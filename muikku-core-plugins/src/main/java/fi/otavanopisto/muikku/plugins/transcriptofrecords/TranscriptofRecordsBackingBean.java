@@ -64,7 +64,7 @@ public class TranscriptofRecordsBackingBean {
   private LocaleController localeController;
   
   @RequestAction
-	public String init() {
+  public String init() {
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW)) {
       return NavigationRules.ACCESS_DENIED;
     }
@@ -146,8 +146,8 @@ public class TranscriptofRecordsBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
     
-	  return null;
-	}
+    return null;
+  }
   
   public String getGrades() {
     return grades;
@@ -185,7 +185,7 @@ public class TranscriptofRecordsBackingBean {
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private String studyTimeLeftStr;
-	
+  
   public static class Grade {
     
     public Grade(String grade, String scale, Boolean passing) {

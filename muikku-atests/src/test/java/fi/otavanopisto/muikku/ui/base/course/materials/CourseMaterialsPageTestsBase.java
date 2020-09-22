@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -27,7 +28,7 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
-//  @Test
+  @Test
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
@@ -73,8 +74,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForPresentAndVisible(".notification-queue__item--success");
+          waitForVisible(".notification-queue__item--success");
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -82,9 +84,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
           waitForPresent(".file-uploader__item-delete-icon");
           waitAndClick(".file-uploader__item-delete-icon");
-          waitForPresentAndVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
+          waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
           waitAndClick(".button--standard-ok");
-          waitForPresentAndVisible(".file-uploader__hint");
+//        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
+          sleep(1500);
+          waitForVisible(".file-uploader__hint");
           assertNotPresent(".file-uploader__item-title");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -96,7 +100,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void courseMaterialExistsTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
@@ -170,7 +174,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         waitForPresent(".material-admin-panel--chapter-functions .icon-pencil");
         click(".material-admin-panel--chapter-functions .icon-pencil");
-        waitForPresentAndVisible(".material-editor--visible .material-editor__title");
+        waitForVisible(".material-editor--visible .material-editor__title");
         clearElement(".material-editor--visible .material-editor__title");
         sendKeys(".material-editor--visible .material-editor__title", "Test title");
         waitAndClick(".button-pill__icon.icon-leanpub");
@@ -186,7 +190,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-   
+  
   @Test
   @TestEnvironments (
     browsers = {
@@ -360,15 +364,16 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__textfield");
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+        waitForNotVisible(".material-page__field-answer-synchronizer");
         waitAndClick(".button--muikku-check-exercises");
         waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
         assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
       } finally {
@@ -379,7 +384,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   @TestEnvironments (
     browsers = {
@@ -425,15 +430,16 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
           waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           waitAndClick(".button--muikku-check-exercises");
           waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
           assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
         } finally {
@@ -485,8 +491,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         selectOption(".material-page__selectfield", "2");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
-
+        sleep(1000);
+        waitForNotVisible(".material-page__field-answer-synchronizer");
+        assertSelectValue(".material-page__selectfield", "2");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         assertSelectedOption(".material-page__selectfield", "dos");
@@ -494,7 +501,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
-      
+ 
     } finally {
       mockBuilder.wiremockReset();
     }
@@ -526,9 +533,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId());
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .addCourseStudent(course1.getId(), courseStudent)
       .build();
+    
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
@@ -540,11 +550,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         try {
           mockBuilder.mockLogin(student);
           login();
-          
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__selectfield");
           selectOption(".material-page__selectfield", "2");
-          waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+          sleep(1000);
+          waitForNotVisible(".material-page__field-answer-synchronizer");
+          assertSelectValue(".material-page__selectfield", "2");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".material-page__selectfield");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__selectfield");
           assertSelectedOption(".material-page__selectfield", "dos");
@@ -598,7 +611,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__radiobutton-items-wrapper");
         waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        sleep(1000);
+        waitForNotVisible(".material-page__field-answer-synchronizer");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__radiobutton-items-wrapper");
         assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
@@ -638,9 +652,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    MockCourseStudent courseStudent = new MockCourseStudent(4l, course1.getId(), student.getId());
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .addCourseStudent(course1.getId(), courseStudent)
       .build();
+
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
@@ -654,7 +671,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__radiobutton-items-wrapper");
           waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
-          waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+          sleep(1000);
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__radiobutton-items-wrapper");
           assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
@@ -707,7 +725,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitAndClickXPath("//input[@type='checkbox' and @value='1']");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        sleep(1000);
+        waitForNotVisible(".material-page__field-answer-synchronizer");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForClickableXPath("//input[@type='checkbox' and @value='1']");
         assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
@@ -759,7 +778,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitAndClickXPath("//input[@type='checkbox' and @value='1']");
-          waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+          sleep(1000);
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForClickableXPath("//input[@type='checkbox' and @value='1']");
           assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
@@ -835,7 +855,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
             "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
-//        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
@@ -896,7 +916,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
         dragAndDropXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]", "//span[@class='material-page__connectfield-counterparts-container']/span[1]", 10, 10);
-//        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
@@ -966,6 +986,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick(".file-uploader__item-delete-icon");
           waitForPresentAndVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
           waitAndClick(".button--standard-ok");
+//        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
+          sleep(1500);
           waitForPresentAndVisible(".file-uploader__hint");
           assertNotPresent(".file-uploader__item-title");
         } finally {
@@ -1042,9 +1064,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           sleep(1000);
           waitAndClick(".button--muikku-check-exercises");
           waitForPresentAndVisible(".material-page__field-answer-examples--sorterfield");
-//        TODO: Fix when answer field renders math
-//        mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
-//        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+          mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
+          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           dragAndDropWithOffSetAndTimeout(".material-page__sorterfield-item:first-child", ".material-page__sorterfield-item:nth-child(2)", 20, 0);
           sleep(1000);
         } finally {
@@ -1116,7 +1137,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   //        TODO: Remove sleep when concurrent save and submit issue fixed
           sleep(350);
           waitAndClick(".button--muikku-check-exercises");
-          waitForPresentAndVisible(".material-page__correct-answers");
+          waitForVisible(".material-page__correct-answers");
           assertTextIgnoreCase(".material-page__correct-answers-data", "0 / 1");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -1141,50 +1162,62 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //    }
 //  )
 //  public void connectFieldAsciiMathSupportTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+//    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
 //    Builder mockBuilder = mocker();
-//    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-//    login();
-//    maximizeWindow();
-//    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
 //    try {
-//      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-//      
-//      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-//          "Test", "text/html;editor=CKEditor", 
-//          "<p>Lorem not solor emut.</p><p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\" />"
-//          + "<param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-r0iJ7LgkLdnysqQvJvIFffMf&quot;,&quot;fields&quot;:[{&quot;name&quot;"
-//          + ":&quot;1&quot;,&quot;text&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;perti&quot;},"
-//          + "{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;sampo&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Ei&quot;},"
-//          + "{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Kylla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;kunta&quot;}],&quot;connections&quot;"
-//          + ":[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},"
-//          + "{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\" /></object></p> ", 1l, 
-//          "EXERCISE");
+//      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+//      mockBuilder
+//      .addStaffMember(admin)
+//      .mockLogin(admin)
+//      .addCourse(course1)
+//      .build();
+//      login();
+//      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+//  
+//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+//      mockBuilder
+//        .addCourseStaffMember(course1.getId(), courseStaffMember)
+//        .build();
 //      try {
-//        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-//        waitForPresent(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
-//        assertVisible(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
-//        waitForAttributeToHaveValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
-//        String mathml = getAttributeValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
-//        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-//        waitAndClick("div[data-field-name='1']");
-//        waitAndClick("div[data-field-value='A']");
+//        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
 //        
-//        waitAndClick("div[data-field-name='2']");
-//        waitAndClick("div[data-field-value='B']");
-//
-//        waitAndClick("div[data-field-name='3']");
-//        waitAndClick("div[data-field-value='C']");
-////      TODO: Remove sleep when concurrent save and submit issue fixed
-//        sleep(350);
-//        waitAndClick("button.muikku-check-exercises");
-//        waitForPresentAndVisible(".correct-answers-count-data");
-//        assertEquals("1 / 1", getWebDriver().findElement(By.cssSelector(".correct-answers-count-data")).getText());
+//        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+//            "Test", "text/html;editor=CKEditor", 
+//            "<p>Lorem not solor emut.</p><p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\" />"
+//            + "<param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-r0iJ7LgkLdnysqQvJvIFffMf&quot;,&quot;fields&quot;:[{&quot;name&quot;"
+//            + ":&quot;1&quot;,&quot;text&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;perti&quot;},"
+//            + "{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;sampo&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Ei&quot;},"
+//            + "{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Kylla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;kunta&quot;}],&quot;connections&quot;"
+//            + ":[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},"
+//            + "{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\" /></object></p> ", 1l, 
+//            "EXERCISE");
+//        try {
+//          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+//          waitForPresent(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
+//          assertVisible(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
+//          waitForAttributeToHaveValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
+//          String mathml = getAttributeValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
+//          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+//          waitAndClick("div[data-field-name='1']");
+//          waitAndClick("div[data-field-value='A']");
+//          
+//          waitAndClick("div[data-field-name='2']");
+//          waitAndClick("div[data-field-value='B']");
+//  
+//          waitAndClick("div[data-field-name='3']");
+//          waitAndClick("div[data-field-value='C']");
+//  //      TODO: Remove sleep when concurrent save and submit issue fixed
+//          sleep(350);
+//          waitAndClick("button.muikku-check-exercises");
+//          waitForPresentAndVisible(".correct-answers-count-data");
+//          assertEquals("1 / 1", getWebDriver().findElement(By.cssSelector(".correct-answers-count-data")).getText());
+//        } finally {
+//          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+//        }
 //      } finally {
-//        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+//        deleteWorkspace(workspace.getId());
 //      }
 //    } finally {
-//      deleteWorkspace(workspace.getId());
 //      mockBuilder.wiremockReset();
 //    }
 //  }    

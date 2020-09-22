@@ -4,11 +4,11 @@ import ApplicationPanel from '~/components/general/application-panel';
 import { i18nType } from 'reducers/base/i18n';
 import Records from './application/records';
 import CurrentRecord from './application/current-record';
-import Vops from './application/vops';
+// import Vops from './application/vops';
 import Hops from './application/hops';
+import Summary from './application/summary';
+import YO from './application/yo';
 import {StateType} from '~/reducers';
-import PrimaryOption from './application/primary';
-import Toolbar from './application/toolbar';
 
 interface StudiesApplicationProps {
   aside: React.ReactElement<any>,
@@ -24,17 +24,16 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
   }
 
   render(){
-    let title = this.props.i18n.text.get('plugin.records.pageTitle')
-    let primaryOption  = <PrimaryOption />
-    let toolbar = <Toolbar />
-
+    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
     return (<div className="application-panel-wrapper">
-      <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
-        <Records/>
+      <ApplicationPanel modifier="records" title={title} asideBefore={this.props.aside}>
+        <Records />
         <CurrentRecord/>
-        <Vops/>
+        {/* Removed until it works <Vops/> */}
         <Hops/>
-      </ApplicationPanel>
+        <Summary/>
+        <YO/>
+        </ApplicationPanel>
     </div>);
   }
 }

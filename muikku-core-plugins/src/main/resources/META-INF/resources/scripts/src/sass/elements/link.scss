@@ -86,7 +86,6 @@
 .link--privacy-policy {
   color: $color-default;
   text-align: center;
-  text-transform: uppercase;
   white-space: normal;
 
   &:hover,
@@ -103,7 +102,8 @@
   border: 0;
 }
 
-.link--plagscan-privacy-policy {
+.link--plagscan-privacy-policy,
+.link--accessibility-statement {
   color: $color-default;
 
   &:hover,
@@ -309,6 +309,10 @@
     background-color: $color-environment-dropdown-link-hover-background;
     color: $color-default-contrast;
   }
+}
+
+.link--studies-file-attachment {
+  padding: 0 0 0 10px;
 }
 
 .link--communicator-label-dropdown,

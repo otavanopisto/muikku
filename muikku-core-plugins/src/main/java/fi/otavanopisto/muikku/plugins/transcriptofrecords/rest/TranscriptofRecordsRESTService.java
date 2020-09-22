@@ -1,6 +1,14 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -13,15 +21,21 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PermissionController;
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
@@ -30,13 +44,24 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -50,6 +75,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private static final long serialVersionUID = -6752333351301485518L;
 
   @Inject
+  private Logger logger;
+
+  @Inject
   private TranscriptOfRecordsController transcriptOfRecordsController;
 
   @Inject
@@ -57,18 +85,42 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private SessionController sessionController;
-
+  
+  @Inject
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;  
+  
+  @Inject
+  private PermissionController permissionController;  
+  
+  @Inject
+  private CourseMetaController courseMetaController;  
+  
   @Inject
   private UserController userController;
 
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
+  private GradingController gradingController;
+
+  @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+  
+  @Inject
+  private MatriculationSchoolDataController matriculationSchoolDataController;
 
   @GET
   @Path("/files/{ID}/content")
@@ -106,6 +158,16 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response getVops(@PathParam("IDENTIFIER") String studentIdentifierString) {
 
+    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
+    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+    if (educationTypeMappingString != null) {
+      try {
+        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);
+      } catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Education type mapping not set").build();
+      }
+    }
+
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
@@ -120,62 +182,129 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         && !Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
+
+    User student = userController.findUserByIdentifier(studentIdentifier);
     
-    try {
-      VopsLister.Result listerResult = transcriptOfRecordsController.listVopsCourses(studentIdentifierString,
-            studentIdentifier);
-
-      VopsRESTModel result = new VopsRESTModel(
-          listerResult.getRows(),
-          listerResult.getNumCourses(),
-          listerResult.getNumMandatoryCourses(),
-          listerResult.isOptedIn()
-      );
-
+    if (!transcriptOfRecordsController.shouldShowStudies(student)) {
+      VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
-    } catch (EducationTypeMappingNotSetException ex) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR)
-                     .entity("Education type mapping not set")
-                     .build();
     }
+    
+    List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
+
+    List<Subject> subjects = courseMetaController.listSubjects();
+    Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = transcriptOfRecordsController.listStudentAssessments(studentIdentifier);
+    
+    
+    String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
+    SchoolDataIdentifier curriculumIdentifier = null;
+    if (curriculum != null) {
+      curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
+    }
+    
+    final List<String> subjectList = new ArrayList<String>();
+    String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
+    if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
+      subjectList.addAll(Arrays.asList(commaSeparatedSubjectsOrder.split(",")));
+    }
+    subjects.sort(new Comparator<Subject>() {
+      public int compare(Subject o1, Subject o2) {
+        int i1 = subjectList.indexOf(o1.getCode());
+        int i2 = subjectList.indexOf(o2.getCode());
+        i1 = i1 == -1 ? Integer.MAX_VALUE : i1;
+        i2 = i2 == -1 ? Integer.MAX_VALUE : i2;
+        return i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
+      }
+    });
+    
+    VopsLister lister = new VopsLister(
+      subjects,
+      transcriptOfRecordsController,
+      student,
+      transferCredits,
+      curriculumIdentifier,
+      workspaceController,
+      workspaceUserEntityController,
+      studentIdentifier,
+      studentAssessments,
+      userGroupEntityController,
+      permissionController,
+      studiesViewCourseChoiceController,
+      studentIdentifierString,
+      gradingController,
+      educationTypeMapping
+    );
+    
+    lister.performListing();
+
+    VopsRESTModel result = new VopsRESTModel(
+        lister.getResult().getRows(),
+        lister.getResult().getNumCourses(),
+        lister.getResult().getNumMandatoryCourses(),
+        lister.getResult().isOptedIn()
+    );
+
+    return Response.ok(result).build();
   }
 
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
-    User user = userController.findUserByIdentifier(userIdentifier);
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
-
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return null;
     }
+    UserIdentifierProperty hopsProperty = userEntityController.getUserIdentifierPropertyByKey(userIdentifier.getIdentifier(), "hops");
+    if (hopsProperty != null && !StringUtils.isBlank(hopsProperty.getValue())) {
+      try {
+        return new ObjectMapper().readValue(hopsProperty.getValue(), HopsRESTModel.class);
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "Error deserializing HOPS form", e);
+      }
+    }
+    else {
+      User user = userController.findUserByIdentifier(userIdentifier);
+      TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
+      return new HopsRESTModel(
+          userProperties.asString("goalSecondarySchoolDegree"),
+          userProperties.asString("goalMatriculationExam"),
+          userProperties.asString("vocationalYears"),
+          userProperties.asString("goalJustMatriculationExam"),
+          userProperties.asString("justTransferCredits"),
+          userProperties.asString("transferCreditYears"),
+          userProperties.asString("completionYears"),
+          userProperties.asString("mathSyllabus"),
+          userProperties.asString("finnish"),
+          userProperties.asBoolean("swedish"),
+          userProperties.asBoolean("english"),
+          userProperties.asBoolean("german"),
+          userProperties.asBoolean("french"),
+          userProperties.asBoolean("italian"),
+          userProperties.asBoolean("spanish"),
+          userProperties.asString("science"),
+          userProperties.asString("religion"),
+          userProperties.asString("additionalInfo"),
+          userProperties.getStudentMatriculationSubjects()
+      );
+    }
+    return new HopsRESTModel();
+  }
+  
+  @GET
+  @Path("/hopseligibility")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response retrieveHopsEligibility(){
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
 
-    TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
-    
-    return new HopsRESTModel(
-        userProperties.asString("goalSecondarySchoolDegree"),
-        userProperties.asString("goalMatriculationExam"),
-        userProperties.asString("vocationalYears"),
-        userProperties.asString("goalJustMatriculationExam"),
-        userProperties.asString("justTransferCredits"),
-        userProperties.asString("transferCreditYears"),
-        userProperties.asString("completionYears"),
-        userProperties.asString("mathSyllabus"),
-        userProperties.asString("finnish"),
-        userProperties.asBoolean("swedish"),
-        userProperties.asBoolean("english"),
-        userProperties.asBoolean("german"),
-        userProperties.asBoolean("french"),
-        userProperties.asBoolean("italian"),
-        userProperties.asBoolean("spanish"),
-        userProperties.asString("science"),
-        userProperties.asString("religion"),
-        userProperties.asString("additionalInfo")
-    );
+    MatriculationEligibilities eligibilities = matriculationSchoolDataController.listEligibilities();
+    return Response.ok(eligibilities).build();
   }
 
   @GET
   @Path("/hops")
   @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveForm(){
+  public Response retrieveHops(){
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
@@ -195,7 +324,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/hops/{USERIDENTIFIER}")
   @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveForm(@PathParam("USERIDENTIFIER") String userIdentifierString){
+  public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString){
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
@@ -289,33 +418,85 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    User user = userController.findUserByIdentifier(userIdentifier);
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
-
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
-
-    transcriptOfRecordsController.saveStringProperty(user, "goalSecondarySchoolDegree", model.getGoalSecondarySchoolDegree());
-    transcriptOfRecordsController.saveStringProperty(user, "goalMatriculationExam", model.getGoalMatriculationExam());
-    transcriptOfRecordsController.saveStringProperty(user, "vocationalYears", model.getVocationalYears());
-    transcriptOfRecordsController.saveStringProperty(user, "goalJustMatriculationExam", model.getGoalJustMatriculationExam());
-    transcriptOfRecordsController.saveStringProperty(user, "justTransferCredits", model.getJustTransferCredits());
-    transcriptOfRecordsController.saveStringProperty(user, "transferCreditYears", model.getTransferCreditYears());
-    transcriptOfRecordsController.saveStringProperty(user, "completionYears", model.getCompletionYears());
-    transcriptOfRecordsController.saveStringProperty(user, "mathSyllabus", model.getMathSyllabus());
-    transcriptOfRecordsController.saveStringProperty(user, "finnish", model.getFinnish());
-    transcriptOfRecordsController.saveBoolProperty(user, "swedish", model.isSwedish());
-    transcriptOfRecordsController.saveBoolProperty(user, "english", model.isEnglish());
-    transcriptOfRecordsController.saveBoolProperty(user, "german", model.isGerman());
-    transcriptOfRecordsController.saveBoolProperty(user, "french", model.isFrench());
-    transcriptOfRecordsController.saveBoolProperty(user, "italian", model.isItalian());
-    transcriptOfRecordsController.saveBoolProperty(user, "spanish", model.isSpanish());
-    transcriptOfRecordsController.saveStringProperty(user, "science", model.getScience());
-    transcriptOfRecordsController.saveStringProperty(user, "religion", model.getReligion());
-    transcriptOfRecordsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
+    
+    try {
+      userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "hops", new ObjectMapper().writeValueAsString(model));
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error serializing HOPS form", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error serializing HOPS form").build();
+    }
 
     return Response.ok().entity(model).build();
+  }
+  
+  @GET
+  @Consumes("application/json")
+  @Path("/studentMatriculationEligibility/{STUDENTIDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getMatriculationEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    if (identifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
+    }
+    
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    User student = userController.findUserByIdentifier(identifier);
+    if (student == null) {
+      return Response.status(Status.NOT_FOUND).entity("Student not found").build();
+    }
+    
+    MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
+    int coursesCompleted = transcriptOfRecordsController.countMandatoryCoursesForStudent(identifier);
+    int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
+
+    if (coursesCompleted >= coursesRequired) {
+      result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
+    } else {
+      result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);
+      result.setCoursesCompleted(coursesCompleted);
+      result.setCoursesRequired(coursesRequired);
+    }
+
+    return Response.ok(result).build();
+  }
+
+  /**
+   * REST endpoint for listing matriculation subjects.
+   * 
+   * Method requires that user is logged in but does not require any special permissions.
+   * 
+   * @return REST response object
+   */
+  @GET
+  @Path("/matriculationSubjects")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listMatriculationSubjects() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
+  }
+  
+  @GET
+  @Path("/matriculationEligibility")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response findMatriculationEligibility(@QueryParam ("subjectCode") String subjectCode) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
+    
+    return Response.ok(result).build();
   }
   
 }

@@ -4,12 +4,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 
 public class TranscriptofRecordsUserProperties {
   
-  public TranscriptofRecordsUserProperties(List<UserProperty> properties) {
+  public TranscriptofRecordsUserProperties(List<UserProperty> properties, StudentMatriculationSubjects studentMatriculationSubjects) {
+    this.studentMatriculationSubjects = studentMatriculationSubjects;
     map(properties);
+  }
+  
+  /**
+   * Returns student's selected matriculation subjects
+   * 
+   * @return student's selected matriculation subjects
+   */
+  public StudentMatriculationSubjects getStudentMatriculationSubjects() {
+    return studentMatriculationSubjects;
   }
 
   private void map(List<UserProperty> properties) {
@@ -37,4 +48,5 @@ public class TranscriptofRecordsUserProperties {
   }
   
   private Map<String, UserProperty> properties = new HashMap<>();
+  private StudentMatriculationSubjects studentMatriculationSubjects;
 }

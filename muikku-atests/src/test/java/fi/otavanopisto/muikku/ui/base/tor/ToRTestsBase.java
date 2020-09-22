@@ -11,18 +11,19 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
-import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class ToRTestsBase extends AbstractUITest {
-  
+//  TODO: Proper testin of revised records
   @Test
   public void recordsWorkspaceEvaluationTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -30,17 +31,17 @@ public class ToRTestsBase extends AbstractUITest {
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
       Long courseId = 2l;
-      
+      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStudent(student)
+        .addStaffMember(admin)
+        .addCourse(course1)
+        .mockLogin(admin)
+        .build();
       login();
       
-      Workspace workspace = createWorkspace("testcourses", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
-      
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
@@ -59,20 +60,21 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
         .mockStaffCompositeCourseAssessmentRequests()      
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-        .mockCourseAssessments(courseStudent, admin);
+        .mockCourseAssessments(courseStudent, admin)
+        .mockStudentCourseStats(student.getId(), 10).build();
       
       logout();
       mockBuilder.mockLogin(student);
       login();
       
-      navigate("/records", false);
+      navigate("/records#records", false);
       waitForPresent(".application-list__item-header--course .application-list__header-primary");
       assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
       
@@ -80,8 +82,8 @@ public class ToRTestsBase extends AbstractUITest {
       assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
       
       waitAndClick(".application-list__item-header--course .application-list__header-primary");
-      waitForPresent(".application-sub-panel__text--course-evaluation");
-      assertText(".application-sub-panel__text--course-evaluation", "Test evaluation.");
+      waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+      assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -98,19 +100,17 @@ public class ToRTestsBase extends AbstractUITest {
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
-      
       Long courseId = 1l;
-      
+      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStudent(student)
+        .addStaffMember(admin)
+        .addCourse(course1)
+        .mockLogin(admin)
+        .build();
       login();
       
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
-      
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
@@ -143,9 +143,9 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
@@ -175,7 +175,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         
-        navigate("/records", false);
+        navigate("/records#records", false);
         waitForPresent(".application-list__header-primary");
         waitAndClick(".application-list__header-primary");
         waitForPresent(".state-PASSED");
@@ -188,10 +188,84 @@ public class ToRTestsBase extends AbstractUITest {
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
-        }
-      } finally {
-        mockBuilder.wiremockReset();
+      }
+    } finally {
+      mockBuilder.wiremockReset();
     }
   }
+  
+//  @Test
+//  public void studiesSummaryTest() throws Exception {
+//    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+//    MockStudent student = new MockStudent(4l, 4l, "Studenter", "Tester", "studenter@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.toDate(2035, 1, 1));
+//    OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+//    Builder mockBuilder = mocker();
+//    try{
+//      Long courseId = 1l;
+//      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+//      mockBuilder
+//        .addStudent(student)
+//        .addStaffMember(admin)
+//        .addCourse(course1)
+//        .mockLogin(admin)
+//        .build();
+//      login();
+//      
+//      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+//      MockCourseStudent courseStudent = new MockCourseStudent(4l, courseId, student.getId());
+//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+//      mockBuilder
+//        .addCourseStaffMember(courseId, courseStaffMember)
+//        .addCourseStudent(courseId, courseStudent)
+//        .mockStudentCourseStats(student.getId(), 10).build()
+//        .build();
+//   
+//      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+//      
+//      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+//        "Test exercise", "text/html;editor=CKEditor", 
+//        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+//        "EVALUATED");
+//      try{        
+//        logout();
+//        mockBuilder.mockLogin(student);
+//        login();
+//
+//        selectFinnishLocale();        
+//        navigate("/records", false);
+//
+//        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivämäärä");        
+//        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date span", "01.01.2012");
+//
+//        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivämäärä");
+//        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date span", "01.01.2035");
+//        
+//        waitForPresent(".application-sub-panel__card-header--summary-evaluated");
+//        assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
+//        waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
+//        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
+//        
+//        waitForPresent(".application-sub-panel__card-header--summary-activity");
+//        assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
+//        waitForPresent(".application-sub-panel__card-highlight--summary-activity");
+////        TODO: Depending on the order tests are run this number can be anything between 1-4 so commenting for now
+////        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
+//
+//        waitForPresent(".application-sub-panel__card-header--summary-returned");
+//        assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
+//        waitForPresent(".application-sub-panel__card-highlight--summary-returned");
+//        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
+//      } finally {
+//          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+//          deleteWorkspace(workspace.getId());
+//      }
+//    } finally {
+//      mockBuilder.wiremockReset();
+//    }
+//  }
   
 }

@@ -402,14 +402,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForVisible(String selector) {
-    int attempts = 0;
-    while (attempts < 2) {
-      try{
-        new WebDriverWait(getWebDriver(), 20).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.cssSelector(selector))));          
-      }catch (StaleElementReferenceException e) {
-      }      
-      attempts++;
-    }
+    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          if(!elements.isEmpty()) {
+            for (WebElement webElement : elements) {
+              return webElement.isDisplayed();
+            }
+          }
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        return false;
+      }
+    });
+    
   }
   
   protected void waitForVisibleXPath(String XPath) {
@@ -696,7 +704,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void selectOption(String selector, String value){
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
-    assertSelectValue(selector, value);
   }
   
   protected void selectFinnishLocale() {
