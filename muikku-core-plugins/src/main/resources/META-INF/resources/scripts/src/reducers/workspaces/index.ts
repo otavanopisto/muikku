@@ -175,7 +175,7 @@ export interface WorkspacePermissionsType {
   workspaceEntityId: number,
   userGroupEntityId: number,
   userGroupName: string,
-  permissions: string[],
+  canSignup: boolean,
 }
 
 export interface WorkspaceType {

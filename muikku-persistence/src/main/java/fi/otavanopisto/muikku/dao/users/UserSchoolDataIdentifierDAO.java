@@ -5,11 +5,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.base.SchoolDataSource_;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -31,6 +34,24 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
     userSchoolDataIdentifier.setArchived(archived);
     
     return persist(userSchoolDataIdentifier);
+  }
+
+  public UserSchoolDataIdentifier findBySchoolDataIdentifier(SchoolDataIdentifier userSchoolDataIdentifier) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    Join<UserSchoolDataIdentifier, SchoolDataSource> joinSchoolDataSource = root.join(UserSchoolDataIdentifier_.dataSource);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(joinSchoolDataSource.get(SchoolDataSource_.identifier), userSchoolDataIdentifier.getDataSource()),
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.identifier), userSchoolDataIdentifier.getIdentifier())
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
   }
 
   public UserSchoolDataIdentifier findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {

@@ -239,9 +239,6 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String ARCHIVE_ALL_WORKSPACE_STUDENTS = "ARCHIVE_ALL_WORKSPACE_STUDENTS";
   
   @Scope (PermissionScope.WORKSPACE)
-  public static final String WORKSPACE_SIGNUP = "WORKSPACE_SIGNUP";
-  
-  @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT })
   public static final String IS_WORKSPACE_STUDENT = "IS_WORKSPACE_STUDENT";
   

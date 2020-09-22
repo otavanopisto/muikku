@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -232,9 +232,8 @@ public class PermissionRESTService extends AbstractRESTService {
   }
 
   private List<Permission> listWorkspaceSettingsPermissions() {
-    // TODO: atm we only support the sign up permission
-    Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
-    return Arrays.asList(permission);
+    // TODO: no permissions are supported by the permission rest service at this time 
+    return Collections.emptyList();
   }
   
 }

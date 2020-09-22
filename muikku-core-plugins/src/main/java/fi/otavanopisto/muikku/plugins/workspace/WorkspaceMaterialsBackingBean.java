@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -44,6 +45,9 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -111,7 +115,7 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     maySignUp = resolveMaySignUp();
-    canSignUp = sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+    canSignUp = workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity);
     workspaceVisitController.visit(workspaceEntity);
     
     return null;
