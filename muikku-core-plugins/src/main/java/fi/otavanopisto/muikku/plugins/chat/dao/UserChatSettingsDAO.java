@@ -33,6 +33,20 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
     
     return getSingleResult(entityManager.createQuery(criteria));
   }
+
+  public UserChatSettings findByNick(String nick) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserChatSettings> criteria = criteriaBuilder.createQuery(UserChatSettings.class);
+    Root<UserChatSettings> root = criteria.from(UserChatSettings.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(UserChatSettings_.nick), nick)
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
   
   @Override
   public void delete(UserChatSettings userChatSettings) {

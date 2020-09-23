@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -47,18 +48,14 @@ import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRESTModel;
-import fi.otavanopisto.muikku.plugins.chat.rest.StatusRESTModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.WorkspaceChatSettingsRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -86,9 +83,9 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private Logger logger;
-  
+
   @Inject
-  private UserController userController;
+  private LocaleController localeController;
   
   @Inject
   private ChatClientHolder chatClientHolder;
@@ -110,9 +107,6 @@ public class ChatRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-
-  @Inject
-  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -198,30 +192,8 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/status")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatStatus() {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    boolean chatEnabled = false;
-    String nick = "";
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
-    if (userChatSettings != null) {
-      UserChatVisibility visibility = userChatSettings.getVisibility();
-      if (visibility == UserChatVisibility.VISIBLE_TO_ALL) {
-        chatEnabled = true;
-      }
-      nick = userChatSettings.getNick();
-      if (nick == null) {
-        nick = "";
-      }
-    } 
-    User user = userController.findUserByIdentifier(userEntity.defaultSchoolDataIdentifier());
-    if (user == null) {
-      return Response.status(Status.NOT_FOUND).entity("Logged user doesn't exist").build();
-    }
-    if (chatEnabled) {
-      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName(), nick)).build();
-    }
-    else {
-      return Response.ok(new StatusRESTModel(false, true, null, null)).build();
-    }
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
+    return Response.ok(userChatSettings != null && userChatSettings.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL ? true : false).build();
   }
 
   private XmppCredentials computeXmppCredentials(
@@ -282,18 +254,24 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateUserChatSettings(ChatSettingsRESTModel payload) {
-    // TODO Validate nick exists if chat is on
-    // TODO Validate nick is unique
+    
+    // Payload validation
+    
+    String nick = StringUtils.trim(payload.getNick());
+    if (payload.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL && StringUtils.isEmpty(nick)) {
+      return Response.status(Status.BAD_REQUEST).entity(localeController.getText(sessionController.getLocale(), "plugin.chat.nicknameRequired")).build();
+    }
+    UserChatSettings userChatSettings = chatController.findUserChatSettingsByNick(payload.getNick());
+    if (userChatSettings != null && !userChatSettings.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.CONFLICT).entity(localeController.getText(sessionController.getLocale(), "plugin.chat.nicknameInUse")).build();
+    }
+    
     UserEntity userEntity = sessionController.getLoggedUserEntity();
 
     chatSyncController.syncStudent(userEntity);
 
     UserChatVisibility visibility = payload.getVisibility();
-    String nick = payload.getNick();
-    if (nick == null) {
-      nick = "";
-    }
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);	  
+    userChatSettings = chatController.findUserChatSettings(userEntity);	  
     if (userChatSettings == null) {
       userChatSettings = chatController.createUserChatSettings(userEntity, visibility, nick);
     }

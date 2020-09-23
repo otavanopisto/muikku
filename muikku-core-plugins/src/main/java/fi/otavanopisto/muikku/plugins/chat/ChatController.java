@@ -23,6 +23,10 @@ public class ChatController {
     return userChatSettingsDAO.findByUserEntityId(userEntity.getId());
   }
 
+  public UserChatSettings findUserChatSettingsByNick(String nick) {
+    return userChatSettingsDAO.findByNick(nick);
+  }
+
   public UserChatSettings createUserChatSettings(UserEntity userEntity, UserChatVisibility visibility, String nick) {
     return userChatSettingsDAO.create(userEntity.getId(), visibility, nick);
   }
