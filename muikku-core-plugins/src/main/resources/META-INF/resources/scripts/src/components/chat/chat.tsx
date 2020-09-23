@@ -96,7 +96,6 @@ interface IPrivateChatData {
 
 interface IChatState {
   isConnectionOk: boolean,
-  showMaterial: boolean,
   roomsList: Object[],
   messages: Object[],
   availableMucRooms: IAvailableChatRoomType[],
@@ -120,16 +119,16 @@ interface IChatProps {
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
-  private mucNickName: string;
-  private nick: string;
   private connection: Strophe.Connection;
+
+  private awaitingConfigurationForChatRoom: string = null;
+  private awaitingChatRoomStanza: Strophe.Builder = null;
 
   constructor(props: IChatProps) {
     super(props);
 
     this.state = {
       isConnectionOk: false,
-      showMaterial: false,
       roomsList: [],
       messages: [],
       availableMucRooms: [],
@@ -332,7 +331,36 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     // const { Strophe, $pres, _ } = this.evtConverse.env;
 
-    // const occupantBareJID = roomJID + "/" + this.state.pyramusUserId;
+    const occupantBareJID = roomJID + "/" + this.state.pyramusUserId;
+
+    const presStanza = $pres({
+      from: this.connection.jid,
+      to: occupantBareJID,
+    }).c("x", { 'xmlns': Strophe.NS.MUC });
+
+    this.awaitingConfigurationForChatRoom = occupantBareJID;
+    this.awaitingChatRoomStanza = $iq({
+      from: this.connection.jid,
+      to: roomJID,
+      type: "set",
+    })
+      .c("query", { xmlns: "http://jabber.org/protocol/muc#owner"})
+      .c("x", {
+        xmlns: "jabber:x:data",
+        type: "submit"
+      }).c("field", {
+        var: "FORM_TYPE"
+      }).c("value", {}, "http://jabber.org/protocol/muc#roomconfig")
+      .up().c("field", {
+        var: "muc#roomconfig_roomname"
+      }).c("value", {}, roomName)
+      .up().c("field", {
+        var: "muc#roomconfig_roomdesc"
+      }).c("value", {}, roomDesc)
+      .up().c("field", {
+        var: "muc#roomconfig_persistentroom"
+      }).c("value", {}, (roomPersistent ? 1 : 0).toString());
+    this.connection.send(presStanza);
 
     // const stanza = $pres({
     //   'from': this.converse.connection.jid,
@@ -366,13 +394,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     // const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
 
-    // this.setState({
-    //   availableMucRooms: newAvailableMucRooms,
-    //   showNewRoomForm: false,
-    //   roomPersistent: false,
-    //   roomDescField: "",
-    //   roomNameField: "",
-    // });
+    this.setState({
+      showNewRoomForm: false,
+      roomPersistent: false,
+      roomDescField: "",
+      roomNameField: "",
+    });
   }
 
   // Getting available chat rooms to be listed in the control box
@@ -413,7 +440,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
   // Toggle states for Control Box window opening/closing
   toggleControlBox() {
-    if (!this.state.showControlBox) {
+    if (this.state.showControlBox) {
       this.setState({
         showControlBox: false,
       });
@@ -495,10 +522,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // });
   }
   componentDidMount() {
-    mApi().chat.status.read().callback((err: Error, result: { mucNickName: string, nick: string, enabled: boolean }) => {
-      if (result && result.enabled) {
-        this.mucNickName = result.mucNickName;
-        this.nick = result.nick;
+    mApi().chat.status.read().callback((err: Error, result: boolean) => {
+      if (result) {
         this.initialize();
       }
     });
@@ -509,6 +534,22 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
   onPresenceMessage(stanza: Element) {
     console.log(stanza);
+
+    // we are being informed of our own user precense in the chatroom when
+    // we have created a chatroom, we are looking for code 201 in that case
+    // which means it was just created
+    if (
+      this.awaitingConfigurationForChatRoom &&
+      stanza.getAttribute("from") === this.awaitingConfigurationForChatRoom
+    ) {
+      this.connection.sendIQ(this.awaitingChatRoomStanza, (answerStanza: Element) => {
+        if (answerStanza.querySelector("error")) {
+          // TODO do something about error https://xmpp.org/extensions/xep-0045.html#createroom-reserved
+        }
+      });
+      this.awaitingConfigurationForChatRoom = null;
+      this.awaitingChatRoomStanza = null;
+    }
     return true;
   }
   onConnectionStatusChanged(status: Strophe.Status, condition: string) {
@@ -619,17 +660,18 @@ class Chat extends React.Component<IChatProps, IChatState> {
         </div>
 
         {/* Chat controlbox */}
-        {(this.state.showControlBox === true) && <div className="chat__panel chat__panel--controlbox">
+        {this.state.showControlBox && <div className="chat__panel chat__panel--controlbox">
           <div className="chat__panel-header chat__panel-header--controlbox">
             <span onClick={this.toggleCreateChatRoomForm} className="chat__button chat__button--new-room icon-plus"></span>
             <span onClick={this.toggleControlBox} className="chat__button chat__button--close icon-cross"></span>
           </div>
 
-          {(this.state.showMaterial === true) && <div className="chat__panel-body chat__panel-body--controlbox">
-
+          <div className="chat__panel-body chat__panel-body--controlbox">
             <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
-              <option value="online">Paikalla</option>
+              <option value="chat">Paikalla</option>
               <option value="away">Palaan pian</option>
+              <option value="dnd">Do not Disturb</option>
+              <option value="xa">Offline</option>
             </select>
 
             <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
@@ -646,10 +688,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>} */}
             </div>
 
-            {(this.state.showNewRoomForm === true) && <div className="chat__subpanel">
+            {this.state.showNewRoomForm && <div className="chat__subpanel">
               <div className="chat__subpanel-header chat__subpanel-header--new-room">
                 <div className="chat__subpanel-title">Luo uusi huone</div>
-                <div onClick={() => this.toggleCreateChatRoomForm()} className="chat__button chat__button--close icon-cross"></div>
+                <div onClick={this.toggleCreateChatRoomForm} className="chat__button chat__button--close icon-cross"></div>
               </div>
               <div className="chat__subpanel-body">
                 <form onSubmit={this.createAndJoinChatRoom}>
@@ -686,7 +728,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                 </form>
               </div>
             </div>}
-          </div>}
+          </div>
         </div>}
 
         {/* Chatrooms */}
