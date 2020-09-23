@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat.dao;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -12,32 +9,18 @@ import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings_;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
 	
   private static final long serialVersionUID = -7830619828801454118L;
 
-  public UserChatSettings create(String userIdentifier, UserChatVisibility userChatVisibility, String nick) {
-    UserChatSettings settings = new UserChatSettings(userIdentifier, userChatVisibility, nick);
+  public UserChatSettings create(Long userEntityId, UserChatVisibility userChatVisibility, String nick) {
+    UserChatSettings settings = new UserChatSettings(userEntityId, userChatVisibility, nick);
     getEntityManager().persist(settings);
     return settings;
   }
   
-  public List<UserChatSettings> listAll(String userIdentifier, UserChatVisibility userChatVisibility, String nick) {
-	EntityManager entityManager = getEntityManager(); 
-	    
-	CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-	CriteriaQuery<UserChatSettings> criteria = criteriaBuilder.createQuery(UserChatSettings.class);
-	Root<UserChatSettings> root = criteria.from(UserChatSettings.class);
-	criteria.select(root);
-	
-	TypedQuery<UserChatSettings> query = entityManager.createQuery(criteria);
-	
-	return query.getResultList();
-  }
-  
-  public UserChatSettings findByUser(SchoolDataIdentifier userIdentifier) {
+  public UserChatSettings findByUserEntityId(Long userEntityId) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -45,7 +28,7 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
     Root<UserChatSettings> root = criteria.from(UserChatSettings.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(UserChatSettings_.userIdentifier), userIdentifier.toId())
+        criteriaBuilder.equal(root.get(UserChatSettings_.userEntityId), userEntityId)
     );
     
     return getSingleResult(entityManager.createQuery(criteria));

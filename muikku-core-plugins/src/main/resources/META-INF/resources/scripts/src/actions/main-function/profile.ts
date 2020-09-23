@@ -259,7 +259,7 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
 
       dispatch({
         type: "SET_PROFILE_CHAT_SETTINGS",
-        payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data.visibility, nick: data.nick}), 'callback')())
+        payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({visibility: data.visibility, nick: data.nick}), 'callback')())
       });
 
       data.success && data.success();

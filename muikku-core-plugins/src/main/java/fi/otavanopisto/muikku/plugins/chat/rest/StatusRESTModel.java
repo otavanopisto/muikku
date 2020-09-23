@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.chat;
+package fi.otavanopisto.muikku.plugins.chat.rest;
 
 public class StatusRESTModel {
 public StatusRESTModel(boolean loggedIn, boolean chatSettingsVisible, String mucNickName, String nick) {

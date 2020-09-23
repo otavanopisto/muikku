@@ -40,8 +40,7 @@
     },
     
     _setVisibility: function(visibility) {
-      var userIdentifier = MUIKKU_LOGGED_USER;
-      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function () {
+      mApi().chat.settings.update({visibility: visibility}).callback($.proxy(function () {
         location.reload();
       }, this));
     }

@@ -50,9 +50,6 @@ public class ProfileBackingBean {
   @Inject
   private LocaleController localeController;
   
-  @Inject 
-  private PluginSettingsController pluginSettingsController;
-  
   @Inject
   private ChatController chatController;
 
@@ -112,7 +109,7 @@ public class ProfileBackingBean {
     SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
     emails = userEmailEntityController.getUserEmailAddresses(identifier);
     
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
     
     chatEnabled = false;
     if (userChatSettings != null) {

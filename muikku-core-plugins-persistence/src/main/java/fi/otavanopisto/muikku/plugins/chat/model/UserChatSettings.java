@@ -13,27 +13,20 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class UserChatSettings {
+
   public UserChatSettings() {
     
   }
   
-  public UserChatSettings(String userIdentifier, UserChatVisibility visibility, String nick) {
+  public UserChatSettings(Long userEntityId, UserChatVisibility visibility, String nick) {
     super();
-    this.userIdentifier = userIdentifier;
+    this.userEntityId = userEntityId;
     this.visibility = visibility;
     this.nick = nick;
   }
 
   public Long getId() {
     return id;
-  }
-
-  public String getUserIdentifier() {
-    return userIdentifier;
-  }
-
-  public void setUserIdentifier(String userIdentifier) {
-    this.userIdentifier = userIdentifier;
   }
 
   public UserChatVisibility getVisibility() {
@@ -52,19 +45,30 @@ public class UserChatSettings {
     this.nick = nick;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotNull
-  @NotEmpty
   @Column(nullable = false, unique = true)
-  private String userIdentifier;
+  private Long userEntityId;
 
   @NotNull
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private UserChatVisibility visibility;
   
+  @NotNull
+  @NotEmpty
+  @Column(nullable = false, unique = true)
   private String nick;
+
 }

@@ -9,8 +9,6 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +27,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -37,18 +34,21 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRESTModel;
+import fi.otavanopisto.muikku.plugins.chat.rest.StatusRESTModel;
+import fi.otavanopisto.muikku.plugins.chat.rest.WorkspaceChatSettingsRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -59,6 +59,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -105,6 +106,9 @@ public class ChatRESTService extends PluginRESTService {
   private WorkspaceController workspaceController;
 
   @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
@@ -127,11 +131,7 @@ public class ChatRESTService extends PluginRESTService {
     }
     Instant now = Instant.now();
     
-    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (loggedUserIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Logged user identifier not found").build();
-    }
-    String userIdentifierString = StringUtils.lowerCase(loggedUserIdentifier.toId());
+    String userIdentifierString = String.format("muikku-user-%d", sessionController.getLoggedUserEntity().getId());
     
     // Do we ever need to resume an existing session? Re-using ChatPrebindParameters and incrementing rid doesn't work.
     
@@ -198,41 +198,28 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/status")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatStatus() {
-    SchoolDataIdentifier identifier = sessionController.getLoggedUser();
-
-    if (identifier == null) {
-      return Response.status(Status.NOT_FOUND).entity("Couldn't find logged user").build();
-    }
-
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean chatEnabled = false;
     String nick = "";
-
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
-
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
     if (userChatSettings != null) {
       UserChatVisibility visibility = userChatSettings.getVisibility();
-
       if (visibility == UserChatVisibility.VISIBLE_TO_ALL) {
         chatEnabled = true;
       }
-
       nick = userChatSettings.getNick();
       if (nick == null) {
         nick = "";
       }
-
-      
     } 
-
-    User user = userController.findUserByIdentifier(identifier);
-
+    User user = userController.findUserByIdentifier(userEntity.defaultSchoolDataIdentifier());
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("Logged user doesn't exist").build();
     }
-
     if (chatEnabled) {
       return Response.ok(new StatusRESTModel(true, true, user.getDisplayName(), nick)).build();
-    } else {
+    }
+    else {
       return Response.ok(new StatusRESTModel(false, true, null, null)).build();
     }
   }
@@ -281,36 +268,44 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatSettingsGet() {
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
-    return Response.ok(userChatSettings).build();
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
+    if (userChatSettings == null) {
+      return Response.status(Status.NOT_FOUND).build(); 
+    }
+    ChatSettingsRESTModel result = new ChatSettingsRESTModel();
+    result.setNick(userChatSettings.getNick());
+    result.setVisibility(userChatSettings.getVisibility());
+    return Response.ok(result).build();
   }
 
   @PUT
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateUserChatSettings(UserChatSettings userChatSettings) {
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+  public Response createOrUpdateUserChatSettings(ChatSettingsRESTModel payload) {
+    // TODO Validate nick exists if chat is on
+    // TODO Validate nick is unique
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
 
-    chatSyncController.syncStudent(userIdentifier);
+    chatSyncController.syncStudent(userEntity);
 
-    UserChatVisibility visibility = userChatSettings.getVisibility();
-    String nick = userChatSettings.getNick();
+    UserChatVisibility visibility = payload.getVisibility();
+    String nick = payload.getNick();
     if (nick == null) {
       nick = "";
     }
-    UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);	  
-    if (findUserChatSettings == null) {
-      findUserChatSettings = chatController.createUserChatSettings(userIdentifier, visibility, nick);
-    } else {
-      chatController.updateUserChatVisibility(findUserChatSettings, visibility);
-      chatController.updateChatNick(findUserChatSettings, nick);
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);	  
+    if (userChatSettings == null) {
+      userChatSettings = chatController.createUserChatSettings(userEntity, visibility, nick);
     }
-    return Response.ok(findUserChatSettings).build(); 
+    else {
+      chatController.updateUserChatVisibility(userChatSettings, visibility);
+      chatController.updateChatNick(userChatSettings, nick);
+    }
+    return Response.ok(userChatSettings).build(); 
   }
   
-  private WorkspaceChatSettingsRestModel restModel(WorkspaceChatSettings workspaceChatSettings) {
-    WorkspaceChatSettingsRestModel restModel = new WorkspaceChatSettingsRestModel();
+  private WorkspaceChatSettingsRESTModel restModel(WorkspaceChatSettings workspaceChatSettings) {
+    WorkspaceChatSettingsRESTModel restModel = new WorkspaceChatSettingsRESTModel();
     restModel.setWorkspaceEntityId(workspaceChatSettings.getWorkspaceEntityId());
     restModel.setChatStatus(workspaceChatSettings.getStatus());
     return restModel;
@@ -323,11 +318,15 @@ public class ChatRESTService extends PluginRESTService {
     
     // Payload validation 
     
-    if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "pyramus-")) {
+    if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "muikku-user-")) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString.toUpperCase());
-    if (identifier == null) {
+    Long userEntityId = NumberUtils.toLong(StringUtils.substring(identifierString, 12));
+    if (userEntityId == null || userEntityId == 0) { 
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -337,19 +336,7 @@ public class ChatRESTService extends PluginRESTService {
     if (searchProvider == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
-    SearchResult result = searchProvider.searchUsers(
-        organizationEntityController.listUnarchived(),
-        null, // searchString 
-        null, // fields 
-        null, // roleArchetypeFilter 
-        null, //userGroupFilters 
-        null, //workspaceFilters 
-        Arrays.asList(identifier), 
-        true, // includeInactiveStudents
-        false, // includeHidden
-        false, // onlyDefaultUsers
-        0, 
-        1);
+    SearchResult result = searchProvider.findUser(userEntity.defaultSchoolDataIdentifier(), true);
     List<Map<String, Object>> results = result.getResults();
     if (results == null || results.isEmpty()) {
       return Response.status(Status.NOT_FOUND).build();
@@ -359,7 +346,7 @@ public class ChatRESTService extends PluginRESTService {
 
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
     boolean isStudent = roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
     HashMap<String, String> senderInfo = new HashMap<>();
     senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
     if (!isStudent) {
@@ -372,8 +359,22 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/settings/{userIdentifier}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getNick(@PathParam("userIdentifier") String identifierString) {
-    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+
+    // Payload validation 
+    
+    if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "user-")) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    Long userEntityId = NumberUtils.toLong(StringUtils.substring(identifierString, 5));
+    if (userEntityId == null || userEntityId == 0) { 
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
     return Response.ok(userChatSettings).build();
   }
 
@@ -394,7 +395,7 @@ public class ChatRESTService extends PluginRESTService {
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
-  public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRestModel workspaceChatSettings) {
+  public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRESTModel workspaceChatSettings) {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
   
@@ -424,31 +425,6 @@ public class ChatRESTService extends PluginRESTService {
     }
   }
   
-  @GET
-  @Path("/affiliations/")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response chatUserAffiliations(@QueryParam("roomName") String roomName) {
-    //SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    List<String> roles = new ArrayList<String>();
-    roles.add("ADMINISTRATOR");
-    roles.add("STYDY_PROGRAM_LEADER");
-
-
-    List<UserSchoolDataIdentifier> usersByAffiliations = chatController.listByOrganizationAndRoles(1, roles);
-    String roomNameWithoutSpaces = roomName.replaceAll("\\s+","");
-    for(UserSchoolDataIdentifier user: usersByAffiliations){
-        EnvironmentRoleEntity userRole = user.getRole();
-        
-        if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(userRole.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(userRole.getArchetype())) {
-          chatSyncController.syncRoomOwners(user, roomNameWithoutSpaces);
-        } 
-      
-
-    }
-
-    return Response.ok(usersByAffiliations).build();
-  }
-
   private SearchProvider getSearchProvider() {
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {

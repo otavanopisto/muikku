@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
@@ -28,7 +27,6 @@ import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
@@ -36,13 +34,12 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.users.UserController;
-import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Stateless
 public class ChatSyncController {
-
+  
   @Inject
   private PluginSettingsController pluginSettingsController;
 
@@ -66,9 +63,6 @@ public class ChatSyncController {
   private UserController userController;
 
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
   private ChatController chatController;
 
   @Inject
@@ -76,51 +70,50 @@ public class ChatSyncController {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
-  public void syncStudent(SchoolDataIdentifier studentIdentifier) {
+  public void syncStudent(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
-      logger.log(Level.INFO, "No openfire token set, skipping room sync");
+      logger.log(Level.SEVERE, "No openfire token set, skipping room sync");
       return;
     }
 
     String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
     if (openfireUrl == null) {
-      logger.log(Level.INFO, "No openfire url set, skipping room sync");
+      logger.log(Level.SEVERE, "No openfire url set, skipping room sync");
       return;
     }
 
     String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
     if (openfirePort == null) {
-      logger.log(Level.INFO, "No openfire port set, skipping room sync");
+      logger.log(Level.SEVERE, "No openfire port set, skipping room sync");
       return;
     }
     if (!StringUtils.isNumeric(openfirePort)) {
-      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
+      logger.log(Level.SEVERE, "Invalid openfire port, skipping room sync");
       return;
     }
+
+    String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
 
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
 
+    SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
     SecureRandom random = new SecureRandom();
-    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(),
-        studentIdentifier.getIdentifier());
-
-    String userSchoolDataSource = user.getSchoolDataSource();
-    String userIdentifier = user.getIdentifier();
+    User user = userController.findUserByIdentifier(muikkuUserIdentifier);
+    if (user == null) {
+      logger.log(Level.SEVERE, String.format("Muikku user %d not found", muikkuUserEntity.getId()));
+      return;
+    }
 
     try {
       // Checking before creating is subject to a race condition, but in the worst
-      // case
-      // the creation just fails, resulting in a log entry
-      UserEntity userEntity = client.getUser(studentIdentifier.toId());
-      if (userEntity == null) {
-        logger.log(Level.INFO, "Syncing chat user " + userSchoolDataSource + "/" + userIdentifier);
+      // case the creation just fails, resulting in a log entry
+      UserEntity openfireUserEntity = client.getUser(openfireUserIdentifier);
+      if (openfireUserEntity == null) {
+        logger.log(Level.INFO, String.format("Adding chat user %s", openfireUserIdentifier));
         // Can't leave the password empty, so next best thing is random passwords
 
         // The passwords are not actually used
@@ -128,25 +121,21 @@ public class ChatSyncController {
         random.nextBytes(passwordBytes);
         String password = Base64.encodeBase64String(passwordBytes);
 
-        userEntity = new UserEntity(userSchoolDataSource + "-" + userIdentifier, user.getDisplayName(), "", password);
-        client.createUser(userEntity);
-
-        if (userSchoolDataSource == null || userIdentifier == null) {
-          logger.log(Level.WARNING, String.format("No user entity found for identifier %s, skipping...", studentIdentifier.getIdentifier()));
-        }
+        openfireUserEntity = new UserEntity(openfireUserIdentifier, user.getDisplayName(), "", password);
+        client.createUser(openfireUserEntity);
       }
 
-      fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity = userEntityController.findUserEntityByUser(user);
-      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
+      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController
+          .listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
 
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-        
+
         // Ignore workspaces that don't have chat enabled
         WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
         if (workspaceChatSettings == null || workspaceChatSettings.getStatus() == WorkspaceChatStatus.DISABLED) {
           continue;
         }
-        
+
         MUCRoomEntity chatRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
         Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
         Set<SchoolDataIdentifier> curriculumIdentifiers = workspace.getCurriculumIdentifiers();
@@ -168,10 +157,6 @@ public class ChatSyncController {
 
           if (chatRoomEntity == null) {
             logger.log(Level.INFO, "Syncing chat workspace " + workspaceEntity.getUrlName());
-            if (userIdentifier == null) {
-              logger.log(Level.WARNING, "Invalid workspace identifier " + userIdentifier + ", skipping...");
-              continue;
-            }
 
             String subjectCode = courseMetaController
                 .findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
@@ -186,7 +171,8 @@ public class ChatSyncController {
             if (!StringUtils.isBlank(roomName)) {
               roomName.append(" - ");
             }
-            // Prefer just name extension but fall back to workspace name if extension is not available
+            // Prefer just name extension but fall back to workspace name if extension is
+            // not available
             if (!StringUtils.isBlank(workspace.getNameExtension())) {
               roomName.append(workspace.getNameExtension());
             }
@@ -206,107 +192,85 @@ public class ChatSyncController {
             client.createChatRoom(chatRoomEntity);
           }
 
-          EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
+          EnvironmentRoleEntity role = userSchoolDataIdentifierController
+              .findUserSchoolDataIdentifierRole(muikkuUserIdentifier);
           if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype())
               || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-            client.addOwner("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource + "-" + userIdentifier);
+            client.addOwner("workspace-chat-" + workspace.getIdentifier(), openfireUserIdentifier);
           }
           else {
-            client.addMember("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource + "-" + userIdentifier);
+            client.addMember("workspace-chat-" + workspace.getIdentifier(), openfireUserIdentifier);
           }
         }
       }
     }
     catch (Exception e) {
-      logger.log(Level.INFO, "Exception when syncing user " + studentIdentifier.getIdentifier(), e);
+      logger.log(Level.SEVERE, String.format("Exception syncing user %d", muikkuUserEntity.getId()), e);
     }
   }
-  
-  public void syncRoomOwners(UserSchoolDataIdentifier userSchoolDataIdentifier, String roomName) {
-    String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
-      if (openfireToken == null) {
-        logger.log(Level.INFO, "No openfire token set, skipping room sync");
-        return;
-      }
 
-      String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
-      if (openfireUrl == null) {
-        logger.log(Level.INFO, "No openfire url set, skipping room sync");
-        return;
-      }
-      String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
-      if (openfirePort == null) {
-        logger.log(Level.INFO, "No openfire port set, skipping room sync");
-        return;
-      }
-      if (!StringUtils.isNumeric(openfirePort)) {
-        logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
-        return;
-      }
-
-      AuthenticationToken token = new AuthenticationToken(openfireToken);
-      RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
-      
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-    	User user = userController.findUserByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier()); 
-
-        String userSchoolDataSource = user.getSchoolDataSource();
-        String userIdentifier = user.getIdentifier();
-              
-        String jid = userSchoolDataSource + "-" + userIdentifier;
-          
-        client.addOwner(roomName, jid);
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
-      }
-      
-      
-
-  }
-  public void removeChatRoomMembership(SchoolDataIdentifier studentIdentifier, WorkspaceEntity workspaceEntity) {
-    
+  public void syncRoomOwners(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity, String roomName) {
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
-      logger.log(Level.INFO, "No openfire token set, skipping room sync");
+      logger.log(Level.SEVERE, "No openfire token set, skipping room sync");
       return;
     }
 
     String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
     if (openfireUrl == null) {
-      logger.log(Level.INFO, "No openfire url set, skipping room sync");
+      logger.log(Level.SEVERE, "No openfire url set, skipping room sync");
       return;
     }
-
     String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
     if (openfirePort == null) {
-      logger.log(Level.INFO, "No openfire port set, skipping room sync");
+      logger.log(Level.SEVERE, "No openfire port set, skipping room sync");
       return;
     }
     if (!StringUtils.isNumeric(openfirePort)) {
-      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
+      logger.log(Level.SEVERE, "Invalid openfire port, skipping room sync");
       return;
     }
 
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
-    
-    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier()); 
 
-    String userSchoolDataSource = user.getSchoolDataSource();
-    String userIdentifier = user.getIdentifier();
-    
+    client.addOwner(roomName, getOpenfireUserIdentifier(muikkuUserEntity));
+  }
+
+  public void removeChatRoomMembership(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity,
+      WorkspaceEntity workspaceEntity) {
+
+    String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
+    if (openfireToken == null) {
+      logger.log(Level.SEVERE, "No openfire token set, skipping room sync");
+      return;
+    }
+
+    String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
+    if (openfireUrl == null) {
+      logger.log(Level.SEVERE, "No openfire url set, skipping room sync");
+      return;
+    }
+
+    String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
+    if (openfirePort == null) {
+      logger.log(Level.SEVERE, "No openfire port set, skipping room sync");
+      return;
+    }
+    if (!StringUtils.isNumeric(openfirePort)) {
+      logger.log(Level.SEVERE, "Invalid openfire port, skipping room sync");
+      return;
+    }
+
+    AuthenticationToken token = new AuthenticationToken(openfireToken);
+    RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
     String roomName = workspace.getIdentifier();
-    String jid = userSchoolDataSource + "-" + userIdentifier;
-    
-    client.deleteMember(roomName, jid);
+    client.deleteMember(roomName, getOpenfireUserIdentifier(muikkuUserEntity));
   }
-  
+
   public void removeWorkspaceChatRoom(WorkspaceEntity workspaceEntity) {
-    
+
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
       logger.log(Level.INFO, "No openfire token set, skipping room sync");
@@ -331,14 +295,13 @@ public class ChatSyncController {
 
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
-    
+
     client.deleteChatRoom("workspace-chat-" + workspaceEntity.getIdentifier());
-    
 
   }
-  
- public void syncWorkspace(WorkspaceEntity workspaceEntity) {
-    
+
+  public void syncWorkspace(WorkspaceEntity workspaceEntity) {
+
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
       logger.log(Level.INFO, "No openfire token set, skipping room sync");
@@ -363,13 +326,12 @@ public class ChatSyncController {
 
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
-    
-    
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    
 
-    String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
-    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    String subjectCode = courseMetaController
+        .findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+
     String separator = "workspace-chat-";
     StringBuilder roomName = new StringBuilder();
     if (!StringUtils.isBlank(subjectCode)) {
@@ -389,7 +351,7 @@ public class ChatSyncController {
       roomName.append(workspace.getName());
     }
     MUCRoomEntity chatRoomEntity = client.getChatRoom(workspace.getIdentifier());
-    
+
     List<String> broadcastPresenceRolesList = new ArrayList<String>();
     broadcastPresenceRolesList.add("moderator");
     broadcastPresenceRolesList.add("participant");
@@ -400,16 +362,16 @@ public class ChatSyncController {
     chatRoomEntity.setLogEnabled(true);
     chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
     client.createChatRoom(chatRoomEntity);
-    
+
     workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
   }
- 
- public void syncWorkspaceUser(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+
+  public void syncWorkspaceUser(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
       logger.log(Level.INFO, "No openfire token set, skipping room sync");
       return;
-      }
+    }
     String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
     if (openfireUrl == null) {
       logger.log(Level.INFO, "No openfire url set, skipping room sync");
@@ -426,15 +388,20 @@ public class ChatSyncController {
     }
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
-    
+
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
-    EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
+    EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserEntity.defaultSchoolDataIdentifier());
     if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-      client.addOwner("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
-    } else {
-      client.addMember("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
-   }
-   
+      client.addOwner("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
+    }
+    else {
+      client.addMember("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
+    }
   }
+  
+  private String getOpenfireUserIdentifier(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
+    return String.format("muikku-user-%d", muikkuUserEntity.getId());
+  }
+
 }

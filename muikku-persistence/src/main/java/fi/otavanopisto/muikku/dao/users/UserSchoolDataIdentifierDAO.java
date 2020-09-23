@@ -105,28 +105,6 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<UserSchoolDataIdentifier> listByOrganizationAndRoles(int i, List<String> roles){
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
-    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
-    Join<UserSchoolDataIdentifier, EnvironmentRoleEntity> join = root.join(UserSchoolDataIdentifier_.role);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.or(
-          criteriaBuilder.equal((join.get(EnvironmentRoleEntity_.archetype)), EnvironmentRoleArchetype.ADMINISTRATOR),
-          criteriaBuilder.equal((join.get(EnvironmentRoleEntity_.archetype)), EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
-        ),
-        
-        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.organization), 1)
-      )
-    );
-    
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
   public UserSchoolDataIdentifier updateOrganization(UserSchoolDataIdentifier userSchoolDataIdentifier,
       OrganizationEntity organizationEntity) {
     userSchoolDataIdentifier.setOrganization(organizationEntity);
