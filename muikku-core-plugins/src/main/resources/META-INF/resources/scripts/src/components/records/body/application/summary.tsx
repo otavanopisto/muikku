@@ -51,18 +51,18 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       </div>
 
       let studyStatus = this.props.hops.value.goalMatriculationExam === "yes" ?
-         <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-           <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
-           <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.pre")}</div>
+        <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
+          <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
+          <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.pre")}</div>
           <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">{this.props.summary.data.eligibilityStatus}</div>
-           <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.post.matriculationEligibility")}</div>
-         </div>:
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
-            <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.pre")}</div>
+          <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.post.matriculationEligibility")}</div>
+        </div>:
+        <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
+          <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
+          <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.pre")}</div>
           <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">{this.props.summary.data.coursesDone}</div>
-            <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.post.workspace")}</div>
-          </div>;
+          <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.done.post.workspace")}</div>
+        </div>;
       return (
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>
