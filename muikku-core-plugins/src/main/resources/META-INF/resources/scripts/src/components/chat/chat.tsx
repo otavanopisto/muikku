@@ -1,13 +1,10 @@
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
-// import { Groupchat } from './groupchat';
-// import { RoomsList } from './roomslist';
-import { PrivateMessages } from './privatemessages';
 import mApi from '~/lib/mApi';
-import promisify from '~/util/promisify';
 import { StateType } from '~/reducers';
 import { connect } from 'react-redux';
-import { Strophe } from "strophe.js";
+import { Strophe } from "strophe.js";
+import { Room } from './room';
 
 /*
 VARIABLES:
@@ -77,7 +74,6 @@ export interface IAvailableChatRoomType {
   roomJID: string,
   roomDesc: string,
   roomPersistent: boolean,
-  chatObject: any,
 }
 
 export interface IChatOccupant {
@@ -96,7 +92,6 @@ interface IPrivateChatData {
 
 interface IChatState {
   isConnectionOk: boolean,
-  roomsList: Object[],
   messages: Object[],
   availableMucRooms: IAvailableChatRoomType[],
   showControlBox: boolean,
@@ -129,16 +124,15 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     this.state = {
       isConnectionOk: false,
-      roomsList: [],
       messages: [],
       availableMucRooms: [],
-      showControlBox: JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
+      showControlBox: JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
       showNewRoomForm: false,
       isStudent: window.MUIKKU_IS_STUDENT,
       openRoomNumber: null,
       pyramusUserId: window.MUIKKU_LOGGED_USER,
-      openChatsJIDS: JSON.parse(window.sessionStorage.getItem("openChats")) || [],
-      selectedUserPresence: JSON.parse(window.sessionStorage.getItem("selectedUserPresence")) || "chat",
+      openChatsJIDS: JSON.parse(window.sessionStorage.getItem("openChats")) || [],
+      selectedUserPresence: JSON.parse(window.sessionStorage.getItem("selectedUserPresence")) || "chat",
       privateChatData: [],
       ready: false,
 
@@ -163,6 +157,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.initialize = this.initialize.bind(this);
     this.onGroupChatMessage = this.onGroupChatMessage.bind(this);
     this.onPresenceMessage = this.onPresenceMessage.bind(this);
+    this.requestExtraInfoAboutRoom = this.requestExtraInfoAboutRoom.bind(this);
     this.onConnectionStatusChanged = this.onConnectionStatusChanged.bind(this);
   }
 
@@ -319,7 +314,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     e.preventDefault();
 
     // We need to trim and replace white spaces so new room will be created succefully
-    const roomJID = this.state.roomNameField.trim().replace(/\s+/g, '-') + '@conference.dev.muikkuverkko.fi';;
+    const roomJID = this.state.roomNameField.trim().replace(/\s+/g, '-') + '@conference.' + location.hostname;
     const roomName = this.state.roomNameField;
     const roomPersistent = this.state.roomPersistent;
     const roomDesc = this.state.roomDescField;
@@ -344,7 +339,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       to: roomJID,
       type: "set",
     })
-      .c("query", { xmlns: "http://jabber.org/protocol/muc#owner"})
+      .c("query", { xmlns: "http://jabber.org/protocol/muc#owner" })
       .c("x", {
         xmlns: "jabber:x:data",
         type: "submit"
@@ -384,17 +379,17 @@ class Chat extends React.Component<IChatProps, IChatState> {
     //   }
     // }), true);
 
-    // let newAvailableMucRoom: IAvailableChatRoomType = {
-    //   roomJID,
-    //   roomName,
-    //   roomDesc,
-    //   roomPersistent,
-    //   chatObject: chat
-    // };
+    const newAvailableMucRoom: IAvailableChatRoomType = {
+      roomJID,
+      roomName,
+      roomDesc,
+      roomPersistent,
+    };
 
-    // const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
+    const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
 
     this.setState({
+      availableMucRooms: newAvailableMucRooms,
       showNewRoomForm: false,
       roomPersistent: false,
       roomDescField: "",
@@ -560,6 +555,79 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // I believe strophe retries automatically so disconnected does not need to be tried
     return true;
   }
+  listExistantChatRooms() {
+    const stanza = $iq({
+      'from': this.connection.jid,
+      'to': 'conference.' + location.hostname,
+      'type': 'get'
+    }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
+    this.connection.sendIQ(stanza, (answerStanza: Element) => {
+      const rooms = answerStanza.querySelectorAll('query item');
+      const currentRooms = [...this.state.availableMucRooms];
+      rooms.forEach((n) => {
+        const roomJID = n.getAttribute("jid");
+        const roomName = n.getAttribute("name");
+        const existsAlreadyIndex = currentRooms.findIndex((r) => r.roomJID === roomJID);
+        if (existsAlreadyIndex >= 0) {
+          const newReplacement: IAvailableChatRoomType = {
+            roomJID,
+            roomName,
+            roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
+            roomPersistent: currentRooms[existsAlreadyIndex].roomPersistent,
+          };
+          currentRooms[existsAlreadyIndex] = newReplacement;
+        } else {
+          currentRooms.push({
+            roomJID,
+            roomName,
+            roomDesc: null,
+            roomPersistent: null,
+          });
+        }
+      });
+
+      this.setState({
+        availableMucRooms: currentRooms,
+      });
+    });
+  }
+  requestExtraInfoAboutRoom(room: IAvailableChatRoomType, refresh?: boolean) {
+    if (room.roomDesc !== null && !refresh) {
+      return;
+    }
+
+    const stanza = $iq({
+      'from': this.connection.jid,
+      'to': room.roomJID,
+      'type': 'get'
+    }).c("query", { xmlns: Strophe.NS.DISCO_INFO });
+
+    this.connection.sendIQ(stanza, (answerStanza: Element) => {
+      const fields = answerStanza.querySelectorAll('query field');
+      const newRoom = {
+        ...room,
+      };
+      fields.forEach((field) => {
+        // muc#roominfo_description
+        // muc#roominfo_subject
+        // muc#roominfo_occupants
+        // x-muc#roominfo_creationdate
+        if (field.getAttribute("var") === "muc#roominfo_description") {
+          newRoom.roomDesc = field.querySelector("value").textContent;
+        }
+      });
+
+      const newAvailableMucRooms = [...this.state.availableMucRooms];
+      const indexOfIt = newAvailableMucRooms.findIndex((r) => r.roomJID === room.roomJID);
+      if (indexOfIt === -1) {
+        return;
+      }
+      newAvailableMucRooms[indexOfIt] = newRoom;
+      this.setState({
+        availableMucRooms: newAvailableMucRooms,
+      });
+    });
+  }
   async initialize() {
     const prebindRequest = await fetch("/rest/chat/prebind");
     const prebind: IPrebindResponseType = await prebindRequest.json();
@@ -574,6 +642,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // // Connect
 
     this.connection.attach(prebind.jid, prebind.sid, prebind.rid.toString(), this.onConnectionStatusChanged);
+
+    this.listExistantChatRooms();
 
     // this.evtConverse = (window as any).converse;
 
@@ -676,16 +746,16 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
             <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
             <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
-              {/* {this.getWorkspaceMucRooms().length > 0 ?
-                this.getWorkspaceMucRooms().map((chat, i) => <RoomsList modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} />)
-                : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>} */}
+              {this.getWorkspaceMucRooms().length > 0 ?
+                this.getWorkspaceMucRooms().map((chat, i) => <Room requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)} modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(this, chat.roomJID)} key={i} chat={chat} />)
+                : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
             <div className="chat__controlbox-rooms-heading">Muut huoneet:</div>
             <div className="chat__controlbox-rooms-listing">
-              {/* {this.getNotWorkspaceMucRooms().length > 0 ?
-                this.getNotWorkspaceMucRooms().map((chat, i) => <RoomsList toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} />)
-                : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>} */}
+              {this.getNotWorkspaceMucRooms().length > 0 ?
+                this.getNotWorkspaceMucRooms().map((chat, i) => <Room requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)} toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(this, chat.roomJID)} key={i} chat={chat} />)
+                : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
             {this.state.showNewRoomForm && <div className="chat__subpanel">
