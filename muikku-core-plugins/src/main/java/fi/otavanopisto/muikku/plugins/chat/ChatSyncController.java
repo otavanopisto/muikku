@@ -125,8 +125,7 @@ public class ChatSyncController {
         client.createUser(openfireUserEntity);
       }
 
-      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController
-          .listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
+      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
 
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
 
@@ -142,11 +141,8 @@ public class ChatSyncController {
         boolean hasCorrectCurriculums = true;
 
         for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
-
           Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
-
           String curriculumName = curriculum.getName();
-
           if (curriculumName.equals("OPS2005")) {
             hasCorrectCurriculums = false;
             break;
@@ -171,8 +167,7 @@ public class ChatSyncController {
             if (!StringUtils.isBlank(roomName)) {
               roomName.append(" - ");
             }
-            // Prefer just name extension but fall back to workspace name if extension is
-            // not available
+            // Prefer just name extension but fall back to workspace name if extension is not available
             if (!StringUtils.isBlank(workspace.getNameExtension())) {
               roomName.append(workspace.getNameExtension());
             }
@@ -329,8 +324,7 @@ public class ChatSyncController {
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
-    String subjectCode = courseMetaController
-        .findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+    String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
 
     String separator = "workspace-chat-";
     StringBuilder roomName = new StringBuilder();
