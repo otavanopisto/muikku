@@ -271,6 +271,7 @@ public class ChatRESTService extends PluginRESTService {
     UserChatVisibility visibility = payload.getVisibility();
     if (visibility == UserChatVisibility.DISABLED) {
       chatController.deleteUserChatSettings(userChatSettings);
+      // TODO I suppose the user's membership in each chat room should be revoked, just to be tidy 
     }
     else {
       
@@ -286,11 +287,11 @@ public class ChatRESTService extends PluginRESTService {
         chatController.updateNickAndVisibility(userChatSettings, nick, visibility);
       }
       
-      // When chat is turned on, ensure that the student exists in Openfire and
-      // is a member of all workspace chat rooms that the student belongs to
+      // When chat is turned on, ensure that the user exists in Openfire and
+      // is a member of all workspace chat rooms that the user belongs to
       
       if (syncMembership) {
-        chatSyncController.syncStudent(userEntity);
+        chatSyncController.syncUser(userEntity);
       }
     }
     return Response.noContent().build(); 

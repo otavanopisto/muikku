@@ -19,10 +19,13 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.MUCRoomEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -64,9 +67,6 @@ public class ChatSyncController {
   private ChatController chatController;
 
   @Inject
-  private Event<WorkspaceChatSettingsEnabledEvent> workspaceChatSettingsEnabledEvent;
-
-  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   /**
@@ -75,102 +75,49 @@ public class ChatSyncController {
    * 
    * @param muikkuUserEntity The user entity
    */
-  public void syncStudent(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
+  public void syncUser(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
     RestApiClient client = getClient();
     if (client != null) {
-      String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
-      SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
-      SecureRandom random = new SecureRandom();
-      User user = userController.findUserByIdentifier(muikkuUserIdentifier);
-      if (user == null) {
-        logger.log(Level.SEVERE, String.format("Muikku user %d not found", muikkuUserEntity.getId()));
-        return;
-      }
-  
       try {
-        // Checking before creating is subject to a race condition, but in the worst
-        // case the creation just fails, resulting in a log entry
-        UserEntity openfireUserEntity = client.getUser(openfireUserIdentifier);
-        if (openfireUserEntity == null) {
-          logger.log(Level.INFO, String.format("Adding chat user %s", openfireUserIdentifier));
-          // Can't leave the password empty, so next best thing is random passwords
-  
-          // The passwords are not actually used
-          byte[] passwordBytes = new byte[20];
-          random.nextBytes(passwordBytes);
-          String password = Base64.encodeBase64String(passwordBytes);
-  
-          openfireUserEntity = new UserEntity(openfireUserIdentifier, user.getDisplayName(), "", password);
-          client.createUser(openfireUserEntity);
-        }
-  
-        List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
-  
-        for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-  
-          // Ignore workspaces that don't have chat enabled
-          WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
-          if (workspaceChatSettings == null || workspaceChatSettings.getStatus() == WorkspaceChatStatus.DISABLED) {
-            continue;
-          }
-  
-          MUCRoomEntity chatRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
-          Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-          if (chatRoomEntity == null) {
-            logger.log(Level.INFO, "Syncing chat workspace " + workspaceEntity.getUrlName());
-  
-            String subjectCode = courseMetaController
-                .findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
-  
-            StringBuilder roomName = new StringBuilder();
-            if (!StringUtils.isBlank(subjectCode)) {
-              roomName.append(subjectCode);
-            }
-            if (workspace.getCourseNumber() != null) {
-              roomName.append(workspace.getCourseNumber());
-            }
-            if (!StringUtils.isBlank(roomName)) {
-              roomName.append(" - ");
-            }
-            // Prefer just name extension but fall back to workspace name if extension is not available
-            if (!StringUtils.isBlank(workspace.getNameExtension())) {
-              roomName.append(workspace.getNameExtension());
-            }
-            else {
-              roomName.append(workspace.getName());
-            }
-  
-            List<String> broadcastPresenceRolesList = new ArrayList<String>();
-            broadcastPresenceRolesList.add("moderator");
-            broadcastPresenceRolesList.add("participant");
-            broadcastPresenceRolesList.add("visitor");
-  
-            chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName.toString(), "");
-            chatRoomEntity.setPersistent(true);
-            chatRoomEntity.setLogEnabled(true);
-            chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
-            client.createChatRoom(chatRoomEntity);
-          }
-  
+        // Make sure the user exists in Openfire
+        
+        UserEntity userEntity = ensureUserExists(client, muikkuUserEntity);
+        if (userEntity != null) {
+
+          // If the user is admin or study programme leader, simply add them as owners of every room...
+
+          SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
           EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserIdentifier);
-          if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-            client.addOwner("workspace-chat-" + workspace.getIdentifier(), openfireUserIdentifier);
+          if (role.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR || role.getArchetype() == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER) {
+            List<MUCRoomEntity> rooms = client.getChatRooms().getMucRooms();
+            for (MUCRoomEntity room : rooms) {
+              ensureUserHasOwnership(client, room, muikkuUserEntity);
+            }
           }
           else {
-            client.addMember("workspace-chat-" + workspace.getIdentifier(), openfireUserIdentifier);
+            
+            // ...otherwise go through the workspaces of the user
+            
+            List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
+            for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+              // Ignore workspaces that don't have chat enabled
+              WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
+              if (workspaceChatSettings == null || workspaceChatSettings.getStatus() == WorkspaceChatStatus.DISABLED) {
+                continue;
+              }
+              // Make sure the chat room exists in Openfire
+              MUCRoomEntity chatRoomEntity = ensureRoomExists(client, workspaceEntity);
+              if (chatRoomEntity != null) {
+                // Make sure the user is a member (or owner) in the room
+                ensureUserHasMembership(client, workspaceEntity, muikkuUserEntity);
+              }
+            }
           }
         }
       }
       catch (Exception e) {
-        logger.log(Level.SEVERE, String.format("Exception syncing user %d", muikkuUserEntity.getId()), e);
+        logger.log(Level.WARNING, String.format("Syncing student %d failed", muikkuUserEntity.getId()), e);
       }
-    }
-  }
-
-  public void syncRoomOwners(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity, String roomName) {
-    RestApiClient client = getClient();
-    if (client != null) {
-      client.addOwner(roomName, getOpenfireUserIdentifier(muikkuUserEntity));
     }
   }
 
@@ -190,14 +137,60 @@ public class ChatSyncController {
     }
   }
 
+  /**
+   * Make sure the given workspace has a chat room and that all members (with chat enabled)
+   * are part of the room
+   * 
+   * @param workspaceEntity The workspace entity
+   */
   public void syncWorkspace(WorkspaceEntity workspaceEntity) {
+    RestApiClient client = getClient();
+    if (client != null) {
+      MUCRoomEntity mucRoomEntity = ensureRoomExists(client, workspaceEntity);
+      if (mucRoomEntity != null) {
+        List<WorkspaceUserEntity> activeWorkspaceStudents = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
+        List<WorkspaceUserEntity> workspaceStaffMembers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+        for (WorkspaceUserEntity activeWorkspaceStudent : activeWorkspaceStudents) {
+          fi.otavanopisto.muikku.model.users.UserEntity userEntity = activeWorkspaceStudent.getUserSchoolDataIdentifier().getUserEntity();
+          UserChatSettings userChatSetting = chatController.findUserChatSettings(userEntity);
+          if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
+            ensureUserHasMembership(client, workspaceEntity, userEntity);
+          }
+        }
+        for (WorkspaceUserEntity workspaceStaffMember : workspaceStaffMembers) {
+          fi.otavanopisto.muikku.model.users.UserEntity userEntity = workspaceStaffMember.getUserSchoolDataIdentifier().getUserEntity();
+          UserChatSettings userChatSetting = chatController.findUserChatSettings(userEntity);
+          if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
+            ensureUserHasMembership(client, workspaceEntity, userEntity);
+          }
+        }
+      }
+      //workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
+    }
+  }
+
+  public void syncWorkspaceUser(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
     RestApiClient client = getClient();
     if (client != null) {
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
   
-      String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+      EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserEntity.defaultSchoolDataIdentifier());
+      if (role.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+        client.addMember("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
+      }
+      else {
+        client.addOwner("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
+      }
+    }
+  }
   
-      String separator = "workspace-chat-";
+  private MUCRoomEntity ensureRoomExists(RestApiClient client, WorkspaceEntity workspaceEntity) {
+    MUCRoomEntity chatRoomEntity = null;
+    chatRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
+    if (chatRoomEntity == null) {
+      logger.log(Level.INFO, String.format("Creating workspace chat room %d", workspaceEntity.getId()));
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
       StringBuilder roomName = new StringBuilder();
       if (!StringUtils.isBlank(subjectCode)) {
         roomName.append(subjectCode);
@@ -215,36 +208,57 @@ public class ChatSyncController {
       else {
         roomName.append(workspace.getName());
       }
-      MUCRoomEntity chatRoomEntity = client.getChatRoom(workspace.getIdentifier());
-  
       List<String> broadcastPresenceRolesList = new ArrayList<String>();
       broadcastPresenceRolesList.add("moderator");
       broadcastPresenceRolesList.add("participant");
       broadcastPresenceRolesList.add("visitor");
-  
-      chatRoomEntity = new MUCRoomEntity(separator + workspace.getIdentifier(), roomName.toString(), "");
+      chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName.toString(), "");
       chatRoomEntity.setPersistent(true);
       chatRoomEntity.setLogEnabled(true);
       chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
       client.createChatRoom(chatRoomEntity);
+    }
+    return chatRoomEntity;
+  }
   
-      workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
+  private UserEntity ensureUserExists(RestApiClient client, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
+    UserEntity openfireUserEntity = null;
+    SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
+    User user = userController.findUserByIdentifier(muikkuUserIdentifier);
+    if (user == null) {
+      logger.log(Level.SEVERE, String.format("Muikku user %d not found", muikkuUserEntity.getId()));
+      return null;
+    }
+    String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
+    openfireUserEntity = client.getUser(openfireUserIdentifier);
+    if (openfireUserEntity == null) {
+      logger.log(Level.INFO, String.format("Creating chat user %s", openfireUserIdentifier));
+      SecureRandom random = new SecureRandom();
+      // Can't leave the password empty, so next best thing is random passwords (not used with prebind)
+      byte[] passwordBytes = new byte[20];
+      random.nextBytes(passwordBytes);
+      String password = Base64.encodeBase64String(passwordBytes);
+      openfireUserEntity = new UserEntity(openfireUserIdentifier, user.getDisplayName(), "", password);
+      client.createUser(openfireUserEntity);
+    }
+    return openfireUserEntity;
+  }
+  
+  private void ensureUserHasMembership(RestApiClient client, WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
+    String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
+    SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
+    EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserIdentifier);
+    if (role.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+      client.addMember("workspace-chat-" + workspaceEntity.getIdentifier(), openfireUserIdentifier);
+    }
+    else {
+      client.addOwner("workspace-chat-" + workspaceEntity.getIdentifier(), openfireUserIdentifier);
     }
   }
-
-  public void syncWorkspaceUser(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
-    RestApiClient client = getClient();
-    if (client != null) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
   
-      EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserEntity.defaultSchoolDataIdentifier());
-      if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-        client.addOwner("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
-      }
-      else {
-        client.addMember("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
-      }
-    }
+  private void ensureUserHasOwnership(RestApiClient client, MUCRoomEntity mucRoomEntity, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
+    String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
+    client.addOwner(mucRoomEntity.getRoomName(), openfireUserIdentifier);
   }
   
   private RestApiClient getClient() {
