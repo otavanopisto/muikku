@@ -53,13 +53,9 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
     super.delete(userChatSettings);
   }
 
-  public UserChatSettings updateVisibility(UserChatSettings settings, UserChatVisibility visibility) {
-    settings.setVisibility(visibility);
-    return persist(settings);
-  }
-  
-  public UserChatSettings updateNick(UserChatSettings settings, String nick) {
+  public UserChatSettings updateNickAndVisibility(UserChatSettings settings, String nick, UserChatVisibility visibility) {
     settings.setNick(nick);
+    settings.setVisibility(visibility);
     return persist(settings);
   }
 }

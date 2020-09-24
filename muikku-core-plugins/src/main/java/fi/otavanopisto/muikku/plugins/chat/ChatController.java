@@ -31,14 +31,14 @@ public class ChatController {
     return userChatSettingsDAO.create(userEntity.getId(), visibility, nick);
   }
 
-  public UserChatSettings updateUserChatVisibility(UserChatSettings settings, UserChatVisibility visibility) {
-    return userChatSettingsDAO.updateVisibility(settings, visibility);
+  public void deleteUserChatSettings(UserChatSettings userChatSettings) {
+    userChatSettingsDAO.delete(userChatSettings);
   }
-  
-  public UserChatSettings updateChatNick(UserChatSettings settings, String nick) {
-    return userChatSettingsDAO.updateNick(settings, nick);
+
+  public UserChatSettings updateNickAndVisibility(UserChatSettings settings, String nick, UserChatVisibility visibility) {
+    return userChatSettingsDAO.updateNickAndVisibility(settings, nick, visibility);
   }
-  
+
   public WorkspaceChatSettings findWorkspaceChatSettings(WorkspaceEntity workspaceEntity) {
     return workspaceChatSettingsDAO.findByWorkspace(workspaceEntity.getId());
   }

@@ -266,20 +266,35 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.CONFLICT).entity(localeController.getText(sessionController.getLocale(), "plugin.chat.nicknameInUse")).build();
     }
     
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-
-    chatSyncController.syncStudent(userEntity);
-
+    // If chat is disabled, we simply delete the settings, freeing the nickname for someone else to use
+    
     UserChatVisibility visibility = payload.getVisibility();
-    userChatSettings = chatController.findUserChatSettings(userEntity);	  
-    if (userChatSettings == null) {
-      userChatSettings = chatController.createUserChatSettings(userEntity, visibility, nick);
+    if (visibility == UserChatVisibility.DISABLED) {
+      chatController.deleteUserChatSettings(userChatSettings);
+      // TODO I suppose the user's membership in each chat room should be revoked, just to be tidy 
     }
     else {
-      chatController.updateUserChatVisibility(userChatSettings, visibility);
-      chatController.updateChatNick(userChatSettings, nick);
+      
+      // Store nick and visibility
+      
+      UserEntity userEntity = sessionController.getLoggedUserEntity();
+      userChatSettings = chatController.findUserChatSettings(userEntity);
+      boolean syncMembership = userChatSettings == null || userChatSettings.getVisibility() != visibility;
+      if (userChatSettings == null) {
+        chatController.createUserChatSettings(userEntity, visibility, nick);
+      }
+      else {
+        chatController.updateNickAndVisibility(userChatSettings, nick, visibility);
+      }
+      
+      // When chat is turned on, ensure that the user exists in Openfire and
+      // is a member of all workspace chat rooms that the user belongs to
+      
+      if (syncMembership) {
+        chatSyncController.syncUser(userEntity);
+      }
     }
-    return Response.ok(userChatSettings).build(); 
+    return Response.noContent().build(); 
   }
   
   private WorkspaceChatSettingsRESTModel restModel(WorkspaceChatSettings workspaceChatSettings) {
