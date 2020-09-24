@@ -5,6 +5,7 @@ import { StateType } from '~/reducers';
 import { connect } from 'react-redux';
 import { Strophe } from "strophe.js";
 import { Room } from './room';
+import { Groupchat } from './groupchat';
 
 /*
 VARIABLES:
@@ -144,6 +145,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.toggleControlBox = this.toggleControlBox.bind(this);
     this.toggleCreateChatRoomForm = this.toggleCreateChatRoomForm.bind(this);
     this.toggleJoinLeaveChatRoom = this.toggleJoinLeaveChatRoom.bind(this);
+    this.leaveChatRoom = this.leaveChatRoom.bind(this);
+    this.joinChatRoom = this.joinChatRoom.bind(this);
     // this.toggleJoinLeavePrivateChat = this.toggleJoinLeavePrivateChat.bind(this);
     this.getUserAvailability = this.getUserAvailability.bind(this);
     this.setUserAvailability = this.setUserAvailability.bind(this);
@@ -389,7 +392,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
 
     this.setState({
-      availableMucRooms: newAvailableMucRooms,
+      availableMucRooms: newAvailableMucRooms.sort((a, b) => a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())),
       showNewRoomForm: false,
       roomPersistent: false,
       roomDescField: "",
@@ -460,44 +463,55 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
     }
   }
+
+  public joinChatRoom(roomJID: string) {
+    // Lets push RoomJid to openChatList and set it to this.state.openChats
+    const newJIDS = !this.state.openChatsJIDS.includes(roomJID) ?
+      [...this.state.openChatsJIDS, roomJID] : this.state.openChatsJIDS;
+
+    this.setState({
+      openChatsJIDS: newJIDS
+    });
+
+    // XEP-0045: 7.2 Entering a Room
+    const presStanza = $pres({
+      from: this.connection.jid,
+      to: roomJID,
+    }).c("x", { 'xmlns': Strophe.NS.MUC }).up()
+      .c("show", {}, this.state.selectedUserPresence);
+
+    this.connection.send(presStanza);
+  }
+
+  public leaveChatRoom(roomJID: string) {
+    const filteredJIDS = this.state.openChatsJIDS.filter(item => item !== roomJID);
+
+    // Set filtered and current openChatList to this.state.openChats
+    this.setState({
+      openChatsJIDS: filteredJIDS,
+    });
+
+    // Set the filtered openChatList to sessionStorage
+    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
+
+    // XEP-0045: 7.14 Exiting a Room
+    const presStanza = $pres({
+      from: this.connection.jid,
+      to: roomJID,
+      type: "unavailable"
+    });
+
+    this.connection.send(presStanza);
+  }
+
   // Toggles between joining and leaving the chat room
-  async toggleJoinLeaveChatRoom(roomJID: string) {
+  public toggleJoinLeaveChatRoom(roomJID: string) {
     // Check whether current roomJID is allready part of openChatList
-    // if (this.state.openChatsJIDS.includes(roomJID)) {
-
-    //   const filteredJIDS = this.state.openChatsJIDS.filter(item => item !== roomJID);
-
-    //   // Set filtered and current openChatList to this.state.openChats
-    //   this.setState({
-    //     openChatsJIDS: filteredJIDS,
-    //   });
-
-    //   // Set the filtered openChatList to sessionStorage
-    //   window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
-
-    //   // Fetch room object
-    //   let chatRoom = await this.converse.api.rooms.get(roomJID);
-
-    //   // When chat room window is closed user will leave the room also.
-    //   chatRoom.leave();
-    // } else {
-    //   // Lets push RoomJid to openChatList and set it to this.state.openChats
-    //   const newJIDS = [...this.state.openChatsJIDS, roomJID];
-
-    //   this.setState({
-    //     openChatsJIDS: newJIDS
-    //   });
-
-    //   if (roomJID) {
-    //     // Fetch room object
-    //     const chatRoom = await this.converse.api.rooms.get(roomJID, {}, false);
-
-    //     if (chatRoom) {
-    //       // Join chat room
-    //       chatRoom.join(this.state.pyramusUserId);
-    //     }
-    //   }
-    // }
+    if (this.state.openChatsJIDS.includes(roomJID)) {
+      this.leaveChatRoom(roomJID);
+    } else {
+      this.joinChatRoom(roomJID);
+    }
   }
   getWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter((room) => room.roomJID.startsWith("workspace-"));
@@ -520,6 +534,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
     mApi().chat.status.read().callback((err: Error, result: boolean) => {
       if (result) {
         this.initialize();
+      }
+    });
+  }
+  componentDidUpdate(prevProps: IChatProps, prevState: IChatState) {
+    const addedGroupChatsInfo = this.state.availableMucRooms.filter((c) => !prevState.availableMucRooms.find((ic) => ic.roomJID !== c.roomJID));
+    addedGroupChatsInfo.forEach((c) => {
+      if (this.state.openChatsJIDS.includes(c.roomJID)) {
+        this.joinChatRoom(c.roomJID);
       }
     });
   }
@@ -587,7 +609,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
 
       this.setState({
-        availableMucRooms: currentRooms,
+        availableMucRooms: currentRooms.sort((a, b) => a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())),
       });
     });
   }
@@ -629,8 +651,16 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
   async initialize() {
-    const prebindRequest = await fetch("/rest/chat/prebind");
-    const prebind: IPrebindResponseType = await prebindRequest.json();
+    let session = window.sessionStorage.getItem("strophe-bosh-session");
+
+    let prebind: IPrebindResponseType;
+    const isRestore = !!session;
+    if (session) {
+      prebind = JSON.parse(session);
+    } else {
+      const prebindRequest = await fetch("/rest/chat/prebind");
+      prebind = await prebindRequest.json();
+    }
 
     this.connection = new Strophe.Connection("/http-bind/");
     this.connection.addHandler(this.onGroupChatMessage, null, 'message', 'groupchat', null, null);
@@ -639,9 +669,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.connection.rawInput = function (data) { console.log('RECV: ' + data); };
     this.connection.rawOutput = function (data) { console.log('SENT: ' + data); };
 
-    // // Connect
-
-    this.connection.attach(prebind.jid, prebind.sid, prebind.rid.toString(), this.onConnectionStatusChanged);
+    // Connect
+    if (isRestore) {
+      this.connection.restore(prebind.jid, this.onConnectionStatusChanged);
+    } else {
+      this.connection.attach(prebind.jid, prebind.sid, prebind.rid.toString(), this.onConnectionStatusChanged);
+    }
 
     this.listExistantChatRooms();
 
@@ -802,24 +835,22 @@ class Chat extends React.Component<IChatProps, IChatState> {
         </div>}
 
         {/* Chatrooms */}
-        {/* <div className="chat__chatrooms-container">
+        <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.includes(chat.roomJID) ?
             <Groupchat
               key={i}
-              toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat}
-              toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom}
+              joinPrivateChat={null}
+              leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
               pyramusUserID={this.state.pyramusUserId}
               chat={chat}
-              evtConverse={this.evtConverse}
-              converse={this.converse}
               onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
             />
             : null)}
 
-          {this.state.privateChatData.map((privateChatData, i) => this.state.openChatsJIDS.includes(privateChatData.occupantBareJID) ?
+          {/* {this.state.privateChatData.map((privateChatData, i) => this.state.openChatsJIDS.includes(privateChatData.occupantBareJID) ?
             <PrivateMessages key={i} toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat} privateChatData={privateChatData} converse={this.converse} />
-            : null)}
-        </div> */}
+            : null)} */}
+        </div>
       </div>
     );
   }
