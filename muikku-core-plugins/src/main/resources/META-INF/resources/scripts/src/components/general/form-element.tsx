@@ -69,16 +69,116 @@ export class FormActionsElement extends React.Component<FormActionsProps, FormAc
   render() {
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
-      <div className={`env-dialog__actions ${this.props.modifiers ? modifiers.map(m => `env-dialog__actions--${m}`).join(" ") : ""}`}>
-        <Button buttonModifiers="dialog-execute" onClick={this.props.executeClick} disabled={this.props.locked}>
+      <div className={`form-element__actions ${this.props.modifiers ? modifiers.map(m => `form-element__actions--${m}`).join(" ") : ""}`}>
+        <Button buttonModifiers="form-element-execute" onClick={this.props.executeClick} disabled={this.props.locked}>
           {this.props.executeLabel}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
+        <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
           {this.props.cancelLabel}
         </Button>
         {this.props.customButton}
       </div>
     );
+  }
+}
+
+interface FormWizardActionsProps {
+  executeLabel: string,
+  cancelLabel: string,
+  nextLabel: string,
+  lastLabel: string,
+  lastClick: () => any,
+  nextClick: () => any,
+  executeClick: () => any,
+  cancelClick: () => any,
+  currentStep: number,
+  totalSteps: number,
+  locked: boolean,
+  executing?: boolean,
+  modifiers?: string | Array<string>
+}
+
+interface FormWizardActionsState {
+  lastStep: boolean,
+}
+
+export class FormWizardActions extends React.Component<FormWizardActionsProps, FormWizardActionsState> {
+  constructor(props: FormWizardActionsProps) {
+    super(props);
+  }
+
+  render() {
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const onLastStep = this.props.currentStep === this.props.totalSteps ? true : false;
+    const onFirstStep = this.props.currentStep === 1 ? true : false;
+
+    return (
+      <div className={`form-element__actions-container ${this.props.modifiers ? modifiers.map(m => `form-element__actions-container--${m}`).join(" ") : ""}`}>
+        {onLastStep ?
+          <div className="form-element__actions">
+            <Button buttonModifiers="form-element-last" onClick={this.props.lastClick} disabled={this.props.locked}>
+              {this.props.lastLabel}
+            </Button>
+            <Button buttonModifiers="form-element-execute" onClick={this.props.executeClick} disabled={this.props.locked}>
+              {this.props.executeLabel}
+            </Button>
+            <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
+              {this.props.cancelLabel}
+            </Button>
+          </div>
+          : <div className="form-element__actions form-element__actions--wizard">
+            <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
+              {this.props.cancelLabel}
+            </Button>
+            {onFirstStep ? null
+              : <Button buttonModifiers="form-element-last" onClick={this.props.lastClick} disabled={this.props.locked}>
+                {this.props.lastLabel}
+              </Button>
+            }
+            <Button buttonModifiers="form-element-next" onClick={this.props.nextClick} disabled={this.props.locked}>
+              {this.props.nextLabel}
+            </Button>
+          </div>}
+      </div>
+    );
+  }
+}
+
+interface SearchFormElementProps {
+  updateField: (fieldValue: string) => any,
+  value?: string,
+  name: string,
+  placeholder?: string,
+  modifiers?: string | Array<string>
+}
+
+interface SearchFormElementState {
+  value: string
+}
+
+export class SearchFormElement extends React.Component<SearchFormElementProps, SearchFormElementState> {
+
+  constructor(props: SearchFormElementProps) {
+    super(props);
+    this.state = {
+      value: this.props.value
+    }
+    this.updateSearchField = this.updateSearchField.bind(this);
+  }
+
+  updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
+    let value = e.target.value;
+    this.props.updateField(value);
+  }
+
+  render() {
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return (
+      <div className="form-element form-element--coursepicker-toolbar">
+        <input name={this.props.name} value={this.state.value} className="form-element__input form-element__input--main-function-search" placeholder={this.props.placeholder} onChange={this.updateSearchField} />
+        <div className="form-element__input-decoration--main-function-search icon-search"></div>
+      </div>
+    )
   }
 }
 
@@ -94,7 +194,7 @@ interface InputFormElementProps {
 }
 
 interface InputFormElementState {
-  value: string
+  value: string,
   valid: number
 }
 

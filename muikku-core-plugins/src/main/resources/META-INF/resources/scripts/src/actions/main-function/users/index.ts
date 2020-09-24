@@ -5,6 +5,7 @@ import { UsersListType, UserStatusType, StudyprogrammeListType, StudyprogrammeTy
 import { UserType, UpdateUserType, CreateUserType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
+import { loadDiscussionThreadsFromServerTriggerType } from '~/actions/discussion';
 
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UsersListType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UsersListType>
@@ -49,7 +50,7 @@ export interface LoadStudyprogrammesTriggerType {
 }
 
 export interface LoadUsersTriggerType {
-  (): AnyActionType
+  (q?: string): AnyActionType
 }
 
 let createStudent: CreateStudentTriggerType = function createStudent(data) {
@@ -187,32 +188,118 @@ let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprog
   }
 }
 
-let loadUsers: LoadUsersTriggerType = function loadUsers() {
+let loadStudents: LoadUsersTriggerType = function loadStudents(q?: string) {
+
+  let data = { q: q };
+  let getStudents = q ? mApi().organizationUserManagement.students.read(data) : mApi().organizationUserManagement.students.read();
+
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null
+      });
 
-      let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
+      await promisify(getStudents, 'callback')().then((users: UsersListType) => {
+        dispatch({
+          type: "UPDATE_STUDENT_USERS",
+          payload: users
+        });
+      });
 
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+
+      dispatch({
+        type: "UPDATE_USERS_STATE",
+        payload: <UserStatusType>"ERROR"
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+    }
+  }
+}
+
+let loadStaff: LoadUsersTriggerType = function loadStaff(q?: string) {
+
+  let data = { q: q };
+  let getStaff = q ? mApi().organizationUserManagement.staffMembers.read(data) : mApi().organizationUserManagement.staffMembers.read();
+
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null
+      });
+
+      await promisify(getStaff, 'callback')().then((users: UsersListType) => {
+        dispatch({
+          type: "UPDATE_STAFF_USERS",
+          payload: users
+        });
+      });
+
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+
+      dispatch({
+        type: "UPDATE_USERS_STATE",
+        payload: <UserStatusType>"ERROR"
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+    }
+  }
+}
+
+
+let loadUsers: LoadUsersTriggerType = function loadUsers(q?: string) {
+
+  let query = { q: q };
+
+  let getStudents = q ? promisify(mApi().organizationUserManagement.students.read(query), 'callback')() : promisify(mApi().organizationUserManagement.students.read(), 'callback')();
+  let getStaffmembers = q ? promisify(mApi().organizationUserManagement.staffMembers.read(query), 'callback')() : promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')();
+
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
 
       await Promise.all([
-        promisify(mApi().organizationUserManagement.students.read(), 'callback')()
-          .then((users: UsersListType) => {
-            dispatch({
-              type: "UPDATE_STUDENT_USERS",
-              payload: users
-            });
-          }),
-        promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')()
-          .then((users: UsersListType) => {
-            dispatch({
-              type: "UPDATE_STAFF_USERS",
-              payload: users
-            });
-          }),
+        getStudents.then((users: UsersListType) => {
+          dispatch({
+            type: "UPDATE_STUDENT_USERS",
+            payload: users
+          });
+        }),
+        getStaffmembers.then((users: UsersListType) => {
+          dispatch({
+            type: "UPDATE_STAFF_USERS",
+            payload: users
+          });
+        }),
       ]);
       dispatch({
         type: "UPDATE_USERS_STATE",
@@ -240,4 +327,4 @@ let loadUsers: LoadUsersTriggerType = function loadUsers() {
   }
 }
 
-export { loadUsers, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
+export { loadUsers, loadStaff, loadStudents, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };

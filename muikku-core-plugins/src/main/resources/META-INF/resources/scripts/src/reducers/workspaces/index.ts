@@ -8,6 +8,12 @@ export interface OrganizationCourseTeacherType {
   hasImage: boolean
 }
 
+export interface CreateWorkspaceType {
+  name: string,
+  template: number,
+  curriculum: string,
+}
+
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
