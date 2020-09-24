@@ -9,6 +9,7 @@
 
 .zoom__zoomed-item-overlay {
   background-color: $color-zoom-image-overlay-background;
+  cursor: zoom-out;
   height: 100%;
   left: 0;
   position: fixed;
@@ -23,7 +24,8 @@
   height: 100%;
   justify-content: center;
   left: 0;
-  padding: 1rem;
+  overflow: auto;
+  padding: 0.5rem;
   position: absolute;
   top: 0;
   width: 100%;
@@ -31,7 +33,6 @@
 
 .zoom__zoomed-item {
   cursor: zoom-out;
-  max-height: 100%;
   max-width: 100%;
 }
 
@@ -40,7 +41,7 @@
   cursor: pointer;
   font-size: 30px;
   height: 30px;
-  position: absolute;
+  position: fixed;
   right: 1rem;
   top: 1rem;
   width: 30px;
