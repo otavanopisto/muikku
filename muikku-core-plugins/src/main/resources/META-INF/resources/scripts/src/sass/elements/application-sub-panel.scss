@@ -55,11 +55,8 @@
   display: flex;
   flex-flow: row wrap;
   line-height: 1;
+  margin: 0 0 10px;
   text-transform: uppercase;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 0 10px;
-  }
 }
 
 .application-sub-panel__header--guider-header {
@@ -233,9 +230,11 @@
 }
 
 .application-sub-panel__card-item {
+  border-radius: 10px;
   margin: 10px 0;
 
   @include breakpoint($breakpoint-desktop) {
+    border-radius: 3px;
     flex-basis: 300px;
     margin: 10px;
 
@@ -502,6 +501,8 @@
   border-bottom: 1px solid $color-default-item-separator-border;
   display: flex;
   flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
   flex-shrink: 0;
   justify-content: flex-start;
   margin: 0 0 10px;
@@ -511,6 +512,10 @@
     border: 0;
     margin: 0;
     padding: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
   }
 }
 
@@ -533,9 +538,16 @@
 }
 
 .application-sub-panel__summary-item-description {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 0.8125rem;
   font-style: italic;
-  padding: 5px;
+  padding: 5px 5px 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px;
+  }
 }
 
 .application-sub-panel__summary-item-state--eligible {
@@ -628,7 +640,6 @@
     flex-flow: row wrap;
   }
 }
-
 
 .application-sub-panel__item-data--summary-start-date span {
   background-color: $color-sub-panel-data-1-background;

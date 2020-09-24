@@ -35,10 +35,6 @@ class Hops extends React.Component<HopsProps, HopsState> {
       this.setState( { hops: nextData } );
     }
   }
-
-  //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
-  //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
-  //later once a pattern is defined
   render() {
     if (!this.props.data || !this.props.data.optedIn){
       return null;
