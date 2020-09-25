@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.ui.base.communicator;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -9,8 +8,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
-
-import com.thoughtworks.selenium.webdriven.commands.WaitForCondition;
 
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;

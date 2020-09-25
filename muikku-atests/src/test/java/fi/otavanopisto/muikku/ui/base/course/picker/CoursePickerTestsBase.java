@@ -8,16 +8,11 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.thoughtworks.selenium.webdriven.commands.Refresh;
-
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
-import fi.otavanopisto.muikku.ui.PyramusMocks;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.Sex;
