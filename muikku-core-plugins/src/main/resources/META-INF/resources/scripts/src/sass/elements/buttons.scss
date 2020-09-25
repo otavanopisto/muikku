@@ -1033,13 +1033,27 @@
   }
 }
 
-.button--dialog-execute {
+.button--form-element-next {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  order: 5;
+}
+
+.button--form-element-last {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  order: 4;
+}
+
+
+.button--dialog-execute,
+.button--form-element-execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
-  order: 3;
+  order: 4;
 
   @include breakpoint($breakpoint-desktop) {
-    order: 1;
+    order: 4;
   }
 
   &.disabled,
@@ -1049,7 +1063,8 @@
   }
 }
 
-.button--dialog-clear {
+.button--dialog-clear,
+.button--form-element-clear {
   background-color: $color-button-clear-background;
   color: $color-button-execute-text;
   order: 1;
@@ -1059,10 +1074,11 @@
   }
 }
 
-.button--dialog-cancel {
+.button--dialog-cancel,
+.button--form-element-cancel {
   background-color: $color-button-cancel-background;
   color: $color-button-cancel-text;
-  order: 2;
+  order: 5;
 
   &.disabled,
   &:disabled {
