@@ -151,7 +151,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         document.head.appendChild(newBase);
       }
     }
-
     getCKEDITOR().replace(this.name, configObj);
     getCKEDITOR().instances[this.name].on('change', () => {
       this.onDataChange();
@@ -159,8 +158,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].on('key', ()=>{
       this.cancelChangeTrigger = false;
     })
-
-    // const height = (this.refs.ckeditor as HTMLTextAreaElement).getBoundingClientRect().height;
     getCKEDITOR().instances[this.name].on('instanceReady', (ev: any)=>{
       ev.editor.document.on('drop', () => {
         this.props.onDrop && this.props.onDrop();
