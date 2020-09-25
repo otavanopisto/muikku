@@ -5,12 +5,16 @@
 
 .application-sub-panel {
   border-bottom: 1px solid $color-subpanel-border;
-  margin: 0 0 20px;
+  margin: 0 10px 20px;
 
   &:last-child {
     border: 0;
-    margin: 0;
   }
+}
+
+.application-sub-panel--yo-status-container {
+  border-bottom: 0;
+  flex-basis: 50%;
 }
 
 .application-sub-panel--workspace-settings {
@@ -46,19 +50,13 @@
 
 // Subpanel header
 .application-sub-panel__header {
+  @include mainfunction-subpanel-title;
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  font-size: 1.1875rem;
-  font-weight: 400;
   line-height: 1;
-  padding: 0 10px;
+  margin: 0 0 10px;
   text-transform: uppercase;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 0 10px;
-    padding: 0;
-  }
 }
 
 .application-sub-panel__header--guider-header {
@@ -149,9 +147,156 @@
 }
 
 // Subpanel body
+.application-sub-panel__body--yo-status-incomplete {
+  border-left: 4px solid $color-sub-panel-status-incomplete-border;
+}
 
-.application-sub-panel__body {
-  padding: 10px 0;
+.application-sub-panel__body--yo-status-complete {
+  border-left: 4px solid $color-sub-panel-status-complete-border;
+}
+
+.application-sub-panel__body--studies-summary-dates {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.application-sub-panel__body--studies-summary-cards {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-direction: row;
+  }
+}
+
+.application-sub-panel__body--studies-yo-subjects {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: row;
+  }
+}
+
+.application-sub-panel__notification-item {
+  flex-basis: 100%;
+}
+
+.application-sub-panel__notification-body {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 10px;
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
+
+.application-sub-panel__notification-body--studies-yo-subjects {
+  padding: 10px 10px 10px 0;
+}
+
+.application-sub-panel__notification-content {
+  margin: 0 0 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.application-sub-panel__notification-content-title {
+  font-weight: 600;
+}
+
+.application-sub-panel__notification-content-label {
+  margin: 0 0.5rem 0 0;
+}
+
+.application-sub-panel__notification-content-data {
+  background-color: $color-sub-panel-data-1-background;
+  border-radius: 3px;
+  padding: 4px;
+}
+
+.application-sub-panel__notification-footer {
+  padding: 10px;
+}
+
+.application-sub-panel__card-item {
+  border-radius: 10px;
+  margin: 10px 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    border-radius: 3px;
+    flex-basis: 300px;
+    margin: 10px;
+
+    &:first-child {
+      margin: 10px 10px 10px 0;
+    }
+
+    &:last-child {
+      margin: 10px 0 10px 10px;
+    }
+  }
+}
+
+.application-sub-panel__card-header {
+  display: flex;
+  font-size: 1.075rem;
+  font-weight: 600;
+  justify-content: center;
+  padding: 10px;
+  text-transform: uppercase;
+}
+
+.application-sub-panel__card-highlight {
+  display: flex;
+  font-size: 2.5rem;
+  justify-content: center;
+  padding: 10px;
+}
+
+
+.application-sub-panel__card-body {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.application-sub-panel__card-item--summary-evaluated {
+  background-color: $color-sub-panel-card-1-background;
+}
+
+.application-sub-panel__card-header--summary-evaluated,
+.application-sub-panel__card-highlight--summary-evaluated {
+  color: $color-sub-panel-card-1-font;
+}
+
+.application-sub-panel__card-item--summary-activity {
+  background-color: $color-sub-panel-card-2-background;
+}
+
+.application-sub-panel__card-header--summary-activity,
+.application-sub-panel__card-highlight--summary-activity {
+  color: $color-sub-panel-card-2-font;
+}
+
+.application-sub-panel__card-item--summary-returned {
+  background-color: $color-sub-panel-card-3-background;
+}
+
+.application-sub-panel__card-header--summary-returned,
+.application-sub-panel__card-highlight--summary-returned {
+  color: $color-sub-panel-card-3-font;
 }
 
 .application-sub-panel__body--workspace-settings {
@@ -203,7 +348,7 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px;
+  padding: 10px 0;
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -308,9 +453,111 @@
 
 // Subpanel item header
 
-.application-sub-panel__item--empty {
-  font-style: italic;
+.application-sub-panel__item--summarizer {
+  align-items: normal;
+  flex-basis: 50%;
+  flex-flow: column wrap;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: column nowrap;
+  }
+}
+
+.application-sub-panel__summary-highlight {
+  color: $color-sub-panel-summary-highlight-font;
+  font-size: 2.5rem;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.application-sub-panel__summary-highlight--total {
+  color: $color-sub-panel-summary-highlight-total-font;
+}
+
+.application-sub-panel__summary-highlight--done {
+  color: $color-sub-panel-card-1-font;
+}
+
+.application-sub-panel__summary-highlight--undone {
+  color: $color-sub-panel-card-2-font;
+}
+
+.application-sub-panel__summary-definition {
+  margin-left: 5px;
+}
+
+.application-sub-panel__item-body {
+  padding: 10px;
+}
+
+.application-sub-panel__summary-item {
+  display: flex;
+}
+
+.application-sub-panel__summary-item--subject-eligibility {
+  align-items: center;
+  border-bottom: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  margin: 0 0 10px;
   padding: 0 0 10px;
+
+  &:last-child {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-sub-panel__summary-item-state {
+  align-items: center;
+  border-radius: 5px;
+  display: flex;
+  font-size: 0.75rem;
+  justify-content: center;
+  line-height: 1;
+  margin: 0 10px 0 0;
+  padding: 5px;
+  text-transform: uppercase;
+  width: 45px;
+}
+
+.application-sub-panel__summary-item-label {
+  font-weight: 600;
+  padding: 5px;
+}
+
+.application-sub-panel__summary-item-description {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.8125rem;
+  font-style: italic;
+  padding: 5px 5px 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px;
+  }
+}
+
+.application-sub-panel__summary-item-state--eligible {
+  background-color: $color-sub-panel-summarizer-true-background;
+  color: $color-sub-panel-summarizer-true-font;
+}
+
+.application-sub-panel__summary-item-state--not-eligible {
+  background-color: $color-sub-panel-summarizer-false-background;
+  color: $color-sub-panel-summarizer-false-font;
 }
 
 .application-sub-panel__item-header {
@@ -332,7 +579,7 @@
   flex-shrink: 0;
   margin: 0 0 5px;
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-pad) {
     flex-basis: 250px;
     margin: 0 10px 0 0;
   }
@@ -361,7 +608,6 @@
   padding: 10px 0;
 }
 
-
 // Subpanel item data
 
 .application-sub-panel__item-data {
@@ -376,6 +622,14 @@
     flex-grow: 1;
     flex-shrink: 1;
   }
+
+  span {
+    background-color: $color-hops-readable-inline-background;
+    border-radius: 3px;
+    display: inline-block;
+    margin: 2px 5px 2px 0;
+    padding: 4px;
+  }
 }
 
 .application-sub-panel__item-data--workspace-management {
@@ -385,6 +639,15 @@
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
+}
+
+.application-sub-panel__item-data--summary-start-date span {
+  background-color: $color-sub-panel-data-1-background;
+}
+
+.application-sub-panel__item-data--summary-end-date span {
+  background-color: $color-sub-panel-data-2-background;
+  color: $color-default;
 }
 
 // HOPS in Guider in readable state
@@ -521,5 +784,3 @@
   border: 0;
   margin: 0;
 }
-
-

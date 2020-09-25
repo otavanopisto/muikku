@@ -46,3 +46,4 @@ public interface MatriculationExamEnrollment {
   public String getDegreeType();
   public void setDegreeType(String degreeType);
 }
+
