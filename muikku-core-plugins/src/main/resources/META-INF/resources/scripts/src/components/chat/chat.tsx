@@ -92,7 +92,7 @@ interface IPrivateChatData {
 }
 
 interface IChatState {
-  isConnectionOk: boolean,
+  isInitialized: boolean,
   messages: Object[],
   availableMucRooms: IAvailableChatRoomType[],
   showControlBox: boolean,
@@ -124,7 +124,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     super(props);
 
     this.state = {
-      isConnectionOk: false,
+      isInitialized: false,
       messages: [],
       availableMucRooms: [],
       showControlBox: JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
@@ -651,6 +651,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
   async initialize() {
+    this.setState({
+      isInitialized: true,
+    });
+
     let session = window.sessionStorage.getItem("strophe-bosh-session");
 
     let prebind: IPrebindResponseType;
@@ -752,6 +756,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // });
   }
   render() {
+    if (!this.state.isInitialized) {
+      return null;
+    }
+
     const userStatusClassName =
       this.state.selectedUserPresence === "chat" ? "online" : this.state.selectedUserPresence === "away" ? "away" : "offline";
 
