@@ -13,7 +13,6 @@ import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.TestRole;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
-import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.pyramus.rest.model.Course;
 
@@ -84,9 +83,11 @@ public class SystemRESTPermissionsTestsIT extends AbstractRESTTest {
     EnumSet<TestRole> testRoles = EnumSet.allOf(TestRole.class);
     testRoles.remove(TestRole.EVERYONE);
 
+    // Tests ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM
+    
     roles(testRoles).forEach(role ->
       role.getRequest()
-        .get(String.format("/test_permissions/environmentpermissions/%s", ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM))
+        .get(String.format("/test_permissions/environmentpermissions/%s", "FORUM_ACCESSENVIRONMENTFORUM"))
         .then()
         .statusCode(204)
     );
@@ -97,9 +98,11 @@ public class SystemRESTPermissionsTestsIT extends AbstractRESTTest {
     EnumSet<TestRole> testRoles = EnumSet.allOf(TestRole.class);
     testRoles.remove(TestRole.EVERYONE);
 
+    // Tests ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM
+    
     roles(testRoles).forEach(role ->
       role.getRequest()
-        .get(String.format("/test_permissions/workspaces/%d/permissions/%s", TEST_WORKSPACE_ID, ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM))
+        .get(String.format("/test_permissions/workspaces/%d/permissions/%s", TEST_WORKSPACE_ID, "FORUM_ACCESSENVIRONMENTFORUM"))
         .then()
         .statusCode(204)
     );
