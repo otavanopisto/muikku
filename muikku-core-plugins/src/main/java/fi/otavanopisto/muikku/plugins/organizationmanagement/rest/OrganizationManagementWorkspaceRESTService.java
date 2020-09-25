@@ -43,6 +43,8 @@ import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -98,6 +100,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
@@ -113,6 +116,13 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     }
     
     SearchResult searchResult = null;
+    
+    templateRestriction = templateRestriction != null ? templateRestriction : TemplateRestriction.ONLY_WORKSPACES;
+    if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
     
     List<WorkspaceAccess> accesses = new ArrayList<>(Arrays.asList(WorkspaceAccess.ANYONE));
     if (sessionController.isLoggedIn()) {
@@ -169,8 +179,9 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .setOrganizationIdentifiers(organizationIdentifiers)
         .setFreeText(searchString)
         .setAccesses(accesses)
-        .setAccessUser(loggedUser )
+        .setAccessUser(loggedUser)
         .setIncludeUnpublished(includeUnpublished)
+        .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
         .setSorts(sorts)
