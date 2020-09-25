@@ -50,6 +50,7 @@ interface CKEditorProps {
   onDrop?():any,
   children?: string,
   autofocus?: boolean,
+  editorTitle?: string,
 }
 
 interface CKEditorState {
@@ -59,6 +60,7 @@ interface CKEditorState {
 const extraConfig = (props: CKEditorProps) => ({
   height: 0,
   startupFocus: props.autofocus,
+  title: props.editorTitle,
   allowedContent: true,
   entities_latin: false,
   entities_greek: false,
