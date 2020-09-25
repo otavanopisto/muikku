@@ -666,7 +666,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       prebind = await prebindRequest.json();
     }
 
-    this.connection = new Strophe.Connection("/http-bind/");
+    this.connection = new Strophe.Connection("/http-bind/", {'keepalive': true});
     this.connection.addHandler(this.onGroupChatMessage, null, 'message', 'groupchat', null, null);
     this.connection.addHandler(this.onPresenceMessage, null, 'presence', null, null, null);
 
