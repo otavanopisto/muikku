@@ -44,7 +44,7 @@ interface CommunicatorNewMessageState {
   selectedItems: Array<ContactRecepientType>,
   subject: string,
   locked: boolean,
-  includesSignature: boolean
+  includesSignature: boolean,
 }
 
 function getStateIdentifier(props: CommunicatorNewMessageProps){
