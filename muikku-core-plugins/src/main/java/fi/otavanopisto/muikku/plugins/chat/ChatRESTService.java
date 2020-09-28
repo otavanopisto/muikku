@@ -23,6 +23,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -47,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRESTModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRESTModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.WorkspaceChatSettingsRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -248,6 +250,38 @@ public class ChatRESTService extends PluginRESTService {
     result.setNick(userChatSettings.getNick());
     result.setVisibility(userChatSettings.getVisibility());
     return Response.ok(result).build();
+  }
+  
+  @POST
+  @Path("/publicRoom")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createPublicChatRoom(ChatRoomRESTModel payload) {
+
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Payload validation
+    
+    String title = StringUtils.trim(payload.getTitle());
+    if (StringUtils.isEmpty(title)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
+    }
+    String description = StringUtils.trim(payload.getDescription());
+    if (StringUtils.isEmpty(description)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing name").build();
+    }
+    
+    // Room creation
+    
+    String roomName = chatSyncController.createPublicChatRoom(title, description, sessionController.getLoggedUserEntity());
+    if (StringUtils.isEmpty(roomName)) {
+      // Room creation failed; see server log for more details, caller may just as well settle with an error
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    payload.setName(roomName);
+    return Response.ok().entity(payload).build();
   }
 
   @PUT

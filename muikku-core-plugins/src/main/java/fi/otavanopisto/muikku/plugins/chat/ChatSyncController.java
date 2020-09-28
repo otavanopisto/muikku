@@ -2,15 +2,20 @@ package fi.otavanopisto.muikku.plugins.chat;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
@@ -34,12 +40,17 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
-@Stateless
 public class ChatSyncController {
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -49,6 +60,9 @@ public class ChatSyncController {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -120,6 +134,91 @@ public class ChatSyncController {
       }
     }
   }
+  
+  public String createPublicChatRoom(String title, String description, fi.otavanopisto.muikku.model.users.UserEntity owner) {
+    String name = null;
+    RestApiClient client = getClient();
+    if (client != null) {
+      // Do our best to turn the given title into a room name that is valid and available
+      String proposedName = generateName(title);
+      if (StringUtils.startsWith(proposedName, "workspace-chat")) {
+        logger.severe("Trying to create a public chat room that looks like a workspace chat room" );
+        return null;
+      }
+      MUCRoomEntity mucRoomEntity = client.getChatRoom(proposedName);
+      if (mucRoomEntity != null) {
+        for (int i = 2; i <= 6; i++) {
+          mucRoomEntity = client.getChatRoom(String.format("%s-%d", proposedName, i));
+          if (mucRoomEntity == null) {
+            proposedName = String.format("%s-%d", proposedName, i);
+            break;
+          }
+        }
+      }
+      if (mucRoomEntity != null) {
+        logger.severe(String.format("Failed to create a unique room name with title %s", title));
+        return null;
+      }
+      
+      // Room data
+      
+      mucRoomEntity = new MUCRoomEntity(proposedName, title, description);
+      mucRoomEntity.setPublicRoom(true);
+      mucRoomEntity.setPersistent(true);
+      mucRoomEntity.setLogEnabled(true);
+      mucRoomEntity.setCanChangeNickname(true);
+      mucRoomEntity.setCanAnyoneDiscoverJID(true);
+      List<String> broadcastPresenceRoles = new ArrayList<String>();
+      broadcastPresenceRoles.add("moderator");
+      broadcastPresenceRoles.add("participant");
+      broadcastPresenceRoles.add("visitor");
+      mucRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRoles);
+      
+      // Creation
+      
+      Response response = client.createChatRoom(mucRoomEntity);
+      if (response.getStatus() != Status.CREATED.getStatusCode()) {
+        logger.severe(String.format("Creating chat room with name %s Failed with HTTP error %d", proposedName, response.getStatus()));
+        return null;
+      }
+        
+      // Room created, add caller + all admins and study programme leaders as its owners
+      ensureUserHasOwnership(client, mucRoomEntity, owner);      
+      SearchProvider searchProvider = getSearchProvider();
+      if (searchProvider == null) {
+        logger.severe("Room creation successful, ElasticSearch missing");
+        return proposedName;
+      }
+      List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+      Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
+      roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
+      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+      SearchResult result = searchProvider.searchUsers(
+          organizations,
+          null,                     // searchString 
+          null,                     // fields 
+          roleArchetypeFilter, 
+          null,                     // userGroupFilters 
+          null,                     // workspaceFilters 
+          null,                     // userIdentifiers 
+          false,                    // includeInactiveStudents
+          false,                    // includeHidden
+          true,                     // onlyDefaultUsers
+          0, 
+          Integer.MAX_VALUE);
+      List<Map<String, Object>> results = result.getResults();
+      for (Map<String, Object> o : results) {
+        Long userEntityId = Long.valueOf(o.get("userEntityId").toString());
+        fi.otavanopisto.muikku.model.users.UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+        UserChatSettings userChatSetting = chatController.findUserChatSettings(userEntity);
+        if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
+          ensureUserHasOwnership(client, mucRoomEntity, userEntity);
+        }
+      }
+      return proposedName;
+    }
+    return name;
+  }
 
   public void removeChatRoomMembership(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity, WorkspaceEntity workspaceEntity) {
     RestApiClient client = getClient();
@@ -185,9 +284,9 @@ public class ChatSyncController {
   }
   
   private MUCRoomEntity ensureRoomExists(RestApiClient client, WorkspaceEntity workspaceEntity) {
-    MUCRoomEntity chatRoomEntity = null;
-    chatRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
-    if (chatRoomEntity == null) {
+    MUCRoomEntity mucRoomEntity = null;
+    mucRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
+    if (mucRoomEntity == null) {
       logger.log(Level.INFO, String.format("Creating workspace chat room %d", workspaceEntity.getId()));
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
@@ -208,17 +307,20 @@ public class ChatSyncController {
       else {
         roomName.append(workspace.getName());
       }
-      List<String> broadcastPresenceRolesList = new ArrayList<String>();
-      broadcastPresenceRolesList.add("moderator");
-      broadcastPresenceRolesList.add("participant");
-      broadcastPresenceRolesList.add("visitor");
-      chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName.toString(), "");
-      chatRoomEntity.setPersistent(true);
-      chatRoomEntity.setLogEnabled(true);
-      chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
-      client.createChatRoom(chatRoomEntity);
+      mucRoomEntity = new MUCRoomEntity(String.format("workspace-chat-%s", workspace.getIdentifier()), roomName.toString(), "");
+      mucRoomEntity.setPersistent(true);
+      mucRoomEntity.setLogEnabled(true);
+      mucRoomEntity.setCanChangeNickname(true);
+      mucRoomEntity.setMembersOnly(true);
+      mucRoomEntity.setCanAnyoneDiscoverJID(true);
+      List<String> broadcastPresenceRoles = new ArrayList<String>();
+      broadcastPresenceRoles.add("moderator");
+      broadcastPresenceRoles.add("participant");
+      broadcastPresenceRoles.add("visitor");
+      mucRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRoles);
+      client.createChatRoom(mucRoomEntity);
     }
-    return chatRoomEntity;
+    return mucRoomEntity;
   }
   
   private UserEntity ensureUserExists(RestApiClient client, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
@@ -287,6 +389,28 @@ public class ChatSyncController {
   
   private String getOpenfireUserIdentifier(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
     return String.format("muikku-user-%d", muikkuUserEntity.getId());
+  }
+
+  private SearchProvider getSearchProvider() {
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      return searchProviderIterator.next();
+    } else {
+      return null;
+    }
+  }
+
+  private String generateName(String title) {
+    // convert to lower-case and replace spaces and slashes with a minus sign
+    String urlName = title == null ? "" : StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
+    // truncate consecutive minus signs into just one
+    while (urlName.indexOf("--") >= 0) {
+      urlName = urlName.replace("--", "-");
+    }
+    // get rid of accented characters and all special characters other than minus,
+    // period, and underscore
+    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    return StringUtils.isBlank(urlName) ? StringUtils.substringBefore(UUID.randomUUID().toString(), "-") : urlName;
   }
 
 }
