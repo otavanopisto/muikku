@@ -260,7 +260,7 @@ public class ChatRESTService extends PluginRESTService {
     }
     String description = StringUtils.trim(payload.getDescription());
     if (StringUtils.isEmpty(description)) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing name").build();
+      return Response.status(Status.BAD_REQUEST).entity("Missing description").build();
     }
     
     // Room creation
