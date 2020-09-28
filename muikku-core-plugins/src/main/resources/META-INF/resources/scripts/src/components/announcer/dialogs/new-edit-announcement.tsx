@@ -265,7 +265,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     if (this.props.announcement) {
       editorTitle = this.props.i18n.text.get('plugin.announcer.editannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label');
     } else {
-      editorTitle = this.props.i18n.text.get('plugin.announcer.createannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')
+      editorTitle = this.props.i18n.text.get('plugin.announcer.createannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label');
     }
 
     let content = (closeDialog: ()=>any) => [

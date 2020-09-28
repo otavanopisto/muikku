@@ -99,9 +99,9 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
       (
       <div className="env-dialog__row" key="1">
         <div className="env-dialog__form-element-container">
-          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>
-            <input type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"
-            placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
+          <label htmlFor="forum-area-name" className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.editArea.name')}</label>
+            <input id="forum-area-name" type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"
+              placeholder={this.props.i18n.text.get('plugin.discussion.editArea.name')}
             value={this.state.name} onChange={this.onNameChange} autoFocus/>
         </div>
       </div>
@@ -109,8 +109,8 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
       (
        <div className="env-dialog__row" key="2">
          <div className="env-dialog__form-element-container">
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.editArea.description')}</div>
-           <textarea className="env-dialog__textarea"
+            <label htmlFor="forum-area-description" className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.editArea.description')}</label>
+            <textarea id="forum-area-description" className="env-dialog__textarea"
             onChange={this.onDescriptionChange} value={this.state.description}/>
          </div>
        </div>
