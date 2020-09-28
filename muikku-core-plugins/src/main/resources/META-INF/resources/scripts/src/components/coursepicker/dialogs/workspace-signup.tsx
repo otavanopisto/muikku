@@ -69,11 +69,13 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
         {workspaceToUse.feeInfo && workspaceToUse.feeInfo.evaluationHasFee ?
           <div className="form-element dialog__content-row">
             <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</label></p>
-            <p><span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span></p>
+            <p>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</p>
           </div> : null}
         <div className="form-element dialog__content-row">
-          <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</label></p>
-          <p><textarea className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/></p>
+          <p>
+            <label htmlFor="sign-up-message">{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</label>
+            <textarea id="sign-up-message" className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/>
+          </p>
         </div>
       </div>
     </div>
