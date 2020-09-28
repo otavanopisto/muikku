@@ -42,7 +42,8 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.maxresults", "20"));
   private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.notificationthreshold", "300"));
-  private static final int MIN_PASSED_COURSES = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.mincoursesthreshold", "5"));
+  private static final int MIN_PASSED_COURSES_NETTILUKIO = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.mincoursesthreshold", "7"));
+  private static final int MIN_PASSED_COURSES_NETTIPK = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.mincoursesthreshold", "5"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.nopassedcourses.checkfreq", "1800000"));
   
   @Inject
@@ -147,11 +148,22 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       User student = userController.findUserByIdentifier(studentIdentifier);
       
       if ((student != null) && isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
+
+        boolean isNettilukio = false;
+        boolean isNettipk = false;
+        @SuppressWarnings("unchecked")
+        ArrayList<Integer> studyProgrammes = (ArrayList<Integer>) result.get("groups");
+        if (studyProgrammes != null) {
+          isNettilukio = studyProgrammes.contains(5); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-6 -> Nettilukio 
+          isNettipk = studyProgrammes.contains(6); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-7 -> Nettiperuskoulu
+        }
+        
         Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, Date.from(student.getStudyStartDate().toInstant()));
         if (passedCourseCount == null) {
           logger.severe(String.format("Could not read course count for %s", studentId));
           continue;
-        } else if (passedCourseCount < MIN_PASSED_COURSES) {
+        }
+        else if ((isNettilukio && passedCourseCount < MIN_PASSED_COURSES_NETTILUKIO) || (isNettipk && passedCourseCount < MIN_PASSED_COURSES_NETTIPK)) {
           studentIdentifiers.add(studentIdentifier);
         }
       }
