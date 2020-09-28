@@ -235,12 +235,9 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatSettingsGet() {
     UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
-    if (userChatSettings == null) {
-      return Response.status(Status.NOT_FOUND).build(); 
-    }
     ChatSettingsRESTModel result = new ChatSettingsRESTModel();
-    result.setNick(userChatSettings.getNick());
-    result.setVisibility(userChatSettings.getVisibility());
+    result.setNick(userChatSettings == null ? null : userChatSettings.getNick());
+    result.setVisibility(userChatSettings == null ? UserChatVisibility.DISABLED : userChatSettings.getVisibility());
     return Response.ok(result).build();
   }
   
