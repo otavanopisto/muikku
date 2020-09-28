@@ -101,7 +101,10 @@ interface IChatState {
   isStudent: boolean,
   pyramusUserId: string,
   openRoomNumber: number,
+  // chats that are supposed to be open
   openChatsJIDS: string[],
+  // chats that are open by having a XMPP connection open
+  openedChatsJIDS: string[],
   selectedUserPresence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
   privateChatData: IPrivateChatData[],
   ready: boolean,
@@ -134,7 +137,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
       isStudent: window.MUIKKU_IS_STUDENT,
       openRoomNumber: null,
       pyramusUserId: window.MUIKKU_LOGGED_USER,
+      
+      // we should have these open
       openChatsJIDS: JSON.parse(window.sessionStorage.getItem("openChats")) || [],
+      // but these are the ones actually open
+      openedChatsJIDS: [],
+
       selectedUserPresence: JSON.parse(window.sessionStorage.getItem("selectedUserPresence")) || "chat",
       privateChatData: [],
       ready: false,
@@ -393,12 +401,18 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
 
+    // we have already made a call to connect because of the pre stanza
+    const newOpenChatsJIDS = [...this.state.openChatsJIDS, roomJID];
+    const newOpenedChatsJIDS = [...this.state.openedChatsJIDS, roomJID];
+
     this.setState({
       availableMucRooms: newAvailableMucRooms.sort((a, b) => a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())),
       showNewRoomForm: false,
       roomPersistent: false,
       roomDescField: "",
       roomNameField: "",
+      openChatsJIDS: newOpenChatsJIDS,
+      openedChatsJIDS: newOpenedChatsJIDS,
     });
   }
 
@@ -467,34 +481,44 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   public joinChatRoom(roomJID: string) {
+    // already joined
+    if (this.state.openedChatsJIDS.includes(roomJID)) {
+      return;
+    }
     // Lets push RoomJid to openChatList and set it to this.state.openChats
     const newJIDS = !this.state.openChatsJIDS.includes(roomJID) ?
       [...this.state.openChatsJIDS, roomJID] : this.state.openChatsJIDS;
+    const newOpenedChatsJIDS = [...this.state.openedChatsJIDS, roomJID];
+
+    window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS));
 
     this.setState({
-      openChatsJIDS: newJIDS
+      openChatsJIDS: newJIDS,
+      openedChatsJIDS: newOpenedChatsJIDS,
     });
 
     // XEP-0045: 7.2 Entering a Room
     const presStanza = $pres({
       from: this.connection.jid,
-      to: roomJID,
-    }).c("x", { 'xmlns': Strophe.NS.MUC }).up()
-      .c("show", {}, this.state.selectedUserPresence);
+      to: roomJID + "/" + this.props.settings.nick,
+    }).c("x", { 'xmlns': Strophe.NS.MUC });
+    //.up().c("show", {}, this.state.selectedUserPresence);
 
     this.connection.send(presStanza);
   }
 
   public leaveChatRoom(roomJID: string) {
     const filteredJIDS = this.state.openChatsJIDS.filter(item => item !== roomJID);
+    const filteredOpenedJIDS = this.state.openedChatsJIDS.filter(item => item !== roomJID);
+
+    // Set the filtered openChatList to sessionStorage
+    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
 
     // Set filtered and current openChatList to this.state.openChats
     this.setState({
       openChatsJIDS: filteredJIDS,
+      openedChatsJIDS: filteredOpenedJIDS,
     });
-
-    // Set the filtered openChatList to sessionStorage
-    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
 
     // XEP-0045: 7.14 Exiting a Room
     const presStanza = $pres({
@@ -671,7 +695,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       isInitialized: false,
     });
 
-    this.connection.disconnect("Chat is disabled");
+    this.connection && this.connection.disconnect("Chat is disabled");
   }
   async initialize() {
     this.setState({
