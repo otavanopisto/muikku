@@ -272,17 +272,17 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="env-dialog__row env-dialog__row--new-announcement-options" key="1">
         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
-          <label htmlFor="announcementStartDate" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</label>
-          <DatePicker id="announcementStartDate" className="env-dialog__input env-dialog__input--date-picker" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+          <label htmlFor="announcement-start-date" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</label>
+          <DatePicker id="announcement-start-date" className="env-dialog__input env-dialog__input--date-picker" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
              locale={this.props.i18n.time.getLocale()}/>
          </div>
          <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
-          <label htmlFor="announcementEndDate" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</label>
-          <DatePicker id="announcementEndDate" className="env-dialog__input env-dialog__input--date-picker" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
+          <label htmlFor="announcement-end-date" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</label>
+          <DatePicker id="announcement-end-date" className="env-dialog__input env-dialog__input--date-picker" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
         </div>
       </div>),
-      (<InputContactsAutofill wcagLabel="announcementRecipients" modifier="new-announcement-recipients" key="2" hasUserPermission={false}
+      (<InputContactsAutofill wcagLabel="announcement-recipients" modifier="new-announcement-recipients" key="2" hasUserPermission={false}
           hasGroupPermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_GROUPS}
           hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
           workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
@@ -292,8 +292,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       (
       <div className="env-dialog__row" key="3">
        <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
-         <label htmlFor="announcementTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</label>
-          <input id="announcementTitle" type="text" className="env-dialog__input" value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
+         <label htmlFor="announcement-title" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</label>
+          <input id="announcement-title" type="text" className="env-dialog__input" value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
        </div>
       </div>
       ),

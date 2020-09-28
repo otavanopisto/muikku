@@ -33,7 +33,6 @@
     font-family: $text-font-family;
     font-weight: 600;
     overflow: hidden;
-    padding: 0 0 5px;
     text-overflow: ellipsis;
   }
 }
@@ -296,7 +295,7 @@
 
 .env-dialog__input-label {
   flex-basis: auto;
-  flex-grow: 1;
+  flex-grow: 0;
   flex-shrink: 0;
   margin: 0 0 0 5px;
 }
@@ -307,7 +306,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   margin: 0 0 0 15px;
-  padding: 0 0 0 10px;
+  padding: 0 0 0 15px;
 }
 
 .env-dialog__input[type="checkbox"] {
