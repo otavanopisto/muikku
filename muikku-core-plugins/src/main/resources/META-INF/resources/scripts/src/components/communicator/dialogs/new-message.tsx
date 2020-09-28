@@ -185,8 +185,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       </div>
       ),
       (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
-        <input className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
-        <label className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
+        <input id="message-signature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        <label htmlFor="message-signature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
         <span className="env-dialog__input-description">
           <i className="mf-signature" dangerouslySetInnerHTML={{__html: this.props.signature.signature}}/>
         </span>
