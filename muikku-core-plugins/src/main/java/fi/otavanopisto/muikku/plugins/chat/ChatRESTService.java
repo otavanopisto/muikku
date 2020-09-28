@@ -294,7 +294,10 @@ public class ChatRESTService extends PluginRESTService {
     UserChatVisibility visibility = payload.getVisibility();
     if (visibility == UserChatVisibility.DISABLED) {
       payload.setNick(null);
-      chatController.deleteUserChatSettings(userChatSettings);
+      userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
+      if (userChatSettings != null) {
+        chatController.deleteUserChatSettings(userChatSettings);
+      }
       // TODO I suppose the user's membership in each chat room should be revoked, just to be tidy 
     }
     else {
