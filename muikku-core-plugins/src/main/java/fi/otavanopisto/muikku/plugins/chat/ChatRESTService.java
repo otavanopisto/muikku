@@ -127,7 +127,9 @@ public class ChatRESTService extends PluginRESTService {
     }
     Instant now = Instant.now();
     
-    String userIdentifierString = String.format("muikku-user-%d", sessionController.getLoggedUserEntity().getId());
+    String userIdentifierString = String.format(
+        isStudent(sessionController.getLoggedUserEntity()) ? "muikku-student-%d" : "muikku-staff-%d",
+        sessionController.getLoggedUserEntity().getId());
     
     // Do we ever need to resume an existing session? Re-using ChatPrebindParameters and incrementing rid doesn't work.
     
@@ -246,8 +248,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createPublicChatRoom(ChatRoomRESTModel payload) {
 
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+    if (isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -338,10 +339,10 @@ public class ChatRESTService extends PluginRESTService {
     
     // Payload validation 
     
-    if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "muikku-user-")) {
+    if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "muikku-")) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    Long userEntityId = NumberUtils.toLong(StringUtils.substring(identifierString, 12));
+    Long userEntityId = NumberUtils.toLong(StringUtils.substringAfterLast(identifierString, "-"));
     if (userEntityId == null || userEntityId == 0) { 
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -364,12 +365,10 @@ public class ChatRESTService extends PluginRESTService {
     
     // Return nick and name (latter for staff only)
 
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    boolean isStudent = roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
     UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
     HashMap<String, String> senderInfo = new HashMap<>();
     senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
-    if (!isStudent) {
+    if (!isStudent(sessionController.getLoggedUserEntity())) {
       senderInfo.put("name", String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName"))));
     }
     return Response.ok(senderInfo).build();
@@ -452,6 +451,11 @@ public class ChatRESTService extends PluginRESTService {
     } else {
       return null;
     }
+  }
+  
+  private boolean isStudent(UserEntity userEntity) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+    return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
   
 }

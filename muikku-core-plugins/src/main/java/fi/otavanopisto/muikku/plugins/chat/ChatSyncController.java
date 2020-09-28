@@ -388,7 +388,12 @@ public class ChatSyncController {
   }
   
   private String getOpenfireUserIdentifier(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
-    return String.format("muikku-user-%d", muikkuUserEntity.getId());
+    if (isStudent(muikkuUserEntity)) {
+      return String.format("muikku-student-%d", muikkuUserEntity.getId());
+    }
+    else {
+      return String.format("muikku-staff-%d", muikkuUserEntity.getId());
+    }
   }
 
   private SearchProvider getSearchProvider() {
@@ -398,6 +403,11 @@ public class ChatSyncController {
     } else {
       return null;
     }
+  }
+
+  private boolean isStudent(fi.otavanopisto.muikku.model.users.UserEntity userEntity) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+    return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
 
   private String generateName(String title) {
