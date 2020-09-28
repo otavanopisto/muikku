@@ -261,8 +261,15 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     (this.setStateAndClear as any)(nState, (this.props.announcement ? this.props.announcement.id + "-" : "") + (this.props.workspaceId || ""));
   }
   render(){
+    let editorTitle:string;
+    if (this.props.announcement) {
+      editorTitle = this.props.i18n.text.get('plugin.announcer.editannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label');
+    } else {
+      editorTitle = this.props.i18n.text.get('plugin.announcer.createannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')
+    }
+
     let content = (closeDialog: ()=>any) => [
-      //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
+      // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="env-dialog__row env-dialog__row--new-announcement-options" key="1">
         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
           <label htmlFor="announcementStartDate" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</label>
@@ -294,7 +301,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       <div className="env-dialog__row env-dialog__row--ckeditor" key="4">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</label>
-          <CKEditor editorTitle={this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+            <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>
       </div>
       )
