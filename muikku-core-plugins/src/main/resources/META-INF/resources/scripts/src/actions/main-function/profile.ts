@@ -233,6 +233,10 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
 
 let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadProfileChatSettings(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    const state = getState();
+    if (state.profile.chatSettings) {
+      return;
+    }
     try {
       let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
 
@@ -241,11 +245,27 @@ let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadPr
           type: "SET_PROFILE_CHAT_SETTINGS",
           payload: chatSettings
         });
+      } else {
+        dispatch({
+          type: "SET_PROFILE_CHAT_SETTINGS",
+          payload: {
+            visibility: "DISABLED",
+            nick: null,
+          },
+        });
       }
 
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
+      } else {
+        dispatch({
+          type: "SET_PROFILE_CHAT_SETTINGS",
+          payload: {
+            visibility: "DISABLED",
+            nick: null,
+          },
+        });
       }
     }
   }
@@ -253,8 +273,6 @@ let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadPr
 
 let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function updateProfileChatSettings(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
-
     try {
 
       dispatch({

@@ -263,6 +263,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false);
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <CousePickerBody />
@@ -278,6 +280,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <IndexBody />
@@ -318,6 +321,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         }
       }) as Action);
 
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <OrganizationAdministrationBody />
   }
@@ -348,6 +352,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
           this.loadCommunicatorData(currentLocation);
         }
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <CommunicatorBody />
@@ -371,6 +377,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         let currentLocation = window.location.hash.replace("#", "").split("/");
         this.loadDiscussionData(currentLocation);
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <DiscussionBody />
   }
@@ -384,6 +392,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcements.pageTitle')));
       this.props.store.dispatch(loadAnnouncementsAsAClient({ hideWorkspaceAnnouncements: "false" }, (announcements: AnnouncementListType) => { announcements }) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <AnnouncementsBody />
   }
@@ -404,6 +414,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else {
         this.loadAnnouncerData(window.location.hash.replace("#", "").split("/"));
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <AnnouncerBody />
@@ -419,6 +431,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
 
       this.loadGuiderData();
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <GuiderBody />
   }
@@ -451,6 +465,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <RecordsBody />

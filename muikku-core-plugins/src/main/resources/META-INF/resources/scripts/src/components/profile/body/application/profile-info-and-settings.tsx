@@ -67,8 +67,8 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       profileVacationStart: (props.profile.properties['profile-vacation-start'] && moment(props.profile.properties['profile-vacation-start'])) || null,
       profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
       phoneNumber: props.profile.properties['profile-phone'] || "",
-      chatVisibility: props.profile.chatSettings.visibility || null,
-      chatNickname: props.profile.chatSettings.nick || ""
+      chatVisibility: (props.profile.chatSettings && props.profile.chatSettings.visibility) || null,
+      chatNickname: (props.profile.chatSettings && props.profile.chatSettings.nick) || ""
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){
@@ -94,18 +94,20 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     }
 
     if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.visibility &&
-        this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility){
+        (!this.props.profile.chatSettings ||
+        this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility)){
       this.setState({
         chatVisibility: nextProps.profile.chatSettings.visibility
       });
-    } else if (nextProps.profile.chatSettings.visibility === undefined){
+    } else if (!nextProps.profile.chatSettings || typeof nextProps.profile.chatSettings.visibility === "undefined"){
       this.setState({
         chatVisibility: "DISABLED"
       });
     }
 
     if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.nick &&
-        this.props.profile.chatSettings.nick !== nextProps.profile.chatSettings.nick){
+        (!this.props.profile.chatSettings ||
+          this.props.profile.chatSettings.nick !== nextProps.profile.chatSettings.nick)){
       this.setState({
         chatNickname: nextProps.profile.chatSettings.nick
       });

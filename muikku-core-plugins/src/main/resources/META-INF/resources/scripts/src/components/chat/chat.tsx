@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Strophe } from "strophe.js";
 import { Room } from './room';
 import { Groupchat } from './groupchat';
+import { UserChatSettingsType } from '~/reducers/main-function/user-index';
 
 /*
 VARIABLES:
@@ -111,6 +112,7 @@ interface IChatState {
 }
 
 interface IChatProps {
+  settings: UserChatSettingsType;
   currentLocale: string;
 }
 
@@ -531,19 +533,33 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // });
   }
   componentDidMount() {
-    mApi().chat.status.read().callback((err: Error, result: boolean) => {
-      if (result) {
-        this.initialize();
-      }
-    });
+    if (this.props.settings && this.props.settings.visibility === "VISIBLE_TO_ALL") {
+      this.initialize();
+    }
   }
   componentDidUpdate(prevProps: IChatProps, prevState: IChatState) {
-    const addedGroupChatsInfo = this.state.availableMucRooms.filter((c) => !prevState.availableMucRooms.find((ic) => ic.roomJID !== c.roomJID));
-    addedGroupChatsInfo.forEach((c) => {
-      if (this.state.openChatsJIDS.includes(c.roomJID)) {
-        this.joinChatRoom(c.roomJID);
-      }
-    });
+    if (this.state.isInitialized) {
+      const addedGroupChatsInfo = this.state.availableMucRooms.filter((c) => !prevState.availableMucRooms.find((ic) => ic.roomJID !== c.roomJID));
+      addedGroupChatsInfo.forEach((c) => {
+        if (this.state.openChatsJIDS.includes(c.roomJID)) {
+          this.joinChatRoom(c.roomJID);
+        }
+      });
+    }
+
+    if (
+      (prevProps.settings && prevProps.settings.visibility === "VISIBLE_TO_ALL") &&
+      (!this.props.settings || this.props.settings.visibility === "DISABLED") &&
+      this.state.isInitialized
+    ) {
+      this.stopChat();
+    } else if (
+      (!prevProps.settings || prevProps.settings.visibility === "DISABLED") &&
+      (this.props.settings && this.props.settings.visibility === "VISIBLE_TO_ALL") &&
+      !this.state.isInitialized
+    ) {
+      this.initialize();
+    }
   }
   onGroupChatMessage(stanza: Element) {
     console.log(stanza);
@@ -650,6 +666,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
     });
   }
+  public stopChat() {
+    this.setState({
+      isInitialized: false,
+    });
+
+    this.connection.disconnect("Chat is disabled");
+  }
   async initialize() {
     this.setState({
       isInitialized: true,
@@ -666,7 +689,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       prebind = await prebindRequest.json();
     }
 
-    this.connection = new Strophe.Connection("/http-bind/", {'keepalive': true});
+    this.connection = new Strophe.Connection("/http-bind/", { 'keepalive': true });
     this.connection.addHandler(this.onGroupChatMessage, null, 'message', 'groupchat', null, null);
     this.connection.addHandler(this.onPresenceMessage, null, 'presence', null, null, null);
 
@@ -867,6 +890,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 function mapStateToProps(state: StateType) {
   return {
     currentLocale: state.locales.current,
+    settings: state.profile.chatSettings,
   }
 };
 

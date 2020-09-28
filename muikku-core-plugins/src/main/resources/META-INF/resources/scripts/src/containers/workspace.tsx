@@ -39,6 +39,7 @@ import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDis
 
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 import { displayNotification } from '~/actions/base/notifications';
+import { loadProfileChatSettings } from '~/actions/main-function/profile';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -448,6 +449,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           ) as Action);
         }
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
@@ -481,6 +484,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           }
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceUsersBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -513,6 +518,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           }
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceJournalBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -541,6 +548,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceManagementBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -558,6 +567,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.props.store.dispatch(loadCurrentWorkspaceUserGroupPermissions() as Action);
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspacePermissionsBody workspaceUrl={props.match.params["workspaceUrl"]}/>

@@ -44,7 +44,7 @@ export interface UserWithSchoolDataType {
 }
 
 export interface UserChatSettingsType {
-  visibility: any,
+  visibility: "DISABLED" | "VISIBLE_TO_ALL",
   nick?: string
 }
 
