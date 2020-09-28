@@ -190,14 +190,6 @@ public class ChatRESTService extends PluginRESTService {
     }
   }
 
-  @GET
-  @Path("/status")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response chatStatus() {
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
-    return Response.ok(userChatSettings != null && userChatSettings.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL ? true : false).build();
-  }
-
   private XmppCredentials computeXmppCredentials(
     PrivateKey privateKey,
     Instant now,
