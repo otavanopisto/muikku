@@ -285,7 +285,7 @@ public class ChatSyncController {
   
   private MUCRoomEntity ensureRoomExists(RestApiClient client, WorkspaceEntity workspaceEntity) {
     MUCRoomEntity mucRoomEntity = null;
-    mucRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
+    mucRoomEntity = client.getChatRoom(String.format("workspace-chat-%s", workspaceEntity.getIdentifier()));
     if (mucRoomEntity == null) {
       logger.log(Level.INFO, String.format("Creating workspace chat room %d", workspaceEntity.getId()));
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
