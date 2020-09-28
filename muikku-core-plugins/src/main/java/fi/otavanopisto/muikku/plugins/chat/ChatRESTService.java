@@ -293,6 +293,7 @@ public class ChatRESTService extends PluginRESTService {
     
     UserChatVisibility visibility = payload.getVisibility();
     if (visibility == UserChatVisibility.DISABLED) {
+      payload.setNick(null);
       chatController.deleteUserChatSettings(userChatSettings);
       // TODO I suppose the user's membership in each chat room should be revoked, just to be tidy 
     }
@@ -317,7 +318,7 @@ public class ChatRESTService extends PluginRESTService {
         chatSyncController.syncUser(userEntity);
       }
     }
-    return Response.noContent().build(); 
+    return Response.ok(payload).build(); 
   }
   
   private WorkspaceChatSettingsRESTModel restModel(WorkspaceChatSettings workspaceChatSettings) {
