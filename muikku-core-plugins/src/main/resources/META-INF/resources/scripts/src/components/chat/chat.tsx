@@ -79,34 +79,27 @@ export interface IAvailableChatRoomType {
 }
 
 export interface IChatOccupant {
-  userId: string,
-  muikkuNickName: string,
-  status: string,
-  firstName: string,
-  lastName: string,
-  receivedMessageNotification: boolean,
-}
-
-interface IPrivateChatData {
-  occupantBareJID: string;
-  occupant: IChatOccupant;
+  userId: string;
+  nick: string;
+  precense: "away" | "chat" | "dnd" | "xa";
+  firstName?: string;
+  lastName?: string;
+  isStudent: boolean;
+  isStaff: boolean;
 }
 
 interface IChatState {
+  connection: Strophe.Connection;
+
   isInitialized: boolean,
-  messages: Object[],
   availableMucRooms: IAvailableChatRoomType[],
   showControlBox: boolean,
   showNewRoomForm: boolean,
   isStudent: boolean,
   pyramusUserId: string,
   openRoomNumber: number,
-  // chats that are supposed to be open
   openChatsJIDS: string[],
-  // chats that are open by having a XMPP connection open
-  openedChatsJIDS: string[],
   selectedUserPresence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
-  privateChatData: IPrivateChatData[],
   ready: boolean,
 
   roomNameField: string;
@@ -120,31 +113,27 @@ interface IChatProps {
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
-  private connection: Strophe.Connection;
-
   private awaitingConfigurationForChatRoom: string = null;
   private awaitingChatRoomStanza: Strophe.Builder = null;
+  private awaitingNewRoom: IAvailableChatRoomType = null;
 
   constructor(props: IChatProps) {
     super(props);
 
     this.state = {
+      connection: null,
+
       isInitialized: false,
-      messages: [],
       availableMucRooms: [],
       showControlBox: JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
       showNewRoomForm: false,
       isStudent: window.MUIKKU_IS_STUDENT,
       openRoomNumber: null,
       pyramusUserId: window.MUIKKU_LOGGED_USER,
-      
+
       // we should have these open
       openChatsJIDS: JSON.parse(window.sessionStorage.getItem("openChats")) || [],
-      // but these are the ones actually open
-      openedChatsJIDS: [],
-
       selectedUserPresence: JSON.parse(window.sessionStorage.getItem("selectedUserPresence")) || "chat",
-      privateChatData: [],
       ready: false,
 
       roomNameField: "",
@@ -157,18 +146,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.toggleJoinLeaveChatRoom = this.toggleJoinLeaveChatRoom.bind(this);
     this.leaveChatRoom = this.leaveChatRoom.bind(this);
     this.joinChatRoom = this.joinChatRoom.bind(this);
-    // this.toggleJoinLeavePrivateChat = this.toggleJoinLeavePrivateChat.bind(this);
-    this.getUserAvailability = this.getUserAvailability.bind(this);
     this.setUserAvailability = this.setUserAvailability.bind(this);
-    // this.onConverseMessage = this.onConverseMessage.bind(this);
-    this.onConverseInitialized = this.onConverseInitialized.bind(this);
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
     this.updateRoomDescField = this.updateRoomDescField.bind(this);
     this.toggleRoomPersistent = this.toggleRoomPersistent.bind(this);
     this.createAndJoinChatRoom = this.createAndJoinChatRoom.bind(this);
     this.updateChatRoomConfig = this.updateChatRoomConfig.bind(this);
     this.initialize = this.initialize.bind(this);
-    this.onGroupChatMessage = this.onGroupChatMessage.bind(this);
     this.onPresenceMessage = this.onPresenceMessage.bind(this);
     this.requestExtraInfoAboutRoom = this.requestExtraInfoAboutRoom.bind(this);
     this.onConnectionStatusChanged = this.onConnectionStatusChanged.bind(this);
@@ -333,22 +317,27 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const roomDesc = this.state.roomDescField;
 
     if (roomJID.startsWith("workspace-")) {
-      alert("Creation of workspace- prefixed chat room is forbidden");
+      console.warn("Creation of workspace- prefixed chat room is forbidden");
+      return;
+    }
+
+    if (!this.props.settings.nick) {
+      console.warn("Can't create a chat room without a nickname specified");
       return;
     }
 
     // const { Strophe, $pres, _ } = this.evtConverse.env;
 
-    const occupantBareJID = roomJID + "/" + this.state.pyramusUserId;
+    const occupantBareJID = roomJID + "/" + this.props.settings.nick;
 
     const presStanza = $pres({
-      from: this.connection.jid,
+      from: this.state.connection.jid,
       to: occupantBareJID,
     }).c("x", { 'xmlns': Strophe.NS.MUC });
 
     this.awaitingConfigurationForChatRoom = occupantBareJID;
     this.awaitingChatRoomStanza = $iq({
-      from: this.connection.jid,
+      from: this.state.connection.jid,
       to: roomJID,
       type: "set",
     })
@@ -368,7 +357,14 @@ class Chat extends React.Component<IChatProps, IChatState> {
       .up().c("field", {
         var: "muc#roomconfig_persistentroom"
       }).c("value", {}, (roomPersistent ? 1 : 0).toString());
-    this.connection.send(presStanza);
+    this.awaitingNewRoom = {
+      roomJID,
+      roomName,
+      roomDesc,
+      roomPersistent,
+    };
+
+    this.state.connection.send(presStanza);
 
     // const stanza = $pres({
     //   'from': this.converse.connection.jid,
@@ -391,66 +387,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     //     'roomdesc': roomDesc
     //   }
     // }), true);
-
-    const newAvailableMucRoom: IAvailableChatRoomType = {
-      roomJID,
-      roomName,
-      roomDesc,
-      roomPersistent,
-    };
-
-    const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
-
-    // we have already made a call to connect because of the pre stanza
-    const newOpenChatsJIDS = [...this.state.openChatsJIDS, roomJID];
-    const newOpenedChatsJIDS = [...this.state.openedChatsJIDS, roomJID];
-
-    this.setState({
-      availableMucRooms: newAvailableMucRooms.sort((a, b) => a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())),
-      showNewRoomForm: false,
-      roomPersistent: false,
-      roomDescField: "",
-      roomNameField: "",
-      openChatsJIDS: newOpenChatsJIDS,
-      openedChatsJIDS: newOpenedChatsJIDS,
-    });
-  }
-
-  // Getting available chat rooms to be listed in the control box
-  async getAvailableChatRooms(iq: XMLDocument) {
-    // Handle the IQ stanza returned from the server, containing all its public groupchats.
-    let availableChatRooms = iq.querySelectorAll('query item');
-
-    if (availableChatRooms.length) {
-      // const nodesArray = [].slice.call(availableChatRooms);
-      // const availableMucRoomsList = [...this.state.availableMucRooms];
-
-      // await Promise.all(nodesArray.map(async (node: any) => {
-      //   const roomName = node.attributes.name.nodeValue;
-      //   const roomJID = node.attributes.jid.value;
-
-      //   // const chat = await this.converse.api.rooms.get(roomJID);
-      //   const roomDesc = chat.attributes.roomconfig.roomdesc;
-      //   const roomPersistent = chat.attributes.roomconfig.persistentroom;
-
-      //   const newRoomToAdd = {
-      //     roomName,
-      //     roomJID,
-      //     roomDesc,
-      //     roomPersistent,
-      //     chatObject: chat,
-      //   }
-
-      //   availableMucRoomsList.push(newRoomToAdd);
-      // }));
-      // this.setState({
-      //   availableMucRooms: availableMucRoomsList,
-      // });
-    } else {
-
-    }
-
-    return true;
   }
   // Toggle states for Control Box window opening/closing
   toggleControlBox() {
@@ -482,34 +418,22 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
   public joinChatRoom(roomJID: string) {
     // already joined
-    if (this.state.openedChatsJIDS.includes(roomJID)) {
+    if (this.state.openChatsJIDS.includes(roomJID)) {
       return;
     }
     // Lets push RoomJid to openChatList and set it to this.state.openChats
     const newJIDS = !this.state.openChatsJIDS.includes(roomJID) ?
       [...this.state.openChatsJIDS, roomJID] : this.state.openChatsJIDS;
-    const newOpenedChatsJIDS = [...this.state.openedChatsJIDS, roomJID];
 
     window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS));
 
     this.setState({
       openChatsJIDS: newJIDS,
-      openedChatsJIDS: newOpenedChatsJIDS,
     });
-
-    // XEP-0045: 7.2 Entering a Room
-    const presStanza = $pres({
-      from: this.connection.jid,
-      to: roomJID + "/" + this.props.settings.nick,
-    }).c("x", { 'xmlns': Strophe.NS.MUC });
-    //.up().c("show", {}, this.state.selectedUserPresence);
-
-    this.connection.send(presStanza);
   }
 
   public leaveChatRoom(roomJID: string) {
     const filteredJIDS = this.state.openChatsJIDS.filter(item => item !== roomJID);
-    const filteredOpenedJIDS = this.state.openedChatsJIDS.filter(item => item !== roomJID);
 
     // Set the filtered openChatList to sessionStorage
     window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
@@ -517,17 +441,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // Set filtered and current openChatList to this.state.openChats
     this.setState({
       openChatsJIDS: filteredJIDS,
-      openedChatsJIDS: filteredOpenedJIDS,
     });
-
-    // XEP-0045: 7.14 Exiting a Room
-    const presStanza = $pres({
-      from: this.connection.jid,
-      to: roomJID,
-      type: "unavailable"
-    });
-
-    this.connection.send(presStanza);
   }
 
   // Toggles between joining and leaving the chat room
@@ -546,31 +460,19 @@ class Chat extends React.Component<IChatProps, IChatState> {
     return this.state.availableMucRooms.filter((room) => !room.roomJID.startsWith("workspace-"));
   }
   setUserAvailability(e: React.ChangeEvent<HTMLSelectElement>) {
-    // let newStatus = e.target.value;
-    // this.converse.api.user.status.set(newStatus);
-    // this.getUserAvailability();
-  }
-  getUserAvailability() {
-    // let userPresence = this.converse.api.user.status.get();
-    // this.setState({
-    //   selectedUserPresence: userPresence
-    // });
+    const newStatus = e.target.value;
+    this.state.connection.send($pres().c("show", {}, newStatus));
+    this.setState({
+      selectedUserPresence: newStatus as any,
+    });
+    window.sessionStorage.setItem("selectedUserPresence", JSON.stringify(newStatus));
   }
   componentDidMount() {
     if (this.props.settings && this.props.settings.visibility === "VISIBLE_TO_ALL") {
       this.initialize();
     }
   }
-  componentDidUpdate(prevProps: IChatProps, prevState: IChatState) {
-    if (this.state.isInitialized) {
-      const addedGroupChatsInfo = this.state.availableMucRooms.filter((c) => !prevState.availableMucRooms.find((ic) => ic.roomJID !== c.roomJID));
-      addedGroupChatsInfo.forEach((c) => {
-        if (this.state.openChatsJIDS.includes(c.roomJID)) {
-          this.joinChatRoom(c.roomJID);
-        }
-      });
-    }
-
+  componentDidUpdate(prevProps: IChatProps) {
     if (
       (prevProps.settings && prevProps.settings.visibility === "VISIBLE_TO_ALL") &&
       (!this.props.settings || this.props.settings.visibility === "DISABLED") &&
@@ -585,10 +487,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.initialize();
     }
   }
-  onGroupChatMessage(stanza: Element) {
-    console.log(stanza);
-    return true;
-  }
   onPresenceMessage(stanza: Element) {
     console.log(stanza);
 
@@ -599,31 +497,48 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.awaitingConfigurationForChatRoom &&
       stanza.getAttribute("from") === this.awaitingConfigurationForChatRoom
     ) {
-      this.connection.sendIQ(this.awaitingChatRoomStanza, (answerStanza: Element) => {
+      this.state.connection.sendIQ(this.awaitingChatRoomStanza, (answerStanza: Element) => {
         if (answerStanza.querySelector("error")) {
           // TODO do something about error https://xmpp.org/extensions/xep-0045.html#createroom-reserved
+        } else {
+          const newAvailableMucRooms = [...this.state.availableMucRooms, this.awaitingNewRoom];
+
+          // we have already made a call to connect because of the pre stanza
+          const newOpenChatsJIDS = [...this.state.openChatsJIDS, this.awaitingNewRoom.roomJID];
+
+          this.setState({
+            availableMucRooms: newAvailableMucRooms.sort((a, b) => a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())),
+            showNewRoomForm: false,
+            roomPersistent: false,
+            roomDescField: "",
+            roomNameField: "",
+            openChatsJIDS: newOpenChatsJIDS,
+          });
+
+          this.awaitingNewRoom = null;
         }
       });
       this.awaitingConfigurationForChatRoom = null;
       this.awaitingChatRoomStanza = null;
     }
+
     return true;
   }
   onConnectionStatusChanged(status: Strophe.Status, condition: string) {
     if (status === Strophe.Status.ATTACHED) {
       // We are atached. Send presence to server so it knows we're online
-      this.connection.send($pres().c("show", {}, this.state.selectedUserPresence));
+      this.state.connection.send($pres().c("show", {}, this.state.selectedUserPresence));
     }
     // I believe strophe retries automatically so disconnected does not need to be tried
     return true;
   }
   listExistantChatRooms() {
     const stanza = $iq({
-      'from': this.connection.jid,
+      'from': this.state.connection.jid,
       'to': 'conference.' + location.hostname,
       'type': 'get'
     }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
-    this.connection.sendIQ(stanza, (answerStanza: Element) => {
+    this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
       const rooms = answerStanza.querySelectorAll('query item');
       const currentRooms = [...this.state.availableMucRooms];
       rooms.forEach((n) => {
@@ -659,12 +574,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
 
     const stanza = $iq({
-      'from': this.connection.jid,
+      'from': this.state.connection.jid,
       'to': room.roomJID,
       'type': 'get'
     }).c("query", { xmlns: Strophe.NS.DISCO_INFO });
 
-    this.connection.sendIQ(stanza, (answerStanza: Element) => {
+    this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
       const fields = answerStanza.querySelectorAll('query field');
       const newRoom = {
         ...room,
@@ -695,7 +610,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       isInitialized: false,
     });
 
-    this.connection && this.connection.disconnect("Chat is disabled");
+    this.state.connection && this.state.connection.disconnect("Chat is disabled");
   }
   async initialize() {
     this.setState({
@@ -713,97 +628,28 @@ class Chat extends React.Component<IChatProps, IChatState> {
       prebind = await prebindRequest.json();
     }
 
-    this.connection = new Strophe.Connection("/http-bind/", { 'keepalive': true });
-    this.connection.addHandler(this.onGroupChatMessage, null, 'message', 'groupchat', null, null);
-    this.connection.addHandler(this.onPresenceMessage, null, 'presence', null, null, null);
+    const connection = new Strophe.Connection("/http-bind/", { 'keepalive': true });
 
-    this.connection.rawInput = function (data) { console.log('RECV: ' + data); };
-    this.connection.rawOutput = function (data) { console.log('SENT: ' + data); };
+    this.setState({
+      connection,
+    }, () => {
+      connection.addHandler(this.onPresenceMessage, null, 'presence', null, null, null);
 
-    // Connect
-    if (isRestore) {
-      this.connection.restore(prebind.jid, this.onConnectionStatusChanged);
-    } else {
-      this.connection.attach(prebind.jid, prebind.sid, prebind.rid.toString(), this.onConnectionStatusChanged);
-    }
+      connection.rawInput = function (data) { console.log('RECV: ' + data); };
+      connection.rawOutput = function (data) { console.log('SENT: ' + data); };
 
-    this.listExistantChatRooms();
+      // Connect
+      if (isRestore) {
+        connection.restore(prebind.jid, this.onConnectionStatusChanged);
+      } else {
+        connection.attach(prebind.jid, prebind.sid, prebind.rid.toString(), this.onConnectionStatusChanged);
+      }
 
-    // this.evtConverse = (window as any).converse;
-
-    // this.evtConverse.plugins.add("muikku-chat-ui", {
-
-    //   initialize: function () {
-    //     const initializedConverseInstance = this._converse;
-    //     _this.converse = initializedConverseInstance;
-    //     _this.onConverseInitialized();
-    //   },
-    // });
-  }
-  onConverseInitialized() {
-    // this.setState({
-    //   isConnectionOk: true,
-    //   ready: true,
-    //   showMaterial: true,
-    // });
-
-    // this.converse.on("disconnect", () => {
-    //   this.setState({
-    //     isConnectionOk: false,
-    //   });
-    // });
-    // this.converse.on("reconnected", () => {
-    //   this.setState({
-    //     isConnectionOk: true,
-    //   });
-    // });
-
-    // this.converse.on("connected", () => {
-    //   this.converse.api.listen.on('message', this.onConverseMessage);
-    //   const { Strophe, $iq } = this.evtConverse.env;
-    //   let from = window.MUIKKU_LOGGED_USER;
-    //   const iq: any = $iq({
-    //     'to': 'conference.dev.muikkuverkko.fi',
-    //     'from': from + "@dev.muikkuverkko.fi",
-    //     'type': "get"
-    //   }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
-
-    //   this.converse.api.sendIQ(iq)
-    //     .then((iq: XMLDocument) => this.getAvailableChatRooms(iq))
-    //     .catch((iq: any) => console.log(iq));
-
-    //   // Get showControlBox status from sessionStroage and set correcponding states
-    //   // We either show the control box or chat bubble button, if sessionStorage does not
-    //   // return value for the key then we have default state (chat bubble is visible then).
-    //   let chatControlBoxStatus = window.sessionStorage.getItem("showControlBox");
-    //   if (chatControlBoxStatus) {
-    //     if (chatControlBoxStatus === "opened") {
-    //       this.setState({
-    //         showControlBox: true,
-    //         showChatButton: false
-    //       });
-    //     } else {
-    //       this.setState({
-    //         showControlBox: false,
-    //         showChatButton: true
-    //       });
-    //     }
-    //   } else {
-    //     this.setState({
-    //       showControlBox: false,
-    //       showChatButton: true
-    //     });
-    //   }
-
-    //   // Fetch user presence status
-    //   const userPresence = this.converse.api.user.status.get();
-    //   this.setState({
-    //     selectedUserPresence: userPresence
-    //   });
-    // });
+      this.listExistantChatRooms();
+    });
   }
   render() {
-    if (!this.state.isInitialized) {
+    if (!this.state.isInitialized || !this.state.connection) {
       return null;
     }
 
@@ -893,6 +739,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.includes(chat.roomJID) ?
             <Groupchat
+              connection={this.state.connection}
+              nick={this.props.settings.nick}
               key={i}
               joinPrivateChat={null}
               leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}

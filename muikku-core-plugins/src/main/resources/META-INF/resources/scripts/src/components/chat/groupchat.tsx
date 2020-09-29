@@ -2,63 +2,54 @@
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
 import { ChatMessage } from './chatMessage';
-import { IChatOccupant, IAvailableChatRoomType } from './chat';
+import { IAvailableChatRoomType, IChatOccupant } from './chat';
 
-interface Iprops {
-  chat: IAvailableChatRoomType,
-  leaveChatRoom: () => void,
-  joinPrivateChat: (occupant: IChatOccupant) => void,
-  onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void,
-  pyramusUserID: string,
+interface IGroupChatProps {
+  chat: IAvailableChatRoomType;
+  nick: string;
+  leaveChatRoom: () => void;
+  joinPrivateChat: (occupant: IChatOccupant) => void;
+  onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
+  pyramusUserID: string;
+  connection: Strophe.Connection;
 }
 
-interface Istate {
-  groupMessages: Object[],
-  availableMucRooms: Object,
-  openChatSettings: boolean,
-  isStudent: boolean,
-  isLastRoomConfigSavedSuccesfully: boolean,
-  showRoomInfo: boolean,
-  minimized: boolean,
-  minimizedChats: Object[],
-  chatRoomType: string,
-  chatRoomOccupants: any,
-  studentOccupants: Object[],
-  staffOccupants: Object[],
-  showOccupantsList: boolean,
-  occupantsListOpened: Object[],
+interface IGroupChatState {
+  messages: Object[],
+  openChatSettings: boolean;
+  isStudent: boolean;
+  showRoomInfo: boolean;
+  minimized: boolean;
+  occupants: IChatOccupant[];
+  showOccupantsList: boolean;
 
   roomNameField: string;
   roomDescField: string;
   roomPersistent: boolean;
 }
 
-export class Groupchat extends React.Component<Iprops, Istate> {
+export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
 
+  private messagesListenerHandler: any = null;
   private messagesEnd: React.RefObject<HTMLDivElement>;
 
-  constructor(props: Iprops) {
+  constructor(props: IGroupChatProps) {
     super(props);
+
     this.state = {
-      groupMessages: [],
-      availableMucRooms: [],
+      messages: [],
       openChatSettings: false,
-      isStudent: false,
-      isLastRoomConfigSavedSuccesfully: null,
+      isStudent: window.MUIKKU_IS_STUDENT,
       showRoomInfo: false,
       minimized: false,
-      minimizedChats: [],
-      chatRoomType: "",
-      chatRoomOccupants: [],
-      studentOccupants: [],
-      staffOccupants: [],
+      occupants: [],
       showOccupantsList: false,
-      occupantsListOpened: [],
 
       roomNameField: this.props.chat.roomName,
       roomDescField: this.props.chat.roomDesc,
       roomPersistent: this.props.chat.roomPersistent,
     }
+
     this.messagesEnd = React.createRef();
 
     this.sendMessageToChatRoom = this.sendMessageToChatRoom.bind(this);
@@ -67,7 +58,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.sendChatroomConfiguration = this.sendChatroomConfiguration.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
-    this.refreshChat = this.refreshChat.bind(this);
+    this.onGroupChatMessage = this.onGroupChatMessage.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.toggleChatRoomSettings = this.toggleChatRoomSettings.bind(this);
   }
@@ -524,69 +515,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     //   window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
     // }
   }
-  async refreshChat() {
-    // const chatObject = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
-
-    // this.props.onUpdateChatRoomConfig({
-    //   ...this.props.chat,
-    //   chatObject,
-    // });
-
-    // if (this.props.chat.chatObject.occupants.models.length > 0) {
-    //   let MuikkuUser: any;
-    //   let occupantData: any;
-    //   let chatSettings: any;
-    //   let tempStudentOccupants = new Array;
-    //   let tempStaffOccupants = new Array;
-    //   for (let item of this.props.chat.chatObject.occupants.models) {
-    //     if (typeof item.attributes.from !== "undefined") {
-    //       if (typeof item.attributes.nick !== 'undefined') {
-    //         if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
-    //           chatSettings = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
-    //           MuikkuUser = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick, {}), 'callback')());
-    //           let MuikkuNickName: string = chatSettings.nick;
-    //           if (MuikkuNickName === "") {
-    //             MuikkuNickName = MuikkuUser.firstName + " " + MuikkuUser.lastName;
-    //           }
-    //           occupantData = { UserId: item.attributes.nick, MuikkuNickName: MuikkuNickName, firstName: MuikkuUser.firstName, lastName: MuikkuUser.lastName, status: item.attributes.show };
-    //         } else {
-    //           MuikkuUser = item.attributes.nick;
-    //           let MuikkuNickName = item.attributes.nick;
-    //           occupantData = { UserId: item.attributes.nick, MuikkuNickName: MuikkuNickName, firstName: "", lastName: "", status: item.attributes.show };
-    //         }
-    //       }
-
-    //       if (typeof item.attributes.nick !== 'undefined') {
-    //         if (item.attributes.nick.startsWith("PYRAMUS-STAFF-")) {
-    //           let isExists = tempStaffOccupants.some(function (curr: any) {
-    //             if (curr.UserId === occupantData.UserId) {
-    //               return true;
-    //             }
-    //           });
-    //           if (isExists !== true) {
-    //             tempStaffOccupants.push(occupantData);
-    //           }
-    //         } else {
-    //           let isExists = tempStudentOccupants.some(function (curr: any) {
-    //             if (curr.UserId === occupantData.UserId) {
-    //               return true;
-    //             }
-    //           });
-    //           if (isExists !== true) {
-    //             tempStudentOccupants.push(occupantData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //   this.setState({
-    //     studentOccupants: tempStudentOccupants,
-    //     staffOccupants: tempStaffOccupants
-    //   });
-    // } else {
-    //   return;
-    // }
-  }
   // Scroll selected view to the bottom
   scrollToBottom(method: ScrollBehavior = "smooth") {
     if (this.messagesEnd.current) {
@@ -600,80 +528,79 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       return false;
     }
   }
-  // Check whether chat room is for workspace or environment level
-  // Workspace gets chat room automatically via workspace management chat settings
-  isWorkspaceChatRoom(roomJID: string) {
-    if (roomJID.startsWith("workspace-")) {
-      this.setState({
-        chatRoomType: "workspace"
-      });
-      return;
-    } else {
-      this.setState({
-        chatRoomType: "other"
-      });
-      return;
+  componentDidUpdate(prevProps: IGroupChatProps) {
+    if (prevProps.chat && this.props.chat) {
+      if (prevProps.chat.roomName !== this.props.chat.roomName) {
+        this.setState({
+          roomNameField: this.props.chat.roomName,
+        });
+      }
+      if (prevProps.chat.roomDesc !== this.props.chat.roomDesc) {
+        this.setState({
+          roomDescField: this.props.chat.roomDesc,
+        });
+      }
+      if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
+        this.setState({
+          roomPersistent: this.props.chat.roomPersistent,
+        });
+      }
+    }
+
+    if (
+      this.props.chat.roomJID !== prevProps.chat.roomJID ||
+      this.props.nick !== prevProps.nick ||
+      this.props.connection !== prevProps.connection
+    ) {
+      this.leaveRoom(prevProps);
+      this.joinRoom();
     }
   }
+  onGroupChatMessage(stanza: Element) {
+    console.log(stanza);
+
+    return true;
+  }
+  joinRoom(props: IGroupChatProps = this.props) {
+    this.messagesListenerHandler = props.connection.addHandler(this.onGroupChatMessage, null, 'message', 'groupchat', null, null);
+
+    const roomJID = props.chat.roomJID;
+
+    if (!props.nick) {
+      console.warn("Cannot join room due to missing nick");
+    }
+
+    // XEP-0045: 7.2 Entering a Room
+    const presStanza = $pres({
+      from: props.connection.jid,
+      to: roomJID + "/" + props.nick,
+    }).c("x", { 'xmlns': Strophe.NS.MUC });
+    //.up().c("show", {}, this.state.selectedUserPresence);
+
+    props.connection.send(presStanza);
+  }
+  leaveRoom(props: IGroupChatProps = this.props) {
+    props.connection.deleteHandler(this.messagesListenerHandler);
+
+    const roomJID = props.chat.roomJID;
+
+    // XEP-0045: 7.14 Exiting a Room
+    const presStanza = $pres({
+      from: props.connection.jid,
+      to: roomJID,
+      type: "unavailable"
+    });
+
+    props.connection.send(presStanza);
+  }
   componentDidMount() {
-    // var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
-
-    // if (roomOccupantsFromSessionStorage) {
-    //   roomOccupantsFromSessionStorage.map((item: any) => {
-    //     if (item === this.props.chat.roomJID) {
-    //       this.setState({
-    //         showOccupantsList: true
-    //       });
-    //     }
-    //   })
-    // }
-
-    // this.isWorkspaceChatRoom(this.props.chat.roomJID);
-
-    // this.props.converse.api.waitUntil('chatBoxesFetched').then(async () => {
-    //   this.openMucConversation(this.props.chat.roomJID);
-    //   this.props.converse.api.listen.on('chatRoomInitialized', (chatbox: any) => {
-    //     this.getMUCMessages(chatbox)
-    //   });
-
-    //   if (this.props.chat.chatObject) {
-    //     this.props.chat.chatObject.listenTo(this.props.chat.chatObject.occupants, 'add', this.refreshChat);
-    //     this.props.chat.chatObject.listenTo(this.props.chat.chatObject.occupants, 'destroy', this.refreshChat);
-    //   }
-    // });
-
-
-    // // Getting minimizedChats sessionStorage value and set it to coresponding state (minimizedChats)
-    // let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
-
-    // // Getting showOccupantsList sessionStorage value and set it to coresponding state
-    // let showOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || []
-
-    // if (showOccupantsFromSessionStorage) {
-    //   this.setState({
-    //     occupantsListOpened: showOccupantsFromSessionStorage,
-    //   });
-    // }
-
-    // if (minimizedChatsFromSessionStorage) {
-    //   this.setState({
-    //     minimizedChats: minimizedChatsFromSessionStorage,
-    //   });
-
-    //   minimizedChatsFromSessionStorage.map((item: any) => {
-    //     if (item === this.props.chat.roomJID) {
-    //       this.setState({
-    //         minimized: true,
-    //       });
-    //     }
-    //   })
-    // }
-
-    // this.props.converse.api.listen.on('message', this.handleIncomingMessages);
-    // this.props.converse.api.listen.on('membersFetched', this.refreshChat);
+    this.joinRoom();
+  }
+  componentWillUnmount() {
+    this.leaveRoom();
   }
   render() {
-    let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
+    let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-") ? "workspace" : "other";
 
     return (
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
@@ -716,32 +643,32 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                   </form>
                 </div>
 
-                {this.state.isLastRoomConfigSavedSuccesfully !== null
+                {/* {this.state.isLastRoomConfigSavedSuccesfully !== null
                   ? (
                     <div>
                       <p>{this.state.isLastRoomConfigSavedSuccesfully ? "SUCCESS" : "FAIL"}</p>
                     </div>
-                  ) : null}
+                  ) : null} */}
               </div>}
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
-                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
-                    groupMessage={groupMessage} />)}
+                  {/* {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
+                    groupMessage={groupMessage} />)} */}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
-                    {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
+                    {/* {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
                     {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
                       <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, staffOccupant)} key={i}>
-                        <span className={"chat__online-indicator chat__occupant-" + staffOccupant.status}></span>{staffOccupant.MuikkuNickName}</div>)}
+                        <span className={"chat__online-indicator chat__occupant-" + staffOccupant.status}></span>{staffOccupant.MuikkuNickName}</div>)} */}
                   </div>
                   <div className="chat__occupants-student">
-                    {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
+                    {/* {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
                     {this.state.studentOccupants.map((studentOccupant: any, i: any) =>
                       <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant)} key={i}>
-                        <span className={"chat__online-indicator chat__occupant-" + studentOccupant.status}></span>{studentOccupant.MuikkuNickName}</div>)}
+                        <span className={"chat__online-indicator chat__occupant-" + studentOccupant.status}></span>{studentOccupant.MuikkuNickName}</div>)} */}
                   </div>
                 </div>}
               </div>
