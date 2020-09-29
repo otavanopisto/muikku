@@ -1,7 +1,6 @@
 /*global converse */
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
-import { ChatMessage } from './chatMessage';
 import { IAvailableChatRoomType, IChatOccupant } from './chat';
 
 interface IGroupChatProps {
@@ -14,8 +13,14 @@ interface IGroupChatProps {
   connection: Strophe.Connection;
 }
 
+interface IBareMessageType {
+  message: string;
+  nick: string;
+  timestamp: Date;
+}
+
 interface IGroupChatState {
-  messages: Object[],
+  messages: IBareMessageType[],
   openChatSettings: boolean;
   isStudent: boolean;
   showRoomInfo: boolean;
@@ -26,6 +31,8 @@ interface IGroupChatState {
   roomNameField: string;
   roomDescField: string;
   roomPersistent: boolean;
+
+  currentMessageToBeSent: string;
 }
 
 export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
@@ -48,6 +55,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       roomNameField: this.props.chat.roomName,
       roomDescField: this.props.chat.roomDesc,
       roomPersistent: this.props.chat.roomPersistent,
+
+      currentMessageToBeSent: "",
     }
 
     this.messagesEnd = React.createRef();
@@ -61,43 +70,30 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.onGroupChatMessage = this.onGroupChatMessage.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.toggleChatRoomSettings = this.toggleChatRoomSettings.bind(this);
+    this.setCurrentMessageToBeSent = this.setCurrentMessageToBeSent.bind(this);
   }
 
-  sendMessageToChatRoom(event: any) {
-    // event.preventDefault();
+  setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      currentMessageToBeSent: e.target.value,
+    });
+  }
 
-    // let text = event.target.chatMessage.value;
-    // let chat = this.props.chat.chatObject;
+  sendMessageToChatRoom(event: React.FormEvent) {
+    event.preventDefault();
 
-    // var spoiler_hint = "undefined";
+    const text = this.state.currentMessageToBeSent;
 
-    // const attrs = chat.getOutgoingMessageAttributes(text, spoiler_hint);
+    this.props.connection.send($msg({
+      from: this.props.connection.jid,
+      to: this.props.chat.roomJID,
+      type: "groupchat",
+    }).c("body", text));
 
-    // attrs.fullname = window.PROFILE_DATA.displayName;
-    // attrs.identifier = window.MUIKKU_LOGGED_USER;
-    // attrs.from = this.state.bareJID;
-    // attrs.to = this.props.chat.roomJID;
-    // attrs.nick = chat.attributes.nick || window.PROFILE_DATA.displayName;
-
-    // let message = chat.messages.findWhere('correcting');
-
-    // if (message) {
-    //   message.save({
-    //     'correcting': false,
-    //     'edited': chat.moment().format(),
-    //     'message': text,
-    //     'references': text,
-    //     'fullname': window.PROFILE_DATA.displayName
-    //   });
-    // } else {
-    //   message = chat.messages.create(attrs);
-    // }
-    // event.target.chatMessage.value = '';
-
-    // if (text !== null || text !== "") {
-    //   this.props.converse.api.send(chat.createMessageStanza(message));
-    // }
-    // this.scrollToBottom.bind(this, "smooth");
+    this.setState({
+      currentMessageToBeSent: "",
+    });
+    this.scrollToBottom.bind(this, "smooth");
   }
 
   // Set chat room configurations
@@ -557,7 +553,32 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     }
   }
   onGroupChatMessage(stanza: Element) {
-    console.log(stanza);
+    const from = stanza.getAttribute("from");
+    const fromBare = from.split("/")[0];
+    const fromNick = from.split("/")[1];
+    const body = stanza.querySelector("body");
+    if (body && fromBare === this.props.chat.roomJID) {
+      const content = body.textContent;
+      let date: Date = null;
+
+      const delay = stanza.querySelector("delay");
+      if (delay) {
+        date = new Date(delay.getAttribute("stamp"));
+      } else {
+        date = new Date();
+      }
+
+      const messageReceived: IBareMessageType = {
+        nick: fromNick,
+        message: content,
+        timestamp: date,
+      };
+
+      const newMessagesList = [...this.state.messages, messageReceived];
+      this.setState({
+        messages: newMessagesList,
+      });
+    }
 
     return true;
   }
@@ -655,6 +676,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
                   {/* {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
                     groupMessage={groupMessage} />)} */}
+                  {this.state.messages.map((m, i) => (
+                    <div style={{width: "100%"}} key={i}>
+                      <div>{m.nick}</div>
+                      <div>{m.message}</div>
+                      <div>{m.timestamp.toJSON()}</div>
+                    </div>
+                  ))}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
@@ -674,7 +702,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent}/>
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)

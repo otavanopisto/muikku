@@ -63,6 +63,11 @@ PyramusUserID
   A pre-defined pyramus-student-# or pyramus-staff-# user ide. This is the local part (user) in bareJID and fullJID and resource part (nick) in occupantBareJID variables.
 */
 
+export interface IChatMessageType {
+  message: string;
+  occupant: IChatOccupant; 
+}
+
 export interface IPrebindResponseType {
   bound: boolean;
   bindEpochMilli: string;
