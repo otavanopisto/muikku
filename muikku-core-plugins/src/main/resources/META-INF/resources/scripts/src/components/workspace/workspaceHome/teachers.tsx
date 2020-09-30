@@ -52,7 +52,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     if (!this.props.status.loggedIn){
       return null;
     }
-    return <div className="panel panel--workspace-teachers" aria-label={this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}>
+    return <div className="panel panel--workspace-teachers">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
         <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</h2>

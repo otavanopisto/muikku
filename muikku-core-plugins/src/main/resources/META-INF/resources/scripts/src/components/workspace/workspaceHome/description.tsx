@@ -29,7 +29,7 @@ interface DescriptionPanelState {
 class DescriptionPanel extends React.Component<DescriptionPanelProps, DescriptionPanelState> {
   render(){
 
-    return <div className="panel panel--workspace-description" aria-label={this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}>
+    return <div className="panel panel--workspace-description">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
         <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</h2>

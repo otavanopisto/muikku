@@ -18,7 +18,7 @@ interface LastMessagesPanelState {
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="panel panel--latest-messages" aria-label={this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}>
+    return (<div className="panel panel--latest-messages">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--latest-messages icon-envelope"></div>
         <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</h2>

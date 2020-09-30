@@ -25,7 +25,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
   render(){
     if (this.props.status.loggedIn && this.props.status.isActiveUser &&
         this.props.status.permissions.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS){
-      return <div className="panel panel--workspace-announcements" aria-label={this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}>
+      return <div className="panel panel--workspace-announcements">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
           <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}</h2>
