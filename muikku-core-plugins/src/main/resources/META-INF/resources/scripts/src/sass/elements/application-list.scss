@@ -19,6 +19,7 @@
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
+  margin: 10px 0 0;
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {

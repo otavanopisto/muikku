@@ -77,7 +77,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
           waitForVisible(".notification-queue__item--success");
-          sleep(500);
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
@@ -87,7 +87,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
           waitAndClick(".button--standard-ok");
 //        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
-          sleep(1500);
+//        Watching for below might resolve this.
+          waitForNotVisible(".material-page__field-answer-synchronizer");
+//          sleep(1500);
           waitForVisible(".file-uploader__hint");
           assertNotPresent(".file-uploader__item-title");
         } finally {

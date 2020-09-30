@@ -149,24 +149,14 @@
   @include form-element-toolbar;
 }
 
-.form-element--workspace-toolbar {
-  @include form-element-toolbar;
-  width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
-  }
-}
-
 .form-element__custom-element {
   padding: 10px 0 0;
 }
 
-.form-element--guider-toolbar {
-  @include form-element-toolbar;
-}
-
-.form-element--coursepicker-toolbar {
+.form-element--guider-toolbar,
+.form-element--coursepicker-toolbar,
+.form-element--add-producer,
+.form-element--workspace-toolbar {
   @include form-element-toolbar;
 }
 
@@ -207,7 +197,6 @@
   }
 
   // scss-lint:disable SelectorFormat
-
   &.INVALID {
     border-color: $color-fatal;
   }
@@ -215,7 +204,6 @@
   &.VALID {
     border-color: $color-success;
   }
-
   // scss-lint:enable SelectorFormat
 
 }
@@ -253,25 +241,30 @@
   display: block;
 }
 
-.form-element__input--main-function-search {
+.form-element__input--main-function-search,
+.form-element__input--subpanel-search,
+.form-element__input--add-producer,
+.form-element__input--add-material-producer {
   background-color: $color-default;
   border: 2px solid $color-main-function-input-field-border;
   margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
   width: 100%;
 }
 
-.form-element__input--add-producer {
-  background-color: $color-default;
+// Overrides the border color
+.form-element__input--add-producer,
+.form-element__input--add-material-producer {
   border: solid 2px $color-form-element-border;
-  margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
-  width: 100%;
 }
 
+// Overrides the border color
 .form-element__input--add-material-producer {
   border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
 }
 
-.form-element__input-decoration--main-function-search {
+.form-element__input-decoration--main-function-search,
+.form-element__input-decoration--subpanel-search,
+.form-element__input-decoration--add-producer {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
 
@@ -281,16 +274,6 @@
   }
 }
 
-.form-element__input-decoration--add-producer {
-  background-color: $color-main-function-input-field-decoration-background;
-  border-radius: 2px;
-  cursor: pointer;
-
-  &::before {
-    @include form-element-input-add-producers-decoration;
-    color: $color-main-function-search-icon;
-  }
-}
 
 .form-element__select {
   -moz-appearance: none;

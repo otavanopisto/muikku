@@ -187,13 +187,14 @@
 }
 
 .application-panel__content-header {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 300;
   margin-bottom: 20px;
   margin-left: 10px;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
     margin-left: 0;
   }
 }
@@ -304,6 +305,14 @@
       justify-content: center;
     }
   }
+
+  .application-panel__content {
+    padding: 10px 0 0;
+  }
+}
+
+// Records
+.application-panel--records {
 
   .application-panel__content {
     padding: 10px 0 0;
