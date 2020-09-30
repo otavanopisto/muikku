@@ -4,9 +4,9 @@
 @import "../base/breakpoints";
 
 .visually-hidden {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
   height: 1px;
+  left: -10000px;
   overflow: hidden;
+  position: absolute;
+  width: 1px;
 }
