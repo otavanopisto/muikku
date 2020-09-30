@@ -11,12 +11,23 @@ interface IGroupChatProps {
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
   pyramusUserID: string;
   connection: Strophe.Connection;
+  presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
 }
 
 interface IBareMessageType {
   message: string;
   nick: string;
+  // because of the way this works the pyramus user id might not be ready yet
+  // for a given message and might be null, until the occupants list is ready
+  pyramusUserID: string;
   timestamp: Date;
+  id: string;
+}
+
+interface IGroupChatOccupant {
+  occupant: IChatOccupant;
+  affilation: "none" | "owner";
+  role: "moderator" | "participant";
 }
 
 interface IGroupChatState {
@@ -25,7 +36,7 @@ interface IGroupChatState {
   isStudent: boolean;
   showRoomInfo: boolean;
   minimized: boolean;
-  occupants: IChatOccupant[];
+  occupants: IGroupChatOccupant[];
   showOccupantsList: boolean;
 
   roomNameField: string;
@@ -38,6 +49,7 @@ interface IGroupChatState {
 export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
 
   private messagesListenerHandler: any = null;
+  private presenceListenerHandler: any = null;
   private messagesEnd: React.RefObject<HTMLDivElement>;
 
   constructor(props: IGroupChatProps) {
@@ -71,6 +83,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.toggleChatRoomSettings = this.toggleChatRoomSettings.bind(this);
     this.setCurrentMessageToBeSent = this.setCurrentMessageToBeSent.bind(this);
+    this.joinRoom = this.joinRoom.bind(this);
+    this.leaveRoom = this.leaveRoom.bind(this);
+    this.onPresence = this.onPresence.bind(this);
+    this.sendRoomPrescense = this.sendRoomPrescense.bind(this);
   }
 
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -481,35 +497,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     // }
   }
   async toggleOccupantsList() {
-    // let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
-
-    // if (this.state.showOccupantsList === true) {
-
-    //   const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== this.props.chat.chatObject.attributes.jid);
-    //   this.setState({
-    //     showOccupantsList: false,
-    //     occupantsListOpened: filteredRooms,
-    //   });
-
-    //   let result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
-
-    //   const filteredChats = result.filter(function (item: any) {
-    //     return item !== this.props.chat.chatObject.attributes.jid;
-    //   });
-
-    //   window.sessionStorage.setItem("showOccupantsList", JSON.stringify(filteredChats));
-
-    // } else if (!roomsWithOpenOccupantsList.includes(this.props.chat.chatObject.attributes.jid)) {
-
-    //   roomsWithOpenOccupantsList.push(this.props.chat.chatObject.attributes.jid);
-
-    //   this.setState({
-    //     occupantsListOpened: roomsWithOpenOccupantsList,
-    //     showOccupantsList: true
-    //   });
-    //   this.refreshChat();
-    //   window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
-    // }
+    this.setState({
+      showOccupantsList: !this.state.showOccupantsList,
+    });
   }
   // Scroll selected view to the bottom
   scrollToBottom(method: ScrollBehavior = "smooth") {
@@ -550,28 +540,52 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     ) {
       this.leaveRoom(prevProps);
       this.joinRoom();
+    } else if (this.props.presence !== prevProps.presence) {
+      // we don't do this on the rejoining because it's automatically done
+      // if rejoining
+      this.sendRoomPrescense();
     }
   }
   onGroupChatMessage(stanza: Element) {
     const from = stanza.getAttribute("from");
-    const fromBare = from.split("/")[0];
     const fromNick = from.split("/")[1];
     const body = stanza.querySelector("body");
-    if (body && fromBare === this.props.chat.roomJID) {
+    if (body) {
       const content = body.textContent;
       let date: Date = null;
 
       const delay = stanza.querySelector("delay");
+      let pyramusUserID: string = null;
       if (delay) {
         date = new Date(delay.getAttribute("stamp"));
+        pyramusUserID = delay.getAttribute("from").split("@")[0];
       } else {
         date = new Date();
+      }
+
+      const id = stanza.querySelector("stanza-id").getAttribute("id");
+
+      // message is already loaded, this can happen when the server
+      // broadcasts messages twice, as when you change your presense
+      if (this.state.messages.find((m) => m.id === id)) {
+        return;
+      }
+
+      if (!pyramusUserID) {
+        // we might not find it, if occupants is not ready
+        const groupChatOccupant = this.state.occupants.find((o) => o.occupant.nick === fromNick);
+        // whenever occupants get added this should be fixed
+        if (groupChatOccupant) {
+          pyramusUserID = groupChatOccupant.occupant.userId;
+        }
       }
 
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
+        id,
         timestamp: date,
+        pyramusUserID,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
@@ -582,26 +596,94 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
     return true;
   }
-  joinRoom(props: IGroupChatProps = this.props) {
-    this.messagesListenerHandler = props.connection.addHandler(this.onGroupChatMessage, null, 'message', 'groupchat', null, null);
+  onPresence(stanza: Element) {
+    console.log(stanza);
 
+    const from = stanza.getAttribute("from");
+    const fromNick = from.split("/")[1];
+
+    const to = stanza.getAttribute("to");
+    const toBare = to.split("/")[0];
+
+    const show = stanza.querySelector("show");
+    const precense: any = show ? show.textContent : "chat";
+
+    const item = stanza.querySelector("item");
+    const userId = item.getAttribute("jid").split("@")[0];
+    const affilation: any = item.getAttribute("affiliation");
+    const role: any = item.getAttribute("role");
+
+    const groupOccupant: IGroupChatOccupant = {
+      occupant: {
+        additional: null,
+        nick: fromNick,
+        isSelf: toBare === this.props.connection.jid,
+        precense,
+        userId,
+      },
+      affilation,
+      role,
+    };
+
+    const newChatMessages = this.state.messages.map((m) => {
+      if (m.nick === groupOccupant.occupant.nick && !m.pyramusUserID) {
+        return {
+          ...m,
+          pyramusUserID: groupOccupant.occupant.userId,
+        };
+      }
+
+      return m;
+    });
+
+    let found = false;
+    const newOccupants = this.state.occupants.map((o) => {
+      if (o.occupant.userId === groupOccupant.occupant.userId) {
+        groupOccupant.occupant.additional = o.occupant.additional;
+        found = true;
+        return groupOccupant;
+      }
+
+      return o;
+    });
+    if (!found) {
+      newOccupants.push(groupOccupant);
+    }
+
+    this.setState({
+      occupants: newOccupants,
+      messages: newChatMessages,
+    });
+
+    return true;
+  }
+  joinRoom(props: IGroupChatProps = this.props) {
     const roomJID = props.chat.roomJID;
+
+    this.messagesListenerHandler = props.connection.addHandler(this.onGroupChatMessage, null, "message", "groupchat", null, roomJID, { matchBare: true });
+    this.presenceListenerHandler = props.connection.addHandler(this.onPresence, null, "presence", null, null, roomJID, { matchBare: true });
 
     if (!props.nick) {
       console.warn("Cannot join room due to missing nick");
+      return;
     }
+
+    this.sendRoomPrescense(props);
+  }
+  sendRoomPrescense(props: IGroupChatProps = this.props) {
+    const roomJID = props.chat.roomJID;
 
     // XEP-0045: 7.2 Entering a Room
     const presStanza = $pres({
       from: props.connection.jid,
       to: roomJID + "/" + props.nick,
-    }).c("x", { 'xmlns': Strophe.NS.MUC });
-    //.up().c("show", {}, this.state.selectedUserPresence);
+    }).c("x", { 'xmlns': Strophe.NS.MUC }).up().c("show", {}, this.props.presence);
 
     props.connection.send(presStanza);
   }
   leaveRoom(props: IGroupChatProps = this.props) {
     props.connection.deleteHandler(this.messagesListenerHandler);
+    props.connection.deleteHandler(this.presenceListenerHandler);
 
     const roomJID = props.chat.roomJID;
 
@@ -610,6 +692,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       from: props.connection.jid,
       to: roomJID,
       type: "unavailable"
+    });
+
+    this.setState({
+      messages: [],
     });
 
     props.connection.send(presStanza);
@@ -677,8 +763,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   {/* {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
                     groupMessage={groupMessage} />)} */}
                   {this.state.messages.map((m, i) => (
-                    <div style={{width: "100%"}} key={i}>
+                    <div style={{ width: "100%" }} key={i}>
                       <div>{m.nick}</div>
+                      <div>{m.pyramusUserID}</div>
                       <div>{m.message}</div>
                       <div>{m.timestamp.toJSON()}</div>
                     </div>
@@ -687,6 +774,18 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
+                    {this.state.occupants.map((o) => {
+                      return (
+                        <div style={{border: "solid 1px red"}} key={o.occupant.userId}>
+                          <div>{o.affilation}</div>
+                          <div>{o.role}</div>
+                          <div>{o.occupant.nick}</div>
+                          <div>{o.occupant.precense}</div>
+                          <div>{o.occupant.nick}</div>
+                          <div>{o.occupant.userId}</div>
+                        </div>
+                      )
+                    })}
                     {/* {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
                     {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
                       <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, staffOccupant)} key={i}>
@@ -702,7 +801,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent}/>
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent} />
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)

@@ -65,7 +65,7 @@ PyramusUserID
 
 export interface IChatMessageType {
   message: string;
-  occupant: IChatOccupant; 
+  occupant: IChatOccupant;
 }
 
 export interface IPrebindResponseType {
@@ -87,10 +87,13 @@ export interface IChatOccupant {
   userId: string;
   nick: string;
   precense: "away" | "chat" | "dnd" | "xa";
-  firstName?: string;
-  lastName?: string;
-  isStudent: boolean;
-  isStaff: boolean;
+  additional: {
+    firstName?: string;
+    lastName?: string;
+    isStudent: boolean;
+    isStaff: boolean;
+  };
+  isSelf: boolean;
 }
 
 interface IChatState {
@@ -493,8 +496,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
   onPresenceMessage(stanza: Element) {
-    console.log(stanza);
-
     // we are being informed of our own user precense in the chatroom when
     // we have created a chatroom, we are looking for code 201 in that case
     // which means it was just created
@@ -744,6 +745,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.includes(chat.roomJID) ?
             <Groupchat
+              presence={this.state.selectedUserPresence}
               connection={this.state.connection}
               nick={this.props.settings.nick}
               key={i}
