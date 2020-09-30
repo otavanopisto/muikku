@@ -29,10 +29,10 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
     } else if (!this.props.status.isStudent) {
       return null;
     }
-    return (<div className="panel panel--continue-studies">
+    return (<div className="panel panel--continue-studies" aria-label={this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}>
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--continue-studies icon-forward"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</div>
+        <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</h2>
       </div>
       <div className="panel__body">
         <div className="panel__body-title">{this.props.lastWorkspace.workspaceName}</div>

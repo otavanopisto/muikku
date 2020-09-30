@@ -18,17 +18,17 @@ interface LastMessagesPanelState {
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="panel panel--latest-messages">
+    return (<div className="panel panel--latest-messages" aria-label={this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}>
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--latest-messages icon-envelope"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</div>
+        <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</h2>
       </div>
       {this.props.lastThreads.length ? (
         <div className="panel__body">
           <div className="item-list item-list--panel-latest-messages">
             {this.props.lastThreads.map((thread)=>{
               return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
-                      to={`/communicator#inbox/${thread.communicatorMessageId}?f`}>
+                href={`/communicator#inbox/${thread.communicatorMessageId}?f`} to={`/communicator#inbox/${thread.communicatorMessageId}?f`}>
                 <span className={`item-list__icon item-list__icon--latest-messages icon-${thread.unreadMessagesInThread ? "envelope-alt" : "envelope-open"}`}></span>
                 <span className="item-list__text-body item-list__text-body--multiline">
                   <span className="item-list__latest-message-caption">

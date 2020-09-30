@@ -22,10 +22,10 @@ interface WorkspacesPanelState {
 
 class WorkspacesPanel extends React.Component<WorkspacesPanelProps, WorkspacesPanelState> {
   render(){
-    return (<div className="panel panel--workspaces">
+    return (<div className="panel panel--workspaces" aria-label={this.props.i18n.text.get('plugin.frontPage.workspaces.title')}>
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspaces icon-books"></div>
-          <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</div>
+          <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</h2>
         </div>
         {this.props.workspaces.length ? (
           <div className="panel__body">
