@@ -185,6 +185,12 @@ export interface WorkspacePermissionsType {
   permissions: string[],
 }
 
+export interface TemplateWorkspaceType {
+  id: number,
+  name: string,
+  nameExtension?: string | null
+}
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -272,11 +278,11 @@ export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
-  organizations: WorkspaceOrganizationFilterListType,
-  baseFilters: WorkspaceBaseFilterListType
+  organizations?: WorkspaceOrganizationFilterListType,
+  baseFilters?: WorkspaceBaseFilterListType
 }
 
-export interface OrganizationWorkspacesavailableFiltersType {
+export interface OrganizationWorkspacesAvailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
 }
@@ -292,9 +298,10 @@ export interface OrganizationWorkspacesActiveFiltersType {
 export interface WorkspacesActiveFiltersType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,
-  organizationFilters: Array<string>,
   query: string,
-  baseFilter: WorkspaceBaseFilterType
+  templates?: string,
+  baseFilter?: WorkspaceBaseFilterType
+  organizationFilters?: Array<string>,
 }
 
 export interface WorkspaceTypeType {
@@ -341,32 +348,35 @@ export interface WorkspaceMaterialEditorType {
 export interface WorkspacesType {
   availableWorkspaces: WorkspaceListType,
   availableFilters: WorkspacesavailableFiltersType,
+  templateWorkspaces: TemplateWorkspaceType[],
   state: WorkspacesStateType,
   activeFilters: WorkspacesActiveFiltersType,
   hasMore: boolean,
   toolbarLock: boolean,
   types?: Array<WorkspaceTypeType>
-  userWorkspaces: WorkspaceListType,
+  userWorkspaces?: WorkspaceListType,
   lastWorkspace?: WorkspaceMaterialReferenceType,
   currentWorkspace?: WorkspaceType,
-  currentMaterials: MaterialContentNodeListType,
-  currentHelp: MaterialContentNodeListType,
-  currentMaterialsActiveNodeId: number,
-  currentMaterialsReplies: MaterialCompositeRepliesListType,
-  editMode: WorkspaceEditModeStateType,
-  materialEditor: WorkspaceMaterialEditorType,
+  currentMaterials?: MaterialContentNodeListType,
+  currentHelp?: MaterialContentNodeListType,
+  currentMaterialsActiveNodeId?: number,
+  currentMaterialsReplies?: MaterialCompositeRepliesListType,
+  editMode?: WorkspaceEditModeStateType,
+  materialEditor?: WorkspaceMaterialEditorType,
 
 }
 
-export interface OrganizationWorkspacesType {
-  availableWorkspaces: WorkspaceListType,
-  availableFilters: OrganizationWorkspacesavailableFiltersType,
-  state: WorkspacesStateType,
-  activeFilters: OrganizationWorkspacesActiveFiltersType,
-  hasMore: boolean,
-  toolbarLock: boolean,
-  types?: Array<WorkspaceTypeType>
-}
+// export interface OrganizationWorkspacesType {
+//   availableWorkspaces: WorkspaceListType,
+//   availableFilters: OrganizationWorkspacesAvailableFiltersType,
+//   templateWorkspaces: TemplateWorkspaceType[],
+//   state: WorkspacesStateType,
+//   activeFilters: OrganizationWorkspacesActiveFiltersType,
+//   hasMore: boolean,
+//   toolbarLock: boolean,
+//   types?: Array<WorkspaceTypeType>
+// }
+// export type OrganizationWorkspacesPatchType = Partial<OrganizationWorkspacesType>;
 
 export type WorkspacesPatchType = Partial<WorkspacesType>;
 
@@ -520,6 +530,7 @@ export default function workspaces(state: WorkspacesType = {
   lastWorkspace: null,
   currentWorkspace: null,
   currentMaterials: null,
+  templateWorkspaces: [],
   currentHelp: null,
   currentMaterialsReplies: null,
   availableFilters: {
@@ -533,6 +544,7 @@ export default function workspaces(state: WorkspacesType = {
     educationFilters: [],
     curriculumFilters: [],
     organizationFilters: [],
+    templates: "ONLY_WORKSPACES",
     query: "",
     baseFilter: "ALL_COURSES"
   },
@@ -806,8 +818,9 @@ export default function workspaces(state: WorkspacesType = {
   return state;
 }
 
-export function organizationWorkspaces(state: OrganizationWorkspacesType = {
+export function organizationWorkspaces(state: WorkspacesType = {
   availableWorkspaces: [],
+  templateWorkspaces: [],
   availableFilters: {
     educationTypes: [],
     curriculums: [],
@@ -822,7 +835,7 @@ export function organizationWorkspaces(state: OrganizationWorkspacesType = {
   toolbarLock: false,
   types: null,
 
-}, action: ActionType): OrganizationWorkspacesType {
+}, action: ActionType): WorkspacesType {
   if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
@@ -845,6 +858,10 @@ export function organizationWorkspaces(state: OrganizationWorkspacesType = {
   } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_STATE") {
     return Object.assign({}, state, {
       state: action.payload
+    });
+  } else if (action.type === "UPDATE_ORGANIZATION_TEMPLATES") {
+    return Object.assign({}, state, {
+      templateWorkspaces: action.payload
     });
   }
   return state;

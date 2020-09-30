@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow } from '~/components/general/dialog';
-import { FormWizardActions, SearchFormElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement } from '~/components/general/form-element';
+import { FormWizardActions, SearchFormElement } from '~/components/general/form-element';
 import { AnyActionType } from '~/actions';
 import { loadStaff, loadStudents, LoadUsersTriggerType } from '~/actions/main-function/users';
+import { loadTemplatesFromServer, LoadTemplatesFromServerTriggerType } from '~/actions/workspaces';
 import notificationActions from '~/actions/base/notifications';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
@@ -16,10 +17,11 @@ import AutofillSelector, { SelectItem } from '~/components/base/input-select-aut
 // import InputContactsAutofillLoaders from '~/components/base/input-contacts-autofill';
 import { StudyprogrammeTypes } from '~/reducers/main-function/users';
 import { UsersType } from '~/reducers/main-function/users';
-import { CreateWorkspaceType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
+import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
 
 import { UserType, UserStaffType } from '~/reducers/user-index';
 import studiesEnded from '~/components/index/body/studies-ended';
+import Workspace from '~/containers/workspace';
 
 interface TemplateType {
   id: number,
@@ -33,10 +35,10 @@ interface OrganizationNewWorkspaceProps {
   i18n: i18nType,
   data?: CreateWorkspaceType,
   users: UsersType,
-  workspace?: WorkspaceListType,
-  studyprogrammes: StudyprogrammeTypes,
+  templates: WorkspaceType[],
   loadStudents: LoadUsersTriggerType,
-  loadStaff: LoadUsersTriggerType
+  loadStaff: LoadUsersTriggerType,
+  loadTemplates: LoadTemplatesFromServerTriggerType
 
 
   // createWorkspace: CreateWorkspaceTriggerType,
@@ -81,7 +83,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   doTemplateSearch(value: string) {
-    console.log(value);
+    this.props.loadTemplates(value);
   }
 
   doStudentSearch(value: string) {
@@ -193,6 +195,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
     switch (page) {
       case 1:
+
         return <div>
           <DialogRow modifiers="new-workspace">
             <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.template.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
@@ -200,12 +203,12 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
               <form>
-                {templates.map((template: TemplateType) => {
+                {this.props.templates.map((template: WorkspaceType) => {
                   return <ApplicationListItem>
                     <ApplicationListItemHeader>
-                      <input key={template.id} type="radio" name={template.type} value={template.id} />
+                      <input key={template.id} type="radio" name="template" value={template.id} />
                       <span className="application-list__header-primary">{template.name}</span>
-                      <span className="application-list__header-secondary">{template.line}</span>
+                      <span className="application-list__header-secondary">{template.educationTypeName}</span>
                     </ApplicationListItemHeader>
                   </ApplicationListItem>
                 })}
@@ -273,12 +276,12 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     users: state.organizationUsers,
-    studyprogrammes: state.studyprogrammes
+    templates: state.organizationWorkspaces.templateWorkspaces
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ loadStaff, loadStudents }, dispatch);
+  return bindActionCreators({ loadStaff, loadStudents, loadTemplates: loadTemplatesFromServer }, dispatch);
 };
 
 export default connect(

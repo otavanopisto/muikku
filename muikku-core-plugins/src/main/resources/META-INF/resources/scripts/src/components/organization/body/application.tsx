@@ -20,10 +20,13 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 import { LoadUsersTriggerType, loadUsers } from '~/actions/main-function/users';
+import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
+import { loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>,
   loadUsers: LoadUsersTriggerType,
+  loadWorkspaces: LoadWorkspacesFromServerTriggerType
   i18n: i18nType
 }
 
@@ -38,8 +41,10 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
       activeTab: "SUMMARY",
     }
     this.onTabChange = this.onTabChange.bind(this);
-    this.doSearch = this.doSearch.bind(this);
+    this.doUserSearch = this.doUserSearch.bind(this);
+    this.doWorkspaceSearch = this.doWorkspaceSearch.bind(this);
   }
+
 
   onTabChange(id: "SUMMARY" | "USERS" | "COURSES" | "REPORTS") {
     this.setState({
@@ -47,8 +52,23 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     });
   }
 
-  doSearch(value: string) {
+  doUserSearch(value: string) {
     this.props.loadUsers(value);
+  }
+
+
+  doWorkspaceSearch(value: string) {
+
+    let filters: WorkspacesActiveFiltersType = {
+      educationFilters: [],
+      curriculumFilters: [],
+      organizationFilters: [],
+      templates: "ONLY_WORKSPACES",
+      query: value,
+      baseFilter: "ALL_COURSES"
+    }
+
+    this.props.loadWorkspaces(filters, true);
   }
 
   render() {
@@ -57,13 +77,13 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     let coursesPrimaryAction = <WorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
-        <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="OrganizationWorkspaceSearch" updateField={this.doSearch} ></SearchFormElement>
+        <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="OrganizationWorkspaceSearch" updateField={this.doWorkspaceSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
     let usersToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
-        <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doSearch} ></SearchFormElement>
+        <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doUserSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
@@ -104,7 +124,7 @@ function mapStateToProps(state: StateType) {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators({ loadUsers }, dispatch);
+  return bindActionCreators({ loadUsers, loadWorkspaces: loadWorkspacesFromServer }, dispatch);
 };
 
 export default connect(
