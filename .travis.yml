@@ -100,6 +100,8 @@ env:
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=guider
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=flags
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=tor
+# WCAG
+  - goals=verify run=always perform_release=false it_profile=wcag findbugs_skip=true use_sc=false package=index
 after_success:
 - . travis-after-success.sh
 after_failure:
