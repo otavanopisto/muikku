@@ -35,7 +35,7 @@ interface IGroupChatState {
 
   roomNameField: string;
   roomDescField: string;
-  roomPersistent: boolean;
+  // roomPersistent: boolean;
 
   currentMessageToBeSent: string;
 }
@@ -62,7 +62,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
       roomNameField: this.props.chat.roomName,
       roomDescField: this.props.chat.roomDesc,
-      roomPersistent: this.props.chat.roomPersistent,
+      // roomPersistent: this.props.chat.roomPersistent,
 
       currentMessageToBeSent: "",
     }
@@ -500,11 +500,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
           roomDescField: this.props.chat.roomDesc,
         });
       }
-      if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
-        this.setState({
-          roomPersistent: this.props.chat.roomPersistent,
-        });
-      }
+      // if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
+      //   this.setState({
+      //     roomPersistent: this.props.chat.roomPersistent,
+      //   });
+      // }
     }
 
     if (
