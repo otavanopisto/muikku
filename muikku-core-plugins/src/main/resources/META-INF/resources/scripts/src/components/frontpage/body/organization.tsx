@@ -6,6 +6,7 @@ import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/logo.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/wcag.scss';
 
 interface FrontpageOrganizationProps {
   i18n: i18nType
@@ -32,8 +33,8 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <h2 className="ordered-container__subcontainer-header--social-media">
                 {this.props.i18n.text.get( 'plugin.organization.some.title' )}
               </h2>
-              <ButtonSocial openInNewTab="_blank" className="icon-twitter" href="https://twitter.com/OtavanOpisto"/>
-              <ButtonSocial openInNewTab="_blank" className="icon-linkedin" href="https://www.linkedin.com/company/106028"/>
+              <ButtonSocial openInNewTab="_blank" className="icon-twitter" href="https://twitter.com/otaviafi"><span className="visually-hidden">Twitter Otavia</span></ButtonSocial>
+              <ButtonSocial openInNewTab="_blank" className="icon-linkedin" href="https://www.linkedin.com/company/106028"><span className="visually-hidden">Linkedin Otavia</span></ButtonSocial>
             </div>
           </div>
 

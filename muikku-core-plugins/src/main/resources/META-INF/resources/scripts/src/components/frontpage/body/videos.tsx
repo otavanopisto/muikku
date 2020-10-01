@@ -17,19 +17,22 @@ export default class FrontpageVideos extends React.Component<FrontpageVideosProp
           <iframe width="1280" height="720"
             src="https://www.youtube.com/embed/IvP595DJ5fM?rel=0&amp;showinfo=0"
             style={{ border: 0 }}
-            allowFullScreen={true}></iframe>
+            allowFullScreen={true}
+            title="Nettilukio.fi - Treenien rinnalla | Robert Ven"></iframe>
         </CarouselVideoItem>
         <CarouselVideoItem>
           <iframe width="1280" height="720"
             src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0"
             style={{ border: 0 }}
-            allowFullScreen={true}></iframe>
+            allowFullScreen={true}
+            title="Nettilukiolaisten ajatuksia"></iframe>
         </CarouselVideoItem>
         <CarouselVideoItem>
           <iframe width="1280" height="720"
             src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0"
             style={{ border: 0 }}
-            allowFullScreen={true}></iframe>
+            allowFullScreen={true}
+            title="Nettilukio: helppoa ja kätevää?"></iframe>
         </CarouselVideoItem>
       </Carousel>
     </section>
