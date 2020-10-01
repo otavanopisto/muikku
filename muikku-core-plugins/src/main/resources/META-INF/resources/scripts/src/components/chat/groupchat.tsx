@@ -83,6 +83,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.leaveRoom = this.leaveRoom.bind(this);
     this.onPresence = this.onPresence.bind(this);
     this.sendRoomPrescense = this.sendRoomPrescense.bind(this);
+    this.onEnterPress = this.onEnterPress.bind(this);
   }
 
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
