@@ -27,6 +27,8 @@ public class ChatPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.chat.ChatPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.chat.ChatPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.chat.ChatJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.otavanopisto.muikku.plugins.chat.ChatJsPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 }
