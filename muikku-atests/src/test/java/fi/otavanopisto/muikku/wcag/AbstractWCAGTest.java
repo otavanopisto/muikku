@@ -32,5 +32,9 @@ public class AbstractWCAGTest extends AbstractUITest {
       assertTrue(AXE.report(violations), false);
     }
   }
+
+  protected void testAccessibility() {
+    this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
+  }
   
 }
