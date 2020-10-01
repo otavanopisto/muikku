@@ -18,9 +18,7 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 
 public class IndexAT extends AbstractWCAGTest {
-  
-  private JSONArray violations;
-  
+
   @Test
   public void frontpage() {
     navigate("/", false);
