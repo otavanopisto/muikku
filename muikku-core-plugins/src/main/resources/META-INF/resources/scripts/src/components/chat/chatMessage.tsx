@@ -61,12 +61,21 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     }
   }
   toggleShowRemoveButton() {
-    this.setState({
-      showRemoveButton: !this.state.showRemoveButton,
-    });
+    if (this.props.canDelete && !this.props.deleted) {
+      this.setState({
+        showRemoveButton: !this.state.showRemoveButton,
+      });
+    }
   }
   removeMessage (){
 
+  }
+  componentDidUpdate() {
+    if ((!this.props.canDelete || this.props.deleted) && this.state.showRemoveButton) {
+      this.setState({
+        showRemoveButton: false,
+      });
+    }
   }
   render() {
     const senderClass = this.props.messsage.isSelf ? "sender-me" : "sender-them";
