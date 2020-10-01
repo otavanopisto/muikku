@@ -90,9 +90,19 @@ export interface IChatOccupant {
   additional: {
     firstName?: string;
     lastName?: string;
-    isStudent: boolean;
-    isStaff: boolean;
   };
+  isSelf: boolean;
+  isStaff: boolean;
+}
+
+export interface IBareMessageType {
+  message: string;
+  nick: string;
+  // because of the way this works the pyramus user id might not be ready yet
+  // for a given message and might be null, until the occupants list is ready
+  pyramusUserID: string;
+  timestamp: Date;
+  id: string;
   isSelf: boolean;
 }
 
@@ -749,7 +759,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               connection={this.state.connection}
               nick={this.props.settings.nick}
               key={i}
-              joinPrivateChat={null}
+              joinPrivateChat={() => null}
               leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
               pyramusUserID={this.state.pyramusUserId}
               chat={chat}

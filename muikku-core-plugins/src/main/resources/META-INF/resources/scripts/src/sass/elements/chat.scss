@@ -585,7 +585,7 @@
   content: "\2022";
 }
 
-.chat__occupant-online {
+.chat__occupant-chat {
   color: $collor-chat-user-status-online;
 }
 
@@ -593,7 +593,11 @@
   color: $collor-chat-user-status-away;
 }
 
-.chat__occupant-offline {
+.chat__occupant-dnd {
+  color: $collor-chat-user-status-away;
+}
+
+.chat__occupant-xa {
   color: $collor-chat-user-status-offline;
 }
 
