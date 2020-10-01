@@ -92,7 +92,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
 
   sendMessageToChatRoom(event: React.FormEvent) {
-    event.preventDefault();
+    event && event.preventDefault();
 
     const text = this.state.currentMessageToBeSent;
 
@@ -481,9 +481,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       this.messagesEnd.current.scrollIntoView({ behavior: method });
     }
   }
-  onEnterPress(e: any) {
+  onEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
+
+      this.sendMessageToChatRoom(null);
 
       return false;
     }
