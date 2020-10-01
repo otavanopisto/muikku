@@ -44,14 +44,14 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         showName: false,
         realName: null,
       });
-    } else if (this.props.messsage.pyramusUserID){
+    } else if (this.props.messsage.userId){
       let userName: string = null;
-      if (REAL_NAMES_CACHE[this.props.messsage.pyramusUserID]) {
-        userName = REAL_NAMES_CACHE[this.props.messsage.pyramusUserID];
+      if (REAL_NAMES_CACHE[this.props.messsage.userId]) {
+        userName = REAL_NAMES_CACHE[this.props.messsage.userId];
       } else {
-        const user: UserType = (await promisify(mApi().user.users.basicinfo.read(this.props.messsage.pyramusUserID,{}), 'callback')()) as UserType;
+        const user: UserType = (await promisify(mApi().chat.userinfo.read(this.props.messsage.userId,{}), 'callback')()) as UserType;
         userName = user.firstName + " " + user.lastName;
-        REAL_NAMES_CACHE[this.props.messsage.pyramusUserID] = userName;
+        REAL_NAMES_CACHE[this.props.messsage.userId] = userName;
       }
 
       this.setState({

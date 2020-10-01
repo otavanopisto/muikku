@@ -107,7 +107,7 @@ export interface IBareMessageType {
   nick: string;
   // because of the way this works the pyramus user id might not be ready yet
   // for a given message and might be null, until the occupants list is ready
-  pyramusUserID: string;
+  userId: string;
   timestamp: Date;
   id: string;
   isSelf: boolean;
@@ -121,7 +121,6 @@ interface IChatState {
   showControlBox: boolean,
   showNewRoomForm: boolean,
   isStudent: boolean,
-  pyramusUserId: string,
   openRoomNumber: number,
   openChatsJIDS: string[],
   selectedUserPresence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
@@ -150,7 +149,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       showNewRoomForm: false,
       isStudent: window.MUIKKU_IS_STUDENT,
       openRoomNumber: null,
-      pyramusUserId: window.MUIKKU_LOGGED_USER,
 
       // we should have these open
       openChatsJIDS: JSON.parse(window.sessionStorage.getItem("openChats")) || [],
@@ -554,7 +552,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
               key={i}
               joinPrivateChat={() => null}
               leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
-              pyramusUserID={this.state.pyramusUserId}
               chat={chat}
               onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
             />

@@ -11,7 +11,6 @@ interface IGroupChatProps {
   leaveChatRoom: () => void;
   joinPrivateChat: (occupant: IChatOccupant) => void;
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
-  pyramusUserID: string;
   connection: Strophe.Connection;
   presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
 }
@@ -534,10 +533,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       let date: Date = null;
 
       const delay = stanza.querySelector("delay");
-      let pyramusUserID: string = null;
+      let userId: string = null;
       if (delay) {
         date = new Date(delay.getAttribute("stamp"));
-        pyramusUserID = delay.getAttribute("from").split("@")[0];
+        userId = delay.getAttribute("from").split("@")[0];
       } else {
         date = new Date();
       }
@@ -550,12 +549,12 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         return;
       }
 
-      if (!pyramusUserID) {
+      if (!userId) {
         // we might not find it, if occupants is not ready
         const groupChatOccupant = this.state.occupants.find((o) => o.occupant.nick === fromNick);
         // whenever occupants get added this should be fixed
         if (groupChatOccupant) {
-          pyramusUserID = groupChatOccupant.occupant.userId;
+          userId = groupChatOccupant.occupant.userId;
         }
       }
 
@@ -564,8 +563,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         message: content,
         id,
         timestamp: date,
-        pyramusUserID,
-        isSelf: pyramusUserID === this.props.pyramusUserID,
+        userId,
+        isSelf: userId === this.props.connection.jid.split("@")[0],
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
@@ -580,69 +579,78 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     console.log(stanza);
 
     const from = stanza.getAttribute("from");
+    const fromBare = from.split("/")[0];
     const fromNick = from.split("/")[1];
-
-    const to = stanza.getAttribute("to");
-    const toBare = to.split("/")[0];
 
     const show = stanza.querySelector("show");
     const precense: any = show ? show.textContent : "chat";
 
     const item = stanza.querySelector("item");
-    const userId = item.getAttribute("jid").split("@")[0];
+    const userJIDBare = item.getAttribute("jid");
+    const userId = userJIDBare.split("@")[0];
     const affilation: any = item.getAttribute("affiliation");
     const role: any = item.getAttribute("role");
 
-    const groupOccupant: IGroupChatOccupant = {
-      occupant: {
-        additional: null,
-        nick: fromNick,
-        isSelf: toBare === this.props.connection.jid,
-        precense,
-        userId,
-        isStaff: toBare.startsWith("muikku-staff"),
-      },
-      affilation,
-      role,
-    };
+    if (stanza.getAttribute("type") === "unavailable") {
+      const newOccupants = this.state.occupants.filter((o) => {
+        return (o.occupant.userId !== userId);
+      });
 
-    if (groupOccupant.occupant.isSelf) {
       this.setState({
-        isOwner: groupOccupant.affilation === "owner",
-        isModerator: groupOccupant.role === "moderator" || groupOccupant.affilation === "owner",
+        occupants: newOccupants,
+      });
+    } else {
+      const groupOccupant: IGroupChatOccupant = {
+        occupant: {
+          additional: null,
+          nick: fromNick,
+          isSelf: userJIDBare === this.props.connection.jid,
+          precense,
+          userId,
+          isStaff: userJIDBare.startsWith("muikku-staff"),
+        },
+        affilation,
+        role,
+      };
+  
+      if (groupOccupant.occupant.isSelf) {
+        this.setState({
+          isOwner: groupOccupant.affilation === "owner",
+          isModerator: groupOccupant.role === "moderator" || groupOccupant.affilation === "owner",
+        });
+      }
+  
+      const newChatMessages = this.state.messages.map((m) => {
+        if (m.nick === groupOccupant.occupant.nick && !m.userId) {
+          return {
+            ...m,
+            pyramusUserID: groupOccupant.occupant.userId,
+            isSelf: groupOccupant.occupant.userId === this.props.connection.jid.split("@")[0],
+          };
+        }
+  
+        return m;
+      });
+  
+      let found = false;
+      const newOccupants = this.state.occupants.map((o) => {
+        if (o.occupant.userId === groupOccupant.occupant.userId) {
+          groupOccupant.occupant.additional = o.occupant.additional;
+          found = true;
+          return groupOccupant;
+        }
+  
+        return o;
+      });
+      if (!found) {
+        newOccupants.push(groupOccupant);
+      }
+  
+      this.setState({
+        occupants: newOccupants,
+        messages: newChatMessages,
       });
     }
-
-    const newChatMessages = this.state.messages.map((m) => {
-      if (m.nick === groupOccupant.occupant.nick && !m.pyramusUserID) {
-        return {
-          ...m,
-          pyramusUserID: groupOccupant.occupant.userId,
-          isSelf: groupOccupant.occupant.userId === this.props.pyramusUserID,
-        };
-      }
-
-      return m;
-    });
-
-    let found = false;
-    const newOccupants = this.state.occupants.map((o) => {
-      if (o.occupant.userId === groupOccupant.occupant.userId) {
-        groupOccupant.occupant.additional = o.occupant.additional;
-        found = true;
-        return groupOccupant;
-      }
-
-      return o;
-    });
-    if (!found) {
-      newOccupants.push(groupOccupant);
-    }
-
-    this.setState({
-      occupants: newOccupants,
-      messages: newChatMessages,
-    });
 
     return true;
   }
