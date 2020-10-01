@@ -95,17 +95,19 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   sendMessageToChatRoom(event: React.FormEvent) {
     event && event.preventDefault();
 
-    const text = this.state.currentMessageToBeSent;
+    const text = this.state.currentMessageToBeSent.trim();
 
-    this.props.connection.send($msg({
-      from: this.props.connection.jid,
-      to: this.props.chat.roomJID,
-      type: "groupchat",
-    }).c("body", text));
+    if (text) {
+      this.props.connection.send($msg({
+        from: this.props.connection.jid,
+        to: this.props.chat.roomJID,
+        type: "groupchat",
+      }).c("body", text));
 
-    this.setState({
-      currentMessageToBeSent: "",
-    }, this.scrollToBottom.bind(this, "smooth"));
+      this.setState({
+        currentMessageToBeSent: "",
+      }, this.scrollToBottom.bind(this, "smooth"));
+    }
   }
 
   // Set chat room configurations
@@ -751,7 +753,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
                   {this.state.messages.map((message) => <ChatMessage key={message.id} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
-                    messsage={message} canDelete={this.state.isModerator || message.isSelf}/>)}
+                    messsage={message} canDelete={this.state.isModerator || message.isSelf} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
