@@ -21,7 +21,7 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
       <div className="ordered-container ordered-container--frontpage-studying">
         <div className="ordered-container__item ordered-container__item--upper-secondary-school">
           <div className="card">
-            <img className="card__image" src="/gfx/kuva_nettilukio.png" alt="" title="" />
+            <img className="card__image" src="/gfx/kuva_nettilukio.png" alt="" role="presentation" />
             <div className="card__content">
               <div className="card__title card__title--frontpage-upper-secondary-school">{this.props.i18n.text.get('plugin.studying.nettilukio.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.nettilukio.description')}</div>
@@ -35,7 +35,7 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
         </div>
         <div className="ordered-container__item ordered-container__item--secondary-school">
           <div className="card">
-            <img className="card__image" src="/gfx/kuva_nettiperuskoulu.png" alt="" title="" />
+            <img className="card__image" src="/gfx/kuva_nettiperuskoulu.png" alt="" role="presentation"/>
             <div className="card__content">
               <div className="card__title card__title--frontpage-secondary-school">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.description')}</div>
@@ -49,7 +49,7 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
         </div>
         <div className="ordered-container__item ordered-container__item--open-materials">
           <div className="card">
-            <img className="card__image" src="/gfx/kuva_aineopiskelu.png" alt="" title="" />
+            <img className="card__image" src="/gfx/kuva_aineopiskelu.png" alt="" role="presentation"/>
             <div className="card__content">
               <div className="card__title card__title--frontpage-open-materials">{this.props.i18n.text.get('plugin.studying.aineopiskelu.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.aineopiskelu.description')}</div>

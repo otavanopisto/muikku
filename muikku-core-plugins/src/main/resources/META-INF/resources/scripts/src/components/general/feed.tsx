@@ -29,12 +29,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
       {this.props.entries.map((entry, index)=>{
         return <li className="feed__item" key={entry.link}>
           <div className="feed__item-aside">
-            <a href={entry.link} target="_blank">
-              {entry.image ? <img className="feed__item-image" src={entry.image} alt={entry.title}/> :
+              {entry.image ? <img className="feed__item-image" src={entry.image} alt="" role="presentation"/> :
               entry.feed === "nettilukio" ? <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettilukio-feed.png"/> :
-              <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettiperuskoulu-feed.png" alt={entry.title}/>
+                <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettiperuskoulu-feed.png" alt="" role="presentation"/>
             }
-            </a>
           </div>
           <div className="feed__item-body">
             {entry.feed === "nettilukio" ? <a className="feed__item-title feed__item-title--nettilukio" href={entry.link} target="_blank">{entry.title}</a> :
