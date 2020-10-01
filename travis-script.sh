@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $run_tests = "true" && $test_suite = $suite || $run_tests = "true" && $it_profile = "rest-it" ]]; then
+if [[ $run_tests == "true" && $test_suite == $suite || $run_tests == "true" && $it_profile == "rest-it" || $run_tests == "true" && $it_profile == "wcag" ]]; then
   pushd .;
   cd muikku-atests;
   set -e;
