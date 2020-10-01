@@ -69,7 +69,6 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
-import fi.otavanopisto.muikku.WorkspaceAccess;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
