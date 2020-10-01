@@ -7,6 +7,13 @@ import { Strophe } from "strophe.js";
 import { Room } from './room';
 import { Groupchat } from './groupchat';
 import { UserChatSettingsType } from '~/reducers/main-function/user-index';
+import promisify from "~/util/promisify";
+
+interface IChatRoomType {
+  name: string;
+  title: string;
+  description: string;
+}
 
 /*
 VARIABLES:
@@ -80,7 +87,7 @@ export interface IAvailableChatRoomType {
   roomName: string,
   roomJID: string,
   roomDesc: string,
-  roomPersistent: boolean,
+  // roomPersistent: boolean,
 }
 
 export interface IChatOccupant {
@@ -122,7 +129,7 @@ interface IChatState {
 
   roomNameField: string;
   roomDescField: string;
-  roomPersistent: boolean;
+  // roomPersistent: boolean;
 }
 
 interface IChatProps {
@@ -131,10 +138,6 @@ interface IChatProps {
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
-  private awaitingConfigurationForChatRoom: string = null;
-  private awaitingChatRoomStanza: Strophe.Builder = null;
-  private awaitingNewRoom: IAvailableChatRoomType = null;
-
   constructor(props: IChatProps) {
     super(props);
 
@@ -156,7 +159,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       roomNameField: "",
       roomDescField: "",
-      roomPersistent: false,
+      // roomPersistent: false,
     }
 
     this.toggleControlBox = this.toggleControlBox.bind(this);
@@ -167,11 +170,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.setUserAvailability = this.setUserAvailability.bind(this);
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
     this.updateRoomDescField = this.updateRoomDescField.bind(this);
-    this.toggleRoomPersistent = this.toggleRoomPersistent.bind(this);
+    // this.toggleRoomPersistent = this.toggleRoomPersistent.bind(this);
     this.createAndJoinChatRoom = this.createAndJoinChatRoom.bind(this);
     this.updateChatRoomConfig = this.updateChatRoomConfig.bind(this);
     this.initialize = this.initialize.bind(this);
-    this.onPresenceMessage = this.onPresenceMessage.bind(this);
     this.requestExtraInfoAboutRoom = this.requestExtraInfoAboutRoom.bind(this);
     this.onConnectionStatusChanged = this.onConnectionStatusChanged.bind(this);
   }
@@ -188,11 +190,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
-  public toggleRoomPersistent() {
-    this.setState({
-      roomPersistent: !this.state.roomPersistent,
-    });
-  }
+  // public toggleRoomPersistent() {
+  //   this.setState({
+  //     roomPersistent: !this.state.roomPersistent,
+  //   });
+  // }
 
   public updateChatRoomConfig(index: number, chat: IAvailableChatRoomType) {
     const newRooms = [...this.state.availableMucRooms];
@@ -202,210 +204,38 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
 
-  // Notification handler for Received Private Messages.
-  // Sets privateChatData and openChats states based on received notification.
-  // Private chat window opens when openChats state has correct BareJID stored in it.
-  // PrivateChatData state requires necessary occupant data for the private chat.
-  // async onConverseMessage(data: any) {
-  //   const converseUtils = this.evtConverse.env.utils;
-  //   let type = data.stanza.getAttribute('type');
-
-  //   const { Strophe } = this.evtConverse.env;
-  //   let from = data.stanza.getAttribute('from');
-  //   let bareJIDOfSender = Strophe.getBareJidFromJid(from);
-  //   const isSameUserAsLoggedInUser = bareJIDOfSender === this.converse.bare_jid;
-
-  //   if (
-  //     type !== null &&
-  //     type !== 'groupchat' &&
-  //     from !== null &&
-  //     !converseUtils.isOnlyChatStateNotification(data.stanza) &&
-  //     !converseUtils.isOnlyMessageDeliveryReceipt(data.stanza) &&
-  //     !isSameUserAsLoggedInUser
-  //   ) {
-  //     const newPrivateChatData = [...this.state.privateChatData];
-  //     const newOpenChatsJIDS = [...this.state.openChatsJIDS];
-
-  //     if (!newOpenChatsJIDS.includes(bareJIDOfSender)) {
-  //       const userId: string = data.stanza.getAttribute('from').split('@')[0];
-
-  //       // Fetch message sender's chatSettings
-  //       let chatSettings: any = (await promisify(mApi().chat.settings.read(userId), 'callback')());
-
-  //       // Setup sender's MuikkuNickName
-  //       let muikkuNickName: string = chatSettings.nick;
-
-  //       // Fetch senders user details in case user has not set MuikkuNickName yet
-  //       let muikkuUser: any = (await promisify(mApi().user.users.basicinfo.read(chatSettings.userIdentifier, {}), 'callback')());
-
-  //       // Check whether message sender has setup a nick name, if not we use hes/her real name
-  //       if (!muikkuNickName) {
-  //         muikkuNickName = muikkuUser.firstName + " " + muikkuUser.lastName;
-  //       }
-
-  //       // Gather chatData so it can be used in onOpenPrivateChat method
-  //       let occupant: IChatOccupant = {
-  //         userId,
-  //         muikkuNickName,
-  //         status: '',
-  //         firstName: muikkuUser.firstName,
-  //         lastName: muikkuUser.lastName,
-  //         receivedMessageNotification: true,
-  //       };
-
-  //       // Pushing BareJID to openChatsList and gathered chatData to newprivateChatData
-  //       // Setting states of openChats and privateChatData from previously set values
-  //       newPrivateChatData.push({ occupantBareJID: bareJIDOfSender, occupant });
-  //       newOpenChatsJIDS.push(bareJIDOfSender);
-  //       this.setState({
-  //         privateChatData: newPrivateChatData,
-  //         openChatsJIDS: newOpenChatsJIDS
-  //       });
-  //     }
-  //   }
-  // }
-
-  // Toggle Private Message Window
-  // async toggleJoinLeavePrivateChat(occupant: IChatOccupant) {
-  //   let openChatsList = [...this.state.openChatsJIDS];
-  //   let newPrivateChatData = [...this.state.privateChatData];
-
-  //   // Checking if message receiver is the same user as logged in user
-  //   // and if true we stop right here as you should not be able to send
-  //   // private messages to yourself.
-  //   if (occupant.userId === window.MUIKKU_LOGGED_USER) {
-  //     return;
-  //   } else if (occupant.userId.startsWith("PYRAMUS-STAFF-") || window.MUIKKU_IS_STUDENT === false) {
-  //     let bareoccupantBareJID = occupant.userId.toLowerCase() + "@dev.muikkuverkko.fi";
-
-  //     // Lets check whether private chat window's BareJID exists in openChatsList
-  //     // or not so we know do we close or open the chat window
-  //     if (openChatsList.includes(bareoccupantBareJID)) {
-  //       // Remove the BareJID of the chat window we are closing from openChatsList
-  //       const filteredChats = openChatsList.filter(item => item !== bareoccupantBareJID);
-  //       const filteredChatData = newPrivateChatData.filter((item) => item.occupantBareJID !== bareoccupantBareJID);
-
-  //       // Set filtered openChatsList as filteredChats to this.state.openChats
-  //       this.setState({
-  //         openChatsJIDS: filteredChats,
-  //         privateChatData: filteredChatData,
-  //       })
-
-  //       // Set current openChatList to sessionStorage
-  //       window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
-
-  //     } else {
-  //       // Lets push object to openChatList and set it to openChats state
-  //       openChatsList.push(bareoccupantBareJID);
-  //       newPrivateChatData.push({ occupantBareJID: bareoccupantBareJID, occupant });
-
-  //       this.setState({
-  //         openChatsJIDS: openChatsList,
-  //         privateChatData: newPrivateChatData
-  //       });
-  //     }
-  //   }
-  // }
-
-  // Nickname, persistency, room name and room description for new chat room
-  // parseRoomDataFromEvent(form: HTMLFormElement) {
-  //   let data = new FormData(form);
-  //   let RoomJID = data.get('roomName').toString();
-  //   let RoomPersistency = data.get('persistent');
-  //   let RoomDesc = data.get('roomDesc');
-  //   let RoomName = data.get('roomName');
-
-  //   return {
-  //     'RoomJID': RoomJID,
-  //     'RoomPersistency': RoomPersistency,
-  //     'RoomDesc': RoomDesc,
-  //     'RoomName': RoomName
-  //   }
-  // }
-
-  // // Creating new chat room
-  // // TODO: Need to check if RoomName is mempty and show error notification
   async createAndJoinChatRoom(e: React.FormEvent) {
     e.preventDefault();
 
     // We need to trim and replace white spaces so new room will be created succefully
-    const roomJID = this.state.roomNameField.trim().replace(/\s+/g, '-') + '@conference.' + location.hostname;
     const roomName = this.state.roomNameField;
-    const roomPersistent = this.state.roomPersistent;
     const roomDesc = this.state.roomDescField;
-
-    if (roomJID.startsWith("workspace-")) {
-      console.warn("Creation of workspace- prefixed chat room is forbidden");
-      return;
-    }
 
     if (!this.props.settings.nick) {
       console.warn("Can't create a chat room without a nickname specified");
       return;
     }
 
-    // const { Strophe, $pres, _ } = this.evtConverse.env;
-
-    const occupantBareJID = roomJID + "/" + this.props.settings.nick;
-
-    const presStanza = $pres({
-      from: this.state.connection.jid,
-      to: occupantBareJID,
-    }).c("x", { 'xmlns': Strophe.NS.MUC });
-
-    this.awaitingConfigurationForChatRoom = occupantBareJID;
-    this.awaitingChatRoomStanza = $iq({
-      from: this.state.connection.jid,
-      to: roomJID,
-      type: "set",
-    })
-      .c("query", { xmlns: "http://jabber.org/protocol/muc#owner" })
-      .c("x", {
-        xmlns: "jabber:x:data",
-        type: "submit"
-      }).c("field", {
-        var: "FORM_TYPE"
-      }).c("value", {}, "http://jabber.org/protocol/muc#roomconfig")
-      .up().c("field", {
-        var: "muc#roomconfig_roomname"
-      }).c("value", {}, roomName)
-      .up().c("field", {
-        var: "muc#roomconfig_roomdesc"
-      }).c("value", {}, roomDesc)
-      .up().c("field", {
-        var: "muc#roomconfig_persistentroom"
-      }).c("value", {}, (roomPersistent ? 1 : 0).toString());
-    this.awaitingNewRoom = {
-      roomJID,
-      roomName,
-      roomDesc,
-      roomPersistent,
-    };
-
-    this.state.connection.send(presStanza);
-
-    // const stanza = $pres({
-    //   'from': this.converse.connection.jid,
-    //   'to': occupantBareJID
-    // }).c("x", { 'xmlns': Strophe.NS.MUC })
-    //   .c("history", { 'maxstanzas': this.converse.muc_history_max_stanzas }).up();
-
-    // this.converse.api.send(stanza);
-
-    // this.converse.api.user.status.set('online');
-
-    // const chat = await this.converse.api.rooms.open(roomJID, _.extend({
-    //   'nick': this.state.pyramusUserId,
-    //   'maximize': true,
-    //   'auto_configure': true,
-    //   'publicroom': true,
-    //   'roomconfig': {
-    //     'persistentroom': roomPersistent,
-    //     'roomname': roomName,
-    //     'roomdesc': roomDesc
-    //   }
-    // }), true);
+    try {
+      const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.create({
+        title: roomName,
+        description: roomDesc,
+      }), 'callback')()) as IChatRoomType;
+      const roomJID = chatRoom.name + '@conference.' + location.hostname;
+      this.setState({
+        availableMucRooms: this.state.availableMucRooms.concat([
+          {
+            roomDesc: chatRoom.description,
+            roomName: chatRoom.title,
+            roomJID,
+          },
+        ]),
+      }, this.joinChatRoom.bind(this, roomJID));
+    } catch (err) {
+      // TODO do something about error
+    }
   }
+
   // Toggle states for Control Box window opening/closing
   toggleControlBox() {
     if (this.state.showControlBox) {
@@ -505,41 +335,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.initialize();
     }
   }
-  onPresenceMessage(stanza: Element) {
-    // we are being informed of our own user precense in the chatroom when
-    // we have created a chatroom, we are looking for code 201 in that case
-    // which means it was just created
-    if (
-      this.awaitingConfigurationForChatRoom &&
-      stanza.getAttribute("from") === this.awaitingConfigurationForChatRoom
-    ) {
-      this.state.connection.sendIQ(this.awaitingChatRoomStanza, (answerStanza: Element) => {
-        if (answerStanza.querySelector("error")) {
-          // TODO do something about error https://xmpp.org/extensions/xep-0045.html#createroom-reserved
-        } else {
-          const newAvailableMucRooms = [...this.state.availableMucRooms, this.awaitingNewRoom];
-
-          // we have already made a call to connect because of the pre stanza
-          const newOpenChatsJIDS = [...this.state.openChatsJIDS, this.awaitingNewRoom.roomJID];
-
-          this.setState({
-            availableMucRooms: newAvailableMucRooms.sort((a, b) => a.roomName.toLowerCase().localeCompare(b.roomName.toLowerCase())),
-            showNewRoomForm: false,
-            roomPersistent: false,
-            roomDescField: "",
-            roomNameField: "",
-            openChatsJIDS: newOpenChatsJIDS,
-          });
-
-          this.awaitingNewRoom = null;
-        }
-      });
-      this.awaitingConfigurationForChatRoom = null;
-      this.awaitingChatRoomStanza = null;
-    }
-
-    return true;
-  }
   onConnectionStatusChanged(status: Strophe.Status, condition: string) {
     if (status === Strophe.Status.ATTACHED) {
       // We are atached. Send presence to server so it knows we're online
@@ -566,7 +361,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             roomJID,
             roomName,
             roomDesc: currentRooms[existsAlreadyIndex].roomDesc,
-            roomPersistent: currentRooms[existsAlreadyIndex].roomPersistent,
+            // roomPersistent: currentRooms[existsAlreadyIndex].roomPersistent,
           };
           currentRooms[existsAlreadyIndex] = newReplacement;
         } else {
@@ -574,7 +369,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
             roomJID,
             roomName,
             roomDesc: null,
-            roomPersistent: null,
+            // roomPersistent: null,
           });
         }
       });
@@ -649,8 +444,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.setState({
       connection,
     }, () => {
-      connection.addHandler(this.onPresenceMessage, null, 'presence', null, null, null);
-
       connection.rawInput = function (data) { console.log('RECV: ' + data); };
       connection.rawOutput = function (data) { console.log('SENT: ' + data); };
 
@@ -734,7 +527,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       onChange={this.updateRoomDescField}
                     />
                   </div>
-                  {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                  {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
                     <label className="chat__label">Pysyvä huone:</label>
                     <input
                       className="chat__checkbox"
@@ -743,7 +536,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       checked={this.state.roomPersistent}
                       onChange={this.toggleRoomPersistent}
                     />
-                  </div>}
+                  </div>} */}
                   <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone" />
                 </form>
               </div>
