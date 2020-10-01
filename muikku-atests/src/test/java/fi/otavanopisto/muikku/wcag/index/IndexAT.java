@@ -22,8 +22,7 @@ public class IndexAT extends AbstractWCAGTest {
   @Test
   public void frontpage() {
     navigate("/", false);
-    JSONObject responseJSON = new AXE.Builder(getWebDriver(), scriptUrl).analyze();
-    this.violations = responseJSON.getJSONArray("violations");
+    this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
   }
 
   @Test
@@ -33,20 +32,10 @@ public class IndexAT extends AbstractWCAGTest {
     mockBuilder.addStudent(student).mockLogin(student).build();
     try{
       login();
-      JSONObject responseJSON = new AXE.Builder(getWebDriver(), scriptUrl).analyze();
-      this.violations = responseJSON.getJSONArray("violations");
+      this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
     }finally {
       mockBuilder.wiremockReset();
     }
   }
   
-  @After
-  public void report() {
-    if (violations.length() == 0) {
-      assertTrue("No violations found", true);
-    } else {
-      AXE.writeResults("target/" + testName.getMethodName(), AXE.report(violations));
-      assertTrue(AXE.report(violations), false);
-    }
-  }
 }
