@@ -18,7 +18,7 @@ interface FrontpageOrganizationState {
 
 export default class FrontpageOrganization extends React.Component<FrontpageOrganizationProps, FrontpageOrganizationState> {
   render() {
-    return <section id="organization" className="screen-container__section">
+    return <section id="organization" className="screen-container__section" aria-label={this.props.i18n.text.get('plugin.wcag.frontPageSectionOrganizationLabel')}>
 
       <div className="card card--frontpage-organization">
         <div className="ordered-container ordered-container--frontpage-organization-info">

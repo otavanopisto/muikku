@@ -16,7 +16,7 @@ interface FrontpageStudyingState {
 
 export default class FrontpageStudying extends React.Component<FrontpageStudyingProps, FrontpageStudyingState> {
   render() {
-    return <section id="studying" className="screen-container__section">
+    return <section id="studying" className="screen-container__section" aria-label={this.props.i18n.text.get("plugin.wcag.frontPageSectionStudyingLabel")}>
       <h2 className="screen-container__header">{this.props.i18n.text.get("plugin.sectionTitle.studying")}</h2>
       <div className="ordered-container ordered-container--frontpage-studying">
         <div className="ordered-container__item ordered-container__item--upper-secondary-school">

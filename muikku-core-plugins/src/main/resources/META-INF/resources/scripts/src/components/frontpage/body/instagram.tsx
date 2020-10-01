@@ -20,7 +20,7 @@ export default class FrontpageInstagram extends React.Component<FrontpageInstagr
     const THUMBNAIL_WIDTH = 640;
     const PHOTO_COUNT = 12;
 
-    return <section id="instagram" className="screen-container__section">
+    return <section id="instagram" className="screen-container__section" aria-label={this.props.i18n.text.get("plugin.wcag.frontPageSectionInstagramLabel")}>
       <h2 className="screen-container__header">{this.props.i18n.text.get("plugin.sectionTitle.instagram")}</h2>
       <div className="ordered-container ordered-container--frontpage-instagram">
 

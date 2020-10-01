@@ -15,7 +15,7 @@ interface FrontpageNewsState {
 
 export default class FrontpageNews extends React.Component<FrontpageNewsProps, FrontpageNewsState> {
   render() {
-    return <section id="news" role="feed" className="screen-container__section">
+    return <section id="news" role="feed" className="screen-container__section" aria-label={this.props.i18n.text.get("plugin.wcag.frontPageSectionNewsLabel")}>
       <h2 className="screen-container__header">{this.props.i18n.text.get("plugin.sectionTitle.news")}</h2>
       <div className="ordered-container ordered-container--frontpage-news">
 

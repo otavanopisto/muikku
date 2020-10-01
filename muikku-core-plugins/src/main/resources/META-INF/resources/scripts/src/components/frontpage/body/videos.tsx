@@ -1,8 +1,9 @@
 import * as React from "react";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
+import { i18nType } from "~/reducers/base/i18n";
 
 interface FrontpageVideosProps {
-
+  i18n: i18nType
 }
 
 interface FrontpageVideosState {
@@ -11,7 +12,7 @@ interface FrontpageVideosState {
 
 export default class FrontpageVideos extends React.Component<FrontpageVideosProps, FrontpageVideosState> {
   render() {
-    return <section id="videos" className="screen-container__section">
+    return <section id="videos" className="screen-container__section" aria-label={this.props.i18n.text.get("plugin.wcag.frontPageSectionVideosLabel")}>
       <Carousel>
         <CarouselVideoItem>
           <iframe width="1280" height="720"
