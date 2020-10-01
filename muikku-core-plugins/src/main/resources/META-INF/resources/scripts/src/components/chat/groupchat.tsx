@@ -1,7 +1,9 @@
 /*global converse */
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
-import { IAvailableChatRoomType, IChatOccupant } from './chat';
+import messages from '../communicator/body/application/messages';
+import { IAvailableChatRoomType, IBareMessageType, IChatOccupant } from './chat';
+import { ChatMessage } from './chatMessage';
 
 interface IGroupChatProps {
   chat: IAvailableChatRoomType;
@@ -14,16 +16,6 @@ interface IGroupChatProps {
   presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
 }
 
-interface IBareMessageType {
-  message: string;
-  nick: string;
-  // because of the way this works the pyramus user id might not be ready yet
-  // for a given message and might be null, until the occupants list is ready
-  pyramusUserID: string;
-  timestamp: Date;
-  id: string;
-}
-
 interface IGroupChatOccupant {
   occupant: IChatOccupant;
   affilation: "none" | "owner";
@@ -34,6 +26,8 @@ interface IGroupChatState {
   messages: IBareMessageType[],
   openChatSettings: boolean;
   isStudent: boolean;
+  isOwner: boolean;
+  isModerator: boolean;
   showRoomInfo: boolean;
   minimized: boolean;
   occupants: IGroupChatOccupant[];
@@ -59,8 +53,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       messages: [],
       openChatSettings: false,
       isStudent: window.MUIKKU_IS_STUDENT,
+      isOwner: false,
+      isModerator: false,
       showRoomInfo: false,
-      minimized: false,
+      minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.chat.roomJID),
       occupants: [],
       showOccupantsList: false,
 
@@ -108,8 +104,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
     this.setState({
       currentMessageToBeSent: "",
-    });
-    this.scrollToBottom.bind(this, "smooth");
+    }, this.scrollToBottom.bind(this, "smooth"));
   }
 
   // Set chat room configurations
@@ -462,39 +457,18 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   // Chat room window minimizing toggle
   toggleMinimizeChats() {
     const roomJID = this.props.chat.roomJID;
-    // let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
+    let minimizedRoomList: string[] = JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]");
+    const newMinimized = !this.state.minimized;
+    this.setState({
+      minimized: newMinimized,
+    });
+    if (newMinimized) {
+      minimizedRoomList.push(roomJID);
+    } else {
+      minimizedRoomList = minimizedRoomList.filter((r) => r !== roomJID);
+    }
 
-    // // Check if chat room window is not mimimized and then mimimized it
-    // if (this.state.minimized === false) {
-    //   this.setState({
-    //     minimized: true
-    //   });
-
-    //   // Update minimizedChats state and corresponding sessionStorage key
-    //   if (!minimizedRoomList.includes(roomJID)) {
-    //     minimizedRoomList.push(roomJID);
-    //     this.setState({
-    //       minimizedChats: minimizedRoomList
-    //     });
-    //     window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
-    //   }
-    //   // If chat room window is mimimized then open it
-    // } else {
-    //   this.setState({
-    //     minimized: false
-    //   });
-
-    //   // Update minimizedChats state and corresponding sessionStorage key
-    //   if (minimizedRoomList.includes(roomJID)) {
-    //     const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJID);
-    //     this.setState({
-    //       minimizedChats: filteredRooms
-    //     });
-    //     window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredRooms));
-    //   }
-    //   // Trigger openMucConversation() to load chat room messages
-    //   this.openMucConversation(roomJID);
-    // }
+    window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
   }
   async toggleOccupantsList() {
     this.setState({
@@ -586,12 +560,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         id,
         timestamp: date,
         pyramusUserID,
+        isSelf: pyramusUserID === this.props.pyramusUserID,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
       this.setState({
         messages: newMessagesList,
-      });
+      }, this.scrollToBottom.bind(this, "smooth"));
     }
 
     return true;
@@ -620,16 +595,25 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         isSelf: toBare === this.props.connection.jid,
         precense,
         userId,
+        isStaff: toBare.startsWith("muikku-staff"),
       },
       affilation,
       role,
     };
+
+    if (groupOccupant.occupant.isSelf) {
+      this.setState({
+        isOwner: groupOccupant.affilation === "owner",
+        isModerator: groupOccupant.role === "moderator" || groupOccupant.affilation === "owner",
+      });
+    }
 
     const newChatMessages = this.state.messages.map((m) => {
       if (m.nick === groupOccupant.occupant.nick && !m.pyramusUserID) {
         return {
           ...m,
           pyramusUserID: groupOccupant.occupant.userId,
+          isSelf: groupOccupant.occupant.userId === this.props.pyramusUserID,
         };
       }
 
@@ -709,6 +693,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   render() {
     let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-") ? "workspace" : "other";
 
+    const staffOccupants = this.state.occupants.filter((o) => o.occupant.isStaff);
+    const studentOccupants = this.state.occupants.filter((o) => !o.occupant.isStaff);
+
     return (
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
@@ -723,7 +710,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 <div className="chat__panel-header-title">{this.props.chat.roomName}</div>
                 <div onClick={this.toggleOccupantsList} className="chat__button chat__button--occupants icon-users"></div>
                 <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
-                {(!this.state.isStudent) && <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--room-settings icon-cogs"></div>}
+                {this.state.isOwner ? <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--room-settings icon-cogs"></div> : null}
                 <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
               </div>
 
@@ -760,42 +747,22 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
-                  {/* {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
-                    groupMessage={groupMessage} />)} */}
-                  {this.state.messages.map((m, i) => (
-                    <div style={{ width: "100%" }} key={i}>
-                      <div>{m.nick}</div>
-                      <div>{m.pyramusUserID}</div>
-                      <div>{m.message}</div>
-                      <div>{m.timestamp.toJSON()}</div>
-                    </div>
-                  ))}
+                  {this.state.messages.map((message) => <ChatMessage key={message.id} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
+                    messsage={message} canDelete={this.state.isModerator || message.isSelf}/>)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
-                    {this.state.occupants.map((o) => {
-                      return (
-                        <div style={{border: "solid 1px red"}} key={o.occupant.userId}>
-                          <div>{o.affilation}</div>
-                          <div>{o.role}</div>
-                          <div>{o.occupant.nick}</div>
-                          <div>{o.occupant.precense}</div>
-                          <div>{o.occupant.nick}</div>
-                          <div>{o.occupant.userId}</div>
-                        </div>
-                      )
-                    })}
-                    {/* {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
-                    {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, staffOccupant)} key={i}>
-                        <span className={"chat__online-indicator chat__occupant-" + staffOccupant.status}></span>{staffOccupant.MuikkuNickName}</div>)} */}
+                    {staffOccupants.length > 0 ? "Henkilökunta" : ""}
+                    {staffOccupants.map((staffOccupant) =>
+                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant)} key={staffOccupant.occupant.userId}>
+                        <span className={"chat__online-indicator chat__occupant-" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
-                    {/* {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
-                    {this.state.studentOccupants.map((studentOccupant: any, i: any) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant)} key={i}>
-                        <span className={"chat__online-indicator chat__occupant-" + studentOccupant.status}></span>{studentOccupant.MuikkuNickName}</div>)} */}
+                    {studentOccupants.length > 0 ? "Oppilaat" : ""}
+                    {studentOccupants.map((studentOccupant) =>
+                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant)} key={studentOccupant.occupant.userId}>
+                        <span className={"chat__online-indicator chat__occupant-" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
                   </div>
                 </div>}
               </div>
