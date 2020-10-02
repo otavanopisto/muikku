@@ -272,6 +272,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
         (window as any).CKEDITOR.disableAutoInline = true;
       });
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -297,6 +299,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.loadWorkspaceHelpData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}
@@ -322,6 +326,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         let currentLocation = window.location.hash.replace("#","").split("/");
         this.loadWorkspaceDiscussionData(currentLocation);
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceDiscussionBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -341,6 +347,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       }) as Action);
 
       this.loadWorkspaceAnnouncementsData(parseInt(window.location.hash.replace("#","")));
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <WorkspaceAnnouncementsBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
@@ -364,6 +372,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       } else {
         this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <WorkspaceAnnouncerBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
