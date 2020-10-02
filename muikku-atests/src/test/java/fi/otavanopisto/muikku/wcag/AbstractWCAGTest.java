@@ -15,7 +15,6 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 public class AbstractWCAGTest extends AbstractUITest {
 
   protected static final URL scriptUrl = AbstractWCAGTest.class.getResource("/axe.min.js");
-  protected JSONArray violations;
   
   @Before
   public void setUp() {
@@ -25,16 +24,20 @@ public class AbstractWCAGTest extends AbstractUITest {
   
   @After
   public void report() {
-    if (violations.length() == 0) {
-      assertTrue("No violations found", true);
-    } else {
-      AXE.writeResults("target/" + testName.getMethodName(), AXE.report(violations));
-      assertTrue(AXE.report(violations), false);
+    if (this.violations != null) {
+      if (this.violations.length() == 0) {
+        assertTrue("No violations found", true);
+      } else {
+        AXE.writeResults("target/" + testName.getMethodName(), AXE.report(this.violations));
+        assertTrue(AXE.report(this.violations), false);
+      }
     }
   }
 
   protected void testAccessibility() {
     this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
   }
+
+  protected JSONArray violations;
   
 }
