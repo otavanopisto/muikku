@@ -18,7 +18,6 @@ public class AbstractWCAGTest extends AbstractUITest {
   
   @Before
   public void setUp() {
-    // ChromeDriver needed to test for Shadow DOM testing support
     setWebDriver(createLocalDriver());
   }
   
