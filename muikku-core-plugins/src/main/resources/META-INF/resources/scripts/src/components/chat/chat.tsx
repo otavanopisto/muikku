@@ -9,7 +9,7 @@ import { Groupchat } from './groupchat';
 import { UserChatSettingsType } from '~/reducers/main-function/user-index';
 import promisify from "~/util/promisify";
 
-interface IChatRoomType {
+export interface IChatRoomType {
   name: string;
   title: string;
   description: string;
@@ -466,9 +466,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
     return (
       <div className="chat">
         {/* Chat bubble */}
-        <div onClick={this.toggleControlBox} className="chat__bubble">
+        {this.state.showControlBox ? null : <div onClick={this.toggleControlBox} className="chat__bubble">
           <span className="icon-chat"></span>
-        </div>
+        </div>}
 
         {/* Chat controlbox */}
         {this.state.showControlBox && <div className="chat__panel chat__panel--controlbox">
@@ -549,7 +549,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               presence={this.state.selectedUserPresence}
               connection={this.state.connection}
               nick={this.props.settings.nick}
-              key={i}
+              key={chat.roomJID}
               joinPrivateChat={() => null}
               leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
               chat={chat}

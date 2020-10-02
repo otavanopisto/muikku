@@ -1,8 +1,10 @@
 /*global converse */
 import * as React from 'react'
+import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
+import promisify from '~/util/promisify';
 import messages from '../communicator/body/application/messages';
-import { IAvailableChatRoomType, IBareMessageType, IChatOccupant } from './chat';
+import { IAvailableChatRoomType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
 import { ChatMessage } from './chatMessage';
 
 interface IGroupChatProps {
@@ -36,6 +38,8 @@ interface IGroupChatState {
   roomDescField: string;
   // roomPersistent: boolean;
 
+  updateFailed: boolean;
+
   currentMessageToBeSent: string;
 }
 
@@ -63,6 +67,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       roomDescField: this.props.chat.roomDesc,
       // roomPersistent: this.props.chat.roomPersistent,
 
+      updateFailed: false,
+
       currentMessageToBeSent: "",
     }
 
@@ -83,6 +89,20 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.onPresence = this.onPresence.bind(this);
     this.sendRoomPrescense = this.sendRoomPrescense.bind(this);
     this.onEnterPress = this.onEnterPress.bind(this);
+    this.updateRoomNameField = this.updateRoomNameField.bind(this);
+    this.updateRoomDescField = this.updateRoomDescField.bind(this)
+  }
+
+  updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      roomNameField: e.target.value,
+    });
+  }
+
+  updateRoomDescField(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      roomDescField: e.target.value,
+    });
   }
 
   setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -113,58 +133,36 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   async setChatroomConfiguration(event: React.FormEvent) {
     event.preventDefault();
 
-    // let roomName = this.state.roomNameField;
-    // let roomDesc = this.state.roomDescField;
-    // let roomPersistency = this.state.roomPersistent;
+    const chat: IAvailableChatRoomType = {
+      ...this.props.chat,
+      roomName: this.state.roomNameField,
+      roomDesc: this.state.roomDescField,
+    };
 
-    // const { $build, _ } = this.props.evtConverse.env;
+    try {
+      const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.create({
+        title: chat.roomName,
+        description: chat.roomDesc,
+        name: chat.roomJID,
+      }), 'callback')()) as IChatRoomType;
 
-    // const stanza = await this.getChatroomConfiguration();
-
-    // const newroomConfig: any = [];
-    // const fields = stanza.querySelectorAll('field');
-
-    // // Go through chat room configuration fields and update when necessary
-    // _.each(fields, (field: any) => {
-    //   const fieldname = field.getAttribute('var').replace('muc#roomConfig_', ''),
-    //     type = field.getAttribute('type');
-    //   let value;
-
-    //   // // Check if fieldname is part of roomConfig in hand
-    //   // if (fieldname in roomConfig) {
-    //   //   switch (type) {
-    //   //     case 'boolean':
-    //   //       value = roomConfig[fieldname] ? 1 : 0;
-    //   //       break;
-    //   //     case 'list-multi':
-    //   //       // TODO: we don't yet handle "list-multi" types
-    //   //       value = field.innerHTML;
-    //   //       break;
-
-    //   //     default:
-    //   //       value = roomConfig[fieldname];
-    //   //   }
-    //   //   field.innerHTML = $build('value').t(value);
-    //   // }
-    //   // Set updated field values and pass them to sendChatroomConfiguration()
-    //   newroomConfig.push(field);
-    // });
-
-    // if (await this.sendChatroomConfiguration(newroomConfig)) {
-    //   // Update necessary chat room states
-    //   this.props.onUpdateChatRoomConfig({
-    //     roomName,
-    //     roomDesc,
-    //     roomPersistent: !!roomPersistency,
-    //     chatObject: this.props.chat.chatObject,
-    //     roomJID: this.props.chat.roomJID,
-    //   });
-    // };
+      this.setState({
+        updateFailed: false,
+        openChatSettings: false
+      });
+  
+      this.props.onUpdateChatRoomConfig(chat);
+    } catch {
+      this.setState({
+        updateFailed: true,
+      });
+    }
   }
 
   public toggleChatRoomSettings() {
     this.setState({
       openChatSettings: !this.state.openChatSettings,
+      updateFailed: false,
     });
   }
 
@@ -736,26 +734,23 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <form onSubmit={this.setChatroomConfiguration}>
                     <div className="chat__subpanel-row">
                       <label className="chat__label">Huoneen nimi: </label>
-                      <input className="chat__textfield" name="newroomName" defaultValue={this.props.chat.roomName} type="text"></input>
+                      <input className="chat__textfield" name="newroomName" value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
                     </div>
                     <div className="chat__subpanel-row">
                       <label className="chat__label">Huoneen kuvaus: </label>
-                      <textarea className="chat__memofield" name="newroomDescription" defaultValue={this.props.chat.roomDesc}></textarea>
+                      <textarea className="chat__memofield" name="newroomDescription" value={this.state.roomDescField} onChange={this.updateRoomDescField}></textarea>
                     </div>
-                    {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                    {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
                       <label className="chat__label">Pysyvä huone: </label>
                       <input className="chat__checkbox" type="checkbox" name="persistent"></input>
-                    </div>}
+                    </div>} */}
                     <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
                   </form>
-                </div>
 
-                {/* {this.state.isLastRoomConfigSavedSuccesfully !== null
-                  ? (
-                    <div>
-                      <p>{this.state.isLastRoomConfigSavedSuccesfully ? "SUCCESS" : "FAIL"}</p>
-                    </div>
-                  ) : null} */}
+                  <div>
+                    {this.state.updateFailed ? "failed" : null}
+                  </div>
+                </div>
               </div>}
 
               <div className="chat__panel-body chat__panel-body--chatroom">
