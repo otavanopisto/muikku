@@ -772,7 +772,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                         <span className={"chat__online-indicator chat__occupant-" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
-                    {studentOccupants.length > 0 ? "Oppilaat" : ""}
+                    {studentOccupants.length > 0 ? "Opiskelijat" : ""}
                     {studentOccupants.map((studentOccupant) =>
                       <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant)} key={studentOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__occupant-" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
