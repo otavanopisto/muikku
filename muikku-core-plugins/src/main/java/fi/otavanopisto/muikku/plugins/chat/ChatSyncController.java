@@ -192,6 +192,18 @@ public class ChatSyncController {
     }
     return name;
   }
+  
+  public void updatePublicChatRoom(String name, String title, String description) {
+    RestApiClient client = getClient();
+    if (client != null) {
+      MUCRoomEntity mucRoomEntity = client.getChatRoom(name);
+      if (mucRoomEntity != null) {
+        mucRoomEntity.setNaturalName(title);
+        mucRoomEntity.setDescription(description);
+        client.updateChatRoom(mucRoomEntity);
+      }
+    }
+  }
 
   public void removeChatRoomMembership(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity, WorkspaceEntity workspaceEntity) {
     RestApiClient client = getClient();

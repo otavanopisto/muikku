@@ -275,6 +275,36 @@ public class ChatRESTService extends PluginRESTService {
   }
 
   @PUT
+  @Path("/publicRoom")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updatePublicChatRoom(ChatRoomRESTModel payload) {
+
+    if (isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Payload validation
+    
+    String name = StringUtils.trim(payload.getName());
+    if (StringUtils.isEmpty(name)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing name").build();
+    }
+    String title = StringUtils.trim(payload.getTitle());
+    if (StringUtils.isEmpty(title)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
+    }
+    String description = StringUtils.trim(payload.getDescription());
+    if (StringUtils.isEmpty(description)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing description").build();
+    }
+    
+    // Room update
+    
+    chatSyncController.updatePublicChatRoom(name, title, description);
+    return Response.ok().entity(payload).build();
+  }
+
+  @PUT
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateUserChatSettings(ChatSettingsRESTModel payload) {

@@ -13,6 +13,7 @@ interface IGroupChatProps {
   leaveChatRoom: () => void;
   joinPrivateChat: (occupant: IChatOccupant) => void;
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
+  requestExtraInfoAboutRoom: () => void;
   connection: Strophe.Connection;
   presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
 }
@@ -140,11 +141,14 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     };
 
     try {
-      const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.create({
+      const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.update({
         title: chat.roomName,
         description: chat.roomDesc,
         name: chat.roomJID,
       }), 'callback')()) as IChatRoomType;
+
+      chat.roomName = chatRoom.title;
+      chat.roomDesc = chatRoom.description;
 
       this.setState({
         updateFailed: false,
@@ -164,6 +168,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       openChatSettings: !this.state.openChatSettings,
       updateFailed: false,
     });
+    this.props.requestExtraInfoAboutRoom();
   }
 
   // Open chat room window
@@ -494,12 +499,12 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     if (prevProps.chat && this.props.chat) {
       if (prevProps.chat.roomName !== this.props.chat.roomName) {
         this.setState({
-          roomNameField: this.props.chat.roomName,
+          roomNameField: this.props.chat.roomName || "",
         });
       }
       if (prevProps.chat.roomDesc !== this.props.chat.roomDesc) {
         this.setState({
-          roomDescField: this.props.chat.roomDesc,
+          roomDescField: this.props.chat.roomDesc || "",
         });
       }
       // if (prevProps.chat.roomPersistent !== this.props.chat.roomPersistent) {
@@ -584,7 +589,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const precense: any = show ? show.textContent : "chat";
 
     const item = stanza.querySelector("item");
-    const userJIDBare = item.getAttribute("jid");
+    const userJIDBare = item.getAttribute("jid").split("/")[0];
     const userId = userJIDBare.split("@")[0];
     const affilation: any = item.getAttribute("affiliation");
     const role: any = item.getAttribute("role");

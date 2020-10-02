@@ -546,6 +546,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.includes(chat.roomJID) ?
             <Groupchat
+              requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)}
               presence={this.state.selectedUserPresence}
               connection={this.state.connection}
               nick={this.props.settings.nick}
