@@ -144,7 +144,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.update({
         title: chat.roomName,
         description: chat.roomDesc,
-        name: chat.roomJID,
+        name: Strophe.getNodeFromJid(chat.roomJID),
       }), 'callback')()) as IChatRoomType;
 
       chat.roomName = chatRoom.title;
