@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.chat;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -103,7 +104,9 @@ public class ChatSyncController {
           SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
           EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserIdentifier);
           if (role.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR || role.getArchetype() == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER) {
-            List<MUCRoomEntity> rooms = client.getChatRooms().getMucRooms();
+            Map<String, String> params = new HashMap<>();
+            params.put("type", "all");
+            List<MUCRoomEntity> rooms = client.getChatRooms(params).getMucRooms();
             for (MUCRoomEntity room : rooms) {
               ensureUserHasOwnership(client, room, muikkuUserEntity);
             }
@@ -183,38 +186,8 @@ public class ChatSyncController {
       }
         
       // Room created, add caller + all admins and study programme leaders as its owners
-      ensureUserHasOwnership(client, mucRoomEntity, owner);      
-      SearchProvider searchProvider = getSearchProvider();
-      if (searchProvider == null) {
-        logger.severe("Room creation successful, ElasticSearch missing");
-        return proposedName;
-      }
-      List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
-      Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
-      SearchResult result = searchProvider.searchUsers(
-          organizations,
-          null,                     // searchString 
-          null,                     // fields 
-          roleArchetypeFilter, 
-          null,                     // userGroupFilters 
-          null,                     // workspaceFilters 
-          null,                     // userIdentifiers 
-          false,                    // includeInactiveStudents
-          false,                    // includeHidden
-          true,                     // onlyDefaultUsers
-          0, 
-          Integer.MAX_VALUE);
-      List<Map<String, Object>> results = result.getResults();
-      for (Map<String, Object> o : results) {
-        Long userEntityId = Long.valueOf(o.get("userEntityId").toString());
-        fi.otavanopisto.muikku.model.users.UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-        UserChatSettings userChatSetting = chatController.findUserChatSettings(userEntity);
-        if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
-          ensureUserHasOwnership(client, mucRoomEntity, userEntity);
-        }
-      }
+      ensureUserHasOwnership(client, mucRoomEntity, owner);
+      addAdminsAsRoomOwners(client, mucRoomEntity);
       return proposedName;
     }
     return name;
@@ -260,9 +233,10 @@ public class ChatSyncController {
           fi.otavanopisto.muikku.model.users.UserEntity userEntity = workspaceStaffMember.getUserSchoolDataIdentifier().getUserEntity();
           UserChatSettings userChatSetting = chatController.findUserChatSettings(userEntity);
           if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
-            ensureUserHasMembership(client, workspaceEntity, userEntity);
+            ensureUserHasOwnership(client, mucRoomEntity, userEntity);
           }
         }
+        addAdminsAsRoomOwners(client, mucRoomEntity);
       }
       //workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
     }
@@ -408,6 +382,40 @@ public class ChatSyncController {
   private boolean isStudent(fi.otavanopisto.muikku.model.users.UserEntity userEntity) {
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
     return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
+  }
+  
+  private void addAdminsAsRoomOwners(RestApiClient client, MUCRoomEntity mucRoomEntity) {
+    SearchProvider searchProvider = getSearchProvider();
+    if (searchProvider == null) {
+      logger.severe("ElasticSearch missing");
+      return;
+    }
+    List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+    Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
+    roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
+    roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+    SearchResult result = searchProvider.searchUsers(
+        organizations,
+        null,                     // searchString 
+        null,                     // fields 
+        roleArchetypeFilter, 
+        null,                     // userGroupFilters 
+        null,                     // workspaceFilters 
+        null,                     // userIdentifiers 
+        false,                    // includeInactiveStudents
+        false,                    // includeHidden
+        true,                     // onlyDefaultUsers
+        0, 
+        Integer.MAX_VALUE);
+    List<Map<String, Object>> results = result.getResults();
+    for (Map<String, Object> o : results) {
+      Long userEntityId = Long.valueOf(o.get("userEntityId").toString());
+      fi.otavanopisto.muikku.model.users.UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      UserChatSettings userChatSetting = chatController.findUserChatSettings(userEntity);
+      if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
+        ensureUserHasOwnership(client, mucRoomEntity, userEntity);
+      }
+    }
   }
 
   private String generateName(String title) {
