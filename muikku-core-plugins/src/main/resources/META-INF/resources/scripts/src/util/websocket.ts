@@ -225,7 +225,7 @@ export default class MuikkuWebsocket {
     this.socketOpen = true;
     this.trigger("webSocketConnected");
 
-	// If we have queued messages, send them now
+    // If we have queued messages, send them now
     while (this.socketOpen && this.messagesPending.length) {
       let message = this.messagesPending.shift();
       this.sendMessage(message.eventType, message.data, message.onSent);
@@ -320,7 +320,7 @@ export default class MuikkuWebsocket {
   discardCurrentWebSocket() {
     // Inform everyone we're no longer open for business...
     this.socketOpen = false;
-    
+
     // ...and stop pinging...
     clearInterval(this.pingHandler);
     this.waitingPong = false;
