@@ -92,7 +92,7 @@ export default class MuikkuWebsocket {
       this.trigger("webSocketDesync");
     }
   }
-  
+
   queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
     let message = {
@@ -108,7 +108,7 @@ export default class MuikkuWebsocket {
       this.messagesPending.push(message);
     }
   }
-  
+
   addEventListener(event: string, actionCreator: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
@@ -118,14 +118,14 @@ export default class MuikkuWebsocket {
     this.listeners[event] = evtListeners;
     return this;
   }
-  
+
   removeEventCallback(event: string, actionCreator: Function){
     let index = this.listeners[event].callbacks.indexOf(actionCreator);
     if (index !== -1){
       this.listeners[event].callbacks.splice(index, 1);
     }
   }
-  
+
   addEventCallback(event: string, action: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
@@ -135,12 +135,12 @@ export default class MuikkuWebsocket {
     this.listeners[event] = evtListeners;
     return this;
   }
-  
+
   restoreEventListeners(){
     this.listeners = this.baseListeners;
     return this;
   }
-  
+
   trigger(event: any, data: any=null){
     this.store.dispatch({
       'type': 'WEBSOCKET_EVENT',
@@ -224,13 +224,13 @@ export default class MuikkuWebsocket {
     // Tell the world we're in business
     this.socketOpen = true;
     this.trigger("webSocketConnected");
-	
+
 	// If we have queued messages, send them now
     while (this.socketOpen && this.messagesPending.length) {
       let message = this.messagesPending.shift();
       this.sendMessage(message.eventType, message.data, message.onSent);
     }
-    
+
     // Start pinging to ensure connection stays alive
     this.startPinging();
   }
@@ -275,7 +275,7 @@ export default class MuikkuWebsocket {
       if (!this.socketOpen || this.reconnecting) {
         return;
       }
-      
+
       if (!this.waitingPong) {
         // Ping pong match start
         this.waitingPong = true;
@@ -316,7 +316,7 @@ export default class MuikkuWebsocket {
       });
     }, this.options.reconnectInterval);
   }
-  
+
   discardCurrentWebSocket() {
     // Inform everyone we're no longer open for business...
     this.socketOpen = false;
@@ -325,10 +325,10 @@ export default class MuikkuWebsocket {
     clearInterval(this.pingHandler);
     this.waitingPong = false;
     this.gotPong = false;
-    
+
     // ...and try to get rid of the current websocket
-    try {
-      if (this.webSocket) {
+    if (this.webSocket) {
+      try {
         this.webSocket.onmessage = ()=>{};
         this.webSocket.onerror = ()=>{};
         this.webSocket.onclose = ()=>{};
@@ -336,9 +336,9 @@ export default class MuikkuWebsocket {
         this.webSocket.close();
         this.webSocket = null;
       }
-    }
-    catch (e) {
-      // Ignore exceptions related to discarding a WebSocket
+      catch (e) {
+        // Ignore exceptions related to discarding a WebSocket
+      }
     }
   }
 
