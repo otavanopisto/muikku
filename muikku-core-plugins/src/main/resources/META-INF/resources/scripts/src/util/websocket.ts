@@ -66,7 +66,7 @@ export default class MuikkuWebsocket {
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
-  
+
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     if (this.socketOpen) {
       try {
