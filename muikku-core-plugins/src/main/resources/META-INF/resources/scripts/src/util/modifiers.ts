@@ -268,6 +268,8 @@ const translations:any = {
   "scrolling": "scrolling",
   "frameborder": "frameBorder",
   "allowfullscreen": "allowFullScreen",
+  "allow": "allow",
+  "loading": "loading",
 
   // Table specefic
   "cellspacing": "cellSpacing", // Deprecated, Table
