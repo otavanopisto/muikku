@@ -300,10 +300,10 @@ export default class MuikkuWebsocket {
     if (this.reconnecting) {
       return;
     }
-    
+
     // Ditch the old websocket and anything related to it
     this.discardCurrentWebSocket();
-    
+
     // Try to re-establish connection every two seconds (onWebSocketConnected will eventually clear us)    
     this.reconnectHandler = setInterval(()=>{
       this.getTicket((ticket: any)=>{
@@ -326,19 +326,14 @@ export default class MuikkuWebsocket {
     this.waitingPong = false;
     this.gotPong = false;
 
-    // ...and try to get rid of the current websocket
+    // ...and get rid of the current websocket
     if (this.webSocket) {
-      try {
-        this.webSocket.onmessage = ()=>{};
-        this.webSocket.onerror = ()=>{};
-        this.webSocket.onclose = ()=>{};
-        this.webSocket.onopen = ()=>{};
-        this.webSocket.close();
-        this.webSocket = null;
-      }
-      catch (e) {
-        // Ignore exceptions related to discarding a WebSocket
-      }
+      this.webSocket.onmessage = ()=>{};
+      this.webSocket.onerror = ()=>{};
+      this.webSocket.onclose = ()=>{};
+      this.webSocket.onopen = ()=>{};
+      this.webSocket.close();
+      this.webSocket = null;
     }
   }
 
