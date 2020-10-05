@@ -289,7 +289,7 @@ export default class MuikkuWebsocket {
         this.sendMessage("ping:ping", {});
       }
       else {
-        // Didn't get a pong to our latest ping in five seconds, reconnect 
+        // Didn't get a pong to our latest ping in five seconds, reconnect
         this.reconnect();
       }
     }, this.options.pingInterval);
@@ -304,7 +304,7 @@ export default class MuikkuWebsocket {
     // Ditch the old websocket and anything related to it
     this.discardCurrentWebSocket();
 
-    // Try to re-establish connection every two seconds (onWebSocketConnected will eventually clear us)    
+    // Try to re-establish connection every two seconds (onWebSocketConnected will eventually clear us)
     this.reconnectHandler = setInterval(()=>{
       this.getTicket((ticket: any)=>{
         if (this.ticket) {
@@ -328,12 +328,18 @@ export default class MuikkuWebsocket {
 
     // ...and get rid of the current websocket
     if (this.webSocket) {
-      this.webSocket.onmessage = ()=>{};
-      this.webSocket.onerror = ()=>{};
-      this.webSocket.onclose = ()=>{};
-      this.webSocket.onopen = ()=>{};
-      this.webSocket.close();
-      this.webSocket = null;
+      try {
+        this.webSocket.onmessage = ()=>{};
+        this.webSocket.onerror = ()=>{};
+        this.webSocket.onclose = ()=>{};
+        this.webSocket.onopen = ()=>{};
+        this.webSocket.close();
+        this.webSocket = null;
+      }
+      catch (e) {
+        // Ignore exceptions related to discarding a WebSocket
+        this.webSocket = null;
+      }
     }
   }
 
