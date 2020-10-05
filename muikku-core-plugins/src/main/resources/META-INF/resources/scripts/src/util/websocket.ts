@@ -319,6 +319,7 @@ export default class MuikkuWebsocket {
 
   discardCurrentWebSocket() {
     // Inform everyone we're no longer open for business...
+    let wasOpen = this.socketOpen;
     this.socketOpen = false;
 
     // ...and stop pinging...
@@ -328,18 +329,19 @@ export default class MuikkuWebsocket {
 
     // ...and get rid of the current websocket
     if (this.webSocket) {
-      try {
-        this.webSocket.onmessage = ()=>{};
-        this.webSocket.onerror = ()=>{};
-        this.webSocket.onclose = ()=>{};
-        this.webSocket.onopen = ()=>{};
-        this.webSocket.close();
-        this.webSocket = null;
+      this.webSocket.onmessage = null;
+      this.webSocket.onerror = null;
+      this.webSocket.onclose = null;
+      this.webSocket.onopen = null;
+      if (wasOpen) {
+        try {
+          this.webSocket.close();
+        }
+        catch (e) {
+          // Ignore exceptions related to closing a WebSocket
+        }
       }
-      catch (e) {
-        // Ignore exceptions related to discarding a WebSocket
-        this.webSocket = null;
-      }
+      this.webSocket = null;
     }
   }
 
