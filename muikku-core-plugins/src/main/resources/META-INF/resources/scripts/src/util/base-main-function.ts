@@ -41,6 +41,10 @@ export default function(store: Store<StateType>, options: {
 
   let websocket = new Websocket(store, actionsAndCallbacks);
 
+  if (state.status.isActiveUser) {
+    getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
+  }
+
   $.ajax({type:"HEAD", url: `/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
     store.dispatch(<Action>updateStatusHasImage(true));
   });
