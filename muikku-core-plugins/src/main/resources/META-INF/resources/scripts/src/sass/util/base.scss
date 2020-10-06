@@ -20,6 +20,10 @@ body {
   overflow-y: auto;
 }
 
+body.using-mouse :focus {
+  outline: none;
+}
+
 ul,
 ol {
   list-style-type: none;

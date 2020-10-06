@@ -61,7 +61,6 @@ select,
 option,
 textarea {
   @include text;
-  outline: none;
 }
 
 fieldset {
@@ -76,4 +75,3 @@ fieldset {
 legend {
   font-weight: 600;
 }
-

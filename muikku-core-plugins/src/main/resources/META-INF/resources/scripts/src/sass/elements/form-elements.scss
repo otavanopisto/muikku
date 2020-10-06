@@ -187,7 +187,6 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   height: 2.25rem;
-  outline: none;
   padding: 0 10px;
   resize: none;
 
@@ -286,7 +285,6 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   height: 2.25rem;
-  outline: none;
   padding: 0 25px 0 10px;
 
   @include breakpoint($breakpoint-pad) {

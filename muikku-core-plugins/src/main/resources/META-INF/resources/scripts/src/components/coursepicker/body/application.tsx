@@ -47,9 +47,9 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     let title = this.props.i18n.text.get('plugin.coursepicker.pageTitle')
     let toolbar = <Toolbar/>
     let primaryOption = <div className="form-element form-element--main-action">
-
+      <label htmlFor="select-courses" className="visually-hidden">{this.props.i18n.text.get('plugin.coursepicker.select.label')}</label>
       {this.props.status.loggedIn ?
-      <select className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+        <select id="select-courses" className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
         {this.props.workspaces.availableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
           if (this.props.status.isStudent && filter === "AS_TEACHER"){
             return false
@@ -58,7 +58,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
         })}
       </select>
       :
-      <select className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select>
+        <select id="select-courses" className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select>
       }
     </div>
     return (<div className="application-panel-wrapper">

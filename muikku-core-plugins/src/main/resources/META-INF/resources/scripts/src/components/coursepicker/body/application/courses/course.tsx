@@ -8,6 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/wcag.scss';
 
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
@@ -41,7 +42,7 @@ class Course extends React.Component<CourseProps, CourseState>{
   }
   render(){
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
-      <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
+      <ApplicationListItemHeader className="application-list__item-header--course" tabIndex={0} onClick={this.toggleExpanded}>
         <span className="application-list__header-icon icon-books"></span>
         <span className="application-list__header-primary">{this.props.workspace.name} {this.props.workspace.nameExtension ? "(" + this.props.workspace.nameExtension + ")" : null}</span>
         {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ? <span className="application-list__fee-indicatoricon-coin-euro icon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
@@ -53,13 +54,13 @@ class Course extends React.Component<CourseProps, CourseState>{
             <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.workspace.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
-            <Button buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}>
+            <Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}>
               {this.props.workspace.isCourseMember ?
-               this.props.i18n.text.get("plugin.coursepicker.course.goto") :
-               this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
+                this.props.i18n.text.get("plugin.coursepicker.course.goto"):
+                this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Button>
             {this.props.workspace.canSignup && this.props.status.loggedIn ?
-              <WorkspaceSignupDialog workspace={this.props.workspace}><Button buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
+              <WorkspaceSignupDialog workspace={this.props.workspace}><Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
                 {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
               </Button></WorkspaceSignupDialog> : null}
           </ApplicationListItemFooter>
