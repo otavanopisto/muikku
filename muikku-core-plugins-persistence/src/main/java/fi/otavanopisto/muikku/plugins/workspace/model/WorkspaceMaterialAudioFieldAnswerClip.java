@@ -70,9 +70,6 @@ public class WorkspaceMaterialAudioFieldAnswerClip {
   @Lob
   private byte[] content;
   
-  @NotNull
-  @NotEmpty
-  @Column (nullable = false)
   private String contentType;
   
   private String fileName;
