@@ -6,19 +6,15 @@ export test_suite=false
 export deploy_snapshot=false
 export deploy_release=false
 
-if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "devel" && $it_profile != "wcag" ]]; then
+if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "devel" ]]; then
   export test_suite="headless"
-  export run_tests="true"
-fi;
-
-if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "devel" && $it_profile == "wcag" ]]; then
   export run_tests="true"
 fi;
 
 if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "master" ]]; then
   export test_suite="full"
   export run_tests="true"
-  if [[ $it_profile != "rest-it" && $browser != "chrome_headless" && $it_profile != "wcag" ]]; then 
+  if [[ $it_profile != "rest-it" && $browser != "chrome_headless" ]]; then 
     export start_sc_tunnel="true"
   fi;
 fi;
