@@ -18,7 +18,8 @@ interface TagInputProps {
   onFocus?: (e: React.FocusEvent<any>)=>any,
   tags: Tag[],
   autofocus?: boolean,
-  deleteByBackKey?: boolean
+  deleteByBackKey?: boolean,
+  wcagLabel?: string
 }
 
 interface TagInputState {
@@ -75,8 +76,8 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   render(){
     return <div className={`container container--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
       <div className="env-dialog__form-element-container" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
-        <div className="env-dialog__label">{this.props.placeholder}</div>
-        <input className="env-dialog__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
+        <label htmlFor={this.props.wcagLabel ? this.props.wcagLabel : ""} className="env-dialog__label">{this.props.placeholder}</label>
+        <input id={this.props.wcagLabel ? this.props.wcagLabel : ""} className="env-dialog__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
         onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
 
         <div ref="selected" className="env-dialog__selected-items">

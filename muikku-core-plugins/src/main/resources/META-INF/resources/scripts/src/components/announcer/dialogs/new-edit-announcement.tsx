@@ -261,21 +261,28 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     (this.setStateAndClear as any)(nState, (this.props.announcement ? this.props.announcement.id + "-" : "") + (this.props.workspaceId || ""));
   }
   render(){
+    let editorTitle:string;
+    if (this.props.announcement) {
+      editorTitle = this.props.i18n.text.get('plugin.announcer.editannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label');
+    } else {
+      editorTitle = this.props.i18n.text.get('plugin.announcer.createannouncement.topic') + " - " + this.props.i18n.text.get('plugin.announcer.createannouncement.content.label');
+    }
+
     let content = (closeDialog: ()=>any) => [
-      //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
+      // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="env-dialog__row env-dialog__row--new-announcement-options" key="1">
         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</div>
-           <DatePicker className="env-dialog__input env-dialog__input--date-picker" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+          <label htmlFor="announcement-start-date" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</label>
+          <DatePicker id="announcement-start-date" className="env-dialog__input env-dialog__input--date-picker" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
              locale={this.props.i18n.time.getLocale()}/>
          </div>
          <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>
-           <DatePicker className="env-dialog__input env-dialog__input--date-picker" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
+          <label htmlFor="announcement-end-date" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</label>
+          <DatePicker id="announcement-end-date" className="env-dialog__input env-dialog__input--date-picker" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
         </div>
       </div>),
-      (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false}
+      (<InputContactsAutofill wcagLabel="announcement-recipients" modifier="new-announcement-recipients" key="2" hasUserPermission={false}
           hasGroupPermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_GROUPS}
           hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
           workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
@@ -285,16 +292,16 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       (
       <div className="env-dialog__row" key="3">
        <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
-         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>
-         <input type="text" className="env-dialog__input" value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
+         <label htmlFor="announcement-title" className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</label>
+          <input id="announcement-title" type="text" className="env-dialog__input" value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
        </div>
       </div>
       ),
       (
       <div className="env-dialog__row env-dialog__row--ckeditor" key="4">
         <div className="env-dialog__form-element-container">
-          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>
-          <CKEditor onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          <label className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</label>
+            <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>
       </div>
       )
