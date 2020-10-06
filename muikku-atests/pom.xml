@@ -258,6 +258,7 @@
         <elasticsearch.http.port>9201</elasticsearch.http.port>
         <elasticsearch.node.port>9301</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <it.profile>ui-it</it.profile>
       </properties>
 
       <dependencies>
@@ -311,6 +312,7 @@
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.browser>${it.browser}</it.browser>
                 <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
+                <it.profile>${it.profile}</it.profile>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -643,6 +645,7 @@
         <elasticsearch.http.port>9201</elasticsearch.http.port>
         <elasticsearch.node.port>9301</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <it.profile>sauce-it</it.profile>
       </properties>
 
       <dependencies>
@@ -702,6 +705,7 @@
                 <it.platform>${it.platform}</it.platform>
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
+                <it.profile>${it.profile}</it.profile>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -1032,6 +1036,7 @@
         <elasticsearch.http.port>9201</elasticsearch.http.port>
         <elasticsearch.node.port>9301</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <it.profile>travis</it.profile>
       </properties>
 
       <dependencies>
@@ -1091,6 +1096,7 @@
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
+                <it.profile>${it.profile}</it.profile>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -1405,6 +1411,7 @@
         <elasticsearch.http.port>9201</elasticsearch.http.port>
         <elasticsearch.node.port>9301</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <it.profile>rest-it</it.profile>
       </properties>
 
       <dependencies>
@@ -1455,6 +1462,7 @@
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
                 <it.test.file>${it.test.file}</it.test.file>
+                <it.profile>${it.profile}</it.profile>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -1779,6 +1787,7 @@
         <elasticsearch.http.port>9201</elasticsearch.http.port>
         <elasticsearch.node.port>9301</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <it.profile>wcag</it.profile>
       </properties>
 
       <dependencies>
@@ -1832,6 +1841,7 @@
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.browser>${it.browser}</it.browser>
                 <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
+                <it.profile>${it.profile}</it.profile>
               </systemPropertyVariables>
             </configuration>
             <executions>

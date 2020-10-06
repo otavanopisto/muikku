@@ -23,17 +23,13 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void indexPageTest() throws IOException {
     navigate("", false);
-    waitForPresent(".hero");
+    testAccessibility();
     assertVisible(".hero");
-    waitForPresent("#studying");
     assertVisible("#studying");
-    waitForPresent("#videos");
     assertVisible("#videos");
-    waitForPresent("#news");
     assertVisible("#news");
-    waitForPresent("#organization");
     assertVisible("#organization");
-
+    reportWCAG();
   }
 
   @Test
@@ -75,6 +71,10 @@ public class IndexPageTestsBase extends AbstractUITest {
         .addCourse(course1)
         .build();
       login();
+      createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
+      long sender = getUserIdByEmail("admin@example.com");
+      long recipient = getUserIdByEmail("student@example.com");
+      createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       logout();
       MockStudent student = new MockStudent(2l, 2l, "Second", "User", "teststudent@example.com", 1l, TestUtilities.toDate(1990, 1, 1), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -87,11 +87,13 @@ public class IndexPageTestsBase extends AbstractUITest {
         .build();
       login();
       try{
+        testAccessibility();
         waitForPresentAndVisible(".navbar .button-pill--profile");
         assertVisible(".navbar .button-pill--profile");
         waitForPresentAndVisible(".item-list--panel-workspaces .item-list__text-body");
         assertVisible(".item-list--panel-workspaces .item-list__text-body");
         assertTextIgnoreCase(".item-list--panel-workspaces .item-list__text-body", "testcourse (test extension)");
+        reportWCAG();
       } finally {
         deleteWorkspace(workspace.getId());
       }
