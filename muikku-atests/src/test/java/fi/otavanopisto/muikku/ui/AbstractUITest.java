@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,6 +53,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.deque.axe.AXE;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -80,6 +82,7 @@ import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
@@ -88,6 +91,8 @@ import static java.lang.Math.toIntExact;
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
   private static final long TEST_START_TIME = System.currentTimeMillis();
+  
+  protected static final URL scriptUrl = AbstractWCAGTest.class.getResource("/axe.min.js");
   
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
@@ -1632,11 +1637,28 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     sleep(500);
   }
   
+  protected void reportWCAG() {
+    if (!System.getProperty("it.profile").equals("sauce-it")) {
+      if (this.violations != null) {
+        if (this.violations.length() != 0) {
+          assertTrue(AXE.report(this.violations), false);
+        }
+      }
+    }
+  }
+
+  protected void testAccessibility() {
+    if (!System.getProperty("it.profile").equals("sauce-it")) {
+      this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
+    }
+  }
+   
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
   
   private String sessionId;
   private WebDriver webDriver;
-
+  private JSONArray violations;
+  
 }
