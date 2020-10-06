@@ -1927,10 +1927,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(content)
-      .type(answerFile.getContentType())
-      .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
-      .build();
+    if (StringUtils.isEmpty(answerFile.getContentType())) {
+      return Response.ok(content)
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .build();
+    }
+    else {
+      return Response.ok(content)
+        .type(answerFile.getContentType())
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .build();
+    }
   }
 
   @GET
@@ -2133,10 +2140,17 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (content == null) {
         return Response.status(Status.NOT_FOUND).build();
       }
-      return Response.ok(content)
-        .type(answerClip.getContentType())
-        .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
-        .build();
+      if (StringUtils.isEmpty(answerClip.getContentType())) {
+        return Response.ok(content)
+          .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
+          .build();
+      }
+      else {
+        return Response.ok(content)
+          .type(answerClip.getContentType())
+          .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
+          .build();
+      }
     }
     
     return Response.status(Status.NOT_FOUND).build();
@@ -3155,9 +3169,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    if (StringUtils.isBlank(entity.getContentType())) {
-      return Response.status(Status.BAD_REQUEST).entity("contentType is missing").build();
-    }
     if (StringUtils.isBlank(entity.getFileIdentifier())) {
       return Response.status(Status.BAD_REQUEST).entity("identifier is missing").build();
     }
@@ -3264,12 +3275,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
-    return Response.ok()
+    if (StringUtils.isEmpty(contentType)) {
+      return Response.ok()
+        .cacheControl(cacheControl)
+        .tag(tag)
+        .entity(output)
+        .build();
+    }
+    else {
+      return Response.ok()
         .cacheControl(cacheControl)
         .tag(tag)
         .type(contentType)
         .entity(output)
         .build();
+    }
   }
   
   @DELETE

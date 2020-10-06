@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
@@ -230,6 +232,7 @@ public class WorkspaceMaterialFieldAnswerController {
       fileAnswerUtils.storeFileToFileSystem(FileAnswerType.FILE, userEntityId, fileId, content);
       content = null;
     }
+    contentType = StringUtils.defaultIfEmpty(contentType, null);
     return workspaceMaterialFileFieldAnswerFileDAO.create(fieldAnswer, content, contentType, fileId, fileName);
   }
 
@@ -269,6 +272,7 @@ public class WorkspaceMaterialFieldAnswerController {
       fileAnswerUtils.storeFileToFileSystem(FileAnswerType.AUDIO, userEntityId, audioId, content);
       content = null;
     }
+    contentType = StringUtils.defaultIfEmpty(contentType, null);
     return workspaceMaterialAudioFieldAnswerClipDAO.create(fieldAnswer, content, contentType, audioId, audioName);
   }
 
@@ -288,18 +292,6 @@ public class WorkspaceMaterialFieldAnswerController {
       }
     }
     workspaceMaterialAudioFieldAnswerClipDAO.delete(fieldAnswerAudio);
-  }
-
-  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipClipId(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, String clipId) {
-    return workspaceMaterialAudioFieldAnswerClipDAO.updateClipId(fieldAnswerAudio, clipId);
-  }
-
-  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipContentType(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, String contentType) {
-    return workspaceMaterialAudioFieldAnswerClipDAO.updateContentType(fieldAnswerAudio, contentType);
-  }
-
-  public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipAudioName(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, String fileName) {
-    return workspaceMaterialAudioFieldAnswerClipDAO.updateFileName(fieldAnswerAudio, fileName);
   }
 
   public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipContent(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, byte[] content) {
