@@ -131,9 +131,11 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitAndClick(".item-list__item--announcements .item-list__announcement-caption");
         
         waitForPresent(".reading-panel__main-container header.article__header");
+        testAccessibility();
         assertTextIgnoreCase(".reading-panel__main-container header.article__header", "Test title");
         assertTextIgnoreCase(".reading-panel__main-container header.article__header + div", "12.11.2015");
         assertTextIgnoreCase(".reading-panel__main-container .article__body", "announcer test announcement");
+        reportWCAG();
       }finally{
         deleteAnnouncements();
       }
