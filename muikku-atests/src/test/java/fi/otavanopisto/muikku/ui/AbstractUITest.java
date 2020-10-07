@@ -1649,7 +1649,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void testAccessibility() {
     if (!System.getProperty("it.profile").equals("sauce-it")) {
-      this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
+      if (this.violations == null) {
+        this.violations = new JSONArray();
+      }
+//      this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
+      this.violations.put(new AXE.Builder(getWebDriver(), scriptUrl).analyze());
     }
   }
    
