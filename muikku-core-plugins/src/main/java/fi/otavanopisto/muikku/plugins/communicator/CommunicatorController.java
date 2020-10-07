@@ -3,11 +3,14 @@ package fi.otavanopisto.muikku.plugins.communicator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -22,6 +25,7 @@ import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -50,14 +54,17 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class CommunicatorController {
    
+  @Inject
+  private Logger logger;
+  
   @Inject
   private UserGroupEntityController userGroupEntityController;
 
@@ -96,6 +103,9 @@ public class CommunicatorController {
 
   @Inject
   private TagController tagController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   @Any
@@ -164,7 +174,7 @@ public class CommunicatorController {
     
     for (UserEntity recipient : userRecipients) {
       // #3758: Only send messages to active users
-      if (!isActiveUser(recipient.defaultSchoolDataIdentifier())) {
+      if (!isActiveUser(recipient)) {
         continue;
       }
       if (!recipientIds.contains(recipient.getId())) {
@@ -185,7 +195,7 @@ public class CommunicatorController {
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier.schoolDataIdentifier())) {
+            if (!isActiveUser(userSchoolDataIdentifier)) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -213,7 +223,7 @@ public class CommunicatorController {
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier.schoolDataIdentifier())) {
+            if (!isActiveUser(userSchoolDataIdentifier)) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -246,6 +256,10 @@ public class CommunicatorController {
           }
         }
       }
+    }
+
+    if (CollectionUtils.isEmpty(recipientIds)) {
+      logger.log(Level.SEVERE, String.format("Message %d contains no recipients", message.getId()));
     }
     
     return message;
@@ -569,11 +583,26 @@ public class CommunicatorController {
     return null;
   }
   
-  private boolean isActiveUser(SchoolDataIdentifier identifier) {
-    SearchProvider searchProvider = getProvider("elastic-search");
-    if (searchProvider != null) {
-      SearchResult searchResult = searchProvider.findUser(identifier, false);
-      return searchResult.getTotalHitCount() > 0;
+  private boolean isActiveUser(UserEntity userEntity) {
+    return isActiveUser(userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier()));
+  }
+  
+  private boolean isActiveUser(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    EnvironmentRoleArchetype role = userSchoolDataIdentifier.getRole() != null ? userSchoolDataIdentifier.getRole().getArchetype() : null;
+
+    EnumSet<EnvironmentRoleArchetype> staffRoles = EnumSet.of(
+        EnvironmentRoleArchetype.ADMINISTRATOR, 
+        EnvironmentRoleArchetype.MANAGER, 
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER);
+
+    if (!staffRoles.contains(role)) {
+      SearchProvider searchProvider = getProvider("elastic-search");
+      if (searchProvider != null) {
+        SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
+        return searchResult.getTotalHitCount() > 0;
+      }
     }
     return true;
   }
