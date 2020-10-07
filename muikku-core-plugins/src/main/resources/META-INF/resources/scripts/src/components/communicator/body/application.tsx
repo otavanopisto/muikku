@@ -49,13 +49,13 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
   render(){
     let title = this.props.i18n.text.get('plugin.communicator.pageTitle')
     let icon = <Dropdown modifier="main-functions-settings" items={[
-      closeDropdown=><Link className="link link--full link--main-functions-settings-dropdown" onClick={this.openDialogSignature.bind(this, closeDropdown)}>
+      closeDropdown=><Link tabIndex={0} className="link link--full link--main-functions-settings-dropdown" onClick={this.openDialogSignature.bind(this, closeDropdown)}>
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signature")}</span>
       </Link>
     ]}>
-      <ButtonPill buttonModifiers="settings" icon="cog"/>
+      <ButtonPill tabIndex={0} buttonModifiers="settings" icon="cog"/>
     </Dropdown>
-    let primaryOption = <NewMessage><Button buttonModifiers="primary-function">
+    let primaryOption = <NewMessage><Button tabIndex={0} buttonModifiers="primary-function">
       {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
     </Button></NewMessage>
     let toolbar = <Toolbar/>

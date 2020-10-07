@@ -75,25 +75,25 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
         {(closePortal: ()=>any)=>{
           let modifiers:Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
-          return <div
+        return <div
             className={`dialog ${(modifiers || []).map(s=>`dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
-            onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null} >
-            <div className={`dialog__window ${(modifiers || []).map(s=>`dialog__window--${s}`).join(" ")}`}>
-              <div className={`dialog__header ${(modifiers || []).map(s=>`dialog__header--${s}`).join(" ")}`}>
-                <div className="dialog__title">
-                    {this.props.title}
-                </div>
-                <div className="dialog__close icon-cross" onClick={closePortal}></div>
+            onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null}>
+            <section role="dialog" aria-labelledby={`dialog-title--${modifiers[0]}`} aria-modal="true" className={`dialog__window ${(modifiers || []).map(s=>`dialog__window--${s}`).join(" ")}`}>
+            <header className={`dialog__header ${(modifiers || []).map(s => `dialog__header--${s}`).join(" ")}`}>
+              <div className="dialog__title" id={`dialog-title--${modifiers[0]}`}>
+                {this.props.title}
               </div>
-              <div className="dialog__content">
+              <div className="dialog__close icon-cross" onClick={closePortal}></div>
+              </header>
+              <section className="dialog__content">
                 {this.props.content(closePortal)}
-              </div>
+              </section>
               {this.props.footer?
-              <div className="dialog__footer">
+              <footer className="dialog__footer">
                 {this.props.footer && this.props.footer(closePortal)}
-              </div>
+              </footer>
               : null}
-          </div>
+          </section>
         </div>}}
     </Portal>);
   }

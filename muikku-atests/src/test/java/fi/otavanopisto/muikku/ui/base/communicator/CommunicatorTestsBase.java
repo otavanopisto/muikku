@@ -280,13 +280,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
 
-        waitForPresentAndVisible(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
+        waitForPresentAndVisible(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
         sleep(500);
-        clearElement(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
-        sendKeys(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name", "Dun dun duun");
-        waitAndClick(".dialog--visible .dialog__window--communicator .button--standard-ok");
+        clearElement(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
+        sendKeys(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name", "Dun dun duun");
+        waitAndClick(".dialog--visible .dialog__window--communicator-edit-label .button--standard-ok");
         sleep(500);
-        waitForNotVisible(".dialog--visible .dialog__window--communicator .dialog--communicator");
+        waitForNotVisible(".dialog--visible .dialog__window--communicator-edit-label .dialog--communicator");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
       }finally{
