@@ -1639,21 +1639,28 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void reportWCAG() {
     if (!System.getProperty("it.profile").equals("sauce-it")) {
-      if (this.violations != null) {
-        if (this.violations.length() != 0) {
-          assertTrue(AXE.report(this.violations), false);
+      if (this.violationList != null) {
+        if (!this.violationList.isEmpty()) {
+          String violationsString = "";          
+          for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
+            violationsString += System.getProperty("line.separator");
+            violationsString += violation.getKey();
+            violationsString += System.getProperty("line.separator");
+            violationsString += AXE.report(violation.getValue());
+            violationsString += System.getProperty("line.separator");
+          }
+          assertTrue(violationsString, false);
         }
       }
     }
   }
 
-  protected void testAccessibility() {
+  protected void testAccessibility(String testView) {
     if (!System.getProperty("it.profile").equals("sauce-it")) {
-      if (this.violations == null) {
-        this.violations = new JSONArray();
+      if (this.violationList == null) {
+        this.violationList = new HashMap<String, JSONArray>();
       }
-//      this.violations = new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations");
-      this.violations.put(new AXE.Builder(getWebDriver(), scriptUrl).analyze());
+      this.violationList.put(testView, new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
     }
   }
    
@@ -1663,6 +1670,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   private String sessionId;
   private WebDriver webDriver;
-  private JSONArray violations;
+  private Map<String, JSONArray> violationList;
   
 }

@@ -23,7 +23,7 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void indexPageTest() throws IOException {
     navigate("", false);
-    testAccessibility();
+    testAccessibility("Frontpage not logged in");
     assertVisible(".hero");
     assertVisible("#studying");
     assertVisible("#videos");
@@ -87,7 +87,7 @@ public class IndexPageTestsBase extends AbstractUITest {
         .build();
       login();
       try{
-        testAccessibility();
+        testAccessibility("Logged in student frontpage");
         waitForPresentAndVisible(".navbar .button-pill--profile");
         assertVisible(".navbar .button-pill--profile");
         waitForPresentAndVisible(".item-list--panel-workspaces .item-list__text-body");
