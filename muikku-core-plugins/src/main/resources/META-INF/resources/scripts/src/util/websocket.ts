@@ -246,7 +246,6 @@ export default class MuikkuWebsocket {
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
-      this.webSocket.onclose = this.onWebSocketClose.bind(this);
       this.webSocket.onopen = this.onWebSocketConnected.bind(this);
     }
     else {
@@ -327,7 +326,6 @@ export default class MuikkuWebsocket {
     if (this.webSocket) {
       this.webSocket.onmessage = null;
       this.webSocket.onerror = null;
-      this.webSocket.onclose = null;
       this.webSocket.onopen = null;
       if (wasOpen) {
         try {
