@@ -35,17 +35,15 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.oldOverflow = null;
     this.state = {visible: false}
   }
-
   onOverlayClick(close: ()=>any, e: Event){
     if (e.target === e.currentTarget){
       close();
     }
   }
-
   onOpen(element: HTMLElement){
     setTimeout(()=>{
       this.setState({
-        visible: true
+        visible: true,
       });
     }, 10);
     this.props.onOpen && this.props.onOpen(element);
@@ -58,7 +56,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
     }
   }
-
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
     this.setState({
       visible: false
@@ -69,7 +66,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);
   }
-
   render(){
     let closeOnOverlayClick = true;
     if (typeof this.props.closeOnOverlayClick !== "undefined") {

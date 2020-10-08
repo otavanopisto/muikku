@@ -90,9 +90,7 @@ export class EnvironmentDialogActionsElement extends React.Component<Environment
     this.state = {
       locked: false
     }
-
   }
-
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
