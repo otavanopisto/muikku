@@ -33,7 +33,7 @@ export default class MuikkuWebsocket {
   private reconnectHandler: NodeJS.Timer;
 
   constructor(store: Store<any>, listeners: ListenerType, options={
-    reconnectInterval: 2000,
+    reconnectInterval: 10000,
     pingInterval: 5000
   }) {
     this.options = options;
@@ -68,7 +68,7 @@ export default class MuikkuWebsocket {
   }
 
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
-    if (this.socketOpen) {
+    if (this.socketOpen && !this.reconnecting) {
       try {
         this.webSocket.send(JSON.stringify({
           eventType: eventType,
@@ -239,11 +239,6 @@ export default class MuikkuWebsocket {
     this.reconnect();
   }
 
-  onWebSocketClose() {
-    this.trigger("webSocketDisconnected");
-    this.reconnect();
-  }
-
   openWebSocket() {
     let host = window.location.host;
     let secure = location.protocol == 'https:';
@@ -300,6 +295,7 @@ export default class MuikkuWebsocket {
     if (this.reconnecting) {
       return;
     }
+    this.reconnecting = true;
 
     // Ditch the old websocket and anything related to it
     this.discardCurrentWebSocket();
