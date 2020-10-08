@@ -25,6 +25,7 @@ export default class MuikkuWebsocket {
     stackId?: string
   }[];
   private pingHandler:any;
+  private connectionLostNotififed:boolean;
   private waitingPong:boolean;
   private gotPong:boolean;
   private listeners:ListenerType;
@@ -42,6 +43,7 @@ export default class MuikkuWebsocket {
     this.webSocket = null;
     this.socketOpen = false;
     this.reconnecting = false;
+    this.connectionLostNotififed = false;
     this.messagesPending = [];
     this.pingHandler = null;
     this.waitingPong = false;
@@ -68,6 +70,7 @@ export default class MuikkuWebsocket {
   }
 
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
+    console.log('sendMessage');
     if (this.socketOpen && !this.reconnecting) {
       try {
         this.webSocket.send(JSON.stringify({
@@ -208,7 +211,8 @@ export default class MuikkuWebsocket {
       if (!err) {
         callback(ticket.ticket);
       }
-      else {
+      else if (!this.connectionLostNotififed) {
+        this.connectionLostNotififed = true;
         this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error') as Action);
       }
     });
@@ -220,6 +224,7 @@ export default class MuikkuWebsocket {
       clearInterval(this.reconnectHandler);
     }
     this.reconnecting = false;
+    this.connectionLostNotififed = false;    
 
     // Tell the world we're in business
     this.socketOpen = true;
