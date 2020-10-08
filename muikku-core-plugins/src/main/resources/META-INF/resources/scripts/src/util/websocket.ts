@@ -17,34 +17,35 @@ export default class MuikkuWebsocket {
   private ticket:any;
   private webSocket:WebSocket;
   private socketOpen:boolean;
+  private reconnecting:boolean;
   private messagesPending:{
     eventType: string,
     data: any,
     onSent?: ()=>any,
     stackId?: string
   }[];
-  private pingHandle:any;
-  private pinging:boolean;
-  private pingTime:number;
+  private pingHandler:any;
+  private waitingPong:boolean;
+  private gotPong:boolean;
   private listeners:ListenerType;
   private baseListeners:ListenerType;
   private store: Store<any>;
-  private reconnectTimeout: NodeJS.Timer;
+  private reconnectHandler: NodeJS.Timer;
 
   constructor(store: Store<any>, listeners: ListenerType, options={
-    reconnectInterval: 200,
-    pingTimeStep: 1000,
-    pingTimeout: 10000
+    reconnectInterval: 2000,
+    pingInterval: 5000
   }) {
     this.options = options;
 
     this.ticket = null;
     this.webSocket = null;
     this.socketOpen = false;
+    this.reconnecting = false;
     this.messagesPending = [];
-    this.pingHandle = null;
-    this.pinging = false;
-    this.pingTime = 0;
+    this.pingHandler = null;
+    this.waitingPong = false;
+    this.gotPong = false;
     this.listeners = listeners;
     this.baseListeners = listeners;
     this.store = store;
@@ -52,8 +53,8 @@ export default class MuikkuWebsocket {
     this.getTicket((ticket: any)=> {
       if (this.ticket) {
         this.openWebSocket();
-        this.startPinging();
-      } else {
+      }
+      else {
         this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
       }
     });
@@ -65,6 +66,7 @@ export default class MuikkuWebsocket {
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
+
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     if (this.socketOpen) {
       try {
@@ -75,16 +77,22 @@ export default class MuikkuWebsocket {
         let websocketState:WebsocketStateType = this.store.getState().websocket;
         this.messagesPending.length === 0 && !websocketState.synchronized && this.trigger("webSocketSync");
         onSent && onSent();
-      } catch (e) {
-        this.queueMessage(eventType, data, onSent, stackId);
-        this.trigger("webSocketDesync");
-        this.reconnect();
       }
-    } else {
-      this.queueMessage(eventType, data, onSent, stackId);
+      catch (e) {
+        if (eventType != 'ping:ping') {
+          this.queueMessage(eventType, data, onSent, stackId);
+        }
+        this.trigger("webSocketDesync");
+      }
+    }
+    else {
+      if (eventType != 'ping:ping') {
+        this.queueMessage(eventType, data, onSent, stackId);
+      }
       this.trigger("webSocketDesync");
     }
   }
+
   queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
     let message = {
@@ -95,10 +103,12 @@ export default class MuikkuWebsocket {
     };
     if (typeof index === "number" && index !== -1){
       this.messagesPending[index] = message
-    } else {
+    }
+    else {
       this.messagesPending.push(message);
     }
   }
+
   addEventListener(event: string, actionCreator: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
@@ -108,12 +118,14 @@ export default class MuikkuWebsocket {
     this.listeners[event] = evtListeners;
     return this;
   }
+
   removeEventCallback(event: string, actionCreator: Function){
     let index = this.listeners[event].callbacks.indexOf(actionCreator);
     if (index !== -1){
       this.listeners[event].callbacks.splice(index, 1);
     }
   }
+
   addEventCallback(event: string, action: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
@@ -123,10 +135,12 @@ export default class MuikkuWebsocket {
     this.listeners[event] = evtListeners;
     return this;
   }
+
   restoreEventListeners(){
     this.listeners = this.baseListeners;
     return this;
   }
+
   trigger(event: any, data: any=null){
     this.store.dispatch({
       'type': 'WEBSOCKET_EVENT',
@@ -142,7 +156,8 @@ export default class MuikkuWebsocket {
         for (let action of listeners){
           if (typeof action === "function"){
             this.store.dispatch(action());
-          } else {
+          }
+          else {
             this.store.dispatch(action);
           }
         }
@@ -168,42 +183,56 @@ export default class MuikkuWebsocket {
               this.ticket = ticket;
               callback(ticket);
             });
-          } else {
+          }
+          else {
             // Ticket passed validation, so we use it
             callback(this.ticket);
           }
         });
-      } else {
+      }
+      else {
         // Create new ticket
         this.createTicket((ticket: any)=>{
           this.ticket = ticket;
           callback(ticket);
         });
       }
-    } catch (e) {
+    }
+    catch (e) {
       this.store.dispatch(actions.displayNotification("Ticket creation failed on an internal error", 'error') as Action);
     }
   }
 
   createTicket(callback: Function) {
-    mApi().websocket.ticket.create()
-      .callback((err: Error, ticket: any)=>{
-        if (!err) {
-          callback(ticket.ticket);
-        } else {
-          this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error') as Action);
-        }
-      });
+    mApi().websocket.ticket.create().callback((err: Error, ticket: any)=>{
+      if (!err) {
+        callback(ticket.ticket);
+      }
+      else {
+        this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error') as Action);
+      }
+    });
   }
 
   onWebSocketConnected() {
+    // Clear reconnection handlers, if any
+    if (this.reconnectHandler) {
+      clearInterval(this.reconnectHandler);
+    }
+    this.reconnecting = false;
+
+    // Tell the world we're in business
     this.socketOpen = true;
     this.trigger("webSocketConnected");
 
+    // If we have queued messages, send them now
     while (this.socketOpen && this.messagesPending.length) {
       let message = this.messagesPending.shift();
       this.sendMessage(message.eventType, message.data, message.onSent);
     }
+
+    // Start pinging to ensure connection stays alive
+    this.startPinging();
   }
 
   onWebSocketError() {
@@ -219,23 +248,13 @@ export default class MuikkuWebsocket {
     let host = window.location.host;
     let secure = location.protocol == 'https:';
     this.webSocket = this.createWebSocket((secure ? 'wss://' : 'ws://') + host + '/ws/socket/' + this.ticket);
-
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
       this.webSocket.onclose = this.onWebSocketClose.bind(this);
-      switch (this.webSocket.readyState) {
-        case this.webSocket.CONNECTING:
-          this.webSocket.onopen = this.onWebSocketConnected.bind(this);
-        break;
-        case this.webSocket.OPEN:
-          this.onWebSocketConnected();
-        break;
-        default:
-          this.store.dispatch(actions.displayNotification("WebSocket connection failed", 'error') as Action);
-        break;
-      }
-    } else {
+      this.webSocket.onopen = this.onWebSocketConnected.bind(this);
+    }
+    else {
       this.store.dispatch(actions.displayNotification("Could not open WebSocket connection", 'error') as Action);
     }
   }
@@ -243,85 +262,102 @@ export default class MuikkuWebsocket {
   createWebSocket(url: string) {
     if ((typeof (<any>window).WebSocket) !== 'undefined') {
       return new WebSocket(url);
-    } else if ((typeof (<any>window).MozWebSocket) !== 'undefined') {
+    }
+    else if ((typeof (<any>window).MozWebSocket) !== 'undefined') {
       return new (<any>window).MozWebSocket(url);
     }
-
     return null;
   }
 
   startPinging() {
-    this.pingHandle = setInterval(()=>{
-      if (this.socketOpen === false) {
+    this.pingHandler = setInterval(()=>{
+      // Skip just in case we would be closed or reconnecting
+      if (!this.socketOpen || this.reconnecting) {
         return;
       }
-      if (!this.pinging) {
+
+      if (!this.waitingPong) {
+        // Ping pong match start
+        this.waitingPong = true;
+        this.gotPong = false;
         this.sendMessage("ping:ping", {});
-        this.pinging = true;
-      } else {
-        this.pingTime += this.options.pingTimeStep;
-
-        if (this.pingTime > this.options.pingTimeout) {
-          if (console) console.log("ping failed, reconnecting...");
-          this.pinging = false;
-          this.pingTime = 0;
-
-          this.reconnect();
-        }
       }
-    }, this.options.pingTimeStep);
+      else if (this.gotPong) {
+        // Sent ping, got pong, just keep it up
+        this.waitingPong = true;
+        this.gotPong = false;
+        this.sendMessage("ping:ping", {});
+      }
+      else {
+        // Didn't get a pong to our latest ping in five seconds, reconnect
+        this.reconnect();
+      }
+    }, this.options.pingInterval);
   }
 
   reconnect() {
-    let wasOpen = this.socketOpen;
-    this.socketOpen = false;
-    clearTimeout(this.reconnectTimeout);
+    // Ignore if we are already busy reconnecting
+    if (this.reconnecting) {
+      return;
+    }
 
-    this.reconnectTimeout = setTimeout(()=>{
-      try {
-        if (this.webSocket) {
-          this.webSocket.onmessage = function () {};
-          this.webSocket.onerror = function () {};
-          this.webSocket.onclose = function () {};
-          if (wasOpen) {
-            this.webSocket.close();
-          }
-        }
-      } catch (e) {
-        // Ignore exceptions related to discarding a WebSocket
-      }
+    // Ditch the old websocket and anything related to it
+    this.discardCurrentWebSocket();
 
+    // Try to re-establish connection every two seconds (onWebSocketConnected will eventually clear us)
+    this.reconnectHandler = setInterval(()=>{
       this.getTicket((ticket: any)=>{
         if (this.ticket) {
           this.openWebSocket();
-        } else {
+        }
+        else {
           this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
         }
       });
-
     }, this.options.reconnectInterval);
+  }
+
+  discardCurrentWebSocket() {
+    // Inform everyone we're no longer open for business...
+    let wasOpen = this.socketOpen;
+    this.socketOpen = false;
+
+    // ...and stop pinging...
+    clearInterval(this.pingHandler);
+    this.waitingPong = false;
+    this.gotPong = false;
+
+    // ...and get rid of the current websocket
+    if (this.webSocket) {
+      this.webSocket.onmessage = null;
+      this.webSocket.onerror = null;
+      this.webSocket.onclose = null;
+      this.webSocket.onopen = null;
+      if (wasOpen) {
+        try {
+          this.webSocket.close();
+        }
+        catch (e) {
+          // Ignore exceptions related to closing a WebSocket
+        }
+      }
+      this.webSocket = null;
+    }
   }
 
   onWebSocketMessage(event: any) {
     let message = JSON.parse(event.data);
     let eventType = message.eventType;
-
-    if (eventType == "ping:pong") {
-      this.pinging = false;
-      this.pingTime = 0;
-    } else {
+    if (eventType == 'ping:pong') {
+      this.gotPong = true;
+    }
+    else {
       this.trigger(eventType, message.data);
     }
   }
 
   onBeforeWindowUnload() {
-    if (this.webSocket) {
-      this.webSocket.onmessage = ()=>{};
-      this.webSocket.onerror = ()=>{};
-      this.webSocket.onclose = ()=>{};
-      if (this.socketOpen) {
-        this.webSocket.close();
-      }
-    }
+    this.discardCurrentWebSocket();
   }
+
 }

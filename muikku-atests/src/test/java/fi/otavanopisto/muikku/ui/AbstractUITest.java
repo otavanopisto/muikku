@@ -40,6 +40,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -352,8 +353,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected RemoteWebDriver createFirefoxDriver() {
     FirefoxProfile firefoxProfile = new FirefoxProfile();
+    FirefoxOptions firefoxOptions = new FirefoxOptions();
+    firefoxOptions.setProfile(firefoxProfile);
     firefoxProfile.setPreference("intl.accept_languages", "en");
-    FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxProfile);
+    FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
     return firefoxDriver;
   }
   
@@ -398,20 +401,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitForElementToBePresent(By locator) {
-    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.presenceOfElementLocated(locator));
+    new WebDriverWait(getWebDriver(), 30).until(ExpectedConditions.presenceOfElementLocated(locator));
   }
   
   protected void waitForVisible(String selector) {
     new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
-          List<WebElement> elements = findElements(selector);
-          if(!elements.isEmpty()) {
-            for (WebElement webElement : elements) {
-              return webElement.isDisplayed();
-            }
-          }
-          return !elements.isEmpty();
+          WebElement element = findElement(selector);
+          return element.isDisplayed();
         } catch (Exception e) {
         }
         return false;
@@ -677,6 +675,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForClickable(selector);
     click(selector);
   }
+
+  protected void waitAndClick(String selector, int timeout) {
+    WebDriverWait wait = new WebDriverWait(getWebDriver(), timeout);
+    WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
+    element.click();
+  }
   
   protected void waitAndClickXPath(String xpath) {
     waitForClickableXPath(xpath);
@@ -771,12 +775,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(Keys.BACK_SPACE);
   }
   
-  protected void waitUntilTextRemovedFromElement(final String selector, String textToRemove) {
+  protected void waitUntilTextChanged(final String selector, String originalText) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           String text = getWebDriver().findElement(By.cssSelector(selector)).getText();
-          return !text.equalsIgnoreCase(textToRemove);
+          return !text.equalsIgnoreCase(originalText);
         } catch (Exception e) {
         }
         
@@ -803,9 +807,27 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  protected void waitUntilParentAnimationIsDone(final String selector) {
+    WebDriverWait wdw = new WebDriverWait(getWebDriver(), 20);
+    ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        String temp = ((JavascriptExecutor) driver).executeScript("return jQuery('" + selector + "').parent('div').is(':animated')")
+            .toString();
+        return temp.equalsIgnoreCase("false");
+      }
+    };
+
+    try {
+      wdw.until(expectation);
+    } catch (Exception e) {
+      throw new AssertionError("Element animation is not finished in time. Css locator: " + selector);
+    }
+  }
+  
   protected void waitUntilContentChanged(final String selector, final String original) {
     WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
         if (!actual.equalsIgnoreCase(original)) {
@@ -910,7 +932,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresentAndVisible(selector);
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
-   
+  
   protected void setAttributeBySelector(String selector, String attribute, String value){
     JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
     String jsString = String.format("$('%s').attr('%s', '%s');", selector, attribute, value );
@@ -973,7 +995,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void login() {
     navigate("/login?authSourceId=1", false);
-    waitForPresentAndVisible(".navbar .button-pill--profile");
+    waitForVisible(".navbar .button-pill--profile");
   }
   
   protected void loginStudent1() throws JsonProcessingException, Exception {

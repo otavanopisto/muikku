@@ -39,7 +39,7 @@ export default function(store: Store<StateType>, options: {
 
   let websocket = new Websocket(store, actionsAndCallbacks);
 
-  if (state.status.isActiveUser){
+  if (state.status.isActiveUser) {
     getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
   }
 

@@ -56,21 +56,6 @@ public class WorkspaceMaterialAudioFieldAnswerClipDAO extends CorePluginsDAO<Wor
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public WorkspaceMaterialAudioFieldAnswerClip updateClipId(WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip, String clipId) {
-    workspaceMaterialAudioFieldAnswerClip.setClipId(clipId);
-    return persist(workspaceMaterialAudioFieldAnswerClip);
-  }
-
-  public WorkspaceMaterialAudioFieldAnswerClip updateFileName(WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip, String fileName) {
-    workspaceMaterialAudioFieldAnswerClip.setFileName(fileName);
-    return persist(workspaceMaterialAudioFieldAnswerClip);
-  }
-
-  public WorkspaceMaterialAudioFieldAnswerClip updateContentType(WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip, String contentType) {
-    workspaceMaterialAudioFieldAnswerClip.setContentType(contentType);
-    return persist(workspaceMaterialAudioFieldAnswerClip);
-  }
-
   public WorkspaceMaterialAudioFieldAnswerClip updateContent(WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip, byte[] content) {
     workspaceMaterialAudioFieldAnswerClip.setContent(content);
     return persist(workspaceMaterialAudioFieldAnswerClip);
