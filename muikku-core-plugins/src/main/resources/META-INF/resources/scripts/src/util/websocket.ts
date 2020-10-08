@@ -70,7 +70,6 @@ export default class MuikkuWebsocket {
   }
 
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
-    console.log('sendMessage');
     if (this.socketOpen && !this.reconnecting) {
       try {
         this.webSocket.send(JSON.stringify({
