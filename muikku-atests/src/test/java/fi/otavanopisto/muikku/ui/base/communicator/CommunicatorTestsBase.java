@@ -34,7 +34,6 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".autocomplete__recipient");
         waitForPresentAndVisible(".env-dialog__input--new-message-title");
 //      TODO: Recipient input hijacks input after first letter. What do?
-        testAccessibility("Communicator create message view");
         sendKeys(".env-dialog__input--new-message-title", "T");
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
@@ -43,18 +42,15 @@ public class CommunicatorTestsBase extends AbstractUITest {
         getWebDriver().get("about:blank");
         navigate("/communicator#sent", false);
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
-        testAccessibility("Communicator sent view");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
-        testAccessibility("Communicator inbox view");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
-        reportWCAG();
       }finally{
         deleteCommunicatorMessages();
       }

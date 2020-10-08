@@ -1670,6 +1670,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   private String sessionId;
   private WebDriver webDriver;
-  private Map<String, JSONArray> violationList;
+  protected Map<String, JSONArray> violationList;
   
 }
