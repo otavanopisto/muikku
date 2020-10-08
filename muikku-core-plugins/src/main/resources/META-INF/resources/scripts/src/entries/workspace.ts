@@ -11,6 +11,9 @@ runApp(reducer, App, (store)=>{
     store.dispatch(<Action>updateWorkspaceEditModeState({available: true}, true));
   }
 
-  let websocket = mainFunctionDefault(store, {setupMessages: false});
+  let websocket = null;
+  if (store.getState().status.loggedIn) {
+    websocket = mainFunctionDefault(store, {setupMessages: false});
+  }
   return {websocket};
 });
