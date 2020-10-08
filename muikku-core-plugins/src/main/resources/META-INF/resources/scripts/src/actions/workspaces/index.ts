@@ -15,6 +15,8 @@ import {
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
+import { SelectItem } from '~/components/base/input-select-autofill';
+import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
 
 
 
@@ -102,7 +104,6 @@ let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadU
     }
   }
 }
-
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   (): AnyActionType
@@ -1095,6 +1096,21 @@ export interface CopyCurrentWorkspaceTriggerType {
   }): AnyActionType
 }
 
+export type CreateWorkspaceStateType = "WORKSPACE-CREATE" | "ADD-STUDENTS" | "ADD-TEACHERS" | "DONE";
+
+export interface CreateWorkspaceTriggerType {
+  (data: {
+    id: string,
+    name?: string,
+    nameExtension?: string,
+    students: SelectItem[],
+    staff?: SelectItem[],
+    success: (state: CreateWorkspaceStateType) => any,
+    fail: () => any,
+  }): AnyActionType
+}
+
+
 let createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -1376,10 +1392,49 @@ let deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType = functi
   }
 }
 
+
+
+let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
+        .create(
+          {
+            name: data.name,
+            nameExtension: data.nameExtension,
+          },
+          {
+            sourceWorkspaceEntityId: data.id
+          }), 'callback')().then(
+            data.success && data.success("WORKSPACE-CREATE")
+          ));
+
+
+      if (data.students.length < 0) {
+        data.success && data.success("ADD-STUDENTS")
+      }
+
+
+      if (data.staff.length < 0) {
+        data.success && data.success("ADD-TEACHERS")
+      }
+
+      data.success && data.success("DONE");
+
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+
+      data.fail && data.fail();
+    }
+  }
+}
+
 let copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType = function copyCurrentWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let state: StateType = getState();
       let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
       let cloneWorkspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
         .create(
@@ -2071,7 +2126,7 @@ export {
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
-  loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
+  loadMoreCurrentWorkspaceJournalsFromServer, createWorkspace, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,

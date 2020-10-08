@@ -49,6 +49,11 @@
 .dialog__window--new-user {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
+
+
+    .dialog__content {
+      height: 400px;
+    }
   }
 }
 
@@ -307,4 +312,13 @@
 .dialog__header--enrollment {
   background: $color-default;
   color: $color-default-contrast;
+}
+
+.dialog__executer {
+
+  &.state-DONE {
+    color: $color-success;
+  }
+
+
 }

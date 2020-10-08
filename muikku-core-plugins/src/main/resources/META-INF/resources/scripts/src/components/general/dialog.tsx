@@ -10,6 +10,7 @@ interface DialogProps {
   children?: React.ReactElement<any>,
   title: string,
   executing?: boolean,
+  executeContent?: React.ReactElement<any>,
   modifier?: string | Array<string>,
   content: any,
   disableScroll?: boolean,
@@ -72,6 +73,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     setTimeout(removeFromDOM, 300);
   }
 
+
   render() {
     let closeOnOverlayClick = true;
     if (typeof this.props.closeOnOverlayClick !== "undefined") {
@@ -85,7 +87,15 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
           className={`dialog ${(modifiers || []).map(s => `dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
           onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null} >
           <div className={`dialog__window ${(modifiers || []).map(s => `dialog__window--${s}`).join(" ")}`}>
-            {this.props.executing && this.props.executing === true ? <div className="dialog__overlay dialog__overlay--executing loader__executing"></div> : null}
+            {this.props.executing && this.props.executing === true ?
+              <div className="dialog__overlay dialog__overlay--executing">
+                {this.props.executeContent ?
+                  <div className="dialog__overlay-content">
+                    <div className="loader__executing--dialog"></div>
+                    {this.props.executeContent}
+                  </div>
+                  : <div className="loader__executing"></div>}
+              </div> : null}
             <div className={`dialog__header ${(modifiers || []).map(s => `dialog__header--${s}`).join(" ")}`}>
               <div className="dialog__title">
                 {this.props.title}
