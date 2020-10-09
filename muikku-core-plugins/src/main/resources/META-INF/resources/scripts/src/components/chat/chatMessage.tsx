@@ -49,8 +49,8 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       if (REAL_NAMES_CACHE[this.props.messsage.userId]) {
         userName = REAL_NAMES_CACHE[this.props.messsage.userId];
       } else {
-        const user: UserType = (await promisify(mApi().chat.userinfo.read(this.props.messsage.userId,{}), 'callback')()) as UserType;
-        userName = user.firstName + " " + user.lastName;
+        const user: any = (await promisify(mApi().chat.userInfo.read(this.props.messsage.userId,{}), 'callback')()) as any;
+        userName = user.name;
         REAL_NAMES_CACHE[this.props.messsage.userId] = userName;
       }
 

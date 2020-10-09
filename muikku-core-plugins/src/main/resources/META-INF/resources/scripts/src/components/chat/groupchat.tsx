@@ -3,7 +3,6 @@ import * as React from 'react'
 import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
 import promisify from '~/util/promisify';
-import messages from '../communicator/body/application/messages';
 import { IAvailableChatRoomType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
 import { ChatMessage } from './chatMessage';
 
@@ -11,7 +10,7 @@ interface IGroupChatProps {
   chat: IAvailableChatRoomType;
   nick: string;
   leaveChatRoom: () => void;
-  joinPrivateChat: (occupant: IChatOccupant) => void;
+  joinPrivateChat: (jid: string) => void;
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
   requestExtraInfoAboutRoom: () => void;
   connection: Strophe.Connection;
@@ -56,7 +55,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.state = {
       messages: [],
       openChatSettings: false,
-      isStudent: window.MUIKKU_IS_STUDENT,
+      isStudent: (window as any).MUIKKU_IS_STUDENT,
       isOwner: false,
       isModerator: false,
       showRoomInfo: false,
@@ -589,7 +588,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const precense: any = show ? show.textContent : "chat";
 
     const item = stanza.querySelector("item");
-    const userJIDBare = item.getAttribute("jid").split("/")[0];
+    const jid = item.getAttribute("jid");
+    const userJIDBare = jid.split("/")[0];
     const userId = userJIDBare.split("@")[0];
     const affilation: any = item.getAttribute("affiliation");
     const role: any = item.getAttribute("role");
@@ -611,6 +611,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
           precense,
           userId,
           isStaff: userJIDBare.startsWith("muikku-staff"),
+          jid: userJIDBare,
         },
         affilation,
         role,
@@ -768,13 +769,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <div className="chat__occupants-staff">
                     {staffOccupants.length > 0 ? "Henkilökunta" : ""}
                     {staffOccupants.map((staffOccupant) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant)} key={staffOccupant.occupant.userId}>
+                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid)} key={staffOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__occupant-" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
                     {studentOccupants.length > 0 ? "Opiskelijat" : ""}
                     {studentOccupants.map((studentOccupant) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant)} key={studentOccupant.occupant.userId}>
+                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid)} key={studentOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__occupant-" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
                   </div>
                 </div>}

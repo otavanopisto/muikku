@@ -8,6 +8,7 @@ import { Room } from './room';
 import { Groupchat } from './groupchat';
 import { UserChatSettingsType } from '~/reducers/main-function/user-index';
 import promisify from "~/util/promisify";
+import { PrivateChat } from './privateChat';
 
 export interface IChatRoomType {
   name: string;
@@ -92,6 +93,7 @@ export interface IAvailableChatRoomType {
 
 export interface IChatOccupant {
   userId: string;
+  jid: string;
   nick: string;
   precense: "away" | "chat" | "dnd" | "xa";
   additional: {
@@ -113,6 +115,11 @@ export interface IBareMessageType {
   isSelf: boolean;
 }
 
+interface IOpenChatJID {
+  type: "muc" | "user",
+  jid: string;
+}
+
 interface IChatState {
   connection: Strophe.Connection;
 
@@ -122,7 +129,7 @@ interface IChatState {
   showNewRoomForm: boolean,
   isStudent: boolean,
   openRoomNumber: number,
-  openChatsJIDS: string[],
+  openChatsJIDS: IOpenChatJID[],
   selectedUserPresence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
   ready: boolean,
 
@@ -137,8 +144,12 @@ interface IChatProps {
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
+  private messagesListenerHandler: any = null;
+
   constructor(props: IChatProps) {
     super(props);
+
+    const openChats = (JSON.parse(window.sessionStorage.getItem("openChats")) || []).filter((r: any) => typeof r !== "string");
 
     this.state = {
       connection: null,
@@ -147,11 +158,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
       availableMucRooms: [],
       showControlBox: JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
       showNewRoomForm: false,
-      isStudent: window.MUIKKU_IS_STUDENT,
+      isStudent: (window as any).MUIKKU_IS_STUDENT,
       openRoomNumber: null,
 
       // we should have these open
-      openChatsJIDS: JSON.parse(window.sessionStorage.getItem("openChats")) || [],
+      openChatsJIDS: openChats,
       selectedUserPresence: JSON.parse(window.sessionStorage.getItem("selectedUserPresence")) || "chat",
       ready: false,
 
@@ -165,6 +176,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.toggleJoinLeaveChatRoom = this.toggleJoinLeaveChatRoom.bind(this);
     this.leaveChatRoom = this.leaveChatRoom.bind(this);
     this.joinChatRoom = this.joinChatRoom.bind(this);
+    this.joinPrivateChat = this.joinPrivateChat.bind(this);
+    this.leavePrivateChat = this.leavePrivateChat.bind(this);
     this.setUserAvailability = this.setUserAvailability.bind(this);
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
     this.updateRoomDescField = this.updateRoomDescField.bind(this);
@@ -262,14 +275,52 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
 
-  public joinChatRoom(roomJID: string) {
+  public joinPrivateChat(jid: string) {
     // already joined
-    if (this.state.openChatsJIDS.includes(roomJID)) {
+    if (this.state.openChatsJIDS.find((r) => r.type === "user" && r.jid === jid)) {
       return;
     }
+
+    const newJoin: IOpenChatJID = {
+      type: "user",
+      jid,
+    };
+
+    // Lets push jid to openChatList and set it to this.state.openChats
+    const newJIDS = [...this.state.openChatsJIDS, newJoin];
+
+    window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS));
+
+    this.setState({
+      openChatsJIDS: newJIDS,
+    });
+  }
+
+  public leavePrivateChat(jid: string) {
+    const filteredJIDS = this.state.openChatsJIDS.filter(item => item.type !== "user" || item.jid !== jid);
+
+    // Set the filtered openChatList to sessionStorage
+    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
+
+    // Set filtered and current openChatList to this.state.openChats
+    this.setState({
+      openChatsJIDS: filteredJIDS,
+    });
+  }
+
+  public joinChatRoom(roomJID: string) {
+    // already joined
+    if (this.state.openChatsJIDS.find((r) => r.type === "muc" && r.jid === roomJID)) {
+      return;
+    }
+
+    const newJoin: IOpenChatJID = {
+      type: "muc",
+      jid: roomJID,
+    };
+
     // Lets push RoomJid to openChatList and set it to this.state.openChats
-    const newJIDS = !this.state.openChatsJIDS.includes(roomJID) ?
-      [...this.state.openChatsJIDS, roomJID] : this.state.openChatsJIDS;
+    const newJIDS = [...this.state.openChatsJIDS, newJoin];
 
     window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS));
 
@@ -279,7 +330,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   public leaveChatRoom(roomJID: string) {
-    const filteredJIDS = this.state.openChatsJIDS.filter(item => item !== roomJID);
+    const filteredJIDS = this.state.openChatsJIDS.filter(item => item.type !== "muc" || item.jid !== roomJID);
 
     // Set the filtered openChatList to sessionStorage
     window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
@@ -293,7 +344,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   // Toggles between joining and leaving the chat room
   public toggleJoinLeaveChatRoom(roomJID: string) {
     // Check whether current roomJID is allready part of openChatList
-    if (this.state.openChatsJIDS.includes(roomJID)) {
+    if (this.state.openChatsJIDS.find(r => r.type === "muc" && r.jid === roomJID)) {
       this.leaveChatRoom(roomJID);
     } else {
       this.joinChatRoom(roomJID);
@@ -414,11 +465,15 @@ class Chat extends React.Component<IChatProps, IChatState> {
       });
     });
   }
+  public onMessageReceived(stanza: Element) {
+    console.log(stanza);
+  }
   public stopChat() {
     this.setState({
       isInitialized: false,
     });
 
+    this.state.connection && this.state.connection.deleteHandler(this.messagesListenerHandler);
     this.state.connection && this.state.connection.disconnect("Chat is disabled");
   }
   async initialize() {
@@ -438,6 +493,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
 
     const connection = new Strophe.Connection("/http-bind/", { 'keepalive': true });
+
+    this.messagesListenerHandler = connection.addHandler(this.onMessageReceived, null, "message", "chat", null, null);
 
     this.setState({
       connection,
@@ -544,23 +601,32 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
         {/* Chatrooms */}
         <div className="chat__chatrooms-container">
-          {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.includes(chat.roomJID) ?
+          {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.find((r) => r.type === "muc" && r.jid === chat.roomJID) ?
             <Groupchat
               requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)}
               presence={this.state.selectedUserPresence}
               connection={this.state.connection}
               nick={this.props.settings.nick}
               key={chat.roomJID}
-              joinPrivateChat={() => null}
+              joinPrivateChat={this.joinPrivateChat}
               leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
               chat={chat}
               onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
             />
             : null)}
 
-          {/* {this.state.privateChatData.map((privateChatData, i) => this.state.openChatsJIDS.includes(privateChatData.occupantBareJID) ?
-            <PrivateMessages key={i} toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat} privateChatData={privateChatData} converse={this.converse} />
-            : null)} */}
+          {
+            this.state.openChatsJIDS
+              .filter((r) => r.type === "user")
+              .map((pchat) => (
+                <PrivateChat
+                  jid={pchat.jid}
+                  initializingStanza={null}
+                  key={pchat.jid}
+                  leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
+                  connection={this.state.connection}
+                />))
+          }
         </div>
       </div>
     );
