@@ -294,7 +294,7 @@ export default class MuikkuWebsocket {
     this.reconnecting = true;
 
     // Ditch the old websocket and anything related to it
-    this.gWebSocket();
+    this.discardCurrentWebSocket();
 
     // Try to re-establish connection every ten seconds (onWebSocketConnected will eventually clear us)
     this.reconnectHandler = setInterval(()=>{
