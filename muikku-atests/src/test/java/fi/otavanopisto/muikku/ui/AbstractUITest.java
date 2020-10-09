@@ -1663,7 +1663,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       this.violationList.put(testView, new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
     }
   }
-   
+
+  protected void testAccessibility() {
+    if (!System.getProperty("it.profile").equals("sauce-it")) {
+      if (this.violationList == null) {
+        this.violationList = new HashMap<String, JSONArray>();
+      }
+      this.violationList.put("default", new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
+    }
+  }
+  
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }

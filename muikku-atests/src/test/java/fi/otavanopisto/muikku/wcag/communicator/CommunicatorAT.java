@@ -43,6 +43,9 @@ public class CommunicatorAT extends AbstractWCAGTest{
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
+        waitAndClick(".application-panel__toolbar .button-pill--label");
+        waitForVisible(".dropdown--communicator-labels");
+        testAccessibility();
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         testAccessibility("Communicator inbox view");
         waitAndClick(".application-list__item-header--communicator-message:first-of-type");
