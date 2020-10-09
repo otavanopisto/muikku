@@ -35,7 +35,7 @@ export default class MuikkuWebsocket {
 
   constructor(store: Store<any>, listeners: ListenerType, options={
     reconnectInterval: 10000,
-    pingInterval: 5000
+    pingInterval: 10000
   }) {
     this.options = options;
 
@@ -221,6 +221,7 @@ export default class MuikkuWebsocket {
     // Clear reconnection handlers, if any
     if (this.reconnectHandler) {
       clearInterval(this.reconnectHandler);
+      this.reconnectHandler = null;
     }
     this.reconnecting = false;
     this.connectionLostNotififed = false;    
@@ -303,7 +304,11 @@ export default class MuikkuWebsocket {
     // Ditch the old websocket and anything related to it
     this.discardCurrentWebSocket();
 
-    // Try to re-establish connection every two seconds (onWebSocketConnected will eventually clear us)
+    // Try to re-establish connection every ten seconds (onWebSocketConnected will eventually clear us)
+    if (this.reconnectHandler) {
+      clearInterval(this.reconnectHandler);
+      this.reconnectHandler = null;
+    }
     this.reconnectHandler = setInterval(()=>{
       this.getTicket((ticket: any)=>{
         if (this.ticket) {
