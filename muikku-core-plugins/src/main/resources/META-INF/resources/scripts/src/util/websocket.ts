@@ -18,6 +18,7 @@ export default class MuikkuWebsocket {
   private webSocket:WebSocket;
   private socketOpen:boolean;
   private reconnecting:boolean;
+  private reconnectRetries:number;
   private messagesPending:{
     eventType: string,
     data: any,
@@ -25,7 +26,6 @@ export default class MuikkuWebsocket {
     stackId?: string
   }[];
   private pingHandler:any;
-  private connectionLostNotififed:boolean;
   private waitingPong:boolean;
   private gotPong:boolean;
   private listeners:ListenerType;
@@ -35,7 +35,7 @@ export default class MuikkuWebsocket {
 
   constructor(store: Store<any>, listeners: ListenerType, options={
     reconnectInterval: 10000,
-    pingInterval: 10000
+    pingInterval: 5000
   }) {
     this.options = options;
 
@@ -43,7 +43,7 @@ export default class MuikkuWebsocket {
     this.webSocket = null;
     this.socketOpen = false;
     this.reconnecting = false;
-    this.connectionLostNotififed = false;
+    this.reconnectRetries = 0;
     this.messagesPending = [];
     this.pingHandler = null;
     this.waitingPong = false;
@@ -55,9 +55,6 @@ export default class MuikkuWebsocket {
     this.getTicket((ticket: any)=> {
       if (this.ticket) {
         this.openWebSocket();
-      }
-      else {
-        this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
       }
     });
 
@@ -201,7 +198,8 @@ export default class MuikkuWebsocket {
       }
     }
     catch (e) {
-      this.store.dispatch(actions.displayNotification("Ticket creation failed on an internal error", 'error') as Action);
+      if (console) console.log('WebSocket ticket creation failed: ' + e);
+      callback();
     }
   }
 
@@ -210,21 +208,16 @@ export default class MuikkuWebsocket {
       if (!err) {
         callback(ticket.ticket);
       }
-      else if (!this.connectionLostNotififed) {
-        this.connectionLostNotififed = true;
-        this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error') as Action);
+      else {
+        if (console) console.log('WebSocket ticket creation failed: ' + err);
+        callback();
       }
     });
   }
 
   onWebSocketConnected() {
     // Clear reconnection handlers, if any
-    if (this.reconnectHandler) {
-      clearInterval(this.reconnectHandler);
-      this.reconnectHandler = null;
-    }
-    this.reconnecting = false;
-    this.connectionLostNotififed = false;    
+    this.discardReconnectHandler();
 
     // Tell the world we're in business
     this.socketOpen = true;
@@ -254,7 +247,7 @@ export default class MuikkuWebsocket {
       this.webSocket.onopen = this.onWebSocketConnected.bind(this);
     }
     else {
-      this.store.dispatch(actions.displayNotification("Could not open WebSocket connection", 'error') as Action);
+      if (console) console.log('Could not open WebSocket connection');
     }
   }
 
@@ -274,7 +267,6 @@ export default class MuikkuWebsocket {
       if (!this.socketOpen || this.reconnecting) {
         return;
       }
-
       if (!this.waitingPong) {
         // Ping pong match start
         this.waitingPong = true;
@@ -305,20 +297,33 @@ export default class MuikkuWebsocket {
     this.discardCurrentWebSocket();
 
     // Try to re-establish connection every ten seconds (onWebSocketConnected will eventually clear us)
+    this.discardReconnectHandler();
+    this.reconnectHandler = setInterval(()=>{
+      this.getTicket((ticket: any)=>{
+        if (this.ticket) {
+          this.discardReconnectHandler();
+          this.openWebSocket();
+        }
+        else {
+          this.reconnectRetries++;
+          if (this.reconnectRetries == 12) { // two minutes have passed, let's give up
+            this.discardReconnectHandler();
+            // TODO localization
+            this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.", 'error') as Action);
+          }
+          if (console) console.log('Could not obtain WebSocket ticket'); 
+        }
+      });
+    }, this.options.reconnectInterval);
+  }
+  
+  discardReconnectHandler() {
     if (this.reconnectHandler) {
       clearInterval(this.reconnectHandler);
       this.reconnectHandler = null;
     }
-    this.reconnectHandler = setInterval(()=>{
-      this.getTicket((ticket: any)=>{
-        if (this.ticket) {
-          this.openWebSocket();
-        }
-        else {
-          this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
-        }
-      });
-    }, this.options.reconnectInterval);
+    this.reconnecting = false;
+    this.reconnectRetries = 0;
   }
 
   discardCurrentWebSocket() {

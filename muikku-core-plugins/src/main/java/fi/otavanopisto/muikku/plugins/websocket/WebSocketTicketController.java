@@ -23,6 +23,10 @@ public class WebSocketTicketController {
   public WebSocketTicket findTicket(String ticket) {
     return webSocketTicketDAO.findByTicket(ticket);
   }
+  
+  public WebSocketTicket updateUser(WebSocketTicket ticket, Long userEntityId) {
+    return webSocketTicketDAO.updateUser(ticket, userEntityId);
+  }
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void removeTicket(String ticket) {
