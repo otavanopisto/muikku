@@ -23,13 +23,11 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void indexPageTest() throws IOException {
     navigate("", false);
-    testAccessibility("Frontpage not logged in");
     assertVisible(".hero");
     assertVisible("#studying");
     assertVisible("#videos");
     assertVisible("#news");
     assertVisible("#organization");
-    reportWCAG();
   }
 
   @Test
@@ -87,13 +85,11 @@ public class IndexPageTestsBase extends AbstractUITest {
         .build();
       login();
       try{
-        testAccessibility("Logged in student frontpage");
         waitForPresentAndVisible(".navbar .button-pill--profile");
         assertVisible(".navbar .button-pill--profile");
         waitForPresentAndVisible(".item-list--panel-workspaces .item-list__text-body");
         assertVisible(".item-list--panel-workspaces .item-list__text-body");
         assertTextIgnoreCase(".item-list--panel-workspaces .item-list__text-body", "testcourse (test extension)");
-        reportWCAG();
       } finally {
         deleteWorkspace(workspace.getId());
       }
