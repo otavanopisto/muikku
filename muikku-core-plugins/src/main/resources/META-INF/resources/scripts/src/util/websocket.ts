@@ -28,6 +28,7 @@ export default class MuikkuWebsocket {
   private pingHandler:any;
   private waitingPong:boolean;
   private gotPong:boolean;
+  private discarded:boolean;
   private listeners:ListenerType;
   private baseListeners:ListenerType;
   private store: Store<any>;
@@ -42,6 +43,7 @@ export default class MuikkuWebsocket {
     this.ticket = null;
     this.webSocket = null;
     this.socketOpen = false;
+    this.discarded = false;
     this.reconnecting = false;
     this.reconnectRetries = 0;
     this.messagesPending = [];
@@ -271,7 +273,7 @@ export default class MuikkuWebsocket {
   startPinging() {
     this.pingHandler = setInterval(()=>{
       // Skip just in case we would be closed or reconnecting
-      if (!this.socketOpen || this.reconnecting) {
+      if (!this.socketOpen || this.reconnecting || this.discarded) {
         return;
       }
       if (!this.waitingPong) {
@@ -295,7 +297,7 @@ export default class MuikkuWebsocket {
 
   reconnect() {
     // Ignore if we are already busy reconnecting
-    if (this.reconnecting) {
+    if (this.reconnecting || this.discarded) {
       return;
     }
     this.reconnecting = true;
@@ -305,6 +307,10 @@ export default class MuikkuWebsocket {
 
     // Try to re-establish connection every ten seconds (onWebSocketConnected will eventually clear us)
     this.reconnectHandler = setInterval(()=>{
+      // Skip if we are discarded already
+      if (this.discarded) {
+        return;
+      }
       this.getTicket((ticket: any)=>{
         if (this.ticket) {
           this.discardReconnectHandler();
@@ -380,6 +386,7 @@ export default class MuikkuWebsocket {
   }
 
   onBeforeWindowUnload() {
+    this.discarded = true;
     this.discardCurrentWebSocket();
   }
 
