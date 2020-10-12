@@ -286,7 +286,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sendKeys(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name", "Dun dun duun");
         waitAndClick(".dialog--visible .dialog__window--communicator-edit-label .button--standard-ok");
         sleep(500);
-        waitForNotVisible(".dialog--visible .dialog__window--communicator-edit-label .dialog--communicator");
+        waitForNotVisible(".dialog--visible .dialog__window--communicator-edit-label");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
       }finally{
@@ -388,10 +388,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container input[type='checkbox']");
         
         waitAndClick(".button-pill__icon.icon-trash");
-        assertGoesAway(".application-list__item-content-aside .message__select-container input:first-child", 5);
+        assertGoesAway(".application-list__item-content-aside .message__select-container input[type='checkbox']", 5);
         navigate("/communicator#trash", false);
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test caption");
