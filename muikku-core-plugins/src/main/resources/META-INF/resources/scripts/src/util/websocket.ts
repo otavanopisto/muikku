@@ -200,7 +200,6 @@ export default class MuikkuWebsocket {
       }
     }
     catch (e) {
-      if (console) console.log('WebSocket ticket creation failed: ' + e);
       callback();
     }
   }
@@ -211,7 +210,6 @@ export default class MuikkuWebsocket {
         callback(ticket.ticket);
       }
       else {
-        if (console) console.log('WebSocket ticket creation failed: ' + err);
         callback();
       }
     });
@@ -247,9 +245,6 @@ export default class MuikkuWebsocket {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
       this.webSocket.onopen = this.onWebSocketConnected.bind(this);
-    }
-    else {
-      if (console) console.log('Could not open WebSocket connection');
     }
   }
 
@@ -316,12 +311,11 @@ export default class MuikkuWebsocket {
             // TODO localization
             this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.", 'error') as Action);
           }
-          if (console) console.log('Could not obtain WebSocket ticket'); 
         }
       });
     }, this.options.reconnectInterval);
   }
-  
+
   discardReconnectHandler() {
     if (this.reconnectHandler) {
       clearInterval(this.reconnectHandler);
@@ -340,7 +334,7 @@ export default class MuikkuWebsocket {
     clearInterval(this.pingHandler);
     this.waitingPong = false;
     this.gotPong = false;
-    
+
     // ...and detach possible reconnect handler...
     if (this.reconnectHandler) {
       clearInterval(this.reconnectHandler);
