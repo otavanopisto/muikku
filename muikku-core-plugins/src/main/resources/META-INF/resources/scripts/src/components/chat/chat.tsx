@@ -118,6 +118,7 @@ export interface IBareMessageType {
 interface IOpenChatJID {
   type: "muc" | "user",
   jid: string;
+  initStanza?: Element;
 }
 
 interface IChatState {
@@ -182,6 +183,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
     this.updateRoomDescField = this.updateRoomDescField.bind(this);
     // this.toggleRoomPersistent = this.toggleRoomPersistent.bind(this);
+    this.onMessageReceived = this.onMessageReceived.bind(this);
     this.createAndJoinChatRoom = this.createAndJoinChatRoom.bind(this);
     this.updateChatRoomConfig = this.updateChatRoomConfig.bind(this);
     this.initialize = this.initialize.bind(this);
@@ -275,7 +277,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
 
-  public joinPrivateChat(jid: string) {
+  public joinPrivateChat(jid: string, initStanza?: Element) {
     // already joined
     if (this.state.openChatsJIDS.find((r) => r.type === "user" && r.jid === jid)) {
       return;
@@ -284,12 +286,18 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const newJoin: IOpenChatJID = {
       type: "user",
       jid,
+      initStanza: initStanza || null,
     };
 
     // Lets push jid to openChatList and set it to this.state.openChats
     const newJIDS = [...this.state.openChatsJIDS, newJoin];
 
-    window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS));
+    window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS.map((j) => {
+      return {
+        ...j,
+        initStanza: null,
+      }
+    })));
 
     this.setState({
       openChatsJIDS: newJIDS,
@@ -300,7 +308,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const filteredJIDS = this.state.openChatsJIDS.filter(item => item.type !== "user" || item.jid !== jid);
 
     // Set the filtered openChatList to sessionStorage
-    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
+    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS.map((j) => {
+      return {
+        ...j,
+        initStanza: null,
+      }
+    })));
 
     // Set filtered and current openChatList to this.state.openChats
     this.setState({
@@ -322,7 +335,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
     // Lets push RoomJid to openChatList and set it to this.state.openChats
     const newJIDS = [...this.state.openChatsJIDS, newJoin];
 
-    window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS));
+    window.sessionStorage.setItem("openChats", JSON.stringify(newJIDS.map((j) => {
+      return {
+        ...j,
+        initStanza: null,
+      }
+    })));
 
     this.setState({
       openChatsJIDS: newJIDS,
@@ -333,7 +351,12 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const filteredJIDS = this.state.openChatsJIDS.filter(item => item.type !== "muc" || item.jid !== roomJID);
 
     // Set the filtered openChatList to sessionStorage
-    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS));
+    window.sessionStorage.setItem("openChats", JSON.stringify(filteredJIDS.map((j) => {
+      return {
+        ...j,
+        initStanza: null,
+      }
+    })));
 
     // Set filtered and current openChatList to this.state.openChats
     this.setState({
@@ -368,6 +391,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
     if (this.props.settings && this.props.settings.visibility === "VISIBLE_TO_ALL") {
       this.initialize();
     }
+  }
+  componentWillUnmount() {
+    this.state.connection.deleteHandler(this.messagesListenerHandler);
   }
   componentDidUpdate(prevProps: IChatProps) {
     if (
@@ -466,7 +492,16 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
   }
   public onMessageReceived(stanza: Element) {
-    console.log(stanza);
+    const userFrom = stanza.getAttribute("from").split("/")[0];
+
+    if (!this.state.openChatsJIDS.find((s) => s.jid !== userFrom && s.type === "user")) {
+      this.joinPrivateChat(
+        userFrom,
+        stanza,
+      );
+    }
+
+    return true;
   }
   public stopChat() {
     this.setState({
@@ -621,7 +656,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               .map((pchat) => (
                 <PrivateChat
                   jid={pchat.jid}
-                  initializingStanza={null}
+                  initializingStanza={pchat.initStanza}
                   key={pchat.jid}
                   leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
                   connection={this.state.connection}

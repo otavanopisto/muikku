@@ -1,9 +1,7 @@
 /*global converse */
 import * as React from 'react'
-import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
-import promisify from '~/util/promisify';
-import { IAvailableChatRoomType, IBareMessageType, IChatRoomType } from './chat';
+import { IBareMessageType } from './chat';
 import { ChatMessage } from './chatMessage';
 
 interface IPrivateChatProps {
@@ -17,12 +15,16 @@ interface IPrivateChatState {
   messages: IBareMessageType[],
   minimized: boolean;
   messageNotification: boolean;
+  targetPrescense: "away" | "chat" | "dnd" | "xa";
+
+  currentMessageToBeSent: string;
 }
 
 export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChatState> {
 
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
+  private isFocused: boolean = false;
   private messagesEnd: React.RefObject<HTMLDivElement>;
 
   constructor(props: IPrivateChatProps) {
@@ -32,6 +34,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       messages: [],
       minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.jid),
       messageNotification: !!this.props.initializingStanza,
+      currentMessageToBeSent: "",
+      targetPrescense: "xa",
     }
 
     this.messagesEnd = React.createRef();
@@ -42,24 +46,83 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.onPresence = this.onPresence.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
     this.onEnterPress = this.onEnterPress.bind(this);
+    this.setCurrentMessageToBeSent = this.setCurrentMessageToBeSent.bind(this);
+    this.onTextFieldFocus = this.onTextFieldFocus.bind(this);
+    this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
+    this.requestPrescense = this.requestPrescense.bind(this);
+  }
+
+  componentDidMount() {
+    this.messagesListenerHandler = this.props.connection.addHandler(this.onPrivateChatMessage, null, "message", "chat", null, this.props.jid, { matchBare: true });
+    this.presenceListenerHandler = this.props.connection.addHandler(this.onPresence, null, "presence", null, null, this.props.jid, { matchBare: true });
+
+    if (this.props.initializingStanza) {
+      this.onPrivateChatMessage(this.props.initializingStanza);
+    }
+
+    this.requestPrescense();
+
+    // this.sendRoomPrescense(props);
+  }
+
+  requestPrescense() {
+    this.props.connection.send($pres({
+      from: this.props.connection.jid,
+      to: this.props.jid,
+      type: "probe",
+    }));
+  }
+
+  componentWillUnmount() {
+    this.props.connection.deleteHandler(this.messagesListenerHandler);
+    this.props.connection.deleteHandler(this.presenceListenerHandler);
+  }
+
+  onTextFieldFocus() {
+    this.isFocused = true;
+    if (this.state.messageNotification) {
+      this.setState({
+        messageNotification: false,
+      });
+    }
+  }
+
+  onTextFieldBlur() {
+    this.isFocused = false;
+  }
+
+  setCurrentMessageToBeSent(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      currentMessageToBeSent: e.target.value,
+    });
   }
 
   sendMessage(event: React.FormEvent) {
     event && event.preventDefault();
 
-    // const text = this.state.currentMessageToBeSent.trim();
+    const text = this.state.currentMessageToBeSent.trim();
 
-    // if (text) {
-    //   this.props.connection.send($msg({
-    //     from: this.props.connection.jid,
-    //     to: this.props.chat.roomJID,
-    //     type: "PrivateChat",
-    //   }).c("body", text));
+    if (text) {
+      this.props.connection.send($msg({
+        from: this.props.connection.jid,
+        to: this.props.jid,
+        type: "chat",
+      }).c("body", text).up().c('active', { xmlns: 'http://jabber.org/protocol/chatstates' }));
 
-    //   this.setState({
-    //     currentMessageToBeSent: "",
-    //   }, this.scrollToBottom.bind(this, "smooth"));
-    // }
+      const newMessage = {
+        nick: null as string,
+        message: text,
+        id: null as string,
+        timestamp: new Date(),
+        userId: this.props.connection.jid.split("@")[0],
+        isSelf: true,
+      }
+
+      this.setState({
+        currentMessageToBeSent: "",
+        messages: [...this.state.messages, newMessage]
+      }, this.scrollToBottom.bind(this, "smooth"));
+    }
   }
 
   scrollToBottom(method: ScrollBehavior = "smooth") {
@@ -69,58 +132,35 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   }
 
   onPrivateChatMessage(stanza: Element) {
-    console.log(stanza);
-    return;
+    const from = stanza.getAttribute("from");
+    const fromNick: string = null;
     
-    // const from = stanza.getAttribute("from");
-    // const fromNick = from.split("/")[1];
-    // const body = stanza.querySelector("body");
-    // if (body) {
-    //   const content = body.textContent;
-    //   let date: Date = null;
+    const body = stanza.querySelector("body");
+    if (body) {
+      const content = body.textContent;
+      const date = new Date();
+      const userId = from.split("@")[0];
+      const id: string = null;
 
-    //   const delay = stanza.querySelector("delay");
-    //   let userId: string = null;
-    //   if (delay) {
-    //     date = new Date(delay.getAttribute("stamp"));
-    //     userId = delay.getAttribute("from").split("@")[0];
-    //   } else {
-    //     date = new Date();
-    //   }
+      const messageReceived: IBareMessageType = {
+        nick: fromNick,
+        message: content,
+        id,
+        timestamp: date,
+        userId,
+        isSelf: userId === this.props.connection.jid.split("@")[0],
+      };
 
-    //   const id = stanza.querySelector("stanza-id").getAttribute("id");
+      const newMessagesList = [...this.state.messages, messageReceived];
+      this.setState({
+        messages: newMessagesList,
+        messageNotification: this.state.messageNotification || (
+          !this.isFocused
+        ),
+      }, this.scrollToBottom.bind(this, "smooth"));
+    }
 
-    //   // message is already loaded, this can happen when the server
-    //   // broadcasts messages twice, as when you change your presense
-    //   if (this.state.messages.find((m) => m.id === id)) {
-    //     return;
-    //   }
-
-    //   if (!userId) {
-    //     // we might not find it, if occupants is not ready
-    //     const PrivateChatOccupant = this.state.occupants.find((o) => o.occupant.nick === fromNick);
-    //     // whenever occupants get added this should be fixed
-    //     if (PrivateChatOccupant) {
-    //       userId = PrivateChatOccupant.occupant.userId;
-    //     }
-    //   }
-
-    //   const messageReceived: IBareMessageType = {
-    //     nick: fromNick,
-    //     message: content,
-    //     id,
-    //     timestamp: date,
-    //     userId,
-    //     isSelf: userId === this.props.connection.jid.split("@")[0],
-    //   };
-
-    //   const newMessagesList = [...this.state.messages, messageReceived];
-    //   this.setState({
-    //     messages: newMessagesList,
-    //   }, this.scrollToBottom.bind(this, "smooth"));
-    // }
-
-    // return true;
+    return true;
   }
   onEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.keyCode == 13 && e.shiftKey == false) {
@@ -147,7 +187,17 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   }
   onPresence(stanza: Element) {
     console.log(stanza);
+    const show = stanza.querySelector("show");
+    const precense: any = show ? show.textContent : "chat";
+
+    this.setState({
+      targetPrescense: precense,
+    });
+
     return true;
+  }
+  setMessageAsRemoved(data: any) {
+    
   }
   render() {
     return (
@@ -167,12 +217,21 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private">
-                {/* {this.state.messages.map((message: any, i: any) => <PrivateMessage key={i} message={message} />)} */}
+                  {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
+                    messsage={message} canDelete={message.isSelf} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
-              <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
+              <textarea
+                className="chat__memofield chat__memofield--muc-message" 
+                onKeyDown={this.onEnterPress}
+                placeholder="Kirjoita viesti tähän..."
+                value={this.state.currentMessageToBeSent}
+                onChange={this.setCurrentMessageToBeSent}
+                onFocus={this.onTextFieldFocus}
+                onBlur={this.onTextFieldBlur}
+              />
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
           </div>
