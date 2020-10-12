@@ -398,7 +398,7 @@ public class ChatRESTService extends PluginRESTService {
     UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
     HashMap<String, String> senderInfo = new HashMap<>();
     senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
-    if (!isStudent(sessionController.getLoggedUserEntity())) {
+    if (!isStudent(sessionController.getLoggedUserEntity()) || StringUtils.startsWith(identifierString, "muikku-staff")) {
       senderInfo.put("name", String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName"))));
     }
     return Response.ok(senderInfo).build();
