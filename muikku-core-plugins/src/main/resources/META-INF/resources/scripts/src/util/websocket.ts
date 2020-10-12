@@ -70,6 +70,20 @@ export default class MuikkuWebsocket {
 
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     if (this.socketOpen && !this.reconnecting) {
+
+      // Check if message queue already has this message. This can happen if it was previously
+      // sent to the server but the server failed to respond within two seconds, causing that
+      // message to be added to queue. Since the message we are sending now is the latest,
+      // clear the previous one from the queue so that it doesn't accidentally overwrite this
+      // message later (if we lose connection and restore it)
+
+      let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+      if (typeof index === "number" && index !== -1) {
+        this.messagesPending.splice(index, 1);
+      }
+
+      // Send message
+
       try {
         this.webSocket.send(JSON.stringify({
           eventType: eventType,
