@@ -81,6 +81,7 @@ export default class MuikkuWebsocket {
       }
       catch (e) {
         if (eventType != 'ping:ping') {
+          console.log('queueMessage error: ' + data);
           this.queueMessage(eventType, data, onSent, stackId);
         }
         this.trigger("webSocketDesync");
@@ -88,6 +89,7 @@ export default class MuikkuWebsocket {
     }
     else {
       if (eventType != 'ping:ping') {
+        console.log('queueMessage socket not open or reconnecting: ' + data);
         this.queueMessage(eventType, data, onSent, stackId);
       }
       this.trigger("webSocketDesync");
@@ -236,10 +238,12 @@ export default class MuikkuWebsocket {
   }
 
   onWebSocketError() {
+    console.log('reconnect onWebSocketError');
     this.reconnect();
   }
 
   onWebSocketClose() {
+    console.log('reconnect onWebSocketClose');
     // This happens as soon as connection has been lost. For some reason sending messages
     // to closed websocket does not result in an error, so we might as well reconnect immediately
     this.reconnect();
@@ -290,6 +294,7 @@ export default class MuikkuWebsocket {
       }
       else {
         // Didn't get a pong to our latest ping in five seconds, reconnect
+        console.log('reconnect no pong');
         this.reconnect();
       }
     }, this.options.pingInterval);
