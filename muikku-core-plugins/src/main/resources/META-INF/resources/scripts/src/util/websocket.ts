@@ -230,7 +230,7 @@ export default class MuikkuWebsocket {
   }
 
   onWebSocketConnected() {
-    // Clear reconnection handlers, if any
+    // Clear possible reconnection handler
     this.discardReconnectHandler();
 
     // Tell the world we're in business
@@ -350,12 +350,7 @@ export default class MuikkuWebsocket {
     this.gotPong = false;
 
     // ...and detach possible reconnect handler...
-    if (this.reconnectHandler) {
-      clearInterval(this.reconnectHandler);
-      this.reconnectHandler = null;
-    }
-    this.reconnecting = false;
-    this.reconnectRetries = 0;
+    this.discardReconnectHandler();
 
     // ...and get rid of the current websocket
     if (this.webSocket) {
