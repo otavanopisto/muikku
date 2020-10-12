@@ -237,6 +237,12 @@ export default class MuikkuWebsocket {
     this.reconnect();
   }
 
+  onWebSocketClose() {
+    // This happens as soon as connection has been lost. For some reason sending messages
+    // to closed websocket does not result in an error, so we might as well reconnect immediately
+    this.reconnect();
+  }
+
   openWebSocket() {
     let host = window.location.host;
     let secure = location.protocol == 'https:';
@@ -245,6 +251,7 @@ export default class MuikkuWebsocket {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
       this.webSocket.onopen = this.onWebSocketConnected.bind(this);
+      this.webSocket.onclose = this.onWebSocketClose.bind(this);
     }
     else {
       if (console) console.log('Could not open WebSocket connection');
@@ -348,6 +355,7 @@ export default class MuikkuWebsocket {
       this.webSocket.onmessage = null;
       this.webSocket.onerror = null;
       this.webSocket.onopen = null;
+      this.webSocket.onclose = null;
       if (wasOpen) {
         try {
           this.webSocket.close();
