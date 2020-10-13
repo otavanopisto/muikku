@@ -185,7 +185,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
-  updateField: (fieldName: string, fieldValue: string, valid: boolean) => any,
+  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any,
   value?: string,
   type?: string,
   mandatory?: boolean,
@@ -226,7 +226,7 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
         valid = true;
       }
     }
-    this.props.updateField(name, value, valid);
+    this.props.updateField(value, valid, name);
   }
 
   componentDidUpdate(prevProps: any) {
@@ -255,7 +255,7 @@ interface SelectFormElementProps {
   mandatory?: boolean,
   valid?: number,
   modifiers?: string | Array<string>,
-  updateField: (fieldName: string, fieldValue: string, valid: boolean) => any;
+  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any;
 }
 
 interface SelectFormElementState {
@@ -265,7 +265,7 @@ interface SelectFormElementState {
 
 export class SelectFormElement extends React.Component<SelectFormElementProps, SelectFormElementState> {
 
-  constructor(props: InputFormElementProps) {
+  constructor(props: SelectFormElementProps) {
     super(props);
     this.updateSelectField = this.updateSelectField.bind(this);
 
@@ -291,7 +291,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
         valid = true;
       }
     }
-    this.props.updateField(name, value, valid);
+    this.props.updateField(name, valid, value,);
   }
 
   componentDidUpdate(prevProps: any) {
@@ -317,7 +317,7 @@ interface EmailFormElementProps {
   label: string,
   value?: string,
   modifiers?: string | Array<string>,
-  updateField: (fieldName: string, fieldValue: string, valid: boolean) => any;
+  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any;
   mandatory?: boolean,
   valid?: number,
 }
@@ -357,7 +357,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
         valid = true;
       }
     }
-    this.props.updateField(e.target.name, value, valid);
+    this.props.updateField(value, valid, e.target.name,);
   }
 
   componentDidUpdate(prevProps: any) {
@@ -381,7 +381,7 @@ interface SSNFormElementProps {
   label: string,
   value?: string,
   modifiers?: string | Array<string>,
-  updateField: (fieldName: string, fieldValue: string, valid: boolean) => any;
+  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any;
   mandatory?: boolean,
   valid?: number,
 }
@@ -436,7 +436,7 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
       this.setState({ valid: 0 });
     }
 
-    this.props.updateField(e.target.name, value, valid);
+    this.props.updateField(value, valid, e.target.name);
   }
 
   componentDidUpdate(prevProps: any) {

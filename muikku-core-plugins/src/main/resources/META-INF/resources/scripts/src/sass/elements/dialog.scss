@@ -250,11 +250,32 @@
   justify-content: flex-start;
 }
 
+// wonder what this is, needs to be checked
+
 .dialog__content-row--label {
   align-items: flex-start;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+}
+
+
+.dialog__content-row-label {
+  font-size: $label-large-font-size;
+}
+
+.dialog__content-row-content {
+  padding: 15px 0 0;
+}
+
+
+.dialog__content-row-content--new-workspace {
+  margin-left: 20px;
+
+  span {
+    margin-left: 10px;
+  }
+
 }
 
 .dialog__footer {
@@ -319,6 +340,4 @@
   &.state-DONE {
     color: $color-success;
   }
-
-
 }

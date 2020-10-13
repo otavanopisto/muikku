@@ -1,6 +1,6 @@
 import * as React from 'react';
-
 import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/tag-input.scss';
 
 interface Tag {
   node: React.ReactElement<any>,
@@ -10,12 +10,13 @@ interface Tag {
 interface TagInputProps {
   modifier: string,
   inputValue: string,
-  onInputDataChange: (e: React.ChangeEvent<HTMLInputElement>)=>any,
-  onDelete: (v: any)=>any,
-  placeholder: string,
+  onInputDataChange: (e: React.ChangeEvent<HTMLInputElement>) => any,
+  onDelete: (v: any) => any,
+  placeholder?: string,
+  label?: string,
   isFocused?: boolean,
-  onBlur?: (e: React.FocusEvent<any>)=>any,
-  onFocus?: (e: React.FocusEvent<any>)=>any,
+  onBlur?: (e: React.FocusEvent<any>) => any,
+  onFocus?: (e: React.FocusEvent<any>) => any,
   tags: Tag[],
   autofocus?: boolean,
   deleteByBackKey?: boolean
@@ -26,64 +27,66 @@ interface TagInputState {
 }
 
 export default class TagInput extends React.Component<TagInputProps, TagInputState> {
-  componentDidMount(){
-    if (this.props.autofocus){
+  componentDidMount() {
+    if (this.props.autofocus) {
       (this.refs["input"] as HTMLElement).focus();
     }
   }
-  constructor(props: TagInputProps){
+  constructor(props: TagInputProps) {
     super(props);
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.focus = this.focus.bind(this);
     this.onDeleteTag = this.onDeleteTag.bind(this);
   }
-  onKeyDown(e: React.KeyboardEvent<any>){
-    if (this.props.deleteByBackKey){
-      if (e.keyCode === 8 && this.props.inputValue === "" && this.props.tags.length > 0){
-        this.props.onDelete(this.props.tags[this.props.tags.length -1].value);
+  onKeyDown(e: React.KeyboardEvent<any>) {
+    if (this.props.deleteByBackKey) {
+      if (e.keyCode === 8 && this.props.inputValue === "" && this.props.tags.length > 0) {
+        this.props.onDelete(this.props.tags[this.props.tags.length - 1].value);
       }
     }
   }
-  focus(){
+  focus() {
     (this.refs["input"] as HTMLElement).focus();
   }
 
-  blur(){
+  blur() {
     (this.refs["input"] as HTMLElement).blur();
   }
-  getInputHeight(){
+  getInputHeight() {
     return (this.refs["input"] as HTMLElement).offsetHeight;
   }
-  getInputBodyHeight(){
+  getInputBodyHeight() {
     return (this.refs["inputbody"] as HTMLElement).offsetHeight;
   }
-  getSelectedHeight(){
+  getSelectedHeight() {
     return (this.refs["selected"] as HTMLElement).offsetHeight;
   }
 
-  componentDidUpdate(){
-    if (this.props.isFocused){
+  componentDidUpdate() {
+    if (this.props.isFocused) {
       this.focus();
     } else {
       this.blur();
     }
   }
-  onDeleteTag(tag: Tag){
+  onDeleteTag(tag: Tag) {
     this.props.onDelete(tag.value);
   }
-  render(){
-    return <div className={`container container--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
-      <div className="env-dialog__form-element-container" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
-        <div className="env-dialog__label">{this.props.placeholder}</div>
-        <input className="env-dialog__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
-        onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
+  render() {
+    return <div className={`container ${this.props.modifier ? "container--" + this.props.modifier : null} ${this.props.isFocused ? "focus" : ""}`}>
+      <div className="tag-input" ref="inputbody" onClick={(e) => this.props.onFocus(e as any)}>
+        {this.props.label ?
+          <div className="tag-input__label">{this.props.label}</div>
+          : null}
+        <input className={`tag-input__input ${this.props.modifier ? "tag-input__input--" + this.props.modifier : null}`} placeholder={this.props.placeholder} value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
+          onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
 
-        <div ref="selected" className="env-dialog__selected-items">
-          {this.props.tags.map((tag, index)=>{
-            return <span key={index} className="env-dialog__selected-item">
-              <span className="env-dialog__selected-item-label">{tag.node}</span>
-              <span className="env-dialog__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, tag)}></span>
+        <div ref="selected" className="tag-input__selected-items">
+          {this.props.tags.map((tag, index) => {
+            return <span key={index} className="tag-input__selected-item">
+              <span className="tag-input__selected-item-label">{tag.node}</span>
+              <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, tag)}></span>
             </span>
           })}
         </div>

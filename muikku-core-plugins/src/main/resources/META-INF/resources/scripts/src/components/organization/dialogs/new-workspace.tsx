@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import Dialog, { DialogRow } from '~/components/general/dialog';
+import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
 import { AnyActionType } from '~/actions';
 import { loadStaff, loadStudents, LoadUsersTriggerType } from '~/actions/main-function/users';
@@ -42,7 +42,7 @@ interface OrganizationNewWorkspaceProps {
 }
 
 interface OrganizationNewWorkspaceState {
-  template: string,
+  template: number,
   workspacename: string,
   locked: boolean,
   currentStep: number,
@@ -95,7 +95,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ template: e.target.value });
+    this.setState({ template: parseInt(e.target.value) });
   }
 
   doStudentSearch(value: string) {
@@ -213,10 +213,10 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       case 1:
         return <div>
           <DialogRow modifiers="new-workspace" >
-            <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.template.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
+            <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
           <DialogRow modifiers="new-workspace">
-            <InputFormElement updateField={this.setWorkspaceName} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name')} value={this.state.workspacename}></InputFormElement>
+            <InputFormElement updateField={this.setWorkspaceName} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspacename}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
@@ -224,7 +224,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
                 {this.props.templates.map((template: WorkspaceType) => {
                   return <ApplicationListItem>
                     <ApplicationListItemHeader>
-                      <input key={template.id} type="radio" onChange={this.selectTemplate} name="template" value={template.id} />
+                      <input key={template.id} type="radio" checked={this.state.template && this.state.template === template.id ? true : false} onChange={this.selectTemplate} name="template" value={template.id} />
                       <span className="application-list__header-primary">{template.name}</span>
                       <span className="application-list__header-secondary">{template.educationTypeName}</span>
                     </ApplicationListItemHeader>
@@ -262,7 +262,36 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         </DialogRow>;
       case 4:
         return <DialogRow modifiers="new-workspace">
-          Koonti
+          <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.template}
+            </DialogRowContent>
+
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.workspacename}
+            </DialogRowContent>
+          </DialogRow>
+
+          <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.students')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.selectedStudents.length > 0 ?
+                this.state.selectedStudents.map((student) => {
+                  return <span className="tag-input__selected-item">{student.label}</span>
+                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.students')}</div>}
+            </DialogRowContent>
+          </DialogRow>
+          <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.teachers')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.selectedStaff.length > 0 ?
+                this.state.selectedStaff.map((staff) => {
+                  return <span className="tag-input__selected-item">{staff.label}</span>
+                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.teachers')}</div>}
+            </DialogRowContent>
+          </DialogRow>
         </DialogRow>;
       default: return <div>EMPTY</div>
     }

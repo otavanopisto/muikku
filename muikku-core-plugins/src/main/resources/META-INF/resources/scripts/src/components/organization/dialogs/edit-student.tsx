@@ -57,7 +57,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     this.saveUser = this.saveUser.bind(this);
   }
 
-  updateField(name: string, value: string, valid: boolean) {
+  updateField(value: string, valid: boolean, name: string) {
     let fieldName = name;
     let fieldValue = valid ? value : "";
     let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });

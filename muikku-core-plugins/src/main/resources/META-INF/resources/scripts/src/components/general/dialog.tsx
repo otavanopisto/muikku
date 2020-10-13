@@ -136,3 +136,43 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
 
   }
 }
+
+interface DialogRowHeaderProps {
+  modifiers?: string | Array<string>,
+  label: string,
+}
+
+interface DialogRowHeaderState {
+}
+
+export class DialogRowHeader extends React.Component<DialogRowHeaderProps, DialogRowHeaderState> {
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return (
+      <div className={`dialog__content-row-label ${this.props.modifiers ? modifiers.map(m => `dialog__content-row-label--${m}`).join(" ") : ""}`}>
+        {this.props.label}
+      </div>
+    );
+
+  }
+}
+
+interface DialogRowContentProps {
+  modifiers?: string | Array<string>,
+}
+
+interface DialogRowContentState {
+}
+
+export class DialogRowContent extends React.Component<DialogRowContentProps, DialogRowContentState> {
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return (
+      <div className={`dialog__content-row-content ${this.props.modifiers ? modifiers.map(m => `dialog__content-row-content--${m}`).join(" ") : ""}`}>
+        {this.props.children}
+      </div>
+    );
+
+  }
+}
+

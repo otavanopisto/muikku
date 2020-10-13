@@ -1100,7 +1100,7 @@ export type CreateWorkspaceStateType = "WORKSPACE-CREATE" | "ADD-STUDENTS" | "AD
 
 export interface CreateWorkspaceTriggerType {
   (data: {
-    id: string,
+    id: number,
     name?: string,
     nameExtension?: string,
     students: SelectItem[],
@@ -1411,7 +1411,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
 
 
       if (data.students.length < 0) {
-        data.success && data.success("ADD-STUDENTS")
+        data.success && data.success("ADD-STUDENTS");
       }
 
 

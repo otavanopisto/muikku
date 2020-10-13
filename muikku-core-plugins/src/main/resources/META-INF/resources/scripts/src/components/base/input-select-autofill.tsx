@@ -19,6 +19,7 @@ export interface AutofillLoaders {
 
 export interface AutofillSelectorProps {
   placeholder?: string,
+  label?: string,
   modifier: string,
   searchItems: SelectItem[],
   selectedItems: SelectItem[],
@@ -58,11 +59,9 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     this.blurTimeout = null;
     this.selectedHeight = null;
     this.onInputChange = this.onInputChange.bind(this);
-    this.autocompleteDataFromServer = this.autocompleteDataFromServer.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
-    this.setBodyMargin = this.setBodyMargin.bind(this);
 
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
@@ -70,19 +69,6 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
   componentWillReceiveProps(nextProps: AutofillSelectorProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems })
-    }
-  }
-
-  setBodyMargin() {
-    let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
-    let prevSelectedHeight = this.selectedHeight;
-    let currentBodyMargin = parseFloat(document.body.style.marginBottom);
-    let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
-
-    if (selectedHeight !== this.selectedHeight) {
-      let bodyMargin = defaultBodyMargin + selectedHeight + "px";
-      document.body.style.marginBottom = bodyMargin;
-      this.selectedHeight = selectedHeight;
     }
   }
 
@@ -111,14 +97,10 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     }
   }
 
-  autocompleteDataFromServer(textInput: string) {
-    let searchId = (new Date()).getTime();
-    this.activeSearchId = searchId;
-  }
-
   onAutocompleteItemClick(item: SelectItem, selected: boolean) {
     if (!selected) {
       this.props.onSelect(item);
+      this.setState({ isFocused: true, autocompleteOpened: false, textInput: "" });
     }
   }
 
@@ -159,7 +141,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
       <TagInput ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
-        placeholder={this.props.placeholder}
+        label={this.props.label} placeholder={this.props.placeholder}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.props.onDelete} />
     </Autocomplete>
   }
