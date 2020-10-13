@@ -204,7 +204,7 @@ export default class MuikkuWebsocket {
         },
         error: $.proxy(function(jqXHR:any) {
           if (jqXHR.status == 403) {
-            // According to server, we are no longer logged in. Stop everything, user needs to login again 
+            // According to server, we are no longer logged in. Stop everything, user needs to login again
             // TODO localization
             this.store.dispatch(actions.displayNotification("Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.", 'error') as Action);
             this.ticket = null;
@@ -220,7 +220,7 @@ export default class MuikkuWebsocket {
             });
           }
           else if (jqXHR.status == 502) {
-            // Server is down. Stop everything, user needs to reload page 
+            // Server is down. Stop everything, user needs to reload page
             // TODO localization
             this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
             this.ticket = null;
@@ -233,7 +233,7 @@ export default class MuikkuWebsocket {
             this.ticket = null;
             callback();
           }
-        }, this)          
+        }, this)
       });
     }
     else {
@@ -259,7 +259,7 @@ export default class MuikkuWebsocket {
       },
       error: function(jqXHR:any) {
         callback();
-      }          
+      }
     });
   }
 
@@ -354,7 +354,7 @@ export default class MuikkuWebsocket {
     // Start the initial reconnect attempt
     this.reconnect();
   }
-  
+
   reconnect() {
     // Skip if we are discarded already
     if (this.discarded) {
@@ -386,7 +386,7 @@ export default class MuikkuWebsocket {
       }
     });
   }
-  
+
   discardCurrentWebSocket(resetReconnectionParams:boolean) {
     // Inform everyone we're no longer open for business...
     let wasOpen = this.socketOpen;
