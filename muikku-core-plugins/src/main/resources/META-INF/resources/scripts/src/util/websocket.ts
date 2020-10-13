@@ -205,9 +205,9 @@ export default class MuikkuWebsocket {
             // according to server, we are no longer logged in
             // TODO localization
             this.store.dispatch(actions.displayNotification("Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.", 'error') as Action);
-            callback();
             // TODO I suppose we don't try reconnect because our session expired
-            this.discardWebSocket();
+            this.discardCurrentWebSocket();
+            callback();
           }
           else if (jqXHR.status == 404) {
             // ticket no longer passes validation but we are still logged in, so try to renew the ticket
@@ -218,10 +218,10 @@ export default class MuikkuWebsocket {
           }
           else {
             // something else went wrong, including 502 for server undergoing restart
-            this.store.dispatch(actions.displayNotification("Muikuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
-            callback();
+            this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
             // TODO I suppose we don't try reconnect because our session expired
-            this.discardWebSocket();
+            this.discardCurrentWebSocket();
+            callback();
           }
         }, this)          
       });
