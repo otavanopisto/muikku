@@ -188,44 +188,67 @@ export default class MuikkuWebsocket {
   }
 
   getTicket(callback: Function) {
-    try {
-      if (this.ticket) {
-        // We have a ticket, so we need to validate it before using it
-        mApi().websocket.cacheClear().ticket.check.read(this.ticket).callback((err: Error, response: any)=>{
-          if (err) {
-            // Ticket did not pass validation, so we need to create a new one
+    if (this.ticket) {
+      console.log('validating current ticket ' + this.ticket);
+      // We have a ticket, so we need to validate it before using it
+      $.ajax({
+        url: '/rest/websocket/ticket/' + this.ticket + '/check',
+        type: 'GET',
+        cache: false,
+        success: function(data:any, textStatus:any, jqXHR:any) {
+          console.log('ticket validation ok ' + jqXHR.status);
+          callback(this.ticket);
+        },
+        error: $.proxy(function(jqXHR:any) {
+          console.log('ticket validation failed ' + jqXHR.status);
+          if (jqXHR.status == 403) {
+            // according to server, we are no longer logged in
+            // TODO localization
+            this.store.dispatch(actions.displayNotification("Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.", 'error') as Action);
+            callback();
+            // TODO I suppose we don't try reconnect because our session expired
+            this.discardWebSocket();
+          }
+          else if (jqXHR.status == 404) {
+            // ticket no longer passes validation but we are still logged in, so try to renew the ticket
             this.createTicket((ticket: any)=>{
               this.ticket = ticket;
               callback(ticket);
             });
           }
           else {
-            // Ticket passed validation, so we use it
-            callback(this.ticket);
+            // something else went wrong, including 502 for server undergoing restart
+            this.store.dispatch(actions.displayNotification("Muikuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
+            callback();
+            // TODO I suppose we don't try reconnect because our session expired
+            this.discardWebSocket();
           }
-        });
-      }
-      else {
-        // Create new ticket
-        this.createTicket((ticket: any)=>{
-          this.ticket = ticket;
-          callback(ticket);
-        });
-      }
+        }, this)          
+      });
     }
-    catch (e) {
-      callback();
+    else {
+      // Create new ticket
+      this.createTicket((ticket: any)=>{
+        this.ticket = ticket;
+        callback(ticket);
+      });
     }
   }
 
   createTicket(callback: Function) {
-    mApi().websocket.ticket.create().callback((err: Error, ticket: any)=>{
-      if (!err) {
-        callback(ticket.ticket);
-      }
-      else {
+    console.log('creating new websocket ticket');
+    $.ajax({
+      url: '/rest/websocket/ticket',
+      type: 'GET',
+      dataType: 'text',
+      success: function(data:any, textStatus:any, jqXHR:any) {
+        console.log('ticket creation successful, now using ' + data);
+        callback(data);
+      },
+      error: function(jqXHR:any) {
+        console.log('ticket creation failed due to ' + jqXHR.status);
         callback();
-      }
+      }          
     });
   }
 

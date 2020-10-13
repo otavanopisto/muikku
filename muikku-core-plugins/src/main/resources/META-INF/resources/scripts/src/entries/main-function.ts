@@ -5,6 +5,9 @@ import runApp from '~/run';
 import mainFunctionDefault from '~/util/base-main-function';
 
 runApp(reducer, App, (store)=>{
-  let websocket = mainFunctionDefault(store);
+  let websocket = null;
+  if (store.getState().status.loggedIn) {
+    websocket = mainFunctionDefault(store);
+  }
   return {websocket};
 });
