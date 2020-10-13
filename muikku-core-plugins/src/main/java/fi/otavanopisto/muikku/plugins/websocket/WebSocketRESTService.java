@@ -58,20 +58,22 @@ public class WebSocketRESTService extends PluginRESTService {
   @RESTPermitUnimplemented
   public Response check(@PathParam("TICKET") String ticketStr) {
     WebSocketTicket ticket = webSocketTicketController.findTicket(ticketStr);
-
     if (ticket != null) {
       UserEntity user = sessionController.getLoggedUserEntity(); 
-  
       Long userId = user != null ? user.getId() : null;
-      boolean valid = userId != null ? userId.equals(ticket.getUser()) : ticket.getUser() == null;
-
-      if (valid)
+      // If we're logged in and the ticket has user information, check that they match
+      // Nulls on either side are tolerated since sessions expire, etc. 
+      boolean valid = userId != null && ticket.getUser() != null ? userId.equals(ticket.getUser()) : true;  
+      if (valid) {
         return Response.noContent().build();
-      else
+      }
+      else {
         return Response.status(Response.Status.NOT_FOUND).build();
+      }
     }
-    else
+    else {
       return Response.status(Response.Status.NOT_FOUND).build();
+    }
   }
   
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  
+  <sql>create table UserIdentifierProperty (id bigint not null auto_increment, identifier varchar(255) not null, propertyKey varchar(255) not null, value longtext not null, primary key (id));</sql>
+  <sql>alter table UserIdentifierProperty add constraint UKobhl6yle764qwps62dgsglcpn unique (identifier, propertyKey);</sql>
+
+</update>

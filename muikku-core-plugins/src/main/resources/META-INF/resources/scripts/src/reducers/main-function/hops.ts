@@ -5,11 +5,11 @@ export type HOPSStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export interface HOPSDataType {
   goalSecondarySchoolDegree: "yes" | "no" | "maybe",
   goalMatriculationExam: "yes" | "no" | "maybe",
-  vocationalYears: string,        //string wtf, but this shit is actually a number
+  vocationalYears: string,        // defined as a string, but this is actually a number
   goalJustMatriculationExam: "yes" | "no",  //yo
-  justTransferCredits: string,    //another disguised number
-  transferCreditYears: string,    //disguides number
-  completionYears: string,      //disguised number
+  justTransferCredits: string,    // disguised number
+  transferCreditYears: string,    // disguised number
+  completionYears: string,      // disguised number
   mathSyllabus: "MAA" | "MAB",
   finnish: "AI" | "S2",
   swedish: boolean,
@@ -21,16 +21,23 @@ export interface HOPSDataType {
   science: "BI" | "FY" | "KE" | "GE",
   religion: "UE" | "ET" | "UX",
   additionalInfo?: string,
+  studentMatriculationSubjects: string[],
   optedIn: boolean
 }
 
-export interface HOPSType {
-  status: HOPSStatusType,
-  value: HOPSDataType
+export interface HOPSEligibilityType {
+  upperSecondarySchoolCurriculum: boolean
 }
 
-export default function vops(state:HOPSType={
+export interface HOPSType {
+  eligibility: HOPSEligibilityType,
+  status: HOPSStatusType,
+  value: HOPSDataType,
+}
+
+export default function hops(state:HOPSType={
   status: "WAIT",
+  eligibility: null,
   value: null
 }, action: ActionType):HOPSType{
   if (action.type === "UPDATE_HOPS_STATUS"){
@@ -40,6 +47,10 @@ export default function vops(state:HOPSType={
   } else if (action.type === "UPDATE_HOPS"){
     return Object.assign({}, state, {
       value: action.payload
+    });
+  } else if (action.type === "UPDATE_HOPS_ELIGIBILITY") {
+    return Object.assign({}, state, {
+      eligibility: action.payload
     });
   }
   return state;

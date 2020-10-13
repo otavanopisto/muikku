@@ -13,6 +13,7 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   disabled?: boolean,
   as?: string,
   href?: string,
+  title? : string,
   to?: string,
   className?: string,
   openInNewTab?: string,

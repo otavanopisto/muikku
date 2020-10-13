@@ -6,6 +6,7 @@
 .application-list {
   @include text;
   height: 100%;
+  margin-bottom: 20px;
   overflow: visible;
   width: 100%;
 
@@ -14,15 +15,43 @@
   }
 }
 
-.application-list__header {
+.application-list__header-container {
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
+  margin: 10px 0 0;
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;
   }
+}
+
+.application-list__header-container--sorter {
+  align-items: center;
+  background-color: $color-application-list-sorter-background;
+  cursor: pointer;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.application-list__header {
+  margin-bottom: 20px;
+}
+
+.application-list__header--discussion {
+  margin-bottom: 0;
+  margin-left: 10px;
+
+
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 0;
+  }
+}
+
+.application-list__header--sorter {
+  font-size: 0.875rem;
+  margin-bottom: 0;
 }
 
 .application-list--workspace-staff-members {
@@ -41,21 +70,7 @@
 
 
 .application-list__title {
-  @include workspace-subpanel-title;
-}
-
-.application-list__header-title {
-  display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 1rem;
-  font-weight: 600;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.25rem;
-    font-weight: 400;
-  }
+  @include mainfunction-subpanel-title;
 }
 
 .application-list__header-icon {
@@ -66,6 +81,18 @@
   flex-shrink: 0;
   font-size: 1.25rem;
   margin-right: 10px;
+}
+
+.application-list__header-icon--notification-1 {
+  color: $color-notification-type-1;
+}
+
+.application-list__header-icon--notification-2 {
+  color: $color-notification-type-2;
+}
+
+.application-list__header-icon--notification-3 {
+  color: $color-notification-type-3;
 }
 
 .application-list__header-primary {
@@ -120,6 +147,7 @@
   align-items: center;
   border-radius: 2px;
   color: $color-default;
+  cursor: help;
   display: flex;
   font-size: 1rem;
   height: 1.875rem;
@@ -214,9 +242,19 @@
   width: 100%;
 }
 
+.application-list__item--studies-file-attacment {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 5px 10px;
+  width: 100%;
+}
+
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+  align-items: center;
   background-color: $color-application-list-item-background;
+  // display: flex;
   position: relative;
 
   &.selected {
@@ -272,6 +310,29 @@
     }
   }
 }
+
+
+.application-list__item--notification {
+  border-top: 3px solid $color-message-border;
+  margin: 0 0 1px;
+  padding: 10px 10px 10px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+  }
+
+  &:first-child {
+    border-color: transparent;
+  }
+
+  &.course--open {
+    background: $color-default;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
+    z-index: 10;
+  }
+}
+
 
 .application-list__item--user {
   border-top: 1px solid $color-default-item-separator-border;
@@ -460,7 +521,10 @@
 .application-list__item-header {
   align-items: center;
   display: flex;
+  flex-basis: auto;
   flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .application-list__item-content-header {
@@ -529,6 +593,7 @@
   }
 }
 
+
 .application-list__item-header-main {
   flex-basis: auto;
   flex-grow: 1;
@@ -592,12 +657,10 @@
 }
 
 .application-list__item-header-aside {
-  align-items: center;
-  display: flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  justify-content: flex-end;
+  justify-content: right;
 }
 
 .application-list--open {
@@ -626,6 +689,8 @@
     padding: 10px 0;
   }
 }
+
+
 
 .application-list__item-content-body--journal-entry {
   padding: 0;
@@ -667,7 +732,7 @@
 
 // Discussion
 
-.application-list__header--discussion {
+.application-list__header-container--discussion {
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
@@ -823,7 +888,8 @@
   padding: 10px;
 }
 
-// Coursepicker
+// Coursepicker - TODO: these should be moved to course.scss ?
+
 .application-list__item-header--course {
   cursor: pointer;
   padding: 10px 0;
@@ -865,7 +931,7 @@
 }
 
 // Studies
-.application-list__header--studies-detailed-info {
+.application-list__header-container--studies-detailed-info {
   font-size: 1.125rem;
   padding: 10px 0;
 

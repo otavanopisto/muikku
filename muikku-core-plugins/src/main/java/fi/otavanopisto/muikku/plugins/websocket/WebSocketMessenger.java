@@ -15,6 +15,8 @@ import javax.transaction.Transactional;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 
+import org.apache.commons.codec.binary.StringUtils;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -146,6 +148,20 @@ public class WebSocketMessenger {
       WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
       if (ticket != null) {
         WebSocketMessage messageData = mapper.readValue(message, WebSocketMessage.class);
+        
+        // If server has been restarted, users have been logged out and any websockets opened
+        // after the restart most likely lack userEntityId. Field answer messages, however,
+        // still carry user information so if we have a ticket without user, we can determine
+        // the user from the message. Not the prettiest solution but it works and lets the
+        // user receive save notifications even if they are still technically not logged in.
+        
+        if (ticket.getUser() == null && StringUtils.equals(messageData.getEventType(), "workspace:field-answer-save")) {
+          JsonNode jsonNode = mapper.readTree(messageData.getData().toString());
+          long userEntityId = jsonNode.get("userEntityId").asLong();
+          ticket = webSocketTicketController.updateUser(ticket, userEntityId);
+          session.getUserProperties().put("UserId", userEntityId);
+        }
+        
         WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
       }
