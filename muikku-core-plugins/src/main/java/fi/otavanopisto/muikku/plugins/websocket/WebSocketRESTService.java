@@ -41,13 +41,11 @@ public class WebSocketRESTService extends PluginRESTService {
   @Path ("/ticket")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createTicket() {
-    System.out.println("Creating new ticket");
     UserEntity userEntity = sessionController.getLoggedUserEntity(); 
     Long userEntityId = userEntity.getId();
     Date timestamp = new Date();
     String ip = request.getRemoteAddr();
     String ticket = UUID.randomUUID().toString();
-    System.out.println("It is " + ticket);
     webSocketTicketController.createTicket(ticket, userEntityId, ip, timestamp);
     return Response.ok(ticket).build();
   }
@@ -56,7 +54,6 @@ public class WebSocketRESTService extends PluginRESTService {
   @Path ("/ticket/{TICKET}/check")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response check(@PathParam("TICKET") String ticketStr) {
-    System.out.println("ticket check user is " + sessionController.getLoggedUserIdentifier());
     WebSocketTicket ticket = webSocketTicketController.findTicket(ticketStr);
     if (ticket != null) {
       UserEntity user = sessionController.getLoggedUserEntity(); 
