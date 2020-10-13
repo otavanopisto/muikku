@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.wcag.Announcer;
+package fi.otavanopisto.muikku.wcag.announcer;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 

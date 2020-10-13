@@ -17,7 +17,7 @@ public class AbstractWCAGTest extends AbstractUITest {
   }
   
   @After
-  protected void report() {
+  public void report() {
     reportWCAG();
   }
 

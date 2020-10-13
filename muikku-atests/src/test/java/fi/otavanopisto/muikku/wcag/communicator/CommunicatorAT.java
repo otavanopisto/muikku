@@ -30,10 +30,10 @@ public class CommunicatorAT extends AbstractWCAGTest{
         waitAndClick("a.button.button--primary-function");
         waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
         testAccessibility("Communicator create message view");
-        
+        waitAndClick(".button--dialog-cancel");
         long sender = getUserIdByEmail("admin@example.com");
         long recipient = getUserIdByEmail("student@example.com");
-        for(int i = 0; i < 40; i++)
+        for(int i = 0; i < 5; i++)
           createCommunicatorMesssage("Test " + i, "Test content " + i, sender, recipient);
         
         navigate("/communicator#sent", false);
@@ -43,14 +43,14 @@ public class CommunicatorAT extends AbstractWCAGTest{
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
-        waitAndClick(".application-panel__toolbar .button-pill--label");
-        waitForVisible(".dropdown--communicator-labels");
-        testAccessibility();
-        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         testAccessibility("Communicator inbox view");
-        waitAndClick(".application-list__item-header--communicator-message:first-of-type");
+        waitAndClick(".message:first-child");
         waitForPresent(".application-list__item-content-header");
         testAccessibility("Communicator message reading view");
+        navigate("/communicator", false);        
+        waitAndClick(".application-panel__toolbar .button-pill--label");
+        waitForVisible(".dropdown--communicator-labels");
+        testAccessibility("Communicator inbox labels dialog");
       }finally{
         deleteCommunicatorMessages();
       }
