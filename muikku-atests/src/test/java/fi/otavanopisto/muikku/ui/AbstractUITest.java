@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -82,6 +83,7 @@ import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.atests.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -1234,8 +1236,34 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", groupId, discussionId, id)
       .then()
       .statusCode(204);
-  }  
+  } 
 
+  protected WorkspaceJournalEntry createJournalEntry(Long workspaceEntityId, Long userEntityId, String html, String title) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceJournalEntry payload = new WorkspaceJournalEntry();
+    payload.setUserEntityId(userEntityId);
+    payload.setWorkspaceEntityId(workspaceEntityId);
+    payload.setHtml(html);
+    payload.setTitle(title);
+    payload.setCreated(Date.from(Instant.now()));
+    payload.setArchived(false);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEID}/journal", workspaceEntityId);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceJournalEntry workspaceJournalEntry = objectMapper.readValue(response.asString(), WorkspaceJournalEntry.class);
+    assertNotNull(workspaceJournalEntry);
+    assertNotNull(workspaceJournalEntry.getId());
+    
+    return workspaceJournalEntry;
+  }
+  
   protected void reindex() {
     asAdmin().get("/test/reindex").then().statusCode(200);    
   }
