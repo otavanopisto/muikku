@@ -74,16 +74,20 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -187,6 +191,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private WorkspaceJournalController workspaceJournalController;
   
   @GET
   @Path("/login")
@@ -1024,6 +1031,26 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     userEntityController.archiveUserEntity(userEntity);
     userIndexer.removeUser(userEntity.getDefaultSchoolDataSource().getIdentifier(), userEntity.getDefaultIdentifier());
     return Response.ok().build();
+  }
+  
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/journal")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId, fi.otavanopisto.muikku.atests.WorkspaceJournalEntry payload) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
+    
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.createJournalEntry(
+        workspaceController.findWorkspaceEntityById(workspaceEntityId),
+        userEntity,
+        payload.getHtml(),
+        payload.getTitle());
+    return Response.ok(toRestModel(workspaceJournalEntry)).build();
+
   }
   
   private fi.otavanopisto.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
