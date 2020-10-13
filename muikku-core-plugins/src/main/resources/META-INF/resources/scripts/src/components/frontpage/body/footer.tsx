@@ -36,6 +36,9 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
           <p className="footer__subitem footer__subitem--privacy-policy">
             <a href="https://otavia.fi/opiskelija-ja-opintotietorekisterin-tietosuojaseloste/" target="_blank" className="link link--privacy-policy">{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}</a>
           </p>
+          <p className="footer__subitem footer__subitem--accessibility-statement">
+            <a href="https://docs.google.com/document/d/1EXS3TroGTNAq9N8bV1pK6W2byKntZpHudBHH3NBGgXY/edit?usp=sharing" target="_blank" className="link link--accessibility-statement">{this.props.i18n.text.get('plugin.footer.accesibilityStatement.text')}</a>
+          </p>
         </div>
         <div className="footer__item footer__item--logos">
           <img src="/gfx/otavia-logo-white.png" alt="Otavia logo" title="Otavia logo" className="logo--organization-footer" />

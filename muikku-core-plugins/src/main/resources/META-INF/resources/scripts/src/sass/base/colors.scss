@@ -5,6 +5,9 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 
+$color-yo-sign-up: #75ce41;
+$color-yo-sign-up-contrast: $color-default;
+
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
 
@@ -70,6 +73,12 @@ $color-workspace-hero-shadow: rgba(0, 0, 0, 0.1);
 // Meta
 $color-meta-workspace-background: $color-default;
 
+// Notifications
+
+$color-notification-type-1: #75ce4a;
+$color-notification-type-2: #b1b1b1;
+$color-notification-type-3: #c43c38;
+
 // Signature
 $color-signature-border: #f2f2f2;
 $color-signature-background: #f8f8f8;
@@ -83,8 +92,8 @@ $color-message-from-workspace-background: #f5f5f5;
 $color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
-$color-grade-passed: #2ed31c;
-$color-grade-failed: #4c4c4c;
+$color-grade-passed: #24c118;
+$color-grade-failed: #de3211;
 $color-task-evaluation: #e2ffe2;
 
 // Wizard
@@ -100,7 +109,8 @@ $color-submitted: #009fe3;
 $color-view-restricted: $color-fatal;
 $color-passed: #24c118;
 $color-failed: #de3211;
-$color-incomplete: #ff6600;
+$color-pending: #009fe3;
+$color-incomplete: #ea7503;
 $color-example: #e2ffe2;
 $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;
@@ -306,7 +316,6 @@ $color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
 $color-footer-default-background: #454545;
 $color-footer-default-text: $color-default;
 $color-footer-plagscan-background: #2c2c2c;
-
 $color-workspace-footer-default-background: $color-default;
 
 // License
@@ -374,7 +383,7 @@ $color-panel-workspace-signup-background: #ff008d;
 $color-panel-border: #e2e2e2;
 $color-panel-shadow: rgba(0, 0, 0, 0.05);
 
-// Item list
+// item list
 $color-item-list-item-font-color-active: #fff;
 $color-item-list-item-background: #fff;
 $color-item-list-item-background-hover: $color-list-hover-background;
@@ -384,7 +393,7 @@ $color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
 $color-item-list-item-aside-background-active: rgb(98, 174, 193);
 $color-item-list-icon-font-color: #4c4c4c;
 
-// Indicator
+// indicator
 $color-indicator-background: $color-fatal;
 $color-indicator-text: $color-fatal-contrast;
 
@@ -401,6 +410,7 @@ $color-toc-box-border: $color-panel-border-color;
 
 // Application list
 $color-application-list-item-background: #fff;
+$color-application-list-sorter-background: #f8f8f8;
 $color-application-list-item-fade-background: rgba(255, 255, 255, 0);
 $color-application-list-item-background-hover: $color-list-hover-background;
 $color-application-list-item-background-active: $color-list-active-background;
@@ -589,6 +599,7 @@ $color-cagtegory-11: #000;
 @import "colors/frontpage";
 @import "colors/main-function";
 @import "colors/index";
+@import "colors/sub-panel";
 @import "colors/application-dialog";
 @import "colors/message";
 @import "colors/course";

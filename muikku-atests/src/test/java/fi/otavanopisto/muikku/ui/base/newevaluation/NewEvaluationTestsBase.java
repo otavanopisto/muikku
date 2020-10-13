@@ -291,19 +291,19 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         
         waitAndClick(".icon-sort-amount-desc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick(".icon-sort-amount-asc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
 
         waitAndClick(".icon-sort-alpha-desc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick(".icon-sort-alpha-asc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         assertTextIgnoreCase(".evaluation-card .evaluation-card-title .evaluation-card-student:nth-child(1)", "master, apprentice");
         } finally {
           deleteWorkspace(workspace.getId());
@@ -488,18 +488,18 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent("div[data-user-entity-id=\"1\"]");
         waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-important-button");
         
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick(".icon-sort-alpha-desc");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        waitUntilTextRemovedFromElement(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "student, anotha");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-unimportant-button");
         waitAndClick(".icon-sort-alpha-asc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");        
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");        
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
       } finally {
           deleteWorkspace(workspace.getId());

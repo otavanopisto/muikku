@@ -13,9 +13,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import fi.otavanopisto.muikku.TestUtilities;
-import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
-import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
@@ -68,13 +66,16 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitForPresent(".application-list-document-short-header");
         waitAndClick(".announcement__select-container input");
         waitAndClick("span.button-pill__icon.icon-trash");
+        waitForVisible(".dialog a.button--standard-ok");
+        sleep(500);
         waitAndClick("a.button--standard-ok");
+        waitForNotVisible(".dialog.dialog--delete-announcement.dialog--visible");
+        waitForNotVisible(".application-list-document-short-header");
         reloadCurrentPage();
         waitForPresent(".application-panel__main-container");
-        assertTrue("Element found even though it shouldn't be there", isElementPresent(".text--item-article-header") == false);
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list-document-short-header") == false);
         navigate("/", false);
         navigate("/announcer#archived", false);
-        
         waitForPresent(".application-list-document-short-header");
         assertTextIgnoreCase(".application-list-document-short-header", "Test title");
       }finally{

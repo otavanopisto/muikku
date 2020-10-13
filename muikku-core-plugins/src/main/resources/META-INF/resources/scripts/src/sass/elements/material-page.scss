@@ -92,7 +92,9 @@
 
 .material-page__content--view-restricted {
   align-items: center;
+  // scss-lint:disable VariableForProperty
   color: darken($color-disabled, 30%);
+  // scss-lint:enable VariableForProperty
   display: flex;
   font-size: 1rem;
   font-style: italic;
@@ -1765,6 +1767,11 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-date-label {
   font-weight: bold;
   padding: 0 10px 0 0;
+}
+
+.material-page__assignment-assessment-date-data {
+  @include assessment-text;
+  line-height: 1.375rem;
 }
 
 // MATERIAL PAGE FIELD ANSWER SYNCHRONIZER

@@ -34,11 +34,16 @@ import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
+import {
+  updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords
+} from '~/actions/main-function/records';
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
-
-import { setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
+import { updateStatistics } from '~/actions/main-function/records/statistics';
+import { updateYO, updateMatriculationSubjectEligibility } from '~/actions/main-function/records/yo';
+import { updateSummary } from '~/actions/main-function/records/summary';
 
 interface MainFunctionProps {
   store: Store<StateType>,
@@ -131,16 +136,32 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     let originalData: any = queryString.parse(dataSplitted[1] || "", { arrayFormat: 'bracket' });
 
     if (!givenLocation && !originalData.w) {
-      this.props.store.dispatch(updateAllStudentUsersAndSetViewToRecords() as Action);
+      this.props.store.dispatch(setLocationToSummaryInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateSummary() as Action);
     } else if (!givenLocation) {
       this.props.store.dispatch(setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)) as Action);
+    } else if (givenLocation === "records") {
+      this.props.store.dispatch(updateAllStudentUsersAndSetViewToRecords() as Action);
     } else if (givenLocation === "vops") {
       this.props.store.dispatch(setLocationToVopsInTranscriptOfRecords() as Action);
       this.props.store.dispatch(updateVops() as Action);
     } else if (givenLocation === "hops") {
       this.props.store.dispatch(setLocationToHopsInTranscriptOfRecords() as Action);
       this.props.store.dispatch(updateHops() as Action);
+    } else if (givenLocation === "yo") {
+      this.props.store.dispatch(setLocationToYoInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateHops(() => {
+        this.props.store.dispatch(updateYO() as Action);
+        this.props.store.dispatch(updateMatriculationSubjectEligibility() as Action);
+      }) as Action);
+    } else if (givenLocation === "summary") {
+      this.props.store.dispatch(setLocationToSummaryInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateSummary() as Action);
+    } else if (givenLocation === "statistics") {
+      this.props.store.dispatch(setLocationToStatisticsInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateStatistics() as Action);
     }
+    this.props.store.dispatch(updateHops() as Action);
   }
 
   loadAnnouncerData(location: string[]) {

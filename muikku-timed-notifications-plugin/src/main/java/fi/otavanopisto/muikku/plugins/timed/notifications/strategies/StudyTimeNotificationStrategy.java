@@ -103,7 +103,21 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       offset += MAX_RESULTS;
     }
     
-    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiers(searchResult)) {
+    for (Map<String, Object> result : searchResult.getResults()) {
+      String studentId = (String) result.get("id");
+      
+      if (StringUtils.isBlank(studentId)) {
+        logger.severe("Could not process user found from search index because it had a null id");
+        continue;
+      }
+      
+      String[] studentIdParts = studentId.split("/", 2);
+      SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+      if (studentIdentifier == null) {
+        logger.severe(String.format("Could not process user found from search index with id %s", studentId));
+        continue;
+      }
+      
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
       if (studentEntity != null) {
@@ -120,13 +134,21 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
           continue;
         }
+
+        boolean isAineopiskelu = false;
+        @SuppressWarnings("unchecked")
+        ArrayList<Integer> studyProgrammes = (ArrayList<Integer>) result.get("groups");
+        if (studyProgrammes != null) {
+          // UserGroupEntity in Muikku -> 10 maps to STUDYPROGRAMME-12 -> Aineopiskelu/peruskoulu
+          // UserGroupEntity in Muikku -> 11 maps to STUDYPROGRAMME-13 -> Aineopiskelu/lukio
+          isAineopiskelu = studyProgrammes.contains(10) || studyProgrammes.contains(11); 
+        }
         
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("internetixStudent", student.hasEvaluationFees());
         templateModel.put("locale", studentLocale);
         templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate("study-time-notification", templateModel);
+        String notificationContent = renderNotificationTemplate(isAineopiskelu ? "study-time-notification-internetix" : "study-time-notification", templateModel);
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
@@ -140,28 +162,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }
-    }
-  }
-  
-  private List<SchoolDataIdentifier> getStudentIdentifiers(SearchResult searchResult){
-    List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<>();
-    for (Map<String, Object> result : searchResult.getResults()) {
-      String studentId = (String) result.get("id");
       
-      if (StringUtils.isBlank(studentId)) {
-        logger.severe("Could not process user found from search index because it had a null id");
-        continue;
-      }
-      
-      String[] studentIdParts = studentId.split("/", 2);
-      SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
-      if (studentIdentifier == null) {
-        logger.severe(String.format("Could not process user found from search index with id %s", studentId));
-        continue;
-      }
-     studentIdentifiers.add(studentIdentifier); 
     }
-    return studentIdentifiers;
   }
   
   private Collection<Long> getGroups(){

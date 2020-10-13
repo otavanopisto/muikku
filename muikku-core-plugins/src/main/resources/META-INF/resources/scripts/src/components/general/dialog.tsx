@@ -38,7 +38,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.oldOverflow = null;
     this.state = { visible: false }
   }
-
   onOverlayClick(close: () => any, e: Event) {
     if (e.target === e.currentTarget) {
       close();
@@ -48,7 +47,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   onOpen(element: HTMLElement) {
     setTimeout(() => {
       this.setState({
-        visible: true
+        visible: true,
       });
     }, 10);
     this.props.onOpen && this.props.onOpen(element);

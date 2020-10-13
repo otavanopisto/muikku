@@ -41,32 +41,8 @@ export default function(store: Store<StateType>, options: {
 
   let websocket = new Websocket(store, actionsAndCallbacks);
 
-  if (state.status.isActiveUser){
+  if (state.status.isActiveUser) {
     getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
-
-    if (state.status.loggedIn && getOptionValue(options.setupChat)){
-      mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,enabled:boolean}) {
-        if (result && result.enabled) {
-          converse.initialize({
-            bosh_service_url : '/http-bind/',
-            authentication : "prebind",
-            keepalive : true,
-            prebind_url : "/rest/chat/prebind",
-            jid: state.status.userId,
-            auto_login : true,
-            muc_domain : 'conference.' + location.hostname,
-            muc_nickname : result.mucNickName,
-            muc_show_join_leave: false,
-            hide_muc_server : true,
-            ping_interval: 45,
-            auto_minimize: true,
-            i18n: state.locales.current,
-            hide_occupants:true,
-            limit_room_controls:true
-          });
-        }
-      });
-    }
   }
 
   $.ajax({type:"HEAD", url: `/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{

@@ -193,6 +193,7 @@ export interface TemplateWorkspaceType {
 
 export interface WorkspaceType {
   archived: boolean,
+  curriculumIdentifiers: Array<string>,
   description: string,
   hasCustomImage: boolean,
   id: number,
@@ -202,14 +203,12 @@ export interface WorkspaceType {
   nameExtension?: string | null,
   numVisits: number,
   published: boolean,
+  subjectIdentifier: string | number,
   urlName: string,
 
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccessType,
-  curriculumIdentifiers?: Array<string>,
-  subjectIdentifier?: string | number,
-
   //These appear in certain circumstances
   //Usually available if externally loaded (eg. coursepicker)
   canSignup?: boolean,

@@ -108,7 +108,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       to: this.state.selectedItems,
       subject: this.state.subject,
       text: ((this.props.signature && this.state.includesSignature) ?
-        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>') :
+        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>'):
         this.state.text),
       success: () => {
         closeDialog();
