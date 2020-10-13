@@ -63,11 +63,9 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         </Link>}
       })}>
       <Link className="button-pill button-pill--profile" role="menuitem" tabIndex={0} aria-haspopup="true" aria-label={this.props.i18n.text.get("plugin.wcag.profileMenu.aria.label")}>
-        {
-          this.props.status.hasImage ?
-            <img alt={this.props.i18n.text.get("plugin.profileBadge.links.profileImageAtl")} src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
-              <span className="button-image"><span className="button-pill__icon icon-user"/></span>
-        }
+        {this.props.status.hasImage ?
+          <img alt={this.props.i18n.text.get("plugin.profileBadge.links.profileImageAtl")} src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
+            <span className="button-image"><span className="button-pill__icon icon-user"/></span>}
       </Link>
     </Dropdown>
   }

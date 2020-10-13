@@ -27,7 +27,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
   render(){
     let title = this.props.i18n.text.get('plugin.forum.pageTitle')
     let toolbar = <Toolbar/>
-    let primaryOption = !this.props.discussion.current && this.props.discussion.areas.length > 0 ? <NewThread><Link className="button button--primary-function">
+    let primaryOption = !this.props.discussion.current && this.props.discussion.areas.length > 0 ? <NewThread><Link tabIndex={0} className="button button--primary-function">
       {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
       </Link></NewThread> : null;
     let primaryOptionMobile = this.props.discussion.areas.length > 0 ? <NewThread><HoverButton icon="plus" modifier="new-message" /></NewThread> : null;

@@ -7,7 +7,8 @@ import '~/sass/elements/application-panel.scss';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import Link from '~/components/general/link';
+import '~/sass/elements/wcag.scss';
+
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionType} from '~/reducers/discussion';
 import NewArea from '../../dialogs/new-area';
@@ -58,7 +59,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
     if (this.props.discussion.current){
       let currentArea = this.props.discussion.areas.find((area)=>area.id === this.props.discussion.current.forumAreaId);
       return <div className="application-panel__toolbar">
-        <ButtonPill buttonModifiers="go-back" onClick={this.onGoBackClick} icon="back"/>
+        <ButtonPill tabIndex={0} buttonModifiers="go-back" onClick={this.onGoBackClick} icon="back"/>
         <div className="breadcrumb">
           <div className={`breadcrumb__item breadcrumb__item--area-${currentArea.id}`}>
             {currentArea.name}
@@ -75,13 +76,14 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
 
     return <ApplicationPanelToolbar>
       {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ?
-          <NewArea><ButtonPill icon="plus" buttonModifiers={["discussion-toolbar"]}/></NewArea> : null}
+        <NewArea><ButtonPill tabIndex={0} icon="plus" buttonModifiers={["discussion-toolbar"]}/></NewArea> : null}
       {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ?
-          <ModifyArea><ButtonPill disabled={!this.props.discussion.areaId} icon="pencil" buttonModifiers={["discussion-toolbar"]}/></ModifyArea> : null}
+        <ModifyArea><ButtonPill tabIndex={0} disabled={!this.props.discussion.areaId} icon="pencil" buttonModifiers={["discussion-toolbar"]}/></ModifyArea> : null}
       {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ?
-          <DeleteArea><ButtonPill disabled={!this.props.discussion.areaId} icon="trash" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
+        <DeleteArea><ButtonPill tabIndex={0} disabled={!this.props.discussion.areaId} icon="trash" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
       <div className="form-element">
-      <select className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
+        <label htmlFor="discussion-area-select" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.areaSelect.label")}</label>
+        <select id="discussion-area-select" className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
         <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
         {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
           {area.name}
