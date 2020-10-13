@@ -1,8 +1,10 @@
 /*global converse */
 import * as React from 'react'
+import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
 import { IBareMessageType } from './chat';
 import { ChatMessage } from './chatMessage';
+import promisify from '~/util/promisify';
 
 interface IPrivateChatProps {
   initializingStanza: Element;
@@ -12,6 +14,7 @@ interface IPrivateChatProps {
 }
 
 interface IPrivateChatState {
+  nick: string,
   messages: IBareMessageType[],
   minimized: boolean;
   messageNotification: boolean;
@@ -31,6 +34,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     super(props);
 
     this.state = {
+      nick: null,
       messages: [],
       minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.jid),
       messageNotification: !!this.props.initializingStanza,
@@ -61,8 +65,14 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     }
 
     this.requestPrescense();
+    this.obtainNick();
+  }
 
-    // this.sendRoomPrescense(props);
+  async obtainNick() {
+    const user: any = (await promisify(mApi().chat.userInfo.read(this.props.jid.split("@")[0],{}), "callback")()) as any;
+    this.setState({
+      nick: user.name,
+    });
   }
 
   requestPrescense() {
@@ -204,13 +214,13 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
         {this.state.minimized === true ? (
           <div onClick={this.toggleMinimizeChats} className={this.state.messageNotification ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
-            <div className="chat__minimized-title">{this.props.jid}</div>
+            <div className="chat__minimized-title">{this.state.nick}</div>
             <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
-              <div className="chat__panel-header-title">{this.props.jid}</div>
+              <div className="chat__panel-header-title">{this.state.nick}</div>
                 <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
                 <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
             </div>
