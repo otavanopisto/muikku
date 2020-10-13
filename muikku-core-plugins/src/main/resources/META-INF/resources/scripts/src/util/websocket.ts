@@ -204,10 +204,10 @@ export default class MuikkuWebsocket {
         },
         error: $.proxy(function(jqXHR:any) {
           if (jqXHR.status == 403) {
-            this.ticket = null;
-            // According to server, we are no longer logged in. Stop trying everything, user needs to reload page 
+            // According to server, we are no longer logged in. Stop everything, user needs to login again 
             // TODO localization
             this.store.dispatch(actions.displayNotification("Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.", 'error') as Action);
+            this.ticket = null;
             this.discarded = true;
             this.discardCurrentWebSocket(true);
             callback();
@@ -219,8 +219,17 @@ export default class MuikkuWebsocket {
               callback(ticket);
             });
           }
+          else if (jqXHR.status == 502) {
+            // Server is down. Stop everything, user needs to reload page 
+            // TODO localization
+            this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
+            this.ticket = null;
+            this.discarded = true;
+            this.discardCurrentWebSocket(true);
+            callback();
+          }
           else {
-            // Something else happened. We should be reconnecting, though 
+            // Something else happened. Carry on since we're most likely reconnecting anyway
             this.ticket = null;
             callback();
           }
