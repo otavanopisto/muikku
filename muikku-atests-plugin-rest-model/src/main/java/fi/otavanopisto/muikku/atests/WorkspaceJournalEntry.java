@@ -8,6 +8,15 @@ public class WorkspaceJournalEntry {
    
   }
   
+  public WorkspaceJournalEntry(Long workspaceEntityId, Long userEntityId, String html, String title, Date created, Boolean archived) {
+    this.workspaceEntityId = workspaceEntityId;
+    this.userEntityId = userEntityId;
+    this.html = html;
+    this.title = title;
+    this.created = created;
+    this.archived = archived;
+  }
+  
   public Long getWorkspaceEntityId() {
     return workspaceEntityId;
   }
