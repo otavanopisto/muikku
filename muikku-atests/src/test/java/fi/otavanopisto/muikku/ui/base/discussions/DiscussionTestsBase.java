@@ -51,7 +51,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         sendKeys("input.env-dialog__input--new-discussion-thread-title", "Test title for discussion");
         addTextToCKEditor("Test text for discussion.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
-        waitForPresent("h3.application-list__title");
+        waitForPresent(".application-list__title");
         assertText("h3.application-list__title", "Test title for discussion");
         waitForPresent(".application-list__item-body article>p");
         assertTextIgnoreCase(".application-list__item-body article>p", "Test text for discussion.");
@@ -209,8 +209,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply to reply.");
         click(".button--dialog-execute");
-        waitForPresentAndVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p");
-        assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p", "Test reply to reply.");
+        waitForPresentAndVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p");
+        assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p", "Test reply to reply.");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }
@@ -251,10 +251,10 @@ public class DiscussionTestsBase extends AbstractUITest {
           waitAndClick(".link--application-list-item-footer:nth-child(2)");
           addToEndCKEditor("Test with quote.");
           waitAndClick(".button--dialog-execute");
-          waitForPresent(".application-list__item--discussion-reply article blockquote p strong");
-          assertText(".application-list__item--discussion-reply article blockquote p strong", "Admin User");
-          assertText(".application-list__item--discussion-reply article blockquote p:nth-child(2)", "Testing testing daa daa");
-          assertText(".application-list__item--discussion-reply article>p", "Test with quote.");
+          waitForPresent(".application-list__item--discussion-reply .rich-text blockquote p strong");
+          assertText(".application-list__item--discussion-reply .rich-text blockquote p strong", "Admin User");
+          assertText(".application-list__item--discussion-reply .rich-text blockquote p:nth-child(2)", "Testing testing daa daa");
+          assertText(".application-list__item--discussion-reply .rich-text>p", "Test with quote.");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }
@@ -298,7 +298,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForPresentAndVisible("h3.application-list__title");
+          waitForPresentAndVisible(".application-list__title");
           reloadCurrentPage();
           waitForPresentAndVisible("h3.application-list__title");
           assertText("h3.application-list__title", "Testinging");
