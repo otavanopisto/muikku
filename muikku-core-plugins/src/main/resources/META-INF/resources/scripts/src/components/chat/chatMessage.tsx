@@ -5,7 +5,7 @@ import mApi from '~/lib/mApi';
 import promisify from '~/util/promisify';
 import { IBareMessageType } from './chat';
 import { UserType } from '~/reducers/user-index';
-import moment from "~/lib/moment";
+import { i18nType } from '~/reducers/base/i18n';
 
 const REAL_NAMES_CACHE: {
   [key: string]: string;
@@ -17,6 +17,7 @@ interface IChatMessageProps {
   onMarkForDelete: () => void;
   deleted?: boolean;
   deletedTime?: string;
+  i18n: i18nType,
 }
 
 interface IChatMessageState {
@@ -86,15 +87,15 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
           {this.props.messsage.nick} {this.state.showName ? <span className="chat__message-meta-sender-real-name">({this.state.realName}) </span> : null}
         </span>
         <span className="chat__message-meta-timestamp">
-          {moment(this.props.messsage.timestamp).format("L")}
+          {this.props.i18n.time.format(this.props.messsage.timestamp, "L")}
         </span>
       </div>
       <div className="chat__message-content-container" onClick={this.toggleShowRemoveButton}>
         <div className="chat__message-content">
-          {this.props.deleted ? <i>Viesti poistettu {moment(this.props.deletedTime).format("L")}</i>  : this.props.messsage.message}
+          {this.props.deleted ? <i>{this.props.i18n.text.get("plugin.chat.message.deleted")} {this.props.i18n.time.format(this.props.deletedTime, "L")}</i>  : this.props.messsage.message}
         </div>
         {this.state.showRemoveButton ? <div className="chat__message-action-container">
-          <div onClick={this.props.onMarkForDelete} className="chat__message-delete">Poista</div>
+          <div onClick={this.props.onMarkForDelete} className="chat__message-delete">{this.props.i18n.text.get("plugin.chat.message.delete")}</div>
         </div> : null}
       </div>
     </div>

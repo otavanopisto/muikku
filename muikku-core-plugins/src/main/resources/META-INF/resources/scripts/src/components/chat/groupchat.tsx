@@ -1,6 +1,7 @@
 /*global converse */
 import * as React from 'react'
 import mApi from '~/lib/mApi';
+import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/chat.scss';
 import promisify from '~/util/promisify';
 import { IAvailableChatRoomType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
@@ -14,6 +15,7 @@ interface IGroupChatProps {
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
   requestExtraInfoAboutRoom: () => void;
   connection: Strophe.Connection;
+  i18n: i18nType,
   presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
 }
 
@@ -739,11 +741,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 <div className="chat__subpanel-body">
                   <form onSubmit={this.setChatroomConfiguration}>
                     <div className="chat__subpanel-row">
-                      <label className="chat__label">Huoneen nimi: </label>
+                      <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
                       <input className="chat__textfield" name="newroomName" value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
                     </div>
                     <div className="chat__subpanel-row">
-                      <label className="chat__label">Huoneen kuvaus: </label>
+                      <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
                       <textarea className="chat__memofield" name="newroomDescription" value={this.state.roomDescField} onChange={this.updateRoomDescField}></textarea>
                     </div>
                     {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
@@ -762,7 +764,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
                   {this.state.messages.map((message) => <ChatMessage key={message.id} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
-                    messsage={message} canDelete={this.state.isModerator || message.isSelf} />)}
+                    messsage={message} canDelete={this.state.isModerator || message.isSelf} i18n={this.props.i18n} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
@@ -782,7 +784,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent} />
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder={this.props.i18n.text.get("plugin.chat.room.writemsg")} onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent} />
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)

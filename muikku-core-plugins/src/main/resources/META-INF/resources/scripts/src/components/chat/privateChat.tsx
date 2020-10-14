@@ -5,12 +5,14 @@ import '~/sass/elements/chat.scss';
 import { IBareMessageType } from './chat';
 import { ChatMessage } from './chatMessage';
 import promisify from '~/util/promisify';
+import { i18nType } from '~/reducers/base/i18n';
 
 interface IPrivateChatProps {
   initializingStanza: Element;
   leaveChat: () => void;
   connection: Strophe.Connection;
   jid: string;
+  i18n: i18nType;
 }
 
 interface IPrivateChatState {
@@ -228,7 +230,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private">
                   {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
-                    messsage={message} canDelete={message.isSelf} />)}
+                    messsage={message} canDelete={message.isSelf} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>
@@ -236,7 +238,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
               <textarea
                 className="chat__memofield chat__memofield--muc-message" 
                 onKeyDown={this.onEnterPress}
-                placeholder="Kirjoita viesti tähän..."
+                placeholder={this.props.i18n.text.get("plugin.chat.private.writemsg")}
                 value={this.state.currentMessageToBeSent}
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}

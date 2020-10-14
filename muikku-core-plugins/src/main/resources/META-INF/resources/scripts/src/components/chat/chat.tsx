@@ -9,6 +9,7 @@ import { Groupchat } from './groupchat';
 import { UserChatSettingsType } from '~/reducers/main-function/user-index';
 import promisify from "~/util/promisify";
 import { PrivateChat } from './privateChat';
+import { i18nType } from '~/reducers/base/i18n';
 
 export interface IChatRoomType {
   name: string;
@@ -142,6 +143,7 @@ interface IChatState {
 interface IChatProps {
   settings: UserChatSettingsType;
   currentLocale: string;
+  i18n: i18nType,
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
@@ -571,20 +573,20 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
           <div className="chat__panel-body chat__panel-body--controlbox">
             <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
-              <option value="chat">Paikalla</option>
-              <option value="away">Palaan pian</option>
-              <option value="dnd">Do not Disturb</option>
-              <option value="xa">Offline</option>
+              <option value="chat">{this.props.i18n.text.get("plugin.chat.state.online")}</option>
+              <option value="away">{this.props.i18n.text.get("plugin.chat.state.away")}</option>
+              <option value="dnd">{this.props.i18n.text.get("plugin.chat.state.dnd")}</option>
+              <option value="xa">{this.props.i18n.text.get("plugin.chat.state.offline")}</option>
             </select>
 
-            <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
+            <div className="chat__controlbox-rooms-heading">{this.props.i18n.text.get("plugin.chat.rooms.workspace")}</div>
             <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
               {this.getWorkspaceMucRooms().length > 0 ?
                 this.getWorkspaceMucRooms().map((chat, i) => <Room requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)} modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(this, chat.roomJID)} key={i} chat={chat} />)
                 : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
-            <div className="chat__controlbox-rooms-heading">Muut huoneet:</div>
+            <div className="chat__controlbox-rooms-heading">{this.props.i18n.text.get("plugin.chat.rooms.others")}</div>
             <div className="chat__controlbox-rooms-listing">
               {this.getNotWorkspaceMucRooms().length > 0 ?
                 this.getNotWorkspaceMucRooms().map((chat, i) => <Room requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)} toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(this, chat.roomJID)} key={i} chat={chat} />)
@@ -599,20 +601,18 @@ class Chat extends React.Component<IChatProps, IChatState> {
               <div className="chat__subpanel-body">
                 <form onSubmit={this.createAndJoinChatRoom}>
                   <div className="chat__subpanel-row">
-                    <label className="chat__label">Huoneen nimi:</label>
+                  <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
                     <input
                       className="chat__textfield"
-                      name="roomName"
                       type="text"
                       value={this.state.roomNameField}
                       onChange={this.updateRoomNameField}
                     />
                   </div>
                   <div className="chat__subpanel-row">
-                    <label className="chat__label">Huoneen kuvaus:</label>
+                    <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
                     <textarea
                       className="chat__memofield"
-                      name="roomDesc"
                       value={this.state.roomDescField}
                       onChange={this.updateRoomDescField}
                     />
@@ -647,6 +647,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               leaveChatRoom={this.leaveChatRoom.bind(this, chat.roomJID)}
               chat={chat}
               onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
+              i18n={this.props.i18n}
             />
             : null)}
 
@@ -660,6 +661,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                   key={pchat.jid}
                   leaveChat={this.leavePrivateChat.bind(this, pchat.jid)}
                   connection={this.state.connection}
+                  i18n={this.props.i18n}
                 />))
           }
         </div>
@@ -672,6 +674,7 @@ function mapStateToProps(state: StateType) {
   return {
     currentLocale: state.locales.current,
     settings: state.profile.chatSettings,
+    i18n: state.i18n,
   }
 };
 
