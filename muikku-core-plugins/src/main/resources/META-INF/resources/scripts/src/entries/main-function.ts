@@ -8,6 +8,9 @@ import tabOrMouse from '~/util/tab-or-mouse';
 runApp(reducer, App, (store)=>{
   tabOrMouse();
 
-  let websocket = mainFunctionDefault(store);
+  let websocket = null;
+  if (store.getState().status.loggedIn) {
+    websocket = mainFunctionDefault(store);
+  }
   return {websocket};
 });
