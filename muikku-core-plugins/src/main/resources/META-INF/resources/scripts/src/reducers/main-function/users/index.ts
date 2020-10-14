@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { UserWithSchoolDataType, UserType } from '~/reducers/user-index';
+import { UserWithSchoolDataType, UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserType>;
@@ -17,7 +17,13 @@ export interface StudyprogrammeType {
 
 export interface UsersType {
   students: UsersListType,
-  staff: UsersListType
+  staff: UsersListType,
+}
+
+export interface UsersSelectType {
+  students: UsersListType,
+  staff: UsersListType,
+  userGroups: Array<UserGroupType>,
 }
 
 // Do not delete, this is for organization
@@ -37,6 +43,28 @@ export default function users(state: UsersType = {
   }
   return state;
 }
+
+export function userSelect(state: UsersSelectType = {
+  students: [],
+  staff: [],
+  userGroups: [],
+}, action: ActionType): UsersSelectType {
+  if (action.type === "UPDATE_STUDENT_SELECTOR") {
+    return Object.assign({}, state, {
+      students: action.payload
+    });
+  } else if (action.type === "UPDATE_STAFF_SELECTOR") {
+    return Object.assign({}, state, {
+      staff: action.payload
+    });
+  } else if (action.type === "UPDATE_GROUP_SELECTOR") {
+    return Object.assign({}, state, {
+      userGroups: action.payload
+    });
+  }
+  return state;
+}
+
 
 // These are here, because they are needed in the creation of a new user.
 // Not sure if they should actually be here, but changing their location is easy

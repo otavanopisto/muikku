@@ -23,8 +23,6 @@ export interface AutofillSelectorProps {
   modifier: string,
   searchItems: SelectItem[],
   selectedItems: SelectItem[],
-  showFullNames: boolean,
-  showEmails?: boolean,
   autofocus?: boolean,
   onDelete: (select: SelectItem) => any,
   onSelect: (select: SelectItem) => any,

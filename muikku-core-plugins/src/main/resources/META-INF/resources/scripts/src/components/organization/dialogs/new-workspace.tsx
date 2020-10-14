@@ -2,25 +2,15 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
-import { AnyActionType } from '~/actions';
-import { loadStaff, loadStudents, LoadUsersTriggerType } from '~/actions/main-function/users';
+import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import { loadTemplatesFromServer, LoadTemplatesFromServerTriggerType, CreateWorkspaceTriggerType, createWorkspace, CreateWorkspaceStateType } from '~/actions/workspaces';
-import notificationActions from '~/actions/base/notifications';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
-import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
 import { bindActionCreators } from 'redux';
-import { StatusType } from '~/reducers/base/status';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
-import { StudyprogrammeTypes } from '~/reducers/main-function/users';
-import { UsersType } from '~/reducers/main-function/users';
+import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
-
-import { UserType, UserStaffType } from '~/reducers/user-index';
-import studiesEnded from '~/components/index/body/studies-ended';
-import Workspace from '~/containers/workspace';
 
 interface TemplateType {
   id: number,
@@ -33,16 +23,17 @@ interface OrganizationNewWorkspaceProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   data?: CreateWorkspaceType,
-  users: UsersType,
+  users: UsersSelectType,
   templates: WorkspaceType[],
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
+  loadUserGroups: LoadUsersTriggerType,
   loadTemplates: LoadTemplatesFromServerTriggerType
   createWorkspace: CreateWorkspaceTriggerType,
 }
 
 interface OrganizationNewWorkspaceState {
-  template: number,
+  template: SelectItem,
   workspacename: string,
   locked: boolean,
   currentStep: number,
@@ -61,7 +52,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     super(props);
     this.state = {
       workspacename: "",
-      template: null,
+      template: { id: null, label: "" },
       selectedStaff: [],
       selectedStudents: [],
       locked: false,
@@ -95,7 +86,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ template: parseInt(e.target.value) });
+    this.setState({ template: { id: parseInt(e.target.value), label: e.target.name } });
   }
 
   doStudentSearch(value: string) {
@@ -178,7 +169,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     });
 
     this.props.createWorkspace({
-      id: this.state.template,
+      id: this.state.template.id,
       name: this.state.workspacename,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,
@@ -222,9 +213,9 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <ApplicationList>
               <form>
                 {this.props.templates.map((template: WorkspaceType) => {
-                  return <ApplicationListItem>
+                  return <ApplicationListItem key={template.id}>
                     <ApplicationListItemHeader>
-                      <input key={template.id} type="radio" checked={this.state.template && this.state.template === template.id ? true : false} onChange={this.selectTemplate} name="template" value={template.id} />
+                      <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />
                       <span className="application-list__header-primary">{template.name}</span>
                       <span className="application-list__header-secondary">{template.educationTypeName}</span>
                     </ApplicationListItemHeader>
@@ -244,8 +235,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           <AutofillSelector modifier="add-students"
             loader={this.doStudentSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={studentSearchItems} onDelete={this.deleteStudent} onSelect={this.selectStudent}
-            showFullNames={true} />
+            selectedItems={this.state.selectedStudents} searchItems={studentSearchItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
         </DialogRow>;
       case 3:
 
@@ -257,23 +247,26 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           <AutofillSelector modifier="add-teachers"
             loader={this.doStaffSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={teacherSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff}
-            showFullNames={true} />
+            selectedItems={this.state.selectedStaff} searchItems={teacherSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 4:
         return <DialogRow modifiers="new-workspace">
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
             <DialogRowContent modifiers="new-workspace">
-              {this.state.template}
-            </DialogRowContent>
-
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
-            <DialogRowContent modifiers="new-workspace">
-              {this.state.workspacename}
+              {this.state.template.label !== "" ?
+                <div>{this.state.template.label}</div>
+                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.template')}</div>}
             </DialogRowContent>
           </DialogRow>
-
+          <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.workspacename !== "" ?
+                <div>{this.state.workspacename}</div>
+                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.workspacename')}</div>}
+            </DialogRowContent>
+          </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.students')} />
             <DialogRowContent modifiers="new-workspace">
@@ -326,13 +319,19 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    users: state.organizationUsers,
+    users: state.userSelect,
     templates: state.organizationWorkspaces.templateWorkspaces
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ loadStaff, loadStudents, loadTemplates: loadTemplatesFromServer, createWorkspace }, dispatch);
+  return bindActionCreators({
+    loadStaff: loadSelectorStaff,
+    loadStudents: loadSelectorStudents,
+    loadUserGroups: loadSelectorUserGroups,
+    loadTemplates: loadTemplatesFromServer,
+    createWorkspace
+  }, dispatch);
 };
 
 export default connect(
