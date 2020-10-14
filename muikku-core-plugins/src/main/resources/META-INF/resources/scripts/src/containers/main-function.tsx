@@ -224,7 +224,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
 

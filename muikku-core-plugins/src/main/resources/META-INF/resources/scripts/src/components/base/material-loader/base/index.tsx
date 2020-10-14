@@ -71,7 +71,7 @@ interface BaseProps {
   i18n: i18nType,
   status: StatusType,
   workspace: WorkspaceType,
-  websocket: WebsocketStateType,
+  websocketState: WebsocketStateType,
   answerable: boolean,
 
   compositeReplies?: MaterialCompositeRepliesType,
@@ -229,16 +229,16 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
   //When we mount we need to register the websocket event for the answer saved
   componentWillMount(){
-    if (this.props.websocket.websocket) {
-      this.props.websocket.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
-      this.props.websocket.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+    if (this.props.websocketState.websocket) {
+      this.props.websocketState.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
+      this.props.websocketState.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
     }
   }
   //and we unregister that on unmount and of course unmount all the will be orphaned react components in the dom
   componentWillUnmount(){
-    if (this.props.websocket.websocket) {
-      this.props.websocket.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
-      this.props.websocket.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+    if (this.props.websocketState.websocket) {
+      this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
+      this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
     }
   }
   //when an answer is saved from the server, as in the websocket calls this
@@ -347,7 +347,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   //Ok so this is what the element calls every time that changes
   onValueChange(context: React.Component<any, any>, name: string, newValue: any){
-    if (!this.props.websocket.websocket) {
+    if (!this.props.websocketState.websocket) {
       // can't do anything if no websocket
       return;
     }
@@ -376,7 +376,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.timeoutChangeRegistry[name] = setTimeout(()=>{
 
       //Tell the server thru the websocket to save
-      this.props.websocket.websocket.sendMessage("workspace:field-answer-save", JSON.stringify({
+      let messageData = JSON.stringify({
         answer: newValue,
         //I have no idea what this is for
         embedId: "",
@@ -385,7 +385,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         workspaceEntityId: this.props.workspace.id,
         workspaceMaterialId: this.props.material.workspaceMaterialId,
         userEntityId: this.props.status.userId
-      }), null, name + "-" + this.props.workspace.id + "-" + this.props.material.workspaceMaterialId + "-" + this.props.material.materialId);
+      });
+      let stackId = name + "-" + this.props.workspace.id + "-" + this.props.material.workspaceMaterialId + "-" + this.props.material.materialId;
+      this.props.websocketState.websocket.sendMessage("workspace:field-answer-save", messageData, null, stackId);
       //We set no callback onsent
       //and for the stackId we use this unique id that should represent the only field
       //remember that base.tsx represents a specific page so a name in the registry here suffices
@@ -398,6 +400,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       //And we wait the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY
       //for considering the answer unsynced if the server does not reply
       this.timeoutConnectionFailedRegistry[name] = setTimeout(()=>{
+        // Takes too long so we queue the message again
+        this.props.websocketState.websocket.queueMessage("workspace:field-answer-save", messageData, null, stackId);
         context.setState({syncError: "server does not reply"});
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE)
