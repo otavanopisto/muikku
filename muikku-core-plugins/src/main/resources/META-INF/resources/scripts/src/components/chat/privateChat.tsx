@@ -230,7 +230,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private">
                   {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
-                    messsage={message} canDelete={message.isSelf} i18n={this.props.i18n} />)}
+                    messsage={message} canDelete={false && message.isSelf} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>

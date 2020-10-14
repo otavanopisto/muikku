@@ -17,61 +17,6 @@ export interface IChatRoomType {
   description: string;
 }
 
-/*
-VARIABLES:
-
-MuikkuUser
-  Object that's contains basic info (firstName and lastName) of loggedin Muikku user.
-
-MuikkuChatUser
-  Object that's contains Muikku user's chat settings.
-
-UserId
-  The local part of BareJID/FullJID and equal as PyramusNickName, used only when querying private message senders MuikkuNickName.
-
-BareJID
-  The <user@host> by which a user is identified outside the context of any existing session or resource; contrast with FullJID and occupantBareJID.
-
-FullJID
-  The <user@host/resource> by which an online user is identified outside the context of a room; contrast with BareJID and occupantBareJID.
-
-occupantBareJID
-  The <room@service/nick> by which an occupant is identified within the context of a room; contrast with BareJID and FullJID.
-
-RoomJID
-  The <room@service> address of a room.
-
-RoomID
-  The localpart of a RoomJID, which might be opaque and thus lack meaning for human users (see under Business Rules for syntax); contrast with RoomName.
-
-RoomName
-  A user-friendly, natural-language name for a room, configured by the room owner and presented in Service Discovery queries; contrast with Room ID.
-
-RoomPersistency
-  Chat room persistency.
-
-RoomDesc
-  A user-friendly, natural-language description for a room, configured by the room owner pulled from Openfire and/or browserStorage.
-
-RoomConfig
-  This is used to gather necessary room configurations.
-
-MuikkuNickName
-  A user-friendly, natural-language nick name for the user, configured by the user itself via Muikku user profile view.
-
-MuikkuFirstName
-  Muikku user's first name
-
-MuikkuLastName
-  Muikku user's last name
-
-MuikkuRealName
-  Real nam eof Muikku user, consists of first name and last name.
-
-PyramusUserID
-  A pre-defined pyramus-student-# or pyramus-staff-# user ide. This is the local part (user) in bareJID and fullJID and resource part (nick) in occupantBareJID variables.
-*/
-
 export interface IChatMessageType {
   message: string;
   occupant: IChatOccupant;
@@ -617,16 +562,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       onChange={this.updateRoomDescField}
                     />
                   </div>
-                  {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
-                    <label className="chat__label">Pysyvä huone:</label>
-                    <input
-                      className="chat__checkbox"
-                      type="checkbox"
-                      name="persistent"
-                      checked={this.state.roomPersistent}
-                      onChange={this.toggleRoomPersistent}
-                    />
-                  </div>} */}
                   <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone" />
                 </form>
               </div>
