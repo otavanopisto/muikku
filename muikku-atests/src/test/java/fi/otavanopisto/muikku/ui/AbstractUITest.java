@@ -1238,12 +1238,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   } 
 
-  protected WorkspaceJournalEntry createJournalEntry(Long workspaceEntityId, Long userEntityId, String html, String title) throws JsonParseException, JsonMappingException, IOException {
+  protected WorkspaceJournalEntry createJournalEntry(Long workspaceId, Long userEntityId, String html, String title) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     WorkspaceJournalEntry payload = new WorkspaceJournalEntry();
     payload.setUserEntityId(userEntityId);
-    payload.setWorkspaceEntityId(workspaceEntityId);
+    payload.setWorkspaceEntityId(workspaceId);
     payload.setHtml(html);
     payload.setTitle(title);
     payload.setCreated(Date.from(Instant.now()));
@@ -1252,7 +1252,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
-      .post("/test/workspaces/{WORKSPACEID}/journal", workspaceEntityId);
+      .post("/test/workspaces/{WORKSPACEID}/journal", workspaceId);
     
     response.then()
       .statusCode(200);

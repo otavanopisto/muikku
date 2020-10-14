@@ -1036,8 +1036,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEID}/journal")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId, fi.otavanopisto.muikku.atests.WorkspaceJournalEntry payload) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceId, fi.otavanopisto.muikku.atests.WorkspaceJournalEntry payload) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -1045,14 +1045,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
     
     WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.createJournalEntry(
-        workspaceController.findWorkspaceEntityById(workspaceEntityId),
+        workspaceController.findWorkspaceEntityById(workspaceId),
         userEntity,
         payload.getHtml(),
         payload.getTitle());
-    return Response.ok(toRestModel(workspaceJournalEntry)).build();
+    return Response.ok(createRestEntity(workspaceJournalEntry)).build();
 
   }
   
+  private fi.otavanopisto.muikku.atests.WorkspaceJournalEntry createRestEntity(WorkspaceJournalEntry workspaceJournalEntry) {
+    return new fi.otavanopisto.muikku.atests.WorkspaceJournalEntry(workspaceJournalEntry.getWorkspaceEntityId(), workspaceJournalEntry.getUserEntityId(),
+        workspaceJournalEntry.getHtml(), workspaceJournalEntry.getTitle(), workspaceJournalEntry.getCreated(), workspaceJournalEntry.getArchived());
+  }
+
   private fi.otavanopisto.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
     return new fi.otavanopisto.muikku.atests.Workspace(workspaceEntity.getId(), 
         name, 
