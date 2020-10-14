@@ -41,35 +41,37 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
     this.confirmContactInfo = this.confirmContactInfo.bind(this);
   }
   async componentDidMount(){
-    try {
-      let user:UserWithSchoolDataType = await promisify(mApi().user.students.read(this.props.status.userSchoolDataIdentifier), 'callback')() as UserWithSchoolDataType;
-      if (!user || (user.updatedByStudent && !FORCE_OPEN)){
-        return;
-      }
-
-      let addresses:Array<StudentUserAddressType> = await promisify(mApi().user.students.addresses.read(this.props.status.userSchoolDataIdentifier), 'callback')() as Array<StudentUserAddressType>;
-      let address = null;
-      for (let i = 0; i < addresses.length; i++) {
-        if (addresses[i].defaultAddress) {
-          address = addresses[i];
-          break;
+    if (this.props.status.isStudent) {
+      try {
+        let user:UserWithSchoolDataType = await promisify(mApi().user.students.read(this.props.status.userSchoolDataIdentifier), 'callback')() as UserWithSchoolDataType;
+        if (!user || (user.updatedByStudent && !FORCE_OPEN)){
+          return;
         }
-      }
 
-      if (!address){
-        address = addresses[0];
-      }
+        let addresses:Array<StudentUserAddressType> = await promisify(mApi().user.students.addresses.read(this.props.status.userSchoolDataIdentifier), 'callback')() as Array<StudentUserAddressType>;
+        let address = null;
+        for (let i = 0; i < addresses.length; i++) {
+          if (addresses[i].defaultAddress) {
+            address = addresses[i];
+            break;
+          }
+        }
 
-      if (!address){
-        return;
-      }
+        if (!address){
+          address = addresses[0];
+        }
 
-      this.setState({
-        user,
-        address,
-        isOpen: true
-      });
-    } catch (e){
+        if (!address){
+          return;
+        }
+
+        this.setState({
+          user,
+          address,
+          isOpen: true
+        });
+      } catch (e){
+      }
     }
   }
   closeDialog(){
