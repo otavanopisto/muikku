@@ -12,16 +12,16 @@ import fi.otavanopisto.muikku.plugin.LocalizedPluginDescriptor;
 import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
 public class ChatPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
-  
+
   @Override
   public void init() {
   }
 
   @Override
-	public String getName() {
-		return "chat";
-	}
-	
+  public String getName() {
+    return "chat";
+  }
+
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
