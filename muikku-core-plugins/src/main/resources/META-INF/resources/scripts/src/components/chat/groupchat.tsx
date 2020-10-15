@@ -407,7 +407,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     // XEP-0045: 7.14 Exiting a Room
     const presStanza = $pres({
       from: props.connection.jid,
-      to: roomJID,
+      to: roomJID + "/" + props.nick,
       type: "unavailable"
     });
 
