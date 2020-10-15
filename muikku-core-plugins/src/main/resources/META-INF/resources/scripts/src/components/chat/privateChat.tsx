@@ -21,6 +21,7 @@ interface IPrivateChatState {
   minimized: boolean;
   messageNotification: boolean;
   targetPrescense: "away" | "chat" | "dnd" | "xa";
+  isStudent: boolean,
 
   currentMessageToBeSent: string;
 }
@@ -42,6 +43,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       messageNotification: !!this.props.initializingStanza,
       currentMessageToBeSent: "",
       targetPrescense: "xa",
+      isStudent: (window as any).MUIKKU_IS_STUDENT,
     }
 
     this.messagesEnd = React.createRef();
@@ -230,6 +232,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private">
                   {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
+                    canToggleRealName={!this.state.isStudent}
                     messsage={message} canDelete={false && message.isSelf} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>

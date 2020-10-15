@@ -473,6 +473,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
                   {this.state.messages.map((message) => <ChatMessage key={message.id} onMarkForDelete={null}
+                    canToggleRealName={!this.state.isStudent}
                     messsage={message} canDelete={false && (this.state.isModerator || message.isSelf)} i18n={this.props.i18n} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>

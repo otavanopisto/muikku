@@ -13,6 +13,7 @@ const REAL_NAMES_CACHE: {
 
 interface IChatMessageProps {
   canDelete: boolean;
+  canToggleRealName: boolean;
   messsage: IBareMessageType;
   onMarkForDelete: () => void;
   deleted?: boolean;
@@ -45,7 +46,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         showName: false,
         realName: null,
       });
-    } else if (this.props.messsage.userId){
+    } else if (this.props.messsage.userId && this.props.canToggleRealName){
       let userName: string = null;
       if (REAL_NAMES_CACHE[this.props.messsage.userId]) {
         userName = REAL_NAMES_CACHE[this.props.messsage.userId];
