@@ -9,6 +9,7 @@ export interface i18nType {
   time: {
     format(date?: Date | string, format?: string):string,
     fromNow(date?: Date | string):string,
+    formatDaily(data?: Date | string, todayFormat?: string, otherDayFormat?: string): string,
     subtract(date?: Date | string, input?: number, value?: string):string,
     add(date?: Date | string, input?: number, value?: string):string,
     getLocalizedMoment(...args: any[]):any,
@@ -31,6 +32,11 @@ export default function i18n(state={
     },
     fromNow(date=new Date()){
       return moment(date).fromNow();
+    },
+    formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "LT L") {
+      const momentOfDate = moment(date);
+      const isToday = moment().diff(momentOfDate, "days") === 0;
+      return moment(date).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(isToday ? todayFormat : otherDayFormat);
     },
     subtract(date=new Date(), input=1, value="days"){
       return moment(date).subtract(input, value).calendar();
