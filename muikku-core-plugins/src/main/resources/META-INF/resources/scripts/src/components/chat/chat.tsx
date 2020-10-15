@@ -500,7 +500,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
 
     const userStatusClassName =
-      this.state.selectedUserPresence === "chat" ? "online" : this.state.selectedUserPresence === "away" ? "away" : "offline";
+      this.state.selectedUserPresence === "chat" ? "online" : this.state.selectedUserPresence === "away" ? "away" : this.state.selectedUserPresence === "dnd" ? "dnd" : "offline";
 
     return (
       <div className="chat">
@@ -512,7 +512,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         {/* Chat controlbox */}
         {this.state.showControlBox && <div className="chat__panel chat__panel--controlbox">
           <div className="chat__panel-header chat__panel-header--controlbox">
-            <span onClick={this.toggleCreateChatRoomForm} className="chat__button chat__button--new-room icon-plus"></span>
+            {!this.state.isStudent && <span onClick={this.toggleCreateChatRoomForm} className="chat__button chat__button--new-room icon-plus"></span>}
             <span onClick={this.toggleControlBox} className="chat__button chat__button--close icon-cross"></span>
           </div>
 

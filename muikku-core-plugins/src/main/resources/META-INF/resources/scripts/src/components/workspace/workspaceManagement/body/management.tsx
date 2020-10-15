@@ -585,18 +585,18 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                   <fieldset>
                     <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.status")}</legend>
                     <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                      <span className="form-element form-element--checkbox-radiobutton">
+                      <div className="form-element form-element--checkbox-radiobutton">
                         <input id="chat-enabled" name="chat-enabled" type="radio"
                           checked={this.state.workspaceChatStatus === "ENABLED"}
                           onChange={this.setWorkspaceChatTo.bind(this, "ENABLED")} />
                         <label htmlFor="chat-enabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatEnabled")}</label>
-                      </span>
-                      <span className="form-element form-element--checkbox-radiobutton">
+                      </div>
+                      <div className="form-element form-element--checkbox-radiobutton">
                         <input id="chat-disabled" name="chat-disabled" type="radio"
                           checked={this.state.workspaceChatStatus === "DISABLED"}
                           onChange={this.setWorkspaceChatTo.bind(this, "DISABLED")} />
                         <label htmlFor="chat-disabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatDisabled")}</label>
-                      </span>
+                      </div>
                     </div>
                   </fieldset>
                 </div>
