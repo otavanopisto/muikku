@@ -145,31 +145,27 @@ public class UserGroupRESTService extends AbstractRESTService {
       }
     }
 
-    if (entities.isEmpty()) {
-      return Response.noContent().build();
-    } else {
-      List<fi.otavanopisto.muikku.rest.model.UserGroup> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
+    List<fi.otavanopisto.muikku.rest.model.UserGroup> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
 
-      for (UserGroupEntity entity : entities) {
-        Long userCount = userGroupEntityController.getGroupUserCount(entity);
-        UserGroup group = userGroupController.findUserGroup(entity);
-        if (group != null) {
-          OrganizationRESTModel organization = null;
-          if (group.getOrganizationIdentifier() != null) {
-            OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
-            if (organizationEntity != null) {
-              organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
-            }
+    for (UserGroupEntity entity : entities) {
+      Long userCount = userGroupEntityController.getGroupUserCount(entity);
+      UserGroup group = userGroupController.findUserGroup(entity);
+      if (group != null) {
+        OrganizationRESTModel organization = null;
+        if (group.getOrganizationIdentifier() != null) {
+          OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
+          if (organizationEntity != null) {
+            organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
-          ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization));
         }
-        else {
-          logger.log(Level.WARNING, "Group not found");
-        }
+        ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization));
       }
-
-      return Response.ok(ret).build();
+      else {
+        logger.log(Level.WARNING, "Group not found");
+      }
     }
+
+    return Response.ok(ret).build();
   }
 
   @GET
