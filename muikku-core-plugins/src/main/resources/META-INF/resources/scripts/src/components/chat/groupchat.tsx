@@ -313,12 +313,17 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       this.setState({
         occupants: newOccupants,
       });
+
+      if (userId === this.props.connection.jid.split("@")[0]) {
+        this.props.leaveChatRoom();
+        return;
+      }
     } else {
       const groupOccupant: IGroupChatOccupant = {
         occupant: {
           additional: null,
           nick: fromNick,
-          isSelf: userJIDBare === this.props.connection.jid,
+          isSelf: userId === this.props.connection.jid.split("@")[0],
           precense,
           userId,
           isStaff: userJIDBare.startsWith("muikku-staff"),
@@ -339,9 +344,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         if (m.nick === groupOccupant.occupant.nick && !m.userId) {
           return {
             ...m,
-            pyramusUserID: groupOccupant.occupant.userId,
+            userId: groupOccupant.occupant.userId,
             isSelf: groupOccupant.occupant.userId === this.props.connection.jid.split("@")[0],
-          };
+          } as IBareMessageType;
         }
   
         return m;
