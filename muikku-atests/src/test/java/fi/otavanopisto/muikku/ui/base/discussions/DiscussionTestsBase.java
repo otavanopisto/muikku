@@ -53,8 +53,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".env-dialog__actions .button--dialog-execute");
         waitForPresent(".application-list__title");
         assertText("h3.application-list__title", "Test title for discussion");
-        waitForPresent(".application-list__item-body article>p");
-        assertTextIgnoreCase(".application-list__item-body article>p", "Test text for discussion.");
+        waitForPresent(".application-list__item-body .rich-text>p");
+        assertTextIgnoreCase(".application-list__item-body .rich-text>p", "Test text for discussion.");
       }finally {
         deleteDiscussion(discussionGroup.getId(), discussion.getId());
       }
@@ -124,8 +124,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
-        waitForPresentAndVisible(".application-list__item--discussion-reply .application-list__item-body article p");
-        assertText(".application-list__item--discussion-reply .application-list__item-body article p", "Test reply for test.");
+        waitForPresentAndVisible(".application-list__item--discussion-reply .application-list__item-body .rich-text p");
+        assertText(".application-list__item--discussion-reply .application-list__item-body .rich-text p", "Test reply for test.");
       } catch (Exception e) {
         deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
     } finally {
@@ -302,8 +302,8 @@ public class DiscussionTestsBase extends AbstractUITest {
           reloadCurrentPage();
           waitForPresentAndVisible("h3.application-list__title");
           assertText("h3.application-list__title", "Testinging");
-          waitForPresent(".application-list__item-content-main .application-list__item-body article>p");
-          assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body article>p", "Testing testing daa daaing");
+          waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
+          assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body .rich-text>p", "Testing testing daa daaing");
           waitForPresent(".application-list__item-edited");
           assertTextStartsWith(".application-list__item-edited", "Muokattu:");
         } finally {
