@@ -242,10 +242,12 @@
 .chat__panel-header--controlbox,
 .chat__subpanel-header--new-room {
   box-shadow: none;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   .chat__button--new-room {
     color: $color-chat-controlbox-main-color;
+    flex-basis: auto;
+    flex-grow: 1;
     margin: 0;
   }
 
@@ -322,15 +324,19 @@
 }
 
 .chat__controlbox-user-status--online {
-  border-color: $collor-chat-user-status-online;
+  border-color: $color-chat-user-status-online;
 }
 
 .chat__controlbox-user-status--offline {
-  border-color: $collor-chat-user-status-offline;
+  border-color: $color-chat-user-status-offline;
 }
 
 .chat__controlbox-user-status--away {
-  border-color: $collor-chat-user-status-away;
+  border-color: $color-chat-user-status-away;
+}
+
+.chat__controlbox-user-status--dnd {
+  border-color: $color-chat-user-status-dnd;
 }
 
 .chat__controlbox-rooms-heading {
@@ -572,33 +578,50 @@
   flex-grow: 0;
   flex-shrink: 0;
   overflow-y: auto;
-  padding: 5px;
+}
+
+.chat__occupants-student {
+  margin-top: 5px;
+}
+
+.chat__occupants-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 5px 2px 5px;
 }
 
 .chat__occupants-item {
+  align-items: center;
   cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
   font-size: 0.75rem;
-  padding: 3px;
+  justify-content: flex-start;
+  padding: 3px 5px;
 }
 
-.chat__online-indicator::before {
-  content: "\2022";
+.chat__online-indicator {
+  background: transparent;
+  border-radius: 100%;
+  height: 8px;
+  margin: 0 4px 0 0;
+  width: 8px;
 }
 
-.chat__occupant-chat {
-  color: $collor-chat-user-status-online;
+.chat__online-indicator--chat {
+  background: $color-chat-user-status-online;
 }
 
-.chat__occupant-away {
-  color: $collor-chat-user-status-away;
+.chat__online-indicator--away {
+  background: $color-chat-user-status-away;
 }
 
-.chat__occupant-dnd {
-  color: $collor-chat-user-status-away;
+.chat__online-indicator--dnd {
+  background: $color-chat-user-status-dnd;
 }
 
-.chat__occupant-xa {
-  color: $collor-chat-user-status-offline;
+.chat__online-indicator--xa {
+  background: $color-chat-user-status-offline;
 }
 
 .chat__message {
@@ -650,17 +673,23 @@
 }
 
 .chat__message-meta-sender {
-  cursor: pointer;
   font-weight: 600;
+  padding: 0 2px;
+}
+
+.chat__message-meta-sender--access-to-realname {
+  cursor: pointer;
 }
 
 .chat__message-meta-timestamp {
   font-size: 0.75rem;
+  padding: 0 2px;
 }
 
 .chat__message-meta-sender-real-name {
   font-style: italic;
   font-weight: 400;
+  padding: 0 0 0 4px;
 }
 
 // Default style for 'sender-them' messages
