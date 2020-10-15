@@ -176,7 +176,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const newMinimized = !this.state.minimized;
     this.setState({
       minimized: newMinimized,
-    });
+    }, this.scrollToBottom);
     if (newMinimized) {
       minimizedRoomList.push(roomJID);
     } else {
