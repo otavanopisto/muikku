@@ -176,7 +176,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const newMinimized = !this.state.minimized;
     this.setState({
       minimized: newMinimized,
-    });
+    }, this.scrollToBottom);
     if (newMinimized) {
       minimizedRoomList.push(roomJID);
     } else {
@@ -480,13 +480,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <div className="chat__occupants-staff">
                     {staffOccupants.length > 0 ? "Henkilökunta" : ""}
                     {staffOccupants.map((staffOccupant) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid)} key={staffOccupant.occupant.userId}>
+                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__occupant-" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
                     {studentOccupants.length > 0 ? "Opiskelijat" : ""}
                     {studentOccupants.map((studentOccupant) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid)} key={studentOccupant.occupant.userId}>
+                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)} key={studentOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__occupant-" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
                   </div>
                 </div>}
