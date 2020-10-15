@@ -492,7 +492,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <div className="chat__occupants-student">
                     {studentOccupants.length > 0 ? <div className="chat__occupants-title">Opiskelijat</div> : ""}
                     {studentOccupants.map((studentOccupant) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)} key={studentOccupant.occupant.userId}>
+                      <div className="chat__occupants-item" onClick={this.state.isStudent ? null : this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)}
+                      key={studentOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__online-indicator--" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
                   </div>
                 </div>}
