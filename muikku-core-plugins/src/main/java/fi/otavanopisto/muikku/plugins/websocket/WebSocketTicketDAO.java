@@ -43,7 +43,7 @@ public class WebSocketTicketDAO extends CorePluginsDAO<WebSocketTicket> {
     
     return getSingleResult(entityManager.createQuery(criteria));
   }
-  
+
   @Override
   public void delete(WebSocketTicket ticket) {
     super.delete(ticket);
