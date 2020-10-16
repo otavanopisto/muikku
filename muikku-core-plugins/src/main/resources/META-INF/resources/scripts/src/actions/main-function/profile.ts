@@ -231,12 +231,8 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
 
 let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadProfileChatSettings(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    const state = getState();
-    if (state.profile.chatSettings) {
-      return;
-    }
     try {
-      let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
+      let chatSettings:any = (await promisify(mApi().chat.settings.cacheClear().read(), 'callback')());
 
       if (chatSettings && chatSettings.visibility) {
         dispatch({
