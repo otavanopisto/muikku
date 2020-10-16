@@ -35,7 +35,7 @@ export default function i18n(state={
     },
     formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "LT L") {
       const momentOfDate = moment(date);
-      const isToday = moment().diff(momentOfDate, "days") === 0;
+      const isToday = moment().isSame(momentOfDate, "day");
       return moment(date).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(isToday ? todayFormat : otherDayFormat);
     },
     subtract(date=new Date(), input=1, value="days"){
