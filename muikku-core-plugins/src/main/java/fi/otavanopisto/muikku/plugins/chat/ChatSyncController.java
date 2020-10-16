@@ -318,8 +318,10 @@ public class ChatSyncController {
       return null;
     }
     String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
+    System.out.println("Asking if " + openfireUserIdentifier + " exists in Openfire");
     openfireUserEntity = client.getUser(openfireUserIdentifier);
     if (openfireUserEntity == null) {
+      System.out.println("Creating that user to Openfire");
       logger.log(Level.INFO, String.format("Creating chat user %s", openfireUserIdentifier));
       SecureRandom random = new SecureRandom();
       // Can't leave the password empty, so next best thing is random passwords (not used with prebind)
