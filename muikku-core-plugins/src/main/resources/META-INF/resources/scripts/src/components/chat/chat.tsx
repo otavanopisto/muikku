@@ -464,12 +464,20 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
 
     let session = window.sessionStorage.getItem("strophe-bosh-session");
+    const expectedId = (this.state.isStudent ? "muikku-student-" : "muikku-staff-") + (window as any).MUIKKU_LOGGED_USER_ID;
 
-    let prebind: IPrebindResponseType;
+    let prebind: IPrebindResponseType = null;
     const isRestore = !!session;
     if (session) {
       prebind = JSON.parse(session);
-    } else {
+      // prebind belongs to a previous user and not the currently logged
+      // in user this means we are logging in as the wrong user
+      if (prebind.jid.split("@")[0] !== expectedId) {
+        prebind = null;
+      }
+    }
+    
+    if (!prebind) {
       const prebindRequest = await fetch("/rest/chat/prebind");
       prebind = await prebindRequest.json();
     }

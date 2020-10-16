@@ -51,6 +51,8 @@ export default function status(state: StatusType={
   hopsEnabled: (<any>window).HOPS_ENABLED
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
+    // remove the session on logout
+    window.sessionStorage.removeItem("strophe-bosh-session");
     $('#logout').click();
     return state;
   } else if (action.type === "UPDATE_STATUS_PROFILE"){
