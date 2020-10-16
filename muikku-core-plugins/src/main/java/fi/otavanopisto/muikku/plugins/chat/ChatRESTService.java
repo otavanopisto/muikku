@@ -339,6 +339,7 @@ public class ChatRESTService extends PluginRESTService {
       userChatSettings = chatController.findUserChatSettings(userEntity);
       boolean syncMembership = userChatSettings == null || userChatSettings.getVisibility() != visibility;
       if (userChatSettings == null) {
+        System.out.println("Creating chat settings for " + userEntity.getId() + " with nick " + nick);
         chatController.createUserChatSettings(userEntity, visibility, nick);
       }
       else {
