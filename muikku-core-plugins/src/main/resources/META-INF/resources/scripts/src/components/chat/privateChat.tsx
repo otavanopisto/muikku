@@ -190,7 +190,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     const newMinimized = !this.state.minimized;
     this.setState({
       minimized: newMinimized,
+      messageNotification: false,
     }, this.scrollToBottom);
+
     if (newMinimized) {
       minimizedChatList.push(this.props.jid);
     } else {
