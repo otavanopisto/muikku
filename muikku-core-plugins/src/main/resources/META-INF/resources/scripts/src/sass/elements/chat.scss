@@ -716,6 +716,12 @@
   padding: 0 0 0 4px;
 }
 
+.chat__message-meta-sender-study-programme {
+  font-style: italic;
+  font-weight: 400;
+  padding: 0 0 0 4px;
+}
+
 // Default style for 'sender-them' messages
 .chat__message-content {
   background: $color-chat-message-default-background;

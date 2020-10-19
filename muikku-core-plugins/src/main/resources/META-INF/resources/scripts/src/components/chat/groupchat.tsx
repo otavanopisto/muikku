@@ -50,6 +50,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   private messagesListenerHandler: any = null;
   private presenceListenerHandler: any = null;
   private messagesEnd: React.RefObject<HTMLDivElement>;
+  private isScrollDetached: boolean = false;
+  private chatRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: IGroupChatProps) {
     super(props);
@@ -75,6 +77,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     }
 
     this.messagesEnd = React.createRef();
+    this.chatRef = React.createRef();
 
     this.sendMessageToChatRoom = this.sendMessageToChatRoom.bind(this);
     this.setChatroomConfiguration = this.setChatroomConfiguration.bind(this);
@@ -90,7 +93,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.sendRoomPrescense = this.sendRoomPrescense.bind(this);
     this.onEnterPress = this.onEnterPress.bind(this);
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
-    this.updateRoomDescField = this.updateRoomDescField.bind(this)
+    this.updateRoomDescField = this.updateRoomDescField.bind(this);
+    this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
   }
 
   updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -174,9 +178,12 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const roomJID = this.props.chat.roomJID;
     let minimizedRoomList: string[] = JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]");
     const newMinimized = !this.state.minimized;
+  
+    this.isScrollDetached = false;
     this.setState({
       minimized: newMinimized,
-    }, this.scrollToBottom);
+    }, this.scrollToBottom.bind(this, "auto"));
+  
     if (newMinimized) {
       minimizedRoomList.push(roomJID);
     } else {
@@ -192,7 +199,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
   // Scroll selected view to the bottom
   scrollToBottom(method: ScrollBehavior = "smooth") {
-    if (this.messagesEnd.current) {
+    if (this.messagesEnd.current && !this.isScrollDetached) {
       this.messagesEnd.current.scrollIntoView({ behavior: method });
     }
   }
@@ -423,6 +430,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   componentWillUnmount() {
     this.leaveRoom();
   }
+  checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
+    if (this.chatRef.current) {
+      const isScrolledToBottom = this.chatRef.current.scrollTop ===
+        this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
+      this.isScrollDetached = !isScrolledToBottom;
+    }
+  }
   render() {
     let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-") ? "workspace" : "other";
 
@@ -479,9 +493,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </div>}
 
               <div className="chat__panel-body chat__panel-body--chatroom">
-                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
+                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
                   {this.state.messages.map((message) => <ChatMessage key={message.id} onMarkForDelete={null}
-                    canToggleRealName={!this.state.isStudent}
+                    canToggleInfo={!this.state.isStudent}
                     messsage={message} canDelete={false && (this.state.isModerator || message.isSelf)} i18n={this.props.i18n} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>

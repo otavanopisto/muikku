@@ -4,16 +4,21 @@ import '~/sass/elements/chat.scss';
 import mApi from '~/lib/mApi';
 import promisify from '~/util/promisify';
 import { IBareMessageType } from './chat';
-import { UserType } from '~/reducers/user-index';
 import { i18nType } from '~/reducers/base/i18n';
 
-const REAL_NAMES_CACHE: {
-  [key: string]: string;
+interface IChatUserInfoType {
+  name: string;
+  nick: string;
+  studyProgramme: string;
+}
+
+const USER_INFO_CACHE: {
+  [key: string]: IChatUserInfoType;
 } = {}
 
 interface IChatMessageProps {
   canDelete: boolean;
-  canToggleRealName: boolean;
+  canToggleInfo: boolean;
   messsage: IBareMessageType;
   onMarkForDelete: () => void;
   deleted?: boolean;
@@ -22,43 +27,50 @@ interface IChatMessageProps {
 }
 
 interface IChatMessageState {
-  showName: boolean;
+  showInfo: boolean;
   realName: string;
+  studyProgramme: string;
   showRemoveButton: boolean;
 }
 
 export class ChatMessage extends React.Component<IChatMessageProps, IChatMessageState> {
   constructor(props: IChatMessageProps){
     super(props);
+
     this.state = {
-      showName: false,
+      showInfo: false,
       realName: null,
+      studyProgramme: null,
       showRemoveButton: false,
     }
 
-    this.toggleRealName = this.toggleRealName.bind(this);
+    this.toggleInfo = this.toggleInfo.bind(this);
     this.removeMessage = this.removeMessage.bind(this);
     this.toggleShowRemoveButton = this.toggleShowRemoveButton.bind(this);
   }
-  async toggleRealName() {
-    if (this.state.showName) {
+  async toggleInfo() {
+    if (this.state.showInfo) {
       this.setState({
-        showName: false,
+        showInfo: false,
         realName: null,
       });
-    } else if (this.props.messsage.userId && this.props.canToggleRealName){
+    } else if (this.props.messsage.userId && this.props.canToggleInfo){
       let userName: string = null;
-      if (REAL_NAMES_CACHE[this.props.messsage.userId]) {
-        userName = REAL_NAMES_CACHE[this.props.messsage.userId];
+      let studyProgramme: string = null;
+      if (USER_INFO_CACHE[this.props.messsage.userId]) {
+        userName = USER_INFO_CACHE[this.props.messsage.userId].name;
+        studyProgramme = USER_INFO_CACHE[this.props.messsage.userId].studyProgramme;
       } else {
-        const user: any = (await promisify(mApi().chat.userInfo.read(this.props.messsage.userId,{}), 'callback')()) as any;
+        const user: IChatUserInfoType = (await promisify(mApi().chat.userInfo.read(this.props.messsage.userId,{}), 'callback')()) as any;
+        USER_INFO_CACHE[this.props.messsage.userId] = user;
         userName = user.name;
-        REAL_NAMES_CACHE[this.props.messsage.userId] = userName;
+        studyProgramme = user.studyProgramme;
       }
 
       this.setState({
-        showName: true,
-        realName: userName
+        showInfo: true,
+        realName: userName,
+        studyProgramme,
       });
     }
   }
@@ -84,8 +96,10 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
 
     return  (<div className={`chat__message chat__message--${senderClass}`}>
       <div className="chat__message-meta">
-        <span className={`chat__message-meta-sender ${this.props.canToggleRealName && "chat__message-meta-sender--access-to-realname"}`} onClick={this.toggleRealName}>
-          {this.props.messsage.nick}{this.state.showName && <span className="chat__message-meta-sender-real-name">({this.state.realName})</span>}
+        <span className={`chat__message-meta-sender ${this.props.canToggleInfo && "chat__message-meta-sender--access-to-realname"}`} onClick={this.toggleInfo}>
+          {this.props.messsage.nick}
+          {this.state.showInfo && <span className="chat__message-meta-sender-real-name">({this.state.realName})</span>}
+          {this.state.showInfo && this.state.studyProgramme && <span className="chat__message-meta-sender-study-programme">({this.state.studyProgramme})</span>}
         </span>
         <span className="chat__message-meta-timestamp">
           {this.props.i18n.time.formatDaily(this.props.messsage.timestamp)}
