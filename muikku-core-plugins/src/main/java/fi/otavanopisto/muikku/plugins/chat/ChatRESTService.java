@@ -22,6 +22,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -301,6 +302,28 @@ public class ChatRESTService extends PluginRESTService {
     
     chatSyncController.updatePublicChatRoom(name, title, description);
     return Response.ok().entity(payload).build();
+  }
+
+  @DELETE
+  @Path("/publicRoom")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deletePublicChatRoom(ChatRoomRESTModel payload) {
+
+    if (isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Payload validation
+    
+    String name = StringUtils.trim(payload.getName());
+    if (StringUtils.isEmpty(name)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing name").build();
+    }
+    
+    // Room delete
+    
+    chatSyncController.removePublicChatRoom(name);
+    return Response.noContent().build();
   }
 
   @PUT
