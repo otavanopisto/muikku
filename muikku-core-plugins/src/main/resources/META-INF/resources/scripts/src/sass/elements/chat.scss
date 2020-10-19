@@ -505,6 +505,7 @@
   border: 0;
   border-radius: 3px;
   color: $color-default;
+  cursor: pointer;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
@@ -522,6 +523,11 @@
 
 .chat__submit--room-settings-other {
   background: $color-chat-other-room-main-color;
+}
+
+.chat__submit--room-settings-delete {
+  background: $color-fatal;
+  margin: 0 0 0 10px;
 }
 
 .chat__memofield--muc-message {

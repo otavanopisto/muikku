@@ -148,7 +148,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   onPrivateChatMessage(stanza: Element) {
     const from = stanza.getAttribute("from");
     const fromNick: string = null;
-    
+
     const body = stanza.querySelector("body");
     if (body) {
       const content = body.textContent;
@@ -213,7 +213,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     return true;
   }
   setMessageAsRemoved(data: any) {
-    
+
   }
   render() {
     return (
@@ -241,9 +241,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
             </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
               <textarea
-                className="chat__memofield chat__memofield--muc-message" 
+                className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
-                placeholder={this.props.i18n.text.get("plugin.chat.private.writemsg")}
+                placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
                 value={this.state.currentMessageToBeSent}
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}

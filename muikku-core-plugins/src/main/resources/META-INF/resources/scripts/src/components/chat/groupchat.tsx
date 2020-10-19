@@ -466,7 +466,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                       <label className="chat__label">Pysyvä huone: </label>
                       <input className="chat__checkbox" type="checkbox" name="persistent"></input>
                     </div>} */}
-                    <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
+                    <div className="chat__subpanel-row">
+                      <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
+                      <input className="chat__submit chat__submit--room-settings-delete" type="submit" value="Poista"></input>
+                    </div>
                   </form>
 
                   <div>
@@ -484,13 +487,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
-                    {staffOccupants.length > 0 ? <div className="chat__occupants-title">Henkilökunta</div> : ""}
+                    {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
                     {staffOccupants.map((staffOccupant) =>
                       <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
-                    {studentOccupants.length > 0 ? <div className="chat__occupants-title">Opiskelijat</div> : ""}
+                    {studentOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.students")}</div> : ""}
                     {studentOccupants.map((studentOccupant) =>
                       <div className="chat__occupants-item" onClick={this.state.isStudent ? null : this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)}
                       key={studentOccupant.occupant.userId}>
@@ -500,7 +503,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder={this.props.i18n.text.get("plugin.chat.room.writemsg")} onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent} />
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder={this.props.i18n.text.get("plugin.chat.writemsg")} onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent} />
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)
