@@ -507,9 +507,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       return null;
     }
 
-    const userStatusClassName =
-      this.state.selectedUserPresence === "chat" ? "online" : this.state.selectedUserPresence === "away" ? "away" : this.state.selectedUserPresence === "dnd" ? "dnd" : "offline";
-
     return (
       <div className="chat">
         {/* Chat bubble */}
@@ -525,11 +522,11 @@ class Chat extends React.Component<IChatProps, IChatState> {
           </div>
 
           <div className="chat__panel-body chat__panel-body--controlbox">
-            <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
-              <option value="chat">{this.props.i18n.text.get("plugin.chat.state.online")}</option>
+            <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${this.state.selectedUserPresence}`}>
+              <option value="chat">{this.props.i18n.text.get("plugin.chat.state.chat")}</option>
               <option value="away">{this.props.i18n.text.get("plugin.chat.state.away")}</option>
               <option value="dnd">{this.props.i18n.text.get("plugin.chat.state.dnd")}</option>
-              <option value="xa">{this.props.i18n.text.get("plugin.chat.state.offline")}</option>
+              <option value="xa">{this.props.i18n.text.get("plugin.chat.state.xa")}</option>
             </select>
 
             <div className="chat__controlbox-rooms-heading">{this.props.i18n.text.get("plugin.chat.rooms.workspace")}</div>

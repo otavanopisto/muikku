@@ -489,7 +489,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <div className="chat__occupants-staff">
                     {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
                     {staffOccupants.map((staffOccupant) =>
-                      <div className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
+                      <div title={this.props.i18n.text.get("plugin.chat.state." + staffOccupant.occupant.precense)} className="chat__occupants-item" onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
                         <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
@@ -497,6 +497,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                     {studentOccupants.map((studentOccupant) =>
                       <div className="chat__occupants-item" onClick={this.state.isStudent ? null : this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)}
                       key={studentOccupant.occupant.userId}>
+
                         <span className={"chat__online-indicator chat__online-indicator--" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
                   </div>
                 </div>}
