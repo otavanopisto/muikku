@@ -616,12 +616,15 @@
 
 .chat__occupants-item {
   align-items: center;
-  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
   justify-content: flex-start;
   padding: 3px 5px;
+}
+
+.chat__occupants-item--has-access-to-pm {
+  cursor: pointer;
 }
 
 .chat__online-indicator {

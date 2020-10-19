@@ -14,7 +14,7 @@ const REAL_NAMES_CACHE: {
 interface IChatMessageProps {
   canDelete: boolean;
   canToggleRealName: boolean;
-  messsage: IBareMessageType;
+  message: IBareMessageType;
   onMarkForDelete: () => void;
   deleted?: boolean;
   deletedTime?: string;
@@ -46,14 +46,14 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         showName: false,
         realName: null,
       });
-    } else if (this.props.messsage.userId && this.props.canToggleRealName){
+    } else if (this.props.message.userId && this.props.canToggleRealName){
       let userName: string = null;
-      if (REAL_NAMES_CACHE[this.props.messsage.userId]) {
-        userName = REAL_NAMES_CACHE[this.props.messsage.userId];
+      if (REAL_NAMES_CACHE[this.props.message.userId]) {
+        userName = REAL_NAMES_CACHE[this.props.message.userId];
       } else {
-        const user: any = (await promisify(mApi().chat.userInfo.read(this.props.messsage.userId,{}), 'callback')()) as any;
+        const user: any = (await promisify(mApi().chat.userInfo.read(this.props.message.userId,{}), 'callback')()) as any;
         userName = user.name;
-        REAL_NAMES_CACHE[this.props.messsage.userId] = userName;
+        REAL_NAMES_CACHE[this.props.message.userId] = userName;
       }
 
       this.setState({
@@ -80,20 +80,20 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     }
   }
   render() {
-    const senderClass = this.props.messsage.isSelf ? "sender-me" : "sender-them";
+    const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
 
     return  (<div className={`chat__message chat__message--${senderClass}`}>
       <div className="chat__message-meta">
         <span className={`chat__message-meta-sender ${this.props.canToggleRealName && "chat__message-meta-sender--access-to-realname"}`} onClick={this.toggleRealName}>
-          {this.props.messsage.nick}{this.state.showName && <span className="chat__message-meta-sender-real-name">({this.state.realName})</span>}
+          {this.props.message.nick}{this.state.showName && <span className="chat__message-meta-sender-real-name">({this.state.realName})</span>}
         </span>
         <span className="chat__message-meta-timestamp">
-          {this.props.i18n.time.formatDaily(this.props.messsage.timestamp)}
+          {this.props.i18n.time.formatDaily(this.props.message.timestamp)}
         </span>
       </div>
       <div className="chat__message-content-container" onClick={this.toggleShowRemoveButton}>
         <div className="chat__message-content">
-          {this.props.deleted ? <i>{this.props.i18n.text.get("plugin.chat.message.deleted")} {this.props.i18n.time.formatDaily(this.props.deletedTime)}</i>  : this.props.messsage.message}
+          {this.props.deleted ? <i>{this.props.i18n.text.get("plugin.chat.message.deleted")} {this.props.i18n.time.formatDaily(this.props.deletedTime)}</i>  : this.props.message.message}
         </div>
         {this.state.showRemoveButton ? <div className="chat__message-action-container">
           <div onClick={this.props.onMarkForDelete} className="chat__message-delete">{this.props.i18n.text.get("plugin.chat.message.delete")}</div>
