@@ -456,19 +456,19 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <form onSubmit={this.setChatroomConfiguration}>
                     <div className="chat__subpanel-row">
                       <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
-                      <input className="chat__textfield" name="newroomName" value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
+                      <input className={`chat__textfield chat__textfield--${chatRoomTypeClassName}`} name="newroomName" disabled={this.props.chat.roomJID.startsWith("workspace-") ? true : null} value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
                     </div>
                     <div className="chat__subpanel-row">
                       <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
-                      <textarea className="chat__memofield" name="newroomDescription" value={this.state.roomDescField} onChange={this.updateRoomDescField}></textarea>
+                      <textarea className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField} onChange={this.updateRoomDescField}></textarea>
                     </div>
                     {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
                       <label className="chat__label">Pysyvä huone: </label>
-                      <input className="chat__checkbox" type="checkbox" name="persistent"></input>
+                      <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
                     </div>} */}
                     <div className="chat__subpanel-row">
-                      <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
-                      <input className="chat__submit chat__submit--room-settings-delete" type="submit" value="Poista"></input>
+                      <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
+                      {!this.props.chat.roomJID.startsWith("workspace-") && <input className="chat__submit chat__submit--room-settings-delete" type="submit" value={this.props.i18n.text.get("plugin.chat.button.delete")}></input>}
                     </div>
                   </form>
 

@@ -448,13 +448,24 @@
 }
 
 .chat__textfield {
-  border: 2px solid $color-default-helper;
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.125rem;
   padding: 5px;
   width: 100%;
+
+  &.chat__textfield--other {
+    border: 2px solid $color-chat-other-room-main-color;
+  }
+
+  &.chat__textfield--workspace {
+    border: 2px solid $color-chat-workspace-room-main-color;
+  }
+
+  &[disabled] {
+    border-color: $color-disabled;
+  }
 }
 
 .chat__muc-recipient {
@@ -462,7 +473,6 @@
 }
 
 .chat__memofield {
-  border: 2px solid $color-default-helper;
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
@@ -470,6 +480,14 @@
   line-height: 1.125rem;
   padding: 5px;
   width: 100%;
+
+  &.chat__memofield--other {
+    border: 2px solid $color-chat-other-room-main-color;
+  }
+
+  &.chat__memofield--workspace {
+    border: 2px solid $color-chat-workspace-room-main-color;
+  }
 }
 
 .chat__memofield::placeholder {
@@ -481,7 +499,7 @@
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  border: solid 2px $color-default-helper;
+  border: 2px solid $color-chat-other-room-main-color;
   border-radius: 3px;
   display: flex;
   height: 1rem;
