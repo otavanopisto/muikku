@@ -161,7 +161,6 @@ public class ChatRESTService extends PluginRESTService {
       chatPrebindParameters.setJid(credentials.getJid());
       chatPrebindParameters.setSid(sessionId);
       chatPrebindParameters.setRid(rid);
-      
       return Response.ok(chatPrebindParameters).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
       logger.log(Level.SEVERE, "Prebind failure", ex);
@@ -400,7 +399,7 @@ public class ChatRESTService extends PluginRESTService {
     HashMap<String, String> senderInfo = new HashMap<>();
     senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
     if (!isStudent(sessionController.getLoggedUserEntity()) || StringUtils.startsWith(identifierString, "muikku-staff")) {
-      senderInfo.put("name", String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName"))));
+      senderInfo.put("name", String.valueOf(results.get(0).get("displayName")));
     }
     return Response.ok(senderInfo).build();
   }
