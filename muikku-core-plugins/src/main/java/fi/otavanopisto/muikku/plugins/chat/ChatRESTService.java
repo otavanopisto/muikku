@@ -399,7 +399,11 @@ public class ChatRESTService extends PluginRESTService {
     HashMap<String, String> senderInfo = new HashMap<>();
     senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
     if (!isStudent(sessionController.getLoggedUserEntity()) || StringUtils.startsWith(identifierString, "muikku-staff")) {
-      senderInfo.put("name", String.valueOf(results.get(0).get("displayName")));
+      String realName = String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName")));
+      senderInfo.put("name", realName);
+      if (results.get(0).containsKey("studyProgrammeName")) {
+        senderInfo.put("studyProgramme", String.valueOf(results.get(0).get("studyProgramme")));
+      }
     }
     return Response.ok(senderInfo).build();
   }
