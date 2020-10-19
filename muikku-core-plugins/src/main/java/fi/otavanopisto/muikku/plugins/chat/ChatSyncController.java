@@ -205,6 +205,13 @@ public class ChatSyncController {
     }
   }
 
+  public void removePublicChatRoom(String name) {
+    RestApiClient client = getClient();
+    if (client != null) {
+      client.deleteChatRoom(name);
+    }
+  }
+
   public void removeChatRoomMembership(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity, WorkspaceEntity workspaceEntity) {
     RestApiClient client = getClient();
     if (client != null) {

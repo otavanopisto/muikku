@@ -22,6 +22,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -161,7 +162,6 @@ public class ChatRESTService extends PluginRESTService {
       chatPrebindParameters.setJid(credentials.getJid());
       chatPrebindParameters.setSid(sessionId);
       chatPrebindParameters.setRid(rid);
-      
       return Response.ok(chatPrebindParameters).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
       logger.log(Level.SEVERE, "Prebind failure", ex);
@@ -304,6 +304,28 @@ public class ChatRESTService extends PluginRESTService {
     return Response.ok().entity(payload).build();
   }
 
+  @DELETE
+  @Path("/publicRoom")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deletePublicChatRoom(ChatRoomRESTModel payload) {
+
+    if (isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Payload validation
+    
+    String name = StringUtils.trim(payload.getName());
+    if (StringUtils.isEmpty(name)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing name").build();
+    }
+    
+    // Room delete
+    
+    chatSyncController.removePublicChatRoom(name);
+    return Response.noContent().build();
+  }
+
   @PUT
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -400,7 +422,11 @@ public class ChatRESTService extends PluginRESTService {
     HashMap<String, String> senderInfo = new HashMap<>();
     senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
     if (!isStudent(sessionController.getLoggedUserEntity()) || StringUtils.startsWith(identifierString, "muikku-staff")) {
-      senderInfo.put("name", String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName"))));
+      String realName = String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName")));
+      senderInfo.put("name", realName);
+      if (results.get(0).containsKey("studyProgrammeName")) {
+        senderInfo.put("studyProgramme", String.valueOf(results.get(0).get("studyProgramme")));
+      }
     }
     return Response.ok(senderInfo).build();
   }
