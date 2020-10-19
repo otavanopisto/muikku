@@ -149,7 +149,7 @@
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
   display: flex;
   flex-flow: column nowrap;
-  height: 450px;
+  height: 500px;
   margin: 0 15px 0 0;
   position: relative;
 }
@@ -158,12 +158,12 @@
   border-top: 4px solid $color-chat-controlbox-main-color;
   margin: 0;
   order: 2;
-  width: 320px;
+  width: 280px;
 }
 
 .chat__panel--workspace {
   border-top: 4px solid $color-chat-workspace-room-main-color;
-  width: 400px;
+  width: 420px;
 }
 
 .chat__panel--other {
@@ -616,12 +616,15 @@
 
 .chat__occupants-item {
   align-items: center;
-  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
   justify-content: flex-start;
   padding: 3px 5px;
+}
+
+.chat__occupants-item--has-access-to-pm {
+  cursor: pointer;
 }
 
 .chat__online-indicator {
