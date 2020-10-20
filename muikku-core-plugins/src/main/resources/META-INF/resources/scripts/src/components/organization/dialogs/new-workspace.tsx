@@ -55,7 +55,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       template: { id: null, label: "" },
       selectedStaff: [],
       selectedStudents: [],
-      locked: false,
+      locked: true,
       totalSteps: 4,
       currentStep: 1,
       executing: false,
@@ -86,7 +86,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ template: { id: parseInt(e.target.value), label: e.target.name } });
+    this.setState({ locked: false, template: { id: parseInt(e.target.value), label: e.target.name } });
   }
 
   doStudentSearch(value: string) {
@@ -161,6 +161,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   lastStep() {
     let lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
+
   }
 
   saveWorkspace(closeDialog: () => any) {
@@ -249,7 +250,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName }
         });
-
 
         return <DialogRow modifiers="new-workspace">
           <AutofillSelector modifier="add-teachers"
