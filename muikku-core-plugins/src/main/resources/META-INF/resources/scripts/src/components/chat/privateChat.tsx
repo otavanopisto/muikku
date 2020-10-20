@@ -32,6 +32,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   private presenceListenerHandler: any = null;
   private isFocused: boolean = false;
   private messagesEnd: React.RefObject<HTMLDivElement>;
+  private isScrollDetached: boolean = false;
+  private chatRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: IPrivateChatProps) {
     super(props);
@@ -47,6 +49,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     }
 
     this.messagesEnd = React.createRef();
+    this.chatRef = React.createRef<HTMLDivElement>();
 
     this.sendMessage = this.sendMessage.bind(this);
     this.onPrivateChatMessage = this.onPrivateChatMessage.bind(this);
@@ -57,6 +60,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.setCurrentMessageToBeSent = this.setCurrentMessageToBeSent.bind(this);
     this.onTextFieldFocus = this.onTextFieldFocus.bind(this);
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
+    this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
     this.requestPrescense = this.requestPrescense.bind(this);
   }
 
@@ -140,7 +144,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   }
 
   scrollToBottom(method: ScrollBehavior = "smooth") {
-    if (this.messagesEnd.current) {
+    if (this.messagesEnd.current && !this.isScrollDetached) {
       this.messagesEnd.current.scrollIntoView({ behavior: method });
     }
   }
@@ -148,7 +152,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   onPrivateChatMessage(stanza: Element) {
     const from = stanza.getAttribute("from");
     const fromNick: string = null;
-    
+
     const body = stanza.querySelector("body");
     if (body) {
       const content = body.textContent;
@@ -188,10 +192,12 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   toggleMinimizeChats() {
     let minimizedChatList: string[] = JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]");
     const newMinimized = !this.state.minimized;
+
+    this.isScrollDetached = false;
     this.setState({
       minimized: newMinimized,
       messageNotification: false,
-    }, this.scrollToBottom);
+    }, this.scrollToBottom.bind(this, "auto"));
 
     if (newMinimized) {
       minimizedChatList.push(this.props.jid);
@@ -213,7 +219,14 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     return true;
   }
   setMessageAsRemoved(data: any) {
-    
+
+  }
+  checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
+    if (this.chatRef.current) {
+      const isScrolledToBottom = this.chatRef.current.scrollTop ===
+        this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
+      this.isScrollDetached = !isScrolledToBottom;
+    }
   }
   render() {
     return (
@@ -231,19 +244,19 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
             </div>
 
-            <div className="chat__panel-body chat__panel-body--chatroom">
+            <div className="chat__panel-body chat__panel-body--chatroom" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
               <div className="chat__messages-container chat__messages-container--private">
                   {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
-                    canToggleRealName={!this.state.isStudent}
+                    canToggleInfo={!this.state.isStudent}
                     messsage={message} canDelete={false && message.isSelf} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
               <textarea
-                className="chat__memofield chat__memofield--muc-message" 
+                className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
-                placeholder={this.props.i18n.text.get("plugin.chat.private.writemsg")}
+                placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
                 value={this.state.currentMessageToBeSent}
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}

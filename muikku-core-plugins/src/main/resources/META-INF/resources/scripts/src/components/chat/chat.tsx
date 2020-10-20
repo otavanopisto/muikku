@@ -476,7 +476,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         prebind = null;
       }
     }
-    
+
     if (!prebind) {
       const prebindRequest = await fetch("/rest/chat/prebind");
       prebind = await prebindRequest.json();
@@ -507,9 +507,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       return null;
     }
 
-    const userStatusClassName =
-      this.state.selectedUserPresence === "chat" ? "online" : this.state.selectedUserPresence === "away" ? "away" : this.state.selectedUserPresence === "dnd" ? "dnd" : "offline";
-
     return (
       <div className="chat">
         {/* Chat bubble */}
@@ -525,30 +522,30 @@ class Chat extends React.Component<IChatProps, IChatState> {
           </div>
 
           <div className="chat__panel-body chat__panel-body--controlbox">
-            <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
-              <option value="chat">{this.props.i18n.text.get("plugin.chat.state.online")}</option>
+            <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${this.state.selectedUserPresence}`}>
+              <option value="chat">{this.props.i18n.text.get("plugin.chat.state.chat")}</option>
               <option value="away">{this.props.i18n.text.get("plugin.chat.state.away")}</option>
               <option value="dnd">{this.props.i18n.text.get("plugin.chat.state.dnd")}</option>
-              <option value="xa">{this.props.i18n.text.get("plugin.chat.state.offline")}</option>
+              <option value="xa">{this.props.i18n.text.get("plugin.chat.state.xa")}</option>
             </select>
 
             <div className="chat__controlbox-rooms-heading">{this.props.i18n.text.get("plugin.chat.rooms.workspace")}</div>
             <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
               {this.getWorkspaceMucRooms().length > 0 ?
                 this.getWorkspaceMucRooms().map((chat, i) => <Room requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)} modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(this, chat.roomJID)} key={i} chat={chat} />)
-                : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
+                : <div className="chat__controlbox-room  chat__controlbox-room--empty">{this.props.i18n.text.get("plugin.chat.rooms.empty")}</div>}
             </div>
 
             <div className="chat__controlbox-rooms-heading">{this.props.i18n.text.get("plugin.chat.rooms.others")}</div>
             <div className="chat__controlbox-rooms-listing">
               {this.getNotWorkspaceMucRooms().length > 0 ?
                 this.getNotWorkspaceMucRooms().map((chat, i) => <Room requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)} toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom.bind(this, chat.roomJID)} key={i} chat={chat} />)
-                : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
+                : <div className="chat__controlbox-room chat__controlbox-room--empty">{this.props.i18n.text.get("plugin.chat.rooms.empty")}</div>}
             </div>
 
             {this.state.showNewRoomForm && <div className="chat__subpanel">
               <div className="chat__subpanel-header chat__subpanel-header--new-room">
-                <div className="chat__subpanel-title">Luo uusi huone</div>
+                <div className="chat__subpanel-title">{this.props.i18n.text.get("plugin.chat.title.createRoom")}</div>
                 <div onClick={this.toggleCreateChatRoomForm} className="chat__button chat__button--close icon-cross"></div>
               </div>
               <div className="chat__subpanel-body">
@@ -570,7 +567,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                       onChange={this.updateRoomDescField}
                     />
                   </div>
-                  <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone" />
+                  <input className="chat__submit chat__submit--new-room" type="submit" value={this.props.i18n.text.get("plugin.chat.button.addRoom")} />
                 </form>
               </div>
             </div>}

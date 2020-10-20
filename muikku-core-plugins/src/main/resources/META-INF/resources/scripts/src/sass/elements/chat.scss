@@ -149,7 +149,7 @@
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
   display: flex;
   flex-flow: column nowrap;
-  height: 450px;
+  height: 500px;
   margin: 0 15px 0 0;
   position: relative;
 }
@@ -158,12 +158,12 @@
   border-top: 4px solid $color-chat-controlbox-main-color;
   margin: 0;
   order: 2;
-  width: 320px;
+  width: 280px;
 }
 
 .chat__panel--workspace {
   border-top: 4px solid $color-chat-workspace-room-main-color;
-  width: 400px;
+  width: 420px;
 }
 
 .chat__panel--other {
@@ -323,11 +323,11 @@
   width: 100%;
 }
 
-.chat__controlbox-user-status--online {
+.chat__controlbox-user-status--chat {
   border-color: $color-chat-user-status-online;
 }
 
-.chat__controlbox-user-status--offline {
+.chat__controlbox-user-status--xa {
   border-color: $color-chat-user-status-offline;
 }
 
@@ -448,13 +448,24 @@
 }
 
 .chat__textfield {
-  border: 2px solid $color-default-helper;
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.125rem;
   padding: 5px;
   width: 100%;
+
+  &.chat__textfield--other {
+    border: 2px solid $color-chat-other-room-main-color;
+  }
+
+  &.chat__textfield--workspace {
+    border: 2px solid $color-chat-workspace-room-main-color;
+  }
+
+  &[disabled] {
+    border-color: $color-disabled;
+  }
 }
 
 .chat__muc-recipient {
@@ -462,7 +473,6 @@
 }
 
 .chat__memofield {
-  border: 2px solid $color-default-helper;
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
@@ -470,6 +480,14 @@
   line-height: 1.125rem;
   padding: 5px;
   width: 100%;
+
+  &.chat__memofield--other {
+    border: 2px solid $color-chat-other-room-main-color;
+  }
+
+  &.chat__memofield--workspace {
+    border: 2px solid $color-chat-workspace-room-main-color;
+  }
 }
 
 .chat__memofield::placeholder {
@@ -481,7 +499,7 @@
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  border: solid 2px $color-default-helper;
+  border: 2px solid $color-chat-other-room-main-color;
   border-radius: 3px;
   display: flex;
   height: 1rem;
@@ -505,6 +523,7 @@
   border: 0;
   border-radius: 3px;
   color: $color-default;
+  cursor: pointer;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
@@ -522,6 +541,11 @@
 
 .chat__submit--room-settings-other {
   background: $color-chat-other-room-main-color;
+}
+
+.chat__submit--room-settings-delete {
+  background: $color-fatal;
+  margin: 0 0 0 10px;
 }
 
 .chat__memofield--muc-message {
@@ -587,17 +611,20 @@
 .chat__occupants-title {
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 5px 5px 2px 5px;
+  padding: 5px 5px 2px;
 }
 
 .chat__occupants-item {
   align-items: center;
-  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
   justify-content: flex-start;
   padding: 3px 5px;
+}
+
+.chat__occupants-item--has-access-to-pm {
+  cursor: pointer;
 }
 
 .chat__online-indicator {
@@ -687,6 +714,12 @@
 }
 
 .chat__message-meta-sender-real-name {
+  font-style: italic;
+  font-weight: 400;
+  padding: 0 0 0 4px;
+}
+
+.chat__message-meta-sender-study-programme {
   font-style: italic;
   font-weight: 400;
   padding: 0 0 0 4px;
