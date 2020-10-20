@@ -273,13 +273,33 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
 
-      dispatch({
-        type: "SET_PROFILE_CHAT_SETTINGS",
-        payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({visibility: data.visibility, nick: data.nick}), 'callback')())
+      const request = await fetch("/rest/chat/settings", {
+        method: "PUT",
+        body: JSON.stringify({visibility: data.visibility, nick: data.nick}),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+      const status = request.status;
+      if (status === 200) {
+        const json = <UserChatSettingsType>(await request.json());
 
-      data.success && data.success();
+        dispatch({
+          type: "SET_PROFILE_CHAT_SETTINGS",
+          payload: <UserChatSettingsType>(json),
+        });
 
+        data.success && data.success();
+      } else {
+        const message = await request.text();
+        dispatch(actions.displayNotification(message, 'error'));
+        data.fail && data.fail();
+      }
+
+      // dispatch({
+      //   type: "SET_PROFILE_CHAT_SETTINGS",
+      //   payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({visibility: data.visibility, nick: data.nick}), 'callback')())
+      // });
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
