@@ -262,13 +262,13 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
             <DialogRowContent modifiers="new-workspace">
-              {this.state.template.label !== "" ?
+              {this.state.template.label && this.state.template.label !== "" ?
                 <div>{this.state.template.label}</div>
                 : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.template')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.workspaceName')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.workspacename !== "" ?
                 <div>{this.state.workspacename}</div>
