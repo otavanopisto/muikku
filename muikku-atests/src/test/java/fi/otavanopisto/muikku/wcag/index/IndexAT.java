@@ -45,6 +45,9 @@ public class IndexAT extends AbstractWCAGTest {
         mockBuilder.mockLogin(student);
         login();
         testAccessibility("Logged in");
+        navigate("/profile", false);
+        waitForPresentAndVisible(".profile-element__title");
+        testAccessibility("Profile view");
       }finally{
         deleteWorkspace(workspace.getId()); 
         deleteCommunicatorMessages();
