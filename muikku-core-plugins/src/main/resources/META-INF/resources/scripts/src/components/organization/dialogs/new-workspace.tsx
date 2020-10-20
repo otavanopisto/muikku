@@ -91,6 +91,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
   doStudentSearch(value: string) {
     this.props.loadStudents(value);
+    this.props.loadUserGroups(value);
   }
 
   selectStudent(student: SelectItem) {
@@ -227,27 +228,34 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         </div>;
       case 2:
 
-        let studentSearchItems = this.props.users.students.map(student => {
-          return { id: student.id, label: student.firstName + " " + student.lastName }
+        let students = this.props.users.students.map(student => {
+          return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
+
+        let groups = this.props.users.userGroups.map(group => {
+          return { id: group.id, label: group.name, icon: "users", type: "student-group" }
+        });
+
+        let allItems = students.concat(groups);
 
         return <DialogRow modifiers="new-workspace">
           <AutofillSelector modifier="add-students"
             loader={this.doStudentSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={studentSearchItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+            selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
         </DialogRow>;
       case 3:
 
-        let teacherSearchItems = this.props.users.staff.map(staff => {
+        let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName }
         });
+
 
         return <DialogRow modifiers="new-workspace">
           <AutofillSelector modifier="add-teachers"
             loader={this.doStaffSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={teacherSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+            selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 4:
         return <DialogRow modifiers="new-workspace">
@@ -272,7 +280,14 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowContent modifiers="new-workspace">
               {this.state.selectedStudents.length > 0 ?
                 this.state.selectedStudents.map((student) => {
-                  return <span className="tag-input__selected-item">{student.label}</span>
+                  return <span key={student.id} className="tag-input__selected-item">
+                    {student.icon ?
+                      <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
+                      : null}
+
+                    {student.label}
+
+                  </span>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
@@ -281,7 +296,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowContent modifiers="new-workspace">
               {this.state.selectedStaff.length > 0 ?
                 this.state.selectedStaff.map((staff) => {
-                  return <span className="tag-input__selected-item">{staff.label}</span>
+                  return <span key={staff.id} className="tag-input__selected-item">{staff.label}</span>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>

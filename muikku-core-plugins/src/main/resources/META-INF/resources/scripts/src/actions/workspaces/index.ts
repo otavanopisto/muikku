@@ -1392,25 +1392,39 @@ let deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType = functi
   }
 }
 
-
-
 let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
-        .create(
-          {
-            name: data.name,
-            nameExtension: data.nameExtension,
-          },
-          {
-            sourceWorkspaceEntityId: data.id
-          }), 'callback')().then(
-            data.success && data.success("WORKSPACE-CREATE")
-          ));
+      // let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
+      //   .create(
+      //     {
+      //       name: data.name,
+      //       nameExtension: data.nameExtension,
+      //     },
+      //     {
+      //       sourceWorkspaceEntityId: data.id
+      //     }), 'callback')().then(
+      //       data.success && data.success("WORKSPACE-CREATE")
+      //     ));
 
+      data.success && data.success("WORKSPACE-CREATE")
 
-      if (data.students.length < 0) {
+      if (data.students.length > 0) {
+        let groups: SelectItem[] = [];
+        let users: SelectItem[] = [];
+
+        data.students.map(student => {
+          if (student.type === "student-group") {
+            groups.push(student);
+          }
+          if (student.type === "student") {
+            users.push(student);
+          }
+        });
+
+        console.log(groups);
+        console.log(users);
+
         data.success && data.success("ADD-STUDENTS");
       }
 

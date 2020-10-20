@@ -6,7 +6,6 @@ import { UserGroupType, UpdateUserType, CreateUserType, UserGroupListType } from
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
 import { loadDiscussionThreadsFromServerTriggerType } from '~/actions/discussion';
-
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UsersListType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UsersListType>
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<"UPDATE_STUDENT_SELECTOR", UsersListType>
@@ -380,7 +379,6 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(q
   }
 }
 
-
 let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: string) {
 
   let data = { q: q };
@@ -423,12 +421,10 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: str
   }
 }
 
-
-
 let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGroups(q?: string) {
 
   let data = { q: q };
-  let getStaff = q ? mApi().organizationUserManagement.staffMembers.read(data) : mApi().organizationUserManagement.staffMembers.read();
+  let getStaff = q ? mApi().usergroup.groups.read(data) : mApi().usergroup.groups.read();
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -466,6 +462,5 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
     }
   }
 }
-
 
 export { loadUsers, loadStaff, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
