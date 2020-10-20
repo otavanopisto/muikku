@@ -425,7 +425,7 @@ public class ChatRESTService extends PluginRESTService {
       String realName = String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName")));
       senderInfo.put("name", realName);
       if (results.get(0).containsKey("studyProgrammeName")) {
-        senderInfo.put("studyProgramme", String.valueOf(results.get(0).get("studyProgramme")));
+        senderInfo.put("studyProgramme", String.valueOf(results.get(0).get("studyProgrammeName")));
       }
     }
     return Response.ok(senderInfo).build();
