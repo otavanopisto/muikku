@@ -266,7 +266,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       // message is already loaded, this can happen when the server
       // broadcasts messages twice, as when you change your presense
       if (this.state.messages.find((m) => m.id === id)) {
-        return;
+        return true;
       }
 
       if (!userId) {
@@ -296,8 +296,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     return true;
   }
   onPresence(stanza: Element) {
-    console.log(stanza);
-
     const from = stanza.getAttribute("from");
     const fromBare = from.split("/")[0];
     const fromNick = from.split("/")[1];
