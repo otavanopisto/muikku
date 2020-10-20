@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.atests.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
@@ -56,10 +57,15 @@ public class CourseAT extends AbstractWCAGTest{
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p>"
-          + "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p></body></html>", 1l, 
+          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 1l, 
           "EXERCISE");
+      
+      WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+          "2.0 Testimateriaali", "text/html;editor=CKEditor", 
+          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 1l, 
+          "EVALUATED");
       try{
+//  TODO: Make sure no AC problems introduced in the material
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -71,6 +77,7 @@ public class CourseAT extends AbstractWCAGTest{
         testAccessibility("Workspace materials view");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
         deleteWorkspace(workspace.getId());
       }
     }finally {
@@ -100,6 +107,11 @@ public class CourseAT extends AbstractWCAGTest{
       navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), false);
       waitForPresentAndVisible(".application-panel--discussion");
       testAccessibility("Workspace discussions view");
+      waitAndClick(".application-list .message--discussion");
+      waitForPresentAndVisible(".application-list__item--discussion-message");
+      testAccessibility("Workspace discussions single message");
+      navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), false);
+      waitForPresentAndVisible(".application-panel--discussion");
       waitAndClick(".application-panel__helper-container--discussion a.button--primary-function");
       waitForPresentAndVisible(".env-dialog__header");
       testAccessibility("Workspace discussions new message");
@@ -112,8 +124,8 @@ public class CourseAT extends AbstractWCAGTest{
     }
   }
   
-//  @Test
-  public void JournalViewTest () throws JsonProcessingException, Exception {
+  @Test
+  public void journalViewTest () throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -135,31 +147,27 @@ public class CourseAT extends AbstractWCAGTest{
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
-      WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p>"
-          + "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p></body></html>", 1l, 
-          "EXERCISE");
-      DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
-      Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+      WorkspaceJournalEntry journalEntry = createJournalEntry(workspace.getId(), student.getEmail(), "<p>Journal content... Testing testing.</p>", "Title of my entry");
       try{
         logout();
         mockBuilder.mockLogin(student);
         login();
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".hero__workspace-title");
-        testAccessibility("Workspace frontpage.");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".material-page");
-        testAccessibility("Workspace materials view");
-        navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".message--discussion");
-        testAccessibility("Workspace discussions view");
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
+        
+        waitForPresentAndVisible(".application-list__item-header-main--journal-entry");
+        testAccessibility("Workspace journal view:");
+        
+        waitAndClick(".application-list__item-footer--journal-entry span:nth-child(2)");
+        waitForPresentAndVisible(".dialog__window--delete-journal");
+        testAccessibility("Workspace journal delete view:");
+        
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
+        waitForPresentAndVisible(".application-list__item-header-main--journal-entry");
+        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        waitForPresentAndVisible(".env-dialog--new-edit-journal");
+        testAccessibility("Worspace journal create view:");
       } finally {
-        deleteWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), discussion.getId());
-        deleteWorkspaceDiscussionGroup(workspace.getId(), discussionGroup.getId());
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteJournalEntry(journalEntry);
         deleteWorkspace(workspace.getId());
       }
     }finally {
