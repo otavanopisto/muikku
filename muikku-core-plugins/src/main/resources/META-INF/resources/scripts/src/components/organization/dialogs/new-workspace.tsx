@@ -272,7 +272,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowContent modifiers="new-workspace">
               {this.state.workspacename !== "" ?
                 <div>{this.state.workspacename}</div>
-                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.workspacename')}</div>}
+                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
@@ -284,9 +284,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
                     {student.icon ?
                       <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
                       : null}
-
                     {student.label}
-
                   </span>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>

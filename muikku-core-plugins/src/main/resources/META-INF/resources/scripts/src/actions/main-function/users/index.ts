@@ -68,7 +68,7 @@ let createStudent: CreateStudentTriggerType = function createStudent(data) {
     try {
       await promisify(mApi().user.students.create(data.student), 'callback')().then(() => {
 
-        mApi().organizationUserManagement.staffMembers.cacheClear();
+        mApi().organizationUserManagement.students.cacheClear();
 
         setTimeout(async () => {
           let users: UsersListType = await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UsersListType;
@@ -96,7 +96,7 @@ let updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
     try {
       await promisify(mApi().user.students.basicInfo.update(data.student.identifier, data.student), 'callback')().then(() => {
 
-        mApi().organizationUserManagement.staffMembers.cacheClear();
+        mApi().organizationUserManagement.students.cacheClear();
 
         setTimeout(async () => {
           let users: UsersListType = await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UsersListType;
