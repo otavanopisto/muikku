@@ -1034,18 +1034,21 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   }
   
   @POST
-  @Path("/workspaces/{WORKSPACEID}/journal")
+  @Path("/workspaces/{WORKSPACEID}/journal/{AUTHOREMAIL}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceId, fi.otavanopisto.muikku.atests.WorkspaceJournalEntry payload) {
+  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("AUTHOREMAIL") String authorEmail, fi.otavanopisto.muikku.atests.WorkspaceJournalEntry payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityById(payload.getUserEntityId());
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(authorEmail);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
     
     WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.createJournalEntry(
-        workspaceController.findWorkspaceEntityById(workspaceId),
+        workspaceEntity,
         userEntity,
         payload.getHtml(),
         payload.getTitle());
@@ -1053,9 +1056,23 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
   }
   
+  @DELETE
+  @Path("/journal/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteJournalEntry(@PathParam("ID") Long journalEntryId) {
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (workspaceJournalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    workspaceJournalController.delete(workspaceJournalEntry);
+    return Response.noContent().build();
+  }
+  
   private fi.otavanopisto.muikku.atests.WorkspaceJournalEntry createRestEntity(WorkspaceJournalEntry workspaceJournalEntry) {
-    return new fi.otavanopisto.muikku.atests.WorkspaceJournalEntry(workspaceJournalEntry.getWorkspaceEntityId(), workspaceJournalEntry.getUserEntityId(),
+    fi.otavanopisto.muikku.atests.WorkspaceJournalEntry journalEntry = new fi.otavanopisto.muikku.atests.WorkspaceJournalEntry(workspaceJournalEntry.getWorkspaceEntityId(), workspaceJournalEntry.getUserEntityId(),
         workspaceJournalEntry.getHtml(), workspaceJournalEntry.getTitle(), workspaceJournalEntry.getCreated(), workspaceJournalEntry.getArchived());
+    journalEntry.setId(workspaceJournalEntry.getId());
+    return journalEntry;
   }
 
   private fi.otavanopisto.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
