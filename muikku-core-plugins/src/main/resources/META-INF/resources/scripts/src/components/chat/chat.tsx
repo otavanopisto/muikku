@@ -136,6 +136,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.initialize = this.initialize.bind(this);
     this.requestExtraInfoAboutRoom = this.requestExtraInfoAboutRoom.bind(this);
     this.onConnectionStatusChanged = this.onConnectionStatusChanged.bind(this);
+    this.stopChat = this.stopChat.bind(this);
   }
 
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -457,6 +458,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     this.state.connection && this.state.connection.deleteHandler(this.messagesListenerHandler);
     this.state.connection && this.state.connection.disconnect("Chat is disabled");
+    window.removeEventListener("logout", this.stopChat);
   }
   async initialize() {
     this.setState({
@@ -491,6 +493,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }, () => {
       connection.rawInput = function (data) { console.log('RECV: ' + data); };
       connection.rawOutput = function (data) { console.log('SENT: ' + data); };
+      window.addEventListener("logout", this.stopChat);
 
       // Connect
       if (isRestore) {
