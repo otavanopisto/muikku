@@ -28,6 +28,7 @@ interface DeleteRoomDialogState {
 }
 
 class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoomDialogState> {
+  private unmounted: boolean = false;
   constructor(props: DeleteRoomDialogProps){
     super(props);
 
@@ -36,14 +37,19 @@ class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoom
   async delete(closeDialog: ()=>any){
     try {
       await (promisify(mApi().chat.publicRoom.del({
-        name: this.props.chat.roomJID,
+        name: this.props.chat.roomJID.split("@")[0],
       }), 'callback')());
-      closeDialog();
+      if (!this.unmounted) {
+        closeDialog();
+      }
       this.props.displayNotification(this.props.i18n.text.get("plugins.chat.rooms.deleteSuccess"), "success");
       this.props.onDelete();
     } catch {
       this.props.displayNotification(this.props.i18n.text.get("plugins.chat.rooms.deleteFail"), "error");
     }
+  }
+  componentWillUnmount() {
+    this.unmounted = true;
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>

@@ -56,6 +56,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   private messagesEnd: React.RefObject<HTMLDivElement>;
   private isScrollDetached: boolean = false;
   private chatRef: React.RefObject<HTMLDivElement>;
+  private unmounted: boolean = false;
 
   constructor(props: IGroupChatProps) {
     super(props);
@@ -109,9 +110,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     e && e.stopPropagation();
     e && e.preventDefault();
 
-    this.setState({
-      deleteDialogOpen: !this.state.deleteDialogOpen,
-    });
+    if (!this.unmounted) {
+      this.setState({
+        deleteDialogOpen: !this.state.deleteDialogOpen,
+      });
+    }
   }
 
   onChatDeleted() {
@@ -326,6 +329,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
     const item = stanza.querySelector("item");
     const jid = item.getAttribute("jid");
+
+    // strange unavailable detected, kicking user out of the room
+    if (jid === null) {
+      this.props.leaveChatRoom();
+      return;
+    }
+
     const userJIDBare = jid.split("/")[0];
     const userId = userJIDBare.split("@")[0];
     const affilation: any = item.getAttribute("affiliation");
@@ -448,6 +458,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
   componentWillUnmount() {
     this.leaveRoom();
+
+    this.unmounted = true;
   }
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
