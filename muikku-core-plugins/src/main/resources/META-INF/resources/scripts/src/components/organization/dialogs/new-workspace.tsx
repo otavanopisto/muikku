@@ -12,11 +12,9 @@ import AutofillSelector, { SelectItem } from '~/components/base/input-select-aut
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
 
-interface TemplateType {
-  id: number,
-  name: string,
-  line: string,
-  type: string
+interface ValidationType {
+  templateSelected: boolean,
+  nameValid: number
 }
 
 interface OrganizationNewWorkspaceProps {
@@ -34,13 +32,14 @@ interface OrganizationNewWorkspaceProps {
 
 interface OrganizationNewWorkspaceState {
   template: SelectItem,
-  workspacename: string,
+  workspaceName: string,
   locked: boolean,
   currentStep: number,
   selectedStaff: SelectItem[],
   selectedStudents: SelectItem[],
   totalSteps: number,
   executing: boolean,
+  validation: ValidationType,
   workspaceCreated: boolean,
   studentsAdded: boolean,
   staffAdded: boolean,
@@ -51,14 +50,21 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   constructor(props: OrganizationNewWorkspaceProps) {
     super(props);
     this.state = {
-      workspacename: "",
-      template: { id: null, label: "" },
+      workspaceName: "",
+      template: {
+        id: null,
+        label: ""
+      },
       selectedStaff: [],
       selectedStudents: [],
-      locked: true,
+      locked: false,
       totalSteps: 4,
       currentStep: 1,
       executing: false,
+      validation: {
+        templateSelected: false,
+        nameValid: 1
+      },
       workspaceCreated: false,
       studentsAdded: false,
       staffAdded: false,
@@ -74,7 +80,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.doStudentSearch = this.doStudentSearch.bind(this);
     this.selectStudent = this.selectStudent.bind(this);
     this.deleteStudent = this.deleteStudent.bind(this);
-    this.updateField = this.updateField.bind(this);
     this.setSelectedStudents = this.setSelectedStudents.bind(this);
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
@@ -86,7 +91,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ locked: false, template: { id: parseInt(e.target.value), label: e.target.name } });
+    let validation: ValidationType = Object.assign(this.state.validation, { templateSelected: true });
+    this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name } });
   }
 
   doStudentSearch(value: string) {
@@ -118,26 +124,23 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ selectedStaff: newState });
   }
 
-  updateField(name: string, value: string, valid: boolean) {
-    let fieldName = name;
-    let fieldValue = valid ? value : "";
-    let newState = Object.assign(this.state.template, { [fieldName]: fieldValue });
-    this.setState({ template: newState });
-  }
-
   setSelectedStudents(selectedStudents: Array<SelectItem>) {
     this.setState({ selectedStudents });
   }
 
   setWorkspaceName(value: string) {
-    this.setState({ workspacename: value });
+    this.setState({ locked: false, workspaceName: value });
   }
 
   clearComponentState() {
     this.setState({
       template: null,
+      validation: {
+        templateSelected: false,
+        nameValid: 1
+      },
       locked: false,
-      workspacename: "",
+      workspaceName: "",
       executing: false,
       currentStep: 1,
       selectedStaff: [],
@@ -154,14 +157,20 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   nextStep() {
-    let nextStep = this.state.currentStep + 1;
-    this.setState({ currentStep: nextStep });
+    if (this.state.validation.templateSelected === false) {
+      this.setState({ locked: true });
+    } else if (this.state.workspaceName === "") {
+      let validation: ValidationType = Object.assign(this.state.validation, { nameValid: 0 });
+      this.setState({ locked: true, validation });
+    } else {
+      let nextStep = this.state.currentStep + 1;
+      this.setState({ locked: false, currentStep: nextStep });
+    }
   }
 
   lastStep() {
     let lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
-
   }
 
   saveWorkspace(closeDialog: () => any) {
@@ -172,7 +181,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
     this.props.createWorkspace({
       id: this.state.template.id,
-      name: this.state.workspacename,
+      name: this.state.workspaceName,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,
       success: (state: CreateWorkspaceStateType) => {
@@ -209,7 +218,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
           <DialogRow modifiers="new-workspace">
-            <InputFormElement updateField={this.setWorkspaceName} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspacename}></InputFormElement>
+            <InputFormElement mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
@@ -270,8 +279,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.workspaceName')} />
             <DialogRowContent modifiers="new-workspace">
-              {this.state.workspacename !== "" ?
-                <div>{this.state.workspacename}</div>
+              {this.state.workspaceName !== "" ?
+                <div>{this.state.workspaceName}</div>
                 : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName')}</div>}
             </DialogRowContent>
           </DialogRow>
