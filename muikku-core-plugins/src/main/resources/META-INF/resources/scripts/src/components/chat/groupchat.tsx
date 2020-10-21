@@ -178,12 +178,12 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const roomJID = this.props.chat.roomJID;
     let minimizedRoomList: string[] = JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]");
     const newMinimized = !this.state.minimized;
-  
+
     this.isScrollDetached = false;
     this.setState({
       minimized: newMinimized,
     }, this.scrollToBottom.bind(this, "auto"));
-  
+
     if (newMinimized) {
       minimizedRoomList.push(roomJID);
     } else {
@@ -522,7 +522,13 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder={this.props.i18n.text.get("plugin.chat.writemsg")} onChange={this.setCurrentMessageToBeSent} value={this.state.currentMessageToBeSent} />
+                <textarea
+                  className="chat__memofield chat__memofield--muc-message"
+                  onKeyDown={this.onEnterPress}
+                  placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
+                  onChange={this.setCurrentMessageToBeSent}
+                  value={this.state.currentMessageToBeSent}
+                  ref={textarea => textarea && textarea.focus()}/>
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)
