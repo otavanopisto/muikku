@@ -6,6 +6,7 @@ import '~/sass/elements/chat.scss';
 import promisify from '~/util/promisify';
 import { IAvailableChatRoomType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
 import { ChatMessage } from './chatMessage';
+import DeleteRoomDialog from "./deleteDialog";
 
 interface IGroupChatProps {
   chat: IAvailableChatRoomType;
@@ -14,6 +15,7 @@ interface IGroupChatProps {
   joinPrivateChat: (jid: string) => void;
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void;
   requestExtraInfoAboutRoom: () => void;
+  removeChatRoom: () => void;
   connection: Strophe.Connection;
   i18n: i18nType,
   presence: "away" | "chat" | "dnd" | "xa", // these are defined by the XMPP protocol https://xmpp.org/rfcs/rfc3921.html 2.2.2
@@ -41,6 +43,8 @@ interface IGroupChatState {
   // roomPersistent: boolean;
 
   updateFailed: boolean;
+
+  deleteDialogOpen: boolean;
 
   currentMessageToBeSent: string;
 }
@@ -74,6 +78,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       updateFailed: false,
 
       currentMessageToBeSent: "",
+
+      deleteDialogOpen: false,
     }
 
     this.messagesEnd = React.createRef();
@@ -95,6 +101,21 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
     this.updateRoomDescField = this.updateRoomDescField.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
+    this.toggleDeleteDialog = this.toggleDeleteDialog.bind(this);
+    this.onChatDeleted = this.onChatDeleted.bind(this);
+  }
+
+  toggleDeleteDialog(e?: React.MouseEvent) {
+    e && e.stopPropagation();
+    e && e.preventDefault();
+
+    this.setState({
+      deleteDialogOpen: !this.state.deleteDialogOpen,
+    });
+  }
+
+  onChatDeleted() {
+    this.props.removeChatRoom();
   }
 
   updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -472,7 +493,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                     </div>
                     <div className="chat__subpanel-row">
                       <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
-                      <textarea className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField} onChange={this.updateRoomDescField}></textarea>
+                      <textarea className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField || ""} onChange={this.updateRoomDescField}></textarea>
                     </div>
                     {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
                       <label className="chat__label">Pysyvä huone: </label>
@@ -480,7 +501,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                     </div>} */}
                     <div className="chat__subpanel-row">
                       <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
-                      {!this.props.chat.roomJID.startsWith("workspace-") && <input className="chat__submit chat__submit--room-settings-delete" type="submit" value={this.props.i18n.text.get("plugin.chat.button.delete")}></input>}
+                      {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteDialog}>{this.props.i18n.text.get("plugin.chat.button.delete")}</button>}
                     </div>
                   </form>
 
@@ -533,6 +554,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               </form>
             </div>)
         }
+
+        <DeleteRoomDialog isOpen={this.state.deleteDialogOpen} onClose={this.toggleDeleteDialog} chat={this.props.chat} onDelete={this.onChatDeleted}/>
       </div>
     );
   }

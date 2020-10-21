@@ -137,6 +137,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.requestExtraInfoAboutRoom = this.requestExtraInfoAboutRoom.bind(this);
     this.onConnectionStatusChanged = this.onConnectionStatusChanged.bind(this);
     this.stopChat = this.stopChat.bind(this);
+    this.removeChatRoom = this.removeChatRoom.bind(this);
   }
 
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -211,6 +212,15 @@ class Chat extends React.Component<IChatProps, IChatState> {
       window.sessionStorage.setItem("showControlBox", "true");
     }
   }
+
+  removeChatRoom(roomJID: string) {
+    this.leaveChatRoom(roomJID);
+
+    this.setState({
+      availableMucRooms: this.state.availableMucRooms.filter((r) => r.roomJID !== roomJID),
+    });
+  }
+
   // Toggle states for Chat Room Create Form window opening/closing
   toggleCreateChatRoomForm() {
     if (!this.state.showNewRoomForm) {
@@ -581,6 +591,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.find((r) => r.type === "muc" && r.jid === chat.roomJID) ?
             <Groupchat
+              removeChatRoom={this.removeChatRoom.bind(this, chat.roomJID)}
               requestExtraInfoAboutRoom={this.requestExtraInfoAboutRoom.bind(this, chat)}
               presence={this.state.selectedUserPresence}
               connection={this.state.connection}
