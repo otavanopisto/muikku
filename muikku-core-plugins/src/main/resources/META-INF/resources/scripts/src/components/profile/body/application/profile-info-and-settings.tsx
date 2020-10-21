@@ -136,11 +136,16 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
   save(){
     let totals = 0;
     let done = 0;
-    let cb = ()=>{
+    let fail: boolean = false;
+    const cb = ()=>{
       done++;
-      if (totals === done){
+      if (totals === done && !fail){
         this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
       }
+    }
+    const failCB = () => {
+      fail = true;
+      done++;
     }
 
     if (!this.props.status.isStudent) {
@@ -170,7 +175,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           visibility: this.state.chatVisibility,
           nick: this.state.chatNickname,
           success: cb,
-          fail: cb,
+          fail: failCB,
         });
       }
     }
