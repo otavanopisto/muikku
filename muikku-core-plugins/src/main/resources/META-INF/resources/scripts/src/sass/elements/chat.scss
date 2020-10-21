@@ -129,7 +129,9 @@
 }
 
 .chat__minimized-title {
+  align-items: center;
   cursor: pointer;
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -138,6 +140,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+// Chat Private Window Nickname
+.chat__target-nickname {
+  margin: 0 0 0 4px;
 }
 
 // Chat Panels
@@ -193,6 +200,8 @@
 }
 
 .chat__panel-header-title {
+  align-items: center;
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
