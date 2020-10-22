@@ -99,7 +99,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         <span className={`chat__message-meta-sender ${this.props.canToggleInfo && "chat__message-meta-sender--access-to-realname"}`} onClick={this.toggleInfo}>
           {this.props.messsage.nick}
           {this.state.showInfo && <span className="chat__message-meta-sender-real-name">({this.state.realName})</span>}
-          {this.state.showInfo && this.state.studyProgramme && <span className="chat__message-meta-sender-study-programme">({this.state.studyProgramme})</span>}
+          {this.state.showInfo && (this.state.studyProgramme && this.state.studyProgramme !== "null") && <span className="chat__message-meta-sender-study-programme">({this.state.studyProgramme})</span>}
         </span>
         <span className="chat__message-meta-timestamp">
           {this.props.i18n.time.formatDaily(this.props.messsage.timestamp)}
