@@ -2,7 +2,7 @@ import * as React from 'react'
 import '~/sass/elements/chat.scss';
 import mApi from '~/lib/mApi';
 import { StateType } from '~/reducers';
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import { Strophe } from "strophe.js";
 import { Room } from './room';
 import { Groupchat } from './groupchat';
@@ -11,6 +11,7 @@ import promisify from "~/util/promisify";
 import { PrivateChat } from './privateChat';
 import { i18nType } from '~/reducers/base/i18n';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
+import { bindActionCreators } from 'redux';
 
 export interface IChatRoomType {
   name: string;
@@ -87,10 +88,10 @@ interface IChatState {
 }
 
 interface IChatProps {
-  settings: UserChatSettingsType;
-  currentLocale: string;
+  settings: UserChatSettingsType,
+  currentLocale: string,
   i18n: i18nType,
-  displayNotification: DisplayNotificationTriggerType;
+  displayNotification: DisplayNotificationTriggerType,
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
@@ -636,8 +637,8 @@ function mapStateToProps(state: StateType) {
   }
 };
 
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 };
 
 export default connect(

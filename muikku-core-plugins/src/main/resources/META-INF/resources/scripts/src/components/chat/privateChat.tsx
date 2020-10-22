@@ -8,11 +8,11 @@ import promisify from '~/util/promisify';
 import { i18nType } from '~/reducers/base/i18n';
 
 interface IPrivateChatProps {
-  initializingStanza: Element;
-  leaveChat: () => void;
-  connection: Strophe.Connection;
-  jid: string;
-  i18n: i18nType;
+  initializingStanza: Element,
+  leaveChat: () => void,
+  connection: Strophe.Connection,
+  jid: string,
+  i18n: i18nType,
 }
 
 interface IPrivateChatState {
@@ -22,7 +22,7 @@ interface IPrivateChatState {
   messageNotification: boolean;
   targetPrescense: "away" | "chat" | "dnd" | "xa";
   isStudent: boolean,
-  currentMessageToBeSent: string;
+  currentMessageToBeSent: string,
 }
 
 export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChatState> {
@@ -33,6 +33,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   private messagesEnd: React.RefObject<HTMLDivElement>;
   private isScrollDetached: boolean = false;
   private chatRef: React.RefObject<HTMLDivElement>;
+  private messageField: any = null;
 
   constructor(props: IPrivateChatProps) {
     super(props);
@@ -61,6 +62,11 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
     this.requestPrescense = this.requestPrescense.bind(this);
+    this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
+  }
+
+  setFocusToMessageField() {
+    this.messageField.focus();
   }
 
   componentDidMount() {
@@ -73,6 +79,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
     this.requestPrescense();
     this.obtainNick();
+    this.setFocusToMessageField();
   }
 
   async obtainNick() {
@@ -265,7 +272,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 value={this.state.currentMessageToBeSent}
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}
-                onBlur={this.onTextFieldBlur}/>
+                onBlur={this.onTextFieldBlur}
+                ref={(input) => { this.messageField = input; }}/>
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
           </div>
