@@ -45,7 +45,7 @@ class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoom
       this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.deleteSuccess", this.props.chat.roomName), "success");
       this.props.onDelete();
     } catch {
-      this.props.displayNotification(this.props.i18n.text.get("pplugins.chat.notification.deleteFail", this.props.chat.roomName), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.deleteFail", this.props.chat.roomName), "error");
     }
   }
   componentWillUnmount() {

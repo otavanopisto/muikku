@@ -10,6 +10,7 @@ import { UserChatSettingsType } from '~/reducers/main-function/user-index';
 import promisify from "~/util/promisify";
 import { PrivateChat } from './privateChat';
 import { i18nType } from '~/reducers/base/i18n';
+import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 
 export interface IChatRoomType {
   name: string;
@@ -89,6 +90,7 @@ interface IChatProps {
   settings: UserChatSettingsType;
   currentLocale: string;
   i18n: i18nType,
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 class Chat extends React.Component<IChatProps, IChatState> {
@@ -194,8 +196,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
         ]),
       }, this.joinChatRoom.bind(this, roomJID));
     } catch (err) {
-      // TODO do something about error
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.createFail"), "error");
     }
+
+    this.toggleCreateChatRoomForm();
   }
 
   // Toggle states for Control Box window opening/closing
