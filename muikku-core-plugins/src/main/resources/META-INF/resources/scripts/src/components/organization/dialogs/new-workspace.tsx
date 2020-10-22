@@ -7,7 +7,7 @@ import { loadTemplatesFromServer, LoadTemplatesFromServerTriggerType, CreateWork
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
@@ -49,6 +49,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
   constructor(props: OrganizationNewWorkspaceProps) {
     super(props);
+
     this.state = {
       workspaceName: "",
       template: {
@@ -63,7 +64,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       executing: false,
       validation: {
         templateSelected: false,
-        nameValid: 1
+        nameValid: 2
       },
       workspaceCreated: false,
       studentsAdded: false,
@@ -137,7 +138,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       template: null,
       validation: {
         templateSelected: false,
-        nameValid: 1
+        nameValid: 2
       },
       locked: false,
       workspaceName: "",
@@ -222,20 +223,21 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
-              <form>
-                {this.props.templates.map((template: WorkspaceType) => {
-                  return <ApplicationListItem key={template.id}>
+              {this.props.templates.map((template: WorkspaceType) => {
+                let aside = <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />;
+                return <ApplicationListItem key={template.id}>
+                  <ApplicationListItemContentWrapper aside={aside}>
                     <ApplicationListItemHeader>
-                      <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />
                       <span className="application-list__header-primary">{template.name}</span>
                       <span className="application-list__header-secondary">{template.educationTypeName}</span>
                     </ApplicationListItemHeader>
-                  </ApplicationListItem>
-                })}
-              </form>
+                  </ApplicationListItemContentWrapper>
+                </ApplicationListItem>
+
+              })}
             </ApplicationList>
           </DialogRow>
-        </div>;
+        </div >;
       case 2:
 
         let students = this.props.users.students.map(student => {
@@ -310,6 +312,10 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         </DialogRow>;
       default: return <div>EMPTY</div>
     }
+  }
+
+  componentDidMount() {
+    this.doTemplateSearch("");
   }
 
   render() {
