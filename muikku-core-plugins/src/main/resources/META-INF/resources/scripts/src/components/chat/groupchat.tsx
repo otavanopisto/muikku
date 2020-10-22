@@ -511,7 +511,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                       <label className="chat__label">Pysyvä huone: </label>
                       <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
                     </div>} */}
-                    <div className="chat__subpanel-row">
+                    <div className="chat__subpanel-row chat__subpanel-row--buttonset">
                       <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
                       {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteDialog}>{this.props.i18n.text.get("plugin.chat.button.delete")}</button>}
                     </div>
@@ -560,8 +560,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   onKeyDown={this.onEnterPress}
                   placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
                   onChange={this.setCurrentMessageToBeSent}
-                  value={this.state.currentMessageToBeSent}
-                  ref={textarea => textarea && textarea.focus()}/>
+                  value={this.state.currentMessageToBeSent}/>
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)

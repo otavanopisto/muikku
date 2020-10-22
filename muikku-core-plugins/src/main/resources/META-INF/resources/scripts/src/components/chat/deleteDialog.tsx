@@ -42,10 +42,10 @@ class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoom
       if (!this.unmounted) {
         closeDialog();
       }
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.rooms.deleteSuccess"), "success");
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.deleteSuccess", this.props.chat.roomName), "success");
       this.props.onDelete();
     } catch {
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.rooms.deleteFail"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("pplugins.chat.notification.deleteFail", this.props.chat.roomName), "error");
     }
   }
   componentWillUnmount() {
@@ -53,7 +53,7 @@ class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoom
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        <span>{this.props.i18n.text.get('plugin.chat.rooms.deleteRoomDesc', this.props.chat.roomName)}</span>
+      <span dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get('plugin.chat.rooms.deleteRoomDesc', this.props.chat.roomName)}}></span>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">

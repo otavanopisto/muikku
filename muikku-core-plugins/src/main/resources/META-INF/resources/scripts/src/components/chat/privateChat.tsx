@@ -265,9 +265,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 value={this.state.currentMessageToBeSent}
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}
-                onBlur={this.onTextFieldBlur}
-                ref={textarea => textarea && textarea.focus()}
-              />
+                onBlur={this.onTextFieldBlur}/>
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
           </div>

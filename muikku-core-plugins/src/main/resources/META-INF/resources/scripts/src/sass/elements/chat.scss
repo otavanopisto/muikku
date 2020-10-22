@@ -449,6 +449,13 @@
   margin: 0 0 10px;
 }
 
+.chat__subpanel-row--buttonset {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
 // Chat Form Elements
 .chat__label {
   font-size: 0.875rem;
@@ -457,6 +464,7 @@
 }
 
 .chat__textfield {
+  border: 2px solid $color-chat-controlbox-main-color;
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
@@ -473,7 +481,8 @@
   }
 
   &[disabled] {
-    border-color: $color-disabled;
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 
@@ -482,6 +491,7 @@
 }
 
 .chat__memofield {
+  border: 2px solid $color-chat-controlbox-main-color;
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
