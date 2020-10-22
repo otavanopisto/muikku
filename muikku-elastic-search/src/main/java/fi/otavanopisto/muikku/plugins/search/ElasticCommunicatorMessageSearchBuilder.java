@@ -7,6 +7,7 @@ import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
 
 
 public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMessageSearchBuilder{
@@ -19,9 +20,11 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   public SearchResult search() {
     return elastic.searchCommunicatorMessages(
         getMessage(),
+        getCaption(),
+        getSenderId(),
         getSender(),
         getReceiver(),
-        getTemplateRestriction(),
+      //  getTemplateRestriction(),
         getFirstResult(),
         getMaxResults(),
         getSorts()
@@ -44,37 +47,56 @@ public CommunicatorMessageSearchBuilder setMessage(String message) {
 }
 
 @Override
-public List<CommunicatorMessageRecipient> getReceiver() {
+public String getCaption() {
+	// TODO Auto-generated method stub
+	return caption;
+}
+
+@Override
+public CommunicatorMessageSearchBuilder setCaption(String caption) {
+	// TODO Auto-generated method stub
+	this.caption = caption;
+	return this;
+}
+
+@Override
+public List<IndexedCommunicatorMessageRecipient> getReceiver() {
 	// TODO Auto-generated method stub
 	return receiver;
 }
 
 @Override
-public CommunicatorMessageSearchBuilder addReceiver(List<CommunicatorMessageRecipient> receiver) {
+public CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver) {
 	// TODO Auto-generated method stub
 	this.receiver = receiver;
 	    return this;
 }
+//
+//@Override
+//public CommunicatorMessageSearchBuilder setReceiver(List<CommunicatorMessageRecipient> receiver) {
+//	// TODO Auto-generated method stub
+//	this.receiver = receiver;
+//	return this;
+//}
 
 @Override
-public CommunicatorMessageSearchBuilder setReceiver(List<CommunicatorMessageRecipient> receiver) {
+public long getSenderId() {
 	// TODO Auto-generated method stub
-	this.receiver = receiver;
-	return this;
+	return senderId;
 }
 
 @Override
-public long getSender() {
+public String getSender() {
 	// TODO Auto-generated method stub
 	return sender;
 }
-
-@Override
-public CommunicatorMessageSearchBuilder setSender(long sender) {
-	// TODO Auto-generated method stub
-	this.sender = sender;
-	return this;
-}
+//
+//@Override
+//public CommunicatorMessageSearchBuilder setSender(long sender) {
+//	// TODO Auto-generated method stub
+//	this.sender = sender;
+//	return this;
+//}
 
 @Override
 public int getFirstResult() {
@@ -123,24 +145,26 @@ public CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts) {
 	return this;
 }
 
-@Override
-public TemplateRestrictionForCommunicatorMessage getTemplateRestriction() {
-	// TODO Auto-generated method stub
-	return templateRestriction;
-}
-
-@Override
-public CommunicatorMessageSearchBuilder setTemplateRestriction(
-		TemplateRestrictionForCommunicatorMessage templateRestriction) {
-	// TODO Auto-generated method stub
-	this.templateRestriction = templateRestriction;
-	return this;
-}
+//@Override
+//public TemplateRestrictionForCommunicatorMessage getTemplateRestriction() {
+//	// TODO Auto-generated method stub
+//	return templateRestriction;
+//}
+//
+//@Override
+//public CommunicatorMessageSearchBuilder setTemplateRestriction(
+//		TemplateRestrictionForCommunicatorMessage templateRestriction) {
+//	// TODO Auto-generated method stub
+//	this.templateRestriction = templateRestriction;
+//	return this;
+//}
 
 private String message;
-private long sender;
-private List<CommunicatorMessageRecipient> receiver;
-private TemplateRestrictionForCommunicatorMessage templateRestriction;
+private String caption;
+private long senderId;
+private String sender;
+private List<IndexedCommunicatorMessageRecipient> receiver;
+//private TemplateRestrictionForCommunicatorMessage templateRestriction;
 private List<Sort> sort;
 private int maxResults;
 private int firstResult;

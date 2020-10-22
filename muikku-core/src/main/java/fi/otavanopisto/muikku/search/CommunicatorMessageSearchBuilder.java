@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 
 
@@ -14,17 +15,19 @@ public interface CommunicatorMessageSearchBuilder {
   String getMessage();
 
   CommunicatorMessageSearchBuilder setMessage(String message);
-
-  List<CommunicatorMessageRecipient> getReceiver();
-
-  CommunicatorMessageSearchBuilder addReceiver(List<CommunicatorMessageRecipient> receiver);
-
-  CommunicatorMessageSearchBuilder setReceiver(List<CommunicatorMessageRecipient> receiver);
-
-  long getSender();
   
-  CommunicatorMessageSearchBuilder setSender(long sender);
+  String getCaption();
   
+  CommunicatorMessageSearchBuilder setCaption(String caption);
+
+  List<IndexedCommunicatorMessageRecipient> getReceiver();
+  
+  long getSenderId();
+  
+  String getSender();
+//  
+//  CommunicatorMessageSearchBuilder setSender(long sender);
+//  
   int getFirstResult();
 
   CommunicatorMessageSearchBuilder setFirstResult(int firstResult);
@@ -38,14 +41,17 @@ public interface CommunicatorMessageSearchBuilder {
   CommunicatorMessageSearchBuilder addSort(Sort sort);
 
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
+//
+//  TemplateRestrictionForCommunicatorMessage getTemplateRestriction();
+//  CommunicatorMessageSearchBuilder setTemplateRestriction(TemplateRestrictionForCommunicatorMessage templateRestriction);
+//	  
+//  public enum TemplateRestrictionForCommunicatorMessage {
+//    LIST_ALL,
+//    ONLY_TEMPLATES,
+//    ONLY_COMMUNICATORMESSAGES
+//  }
 
-  TemplateRestrictionForCommunicatorMessage getTemplateRestriction();
-  CommunicatorMessageSearchBuilder setTemplateRestriction(TemplateRestrictionForCommunicatorMessage templateRestriction);
-	  
-  public enum TemplateRestrictionForCommunicatorMessage {
-    LIST_ALL,
-    ONLY_TEMPLATES,
-    ONLY_COMMUNICATORMESSAGES
-  }
+CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
+
 
 }

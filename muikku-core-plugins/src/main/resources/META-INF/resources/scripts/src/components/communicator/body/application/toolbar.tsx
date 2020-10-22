@@ -16,6 +16,7 @@ import LabelUpdateDialog from '../../dialogs/label-update';
 import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
+import * as queryString from 'query-string';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -25,7 +26,7 @@ import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
-import { promisify } from 'util';
+import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 
 interface CommunicatorToolbarProps {
@@ -47,36 +48,58 @@ interface CommunicatorToolbarProps {
 
 interface CommunicatorToolbarState {
   labelFilter: string,
-  isCurrentRead: boolean
+  isCurrentRead: boolean,
+  searchquery: any
 }
 
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
+  private searchTimer: NodeJS.Timer;
   constructor(props: CommunicatorToolbarProps){
     super(props);
 
+    this.setSearchQuery = this.setSearchQuery.bind(this);
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
     this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
-	this.searchFromMessages = this.searchFromMessages.bind(this);
+    this.searchFromMessages = this.searchFromMessages.bind(this);
+    this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
 
     this.state = {
       labelFilter: "",
-      isCurrentRead: true
+      isCurrentRead: true,
+      searchquery: this.props.messages.selectedThreads || ""
     }
   }
 
-  async searchFromMessages(e: any){
-	let searchString = e.target[0].value;
-	let sender = 
-	alert(searchString);
-	let testi =  await promisify(mApi().communicator.searchItems.read({
+  async searchFromMessages(query: any){
+	let searchString = query;
+	
+	let data = await promisify(mApi().communicator.searchItems.read({
 		  message: searchString,
           firstResult: 0,
           maxResults: 50
-	}))();
+  }), "callback")();
+  
+  }
+
+  setSearchQuery(e: React.ChangeEvent<HTMLInputElement>){
+    clearTimeout(this.searchTimer);
+
+    this.setState({
+      searchquery: e.target.value
+    });
+
+    this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
+  }
+
+  updateSearchWithQuery(query: string){
+    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+    locationData.q = query;
+    window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
+    this.searchFromMessages(query);
   }
 
   loadMessage(messageId: number){
@@ -248,12 +271,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         disabled={this.props.messages.selectedThreads.length < 1}
         onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
     
-	  <div>
-		<form onSubmit={this.searchFromMessages}>
-		  <input type="text" placeholder="Etsi viesteistä"/>
-		  <input type="submit" value="Etsi"/>
-		</form>
-	  </div>
+    <div className="form-element form-element--coursepicker-toolbar">
+      <input className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
+      <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
+    </div>
+   
   	</ApplicationPanelToolbar>
   }
 }

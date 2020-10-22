@@ -3,26 +3,68 @@ package fi.otavanopisto.muikku.plugins.search;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
+
 import java.util.List;
+
+import fi.otavanopisto.muikku.search.annotations.IndexField;
+import fi.otavanopisto.muikku.search.annotations.IndexId;
+import fi.otavanopisto.muikku.search.annotations.Indexable;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
+
+@Indexable (
+		  name = "IndexedCommunicatorMessage",
+		  options = {
+		    @IndexableFieldOption (
+		      name = "message",
+		      type = "string",
+		      index = "not_analyzed"
+		    ),
+		    @IndexableFieldOption (
+			  name = "caption",
+		      type = "string",
+		      index = "not_analyzed"
+				    ),
+		    @IndexableFieldOption (
+		      name = "senderId",
+		      type = "long",
+		      index = "not_analyzed"
+		    ),
+		    @IndexableFieldOption (
+			  name = "sender",
+		      type = "string",
+		      index = "not_analyzed"
+				    ),
+		    @IndexableFieldOption (
+		      name = "receiver",
+		      type = "List<IndexedCommunicatorMessageRecipient>",
+		      index = "not_analyzed"
+		    )
+		  }
+		)
 
 public class IndexedCommunicatorMessage {
 public IndexedCommunicatorMessage() {
-    super();
-   // this.message = communicatorMessage.getContent();
-   // this.sender = communicatorMessage.getSender();
-   // CommunicatorMessageId messageId = communicatorMessage.getCommunicatorMessageId();
-    //this.receiver =  communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(userEntity, messageId, communicatorMessage.getTrashedBySender());
-  }
+    super();}
   
   public String getMessage() {
 	 return this.message;
   }
   
-  public long getSender() {
-    return this.sender;
+  public String getCaption() {
+		 return this.caption;
+	  }
+  
+  public long getSenderId() {
+    return this.senderId;
   }
   
-  public List<CommunicatorMessageRecipient> getReceiver() {
+  public String getSender() {
+	    return this.sender;
+	  }
+  
+  public List<IndexedCommunicatorMessageRecipient> getReceiver() {
     return this.receiver;
   }
   
@@ -30,16 +72,36 @@ public IndexedCommunicatorMessage() {
     this.message = message;
   }
   
-  public void setSender(long sender) {
-    this.sender = sender;
+  public void setCaption(String caption) {
+	    this.caption = caption;
+	  }
+  
+  public void setSenderId(long senderId) {
+    this.senderId = senderId;
   }
   
-  public void setReceiver(List<CommunicatorMessageRecipient> receiver) {
-	this.receiver = receiver;
+  public void setSender(String sender) {
+	    this.sender = sender;
+	  }
+  
+  public void setReceiver(List<IndexedCommunicatorMessageRecipient> recipientsEntityList) {
+	this.receiver = recipientsEntityList;
+  }
+  
+  @IndexId
+  public String getSearchId() {
+	return this.searchId;
+  }
+  
+  public void setSearchId(String searchId) {
+	 this.searchId = searchId;
   }
   
   private String message;
-  private long sender;
-  private List<CommunicatorMessageRecipient> receiver;
+  private String caption;
+  private long senderId;
+  private String sender;
+  private List<IndexedCommunicatorMessageRecipient> receiver;
+  private String searchId;
 }
 

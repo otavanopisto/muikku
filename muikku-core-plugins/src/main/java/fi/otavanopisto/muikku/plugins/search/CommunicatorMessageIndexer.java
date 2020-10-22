@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.search;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +18,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataController;
@@ -29,6 +32,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 public class CommunicatorMessageIndexer {
@@ -36,36 +40,60 @@ public class CommunicatorMessageIndexer {
   @Inject
   private Logger logger;
 
-  @Inject 
-  private CourseMetaController courseMetaController; 
-  
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
-
-  @Inject
-  private UserController userController;
-  
-  @Inject 
-  private SessionController sessionController;
   
   @Inject
   private SearchIndexer indexer;
   
   @Inject
   private CommunicatorController communicatorController;
+  
+  @Inject 
+  private UserEntityController userEntityController;
+  
+  @Inject 
+  private UserController userController;
 
   public void indexMessage(CommunicatorMessage message, UserEntity userEntity) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       if (message != null) {
-    	
-    	IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
+      	IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
+
+    	//set message
     	indexedCommunicatorMessage.setMessage(message.getContent());
-    	indexedCommunicatorMessage.setSender(message.getSender());
-        CommunicatorMessageId messageId = message.getCommunicatorMessageId();
-    	List<CommunicatorMessageRecipient> receiver = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(userEntity, messageId, message.getTrashedBySender());
-    	indexedCommunicatorMessage.setReceiver(receiver);
+    	
+    	//set caption
+    	indexedCommunicatorMessage.setCaption(message.getCaption());
+    	
+    	//set sender
+    	Long senderId = message.getSender();
+    	UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
+        User sender = userController.findUserByUserEntityDefaults(senderEntity);
         
+    	indexedCommunicatorMessage.setSender(sender.getDisplayName());
+    	
+    	//set recipients
+    	List<CommunicatorMessageRecipient> recipientsList = communicatorController.listCommunicatorMessageRecipients(message);
+    	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
+    	for (CommunicatorMessageRecipient recipient : recipientsList) {
+            Long recipientEntity = recipient.getRecipient();
+            
+            if(recipientEntity != null) {
+              UserEntity userRecipientEntity = userEntityController.findUserEntityById(recipientEntity);
+              User userRecipient = userController.findUserByUserEntityDefaults(userRecipientEntity);
+              IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
+              recipientData.setUserEntityId(recipientEntity);
+              recipientData.setDisplayName(userRecipient.getDisplayName());
+              
+              recipientsEntityList.add(recipientData);
+            }
+        }
+    	indexedCommunicatorMessage.setReceiver(recipientsEntityList);
+    	indexedCommunicatorMessage.setSearchId(message.getId().toString());
+        
+    	//call method indexCommunicatorMessage
     	indexCommunicatorMessage(indexedCommunicatorMessage);
     	
       } else {
@@ -82,7 +110,7 @@ public class CommunicatorMessageIndexer {
         indexer.index(indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage);
       }
     } catch (Exception e) {
-      logger.warning(String.format("could not index message #%s/%s", indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage.getSender()));
+      logger.warning(String.format("could not index message #%s/%s//%s", indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage.getSearchId(), e));
     }
   }
 

@@ -52,6 +52,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -59,7 +60,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
-import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder.TemplateRestrictionForCommunicatorMessage;
 
 
 
@@ -669,9 +669,11 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchCommunicatorMessages(
       String message,
-      long sender,
-      List<CommunicatorMessageRecipient> receiver, 
-      TemplateRestrictionForCommunicatorMessage templateRestriction,
+      String caption,
+      long senderId,
+      String sender,
+      List<IndexedCommunicatorMessageRecipient> receiver, 
+//      TemplateRestrictionForCommunicatorMessage templateRestriction,
       int start, 
       int maxResults, 
       List<Sort> sorts) {
@@ -681,25 +683,36 @@ public class ElasticSearchProvider implements SearchProvider {
     
     BoolQueryBuilder query = boolQuery();
     
+   // query.must(termQuery("content", message));
+    
+//    "query": {
+//        "match": {
+//          "_all": {
+//            "query": "viesti"
+//          }
+    
+    //query.must(termQuery("message", message));
+    
     try {
       
       
-      switch (templateRestriction) {
-        case ONLY_COMMUNICATORMESSAGES:
-          query.must(termQuery("isTemplate", Boolean.FALSE));
-        break;
-        case ONLY_TEMPLATES:
-          query.must(termQuery("isTemplate", Boolean.TRUE));
-        break;
-        case LIST_ALL:
-          // No restrictions
-        break;
-      }
+//      switch (templateRestriction) {
+//        case ONLY_COMMUNICATORMESSAGES:
+//          query.must(termQuery("isTemplate", Boolean.FALSE));
+//        break;
+//        case ONLY_TEMPLATES:
+//          query.must(termQuery("isTemplate", Boolean.TRUE));
+//        break;
+//        case LIST_ALL:
+//          // No restrictions
+//        break;
+//      }
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
-        .setTypes("CommunicatorMessage")
+        .setTypes("IndexedCommunicatorMessage")
         .setFrom(start)
+        .setQuery(query)
         .setSize(maxResults);
       
       if (sorts != null && !sorts.isEmpty()) {
@@ -708,7 +721,7 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
       
-      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      SearchResponse response = requestBuilder.setQuery(matchQuery("_all", message)).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits();
