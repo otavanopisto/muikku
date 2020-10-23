@@ -73,6 +73,7 @@ public class CommunicatorMessageIndexer {
         User sender = userController.findUserByUserEntityDefaults(senderEntity);
         
     	indexedCommunicatorMessage.setSender(sender.getDisplayName());
+    	indexedCommunicatorMessage.setSenderId(senderId);
     	
     	//set recipients
     	List<CommunicatorMessageRecipient> recipientsList = communicatorController.listCommunicatorMessageRecipients(message);

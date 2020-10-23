@@ -25,9 +25,11 @@ public interface CommunicatorMessageSearchBuilder {
   long getSenderId();
   
   String getSender();
-//  
-//  CommunicatorMessageSearchBuilder setSender(long sender);
-//  
+  
+  CommunicatorMessageSearchBuilder setSender(String sender);
+  
+  CommunicatorMessageSearchBuilder setSenderId(long senderId);
+  
   int getFirstResult();
 
   CommunicatorMessageSearchBuilder setFirstResult(int firstResult);
@@ -41,17 +43,8 @@ public interface CommunicatorMessageSearchBuilder {
   CommunicatorMessageSearchBuilder addSort(Sort sort);
 
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
-//
-//  TemplateRestrictionForCommunicatorMessage getTemplateRestriction();
-//  CommunicatorMessageSearchBuilder setTemplateRestriction(TemplateRestrictionForCommunicatorMessage templateRestriction);
-//	  
-//  public enum TemplateRestrictionForCommunicatorMessage {
-//    LIST_ALL,
-//    ONLY_TEMPLATES,
-//    ONLY_COMMUNICATORMESSAGES
-//  }
 
-CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
+  CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
 
 
 }

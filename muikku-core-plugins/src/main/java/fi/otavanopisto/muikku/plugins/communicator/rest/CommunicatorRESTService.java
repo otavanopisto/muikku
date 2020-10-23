@@ -334,9 +334,11 @@ public class CommunicatorRESTService extends PluginRESTService {
           for (Map<String, Object> result : results) {
             String searchMessage = (String) result.get("message");
             String sender = result.get("sender").toString();
+            String senderId = result.get("senderId").toString();
             String receiver = result.get("receiver").toString();
             String searchId = result.get("id").toString();
             String caption = (String) result.get("caption");
+            
            // if (StringUtils.isNoneBlank(searchId)) {
               //String[] id = searchId.split("/", 2);
              // if (id.length == 2) {
@@ -346,6 +348,8 @@ public class CommunicatorRESTService extends PluginRESTService {
             communicatorMessage.setContent(searchMessage);
             communicatorMessage.setReceiver(receiver);
             communicatorMessage.setSender(sender);
+            communicatorMessage.setSenderId(senderId);
+            
             
             communicatorMessages.add(communicatorMessage.toString());
             

@@ -49,6 +49,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -59,6 +60,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 
 
@@ -75,6 +77,9 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private SessionController sessionController;
   
   @Override
   public void init() {
@@ -442,6 +447,7 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("subjectIdentifier", subjectIdentifier));
     query.must(termQuery("courseNumber", courseNumber));
     // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
+    
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")
@@ -683,15 +689,17 @@ public class ElasticSearchProvider implements SearchProvider {
     
     BoolQueryBuilder query = boolQuery();
     
-   // query.must(termQuery("content", message));
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    Long id = loggedUser.getId();
+    String idToString = String.valueOf(id);
     
-//    "query": {
-//        "match": {
-//          "_all": {
-//            "query": "viesti"
-//          }
     
-    //query.must(termQuery("message", message));
+    query.must(boolQuery()
+    		.should(termsQuery("message", message))
+            .should(termsQuery("senderId", idToString))
+            .should(termsQuery("receiver.userEntityId", idToString))
+            .minimumNumberShouldMatch(1));
+    
     
     try {
       
@@ -721,7 +729,7 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
       
-      SearchResponse response = requestBuilder.setQuery(matchQuery("_all", message)).execute().actionGet();
+      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits();

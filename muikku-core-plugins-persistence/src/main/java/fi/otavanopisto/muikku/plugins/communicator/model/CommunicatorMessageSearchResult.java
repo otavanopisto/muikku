@@ -46,7 +46,17 @@ public class CommunicatorMessageSearchResult{
 	this.receiver = receiver;
   }
   
+  public void setSenderId(String senderId2) {
+	this.senderId = senderId2;
+  }
+  
+  public String getSenderId() {
+	return senderId;
+  }
+  
   private Long id;
+  
+  private String senderId;
 
   private String communicatorMessageId;
 
