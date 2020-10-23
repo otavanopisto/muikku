@@ -668,18 +668,13 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   
-  
-  
-  //-----------------------------------------------------------------------
-  
   @Override
   public SearchResult searchCommunicatorMessages(
       String message,
       String caption,
       long senderId,
       String sender,
-      List<IndexedCommunicatorMessageRecipient> receiver, 
-//      TemplateRestrictionForCommunicatorMessage templateRestriction,
+      List<IndexedCommunicatorMessageRecipient> receiver,
       int start, 
       int maxResults, 
       List<Sort> sorts) {
@@ -702,19 +697,6 @@ public class ElasticSearchProvider implements SearchProvider {
     
     
     try {
-      
-      
-//      switch (templateRestriction) {
-//        case ONLY_COMMUNICATORMESSAGES:
-//          query.must(termQuery("isTemplate", Boolean.FALSE));
-//        break;
-//        case ONLY_TEMPLATES:
-//          query.must(termQuery("isTemplate", Boolean.TRUE));
-//        break;
-//        case LIST_ALL:
-//          // No restrictions
-//        break;
-//      }
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
@@ -747,10 +729,6 @@ public class ElasticSearchProvider implements SearchProvider {
       return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
-  
-  //------------------------------------------------------------------------
-
-  
   
   
   @Override

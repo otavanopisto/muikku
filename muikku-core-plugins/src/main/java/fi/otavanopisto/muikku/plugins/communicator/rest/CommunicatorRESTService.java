@@ -294,14 +294,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<Object> communicatorMessages = new ArrayList<Object>();
     CommunicatorMessageSearchResult communicatorMessage = new CommunicatorMessageSearchResult();
 
-	    
-	//if (labelId != null) {
-	//  label = communicatorController.findUserLabelById(labelId);
-	//  if (label == null)
-	//    return Response.status(Status.NOT_FOUND).build();
-	//}
-	//else
-   //   label = null;
       
     List<CommunicatorMessage> receivedItems;
     
@@ -312,22 +304,16 @@ public class CommunicatorRESTService extends PluginRESTService {
       
       List<Sort> sorts = null;
       
-//      if (orderBy != null && orderBy.contains("alphabet")) {
-//        sorts = new ArrayList<>();
-//        sorts.add(new Sort("name.untouched", Sort.Order.ASC));
-//      }
+      if (message.isEmpty() || message == null) {
+    	 return Response.noContent().build();
+      }
       
       searchResult = searchProvider.searchCommunicatorMessages()
-    		 // .setTemplateRestriction(templateRestriction)
     		  .setSorts(sorts)
     		  .setMaxResults(maxResults)
     		  .setFirstResult(firstResult)
-    		  //.setReceiver(receiver)
-    		  //.setSender(sender)
     		  .setMessage(message)
     	      .search();
-      
-
       
       try {
           List<Map<String, Object>> results = searchResult.getResults();
@@ -336,14 +322,8 @@ public class CommunicatorRESTService extends PluginRESTService {
             String sender = result.get("sender").toString();
             String senderId = result.get("senderId").toString();
             String receiver = result.get("receiver").toString();
-            String searchId = result.get("id").toString();
             String caption = (String) result.get("caption");
             
-           // if (StringUtils.isNoneBlank(searchId)) {
-              //String[] id = searchId.split("/", 2);
-             // if (id.length == 2) {
-             //   String dataSource = id[1];
-             //   String identifier = id[0];
             communicatorMessage.setCaption(caption);
             communicatorMessage.setContent(searchMessage);
             communicatorMessage.setReceiver(receiver);
@@ -351,66 +331,22 @@ public class CommunicatorRESTService extends PluginRESTService {
             communicatorMessage.setSenderId(senderId);
             
             
-            communicatorMessages.add(communicatorMessage.toString());
+            communicatorMessages.add(communicatorMessage);
             
-           // }
-              //  WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
-//                if (workspaceEntity != null) {
-//                  String name = (String) result.get("name");
-//                  String nameExtension = (String) result.get("nameExtension");
-//                  String description = (String) result.get("description");
-//                  boolean canSignup = getCanSignup(workspaceEntity);
-//                  boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
-//                  String educationTypeId = (String) result.get("educationTypeIdentifier");
-//                  String educationTypeName = null;
-//                  
-//                  if (StringUtils.isNotBlank(educationTypeId)) {
-//                    EducationType educationType = null;
-//                    SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
-//                    if (educationTypeIdentifier == null) {
-//                      logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
-//                    } else {
-//                      educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
-//                    }
-//                    
-//                    if (educationType != null) {
-//                      educationTypeName = educationType.getName();
-//                    }
-//                  }
-//    
-//                  if (StringUtils.isNotBlank(name)) {
-//                    workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, canSignup, isCourseMember));
-//                  } else {
-//                    logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
-//                  }
-//                } else {
-//                  logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
-//                }
-//             // }
-//            }
+            //TODO null checks etc
           }
         } finally {
         	
-        	
-//          schoolDataBridgeSessionController.endSystemSession();
-//        }
-//      } else {
-//        return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-//      }
-//
-      if (communicatorMessage == null) {
-        // TODO: return 200 & empty list instead of 204
-        return Response.noContent().build();
-      }
-      
-    }}
+          if (communicatorMessage == null) {
+            // TODO: return 200 & empty list instead of 204
+            return Response.noContent().build();
+          }
+       }  
+    }
     
     return Response.ok(
-    	     communicatorMessage
+    	     communicatorMessages
     	    ).build();
-	
-      
-    
   }
   
   @DELETE

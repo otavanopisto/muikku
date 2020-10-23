@@ -24,7 +24,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
         getSenderId(),
         getSender(),
         getReceiver(),
-      //  getTemplateRestriction(),
         getFirstResult(),
         getMaxResults(),
         getSorts()
@@ -69,15 +68,8 @@ public List<IndexedCommunicatorMessageRecipient> getReceiver() {
 public CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver) {
 	// TODO Auto-generated method stub
 	this.receiver = receiver;
-	    return this;
+	return this;
 }
-//
-//@Override
-//public CommunicatorMessageSearchBuilder setReceiver(List<CommunicatorMessageRecipient> receiver) {
-//	// TODO Auto-generated method stub
-//	this.receiver = receiver;
-//	return this;
-//}
 
 @Override
 public long getSenderId() {
@@ -86,17 +78,24 @@ public long getSenderId() {
 }
 
 @Override
+public CommunicatorMessageSearchBuilder setSenderId(long senderId) {
+	this.senderId = senderId;
+	return this;
+}
+
+
+@Override
 public String getSender() {
 	// TODO Auto-generated method stub
 	return sender;
 }
-//
-//@Override
-//public CommunicatorMessageSearchBuilder setSender(long sender) {
-//	// TODO Auto-generated method stub
-//	this.sender = sender;
-//	return this;
-//}
+
+@Override
+public CommunicatorMessageSearchBuilder setSender(String sender) {
+	// TODO Auto-generated method stub
+	this.sender = sender;
+	return this;
+}
 
 @Override
 public int getFirstResult() {
@@ -145,26 +144,12 @@ public CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts) {
 	return this;
 }
 
-//@Override
-//public TemplateRestrictionForCommunicatorMessage getTemplateRestriction() {
-//	// TODO Auto-generated method stub
-//	return templateRestriction;
-//}
-//
-//@Override
-//public CommunicatorMessageSearchBuilder setTemplateRestriction(
-//		TemplateRestrictionForCommunicatorMessage templateRestriction) {
-//	// TODO Auto-generated method stub
-//	this.templateRestriction = templateRestriction;
-//	return this;
-//}
 
 private String message;
 private String caption;
 private long senderId;
 private String sender;
 private List<IndexedCommunicatorMessageRecipient> receiver;
-//private TemplateRestrictionForCommunicatorMessage templateRestriction;
 private List<Sort> sort;
 private int maxResults;
 private int firstResult;
