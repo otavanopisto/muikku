@@ -28,8 +28,8 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
       let ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
       let modificator = workspace.isEmpty ? "-empty" : "";
       items.push(<div className={"filter-item filter-item--workspaces" + modificator} key={workspace.name}>
-        <input type='checkbox' onClick={() => { this.props.workspaceHandler(workspace.id) }} checked={ifChecked} />
-        <span className="filter-item__label">{workspace.name}</span>
+        <input id={`filter-workspace` + workspace.id} type='checkbox' onClick={() => { this.props.workspaceHandler(workspace.id) }} checked={ifChecked} />
+        <label htmlFor={`filter-workspace` + workspace.id} className="filter-item__label">{workspace.name}</label>
       </div>);
     });
 
@@ -42,8 +42,8 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
         let ifChecked = !this.props.filteredCompletedWorkspaces.includes(workspace.id);
         let modificator = workspace.isEmpty ? "-empty" : "";
         items.push(<div className={"filter-item filter-item--workspaces" + modificator} key={workspace.name}>
-          <input type='checkbox' onClick={() => { this.props.completedWorkspaceHandler(workspace.id) }} checked={ifChecked} />
-          <span className="filter-item__label">{workspace.name}</span>
+          <input id={`filter-workspace` + workspace.id} type='checkbox' onClick={() => { this.props.completedWorkspaceHandler(workspace.id) }} checked={ifChecked} />
+          <label htmlFor={`filter-workspace` + workspace.id} className="filter-item__label">{workspace.name}</label>
         </div>)
       });
     }

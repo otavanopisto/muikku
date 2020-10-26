@@ -26,7 +26,8 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
     let title = this.props.i18n.text.get('plugin.guider.guider')
     let toolbar = <Toolbar/>
     let primaryOption = <div className="form-element form-element--main-action">
-      <select className="form-element__select form-element__select--main-action" disabled>
+      <label htmlFor="select-users" className="visually-hidden">{this.props.i18n.text.get('plugin.coursepicker.select.label')}</label>
+      <select id="select-users" className="form-element__select form-element__select--main-action" disabled>
         <option>{this.props.i18n.text.get("plugin.guider.students.all")}</option>
       </select>
     </div>

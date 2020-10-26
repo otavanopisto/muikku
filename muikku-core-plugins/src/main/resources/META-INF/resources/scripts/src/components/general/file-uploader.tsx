@@ -194,9 +194,9 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
     if (this.props.invisible) {
       return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
         <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
-          <span className="file-uploader__hint">{this.props.hintText}</span>
+          <span id="file-uploader__hint" className="file-uploader__hint">{this.props.hintText}</span>
           {this.props.readOnly ? null :
-            (<input type="file" multiple className="file-uploader__field"/>)
+            (<input aria-labelledby="file-uploader__hint" type="file" multiple className="file-uploader__field"/>)
           }
         </span>
         {this.props.files && (this.props.files.length ?
@@ -294,9 +294,9 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
 
     return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
       <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
-        <span className="file-uploader__hint">{this.props.hintText}</span>
+        <span id="file-uploader__hint" className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
-          (<input type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
+          (<input aria-labelledby="file-uploader__hint" type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
         }
       </span>
       {dataNode}

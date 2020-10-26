@@ -60,7 +60,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
       </object>
       <div className="application-sub-panel__header-main-container">
-        <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</div>
+        <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</h2>
         <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
       </div>
       <div className="application-sub-panel__header-aside-container">
@@ -194,21 +194,21 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         {studentBasicInfo}
       </div>
       {studentHops ? <div className="application-sub-panel">
-        <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</div>
+        <h3 className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
         {studentHops}
       </div> : null}
       {studentVops ? <div className="application-sub-panel">
-        <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.vops")}</div>
+        <h3 className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.vops")}</h3>
         {studentVops}
       </div> : null}
       <div className="application-sub-panel">
-        <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</div>
+        <h3 className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</h3>
         <div className="application-sub-panel__body">
           {studentWorkspaces}
         </div>
       </div>
       <div className="application-sub-panel">
-        <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>
+        <h3 className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</h3>
         {files}
       </div>
       <div className="application-sub-panel">
