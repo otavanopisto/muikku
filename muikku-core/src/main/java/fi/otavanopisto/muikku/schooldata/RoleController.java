@@ -23,14 +23,14 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 
 public class RoleController {
 
-	@Inject
-	private Logger logger;
+  @Inject
+  private Logger logger;
 
-	@Inject
-	private SchoolDataSourceDAO schoolDataSourceDAO;
-	
-	@Inject
-	private UserSchoolDataController userSchoolDataController;
+  @Inject
+  private SchoolDataSourceDAO schoolDataSourceDAO;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private RoleEntityDAO roleEntityDAO;
@@ -49,9 +49,9 @@ public class RoleController {
   
   /* Roles */
 
-	public Role findRole(SchoolDataSource dataSource, String identifier) {
-		return userSchoolDataController.findRole(dataSource,identifier);
-	}
+  public Role findRole(SchoolDataSource dataSource, String identifier) {
+    return userSchoolDataController.findRole(dataSource,identifier);
+  }
 
   public Role findRoleByDataSourceAndRoleEntity(String schoolDataSource, RoleEntity roleEntity) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
@@ -68,46 +68,46 @@ public class RoleController {
     return null;
   }
   
-	public Role findUserEnvironmentRole(User user) {
-		return userSchoolDataController.findUserEnvironmentRole(user);
-	}
+  public Role findUserEnvironmentRole(User user) {
+    return userSchoolDataController.findUserEnvironmentRole(user);
+  }
 
-	public List<Role> listRoles() {
-		return userSchoolDataController.listRoles();
-	}
-	
-	public void setRoleEntity(String schoolDataSource, String identifier, RoleEntity roleEntity) {
-		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-		if (dataSource != null) {
-		  RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
-		  if (roleSchoolDataIdentifier != null) {
-		  	if (roleEntity != null) {
-		  	  roleSchoolDataIdentifierDAO.updateRoleEntity(roleSchoolDataIdentifier, roleEntity);
-		  	} else {
-		  		roleSchoolDataIdentifierDAO.delete(roleSchoolDataIdentifier);
-		  	}
-		  } else {
-		  	if (roleEntity != null) {
-		  		roleSchoolDataIdentifierDAO.create(dataSource, identifier, roleEntity);
-		  	}		  	
-		  }
-		}
-	}
+  public List<Role> listRoles() {
+    return userSchoolDataController.listRoles();
+  }
+  
+  public void setRoleEntity(String schoolDataSource, String identifier, RoleEntity roleEntity) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+      if (roleSchoolDataIdentifier != null) {
+        if (roleEntity != null) {
+          roleSchoolDataIdentifierDAO.updateRoleEntity(roleSchoolDataIdentifier, roleEntity);
+        } else {
+          roleSchoolDataIdentifierDAO.delete(roleSchoolDataIdentifier);
+        }
+      } else {
+        if (roleEntity != null) {
+          roleSchoolDataIdentifierDAO.create(dataSource, identifier, roleEntity);
+        }        
+      }
+    }
+  }
 
-	/* Role Entities */
+  /* Role Entities */
 
-	public RoleEntity findRoleEntityById(Long id) {
-		return roleEntityDAO.findById(id);
-	}
+  public RoleEntity findRoleEntityById(Long id) {
+    return roleEntityDAO.findById(id);
+  }
 
-	public RoleEntity findRoleEntityByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
-	  RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-	  if (schoolDataIdentifier != null) {
-	  	return schoolDataIdentifier.getRoleEntity();
-	  }
-		
-		return null;
-	}
+  public RoleEntity findRoleEntityByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
+    RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    if (schoolDataIdentifier != null) {
+      return schoolDataIdentifier.getRoleEntity();
+    }
+    
+    return null;
+  }
 
   public RoleEntity findRoleEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
@@ -122,43 +122,54 @@ public class RoleController {
   public RoleEntity findRoleEntity(Role role) {
     return findRoleEntityByDataSourceAndIdentifier(role.getSchoolDataSource(), role.getIdentifier());
   }
-	
-	public List<RoleEntity> listRoleEntities() {
-		return roleEntityDAO.listAll();
-	}
-	
-	public List<EnvironmentRoleEntity> listEnvironmentRoleEntities() {
-	  return environmentRoleEntityDAO.listAll();
-	}
+  
+  public List<RoleEntity> listRoleEntities() {
+    return roleEntityDAO.listAll();
+  }
+  
+  public List<EnvironmentRoleEntity> listEnvironmentRoleEntities() {
+    return environmentRoleEntityDAO.listAll();
+  }
 
-	public List<SystemRoleEntity> listSystemRoleEntities() {
-	  return systemRoleEntityDAO.listAll();
-	}
-	
-	/* Workspace Role Entities */
-	
-	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
-		return workspaceRoleEntityDAO.listAll();
-	}
+  public List<SystemRoleEntity> listSystemRoleEntities() {
+    return systemRoleEntityDAO.listAll();
+  }
+  
+  /* Workspace Role Entities */
+  
+  public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
+    return workspaceRoleEntityDAO.listAll();
+  }
 
   public WorkspaceRoleEntity findWorkspaceRoleEntityById(Long id) {
     return workspaceRoleEntityDAO.findById(id);
   }
-	
-	public WorkspaceRoleEntity findWorkspaceRoleEntityByName(String name) {
-	  return workspaceRoleEntityDAO.findByName(name);
-	}
-	
-	public WorkspaceRoleEntity findWorkspaceRoleEntity(Role role) {
-		RoleEntity roleEntity = findRoleEntity(role);
-		if (roleEntity instanceof WorkspaceRoleEntity) {
-			return (WorkspaceRoleEntity) roleEntity;
-		}
-		
-		return null;
-	}
+  
+  public WorkspaceRoleEntity findWorkspaceRoleEntityByName(String name) {
+    return workspaceRoleEntityDAO.findByName(name);
+  }
+  
+  public WorkspaceRoleEntity findWorkspaceRoleEntity(Role role) {
+    RoleEntity roleEntity = findRoleEntity(role);
+    if (roleEntity instanceof WorkspaceRoleEntity) {
+      return (WorkspaceRoleEntity) roleEntity;
+    }
+    
+    return null;
+  }
   
   public List<WorkspaceRoleEntity> listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype archetype) {
     return workspaceRoleEntityDAO.listByArchetype(archetype);
   }
+  
+  public WorkspaceRoleEntity getWorkspaceStudentRole() {
+    List<WorkspaceRoleEntity> workspaceStudentRoles = listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype.STUDENT);
+    if (workspaceStudentRoles.size() == 1) {
+      return workspaceStudentRoles.get(0);
+    } else {
+      // TODO: How to choose correct workspace student role?
+      throw new RuntimeException("Multiple workspace student roles found.");
+    }
+  }
+  
 }
