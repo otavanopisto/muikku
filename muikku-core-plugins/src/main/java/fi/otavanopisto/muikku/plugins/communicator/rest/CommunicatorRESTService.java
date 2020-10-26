@@ -324,14 +324,18 @@ public class CommunicatorRESTService extends PluginRESTService {
             String receiver = result.get("receiver").toString();
             String caption = (String) result.get("caption");
             
-            communicatorMessage.setCaption(caption);
-            communicatorMessage.setContent(searchMessage);
-            communicatorMessage.setReceiver(receiver);
-            communicatorMessage.setSender(sender);
-            communicatorMessage.setSenderId(senderId);
+            Long loggedUserId = user.getId();
             
-            
-            communicatorMessages.add(communicatorMessage);
+            if (senderId == loggedUserId.toString() || receiver.contains(loggedUserId.toString())) {
+	            communicatorMessage.setCaption(caption);
+	            communicatorMessage.setContent(searchMessage);
+	            communicatorMessage.setReceiver(receiver);
+	            communicatorMessage.setSender(sender);
+	            communicatorMessage.setSenderId(senderId);
+	            
+	            
+	            communicatorMessages.add(communicatorMessage);
+            }
             
             //TODO null checks etc
           }
