@@ -24,10 +24,6 @@ public class WebSocketTicketController {
     return webSocketTicketDAO.findByTicket(ticket);
   }
   
-  public WebSocketTicket updateUser(WebSocketTicket ticket, Long userEntityId) {
-    return webSocketTicketDAO.updateUser(ticket, userEntityId);
-  }
-
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void removeTicket(String ticket) {
     WebSocketTicket webSocketTicket = findTicket(ticket);

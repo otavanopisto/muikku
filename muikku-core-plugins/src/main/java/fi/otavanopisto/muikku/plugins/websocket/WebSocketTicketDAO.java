@@ -43,12 +43,7 @@ public class WebSocketTicketDAO extends CorePluginsDAO<WebSocketTicket> {
     
     return getSingleResult(entityManager.createQuery(criteria));
   }
-  
-  public WebSocketTicket updateUser(WebSocketTicket ticket, Long user) {
-    ticket.setUser(user);
-    return persist(ticket);
-  }
-  
+
   @Override
   public void delete(WebSocketTicket ticket) {
     super.delete(ticket);
