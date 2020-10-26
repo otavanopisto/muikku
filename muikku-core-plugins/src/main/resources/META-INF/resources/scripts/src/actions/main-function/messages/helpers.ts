@@ -1,6 +1,5 @@
 import notificationActions from '~/actions/base/notifications';
 
-import {hexToColorInt} from '~/util/modifiers';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType} from '~/actions';
@@ -33,7 +32,7 @@ export function getApiId(item:MessagesNavigationItemType, weirdSecondVersion:boo
   }
 }
 
-export async function loadMessagesHelper(location:string | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadMessagesHelper(location:string | null, query: string | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   //Remove the current message
   dispatch({
     type: "SET_CURRENT_MESSAGE_THREAD",
@@ -42,9 +41,10 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
 
   let state = getState();
   let actualLocation:string = location || state.messages.location;
+  let actualQuery: string = (typeof query === "string" ? query : state.messages.query) || null;
 
   //Avoid loading messages again for the first time if it's the same location
-  if (initial && actualLocation === state.messages.location && state.messages.state === "READY"){
+  if (initial && actualLocation === state.messages.location && state.messages.query === (query || null) && state.messages.state === "READY"){
     return;
   }
 
@@ -81,7 +81,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
 
   let params;
   //If we got a folder
-  if (item.type === 'folder'){
+  if (item.type === 'folder' && !actualQuery){
     params = {
         firstResult,
         //We load one more to check if they have more
@@ -96,7 +96,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       break;
     }
     //If we got a label
-  } else if (item.type === 'label') {
+  } else if (item.type === 'label' || actualQuery) {
     params = {
         firstResult,
         //We load one more to check if they have more
@@ -112,7 +112,13 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
 
   let threads:MessageThreadListType;
   try {
-    if (item.type !== "label"){
+    if (actualQuery) {
+      const queryParams = {
+        ...params,
+        message: actualQuery,
+      }
+      threads = <MessageThreadListType>await promisify(mApi().communicator.searchItems.read(queryParams), 'callback')();
+    } else if (item.type !== "label"){
       threads = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
     } else {
       threads = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
@@ -129,11 +135,12 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
 
     //Create the payload for updating all the communicator properties
     let properLocation = location || item.location;
-    let payload:MessagesPatchType = {
+    let payload: MessagesPatchType = {
       state: "READY",
       threads: (concat ? state.messages.threads.concat(actualThreads) : actualThreads),
       hasMore,
-      location: properLocation
+      location: properLocation,
+      query: actualQuery,
     }
     if (!concat){
       payload.selectedThreads = [];

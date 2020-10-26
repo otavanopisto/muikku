@@ -118,7 +118,7 @@ export interface SendMessageTriggerType {
 }
 
 export interface LoadMessageThreadsTriggerType {
-  ( location: string ): AnyActionType
+  ( location: string, query: string ): AnyActionType
 }
 
 export interface UpdateMessagesSelectedThreads {
@@ -314,8 +314,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
   }
 }
 
-let loadMessageThreads: LoadMessageThreadsTriggerType = function loadMessageThreads( location ) {
-  return loadMessagesHelper.bind( this, location, true );
+let loadMessageThreads: LoadMessageThreadsTriggerType = function loadMessageThreads( location, query ) {
+  return loadMessagesHelper.bind( this, location, query, true );
 }
 
 let updateMessagesSelectedThreads: UpdateMessagesSelectedThreads = function updateMessagesSelectedThreads( threads ) {
@@ -340,7 +340,7 @@ let removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerT
 }
 
 let loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType = function loadMoreMessageThreads() {
-  return loadMessagesHelper.bind( this, null, false );
+  return loadMessagesHelper.bind( this, null, null, false );
 }
 
 let addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType = function addLabelToSelectedMessageThreads( label ) {

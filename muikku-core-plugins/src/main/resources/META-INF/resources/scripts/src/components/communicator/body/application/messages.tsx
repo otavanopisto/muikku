@@ -93,9 +93,6 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
 
-    //DO NOT DELETE
-    //VERY CRITICAL CODE
-    //REMOVAL WILL CAUSE EXPLOSION
     return <BodyScrollKeeper hidden={!!this.props.currentThread}>
       <SelectableList as={ApplicationList} selectModeModifiers="select-mode"
         extra={this.props.state === "LOADING_MORE" ?

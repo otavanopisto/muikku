@@ -10,7 +10,7 @@ import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelF
   ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
   RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
   restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType} from '~/actions/main-function/messages';
+  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType, loadMessageThreads, LoadMessageThreadsTriggerType} from '~/actions/main-function/messages';
 import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '../../dialogs/label-update';
 import {MessagesType} from '~/reducers/main-function/messages';
@@ -26,8 +26,6 @@ import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
-import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
 
 interface CommunicatorToolbarProps {
   messages: MessagesType,
@@ -43,7 +41,8 @@ interface CommunicatorToolbarProps {
   removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType,
   restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType,
   restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType
+  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType,
+  loadMessageThreads: LoadMessageThreadsTriggerType,
 }
 
 interface CommunicatorToolbarState {
@@ -64,7 +63,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
     this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
-    this.searchFromMessages = this.searchFromMessages.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
 
     this.state = {
@@ -74,17 +72,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
   }
 
-  async searchFromMessages(query: any){
-	let searchString = query;
-	
-	let data = await promisify(mApi().communicator.searchItems.read({
-		  message: searchString,
-          firstResult: 0,
-          maxResults: 50
-  }), "callback")();
-  
-  }
-
   setSearchQuery(e: React.ChangeEvent<HTMLInputElement>){
     clearTimeout(this.searchTimer);
 
@@ -92,19 +79,15 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       searchquery: e.target.value
     });
 
+    clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
   }
 
   updateSearchWithQuery(query: string){
-    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
-    locationData.q = query;
-    window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
-    this.searchFromMessages(query);
+    this.props.loadMessageThreads(null, query);
   }
 
   loadMessage(messageId: number){
-    //TODO this is a retarded way to do things if we ever update to a SPA
-    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
       history.replaceState('', '', location.hash.split("/")[0] + "/" + messageId);
       window.dispatchEvent(new HashChangeEvent("hashchange"));
@@ -122,8 +105,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
   }
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
-    //TODO this is a retarded way to do things if we ever update to a SPA
-    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
       let canGoBack = (!document.referrer || document.referrer.indexOf(window.location.host) !== -1) && (history.length);
       if (canGoBack && location.hash.indexOf("?f") === -1){
@@ -291,7 +272,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
     removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads, toggleMessageThreadReadStatus,
     toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
-    removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads}, dispatch);
+    removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads,
+    loadMessageThreads}, dispatch);
 };
 
 export default connect(

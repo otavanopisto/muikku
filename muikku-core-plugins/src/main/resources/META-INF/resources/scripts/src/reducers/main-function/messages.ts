@@ -167,6 +167,7 @@ export interface MessagesType {
   selectedThreadsIds: Array<number>,
   hasMore: boolean,
   location: string,
+  query: string,
   toolbarLock: boolean,
   currentThread?: MessageThreadExpandedType,
   signature?: MessageSignatureType,
@@ -185,7 +186,8 @@ export interface MessagesPatchType {
   currentThread?: MessageThreadExpandedType,
   signature?: MessageSignatureType,
   navigation?: MessagesNavigationItemListType,
-  unreadThreadCount?: number
+  unreadThreadCount?: number,
+  query?: string,
 };
 
 function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesNavigationItemType){
@@ -212,6 +214,7 @@ export default function messages(state: MessagesType = {
   toolbarLock: false,
   currentThread: null,
   signature: null,
+  query: null,
 
   unreadThreadCount: 0,
   navigation: defaultNavigation
