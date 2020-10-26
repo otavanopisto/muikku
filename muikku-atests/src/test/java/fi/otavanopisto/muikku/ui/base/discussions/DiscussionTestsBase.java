@@ -52,7 +52,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         addTextToCKEditor("Test text for discussion.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
         waitForPresent(".application-list__title");
-        assertText("h3.application-list__title", "Test title for discussion");
+        assertText(".application-list__title", "Test title for discussion");
         waitForPresent(".application-list__item-body .rich-text>p");
         assertTextIgnoreCase(".application-list__item-body .rich-text>p", "Test text for discussion.");
       }finally {
@@ -300,8 +300,8 @@ public class DiscussionTestsBase extends AbstractUITest {
           waitAndClick(".button--dialog-execute");
           waitForPresentAndVisible(".application-list__title");
           reloadCurrentPage();
-          waitForPresentAndVisible("h3.application-list__title");
-          assertText("h3.application-list__title", "Testinging");
+          waitForPresentAndVisible(".application-list__title");
+          assertText(".application-list__title", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
           assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body .rich-text>p", "Testing testing daa daaing");
           waitForPresent(".application-list__item-edited");
