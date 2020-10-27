@@ -1,16 +1,9 @@
-package fi.otavanopisto.muikku.plugins.search;
-
-import javax.inject.Inject;
-
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
+package fi.otavanopisto.muikku.search;
 
 import java.util.List;
 
-import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
-import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
 @Indexable (
