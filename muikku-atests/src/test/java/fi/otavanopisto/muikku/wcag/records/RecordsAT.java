@@ -7,6 +7,8 @@ import java.time.ZoneOffset;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
@@ -85,4 +87,50 @@ public class RecordsAT extends AbstractWCAGTest{
       mockBuilder.wiremockReset();
     }
   }
+  
+  @Test
+  public void recordsViewTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Builder mockBuilder = mocker();
+    try{
+      Long courseId = 3l;
+      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStudent(student)
+        .addStaffMember(admin)
+        .addCourse(course1)
+        .mockLogin(admin)
+        .build();
+      login();
+      
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
+        .mockStudentCourseStats(student.getId(), 10)
+        .build();
+      try {
+        logout();
+        mockBuilder.mockLogin(student).mockMatriculationEligibility(true);
+        login();
+        navigate("/records#hops", false);
+        waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
+        waitForPresentXPath("//a[@href='#yo']");
+        testAccessibility("Records view HOPS");
+        navigate("/records", false);
+        waitForPresentAndVisible(".filter--graph-filter");
+        
+        testAccessibility("Records view summary");
+      }finally {
+        deleteWorkspace(workspace.getId());
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }

@@ -35,6 +35,7 @@ import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockLoggable;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
@@ -52,6 +53,8 @@ import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Grade;
 import fi.otavanopisto.pyramus.rest.model.GradingScale;
+import fi.otavanopisto.pyramus.rest.model.MatriculationEligibilities;
+import fi.otavanopisto.pyramus.rest.model.MatriculationExam;
 import fi.otavanopisto.pyramus.rest.model.Organization;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
@@ -1045,7 +1048,36 @@ public class PyramusMock {
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
         
-        return this;        
+        return this;
+      }
+      
+      public Builder mockMatriculationEligibility(Boolean eligible) throws JsonProcessingException {
+        MatriculationEligibilities eligibles = new MatriculationEligibilities(eligible);
+        String eligibilityJson = pmock.objectMapper.writeValueAsString(eligibles);
+        stubFor(get(urlEqualTo("/1/matriculation/eligibility"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(eligibilityJson)
+            .withStatus(200)));
+        return this;
+      }
+      
+//    listMatriculationExams
+      public Builder listMatriculationExamsMock(Boolean onlyEligible) throws JsonProcessingException {
+//         = pyramusClient.get(
+//            String.format("/matriculation/exams?onlyEligible=%s", onlyEligible), PyramusMatriculationExam[].class);
+        PyramusMatriculationExam result = new PyramusMatriculationExam();
+        
+//        PyramusMatriculationExam[] exams = new Array();
+        ArrayList<PyramusMatriculationExam> exams = new ArrayList<>();
+        String examsJson = pmock.objectMapper.writeValueAsString(exams);
+        
+        stubFor(get(urlEqualTo(String.format("/1/matriculation/exams?onlyEligible=%s", onlyEligible)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(examsJson)
+            .withStatus(200)));
+        return this;
       }
       
       public Builder build() throws Exception {
