@@ -18,6 +18,7 @@ export default class MuikkuWebsocket {
   private webSocket:WebSocket;
   private socketOpen:boolean;
   private reconnecting:boolean;
+  private reconnectRetries:number;
   private messagesPending:{
     eventType: string,
     data: any,
@@ -27,13 +28,14 @@ export default class MuikkuWebsocket {
   private pingHandler:any;
   private waitingPong:boolean;
   private gotPong:boolean;
+  private discarded:boolean;
   private listeners:ListenerType;
   private baseListeners:ListenerType;
   private store: Store<any>;
   private reconnectHandler: NodeJS.Timer;
 
   constructor(store: Store<any>, listeners: ListenerType, options={
-    reconnectInterval: 2000,
+    reconnectInterval: 10000,
     pingInterval: 5000
   }) {
     this.options = options;
@@ -41,7 +43,9 @@ export default class MuikkuWebsocket {
     this.ticket = null;
     this.webSocket = null;
     this.socketOpen = false;
+    this.discarded = false;
     this.reconnecting = false;
+    this.reconnectRetries = 0;
     this.messagesPending = [];
     this.pingHandler = null;
     this.waitingPong = false;
@@ -54,9 +58,6 @@ export default class MuikkuWebsocket {
       if (this.ticket) {
         this.openWebSocket();
       }
-      else {
-        this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
-      }
     });
 
     this.store.dispatch({
@@ -68,7 +69,21 @@ export default class MuikkuWebsocket {
   }
 
   sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
-    if (this.socketOpen) {
+    if (this.socketOpen && !this.reconnecting) {
+
+      // Check if message queue already has this message. This can happen if it was previously
+      // sent to the server but the server failed to respond within two seconds, causing that
+      // message to be added to queue. Since the message we are sending now is the latest,
+      // clear the previous one from the queue so that it doesn't accidentally overwrite this
+      // message later (if we lose connection and restore it)
+
+      let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+      if (typeof index === "number" && index !== -1) {
+        this.messagesPending.splice(index, 1);
+      }
+
+      // Send message
+
       try {
         this.webSocket.send(JSON.stringify({
           eventType: eventType,
@@ -173,53 +188,89 @@ export default class MuikkuWebsocket {
   }
 
   getTicket(callback: Function) {
-    try {
-      if (this.ticket) {
-        // We have a ticket, so we need to validate it before using it
-        mApi().websocket.cacheClear().ticket.check.read(this.ticket).callback((err: Error, response: any)=>{
-          if (err) {
-            // Ticket did not pass validation, so we need to create a new one
+    // Check if we have given up for good
+    if (this.discarded) {
+      this.ticket = null;
+      callback();
+    }
+    if (this.ticket) {
+      // We have a ticket, so we need to validate it before using it
+      $.ajax({
+        url: '/rest/websocket/ticket/' + this.ticket + '/check',
+        type: 'GET',
+        cache: false,
+        success: function(data:any, textStatus:any, jqXHR:any) {
+          callback(this.ticket);
+        },
+        error: $.proxy(function(jqXHR:any) {
+          if (jqXHR.status == 403) {
+            // According to server, we are no longer logged in. Stop everything, user needs to login again
+            // TODO localization
+            this.store.dispatch(actions.displayNotification("Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.", 'error') as Action);
+            this.ticket = null;
+            this.discarded = true;
+            this.discardCurrentWebSocket(true);
+            callback();
+          }
+          else if (jqXHR.status == 404) {
+            // Ticket no longer passes validation but we are still logged in, so try to renew the ticket
             this.createTicket((ticket: any)=>{
               this.ticket = ticket;
               callback(ticket);
             });
           }
-          else {
-            // Ticket passed validation, so we use it
-            callback(this.ticket);
+          else if (jqXHR.status == 502) {
+            // Server is down. Stop everything, user needs to reload page
+            // TODO localization
+            this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja lataa sivu uudelleen.", 'error') as Action);
+            this.ticket = null;
+            this.discarded = true;
+            this.discardCurrentWebSocket(true);
+            callback();
           }
-        });
-      }
-      else {
-        // Create new ticket
-        this.createTicket((ticket: any)=>{
-          this.ticket = ticket;
-          callback(ticket);
-        });
-      }
+          else {
+            // Something else happened. Carry on since we're most likely reconnecting anyway
+            this.ticket = null;
+            callback();
+          }
+        }, this)
+      });
     }
-    catch (e) {
-      this.store.dispatch(actions.displayNotification("Ticket creation failed on an internal error", 'error') as Action);
+    else {
+      // Create new ticket
+      this.createTicket((ticket: any)=>{
+        this.ticket = ticket;
+        callback(ticket);
+      });
     }
   }
 
   createTicket(callback: Function) {
-    mApi().websocket.ticket.create().callback((err: Error, ticket: any)=>{
-      if (!err) {
-        callback(ticket.ticket);
-      }
-      else {
-        this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error') as Action);
+    // Check if we have given up for good
+    if (this.discarded) {
+      callback();
+    }
+    $.ajax({
+      url: '/rest/websocket/ticket',
+      type: 'GET',
+      dataType: 'text',
+      success: function(data:any, textStatus:any, jqXHR:any) {
+        callback(data);
+      },
+      error: function(jqXHR:any) {
+        callback();
       }
     });
   }
 
   onWebSocketConnected() {
-    // Clear reconnection handlers, if any
+    // Clear possible reconnection handler
     if (this.reconnectHandler) {
-      clearInterval(this.reconnectHandler);
+      clearTimeout(this.reconnectHandler);
+      this.reconnectHandler = null;
     }
     this.reconnecting = false;
+    this.reconnectRetries = 0;
 
     // Tell the world we're in business
     this.socketOpen = true;
@@ -236,12 +287,9 @@ export default class MuikkuWebsocket {
   }
 
   onWebSocketError() {
-    this.reconnect();
-  }
-
-  onWebSocketClose() {
-    this.trigger("webSocketDisconnected");
-    this.reconnect();
+    if (!this.reconnecting && !this.discarded) {
+      this.startReconnecting();
+    }
   }
 
   openWebSocket() {
@@ -251,11 +299,7 @@ export default class MuikkuWebsocket {
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
-      this.webSocket.onclose = this.onWebSocketClose.bind(this);
       this.webSocket.onopen = this.onWebSocketConnected.bind(this);
-    }
-    else {
-      this.store.dispatch(actions.displayNotification("Could not open WebSocket connection", 'error') as Action);
     }
   }
 
@@ -272,10 +316,9 @@ export default class MuikkuWebsocket {
   startPinging() {
     this.pingHandler = setInterval(()=>{
       // Skip just in case we would be closed or reconnecting
-      if (!this.socketOpen || this.reconnecting) {
+      if (!this.socketOpen || this.reconnecting || this.discarded) {
         return;
       }
-
       if (!this.waitingPong) {
         // Ping pong match start
         this.waitingPong = true;
@@ -290,48 +333,86 @@ export default class MuikkuWebsocket {
       }
       else {
         // Didn't get a pong to our latest ping in five seconds, reconnect
-        this.reconnect();
+        if (!this.reconnecting && !this.discarded) {
+          this.startReconnecting();
+        }
       }
     }, this.options.pingInterval);
   }
 
-  reconnect() {
+  startReconnecting() {
     // Ignore if we are already busy reconnecting
-    if (this.reconnecting) {
+    if (this.reconnecting || this.discarded) {
       return;
     }
+    this.reconnecting = true;
+    this.reconnectRetries = 0;
 
-    // Ditch the old websocket and anything related to it
-    this.discardCurrentWebSocket();
+    // Ditch the old websocket and anything related to it (except that we are reconnecting)
+    this.discardCurrentWebSocket(false);
 
-    // Try to re-establish connection every two seconds (onWebSocketConnected will eventually clear us)
-    this.reconnectHandler = setInterval(()=>{
-      this.getTicket((ticket: any)=>{
-        if (this.ticket) {
-          this.openWebSocket();
-        }
-        else {
-          this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
-        }
-      });
-    }, this.options.reconnectInterval);
+    // Start the initial reconnect attempt
+    this.reconnect();
   }
 
-  discardCurrentWebSocket() {
+  reconnect() {
+    // Skip if we are discarded already
+    if (this.discarded) {
+      return;
+    }
+    this.getTicket((ticket: any)=>{
+      if (this.ticket) {
+        // Re-acquired ticket, ditch reconnect handler and open socket
+        if (this.reconnectHandler) {
+          clearTimeout(this.reconnectHandler);
+          this.reconnectHandler = null;
+        }
+        this.openWebSocket();
+      }
+      else {
+        this.reconnectRetries++;
+        if (this.reconnectRetries == 12) { // two minutes have passed, let's give up
+          this.discarded = true;
+          this.discardCurrentWebSocket(true);
+          // TODO localization
+          this.store.dispatch(actions.displayNotification("Muikkuun ei saada yhteyttä. Ole hyvä ja lataa sivu uudelleen. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi.", 'error') as Action);
+        }
+        else {
+          // Reconnect retry failed, retry after reconnectInterval
+          this.reconnectHandler = setTimeout(()=>{
+            this.reconnect();
+          }, this.options.reconnectInterval);
+        }
+      }
+    });
+  }
+
+  discardCurrentWebSocket(resetReconnectionParams:boolean) {
     // Inform everyone we're no longer open for business...
     let wasOpen = this.socketOpen;
     this.socketOpen = false;
 
     // ...and stop pinging...
-    clearInterval(this.pingHandler);
+    if (this.pingHandler) {
+      clearInterval(this.pingHandler);
+    }
     this.waitingPong = false;
     this.gotPong = false;
+
+      // ...and detach possible reconnect handler...
+    if (this.reconnectHandler) {
+      clearTimeout(this.reconnectHandler);
+      this.reconnectHandler = null;
+    }
+    if (resetReconnectionParams) {
+      this.reconnecting = false;
+      this.reconnectRetries = 0;
+    }
 
     // ...and get rid of the current websocket
     if (this.webSocket) {
       this.webSocket.onmessage = null;
       this.webSocket.onerror = null;
-      this.webSocket.onclose = null;
       this.webSocket.onopen = null;
       if (wasOpen) {
         try {
@@ -357,7 +438,8 @@ export default class MuikkuWebsocket {
   }
 
   onBeforeWindowUnload() {
-    this.discardCurrentWebSocket();
+    this.discarded = true;
+    this.discardCurrentWebSocket(true);
   }
 
 }

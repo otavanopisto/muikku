@@ -240,8 +240,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceHome(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-
+      this.props.websocket && this.props.websocket.restoreEventListeners();
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
@@ -275,8 +274,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceHelp(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-
+      this.props.websocket && this.props.websocket.restoreEventListeners();
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
@@ -302,7 +300,6 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
@@ -326,7 +323,6 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.announcements.pageTitle')));
 
@@ -344,7 +340,6 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
@@ -414,8 +409,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceMaterials(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-
+      this.props.websocket && this.props.websocket.restoreEventListeners();
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
