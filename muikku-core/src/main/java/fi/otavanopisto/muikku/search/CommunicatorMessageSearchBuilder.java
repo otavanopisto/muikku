@@ -1,15 +1,11 @@
 package fi.otavanopisto.muikku.search;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 
-
 public interface CommunicatorMessageSearchBuilder {
+  
   SearchResult search();
 	  
   String getMessage();
@@ -45,6 +41,5 @@ public interface CommunicatorMessageSearchBuilder {
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
 
   CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
-
 
 }

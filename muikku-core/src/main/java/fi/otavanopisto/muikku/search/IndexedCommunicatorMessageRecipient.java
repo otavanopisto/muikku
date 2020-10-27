@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.communicator.model;
+package fi.otavanopisto.muikku.search;
 
 public class IndexedCommunicatorMessageRecipient{
 
