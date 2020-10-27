@@ -10,11 +10,9 @@ import '~/sass/elements/glyph.scss';
 
 export interface SelectItem {
   id: number,
-  label: string
-}
-
-export interface AutofillLoaders {
-  [index: string]: (searchString: string) => any;
+  label: string,
+  icon?: string,
+  type?: string
 }
 
 export interface AutofillSelectorProps {
@@ -111,7 +109,9 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     let selectedItems = this.props.selectedItems.map((item) => {
       return {
         node: <span className="autocomplete__selected-item">
-          <span className="glyph glyph--selected-recipient icon-user" />
+          {item.icon ?
+            <span className={`glyph glyph--selected-recipient icon-${item.icon}`} />
+            : null}
           {
             item.label
           }
@@ -122,7 +122,9 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
 
     let autocompleteItems = this.state.searchItems.map((item) => {
       let node = <div className="autocomplete__recipient">
-        <span className="glyph glyph--autocomplete-recipient icon-user"></span>
+        {item.icon ?
+          <span className={`glyph glyph--selected-recipient icon-${item.icon}`} />
+          : null}
         {
           filterHighlight(item.label, this.state.textInput)
         }

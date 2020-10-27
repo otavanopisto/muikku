@@ -39,7 +39,6 @@ export interface InputContactsAutofillState {
   selectedItems: ContactRecepientType[],
   textInput: string,
   autocompleteOpened: boolean,
-
   isFocused: boolean
 }
 
