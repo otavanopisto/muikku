@@ -161,15 +161,22 @@ public class RoleController {
   public List<WorkspaceRoleEntity> listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype archetype) {
     return workspaceRoleEntityDAO.listByArchetype(archetype);
   }
-  
-  public WorkspaceRoleEntity getWorkspaceStudentRole() {
-    List<WorkspaceRoleEntity> workspaceStudentRoles = listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype.STUDENT);
+
+  /**
+   * Returns a WorkspaceRoleEntity if and only if there is exactly one matching the given archetype.
+   */
+  public WorkspaceRoleEntity getWorkspaceRoleByArchetype(WorkspaceRoleArchetype archetype) {
+    List<WorkspaceRoleEntity> workspaceStudentRoles = listWorkspaceRoleEntitiesByArchetype(archetype);
     if (workspaceStudentRoles.size() == 1) {
       return workspaceStudentRoles.get(0);
     } else {
-      // TODO: How to choose correct workspace student role?
-      throw new RuntimeException("Multiple workspace student roles found.");
+      // TODO: How to choose correct workspace role?
+      throw new RuntimeException("Multiple workspace roles found with given archetype.");
     }
+  }
+  
+  public WorkspaceRoleEntity getWorkspaceStudentRole() {
+    return getWorkspaceRoleByArchetype(WorkspaceRoleArchetype.STUDENT);
   }
   
 }

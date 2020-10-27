@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,9 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -21,35 +24,47 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationManagerWorkspace;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationManagerWorkspaceTeacher;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
+import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/organizationmanagement/workspaces")
@@ -74,6 +89,9 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
+  private WorkspaceController workspaceController;
+  
+  @Inject
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
@@ -88,6 +106,18 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private RoleController roleController;
+  
+  @Inject
+  private UserIndexer userIndexer;
+  
+  @Inject
+  private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
+
   @Inject
   private Instance<SearchProvider> searchProviderInstance;
   
@@ -246,10 +276,141 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     return Response.ok(workspaces).build();
   }
   
-//  private SearchProvider getSearchProvider() {
-//    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
-//    return searchProviderIterator.hasNext() ? searchProviderIterator.next() : null;
-//  }
+  @POST
+  @Path("/{WORKSPACEID}/students")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
+  public Response createWorkspaceStudent(@PathParam("WORKSPACEID") Long workspaceEntityId, 
+      StudentIdentifiers studentIdentifiersContainer) {
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    List<String> studentIdentifiers = studentIdentifiersContainer.getStudentIdentifiers();
+    
+    if (CollectionUtils.isNotEmpty(studentIdentifiers)) {
+      Set<SchoolDataIdentifier> collect = studentIdentifiers.stream()
+          .map(studentIdentifierStr -> SchoolDataIdentifier.fromId(studentIdentifierStr))
+          .collect(Collectors.toSet());
+
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+      WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
+      Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
+      
+      for (SchoolDataIdentifier userIdentifier : collect) {
+        User user = userController.findUserByIdentifier(userIdentifier);
+        addUserToWorkspace(user, workspaceEntity, workspace, role);
+      }
+    }
+    
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/{WORKSPACEID}/studentGroups")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
+  public Response createWorkspaceStudentsFromGroup(@PathParam("WORKSPACEID") Long workspaceEntityId, 
+      StudentGroupIdentifiers studentGroupIdentifiersContainer) {
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    List<String> studentGroupIdentifiers = studentGroupIdentifiersContainer.getStudentGroupIdentifiers();
+    
+    if (CollectionUtils.isNotEmpty(studentGroupIdentifiers)) {
+      Set<SchoolDataIdentifier> collect = studentGroupIdentifiers.stream()
+          .map(studentIdentifierStr -> SchoolDataIdentifier.fromId(studentIdentifierStr))
+          .collect(Collectors.toSet());
+
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+      WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
+      Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
+
+      for (SchoolDataIdentifier userIdentifier : collect) {
+        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByIdentifier(userIdentifier);
+        List<UserGroupUserEntity> userGroupUserEntities = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroupEntity);
+        
+        for (UserGroupUserEntity userGroupUserEntity : userGroupUserEntities) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
+          User user = userController.findUserByIdentifier(userSchoolDataIdentifier.schoolDataIdentifier());
+          addUserToWorkspace(user, workspaceEntity, workspace, role);
+        }
+      }
+    }
+    
+    return Response.noContent().build();
+  }
+
+  @POST
+  @Path("/{WORKSPACEID}/staff")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
+  public Response createWorkspaceStaffMembers(@PathParam("WORKSPACEID") Long workspaceEntityId, 
+      StaffMemberIdentifiers staffMemberIdentifiersContainer) {
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    List<String> staffMemberIdentifiers = staffMemberIdentifiersContainer.getStaffMemberIdentifiers();
+    
+    if (CollectionUtils.isNotEmpty(staffMemberIdentifiers)) {
+      Set<SchoolDataIdentifier> collect = staffMemberIdentifiers.stream()
+          .map(staffMemberIdentifierStr -> SchoolDataIdentifier.fromId(staffMemberIdentifierStr))
+          .collect(Collectors.toSet());
+
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+      WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceRoleByArchetype(WorkspaceRoleArchetype.TEACHER);
+      Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
+      
+      for (SchoolDataIdentifier userIdentifier : collect) {
+        User user = userController.findUserByIdentifier(userIdentifier);
+        addUserToWorkspace(user, workspaceEntity, workspace, role);
+      }
+    }
+    
+    return Response.noContent().build();
+  }
+
+  private void addUserToWorkspace(User user, WorkspaceEntity workspaceEntity, Workspace workspace, Role role) {
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
+      workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+    }
+    if (workspaceUserEntity != null && Boolean.FALSE.equals(workspaceUserEntity.getActive())) {
+      workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
+      userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+    }
+    
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceEntity.schoolDataIdentifier(), userIdentifier);
+    if (workspaceUser == null) {
+      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+      waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
+    }
+    else {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
+    }
+  }
 
   private OrganizationManagerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName) {
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -286,4 +447,23 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     return new OrganizationManagerWorkspaceTeacher(user.getFirstName(), user.getLastName());
   }
   
+  /**
+   * TODO Refactor - the same is used in course picker
+   */
+  private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    Long workspaceUserEntityId = null;
+    long timeoutTime = System.currentTimeMillis() + 10000;    
+    while (workspaceUserEntityId == null) {
+      workspaceUserEntityId = workspaceUserEntityIdFinder.findWorkspaceUserEntityId(workspaceEntity, userIdentifier);
+      if (workspaceUserEntityId != null || System.currentTimeMillis() > timeoutTime) {
+        break;
+      }
+      try {
+        Thread.sleep(100);
+      }
+      catch (InterruptedException e) {
+      }
+    }
+  }
+
 }

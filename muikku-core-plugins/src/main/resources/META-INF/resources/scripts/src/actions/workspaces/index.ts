@@ -1409,13 +1409,32 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
             data.success && data.success("WORKSPACE-CREATE")
           ));
 
-
-      if (data.students.length < 0) {
+      if (data.students.length > 0) {
+        let studentIdentifiers = data.students.map((student) => student.id);
+        
+        await promisify(mApi().organizationmanagement.workspaces.students
+            .create(workspace.id, {
+              studentIdentifiers: studentIdentifiers
+            }
+            ), 'callback')().then(
+              data.success && data.success("ADD-STUDENTS")
+            );
+        
         data.success && data.success("ADD-STUDENTS");
       }
 
 
-      if (data.staff.length < 0) {
+      if (data.staff.length > 0) {
+        let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
+
+        await promisify(mApi().organizationmanagement.workspaces.staff
+            .create(workspace.id, {
+              staffMemberIdentifiers: staffMemberIdentifiers
+            }
+            ), 'callback')().then(
+              data.success && data.success("ADD-STUDENTS")
+            );
+        
         data.success && data.success("ADD-TEACHERS")
       }
 
