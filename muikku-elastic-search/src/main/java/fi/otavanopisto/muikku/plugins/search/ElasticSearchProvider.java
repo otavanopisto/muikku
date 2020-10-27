@@ -52,8 +52,6 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -62,9 +60,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
-
-
-
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
