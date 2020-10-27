@@ -9,7 +9,7 @@ import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducer
 import {
   MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
-  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType,
+  WorkspacePermissionsType, WorkspaceMaterialEditorType, TemplateWorkspaceListType, MaterialContentNodeProducerType, MaterialContentNodeType,
   WorkspaceEditModeStateType,
   WorkspaceOrganizationFilterListType
 } from '~/reducers/workspaces';
@@ -57,7 +57,11 @@ export type UPDATE_ORGANIZATION_WORKSPACES_STATE =
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_STATE", WorkspacesStateType>
 
 export type UPDATE_ORGANIZATION_TEMPLATES =
-  SpecificActionType<"UPDATE_ORGANIZATION_TEMPLATES", WorkspacesPatchType>
+  SpecificActionType<"UPDATE_ORGANIZATION_TEMPLATES", WorkspaceListType>
+
+export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE =
+  SpecificActionType<"UPDATE_ORGANIZATION_SELECTED_WORKSPACE", WorkspaceUpdateType>
+
 
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_HELP", MaterialContentNodeListType>;
@@ -94,7 +98,7 @@ let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadU
     try {
       dispatch({
         type: "UPDATE_ORGANIZATION_TEMPLATES",
-        payload: <WorkspacesPatchType>(await (promisify(mApi().workspace.workspaces.read({ query: query, templates: "ONLY_TEMPLATES" }), 'callback')()) || 0)
+        payload: <WorkspaceListType>(await (promisify(mApi().workspace.workspaces.read({ query: query, templates: "ONLY_TEMPLATES" }), 'callback')()) || 0)
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -518,17 +522,21 @@ export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType,
     update: WorkspaceUpdateType,
-    success?: () => any,
+    addStudents?: any,
+    addTeachers?: any,
+    removeStudents?: any,
+    removeTeachers?: any,
+    success?: (state?: UpdateWorkspaceStateType) => any,
     fail?: () => any
   }): AnyActionType
 }
 
 export interface LoadStaffMembersOfWorkspaceTriggerType {
-  (workspace: WorkspaceType): AnyActionType
+  (workspace: WorkspaceType, loadOrganizationStaff?: boolean): AnyActionType
 }
 
 export interface LoadStudentsOfWorkspaceTriggerType {
-  (workspace: WorkspaceType): AnyActionType
+  (workspace: WorkspaceType, loadOrganizationStudents?: boolean): AnyActionType
 }
 
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
@@ -788,7 +796,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
   }
 }
 
-let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace) {
+let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace, loadOrganizationStaff) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let staffMembers = <Array<UserStaffType>>(await promisify(mApi().user.staffMembers.read({
@@ -796,15 +804,24 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
         properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
       }), 'callback')());
 
-      dispatch({
-        type: 'UPDATE_WORKSPACE',
-        payload: {
-          original: workspace,
-          update: {
-            staffMembers
+      let update: WorkspaceUpdateType = {
+        staffMembers
+      }
+
+      if (loadOrganizationStaff === true) {
+        dispatch({
+          type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+          payload: update
+        });
+      } else {
+        dispatch({
+          type: 'UPDATE_WORKSPACE',
+          payload: {
+            original: workspace,
+            update
           }
-        }
-      });
+        });
+      }
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -814,22 +831,28 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
   }
 }
 
-let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace) {
+let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace, loadOrganizationStudents) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let students = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
-
       let update: WorkspaceUpdateType = {
         students
       };
 
-      dispatch({
-        type: 'UPDATE_WORKSPACE',
-        payload: {
-          original: workspace,
-          update
-        }
-      });
+      if (loadOrganizationStudents === true) {
+        dispatch({
+          type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+          payload: update
+        });
+      } else {
+        dispatch({
+          type: 'UPDATE_WORKSPACE',
+          payload: {
+            original: workspace,
+            update
+          }
+        });
+      }
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -1097,6 +1120,8 @@ export interface CopyCurrentWorkspaceTriggerType {
 }
 
 export type CreateWorkspaceStateType = "WORKSPACE-CREATE" | "ADD-STUDENTS" | "ADD-TEACHERS" | "DONE";
+export type UpdateWorkspaceStateType = "WORKSPACE-UPDATE" | "ADD-STUDENTS" | "REMOVE-STUDENTS" | "ADD-TEACHERS" | "REMOVE-TEACHERS" | "DONE";
+
 
 export interface CreateWorkspaceTriggerType {
   (data: {

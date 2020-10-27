@@ -14,6 +14,8 @@ export interface CreateWorkspaceType {
   curriculum: string,
 }
 
+export type LoadWorkspaceActionType = "UPDATE_WORKSPACE" | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
+
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
@@ -185,6 +187,9 @@ export interface WorkspacePermissionsType {
   permissions: string[],
 }
 
+export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;
+
+
 export interface TemplateWorkspaceType {
   id: number,
   name: string,
@@ -237,7 +242,7 @@ export interface WorkspaceType {
   journals?: WorkspaceJournalsType
 
   // These are only in organizationlistings
-  teachers?: Array<OrganizationCourseTeacherType>,
+  teachers?: Array<UserStaffType>,
   studentCount?: number
 }
 
@@ -820,6 +825,7 @@ export default function workspaces(state: WorkspacesType = {
 export function organizationWorkspaces(state: WorkspacesType = {
   availableWorkspaces: [],
   templateWorkspaces: [],
+  currentWorkspace: null,
   availableFilters: {
     educationTypes: [],
     curriculums: [],
@@ -861,6 +867,10 @@ export function organizationWorkspaces(state: WorkspacesType = {
   } else if (action.type === "UPDATE_ORGANIZATION_TEMPLATES") {
     return Object.assign({}, state, {
       templateWorkspaces: action.payload
+    });
+  } else if (action.type === "UPDATE_ORGANIZATION_SELECTED_WORKSPACE") {
+    return Object.assign({}, state, {
+      currentWorkspace: action.payload
     });
   }
   return state;
