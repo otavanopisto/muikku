@@ -59,7 +59,7 @@ env:
   # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/discussions
   # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/picker
   # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=indexpage
-
+  if [[ $TRAVIS_BRANCH == "master" ]]; then
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="latest" browser_resolution="1024x768" platform="OS X 10.11" package=course/materials
@@ -81,8 +81,9 @@ env:
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=guider
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=tor
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=flags
-      
+  fi;    
 # Headless
+  if [[ $TRAVIS_BRANCH == "devel" ]]; then
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=communicator
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course
 #  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/discussions
@@ -100,6 +101,7 @@ env:
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=guider
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=flags
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=tor
+  fi;
 after_success:
 - . travis-after-success.sh
 after_failure:
