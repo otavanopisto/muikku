@@ -62,6 +62,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
+
   componentWillReceiveProps(nextProps: AutofillSelectorProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems })
@@ -84,7 +85,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     if (textInput) {
       this.props.loader(textInput);
     } else {
-
+      this.props.loader("");
     }
   }
 

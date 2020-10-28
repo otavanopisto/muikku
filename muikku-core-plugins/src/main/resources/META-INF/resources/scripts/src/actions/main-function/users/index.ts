@@ -1,11 +1,12 @@
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
-import { UsersListType, UserStatusType, StudyprogrammeListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
+import { UsersListType, UsersSelectType, UserStatusType, StudyprogrammeListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
 import { UserGroupType, UpdateUserType, CreateUserType, UserGroupListType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
 import { loadDiscussionThreadsFromServerTriggerType } from '~/actions/discussion';
+
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UsersListType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UsersListType>
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<"UPDATE_STUDENT_SELECTOR", UsersListType>
@@ -14,6 +15,8 @@ export type UPDATE_GROUP_SELECTOR = SpecificActionType<"UPDATE_GROUP_SELECTOR", 
 export type UPDATE_USERS_STATE = SpecificActionType<"UPDATE_USERS_STATE", UserStatusType>
 export type UPDATE_STUDYPROGRAMME_TYPES = SpecificActionType<"UPDATE_STUDYPROGRAMME_TYPES", StudyprogrammeListType>
 export type UPDATE_STUDYPROGRAMME_STATUS_TYPE = SpecificActionType<"UPDATE_STUDYPROGRAMME_STATUS_TYPE", StudyprogrammeTypeStatusType>
+export type CLEAR_USER_SELECTOR = SpecificActionType<"CLEAR_USER_SELECTOR", Partial<UsersSelectType>>
+
 
 export interface CreateStudentTriggerType {
   (data: {
@@ -340,22 +343,31 @@ let loadUsers: LoadUsersTriggerType = function loadUsers(q?: string) {
 let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(q?: string) {
 
   let data = { q: q };
-  let getStudents = q ? mApi().organizationUserManagement.students.read(data) : mApi().organizationUserManagement.students.read();
+  let getStudents = q ? mApi().organizationUserManagement.students.read(data) : null;
+
+
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
+
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-
-      await promisify(getStudents, 'callback')().then((users: UsersListType) => {
-        dispatch({
-          type: "UPDATE_STUDENT_SELECTOR",
-          payload: users
+      if (getStudents !== null) {
+        await promisify(getStudents, 'callback')().then((users: UsersListType) => {
+          dispatch({
+            type: "UPDATE_STUDENT_SELECTOR",
+            payload: users
+          });
         });
-      });
-
+      } else {
+        let payload: Partial<UsersSelectType> = { students: [] };
+        dispatch({
+          type: "CLEAR_USER_SELECTOR",
+          payload
+        });
+      }
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -382,22 +394,29 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(q
 let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: string) {
 
   let data = { q: q };
-  let getStaff = q ? mApi().organizationUserManagement.staffMembers.read(data) : mApi().organizationUserManagement.staffMembers.read();
+  let getStaff = q ? mApi().organizationUserManagement.staffMembers.read(data) : null;
 
+  console.log(data);
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-
-      await promisify(getStaff, 'callback')().then((users: UsersListType) => {
-        dispatch({
-          type: "UPDATE_STAFF_SELECTOR",
-          payload: users
+      if (getStaff !== null) {
+        await promisify(getStaff, 'callback')().then((users: UsersListType) => {
+          dispatch({
+            type: "UPDATE_STAFF_SELECTOR",
+            payload: users
+          });
         });
-      });
-
+      } else {
+        let payload: Partial<UsersSelectType> = { staff: [] };
+        dispatch({
+          type: "CLEAR_USER_SELECTOR",
+          payload
+        });
+      }
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -424,7 +443,7 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: str
 let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGroups(q?: string) {
 
   let data = { q: q };
-  let getStaff = q ? mApi().usergroup.groups.read(data) : mApi().usergroup.groups.read();
+  let getStaff = q ? mApi().usergroup.groups.read(data) : null;
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -432,14 +451,20 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
         type: "LOCK_TOOLBAR",
         payload: null
       });
-
-      await promisify(getStaff, 'callback')().then((usergGroups: UserGroupListType) => {
-        dispatch({
-          type: "UPDATE_GROUP_SELECTOR",
-          payload: usergGroups
+      if (getStaff !== null) {
+        await promisify(getStaff, 'callback')().then((usergGroups: UserGroupListType) => {
+          dispatch({
+            type: "UPDATE_GROUP_SELECTOR",
+            payload: usergGroups
+          });
         });
-      });
-
+      } else {
+        let payload: Partial<UsersSelectType> = { userGroups: [] };
+        dispatch({
+          type: "CLEAR_USER_SELECTOR",
+          payload
+        });
+      }
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null

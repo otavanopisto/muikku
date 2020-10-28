@@ -1,4 +1,5 @@
 import { ActionType } from "~/actions";
+import students from "~/components/guider/body/application/students";
 import { UserWithSchoolDataType, UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
@@ -61,7 +62,12 @@ export function userSelect(state: UsersSelectType = {
     return Object.assign({}, state, {
       userGroups: action.payload
     });
+  } else if (action.type === "CLEAR_USER_SELECTOR") {
+    return Object.assign({}, state,
+      action.payload
+    );
   }
+
   return state;
 }
 
