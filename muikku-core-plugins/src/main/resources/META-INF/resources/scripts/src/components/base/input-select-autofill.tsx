@@ -62,6 +62,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
+
   componentWillReceiveProps(nextProps: AutofillSelectorProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems })
@@ -79,12 +80,12 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
 
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     let textInput = e.target.value;
-    this.setState({ autocompleteOpened: true });
+    this.setState({ autocompleteOpened: true, textInput: textInput });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
       this.props.loader(textInput);
     } else {
-
+      this.props.loader("");
     }
   }
 
