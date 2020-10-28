@@ -89,13 +89,13 @@ export interface LoadTemplatesFromServerTriggerType {
   (query: string): AnyActionType
 }
 
-let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadUserWorkspacesFromServer(query: string) {
+let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadTemplatesFromServer(query: string) {
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
         type: "UPDATE_ORGANIZATION_TEMPLATES",
-        payload: <WorkspacesPatchType>(await (promisify(mApi().workspace.workspaces.read({ query: query, templates: "ONLY_TEMPLATES" }), 'callback')()) || 0)
+        payload: <WorkspacesPatchType>(await (promisify(mApi().organizationmanagement.workspaces.read({ q: query, templates: "ONLY_TEMPLATES" }), 'callback')()) || 0)
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
