@@ -79,7 +79,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
 
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     let textInput = e.target.value;
-    this.setState({ autocompleteOpened: true });
+    this.setState({ autocompleteOpened: true, textInput: textInput });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
       this.props.loader(textInput);
