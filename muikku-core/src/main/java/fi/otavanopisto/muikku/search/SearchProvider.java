@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.search;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -26,7 +27,7 @@ public interface SearchProvider {
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
-  public SearchResult searchCommunicatorMessages(String message,String caption, long senderId, String sender, List<IndexedCommunicatorMessageRecipient> receiver, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchCommunicatorMessages(String message, Long communicatorMessageId, String caption, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> receiver, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
 
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,

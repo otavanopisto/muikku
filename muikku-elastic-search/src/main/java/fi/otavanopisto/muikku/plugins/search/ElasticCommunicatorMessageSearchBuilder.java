@@ -1,10 +1,13 @@
 package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 
@@ -18,10 +21,13 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   public SearchResult search() {
     return elastic.searchCommunicatorMessages(
         getMessage(),
+        getCommunicatorMessageId(),
         getCaption(),
         getSenderId(),
         getSender(),
         getReceiver(),
+        getCreated(),
+        getTags(),
         getFirstResult(),
         getMaxResults(),
         getSorts()
@@ -40,6 +46,19 @@ public String getMessage() {
 public CommunicatorMessageSearchBuilder setMessage(String message) {
 	// TODO Auto-generated method stub
 	this.message = message;
+	return this;
+}
+
+@Override
+public Long getCommunicatorMessageId() {
+	// TODO Auto-generated method stub
+	return communicatorMessageId;
+}
+
+@Override
+public CommunicatorMessageSearchBuilder setCommunicatorMessageId(Long communicatorMessageId) {
+	// TODO Auto-generated method stub
+	this.communicatorMessageId = communicatorMessageId;
 	return this;
 }
 
@@ -83,18 +102,43 @@ public CommunicatorMessageSearchBuilder setSenderId(long senderId) {
 
 
 @Override
-public String getSender() {
+public IndexedCommunicatorMessageSender getSender() {
 	// TODO Auto-generated method stub
 	return sender;
 }
 
 @Override
-public CommunicatorMessageSearchBuilder setSender(String sender) {
+public CommunicatorMessageSearchBuilder setSender(IndexedCommunicatorMessageSender sender) {
 	// TODO Auto-generated method stub
 	this.sender = sender;
 	return this;
 }
 
+@Override
+public Date getCreated() {
+	// TODO Auto-generated method stub
+	return created;
+}
+
+@Override
+public CommunicatorMessageSearchBuilder setCreated(Date created) {
+	// TODO Auto-generated method stub
+	this.created = created;
+	return this;
+}
+
+@Override
+public Set<Long> getTags() {
+	// TODO Auto-generated method stub
+	return tags;
+}
+
+@Override
+public CommunicatorMessageSearchBuilder setTags(Set<Long> tags) {
+	// TODO Auto-generated method stub
+	this.tags = tags;
+	return this;
+}
 @Override
 public int getFirstResult() {
 	// TODO Auto-generated method stub
@@ -144,10 +188,13 @@ public CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts) {
 
 
 private String message;
+private Long communicatorMessageId;
 private String caption;
 private long senderId;
-private String sender;
+private IndexedCommunicatorMessageSender sender;
 private List<IndexedCommunicatorMessageRecipient> receiver;
+private Date created;
+private Set<Long> tags;
 private List<Sort> sort;
 private int maxResults;
 private int firstResult;

@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.search;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 
@@ -9,8 +11,20 @@ public interface CommunicatorMessageSearchBuilder {
   SearchResult search();
 	  
   String getMessage();
-
+  
   CommunicatorMessageSearchBuilder setMessage(String message);
+  
+  Long getCommunicatorMessageId();
+
+  CommunicatorMessageSearchBuilder setCommunicatorMessageId(Long communicatorMessageId);
+  
+  Date getCreated();
+  
+  CommunicatorMessageSearchBuilder setCreated(Date created);
+  
+  Set<Long> getTags();
+  
+  CommunicatorMessageSearchBuilder setTags(Set<Long> tags);
   
   String getCaption();
   
@@ -20,9 +34,9 @@ public interface CommunicatorMessageSearchBuilder {
   
   long getSenderId();
   
-  String getSender();
+  IndexedCommunicatorMessageSender getSender();
   
-  CommunicatorMessageSearchBuilder setSender(String sender);
+  CommunicatorMessageSearchBuilder setSender(IndexedCommunicatorMessageSender sender);
   
   CommunicatorMessageSearchBuilder setSenderId(long senderId);
   

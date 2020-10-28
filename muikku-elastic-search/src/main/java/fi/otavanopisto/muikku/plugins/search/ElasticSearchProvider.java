@@ -61,6 +61,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -667,10 +668,13 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchCommunicatorMessages(
       String message,
+      Long communicatorMessageId,
       String caption,
       long senderId,
-      String sender,
+      IndexedCommunicatorMessageSender sender,
       List<IndexedCommunicatorMessageRecipient> receiver,
+      Date created,
+      Set<Long> tags,
       int start, 
       int maxResults, 
       List<Sort> sorts) {
@@ -686,7 +690,7 @@ public class ElasticSearchProvider implements SearchProvider {
     
     
     query.must(boolQuery()
-    		.should(termsQuery("message", message))
+    		.must(matchQuery("_all", message))
             .should(termsQuery("senderId", idToString))
             .should(termsQuery("receiver.userEntityId", idToString))
             .minimumNumberShouldMatch(1));

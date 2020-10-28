@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -9,11 +11,13 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -47,15 +51,24 @@ public class CommunicatorMessageIndexer {
     	//set message
     	indexedCommunicatorMessage.setMessage(message.getContent());
     	
+    	//set communicatorMessageId
+    	CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
+    	Long messageId = communicatorMessageId.getId();
+    	indexedCommunicatorMessage.setCommunicatorMessageId(messageId);
+    	
     	//set caption
     	indexedCommunicatorMessage.setCaption(message.getCaption());
+    	
     	
     	//set sender
     	Long senderId = message.getSender();
     	UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
         User sender = userController.findUserByUserEntityDefaults(senderEntity);
-        
-    	indexedCommunicatorMessage.setSender(sender.getDisplayName());
+        IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
+        senderData.setFirstName(sender.getFirstName());
+        senderData.setLastName(sender.getLastName());
+        senderData.setUserEntityId(senderId);
+    	indexedCommunicatorMessage.setSender(senderData);
     	indexedCommunicatorMessage.setSenderId(senderId);
     	
     	//set recipients
@@ -67,14 +80,32 @@ public class CommunicatorMessageIndexer {
             if(recipientEntity != null) {
               UserEntity userRecipientEntity = userEntityController.findUserEntityById(recipientEntity);
               User userRecipient = userController.findUserByUserEntityDefaults(userRecipientEntity);
+              
               IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
+              
+              //set receiver userEntityId & display name
               recipientData.setUserEntityId(recipientEntity);
               recipientData.setDisplayName(userRecipient.getDisplayName());
+          	  
+              // set is message read/unread by receiver
+              CommunicatorMessageRecipient communicatorMessageRecipient = communicatorController.findCommunicatorMessageRecipient(recipientEntity);
+          	  Boolean readByReceiver = communicatorMessageRecipient.getReadByReceiver();
+              recipientData.setReadByReceiver(readByReceiver);
               
               recipientsEntityList.add(recipientData);
             }
         }
     	indexedCommunicatorMessage.setReceiver(recipientsEntityList);
+    	
+    	// set created
+    	Date created = message.getCreated();
+    	indexedCommunicatorMessage.setCreated(created);
+    	
+    	// set tags
+    	Set<Long> tags = message.getTags();
+    	indexedCommunicatorMessage.setTags(tags);
+    	
+    	
     	indexedCommunicatorMessage.setSearchId(message.getId().toString());
         
     	//call method indexCommunicatorMessage

@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.search;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -15,6 +17,11 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 		      index = "not_analyzed"
 		    ),
 		    @IndexableFieldOption (
+		      name = "communicatorMessageId",
+		      type = "Long",
+		      index = "not_analyzed"
+		    ),
+		    @IndexableFieldOption (
 			  name = "caption",
 		      type = "string",
 		      index = "not_analyzed"
@@ -26,12 +33,22 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 		    ),
 		    @IndexableFieldOption (
 			  name = "sender",
-		      type = "string",
+		      type = "IndexedCommunicatorMessageSender",
 		      index = "not_analyzed"
-				    ),
+		    ),
 		    @IndexableFieldOption (
 		      name = "receiver",
 		      type = "List<IndexedCommunicatorMessageRecipient>",
+		      index = "not_analyzed"
+		    ),
+		    @IndexableFieldOption (
+		      name = "created",
+		      type = "Date",
+		      index = "not_analyzed"
+		    ),
+		    @IndexableFieldOption (
+		      name = "tags",
+		      type = "Set<Long>",
 		      index = "not_analyzed"
 		    )
 		  }
@@ -45,15 +62,19 @@ public IndexedCommunicatorMessage() {
 	 return this.message;
   }
   
+  public Long getCommunicatorMessageId() {
+	return this.communicatorMessageId;
+  }
+  
   public String getCaption() {
-		 return this.caption;
-	  }
+    return this.caption;
+  }
   
   public long getSenderId() {
     return this.senderId;
   }
   
-  public String getSender() {
+  public IndexedCommunicatorMessageSender getSender() {
 	    return this.sender;
 	  }
   
@@ -61,8 +82,25 @@ public IndexedCommunicatorMessage() {
     return this.receiver;
   }
   
+  @IndexId
+  public String getSearchId() {
+	return this.searchId;
+  }
+  
+  public Date getcreated() {
+	 return this.created;
+  }
+  
+  public Set<Long> getTags(){
+	return this.tags;
+  }
+  
   public void setMessage(String message) {
     this.message = message;
+  }
+  
+  public void setCommunicatorMessageId(Long communicatorMessageId) {
+	this.communicatorMessageId = communicatorMessageId;
   }
   
   public void setCaption(String caption) {
@@ -73,7 +111,7 @@ public IndexedCommunicatorMessage() {
     this.senderId = senderId;
   }
   
-  public void setSender(String sender) {
+  public void setSender(IndexedCommunicatorMessageSender sender) {
 	    this.sender = sender;
 	  }
   
@@ -81,20 +119,30 @@ public IndexedCommunicatorMessage() {
 	this.receiver = recipientsEntityList;
   }
   
-  @IndexId
-  public String getSearchId() {
-	return this.searchId;
-  }
   
   public void setSearchId(String searchId) {
 	 this.searchId = searchId;
   }
+ 
+  
+  public void setCreated(Date created) {
+	this.created = created;
+  }
+  
+  public void setTags(Set<Long> tags) {
+	this.tags = tags;
+  }
+  
+  
   
   private String message;
+  private Long communicatorMessageId;
   private String caption;
   private long senderId;
-  private String sender;
+  private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> receiver;
   private String searchId;
+  private Date created;
+  private Set<Long> tags;
 }
 

@@ -1,6 +1,10 @@
 package fi.otavanopisto.muikku.plugins.communicator.model;
 
-public class CommunicatorMessageSearchResult{
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>{
 
   public Long getId() {
     return id;
@@ -30,29 +34,46 @@ public class CommunicatorMessageSearchResult{
     this.content = content;
   }
 
-  public String getSender() {
+  public IndexedCommunicatorMessageSender getSender() {
     return sender;
   }
   
-  public String getReceiver() {
+  public List<IndexedCommunicatorMessageRecipient> getReceiver() {
 	return receiver;
   }
 
-  public void setSender(String sender) {
+  public void setSender(IndexedCommunicatorMessageSender sender) {
     this.sender = sender;
   }
 
-  public void setReceiver(String receiver) {
+  public void setReceiver(List<IndexedCommunicatorMessageRecipient> receiver) {
 	this.receiver = receiver;
   }
   
-  public void setSenderId(String senderId2) {
-	this.senderId = senderId2;
+  public void setSenderId(String senderId) {
+	this.senderId = senderId;
   }
   
   public String getSenderId() {
 	return senderId;
   }
+  
+  public void setCreated(String created) {
+	this.created = created;
+  }
+  
+  public String getCreated() {
+	return created;
+  }
+  
+  public void setTags(String tags) {
+	this.tags = tags;
+  }
+  
+  public String getTags(){
+	return tags;
+  }
+  
   
   private Long id;
   
@@ -60,12 +81,16 @@ public class CommunicatorMessageSearchResult{
 
   private String communicatorMessageId;
 
-  private String sender;
+  private IndexedCommunicatorMessageSender sender;
 
   private String caption;
 
   private String content;
   
-  private String receiver;
+  private List<IndexedCommunicatorMessageRecipient> receiver;
+  
+  private String created;
+  
+  private String tags;
 
 }
