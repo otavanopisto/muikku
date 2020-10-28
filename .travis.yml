@@ -23,13 +23,11 @@ addons:
     - libxi6
     - libgconf-2-4
 before_install:
-- if [[ $suite == 'headless' && $TRAVIS_BRANCH == 'devel' ] || [ $suite == 'full' && $TRAVIS_BRANCH == 'master' ]]; then
-    - openssl aes-256-cbc -K $encrypted_f6ca69c00a28_key -iv $encrypted_f6ca69c00a28_iv
-      -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
-    - tar xvf travis-encrypted.tar  
-    - unset GEM_PATH
-    - . travis-setenv.sh    
-  fi;
+- openssl aes-256-cbc -K $encrypted_f6ca69c00a28_key -iv $encrypted_f6ca69c00a28_iv
+  -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
+- tar xvf travis-encrypted.tar  
+- unset GEM_PATH
+- . travis-setenv.sh
 install:
 - . install_chromedriver.sh
 - . travis-install.sh
@@ -61,6 +59,7 @@ env:
   # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/discussions
   # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/picker
   # - it_profile=travis findbugs_skip=true run=on_rc use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=indexpage
+
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="microsoftedge" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="internet explorer" browser_version="11.0" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="latest" browser_resolution="1024x768" platform="OS X 10.11" package=course/materials
