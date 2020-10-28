@@ -10,11 +10,11 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
     return id;
   }
   
-  public String getCommunicatorMessageId() {
+  public Long getCommunicatorMessageId() {
     return communicatorMessageId;
   }
 
-  public void setCommunicatorMessageId(String communicatorMessageId) {
+  public void setCommunicatorMessageId(Long communicatorMessageId) {
     this.communicatorMessageId = communicatorMessageId;
   }
 
@@ -50,11 +50,11 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
 	this.receiver = receiver;
   }
   
-  public void setSenderId(String senderId) {
+  public void setSenderId(Long senderId) {
 	this.senderId = senderId;
   }
   
-  public String getSenderId() {
+  public Long getSenderId() {
 	return senderId;
   }
   
@@ -66,20 +66,20 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
 	return created;
   }
   
-  public void setTags(String tags) {
+  public void setTags(Set<Long> tags) {
 	this.tags = tags;
   }
   
-  public String getTags(){
+  public Set<Long> getTags(){
 	return tags;
   }
   
   
   private Long id;
   
-  private String senderId;
+  private Long senderId;
 
-  private String communicatorMessageId;
+  private Long communicatorMessageId;
 
   private IndexedCommunicatorMessageSender sender;
 
@@ -91,6 +91,6 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
   
   private String created;
   
-  private String tags;
+  private Set<Long> tags;
 
 }

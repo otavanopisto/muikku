@@ -324,20 +324,24 @@ public class CommunicatorRESTService extends PluginRESTService {
       try {
           List<Map<String, Object>> results = searchResult.getResults();
           for (Map<String, Object> result : results) {
-            String searchMessage = (String) result.get("message");
+            String content = (String) result.get("message");
             HashMap sender = (HashMap) result.get("sender");
-            String senderId = result.get("senderId").toString();
+            
+            String senderIdString = result.get("senderId").toString();
+            Long senderId = Long.parseLong(senderIdString);
+            
             List<IndexedCommunicatorMessageRecipient> receiver = (List<IndexedCommunicatorMessageRecipient>) result.get("receiver");
             String caption = (String) result.get("caption");
-            String communicatorMessageId = result.get("communicatorMessageId").toString();
+            String communicatorMessageIdString = result.get("communicatorMessageId").toString();
+            Long communicatorMessageId = Long.parseLong(communicatorMessageIdString);
             Long created = (Long) result.get("created");
-            String tags = result.get("tags").toString();
+            List<Long> tagsList = (List<Long>) result.get("tags");
+            
+            Set<Long> tags = new HashSet<>(tagsList);
             
             Date datew = new Date(created);
             String createdDate = new SimpleDateFormat("d.M.yyyy").format(datew);
-            
-          //Creating a HashMap object
-
+          
             //Getting Collection of values from HashMap
 
             Collection<String> values = sender.values();
@@ -346,8 +350,6 @@ public class CommunicatorRESTService extends PluginRESTService {
             //Creating an ArrayList of values
 
             ArrayList<Object> listOfValues = new ArrayList<Object>(values);
-            
-            
             
             IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
             String stringToConvert = String.valueOf(listOfValues.get(2));
@@ -363,12 +365,11 @@ public class CommunicatorRESTService extends PluginRESTService {
 	            communicatorMessage.setCaption(caption);
 	            communicatorMessage.setCommunicatorMessageId(communicatorMessageId);
 	            communicatorMessage.setCreated(createdDate);
-	            communicatorMessage.setContent(searchMessage);
-	            communicatorMessage.setReceiver(receiver);
+	            communicatorMessage.setContent(content);
 	            communicatorMessage.setSender(senderData);
 	            communicatorMessage.setSenderId(senderId);
 	            communicatorMessage.setTags(tags);
-	            
+	            communicatorMessage.setReceiver(receiver);
 	            
 				communicatorMessages.add(communicatorMessage);
             }
@@ -567,7 +568,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
     
-    communicatorMessageIndexer.indexMessage(message, userEntity); 
+    communicatorMessageIndexer.indexMessage(message); 
     
     sendNewMessageNotifications(message);
     
@@ -594,13 +595,12 @@ public class CommunicatorRESTService extends PluginRESTService {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
-
     List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
     
     for (CommunicatorMessageRecipient r : list) {
       communicatorController.updateRead(r, true);
+      communicatorMessageIndexer.indexMessage(r.getCommunicatorMessage()); 
     }
-    
     return Response.noContent().build();
   }
 
@@ -623,6 +623,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       }
       
       communicatorController.updateRead(r, false);
+      communicatorMessageIndexer.indexMessage(r.getCommunicatorMessage()); 
     }
     
     return Response.noContent().build();
@@ -715,7 +716,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, userEntity, 
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
-    communicatorMessageIndexer.indexMessage(message, userEntity); 
+    communicatorMessageIndexer.indexMessage(message); 
 
     sendNewMessageNotifications(message);
     

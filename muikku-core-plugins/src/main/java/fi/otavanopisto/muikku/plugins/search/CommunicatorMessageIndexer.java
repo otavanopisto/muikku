@@ -42,7 +42,7 @@ public class CommunicatorMessageIndexer {
   @Inject 
   private UserController userController;
 
-  public void indexMessage(CommunicatorMessage message, UserEntity userEntity) {
+  public void indexMessage(CommunicatorMessage message) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       if (message != null) {
@@ -72,25 +72,23 @@ public class CommunicatorMessageIndexer {
     	indexedCommunicatorMessage.setSenderId(senderId);
     	
     	//set recipients
-    	List<CommunicatorMessageRecipient> recipientsList = communicatorController.listCommunicatorMessageRecipients(message);
+    	List<CommunicatorMessageRecipient> recipientsList = communicatorController.listAllCommunicatorMessageRecipients(message);
     	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
     	for (CommunicatorMessageRecipient recipient : recipientsList) {
-            Long recipientEntity = recipient.getRecipient();
+            Long recipientId = recipient.getRecipient();
             
-            if(recipientEntity != null) {
-              UserEntity userRecipientEntity = userEntityController.findUserEntityById(recipientEntity);
-              User userRecipient = userController.findUserByUserEntityDefaults(userRecipientEntity);
+            if(recipientId != null) {
+              UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
+              User userRecipient = userController.findUserByUserEntityDefaults(recipientEntity);
               
               IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
               
               //set receiver userEntityId & display name
-              recipientData.setUserEntityId(recipientEntity);
+              recipientData.setUserEntityId(recipientId);
               recipientData.setDisplayName(userRecipient.getDisplayName());
           	  
               // set is message read/unread by receiver
-              CommunicatorMessageRecipient communicatorMessageRecipient = communicatorController.findCommunicatorMessageRecipient(recipientEntity);
-          	  Boolean readByReceiver = communicatorMessageRecipient.getReadByReceiver();
-              recipientData.setReadByReceiver(readByReceiver);
+              recipientData.setReadByReceiver(recipient.getReadByReceiver());
               
               recipientsEntityList.add(recipientData);
             }
