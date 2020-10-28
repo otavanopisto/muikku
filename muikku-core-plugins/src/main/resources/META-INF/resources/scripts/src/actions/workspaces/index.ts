@@ -5,7 +5,7 @@ import { AnyActionType, SpecificActionType } from '~/actions';
 import { WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType } from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
-import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
+import { UserStaffType, ShortWorkspaceUserWithActiveStatusType, UserType } from '~/reducers/user-index';
 import {
   MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
@@ -17,6 +17,7 @@ import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 import { SelectItem } from '~/components/base/input-select-autofill';
 import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
+import { group } from 'console';
 
 
 
@@ -1395,63 +1396,95 @@ let deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType = functi
 let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
-          .create(
-              {
-                name: data.name,
-                nameExtension: data.nameExtension,
-              },
-              {
-                sourceWorkspaceEntityId: data.id
-              }), 'callback')().then(
-                  data.success && data.success("WORKSPACE-CREATE")
-              ));
+      // let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
+      //   .create(
+      //     {
+      //       name: data.name,
+      //       nameExtension: data.nameExtension,
+      //     },
+      //     {
+      //       sourceWorkspaceEntityId: data.id
+      //     }), 'callback')().then(
+      //       data.success && data.success("WORKSPACE-CREATE")
+      //     ));
 
       data.success && data.success("WORKSPACE-CREATE")
 
       if (data.students.length > 0) {
-        let groups: SelectItem[] = [];
-        let users: SelectItem[] = [];
+        let groupIdentifiers: number[] = [];
+        let studentIdentifiers: number[] = [];
 
         data.students.map(student => {
           if (student.type === "student-group") {
-            groups.push(student);
+            groupIdentifiers.push(student.id);
           }
           if (student.type === "student") {
-            users.push(student);
+            studentIdentifiers.push(student.id);
           }
         });
 
-        console.log(groups);
-        console.log(users);
-      }
+        console.log(studentIdentifiers);
 
-      if (data.students.length > 0) {
-        let studentIdentifiers = data.students.map((student) => student.id);
-        
-        await promisify(mApi().organizationmanagement.workspaces.students
-            .create(workspace.id, {
-              studentIdentifiers: studentIdentifiers
-            }
-            ), 'callback')().then(
-              data.success && data.success("ADD-STUDENTS")
-            );
+        if (groupIdentifiers.length > 0) {
+          // This will "press" the users out of the userGroup and push them into the existing user array
+
+          await Promise.all(
+            groupIdentifiers.map(async group => {
+              await promisify(mApi().usergroup.groups.users.read(group), 'callback')().then((user: UserType) => {
+                studentIdentifiers.push(user.id);
+              }
+              );
+            })
+          );
+
+          // Set will clear duplicates if any
+          let gi = new Set(studentIdentifiers);
+
+          // Back to Array
+          studentIdentifiers = Array.from(gi);
+        }
+        console.log(groupIdentifiers);
+        console.log(studentIdentifiers);
+        // let studentIdentifiers = data.students.map((student) => student.id);
+
+        // await promisify(mApi().organizationmanagement.workspaces.students
+        //   .create(workspace.id, {
+        //     studentIdentifiers: studentIdentifiers
+        //   }
+        //   ), 'callback')().then(
+        //     data.success && data.success("ADD-STUDENTS")
+        //   );
         data.success && data.success("ADD-STUDENTS");
+
       }
 
-      if (data.staff.length > 0) {
-        let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
-        await promisify(mApi().organizationmanagement.workspaces.staff
-            .create(workspace.id, {
-              staffMemberIdentifiers: staffMemberIdentifiers
-            }
-            ), 'callback')().then(
-              data.success && data.success("ADD-TEACHERS")
-            );
-        
-        data.success && data.success("ADD-TEACHERS")
-      }
+      // if (data.students.length > 0) {
+      //   let studentIdentifiers = data.students.map((student) => student.id);
+
+      //   await promisify(mApi().organizationmanagement.workspaces.students
+      //     .create(workspace.id, {
+      //       studentIdentifiers: studentIdentifiers
+      //     }
+      //     ), 'callback')().then(
+      //       data.success && data.success("ADD-STUDENTS")
+      //     );
+      //   data.success && data.success("ADD-STUDENTS");
+      // }
+
+      // if (data.staff.length > 0) {
+      //   let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
+
+      //   await promisify(mApi().organizationmanagement.workspaces.staff
+      //     .create(workspace.id, {
+      //       staffMemberIdentifiers: staffMemberIdentifiers
+      //     }
+      //     ), 'callback')().then(
+      //       data.success && data.success("ADD-TEACHERS")
+      //     );
+
+      //   data.success && data.success("ADD-TEACHERS")
+      // }
 
       data.success && data.success("DONE");
 

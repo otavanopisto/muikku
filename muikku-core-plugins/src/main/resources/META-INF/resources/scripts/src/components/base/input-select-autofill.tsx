@@ -79,17 +79,12 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
 
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     let textInput = e.target.value;
-    this.setState({ textInput, autocompleteOpened: true });
+    this.setState({ autocompleteOpened: true });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
       this.props.loader(textInput);
-      this.setState({
-        searchItems: this.props.searchItems
-      });
     } else {
-      this.setState({
-        searchItems: []
-      });
+
     }
   }
 
@@ -120,7 +115,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
       };
     });
 
-    let autocompleteItems = this.state.searchItems.map((item) => {
+    let autocompleteItems = this.props.searchItems.map((item) => {
       let node = <div className="autocomplete__recipient">
         {item.icon ?
           <span className={`glyph glyph--selected-recipient icon-${item.icon}`} />
