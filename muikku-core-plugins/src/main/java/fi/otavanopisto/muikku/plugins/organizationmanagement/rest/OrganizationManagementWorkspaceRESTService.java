@@ -269,10 +269,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       schoolDataBridgeSessionController.endSystemSession();
     }
 
-    if (workspaces.isEmpty()) {
-      return Response.noContent().build();
-    }
-    
     return Response.ok(workspaces).build();
   }
   
