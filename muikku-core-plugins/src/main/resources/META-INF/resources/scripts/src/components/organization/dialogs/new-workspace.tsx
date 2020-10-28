@@ -223,18 +223,19 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
-              {this.props.templates.map((template: WorkspaceType) => {
-                let aside = <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />;
-                return <ApplicationListItem key={template.id}>
-                  <ApplicationListItemContentWrapper aside={aside}>
-                    <ApplicationListItemHeader>
-                      <span className="application-list__header-primary">{template.name}</span>
-                      <span className="application-list__header-secondary">{template.educationTypeName}</span>
-                    </ApplicationListItemHeader>
-                  </ApplicationListItemContentWrapper>
-                </ApplicationListItem>
-
-              })}
+              {this.props.templates.length > 0 ?
+                this.props.templates.map((template: WorkspaceType) => {
+                  let aside = <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />;
+                  return <ApplicationListItem key={template.id}>
+                    <ApplicationListItemContentWrapper aside={aside}>
+                      <ApplicationListItemHeader>
+                        <span className="application-list__header-primary">{template.name}</span>
+                        <span className="application-list__header-secondary">{template.educationTypeName}</span>
+                      </ApplicationListItemHeader>
+                    </ApplicationListItemContentWrapper>
+                  </ApplicationListItem>
+                })
+                : <div className="empty">{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}</div>}
             </ApplicationList>
           </DialogRow>
         </div >;
