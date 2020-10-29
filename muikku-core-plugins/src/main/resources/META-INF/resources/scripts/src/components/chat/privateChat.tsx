@@ -82,7 +82,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.presenceListenerHandler = this.props.connection.addHandler(this.onPresence, null, "presence", null, null, this.props.jid, { matchBare: true });
 
     if (this.props.initializingStanza) {
-      this.onPrivateChatMessage(this.props.initializingStanza);
+      // this.onPrivateChatMessage(this.props.initializingStanza);
     }
 
     this.requestPrescense();

@@ -529,7 +529,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
         const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
         const message = historyMessage.querySelector("message").textContent;
-        const date = new Date();
+        const date = new Date(stamp);
         const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
 
         const messageReceived: IBareMessageType = {
