@@ -4,12 +4,12 @@ import { Dispatch, connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
 import { StatusType } from '~/reducers/base/status';
 import { ProfileType } from '~/reducers/main-function/profile';
-import { UserIndexType } from '~/reducers/user-index';
 import UploadImageDialog from '../../dialogs/upload-image';
 import { getUserImageUrl } from '~/util/modifiers';
 import Button from '~/components/general/button';
 import DeleteImageDialog from '../../dialogs/delete-image';
 import '~/sass/elements/change-image.scss';
+import '~/sass/elements/wcag.scss';
 
 interface ProfilePictureProps {
   i18n: i18nType,
@@ -85,7 +85,8 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
         </div> : <div className="change-image">
           <form className="change-image__container" style={
             {backgroundImage:this.props.status.hasImage ? `url("${getUserImageUrl(this.props.status.userId, 256, this.props.status.imgVersion)}")` : null}}>
-            <input name="file" type="file" accept="image/*" onChange={this.readFile}/>
+            <label className="visually-hidden" htmlFor="profilePictureUpload">{this.props.i18n.text.get("plugin.wcag.proflie.uploadPicture.label")}</label>
+            <input id="profilePictureUpload" name="file" type="file" accept="image/*" onChange={this.readFile}/>
             <div className="change-image__actions">
             <Button buttonModifiers="change-image-edit" onClick={this.editCurrentImage}>
               <span className="icon icon-pencil"/>
