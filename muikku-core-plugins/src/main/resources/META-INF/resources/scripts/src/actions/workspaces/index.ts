@@ -797,6 +797,35 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
   }
 }
 
+
+let loadWorkspaceCurrentStaffSelect: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace, loadOrganizationStaff) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      let staffMemberSelect = <Array<SelectItem>>(await promisify(mApi().user.staffMembers.read({
+        workspaceEntityId: workspace.id
+      }), 'callback')().then((staffmembers: UserStaffType[]) => {
+        staffmembers.map((staffMember: UserStaffType) => {
+          return { id: staffMember.userEntityId, label: staffMember.firstName + " " + staffMember.lastName }
+        });
+      }));
+
+      let update: WorkspaceUpdateType = {
+        staffMemberSelect, id: workspace.id
+      }
+      dispatch({
+        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+        payload: update
+      });
+    }
+    catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+    }
+  }
+}
+
 let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace, loadOrganizationStaff) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -810,9 +839,12 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
       }
 
       if (loadOrganizationStaff === true) {
+        let updateO: WorkspaceUpdateType = {
+          staffMembers, id: workspace.id
+        };
         dispatch({
           type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-          payload: update
+          payload: updateO
         });
       } else {
         dispatch({
@@ -841,9 +873,12 @@ let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadS
       };
 
       if (loadOrganizationStudents === true) {
+        let updateO: WorkspaceUpdateType = {
+          students, id: workspace.id
+        };
         dispatch({
           type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-          payload: update
+          payload: updateO
         });
       } else {
         dispatch({

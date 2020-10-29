@@ -1,4 +1,5 @@
 import { ActionType } from '~/actions';
+import { SelectItem } from '~/components/base/input-select-autofill';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { repairContentNodes } from '~/util/modifiers';
 
@@ -231,10 +232,12 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
+  staffMemberSelect?: Array<SelectItem>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
+  studentsSelect?: Array<SelectItem>,
   details?: WorkspaceDetailsType,
   permissions?: WorkspacePermissionsType[],
 
@@ -869,9 +872,16 @@ export function organizationWorkspaces(state: WorkspacesType = {
       templateWorkspaces: action.payload
     });
   } else if (action.type === "UPDATE_ORGANIZATION_SELECTED_WORKSPACE") {
-    return Object.assign({}, state, {
-      currentWorkspace: action.payload
-    });
+    let newCurrent = state.currentWorkspace;
+    if (newCurrent && newCurrent.id === action.payload.id) {
+      return Object.assign({}, state, {
+        currentWorkspace: { ...newCurrent, ...action.payload }
+      });
+    } else {
+      return Object.assign({}, state, {
+        currentWorkspace: action.payload
+      });
+    }
   }
   return state;
 }
