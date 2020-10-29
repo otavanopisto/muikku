@@ -453,7 +453,6 @@
 }
 
 // Button that appears inside views component
-
 .button--primary-function-content {
   background-color: $color-button-primary-background;
   border: 0;
@@ -473,6 +472,10 @@
   &.active {
     background-color: darken($color-button-primary-background, 20%);
   }
+}
+
+.button--remove-subject-row {
+  background: $color-fatal;
 }
 
 // Button that is used to save views form information
