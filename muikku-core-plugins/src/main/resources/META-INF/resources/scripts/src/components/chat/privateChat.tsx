@@ -25,7 +25,7 @@ interface IPrivateChatState {
   currentMessageToBeSent: string,
   loadingMessages: boolean,
   canLoadMoreMessages: boolean,
-  lastMessageId: string,
+  lastMessageStamp: string,
 }
 
 export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChatState> {
@@ -51,7 +51,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       isStudent: (window as any).MUIKKU_IS_STUDENT,
       loadingMessages: false,
       canLoadMoreMessages: true,
-      lastMessageId: null,
+      lastMessageStamp: null,
     }
 
     this.messagesEnd = React.createRef();
@@ -251,7 +251,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       return this.chatRef.current.scrollTop === 0;
     }
 
-    return true;
+    return false;
   }
   loadMessages() {
     if (this.state.loadingMessages || !this.state.canLoadMoreMessages) {
@@ -270,23 +270,24 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     .c("with", {}, this.props.jid)
     .c("max", {}, "10");
 
-    if (this.state.lastMessageId) {
-      stanza.c("before-id", {}, this.state.lastMessageId);
+    if (this.state.lastMessageStamp) {
+      stanza.c("before", {}, this.state.lastMessageStamp);
     }
 
     this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
       console.log(answerStanza);
-      let lastMessageId: string = null;
+      let lastMessageStamp: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
         const id = historyMessage.querySelector("id").textContent;
+        const stamp = historyMessage.querySelector("timestamp").textContent;
         if (index === 0) {
-          lastMessageId = id;
+          lastMessageStamp = stamp;
         }
 
         const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
         const message = historyMessage.querySelector("message").textContent;
-        const date = new Date(historyMessage.querySelector("timestamp").textContent);
+        const date = new Date(stamp);
         const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
 
         const messageReceived: IBareMessageType = {
@@ -301,9 +302,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         return messageReceived;
       });
 
-      if (lastMessageId) {
+      if (lastMessageStamp) {
         this.setState({
-          lastMessageId,
+          lastMessageStamp,
         });
       }
 
@@ -316,7 +317,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           messages: [...newMessages, ...this.state.messages],
         }, () => {
           if (!this.isScrollDetached) {
-            this.scrollToBottom();
+            this.scrollToBottom("auto");
           } else if (this.chatRef.current) {
             const currentScrollHeight = this.chatRef.current.scrollHeight;
             const diff = currentScrollHeight - oldScrollHeight;
@@ -357,8 +358,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
             </div>
 
-            <div className="chat__panel-body chat__panel-body--chatroom" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-              <div className="chat__messages-container chat__messages-container--private">
+            <div className="chat__panel-body chat__panel-body--chatroom">
+              <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
                   {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
                     canToggleInfo={!this.state.isStudent}
                     messsage={message} canDelete={false && message.isSelf} i18n={this.props.i18n} />)}

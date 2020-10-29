@@ -41,7 +41,7 @@ interface IGroupChatState {
   roomNameField: string;
   roomDescField: string;
 
-  lastMessageId: string;
+  lastMessageStamp: string;
   loadingMessages: boolean;
   canLoadMoreMessages: boolean;
   // roomPersistent: boolean;
@@ -76,7 +76,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.chat.roomJID),
       occupants: [],
       showOccupantsList: false,
-      lastMessageId: null,
+      lastMessageStamp: null,
       loadingMessages: false,
       canLoadMoreMessages: true,
 
@@ -494,7 +494,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       return this.chatRef.current.scrollTop === 0;
     }
 
-    return true;
+    return false;
   }
   loadMessages() {
     if (this.state.loadingMessages || !this.state.canLoadMoreMessages) {
@@ -513,22 +513,23 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     .c("with", {}, this.props.chat.roomJID)
     .c("max", {}, "10");
 
-    if (this.state.lastMessageId) {
-      stanza.c("before-id", {}, this.state.lastMessageId);
+    if (this.state.lastMessageStamp) {
+      stanza.c("before", {}, this.state.lastMessageStamp);
     }
 
     this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
-      let lastMessageId: string = null;
+      let lastMessageStamp: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
         const id = historyMessage.querySelector("id").textContent;
+        const stamp = historyMessage.querySelector("timestamp").textContent;
         if (index === 0) {
-          lastMessageId = id;
+          lastMessageStamp = stamp;
         }
 
         const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
         const message = historyMessage.querySelector("message").textContent;
-        const date = new Date(historyMessage.querySelector("timestamp").textContent);
+        const date = new Date();
         const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
 
         const messageReceived: IBareMessageType = {
@@ -543,9 +544,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         return messageReceived;
       });
 
-      if (lastMessageId) {
+      if (lastMessageStamp) {
         this.setState({
-          lastMessageId,
+          lastMessageStamp,
         });
       }
 
@@ -558,7 +559,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
           messages: [...newMessages, ...this.state.messages],
         }, () => {
           if (!this.isScrollDetached) {
-            this.scrollToBottom();
+            this.scrollToBottom("auto");
           } else if (this.chatRef.current) {
             const currentScrollHeight = this.chatRef.current.scrollHeight;
             const diff = currentScrollHeight - oldScrollHeight;
