@@ -53,9 +53,9 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signature")}</span>
       </Link>
     ]}>
-      <ButtonPill tabIndex={0} buttonModifiers="settings" icon="cog"/>
+      <ButtonPill buttonModifiers="settings" icon="cog"/>
     </Dropdown>
-    let primaryOption = <NewMessage><Button tabIndex={0} buttonModifiers="primary-function">
+    let primaryOption = <NewMessage><Button buttonModifiers="primary-function">
       {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
     </Button></NewMessage>
     let toolbar = <Toolbar/>

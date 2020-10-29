@@ -131,18 +131,18 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <ButtonPill tabIndex={0} buttonModifiers="go-back" icon="back" onClick={this.onGoBackClick}/>
+            <ButtonPill buttonModifiers="go-back" icon="back" onClick={this.onGoBackClick}/>
 
             <div className="application-panel__tool--current-folder">
               <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-                <ButtonPill tabIndex={0} buttonModifiers="toolbar-edit-label" icon="pencil"/>
+                <ButtonPill buttonModifiers="toolbar-edit-label" icon="pencil"/>
               </LabelUpdateDialog> : null}
             </div>
             {this.props.messages.location === "trash" ?
-              <ButtonPill tabIndex={0} buttonModifiers="restore" icon="undo" onClick={this.props.restoreCurrentMessageThread}/> : null}
-              <ButtonPill tabIndex={0} buttonModifiers="delete" icon="trash" onClick={this.props.deleteCurrentMessageThread}/>
+              <ButtonPill buttonModifiers="restore" icon="undo" onClick={this.props.restoreCurrentMessageThread}/> : null}
+              <ButtonPill buttonModifiers="delete" icon="trash" onClick={this.props.deleteCurrentMessageThread}/>
               <Dropdown modifier="communicator-labels" items={
                 [
                   <div className="form-element">
@@ -163,17 +163,17 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                   </Link>);
                 }))
               }>
-                <ButtonPill tabIndex={0} buttonModifiers="label" icon="tag"/>
+                <ButtonPill buttonModifiers="label" icon="tag"/>
               </Dropdown>
-            {isUnreadOrInboxOrLabel ? <ButtonPill tabIndex={0} buttonModifiers="toggle-read" icon={`${this.state.isCurrentRead ? "envelope-open" : "envelope-alt"}`}
+            {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.state.isCurrentRead ? "envelope-open" : "envelope-alt"}`}
               onClick={this.props.messages.toolbarLock ? null : this.toggleCurrentMessageReadStatus}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
-            <ButtonPill tabIndex={0} buttonModifiers="next-page" icon="arrow-left"
+            <ButtonPill buttonModifiers="next-page" icon="arrow-left"
               disabled={this.props.messages.currentThread.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
 
-            <ButtonPill tabIndex={0} buttonModifiers="prev-page" icon="arrow-right"
+            <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
              disabled={this.props.messages.currentThread.olderThreadId === null}
              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
           </ApplicationPanelToolbarActionsAside>
@@ -195,13 +195,13 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-          <ButtonPill tabIndex={0} buttonModifiers="toolbar-edit-label" icon="pencil"/>
+          <ButtonPill buttonModifiers="toolbar-edit-label" icon="pencil"/>
          </LabelUpdateDialog> : null}
       </div>
 
-      {this.props.messages.location === "trash" ? <ButtonPill tabIndex={0} buttonModifiers="restore" icon="undo"
+      {this.props.messages.location === "trash" ? <ButtonPill buttonModifiers="restore" icon="undo"
         disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.restoreSelectedMessageThreads}/> : null}
-      <ButtonPill tabIndex={0} buttonModifiers="delete" icon="trash"
+      <ButtonPill buttonModifiers="delete" icon="trash"
        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
 
       <Dropdown onClose={this.resetLabelFilter} modifier="communicator-labels" items={
@@ -225,10 +225,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           </Link>);
         }))
       }>
-        <ButtonPill tabIndex={0} buttonModifiers="label" icon="tag"/>
+        <ButtonPill buttonModifiers="label" icon="tag"/>
       </Dropdown>
 
-      {isUnreadOrInboxOrLabel ? <ButtonPill tabIndex={0} buttonModifiers="toggle-read" icon={`${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "envelope-open" : "envelope-alt"}`}
+      {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "envelope-open" : "envelope-alt"}`}
         disabled={this.props.messages.selectedThreads.length < 1}
         onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
     </ApplicationPanelToolbar>

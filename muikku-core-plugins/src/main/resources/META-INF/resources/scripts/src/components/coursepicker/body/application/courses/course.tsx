@@ -42,7 +42,7 @@ class Course extends React.Component<CourseProps, CourseState>{
   }
   render(){
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
-      <ApplicationListItemHeader className="application-list__item-header--course" tabIndex={0} onClick={this.toggleExpanded}>
+      <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="application-list__header-icon icon-books"></span>
         <span className="application-list__header-primary">{this.props.workspace.name} {this.props.workspace.nameExtension ? "(" + this.props.workspace.nameExtension + ")" : null}</span>
         {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ? <span className="application-list__fee-indicatoricon-coin-euro icon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
