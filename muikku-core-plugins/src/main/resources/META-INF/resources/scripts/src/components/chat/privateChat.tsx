@@ -23,6 +23,9 @@ interface IPrivateChatState {
   targetPrescense: "away" | "chat" | "dnd" | "xa";
   isStudent: boolean,
   currentMessageToBeSent: string,
+  loadingMessages: boolean,
+  canLoadMoreMessages: boolean,
+  lastMessageId: string,
 }
 
 export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChatState> {
@@ -46,6 +49,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       currentMessageToBeSent: "",
       targetPrescense: "xa",
       isStudent: (window as any).MUIKKU_IS_STUDENT,
+      loadingMessages: false,
+      canLoadMoreMessages: true,
+      lastMessageId: null,
     }
 
     this.messagesEnd = React.createRef();
@@ -63,6 +69,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
     this.requestPrescense = this.requestPrescense.bind(this);
     this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
+    this.isScrolledToTop = this.isScrolledToTop.bind(this);
+    this.loadMessages = this.loadMessages.bind(this);
   }
 
   setFocusToMessageField() {
@@ -80,6 +88,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.requestPrescense();
     this.obtainNick();
     this.setFocusToMessageField();
+    this.loadMessages();
   }
 
   async obtainNick() {
@@ -233,6 +242,98 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
       this.isScrollDetached = !isScrolledToBottom;
     }
+    if (this.isScrolledToTop()) {
+      this.loadMessages();
+    }
+  }
+  isScrolledToTop() {
+    if (this.chatRef.current) {
+      return this.chatRef.current.scrollTop === 0;
+    }
+
+    return true;
+  }
+  loadMessages() {
+    if (this.state.loadingMessages || !this.state.canLoadMoreMessages) {
+      return;
+    }
+
+    this.setState({
+      loadingMessages: true,
+    });
+
+    const stanza = $iq({
+      type: "set",
+    }).c("query", {
+      xmlns: "otavanopisto:chat:history",
+    }).c("type", {}, "groupchat")
+    .c("with", {}, this.props.jid)
+    .c("max", {}, "10");
+
+    if (this.state.lastMessageId) {
+      stanza.c("before-id", {}, this.state.lastMessageId);
+    }
+
+    this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
+      console.log(answerStanza);
+      let lastMessageId: string = null;
+      const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
+      const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
+        const id = historyMessage.querySelector("id").textContent;
+        if (index === 0) {
+          lastMessageId = id;
+        }
+
+        const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
+        const message = historyMessage.querySelector("message").textContent;
+        const date = new Date(historyMessage.querySelector("timestamp").textContent);
+        const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
+
+        const messageReceived: IBareMessageType = {
+          nick,
+          message,
+          id,
+          timestamp: date,
+          userId,
+          isSelf: userId === this.props.connection.jid.split("@")[0],
+        };
+
+        return messageReceived;
+      });
+
+      if (lastMessageId) {
+        this.setState({
+          lastMessageId,
+        });
+      }
+
+      if (newMessages.length) {
+        const oldScrollHeight = this.chatRef.current && this.chatRef.current.scrollHeight;
+        // most likely 0, but who knows, fast fingers
+        const oldScrollTop = this.chatRef.current && this.chatRef.current.scrollTop;
+
+        this.setState({
+          messages: [...newMessages, ...this.state.messages],
+        }, () => {
+          if (!this.isScrollDetached) {
+            this.scrollToBottom();
+          } else if (this.chatRef.current) {
+            const currentScrollHeight = this.chatRef.current.scrollHeight;
+            const diff = currentScrollHeight - oldScrollHeight;
+            this.chatRef.current.scrollTop = diff + oldScrollTop;
+          }
+          this.setState({
+            loadingMessages: false,
+            canLoadMoreMessages: !allMessagesLoaded,
+          });
+        });
+      } else {
+        this.setState({
+          loadingMessages: false,
+          canLoadMoreMessages: false,
+        });
+      }
+    });
   }
   render() {
     return (

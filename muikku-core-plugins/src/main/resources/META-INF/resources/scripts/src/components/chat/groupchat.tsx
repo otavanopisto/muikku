@@ -518,7 +518,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     }
 
     this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
-      console.log(answerStanza);
       let lastMessageId: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
