@@ -476,6 +476,16 @@
 
 .button--remove-subject-row {
   background: $color-fatal;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-fatal, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-fatal, 20%);
+  }
 }
 
 // Button that is used to save views form information
