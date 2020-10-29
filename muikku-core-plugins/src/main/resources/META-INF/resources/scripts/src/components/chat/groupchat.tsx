@@ -40,6 +40,10 @@ interface IGroupChatState {
 
   roomNameField: string;
   roomDescField: string;
+
+  lastMessageId: string;
+  loadingMessages: boolean;
+  canLoadMoreMessages: boolean;
   // roomPersistent: boolean;
 
   updateFailed: boolean;
@@ -72,6 +76,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       minimized: JSON.parse(window.sessionStorage.getItem("minimizedChats") || "[]").includes(props.chat.roomJID),
       occupants: [],
       showOccupantsList: false,
+      lastMessageId: null,
+      loadingMessages: false,
+      canLoadMoreMessages: true,
 
       roomNameField: this.props.chat.roomName,
       roomDescField: this.props.chat.roomDesc,
@@ -106,6 +113,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.toggleDeleteDialog = this.toggleDeleteDialog.bind(this);
     this.onChatDeleted = this.onChatDeleted.bind(this);
     this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
+    this.loadMessages = this.loadMessages.bind(this);
+    this.isScrolledToTop = this.isScrolledToTop.bind(this);
   }
 
   setFocusToMessageField() {
@@ -462,6 +471,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   componentDidMount() {
     this.joinRoom();
     this.setFocusToMessageField();
+    this.loadMessages();
   }
   componentWillUnmount() {
     this.leaveRoom();
@@ -474,6 +484,99 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         this.chatRef.current.scrollHeight - this.chatRef.current.offsetHeight;
       this.isScrollDetached = !isScrolledToBottom;
     }
+
+    if (this.isScrolledToTop()) {
+      this.loadMessages();
+    }
+  }
+  isScrolledToTop() {
+    if (this.chatRef.current) {
+      return this.chatRef.current.scrollTop === 0;
+    }
+
+    return true;
+  }
+  loadMessages() {
+    if (this.state.loadingMessages || !this.state.canLoadMoreMessages) {
+      return;
+    }
+
+    this.setState({
+      loadingMessages: true,
+    });
+
+    const stanza = $iq({
+      type: "set",
+    }).c("query", {
+      xmlns: "otavanopisto:chat:history",
+    }).c("type", {}, "groupchat")
+    .c("with", {}, this.props.chat.roomJID)
+    .c("max", {}, "10");
+
+    if (this.state.lastMessageId) {
+      stanza.c("before-id", {}, this.state.lastMessageId);
+    }
+
+    this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
+      console.log(answerStanza);
+      let lastMessageId: string = null;
+      const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
+      const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
+        const id = historyMessage.querySelector("id").textContent;
+        if (index === 0) {
+          lastMessageId = id;
+        }
+
+        const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
+        const message = historyMessage.querySelector("message").textContent;
+        const date = new Date(historyMessage.querySelector("timestamp").textContent);
+        const userId = historyMessage.querySelector("fromJID").textContent.split("@")[0];
+
+        const messageReceived: IBareMessageType = {
+          nick,
+          message,
+          id,
+          timestamp: date,
+          userId,
+          isSelf: userId === this.props.connection.jid.split("@")[0],
+        };
+
+        return messageReceived;
+      });
+
+      if (lastMessageId) {
+        this.setState({
+          lastMessageId,
+        });
+      }
+
+      if (newMessages.length) {
+        const oldScrollHeight = this.chatRef.current && this.chatRef.current.scrollHeight;
+        // most likely 0, but who knows, fast fingers
+        const oldScrollTop = this.chatRef.current && this.chatRef.current.scrollTop;
+
+        this.setState({
+          messages: [...newMessages, ...this.state.messages],
+        }, () => {
+          if (!this.isScrollDetached) {
+            this.scrollToBottom();
+          } else if (this.chatRef.current) {
+            const currentScrollHeight = this.chatRef.current.scrollHeight;
+            const diff = currentScrollHeight - oldScrollHeight;
+            this.chatRef.current.scrollTop = diff + oldScrollTop;
+          }
+          this.setState({
+            loadingMessages: false,
+            canLoadMoreMessages: !allMessagesLoaded,
+          });
+        });
+      } else {
+        this.setState({
+          loadingMessages: false,
+          canLoadMoreMessages: false,
+        });
+      }
+    });
   }
   render() {
     let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-") ? "workspace" : "other";
