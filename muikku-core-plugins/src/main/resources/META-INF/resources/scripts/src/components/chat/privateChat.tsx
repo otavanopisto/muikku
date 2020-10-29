@@ -266,7 +266,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       type: "set",
     }).c("query", {
       xmlns: "otavanopisto:chat:history",
-    }).c("type", {}, "groupchat")
+    }).c("type", {}, "chat")
     .c("with", {}, this.props.jid)
     .c("max", {}, "10");
 
