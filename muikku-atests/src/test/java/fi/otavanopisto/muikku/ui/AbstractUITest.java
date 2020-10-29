@@ -645,6 +645,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.xpath(xpath)).click();
   }
   
+  protected void clickLinkWithText(String text) {
+    getWebDriver().findElement(By.linkText(text)).click();
+  }
+  
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {

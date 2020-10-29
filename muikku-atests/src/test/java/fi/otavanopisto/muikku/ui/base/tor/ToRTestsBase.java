@@ -22,10 +22,11 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class ToRTestsBase extends AbstractUITest {
-//  TODO: Proper testing of revised records
+
   @Test
   public void recordsWorkspaceEvaluationTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -197,8 +198,7 @@ public class ToRTestsBase extends AbstractUITest {
   }
   
   @Test
-  public void recordsViewTest() throws JsonProcessingException, Exception {
-//    mockEligibility
+  public void recordsHOPSAndMatriculation() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
@@ -217,16 +217,35 @@ public class ToRTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+
+      StudentMatriculationEligibility studentMatriculationEligibilityAI = new StudentMatriculationEligibility(true, 5, 4, 1);
+      StudentMatriculationEligibility studentMatriculationEligibilityMAA = new StudentMatriculationEligibility(false, 8, 5, 1);
+      
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
-        .mockStudentCourseStats(student.getId(), 10)
+        .mockStudentCourseStats(student.getId(), 25)
         .build();
       try {
         logout();
-        mockBuilder.mockLogin(student).mockMatriculationEligibility(true);
+        mockBuilder.mockLogin(student).mockMatriculationEligibility(true).mockMatriculationExam(true).mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI").mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA");
         login();
-        navigate("/records", false);
+        selectFinnishLocale();
+        navigate("/records#hops", false);
+        waitAndClick(".form-element__radio-option-container #goalMatriculationExamyes");
+        waitAndClick(".button--primary-function-content");
+        waitForPresentAndVisible(".form-element__select--matriculation-exam");
+        selectOption(".form-element__select--matriculation-exam", "A");
+
+        waitAndClick(".button--primary-function-content");
+        
+        waitForPresentXPath("//a[@href='#yo']");
+        clickLinkWithText("Ylioppilaskirjoitukset");
+        
+        waitForPresentAndVisible(".application-sub-panel--yo-status-container");
+        waitForPresentAndVisible(".button--yo-signup");
+        assertText(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
+        
       }finally {
 //        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());

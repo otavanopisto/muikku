@@ -21,8 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +29,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
@@ -54,7 +53,6 @@ import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Grade;
 import fi.otavanopisto.pyramus.rest.model.GradingScale;
 import fi.otavanopisto.pyramus.rest.model.MatriculationEligibilities;
-import fi.otavanopisto.pyramus.rest.model.MatriculationExam;
 import fi.otavanopisto.pyramus.rest.model.Organization;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
@@ -63,6 +61,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
@@ -1062,14 +1061,17 @@ public class PyramusMock {
         return this;
       }
       
-//    listMatriculationExams
-      public Builder listMatriculationExamsMock(Boolean onlyEligible) throws JsonProcessingException {
-//         = pyramusClient.get(
-//            String.format("/matriculation/exams?onlyEligible=%s", onlyEligible), PyramusMatriculationExam[].class);
+      public Builder mockMatriculationExam(Boolean onlyEligible) throws JsonProcessingException {     
+        Date startDate = new Date();
+        Date endDate = new Date(TestUtilities.toDate(2025, 12, 12).toInstant().toEpochMilli());
         PyramusMatriculationExam result = new PyramusMatriculationExam();
-        
-//        PyramusMatriculationExam[] exams = new Array();
+        result.setEligible(true);
+        result.setEnds(endDate.getTime());
+        result.setEnrolled(false);
+        result.setId(1l);
+        result.setStarts(startDate.getTime());
         ArrayList<PyramusMatriculationExam> exams = new ArrayList<>();
+        exams.add(result);
         String examsJson = pmock.objectMapper.writeValueAsString(exams);
         
         stubFor(get(urlEqualTo(String.format("/1/matriculation/exams?onlyEligible=%s", onlyEligible)))
@@ -1077,6 +1079,19 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(examsJson)
             .withStatus(200)));
+        return this;
+      }
+      
+      public Builder mockStudentsMatriculationEligibility(StudentMatriculationEligibility studentMatriculationEligibility, String subjectCode) throws JsonProcessingException {
+//        StudentMatriculationEligibility studentMatriculationEligibility = new StudentMatriculationEligibility(eligible, 1, 1, 1);
+        String matriculationSubjectJson = pmock.objectMapper.writeValueAsString(studentMatriculationEligibility);
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/students/students/.*/matriculationEligibility"), true);
+        stubFor(get(urlPattern)
+            .withQueryParam("subjectCode", matching(subjectCode))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(matriculationSubjectJson)
+            .withStatus(200)));      
         return this;
       }
       
