@@ -23,7 +23,7 @@ public class WebSocketTicketController {
   public WebSocketTicket findTicket(String ticket) {
     return webSocketTicketDAO.findByTicket(ticket);
   }
-
+  
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void removeTicket(String ticket) {
     WebSocketTicket webSocketTicket = findTicket(ticket);

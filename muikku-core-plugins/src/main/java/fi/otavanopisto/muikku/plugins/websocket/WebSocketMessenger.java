@@ -31,7 +31,7 @@ public class WebSocketMessenger {
 
   @Inject
   private WebSocketTicketController webSocketTicketController;
-  
+
   private Map<String, Session> sessions;
   
   @PostConstruct
