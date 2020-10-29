@@ -511,7 +511,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       xmlns: "otavanopisto:chat:history",
     }).c("type", {}, "groupchat")
     .c("with", {}, this.props.chat.roomJID)
-    .c("max", {}, "10");
+    .c("max", {}, "25");
 
     if (this.state.lastMessageStamp) {
       stanza.c("before", {}, this.state.lastMessageStamp);

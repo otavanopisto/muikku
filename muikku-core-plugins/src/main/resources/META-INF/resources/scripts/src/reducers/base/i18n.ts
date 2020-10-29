@@ -33,7 +33,7 @@ export default function i18n(state={
     fromNow(date=new Date()){
       return moment(date).fromNow();
     },
-    formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "LT L") {
+    formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "L") {
       const momentOfDate = moment(date);
       const isToday = moment().isSame(momentOfDate, "day");
       return moment(date).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(isToday ? todayFormat : otherDayFormat);

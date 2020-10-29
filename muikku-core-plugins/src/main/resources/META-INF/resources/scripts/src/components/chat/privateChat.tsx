@@ -268,7 +268,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       xmlns: "otavanopisto:chat:history",
     }).c("type", {}, "chat")
     .c("with", {}, this.props.jid)
-    .c("max", {}, "10");
+    .c("max", {}, "25");
 
     if (this.state.lastMessageStamp) {
       stanza.c("before", {}, this.state.lastMessageStamp);
