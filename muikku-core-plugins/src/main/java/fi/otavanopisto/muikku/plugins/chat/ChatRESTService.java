@@ -135,10 +135,11 @@ public class ChatRESTService extends PluginRESTService {
     // Do we ever need to resume an existing session? Re-using ChatPrebindParameters and incrementing rid doesn't work.
     
     try {
+      String serverName = getServerName();
       XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
       BoshConnectionConfiguration connectionConfig = BoshConnectionConfiguration
           .builder()
-          .hostname(request.getServerName())
+          .hostname(serverName)
           .channelEncryption(ChannelEncryption.DIRECT)
           .port(443)
           .path("/http-bind/")
@@ -148,7 +149,7 @@ public class ChatRESTService extends PluginRESTService {
       XmppSessionConfiguration sessionConfig = XmppSessionConfiguration.builder()
           .cacheDirectory(null)
           .build();
-      XmppClient xmppClient = XmppClient.create(request.getServerName(), sessionConfig, connectionConfig);
+      XmppClient xmppClient = XmppClient.create(serverName, sessionConfig, connectionConfig);
       xmppClient.connect();
       xmppClient.login(credentials.getUsername(), credentials.getPassword());
       BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
@@ -207,12 +208,21 @@ public class ChatRESTService extends PluginRESTService {
     sig.update(hash);
     signature = sig.sign();
     
-    String serverName = request.getServerName();
+    String serverName = getServerName();
     String jid = userIdentifierString + "@" + serverName;
     
     String password = tokenString + "," + Base64.encodeBase64String(signature);
     XmppCredentials credentials = new XmppCredentials(userIdentifierString, jid, password);
     return credentials;
+  }
+  
+  private String getServerName() {
+    String setting = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
+    if (setting == null) {
+      return null;
+    }
+    int protocolPrefix = setting.indexOf("//");
+    return protocolPrefix == -1 ? setting : StringUtils.substringAfter(setting, "//");
   }
   
   private PrivateKey getPrivateKey() {
