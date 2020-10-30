@@ -298,7 +298,6 @@ public class CommunicatorRESTService extends PluginRESTService {
 	CommunicatorLabel label;
 	
     List<Object> communicatorMessages = new ArrayList<Object>();
-    CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender> communicatorMessage = new CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>();
 
       
     List<CommunicatorMessage> receivedItems;
@@ -324,6 +323,8 @@ public class CommunicatorRESTService extends PluginRESTService {
       try {
           List<Map<String, Object>> results = searchResult.getResults();
           for (Map<String, Object> result : results) {
+            CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender> communicatorMessage = new CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>();
+
             String content = (String) result.get("message");
             HashMap sender = (HashMap) result.get("sender");
             
@@ -359,8 +360,6 @@ public class CommunicatorRESTService extends PluginRESTService {
             senderData.setLastName(listOfValues.get(1).toString());
             senderData.setUserEntityId(userEntityId);
             
-            Long loggedUserId = user.getId();
-            
             if (communicatorMessageId != null) {
 	            communicatorMessage.setCaption(caption);
 	            communicatorMessage.setCommunicatorMessageId(communicatorMessageId);
@@ -378,7 +377,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         } finally {
         	
-          if (communicatorMessage == null) {
+          if (communicatorMessages == null) {
             // TODO: return 200 & empty list instead of 204
             return Response.noContent().build();
           }
