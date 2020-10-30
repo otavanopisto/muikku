@@ -1083,7 +1083,6 @@ public class PyramusMock {
       }
       
       public Builder mockStudentsMatriculationEligibility(StudentMatriculationEligibility studentMatriculationEligibility, String subjectCode) throws JsonProcessingException {
-//        StudentMatriculationEligibility studentMatriculationEligibility = new StudentMatriculationEligibility(eligible, 1, 1, 1);
         String matriculationSubjectJson = pmock.objectMapper.writeValueAsString(studentMatriculationEligibility);
         UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/students/students/.*/matriculationEligibility"), true);
         stubFor(get(urlPattern)
