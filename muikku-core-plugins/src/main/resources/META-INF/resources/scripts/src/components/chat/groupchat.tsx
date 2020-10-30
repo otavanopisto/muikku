@@ -432,7 +432,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.presenceListenerHandler = props.connection.addHandler(this.onPresence, null, "presence", null, null, roomJID, { matchBare: true });
 
     if (!props.nick) {
-      console.warn("Cannot join room due to missing nick");
       return;
     }
 

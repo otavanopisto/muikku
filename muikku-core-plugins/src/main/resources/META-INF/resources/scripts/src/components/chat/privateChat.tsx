@@ -223,7 +223,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedChatList));
   }
   onPresence(stanza: Element) {
-    console.log(stanza);
     const show = stanza.querySelector("show");
     const precense: any = show ? show.textContent : "chat";
 
@@ -275,7 +274,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     }
 
     this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
-      console.log(answerStanza);
       let lastMessageStamp: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {

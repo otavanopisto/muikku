@@ -177,7 +177,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     const roomDesc = this.state.roomDescField;
 
     if (!this.props.settings.nick) {
-      console.warn("Can't create a chat room without a nickname specified");
       return;
     }
 
@@ -506,8 +505,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.setState({
       connection,
     }, () => {
-      connection.rawInput = function (data) { console.log('RECV: ' + data); };
-      connection.rawOutput = function (data) { console.log('SENT: ' + data); };
       window.addEventListener("logout", this.stopChat);
 
       // Connect
