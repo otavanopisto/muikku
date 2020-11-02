@@ -107,8 +107,10 @@ public class ChatSyncController {
             Map<String, String> params = new HashMap<>();
             params.put("type", "all");
             List<MUCRoomEntity> rooms = client.getChatRooms(params).getMucRooms();
-            for (MUCRoomEntity room : rooms) {
-              ensureUserHasOwnership(client, room, muikkuUserEntity);
+            if (rooms != null) {
+              for (MUCRoomEntity room : rooms) {
+                ensureUserHasOwnership(client, room, muikkuUserEntity);
+              }
             }
           }
           else {
