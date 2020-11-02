@@ -7,6 +7,7 @@ import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 const ProgressBarLine = require('react-progress-bar.js').Line;
+import * as uuid from "uuid";
 
 interface FileUploaderProps {
   // Default uploading process
@@ -191,12 +192,13 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
     });
   }
   render(){
+    let uniqueElementID = "file-uploader__hint-" + uuid.v4();
     if (this.props.invisible) {
       return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
         <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
-          <span id="file-uploader__hint" className="file-uploader__hint">{this.props.hintText}</span>
+          <span id={uniqueElementID} className="file-uploader__hint">{this.props.hintText}</span>
           {this.props.readOnly ? null :
-            (<input aria-labelledby="file-uploader__hint" type="file" multiple className="file-uploader__field"/>)
+            (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field"/>)
           }
         </span>
         {this.props.files && (this.props.files.length ?
@@ -294,9 +296,9 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
 
     return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
       <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
-        <span id="file-uploader__hint" className="file-uploader__hint">{this.props.hintText}</span>
+        <span id={uniqueElementID} className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
-          (<input aria-labelledby="file-uploader__hint" type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
+          (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
         }
       </span>
       {dataNode}
