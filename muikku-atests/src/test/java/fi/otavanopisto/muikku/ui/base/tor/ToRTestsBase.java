@@ -225,7 +225,6 @@ public class ToRTestsBase extends AbstractUITest {
       waitAndClick(".button--add-subject-row");
       waitForPresentAndVisible(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam");
       selectOption(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam", "M");
-      sleep(1000);
       waitForPresentXPath("//a[@href='#yo']");
       clickLinkWithText("Ylioppilaskirjoitukset");
       
