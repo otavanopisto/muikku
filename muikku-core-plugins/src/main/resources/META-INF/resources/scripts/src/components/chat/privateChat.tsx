@@ -340,7 +340,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         {this.state.minimized === true ? (
           <div onClick={this.toggleMinimizeChats} className={this.state.messageNotification ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
             <div className="chat__minimized-title">
+              {/* ToDo: Add this back when we can show users presence to each other
               <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
+              */}
               <span className="chat__target-nickname">{this.state.nick}</span>
             </div>
             <div onClick={this.props.leaveChat} className="chat__button chat__button--close icon-cross"></div>
@@ -349,7 +351,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">
+                  {/* ToDo: Add this back when we can show users presence to each other
                   <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
+                  */}
                   <span className="chat__target-nickname">{this.state.nick}</span>
                 </div>
                 <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
