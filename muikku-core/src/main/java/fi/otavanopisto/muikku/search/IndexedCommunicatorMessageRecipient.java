@@ -9,6 +9,14 @@ public class IndexedCommunicatorMessageRecipient{
   public void setUserEntityId(Long userEntityId) {
     this.userEntityId = userEntityId;
   }
+  
+  public Boolean getReadByReceiver() {
+	return readByReceiver;
+  }
+  
+  public void setReadByReceiver(Boolean readByReceiver) {
+	this.readByReceiver = readByReceiver;
+  }
 
   public String getDisplayName() {
     return displayName;
@@ -23,4 +31,5 @@ public class IndexedCommunicatorMessageRecipient{
 
   private String displayName;
 
+  private Boolean readByReceiver;
 }
