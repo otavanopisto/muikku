@@ -50,14 +50,6 @@ export interface UpdateStaffmemberTriggerType {
   }): AnyActionType
 }
 
-// export interface UpdateUserGroupTriggerType {
-//   (data: {
-//     userGroup: UpdateUserType,
-//     success?: () => any,
-//     fail?: () => any
-//   }): AnyActionType
-// }
-
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
 }

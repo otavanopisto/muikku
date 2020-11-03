@@ -335,9 +335,11 @@
   color: $color-default-contrast;
 }
 
-.dialog__executer {
 
+.dialog__executer {
+  // scss-lint:disable SelectorFormat
   &.state-DONE {
     color: $color-success;
   }
+  // scss-lint:enable SelectorFormat
 }
