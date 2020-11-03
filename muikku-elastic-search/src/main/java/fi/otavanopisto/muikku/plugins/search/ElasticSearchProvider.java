@@ -41,6 +41,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
@@ -690,7 +693,7 @@ public class ElasticSearchProvider implements SearchProvider {
     
     
     query.must(boolQuery()
-    		.must(matchQuery("_all", message))
+    		.must(QueryBuilders.queryStringQuery("*" + message + "*"))
             .should(termsQuery("senderId", idToString))
             .should(termsQuery("receiver.userEntityId", idToString))
             .minimumNumberShouldMatch(1));
