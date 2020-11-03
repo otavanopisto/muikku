@@ -458,6 +458,13 @@
     flex-shrink: 0;
   }
 }
+.application-list__item-content-aside--course {
+  padding: 15px 0;
+
+  input[type=radio] {
+    padding: 8px;
+  }
+}
 
 .application-list__item-content-aside--workspace-user {
   align-items: flex-start;
