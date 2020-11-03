@@ -74,6 +74,14 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
 	return tags;
   }
   
+  public List<CommunicatorMessageIdLabel> getLabels(){
+	return labels;
+  }
+  
+  public void setLabels(List<CommunicatorMessageIdLabel> labels) {
+	this.labels = labels;
+  }
+  
   
   private Long id;
   
@@ -92,5 +100,7 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
   private String created;
   
   private Set<Long> tags;
+  
+  private List<CommunicatorMessageIdLabel> labels;
 
 }

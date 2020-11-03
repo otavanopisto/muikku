@@ -12,6 +12,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -19,6 +20,7 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -41,11 +43,15 @@ public class CommunicatorMessageIndexer {
   
   @Inject 
   private UserController userController;
+  
+  @Inject
+  private SessionController sessionController;
 
   public void indexMessage(CommunicatorMessage message) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       if (message != null) {
+    	UserEntity loggedUser = sessionController.getLoggedUserEntity();
       	IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
 
     	//set message
@@ -102,6 +108,10 @@ public class CommunicatorMessageIndexer {
     	// set tags
     	Set<Long> tags = message.getTags();
     	indexedCommunicatorMessage.setTags(tags);
+    	
+    	//set labels
+        List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessageId);
+        indexedCommunicatorMessage.setLabels(labels);
     	
     	
     	indexedCommunicatorMessage.setSearchId(message.getId().toString());

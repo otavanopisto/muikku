@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
@@ -50,6 +51,11 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 		      name = "tags",
 		      type = "Set<Long>",
 		      index = "not_analyzed"
+		    ),
+		    @IndexableFieldOption (
+		      name = "labels",
+		      type = "List<CommunicatorMessageIdLabel>",
+		      index = "not_analyzed"
 		    )
 		  }
 		)
@@ -95,6 +101,10 @@ public IndexedCommunicatorMessage() {
 	return this.tags;
   }
   
+  public List<CommunicatorMessageIdLabel> getLabels(){
+	return this.labels;
+  }
+  
   public void setMessage(String message) {
     this.message = message;
   }
@@ -133,6 +143,10 @@ public IndexedCommunicatorMessage() {
 	this.tags = tags;
   }
   
+  public void setLabels(List<CommunicatorMessageIdLabel> labels) {
+	this.labels = labels;
+  }
+  
   
   
   private String message;
@@ -144,5 +158,6 @@ public IndexedCommunicatorMessage() {
   private String searchId;
   private Date created;
   private Set<Long> tags;
+  private List<CommunicatorMessageIdLabel> labels;
 }
 

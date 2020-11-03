@@ -55,6 +55,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -678,6 +679,7 @@ public class ElasticSearchProvider implements SearchProvider {
       List<IndexedCommunicatorMessageRecipient> receiver,
       Date created,
       Set<Long> tags,
+      List<CommunicatorMessageIdLabel> labels,
       int start, 
       int maxResults, 
       List<Sort> sorts) {

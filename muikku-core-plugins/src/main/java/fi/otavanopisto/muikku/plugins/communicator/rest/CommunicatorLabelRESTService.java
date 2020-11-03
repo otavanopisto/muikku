@@ -30,6 +30,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -57,6 +58,9 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
 
   @Inject
   private CommunicatorRESTModels restModels;
+  
+  @Inject
+  private CommunicatorMessageIndexer communicatorMessageIndexer;
   
   @GET
   @Path ("/messages/{COMMUNICATORMESSAGEID}/labels")
@@ -90,7 +94,8 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       
       if (userLabel == null) {
         userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
-    
+        CommunicatorMessage message = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+        communicatorMessageIndexer.indexMessage(message);
         return Response.ok(
           restModels.restLabel(userLabel)
         ).build();
@@ -133,7 +138,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     if (!canAccessLabel(userEntity, label.getLabel())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
+    
     communicatorController.delete(label);
     
     return Response.noContent().build();

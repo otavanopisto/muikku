@@ -337,6 +337,7 @@ public class CommunicatorRESTService extends PluginRESTService {
             Long communicatorMessageId = Long.parseLong(communicatorMessageIdString);
             Long created = (Long) result.get("created");
             List<Long> tagsList = (List<Long>) result.get("tags");
+            List<CommunicatorMessageIdLabel> labels = (List<CommunicatorMessageIdLabel>) result.get("labels");
             
             Set<Long> tags = new HashSet<>(tagsList);
             
@@ -364,6 +365,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 	            communicatorMessage.setCaption(caption);
 	            communicatorMessage.setCommunicatorMessageId(communicatorMessageId);
 	            communicatorMessage.setCreated(createdDate);
+	            communicatorMessage.setLabels(labels);
 	            communicatorMessage.setContent(content);
 	            communicatorMessage.setSender(senderData);
 	            communicatorMessage.setSenderId(senderId);

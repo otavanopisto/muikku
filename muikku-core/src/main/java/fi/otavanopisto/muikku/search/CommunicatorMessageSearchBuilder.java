@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 
 public interface CommunicatorMessageSearchBuilder {
@@ -55,5 +56,9 @@ public interface CommunicatorMessageSearchBuilder {
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
 
   CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
+  
+  List<CommunicatorMessageIdLabel> getLabels();
+  
+  CommunicatorMessageSearchBuilder setLabels(List<CommunicatorMessageIdLabel> labels);
 
 }
