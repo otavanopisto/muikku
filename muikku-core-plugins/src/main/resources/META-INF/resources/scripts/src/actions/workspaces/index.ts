@@ -18,6 +18,7 @@ import $ from '~/lib/jquery';
 import { SelectItem } from '~/components/base/input-select-autofill';
 import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
 import { group } from 'console';
+import userCredentials from '~/reducers/user-credentials';
 
 
 
@@ -798,20 +799,25 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
 }
 
 
-let loadWorkspaceCurrentStaffSelect: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace, loadOrganizationStaff) {
+let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStaff(workspace) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let staffMemberSelect = <Array<SelectItem>>(await promisify(mApi().user.staffMembers.read({
         workspaceEntityId: workspace.id
       }), 'callback')().then((staffmembers: UserStaffType[]) => {
         staffmembers.map((staffMember: UserStaffType) => {
-          return { id: staffMember.userEntityId, label: staffMember.firstName + " " + staffMember.lastName }
+          return {
+            id: staffMember.userEntityId,
+            label: staffMember.firstName + " " + staffMember.lastName,
+            icon: "user"
+          }
         });
       }));
 
       let update: WorkspaceUpdateType = {
         staffMemberSelect, id: workspace.id
       }
+
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
         payload: update
@@ -863,6 +869,39 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
     }
   }
 }
+
+
+let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStudents(workspace) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      let studentsSelect = <Array<SelectItem>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')().then((students: ShortWorkspaceUserWithActiveStatusType[]) => {
+        students.map((student: ShortWorkspaceUserWithActiveStatusType) => {
+          return {
+            id: student.workspaceUserEntityId,
+            label: student.firstName + " " + student.lastName,
+            icon: "user"
+          }
+        });
+      }));
+
+      let update: WorkspaceUpdateType = {
+        studentsSelect, id: workspace.id
+      }
+
+      dispatch({
+        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+        payload: update
+      });
+    }
+    catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+    }
+  }
+}
+
 
 let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace, loadOrganizationStudents) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -2251,7 +2290,7 @@ export {
   loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer,
   loadUserWorkspaceOrganizationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
+  updateWorkspace, loadStaffMembersOfWorkspace, loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspace, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,

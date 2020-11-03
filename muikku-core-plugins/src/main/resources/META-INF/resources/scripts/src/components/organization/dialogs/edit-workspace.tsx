@@ -3,13 +3,15 @@ import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
-import { UpdateWorkspaceTriggerType, updateWorkspace, UpdateWorkspaceStateType, loadStudentsOfWorkspace, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType } from '~/actions/workspaces';
+import {
+  UpdateWorkspaceTriggerType, updateWorkspace, UpdateWorkspaceStateType, loadStudentsOfWorkspace,
+  loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType
+} from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType, } from '~/reducers/main-function/users';
-
 import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
 import currentStudent from '~/components/guider/body/application/current-student';
 import studiesEnded from '~/components/index/body/studies-ended';
@@ -25,8 +27,8 @@ interface OrganizationEditWorkspaceProps {
   workspace: WorkspaceType,
   currentWorkspace: WorkspaceType,
   updateWorkspace: UpdateWorkspaceTriggerType,
-  loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType,
-  loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType,
+  loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType,
+  loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
   loadUserGroups: LoadUsersTriggerType,
@@ -58,8 +60,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   constructor(props: OrganizationEditWorkspaceProps) {
     super(props);
-
-
 
     this.state = {
       workspaceName: this.props.workspace.name,
@@ -95,7 +95,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
-    this.workspaceChanged = false;
+
   }
   doStudentSearch(value: string) {
     this.props.loadStudents(value);
@@ -162,13 +162,13 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     if (this.state.currentStep === 1) {
       this.workspaceChanged = this.props.currentWorkspace && this.props.currentWorkspace.id !== this.props.workspace.id;
       if (this.state.selectedStudents.length === 0 || this.workspaceChanged) {
-        this.props.loadStudentsOfWorkspace(this.props.workspace, true);
+        this.props.loadCurrentOrganizationWorkspaceSelectStudents(this.props.workspace, true);
         this.setState({ studentsLoaded: false });
       }
     }
     if (this.state.currentStep === 2) {
       if (this.state.selectedStaff.length === 0 || this.workspaceChanged) {
-        this.props.loadStaffMembersOfWorkspace(this.props.workspace, true);
+        this.props.loadCurrentOrganizationWorkspaceSelectStaff(this.props.workspace, true);
         this.setState({ staffLoaded: false });
       }
     }
@@ -180,7 +180,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       this.setState({ locked: false, currentStep: nextStep });
     }
   }
-
 
   lastStep() {
     let lastStep = this.state.currentStep - 1;
@@ -326,25 +325,25 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   render() {
 
-    if (this.props.currentWorkspace && this.props.currentWorkspace.students && this.state.studentsLoaded === false) {
-      let students: SelectItem[] = this.props.currentWorkspace.students.map(student => {
-        return {
-          id: student.userEntityId,
-          label: student.firstName + " " + student.lastName
-        }
-      });
-      this.setState({ selectedStudents: students, studentsLoaded: true });
-    }
+    // if (this.props.currentWorkspace && this.props.currentWorkspace.students && this.state.studentsLoaded === false) {
+    //   let students: SelectItem[] = this.props.currentWorkspace.students.map(student => {
+    //     return {
+    //       id: student.userEntityId,
+    //       label: student.firstName + " " + student.lastName
+    //     }
+    //   });
+    //   this.setState({ selectedStudents: students, studentsLoaded: true });
+    // }
 
-    if (this.props.currentWorkspace && this.props.currentWorkspace.staffMembers && this.state.staffLoaded === false) {
-      let staff: SelectItem[] = this.props.currentWorkspace.staffMembers.map(staff => {
-        return {
-          id: staff.userEntityId,
-          label: staff.firstName + " " + staff.lastName
-        }
-      });
-      this.setState({ selectedStaff: staff, staffLoaded: true });
-    }
+    // if (this.props.currentWorkspace && this.props.currentWorkspace.staffMembers && this.state.staffLoaded === false) {
+    //   let staff: SelectItem[] = this.props.currentWorkspace.staffMembers.map(staff => {
+    //     return {
+    //       id: staff.userEntityId,
+    //       label: staff.firstName + " " + staff.lastName
+    //     }
+    //   });
+    //   this.setState({ selectedStaff: staff, staffLoaded: true });
+    // }
 
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
     let executeContent = <div><div className={`dialog__executer ${this.state.workspaceCreated === true ? "dialog__executer state-DONE" : ""}`}>Create workspace</div>
@@ -366,7 +365,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.title')}
       content={content}>
       {this.props.children}
-    </Dialog  >
+    </Dialog>
     )
   }
 }
@@ -384,8 +383,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     loadStaff: loadSelectorStaff,
     loadStudents: loadSelectorStudents,
     loadUserGroups: loadSelectorUserGroups,
-    loadStudentsOfWorkspace,
-    loadStaffMembersOfWorkspace,
+    loadCurrentOrganizationWorkspaceSelectStudents,
+    loadCurrentOrganizationWorkspaceSelectStaff,
     updateWorkspace
   }, dispatch);
 };
