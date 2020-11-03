@@ -179,13 +179,14 @@ public class UserGroupRESTService extends AbstractRESTService {
 
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(groupId);
 
-    if (userGroupEntity == null) {
+    // #5170: Proper (quiet) handling for archived user groups
+    if (userGroupEntity == null || Boolean.TRUE.equals(userGroupEntity.getArchived())) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
     UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
     if (userGroup == null) {
-      logger.severe("UserGroupEntity without UserGroup");
+      logger.warning(String.format("UserGroupEntity %d without UserGroup", userGroupEntity.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
 
