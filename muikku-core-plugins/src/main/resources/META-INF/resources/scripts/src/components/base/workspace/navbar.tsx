@@ -252,10 +252,10 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
 
   let editModeSwitch = null;
   if (this.props.workspaceEditMode.available){
-     editModeSwitch = (<input key="3" type="checkbox"
+    editModeSwitch = (<span><label htmlFor="editingMasterSwitch" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.mainNavigation.editingMasterSwitch")}</label><input id="editingMasterSwitch" key="3" type="checkbox"
          className={`button-pill button-pill--editing-master-switch ${this.props.workspaceEditMode.active ? "button-pill--editing-master-switch-active" : ""}`}
          onChange={this.toggleEditModeActive}
-         checked={this.props.workspaceEditMode.active}/>)
+       checked={this.props.workspaceEditMode.active} /></span>)
   }
 
   let navbarModifiers = this.props.workspaceEditMode.active ? "workspace-edit-mode" : "workspace";
