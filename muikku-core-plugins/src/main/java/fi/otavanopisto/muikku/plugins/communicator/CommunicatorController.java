@@ -326,6 +326,10 @@ public class CommunicatorController {
     return communicatorMessageDAO.countMessagesByUserAndMessageId(user, communicatorMessageId, inTrash);
   }
   
+  public Long countTotalMessages() {
+  	return communicatorMessageDAO.count();
+  }
+  
   public List<CommunicatorMessageTemplate> listMessageTemplates(UserEntity user) {
     return communicatorMessageTemplateDAO.listByUser(user);
   }
@@ -459,6 +463,10 @@ public class CommunicatorController {
 
   public List<CommunicatorMessage> listAllMessages() {
     return communicatorMessageDAO.listAll();
+  }
+  
+  public List<CommunicatorMessage> listAllMessages(int firstResult, int maxResults) {
+  	return communicatorMessageDAO.listAll(firstResult, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listAllRecipients() {

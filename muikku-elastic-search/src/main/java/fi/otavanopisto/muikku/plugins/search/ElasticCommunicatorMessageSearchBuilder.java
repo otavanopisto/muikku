@@ -29,7 +29,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
         getReceiver(),
         getCreated(),
         getTags(),
-        getLabels(),
         getFirstResult(),
         getMaxResults(),
         getSorts()
@@ -143,16 +142,6 @@ public CommunicatorMessageSearchBuilder setTags(Set<Long> tags) {
 }
 
 @Override
-public List<CommunicatorMessageIdLabel> getLabels() {
-	return labels;
-}
-
-@Override
-public CommunicatorMessageSearchBuilder setLabels(List<CommunicatorMessageIdLabel> labels) {
-	this.labels = labels;
-	return this;
-}
-@Override
 public int getFirstResult() {
 	// TODO Auto-generated method stub
 	return firstResult;
@@ -208,7 +197,6 @@ private IndexedCommunicatorMessageSender sender;
 private List<IndexedCommunicatorMessageRecipient> receiver;
 private Date created;
 private Set<Long> tags;
-private List<CommunicatorMessageIdLabel> labels;
 private List<Sort> sort;
 private int maxResults;
 private int firstResult;

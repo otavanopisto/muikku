@@ -679,7 +679,6 @@ public class ElasticSearchProvider implements SearchProvider {
       List<IndexedCommunicatorMessageRecipient> receiver,
       Date created,
       Set<Long> tags,
-      List<CommunicatorMessageIdLabel> labels,
       int start, 
       int maxResults, 
       List<Sort> sorts) {

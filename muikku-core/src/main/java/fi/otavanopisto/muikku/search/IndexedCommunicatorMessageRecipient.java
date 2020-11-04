@@ -1,5 +1,9 @@
 package fi.otavanopisto.muikku.search;
 
+import java.util.List;
+
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
+
 public class IndexedCommunicatorMessageRecipient{
 
   public Long getUserEntityId() {
@@ -25,6 +29,14 @@ public class IndexedCommunicatorMessageRecipient{
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
+  
+  public List<CommunicatorMessageIdLabel> getLabels(){
+	  return this.labels;
+  }
+  
+  public void setLabels(List<CommunicatorMessageIdLabel> labels) {
+	this.labels = labels;
+  }
 
   
   private Long userEntityId;
@@ -32,4 +44,6 @@ public class IndexedCommunicatorMessageRecipient{
   private String displayName;
 
   private Boolean readByReceiver;
+  
+  private List<CommunicatorMessageIdLabel> labels;
 }

@@ -56,9 +56,4 @@ public interface CommunicatorMessageSearchBuilder {
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
 
   CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
-  
-  List<CommunicatorMessageIdLabel> getLabels();
-  
-  CommunicatorMessageSearchBuilder setLabels(List<CommunicatorMessageIdLabel> labels);
-
 }

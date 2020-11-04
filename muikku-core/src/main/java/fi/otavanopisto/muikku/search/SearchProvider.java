@@ -28,7 +28,7 @@ public interface SearchProvider {
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
-  public SearchResult searchCommunicatorMessages(String message, Long communicatorMessageId, String caption, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> receiver, Date created, Set<Long> tags, List<CommunicatorMessageIdLabel> labels, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchCommunicatorMessages(String message, Long communicatorMessageId, String caption, long senderId, IndexedCommunicatorMessageSender sender, List<IndexedCommunicatorMessageRecipient> receiver, Date created, Set<Long> tags, int start, int maxResults, List<Sort> sorts);
 
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,

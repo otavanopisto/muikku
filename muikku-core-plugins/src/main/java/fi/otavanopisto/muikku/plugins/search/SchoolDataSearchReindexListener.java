@@ -21,6 +21,8 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchIndexer;
@@ -52,6 +54,9 @@ public class SchoolDataSearchReindexListener {
   @Inject
   private PluginSettingsController pluginSettingsController;
   
+  @Inject 
+  private CommunicatorController communicatorController;
+  
   @Inject
   private SearchIndexer indexer;
   
@@ -60,6 +65,9 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
+  
+  @Inject
+  private CommunicatorMessageIndexer communicatorMessageIndexer;
   
   @Resource
   private TimerService timerService;
@@ -93,6 +101,10 @@ public class SchoolDataSearchReindexListener {
       if (tasks.contains(Task.USER_GROUPS)) {
         setOffset("groupIndex", 0);
       }
+      
+      if (tasks.contains(Task.COMMUNICATORMESSAGES)) {
+        setOffset("communicatorIndex", 0);
+      }
     }
     
     logger.log(Level.INFO, "Reindex initiated.");
@@ -117,7 +129,10 @@ public class SchoolDataSearchReindexListener {
       if (allDone && tasks.contains(Task.USER_GROUPS)) {
         allDone = allDone && reindexUserGroups();
       }
-  
+      
+      if (allDone && tasks.contains(Task.COMMUNICATORMESSAGES)) {
+          allDone = allDone && reindexCommunicatorMessages();
+        }
       if (!allDone) {
         startTimer(getTimeout());
       } else {
@@ -215,6 +230,39 @@ public class SchoolDataSearchReindexListener {
       return true;
     }
   }
+  
+  private boolean reindexCommunicatorMessages() {
+	    try {
+	    	Long totalMessagesCount = communicatorController.countTotalMessages();
+	    	
+	      int communicatorIndex = getOffset("communicatorIndex");
+	      
+	      if (communicatorIndex < totalMessagesCount) {
+		      List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
+
+	        int last = Math.min(batch.size(), communicatorIndex + getBatchSize());
+	        
+	        for (int i = communicatorIndex; i < last; i++) {
+	          CommunicatorMessage message = batch.get(i);
+	  	          
+	          try {
+	            communicatorMessageIndexer.indexMessage(message);
+	          } catch (Exception e) {
+	            logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
+	          }
+	        }
+	        
+	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + getBatchSize() + ")");
+	  
+	        setOffset("communicatorIndex", communicatorIndex + getBatchSize());
+	        return false;
+	      } else
+	        return true;
+	    } catch (Exception ex) {
+	      logger.log(Level.SEVERE, "Could not finish indexing usergroup entities.", ex);
+	      return true;
+	    }
+	  }
   
   private int getBatchSize() {
     return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data", "school-data.reindexer.batch"), DEFAULT_BATCH_SIZE);

@@ -51,7 +51,6 @@ public class CommunicatorMessageIndexer {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       if (message != null) {
-    	UserEntity loggedUser = sessionController.getLoggedUserEntity();
       	IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
 
     	//set message
@@ -96,6 +95,10 @@ public class CommunicatorMessageIndexer {
               // set is message read/unread by receiver
               recipientData.setReadByReceiver(recipient.getReadByReceiver());
               
+              // set labels
+              List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(recipientEntity, communicatorMessageId);
+              recipientData.setLabels(labels);
+              
               recipientsEntityList.add(recipientData);
             }
         }
@@ -108,10 +111,6 @@ public class CommunicatorMessageIndexer {
     	// set tags
     	Set<Long> tags = message.getTags();
     	indexedCommunicatorMessage.setTags(tags);
-    	
-    	//set labels
-        List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessageId);
-        indexedCommunicatorMessage.setLabels(labels);
     	
     	
     	indexedCommunicatorMessage.setSearchId(message.getId().toString());
