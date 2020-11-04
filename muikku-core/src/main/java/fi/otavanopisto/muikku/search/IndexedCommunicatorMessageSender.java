@@ -26,8 +26,6 @@ public class IndexedCommunicatorMessageSender{
     this.firstName = firstName;
   }
   
-
-  
   private Long userEntityId;
 
   private String firstName;

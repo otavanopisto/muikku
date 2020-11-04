@@ -39,7 +39,7 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
   }
   
   public List<IndexedCommunicatorMessageRecipient> getReceiver() {
-	return receiver;
+	  return receiver;
   }
 
   public void setSender(IndexedCommunicatorMessageSender sender) {
@@ -47,31 +47,31 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
   }
 
   public void setReceiver(List<IndexedCommunicatorMessageRecipient> receiver) {
-	this.receiver = receiver;
+	  this.receiver = receiver;
   }
   
   public void setSenderId(Long senderId) {
-	this.senderId = senderId;
+	  this.senderId = senderId;
   }
   
   public Long getSenderId() {
-	return senderId;
+	  return senderId;
   }
   
   public void setCreated(String created) {
-	this.created = created;
+	  this.created = created;
   }
   
   public String getCreated() {
-	return created;
+	  return created;
   }
   
   public void setTags(Set<Long> tags) {
-	this.tags = tags;
+	  this.tags = tags;
   }
   
   public Set<Long> getTags(){
-	return tags;
+	  return tags;
   }
   
   private Long id;

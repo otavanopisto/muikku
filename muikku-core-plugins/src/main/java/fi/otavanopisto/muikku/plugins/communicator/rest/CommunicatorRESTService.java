@@ -291,16 +291,11 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/searchItems/")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response messageSearchFromInbox(
-	  @QueryParam("message") String message,
+	    @QueryParam("message") String message,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
-	UserEntity user = sessionController.getLoggedUserEntity();    
-	CommunicatorLabel label;
 	
     List<Object> communicatorMessages = new ArrayList<Object>();
-
-      
-    List<CommunicatorMessage> receivedItems;
     
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
@@ -321,72 +316,69 @@ public class CommunicatorRESTService extends PluginRESTService {
     	      .search();
       
       try {
-          List<Map<String, Object>> results = searchResult.getResults();
-          for (Map<String, Object> result : results) {
-            CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender> communicatorMessage = new CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>();
+        List<Map<String, Object>> results = searchResult.getResults();
+        for (Map<String, Object> result : results) {
+          CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender> communicatorMessage = new CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>();
 
-            String content = (String) result.get("message");
-            HashMap sender = (HashMap) result.get("sender");
-            
-            String senderIdString = result.get("senderId").toString();
-            Long senderId = Long.parseLong(senderIdString);
-            
-            List<IndexedCommunicatorMessageRecipient> receiver = (List<IndexedCommunicatorMessageRecipient>) result.get("receiver");
-            String caption = (String) result.get("caption");
-            String communicatorMessageIdString = result.get("communicatorMessageId").toString();
-            Long communicatorMessageId = Long.parseLong(communicatorMessageIdString);
-            Long created = (Long) result.get("created");
-            List<Long> tagsList = (List<Long>) result.get("tags");
-            
-            Set<Long> tags = new HashSet<>(tagsList);
-            
-            Date datew = new Date(created);
-            String createdDate = new SimpleDateFormat("d.M.yyyy").format(datew);
+          String content = (String) result.get("message");
+          HashMap sender = (HashMap) result.get("sender");      
+          String senderIdString = result.get("senderId").toString();
+          Long senderId = Long.parseLong(senderIdString);
           
-            //Getting Collection of values from HashMap
+          List<IndexedCommunicatorMessageRecipient> receiver = (List<IndexedCommunicatorMessageRecipient>) result.get("receiver");
+          String caption = (String) result.get("caption");
+          String communicatorMessageIdString = result.get("communicatorMessageId").toString();
+          Long communicatorMessageId = Long.parseLong(communicatorMessageIdString);
+          Long created = (Long) result.get("created");
+          List<Long> tagsList = (List<Long>) result.get("tags");
+        
+          Set<Long> tags = new HashSet<>(tagsList);
+        
+          Date datew = new Date(created);
+          String createdDate = new SimpleDateFormat("d.M.yyyy").format(datew);
+        
+          //Getting Collection of values from HashMap
 
-            Collection<String> values = sender.values();
-            values.toString();
+          Collection<String> values = sender.values();
+          values.toString();
 
-            //Creating an ArrayList of values
+          //Creating an ArrayList of values
 
-            ArrayList<Object> listOfValues = new ArrayList<Object>(values);
-            
-            IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
-            String stringToConvert = String.valueOf(listOfValues.get(2));
-            Long userEntityId = Long.parseLong(stringToConvert);
-            
-            senderData.setFirstName(listOfValues.get(0).toString());
-            senderData.setLastName(listOfValues.get(1).toString());
-            senderData.setUserEntityId(userEntityId);
-            
-            if (communicatorMessageId != null) {
-	            communicatorMessage.setCaption(caption);
-	            communicatorMessage.setCommunicatorMessageId(communicatorMessageId);
-	            communicatorMessage.setCreated(createdDate);
-	            communicatorMessage.setContent(content);
-	            communicatorMessage.setSender(senderData);
-	            communicatorMessage.setSenderId(senderId);
-	            communicatorMessage.setTags(tags);
-	            communicatorMessage.setReceiver(receiver);
-	            
-				      communicatorMessages.add(communicatorMessage);
-            }
-            
-            //TODO null checks etc
+          ArrayList<Object> listOfValues = new ArrayList<Object>(values);
+          
+          IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
+          String stringToConvert = String.valueOf(listOfValues.get(2));
+          Long userEntityId = Long.parseLong(stringToConvert);
+          
+          senderData.setFirstName(listOfValues.get(0).toString());
+          senderData.setLastName(listOfValues.get(1).toString());
+          senderData.setUserEntityId(userEntityId);
+          
+          if (communicatorMessageId != null) {
+	          communicatorMessage.setCaption(caption);
+	          communicatorMessage.setCommunicatorMessageId(communicatorMessageId);
+	          communicatorMessage.setCreated(createdDate);
+	          communicatorMessage.setContent(content);
+	          communicatorMessage.setSender(senderData);
+	          communicatorMessage.setSenderId(senderId);
+	          communicatorMessage.setTags(tags);
+	          communicatorMessage.setReceiver(receiver);
+	          
+		        communicatorMessages.add(communicatorMessage);
           }
-        } finally {
+        }
+      } finally {
         	
-          if (communicatorMessages == null) {
-            // TODO: return 200 & empty list instead of 204
-            return Response.noContent().build();
-          }
-       }  
+        if (communicatorMessages == null) {
+          // TODO: return 200 & empty list instead of 204
+          return Response.noContent().build();
+        }
+      }  
     }
     
     return Response.ok(
-    	     communicatorMessages
-    	    ).build();
+      communicatorMessages
+    ).build();
   }
   
   @DELETE

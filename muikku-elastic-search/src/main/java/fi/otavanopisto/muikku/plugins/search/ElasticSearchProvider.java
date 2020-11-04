@@ -668,7 +668,6 @@ public class ElasticSearchProvider implements SearchProvider {
     return new ElasticCommunicatorMessageSearchBuilder(this);
   }
   
-  
   @Override
   public SearchResult searchCommunicatorMessages(
       String message,
@@ -695,10 +694,9 @@ public class ElasticSearchProvider implements SearchProvider {
     
     query.must(boolQuery()
     		.must(QueryBuilders.queryStringQuery("*" + message + "*"))
-            .should(termsQuery("senderId", idToString))
-            .should(termsQuery("receiver.userEntityId", idToString))
-            .minimumNumberShouldMatch(1));
-    
+        .should(termsQuery("senderId", idToString))
+        .should(termsQuery("receiver.userEntityId", idToString))
+        .minimumNumberShouldMatch(1));
     
     try {
       

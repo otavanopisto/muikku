@@ -43,9 +43,6 @@ public class CommunicatorMessageIndexer {
   
   @Inject 
   private UserController userController;
-  
-  @Inject
-  private SessionController sessionController;
 
   public void indexMessage(CommunicatorMessage message) {
     schoolDataBridgeSessionController.startSystemSession();
@@ -53,74 +50,75 @@ public class CommunicatorMessageIndexer {
       if (message != null) {
       	IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
 
-    	//set message
-    	indexedCommunicatorMessage.setMessage(message.getContent());
-    	
-    	//set communicatorMessageId
-    	CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
-    	Long messageId = communicatorMessageId.getId();
-    	indexedCommunicatorMessage.setCommunicatorMessageId(messageId);
-    	
-    	//set caption
-    	indexedCommunicatorMessage.setCaption(message.getCaption());
-    	
-    	
-    	//set sender
-    	Long senderId = message.getSender();
-    	UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
+    	  //set message
+    	  indexedCommunicatorMessage.setMessage(message.getContent());
+    	  
+    	  //set communicatorMessageId
+    	  CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
+    	  Long messageId = communicatorMessageId.getId();
+    	  indexedCommunicatorMessage.setCommunicatorMessageId(messageId);
+      	
+    	  //set caption
+    	  indexedCommunicatorMessage.setCaption(message.getCaption());
+    	  
+    	  
+    	  //set sender
+    	  Long senderId = message.getSender();
+    	  UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
         User sender = userController.findUserByUserEntityDefaults(senderEntity);
         IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
         senderData.setFirstName(sender.getFirstName());
         senderData.setLastName(sender.getLastName());
         senderData.setUserEntityId(senderId);
-    	indexedCommunicatorMessage.setSender(senderData);
-    	indexedCommunicatorMessage.setSenderId(senderId);
-    	
-    	//set recipients
-    	List<CommunicatorMessageRecipient> recipientsList = communicatorController.listAllCommunicatorMessageRecipients(message);
-    	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
-    	for (CommunicatorMessageRecipient recipient : recipientsList) {
-            Long recipientId = recipient.getRecipient();
+    	  indexedCommunicatorMessage.setSender(senderData);
+    	  indexedCommunicatorMessage.setSenderId(senderId);
+    	  
+    	  //set recipients
+    	  List<CommunicatorMessageRecipient> recipientsList = communicatorController.listAllCommunicatorMessageRecipients(message);
+	    	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
+	    	for (CommunicatorMessageRecipient recipient : recipientsList) {
+          Long recipientId = recipient.getRecipient();
+          
+          if(recipientId != null) {
+            UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
+            User userRecipient = userController.findUserByUserEntityDefaults(recipientEntity);
             
-            if(recipientId != null) {
-              UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
-              User userRecipient = userController.findUserByUserEntityDefaults(recipientEntity);
-              
-              IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
-              
-              //set receiver userEntityId & display name
-              recipientData.setUserEntityId(recipientId);
-              recipientData.setDisplayName(userRecipient.getDisplayName());
-          	  
-              // set is message read/unread by receiver
-              recipientData.setReadByReceiver(recipient.getReadByReceiver());
-              
-              // set labels
-              List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(recipientEntity, communicatorMessageId);
-              recipientData.setLabels(labels);
-              
-              recipientsEntityList.add(recipientData);
-            }
+            IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
+            
+            //set receiver userEntityId & display name
+            recipientData.setUserEntityId(recipientId);
+            recipientData.setDisplayName(userRecipient.getDisplayName());
+          	
+            // set is message read/unread by receiver
+            recipientData.setReadByReceiver(recipient.getReadByReceiver());
+            
+            // set labels
+            List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(recipientEntity, communicatorMessageId);
+            recipientData.setLabels(labels);
+            
+            recipientsEntityList.add(recipientData);
+          }
         }
-    	indexedCommunicatorMessage.setReceiver(recipientsEntityList);
-    	
-    	// set created
-    	Date created = message.getCreated();
-    	indexedCommunicatorMessage.setCreated(created);
-    	
-    	// set tags
-    	Set<Long> tags = message.getTags();
-    	indexedCommunicatorMessage.setTags(tags);
-    	
-    	
-    	indexedCommunicatorMessage.setSearchId(message.getId().toString());
-        
-    	//call method indexCommunicatorMessage
-    	indexCommunicatorMessage(indexedCommunicatorMessage);
-    	
-      } else {
-        logger.warning(String.format("could not index communicator message because message entity #%s/%s could not be found", message));
-      }
+	    	
+    	  indexedCommunicatorMessage.setReceiver(recipientsEntityList);
+	    	
+	    	// set created
+	    	Date created = message.getCreated();
+	    	indexedCommunicatorMessage.setCreated(created);
+	    	
+	    	// set tags
+	    	Set<Long> tags = message.getTags();
+	    	indexedCommunicatorMessage.setTags(tags);
+	    	
+	    	
+	    	indexedCommunicatorMessage.setSearchId(message.getId().toString());
+	        
+	    	//call method indexCommunicatorMessage
+	    	indexCommunicatorMessage(indexedCommunicatorMessage);
+	    	
+	    } else {
+	      logger.warning(String.format("could not index communicator message because message entity #%s/%s could not be found", message));
+	    }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
