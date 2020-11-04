@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
 public class ChatPrebindParameters {
-  public ChatPrebindParameters() {
-    super();
-  }
   
   public boolean isBound() {
     return bound;
@@ -45,6 +42,15 @@ public class ChatPrebindParameters {
     this.rid = rid;
   }
 
+  public String getDomain() {
+    return domain;
+  }
+
+  public void setDomain(String domain) {
+    this.domain = domain;
+  }
+
+  private String domain;
   private boolean bound;
   private long bindEpochMilli;
   private String jid;
