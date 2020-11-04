@@ -212,9 +212,11 @@
 
 
 .application-list__item-content-actions {
+  // scss-lint:disable SelectorFormat
   .state-DISABLED {
     color: $color-disabled;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 
@@ -456,6 +458,13 @@
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 0;
+  }
+}
+.application-list__item-content-aside--course {
+  padding: 15px 0;
+
+  input[type=radio] {
+    padding: 8px;
   }
 }
 

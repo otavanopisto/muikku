@@ -2,11 +2,8 @@ import * as React from 'react';
 import Autocomplete from '~/components/general/autocomplete';
 import TagInput from '~/components/general/tag-input';
 import { filterHighlight, getName } from '~/util/modifiers';
-import { WorkspaceType } from '~/reducers/workspaces';
-import { UserWithSchoolDataType, UserGroupType, UserType, UserStaffType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
-
 
 export interface SelectItem {
   id: number,

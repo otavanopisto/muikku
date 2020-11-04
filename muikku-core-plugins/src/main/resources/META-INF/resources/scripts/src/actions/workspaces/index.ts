@@ -1495,17 +1495,17 @@ let deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType = functi
 let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      // let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
-      //   .create(
-      //     {
-      //       name: data.name,
-      //       nameExtension: data.nameExtension,
-      //     },
-      //     {
-      //       sourceWorkspaceEntityId: data.id
-      //     }), 'callback')().then(
-      //       data.success && data.success("WORKSPACE-CREATE")
-      //     ));
+      let workspace: WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
+        .create(
+          {
+            name: data.name,
+            nameExtension: data.nameExtension,
+          },
+          {
+            sourceWorkspaceEntityId: data.id
+          }), 'callback')().then(
+            data.success && data.success("WORKSPACE-CREATE")
+          ));
 
       data.success && data.success("WORKSPACE-CREATE")
 
@@ -1522,68 +1522,32 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           }
         });
 
-        console.log(studentIdentifiers);
 
-        if (groupIdentifiers.length > 0) {
-          // This will "press" the users out of the userGroup and push them into the existing user array
-
-          await Promise.all(
-            groupIdentifiers.map(async group => {
-              await promisify(mApi().usergroup.groups.users.read(group), 'callback')().then((user: UserType) => {
-                studentIdentifiers.push(user.id);
-              }
-              );
-            })
+        await promisify(mApi().organizationmanagement.workspaces.students
+          .create(workspace.id, {
+            studentIdentifiers: studentIdentifiers,
+            studentGroupIds: groupIdentifiers
+          }
+          ), 'callback')().then(
+            data.success && data.success("ADD-STUDENTS")
           );
-
-          // Set will clear duplicates if any
-          let gi = new Set(studentIdentifiers);
-
-          // Back to Array
-          studentIdentifiers = Array.from(gi);
-        }
-        console.log(groupIdentifiers);
-        console.log(studentIdentifiers);
-        // let studentIdentifiers = data.students.map((student) => student.id);
-
-        // await promisify(mApi().organizationmanagement.workspaces.students
-        //   .create(workspace.id, {
-        //     studentIdentifiers: studentIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.success && data.success("ADD-STUDENTS")
-        //   );
         data.success && data.success("ADD-STUDENTS");
 
       }
 
+      if (data.staff.length > 0) {
+        let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
-      // if (data.students.length > 0) {
-      //   let studentIdentifiers = data.students.map((student) => student.id);
+        await promisify(mApi().organizationmanagement.workspaces.staff
+          .create(workspace.id, {
+            staffMemberIdentifiers: staffMemberIdentifiers
+          }
+          ), 'callback')().then(
+            data.success && data.success("ADD-TEACHERS")
+          );
 
-      //   await promisify(mApi().organizationmanagement.workspaces.students
-      //     .create(workspace.id, {
-      //       studentIdentifiers: studentIdentifiers
-      //     }
-      //     ), 'callback')().then(
-      //       data.success && data.success("ADD-STUDENTS")
-      //     );
-      //   data.success && data.success("ADD-STUDENTS");
-      // }
-
-      // if (data.staff.length > 0) {
-      //   let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
-
-      //   await promisify(mApi().organizationmanagement.workspaces.staff
-      //     .create(workspace.id, {
-      //       staffMemberIdentifiers: staffMemberIdentifiers
-      //     }
-      //     ), 'callback')().then(
-      //       data.success && data.success("ADD-TEACHERS")
-      //     );
-
-      //   data.success && data.success("ADD-TEACHERS")
-      // }
+        data.success && data.success("ADD-TEACHERS")
+      }
 
       data.success && data.success("DONE");
 
