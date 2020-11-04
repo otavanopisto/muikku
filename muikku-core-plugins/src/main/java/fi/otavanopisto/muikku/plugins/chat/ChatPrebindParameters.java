@@ -42,15 +42,15 @@ public class ChatPrebindParameters {
     this.rid = rid;
   }
 
-  public String getDomain() {
-    return domain;
+  public String getHostname() {
+    return hostname;
   }
 
-  public void setDomain(String domain) {
-    this.domain = domain;
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
   }
 
-  private String domain;
+  private String hostname;
   private boolean bound;
   private long bindEpochMilli;
   private String jid;

@@ -159,7 +159,7 @@ public class ChatRESTService extends PluginRESTService {
 
       ChatPrebindParameters chatPrebindParameters = new ChatPrebindParameters();
       chatPrebindParameters.setBound(true);
-      chatPrebindParameters.setDomain(getServerName());
+      chatPrebindParameters.setHostname(getServerName());
       chatPrebindParameters.setBindEpochMilli(Instant.now().toEpochMilli());
       chatPrebindParameters.setJid(credentials.getJid());
       chatPrebindParameters.setSid(sessionId);
