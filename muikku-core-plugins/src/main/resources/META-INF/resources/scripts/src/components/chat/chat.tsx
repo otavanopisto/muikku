@@ -483,6 +483,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
 
     let session = window.sessionStorage.getItem("strophe-bosh-session");
+    let prebindSessionHost = window.sessionStorage.getItem("strophe-bosh-hostname");
     const expectedId = (this.state.isStudent ? "muikku-student-" : "muikku-staff-") + (window as any).MUIKKU_LOGGED_USER_ID;
 
     let prebind: IPrebindResponseType = null;
@@ -499,9 +500,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
     if (!prebind) {
       const prebindRequest = await fetch("/rest/chat/prebind");
       prebind = await prebindRequest.json();
+      window.sessionStorage.setItem("strophe-bosh-hostname", prebind.hostname);
     }
 
-    const connection = new Strophe.Connection("https://" +  prebind.hostname + "/http-bind/", { 'keepalive': true });
+    const connection = new Strophe.Connection("https://" +  (prebind.hostname || prebindSessionHost) + "/http-bind/", { 'keepalive': true });
 
     this.messagesListenerHandler = connection.addHandler(this.onMessageReceived, null, "message", "chat", null, null);
 
