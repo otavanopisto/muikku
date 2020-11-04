@@ -72,7 +72,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     setTimeout(removeFromDOM, 300);
   }
 
-
   render() {
     let closeOnOverlayClick = true;
     if (typeof this.props.closeOnOverlayClick !== "undefined") {
