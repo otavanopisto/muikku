@@ -30,6 +30,7 @@ export interface IPrebindResponseType {
   jid: string;
   sid: string;
   rid: number;
+  hostname: string;
 }
 
 export interface IAvailableChatRoomType {
@@ -71,6 +72,7 @@ interface IOpenChatJID {
 
 interface IChatState {
   connection: Strophe.Connection;
+  connectionHostname: string;
 
   isInitialized: boolean,
   availableMucRooms: IAvailableChatRoomType[],
@@ -104,6 +106,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     this.state = {
       connection: null,
+      connectionHostname: null,
 
       isInitialized: false,
       availableMucRooms: [],
@@ -185,7 +188,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         title: roomName,
         description: roomDesc,
       }), 'callback')()) as IChatRoomType;
-      const roomJID = chatRoom.name + '@conference.' + location.hostname;
+      const roomJID = chatRoom.name + '@conference.' + this.state.connectionHostname;
       this.setState({
         availableMucRooms: this.state.availableMucRooms.concat([
           {
@@ -383,7 +386,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
   listExistantChatRooms() {
     const stanza = $iq({
       'from': this.state.connection.jid,
-      'to': 'conference.' + location.hostname,
+      'to': 'conference.' + this.state.connectionHostname,
       'type': 'get'
     }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
     this.state.connection.sendIQ(stanza, (answerStanza: Element) => {
@@ -498,12 +501,13 @@ class Chat extends React.Component<IChatProps, IChatState> {
       prebind = await prebindRequest.json();
     }
 
-    const connection = new Strophe.Connection("/http-bind/", { 'keepalive': true });
+    const connection = new Strophe.Connection("https://" +  prebind.hostname + "/http-bind/", { 'keepalive': true });
 
     this.messagesListenerHandler = connection.addHandler(this.onMessageReceived, null, "message", "chat", null, null);
 
     this.setState({
       connection,
+      connectionHostname: prebind.hostname,
     }, () => {
       window.addEventListener("logout", this.stopChat);
 
