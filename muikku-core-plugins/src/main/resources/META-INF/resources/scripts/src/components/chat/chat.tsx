@@ -509,7 +509,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     this.setState({
       connection,
-      connectionHostname: prebind.hostname,
+      connectionHostname: (prebind.hostname || prebindSessionHost),
     }, () => {
       window.addEventListener("logout", this.stopChat);
 
