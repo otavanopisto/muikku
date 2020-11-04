@@ -415,11 +415,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       <ProgressData modifier="workspace-materials" title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
     : null;
 
-    return <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
-      {results}
-      {emptyMessage}
-      {createSectionElementWhenEmpty}
-    </ContentPanel>
+    return <div className="content-panel-wrapper">
+      <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
+        {results}
+        {emptyMessage}
+        {createSectionElementWhenEmpty}
+      </ContentPanel>
+    </div>
   }
 }
 
