@@ -132,8 +132,6 @@ public class ChatRESTService extends PluginRESTService {
         isStudent(sessionController.getLoggedUserEntity()) ? "muikku-student-%d" : "muikku-staff-%d",
         sessionController.getLoggedUserEntity().getId());
     
-    // Do we ever need to resume an existing session? Re-using ChatPrebindParameters and incrementing rid doesn't work.
-    
     try {
       String serverName = getServerName();
       XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
@@ -164,7 +162,7 @@ public class ChatRESTService extends PluginRESTService {
       chatPrebindParameters.setJid(credentials.getJid());
       chatPrebindParameters.setSid(sessionId);
       chatPrebindParameters.setRid(rid);
-      
+
       return Response.ok(chatPrebindParameters).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
       logger.log(Level.SEVERE, "Prebind failure", ex);
@@ -363,7 +361,6 @@ public class ChatRESTService extends PluginRESTService {
       if (userChatSettings != null) {
         chatController.deleteUserChatSettings(userChatSettings);
       }
-      // TODO I suppose the user's membership in each chat room should be revoked, just to be tidy 
     }
     else {
       
@@ -373,7 +370,6 @@ public class ChatRESTService extends PluginRESTService {
       userChatSettings = chatController.findUserChatSettings(userEntity);
       boolean syncMembership = userChatSettings == null || userChatSettings.getVisibility() != visibility;
       if (userChatSettings == null) {
-        System.out.println("Creating chat settings for " + userEntity.getId() + " with nick " + nick);
         chatController.createUserChatSettings(userEntity, visibility, nick);
       }
       else {

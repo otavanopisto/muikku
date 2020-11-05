@@ -147,7 +147,7 @@ public class ChatSyncController {
       // Do our best to turn the given title into a room name that is valid and available
       String proposedName = generateName(title);
       if (StringUtils.startsWith(proposedName, "workspace-chat")) {
-        logger.severe("Trying to create a public chat room that looks like a workspace chat room" );
+        logger.severe("Trying to create a public chat room that looks like a workspace chat room");
         return null;
       }
       MUCRoomEntity mucRoomEntity = client.getChatRoom(proposedName);
@@ -259,7 +259,6 @@ public class ChatSyncController {
         }
         addAdminsAsRoomOwners(client, mucRoomEntity);
       }
-      //workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
     }
   }
 
