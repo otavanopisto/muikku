@@ -70,9 +70,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
-  componentDidUpdate() {
-
-  }
   render() {
     const senderClass = this.props.messsage.isSelf ? "sender-me" : "sender-them";
 
