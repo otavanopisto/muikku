@@ -17,10 +17,8 @@ const USER_INFO_CACHE: {
 } = {}
 
 interface IChatMessageProps {
-  canDelete: boolean;
   canToggleInfo: boolean;
   messsage: IBareMessageType;
-  onMarkForDelete: () => void;
   deleted?: boolean;
   deletedTime?: string;
   i18n: i18nType,
@@ -45,7 +43,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     }
 
     this.toggleInfo = this.toggleInfo.bind(this);
-    this.toggleShowRemoveButton = this.toggleShowRemoveButton.bind(this);
   }
   async toggleInfo() {
     if (this.state.showInfo) {
@@ -73,19 +70,8 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
-  toggleShowRemoveButton() {
-    if (this.props.canDelete && !this.props.deleted) {
-      this.setState({
-        showRemoveButton: !this.state.showRemoveButton,
-      });
-    }
-  }
   componentDidUpdate() {
-    if ((!this.props.canDelete || this.props.deleted) && this.state.showRemoveButton) {
-      this.setState({
-        showRemoveButton: false,
-      });
-    }
+
   }
   render() {
     const senderClass = this.props.messsage.isSelf ? "sender-me" : "sender-them";
@@ -101,13 +87,10 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
           {this.props.i18n.time.formatDaily(this.props.messsage.timestamp)}
         </span>
       </div>
-      <div className="chat__message-content-container" onClick={this.toggleShowRemoveButton}>
+      <div className="chat__message-content-container">
         <div className="chat__message-content">
           {this.props.deleted ? <i>{this.props.i18n.text.get("plugin.chat.message.deleted")} {this.props.i18n.time.formatDaily(this.props.deletedTime)}</i>  : this.props.messsage.message}
         </div>
-        {this.state.showRemoveButton ? <div className="chat__message-action-container">
-          <div onClick={this.props.onMarkForDelete} className="chat__message-delete">{this.props.i18n.text.get("plugin.chat.message.delete")}</div>
-        </div> : null}
       </div>
     </div>
     );
