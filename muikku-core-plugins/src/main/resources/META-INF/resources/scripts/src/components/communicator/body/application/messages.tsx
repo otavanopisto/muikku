@@ -100,8 +100,22 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
           return <ApplicationListItem
             key={message.communicatorMessageId}
             className="message"
-            onClick={this.setCurrentThread.bind(this, message)}
-          >
+            onClick={this.setCurrentThread.bind(this, message)}>
+            <ApplicationListItemHeader modifiers="communicator-message">
+              <div className={`application-list__header-primary`}>
+                <span className="application-list__header-primary-sender">{message.sender.firstName} {message.sender.lastName}</span>
+                <span className="application-list__header-primary-recipients">{message.receiver.map((recipient) => {
+                  return (
+                    <span className="application-list__header-primary-recipient" key={recipient.userEntityId}>
+                      {recipient.displayName}
+                    </span>
+                  )
+                })}</span>
+              </div>
+              <div className="application-list__header-item-date">
+                {this.props.i18n.time.format(message.created)}
+              </div>
+            </ApplicationListItemHeader>
             <ApplicationListItemBody modifiers="communicator-message">
               <span className="application-list__header-item-body">{message.caption}</span>
             </ApplicationListItemBody>
