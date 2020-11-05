@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
@@ -17,6 +18,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageLabels;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
@@ -93,8 +95,16 @@ public class CommunicatorMessageIndexer {
             recipientData.setReadByReceiver(recipient.getReadByReceiver());
             
             // set labels
+            List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
             List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(recipientEntity, communicatorMessageId);
-            recipientData.setLabels(labels);
+            for (CommunicatorMessageIdLabel label : labels) {
+              IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+              CommunicatorLabel wholeLabel = label.getLabel();
+              labelData.setLabel(wholeLabel.getName());
+              labelsList.add(labelData);
+            } 
+            
+            recipientData.setLabels(labelsList);
             
             recipientsEntityList.add(recipientData);
           }
