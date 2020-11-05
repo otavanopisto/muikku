@@ -29,8 +29,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitAndClick("a.button.button--primary-function");
-        waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
-        sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
+        waitForPresent(".env-dialog__body .autocomplete--new-message input.tag-input__input--new-message");
+        sendKeys(".env-dialog__body .autocomplete--new-message input.tag-input__input--new-message", "Test");
         waitAndClick(".autocomplete__recipient");
         waitForPresentAndVisible(".env-dialog__input--new-message-title");
 //      TODO: Recipient input hijacks input after first letter. What do?
