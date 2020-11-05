@@ -134,8 +134,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   private CommunicatorMessageIndexer communicatorMessageIndexer;
   
-  
-  
   @GET
   @Path ("/items")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
