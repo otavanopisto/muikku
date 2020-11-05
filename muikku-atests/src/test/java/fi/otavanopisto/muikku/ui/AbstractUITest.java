@@ -1026,7 +1026,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     navigate("/", false);
     waitAndClick(".button-pill--profile");
     waitAndClick(".dropdown__container .icon-sign-out");
-    waitForPresent("body");
+    waitForPresent(".button--login");
   }
   @Deprecated
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
