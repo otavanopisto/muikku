@@ -232,9 +232,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
     return true;
   }
-  setMessageAsRemoved(data: any) {
-
-  }
   checkScrollDetachment(e: React.UIEvent<HTMLDivElement>) {
     if (this.chatRef.current) {
       const isScrolledToBottom = this.chatRef.current.scrollTop ===
@@ -362,9 +359,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message, index) => <ChatMessage key={index} onMarkForDelete={this.setMessageAsRemoved.bind(this)}
+                  {this.state.messages.map((message, index) => <ChatMessage key={index}
                     canToggleInfo={!this.state.isStudent}
-                    messsage={message} canDelete={false && message.isSelf} i18n={this.props.i18n} />)}
+                    messsage={message} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>

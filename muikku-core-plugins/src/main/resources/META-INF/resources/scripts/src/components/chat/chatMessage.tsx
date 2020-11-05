@@ -45,7 +45,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     }
 
     this.toggleInfo = this.toggleInfo.bind(this);
-    this.removeMessage = this.removeMessage.bind(this);
     this.toggleShowRemoveButton = this.toggleShowRemoveButton.bind(this);
   }
   async toggleInfo() {
@@ -80,9 +79,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         showRemoveButton: !this.state.showRemoveButton,
       });
     }
-  }
-  removeMessage (){
-
   }
   componentDidUpdate() {
     if ((!this.props.canDelete || this.props.deleted) && this.state.showRemoveButton) {

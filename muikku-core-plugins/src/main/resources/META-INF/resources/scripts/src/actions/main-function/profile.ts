@@ -223,7 +223,6 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
 
       dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.error'), 'error'));
 
-
       data.fail && data.fail();
     }
   }
