@@ -11,6 +11,36 @@ export interface MessageSignatureType {
   signature: string
 }
 
+export interface MessageSearchResult {
+  caption: string;
+  communicatorMessageId: number;
+  /**
+   * Badly formatted
+   */
+  created: string;
+  content: string;
+
+  /**
+   * For some reason id remains being null
+   */
+  id: null;
+  receiver: Array<{
+    readByReceiver: boolean,
+    displayName: string,
+    userEntityId: number,
+  }>,
+  sender: {
+    userEntityId: number,
+    firstName: string,
+    lastName: string,
+  },
+  senderId: number;
+  /**
+   * TODO I can't know what tags are because the server keeps crashing
+   */
+  tags: Array<any>;
+}
+
 export interface MessageThreadLabelType {
   id: number,
   labelColor: number,
@@ -162,6 +192,7 @@ const defaultNavigation: MessagesNavigationItemListType = [
 
 export interface MessagesType {
   state: MessagesStateType,
+  searchMessages: MessageSearchResult[],
   threads: MessageThreadListType,
   selectedThreads: MessageThreadListType,
   selectedThreadsIds: Array<number>,
@@ -177,6 +208,7 @@ export interface MessagesType {
 
 export interface MessagesPatchType {
   state?: MessagesStateType,
+  searchMessages?: MessageSearchResult[],
   threads?: MessageThreadListType,
   selectedThreads?: MessageThreadListType,
   selectedThreadsIds?: Array<number>,
@@ -206,6 +238,7 @@ function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesN
 
 export default function messages(state: MessagesType = {
   state: "LOADING",
+  searchMessages: null,
   threads: [],
   selectedThreads: [],
   selectedThreadsIds: [],

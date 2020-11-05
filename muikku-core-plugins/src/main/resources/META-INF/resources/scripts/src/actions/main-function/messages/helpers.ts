@@ -3,7 +3,7 @@ import notificationActions from '~/actions/base/notifications';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType} from '~/actions';
-import { MessagesNavigationItemType, MessagesNavigationItemListType, MessagesStateType, MessageThreadListType, MessagesPatchType, MessageThreadLabelType, MessageThreadType } from '~/reducers/main-function/messages';
+import { MessagesNavigationItemType, MessagesNavigationItemListType, MessagesStateType, MessageThreadListType, MessagesPatchType, MessageThreadLabelType, MessageThreadType, MessageSearchResult } from '~/reducers/main-function/messages';
 import { StateType } from '~/reducers';
 
 //HELPERS
@@ -41,7 +41,7 @@ export async function loadMessagesHelper(location:string | null, query: string |
 
   let state = getState();
   let actualLocation:string = location || state.messages.location;
-  let actualQuery: string = (typeof query === "string" ? query : state.messages.query) || null;
+  let searchQuery: string = (typeof query === "string" ? query : state.messages.query) || null;
 
   //Avoid loading messages again for the first time if it's the same location
   if (initial && actualLocation === state.messages.location && state.messages.query === (query || null) && state.messages.state === "READY"){
@@ -74,14 +74,21 @@ export async function loadMessagesHelper(location:string | null, query: string |
     });
   }
 
+  let slotUsed = "threads";
+  if (searchQuery) {
+    slotUsed = "searchMessages";
+  }
+
+
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : state.messages.threads.length;
+  //because searchMessages might be null we need to consider that
+  let firstResult = (initial ? 0 : ((state.messages as any)[slotUsed] && (state.messages as any)[slotUsed].length)) || 0;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
 
   let params;
   //If we got a folder
-  if (item.type === 'folder' && !actualQuery){
+  if (item.type === 'folder' && !searchQuery){
     params = {
         firstResult,
         //We load one more to check if they have more
@@ -96,7 +103,7 @@ export async function loadMessagesHelper(location:string | null, query: string |
       break;
     }
     //If we got a label
-  } else if (item.type === 'label' || actualQuery) {
+  } else if (item.type === 'label' || searchQuery) {
     params = {
         firstResult,
         //We load one more to check if they have more
@@ -110,37 +117,42 @@ export async function loadMessagesHelper(location:string | null, query: string |
     });
   }
 
-  let threads:MessageThreadListType;
+  let results:MessageThreadListType | MessageSearchResult[];
   try {
-    if (actualQuery) {
+    if (searchQuery) {
       const queryParams = {
         ...params,
-        message: actualQuery,
+        message: searchQuery,
       }
-      threads = <MessageThreadListType>await promisify(mApi().communicator.searchItems.read(queryParams), 'callback')();
+      results = <MessageSearchResult[]>await promisify(mApi().communicator.searchItems.read(queryParams), 'callback')();
     } else if (item.type !== "label"){
-      threads = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+      results = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
     } else {
-      threads = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
+      results = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
     }
-    let hasMore:boolean = threads.length === MAX_LOADED_AT_ONCE + 1;
+    let hasMore:boolean = results.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualThreads = threads.concat([]);
+    let actualResults = (results as any).concat([]);
     if (hasMore){
       //we got to get rid of that extra loaded message
-      actualThreads.pop();
+      actualResults.pop();
     }
 
     //Create the payload for updating all the communicator properties
     let properLocation = location || item.location;
     let payload: MessagesPatchType = {
       state: "READY",
-      threads: (concat ? state.messages.threads.concat(actualThreads) : actualThreads),
       hasMore,
       location: properLocation,
-      query: actualQuery,
+      query: searchQuery,
+    }
+    if (searchQuery) {
+      payload.searchMessages = (concat ? (state.messages.searchMessages || []).concat(actualResults) : actualResults);
+    } else {
+      payload.threads = (concat ? state.messages.threads.concat(actualResults) : actualResults);
+      payload.searchMessages = null;
     }
     if (!concat){
       payload.selectedThreads = [];
