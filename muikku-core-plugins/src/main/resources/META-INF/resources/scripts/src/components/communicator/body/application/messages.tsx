@@ -113,11 +113,11 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             isSelected,
             key: thread.communicatorMessageId,
             wcagLabel: thread.unreadMessagesInThread ? this.props.i18n.text.get("plugin.wcag.messageUnread.aria.label") : null,
-            checkboxId: `message-select-${index}`,
+            checkboxId: `messageSelect-${index}`,
             checkboxClassName: "message__selector",
             contents: (checkbox: React.ReactElement<any>)=>{
               return <ApplicationListItemContentWrapper aside={<div className="message__select-container">
-                <label htmlFor={`message-select-` + index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.messageSelect.label")}</label>
+                <label htmlFor={`messageSelect-` + index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.messageSelect.label")}</label>
                 {checkbox}
               </div>}>
                 <ApplicationListItemHeader modifiers="communicator-message">

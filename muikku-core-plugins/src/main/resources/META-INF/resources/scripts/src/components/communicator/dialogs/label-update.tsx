@@ -157,8 +157,8 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
           </div>
           <div className="dialog__container dialog__container--label-form">
             <div className="form-element form-element--edit-label">
-              <label htmlFor="communicator-label-name">{this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')}</label>
-              <input id="communicator-label-name" placeholder={this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')} value={this.state.name}
+              <label htmlFor="communicatorLabelName">{this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')}</label>
+              <input id="communicatorLabelName" placeholder={this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')} value={this.state.name}
                 className="form-element__input form-element__input--communicator-label-name"
                 disabled={this.state.removed}
                 onChange={this.onNameChange}/>

@@ -201,8 +201,8 @@ class Help extends React.Component<HelpProps, HelpState> {
         <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(null).map((item)=>{
           return (closeDropdown: ()=>any)=>{
             if (item.file) {
-              return <label htmlFor="base-file-input" className={`link link--full link--material-management-dropdown`}>
-                  <input type="file" id="base-file-input" onChange={(e)=>{closeDropdown(); item.onChange && item.onChange(e)}}/>
+              return <label htmlFor="baseFileInput" className={`link link--full link--material-management-dropdown`}>
+                  <input type="file" id="baseFileInput" onChange={(e)=>{closeDropdown(); item.onChange && item.onChange(e)}}/>
                   <span className={`link__icon icon-${item.icon}`}></span>
                   <span>{this.props.i18n.text.get(item.text)}</span>
                </label>

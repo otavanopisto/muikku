@@ -83,20 +83,20 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
     const credentialsContent =  this.props.credentials.state == "READY" ? <div className="form form--forgot-password">
     <div className="form-row">
       <div className="form-element form-element--forgot-password">
-          <label htmlFor="reset-credentials-username">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.name")}</label>
-          <input id="reset-credentials-username" className="form-element__input" type="text" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
+          <label htmlFor="resetCredentialsUsername">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.name")}</label>
+          <input id="resetCredentialsUsername" className="form-element__input" type="text" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
       </div>
     </div>
     <div className="form-row">
       <div className="form-element form-element--forgot-password">
-          <label htmlFor="reset-credentials-password1">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password1")}</label>
-          <input id="reset-credentials-password1" className="form-element__input" type="password" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
+          <label htmlFor="resetCredentialsPassword1">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password1")}</label>
+          <input id="resetCredentialsPassword1" className="form-element__input" type="password" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
       </div>
     </div>
     <div className="form-row">
       <div className="form-element form-element--forgot-password">
-          <label htmlFor="reset-credentials-password2">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password2")}</label>
-          <input id="reset-credentials-password2" className="form-element__input" type="password" value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")} />
+          <label htmlFor="resetCredentialsPassword2">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password2")}</label>
+          <input id="resetCredentialsPassword2" className="form-element__input" type="password" value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")} />
       </div>
     </div>
     <div className="form-row">

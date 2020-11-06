@@ -170,8 +170,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       (
        <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
-          <label htmlFor="message-title" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
-          <input id="message-title" type="text" className="env-dialog__input env-dialog__input--new-message-title"
+          <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
+          <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div>
         </div>
@@ -185,8 +185,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       </div>
       ),
       (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
-        <input id="message-signature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
-        <label htmlFor="message-signature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
+        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
         <span className="env-dialog__input-description">
           <i className="mf-signature" dangerouslySetInnerHTML={{__html: this.props.signature.signature}}/>
         </span>

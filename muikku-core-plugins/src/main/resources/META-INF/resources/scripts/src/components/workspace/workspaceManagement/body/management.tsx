@@ -427,8 +427,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
                 <div className="application-sub-panel__item-split-container">
                   <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                    <label htmlFor="wokspace-name" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</label>
-                    <input id="wokspace-name" name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
+                    <label htmlFor="wokspaceName" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</label>
+                    <input id="wokspaceName" name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
                       value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
                     <div className="application-sub-panel__item-actions">
                       <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
@@ -501,22 +501,22 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                     <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
                     <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
                       <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="access-members" name="access-members" type="radio"
+                        <input id="accessMembers" name="access-members" type="radio"
                          checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
                          onChange={this.setWorkspaceAccessTo.bind(this, "MEMBERS_ONLY")}/>
-                        <label htmlFor="access-members">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
+                        <label htmlFor="accessMembers">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
                       </div>
                       <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="access-loggedin" name="access-loggedin" type="radio"
+                        <input id="accessLoggedin" name="access-loggedin" type="radio"
                          checked={this.state.workspaceAccess === "LOGGED_IN"}
                          onChange={this.setWorkspaceAccessTo.bind(this, "LOGGED_IN")}/>
-                        <label htmlFor="access-loggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
+                        <label htmlFor="accessLoggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
                       </div>
                       <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="access-anyone" name="access-anyone" type="radio"
+                        <input id="accessAnyone" name="access-anyone" type="radio"
                          checked={this.state.workspaceAccess === "ANYONE"}
                          onChange={this.setWorkspaceAccessTo.bind(this, "ANYONE")}/>
-                        <label htmlFor="access-anyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
+                        <label htmlFor="accessAnyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
                       </div>
                     </div>
                   </fieldset>
@@ -527,13 +527,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
                 <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-name-extension">
-                  <label htmlFor="name-extension" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</label>
-                  <input id="name-extension" name="name-extension" type="text" className="form-element__input form-element__input--workspace-name-extension"
+                  <label htmlFor="nameEextension" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</label>
+                  <input id="nameExtension" name="name-extension" type="text" className="form-element__input form-element__input--workspace-name-extension"
                    value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
                 </div>
                 <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-type">
-                  <label htmlFor="workspace-type" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</label>
-                  <select id="workspace-type" name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
+                  <label htmlFor="workspaceType" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</label>
+                  <select id="workspaceType" name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
                     {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
                       <option key={type.identifier} value={type.identifier}>{type.name}</option>
                     )}

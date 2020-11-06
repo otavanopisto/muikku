@@ -28,7 +28,7 @@ interface StudentState {
 class Student extends React.Component<StudentProps, StudentState> {
   render(){
     return <ApplicationListItemContentWrapper aside={<div className="user__select-container">
-      <label htmlFor={`user-select-` + this.props.index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.userSelect.label")}</label>
+      <label htmlFor={`userSelect-` + this.props.index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.userSelect.label")}</label>
       {this.props.checkbox}
     </div>}>
       <ApplicationListItemHeader>

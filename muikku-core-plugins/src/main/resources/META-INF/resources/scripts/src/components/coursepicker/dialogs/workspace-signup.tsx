@@ -73,8 +73,8 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
           </div> : null}
         <div className="form-element dialog__content-row">
           <p>
-            <label htmlFor="sign-up-message">{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</label>
-            <textarea id="sign-up-message" className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/>
+            <label htmlFor="signUpMessage">{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</label>
+            <textarea id="signUpMessage" className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/>
           </p>
         </div>
       </div>

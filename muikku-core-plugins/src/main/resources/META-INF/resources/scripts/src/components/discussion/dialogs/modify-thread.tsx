@@ -120,19 +120,19 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="env-dialog__row env-dialog__row--new-discussion-options">
          <div className="env-dialog__form-element-container">
-           <label htmlFor="message-title" className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</label>
-           <input id="message-title" className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
+           <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</label>
+           <input id="messageTitle" className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
              value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          </div>
        </div>,
        (this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
          <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
-           <input id="message-pinned" type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-           <label htmlFor="message-pinned" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</label>
+           <input id="messagePinned" type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+           <label htmlFor="messagePinned" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</label>
          </div>
          <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
-           <input id="message-locked" type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-           <label htmlFor="message-locked" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</label>
+           <input id="messageLocked" type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+           <label htmlFor="messageLocked" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</label>
         </div>
        </div> : null),
        <div className="env-dialog__row env-dialog__row--ckeditor" key="3">

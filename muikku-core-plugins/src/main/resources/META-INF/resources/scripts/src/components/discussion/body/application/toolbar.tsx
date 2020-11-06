@@ -82,8 +82,8 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ?
         <DeleteArea><ButtonPill disabled={!this.props.discussion.areaId} icon="trash" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
       <div className="form-element">
-        <label htmlFor="discussion-area-select" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.areaSelect.label")}</label>
-        <select id="discussion-area-select" className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
+        <label htmlFor="discussionAreaSelect" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.areaSelect.label")}</label>
+        <select id="discussionAreaSelect" className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
         <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
         {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
           {area.name}

@@ -58,11 +58,11 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               onEnter: this.setCurrentAnnouncement.bind(this, announcement),
               isSelected: this.props.announcements.selectedIds.includes(announcement.id),
               key: announcement.id,
-              checkboxId: `announcement-select-${announcement.id}`,
+              checkboxId: `announcementSelect-${announcement.id}`,
               checkboxClassName: "announcement__selector",
               contents: (checkbox: React.ReactElement<any>)=>{
                 return <ApplicationListItemContentWrapper className="announcement__content" aside={<div className="announcement__select-container">
-                  <label htmlFor={`announcement-select-` + announcement.id} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.announcementSelect.label")}</label>
+                  <label htmlFor={`announcementSelect-` + announcement.id} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.announcementSelect.label")}</label>
                   {checkbox}
                 </div>}>
                   <ApplicationListItemHeader>
