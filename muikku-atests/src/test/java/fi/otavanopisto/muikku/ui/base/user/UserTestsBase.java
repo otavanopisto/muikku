@@ -107,17 +107,23 @@ public class UserTestsBase extends AbstractUITest {
       navigate("/profile", false);
       waitForPresentAndVisible(".profile-element__title");
       assertTextIgnoreCase(".profile-element__title", "admin user");
-      waitForPresentAndVisible(".application-panel__body .application-panel__content .application-panel__main-container .profile-element .profile-element__item .profile-element__data");
-      assertTextIgnoreCase(".application-panel__body .application-panel__content .application-panel__main-container .profile-element .profile-element__item .profile-element__data", "admin@example.com");
+      waitForPresentAndVisible(".profile-element__item .profile-element__data");
+      assertTextIgnoreCase(".profile-element__item .profile-element__data", "admin@example.com");
       
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(1) > label", "Puhelinnumero");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(1) > input");
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(2) > label", "Puhelinnumero");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(2) > input");
 
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(2) > label", "Loma alkaa");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(2) .react-datepicker__input-container input");
-      
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(3) > label", "Loma loppuu");
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(3) > label", "Loma alkaa");
       assertVisible("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
+      
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(4) > label", "Loma loppuu");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(4) .react-datepicker__input-container input");
+      
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(5) > label", "Chatin näkyvyys");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(5) select");
+
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(6) > label", "Chatin nimimerkki");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(6) input");
       
       assertTextIgnoreCase("form .button--primary-function-save", "Tallenna");
       assertVisible("form .button--primary-function-save");
