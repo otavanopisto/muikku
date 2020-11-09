@@ -52,7 +52,6 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     activeFilters: actualFilters
   }
 
-
   if (!loadOrganizationWorkspaces === true) {
     dispatch({
       type: "UPDATE_WORKSPACES_ALL_PROPS",

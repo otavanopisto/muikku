@@ -71,7 +71,6 @@ export function userSelect(state: UsersSelectType = {
   return state;
 }
 
-
 // These are here, because they are needed in the creation of a new user.
 // Not sure if they should actually be here, but changing their location is easy
 // At the time of writing, it's only used when creating a user in the organization

@@ -5,8 +5,6 @@ import { UsersListType, UsersSelectType, UserStatusType, StudyprogrammeListType,
 import { UserGroupType, UpdateUserType, CreateUserType, UserGroupListType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
-import { loadDiscussionThreadsFromServerTriggerType } from '~/actions/discussion';
-
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UsersListType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UsersListType>
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<"UPDATE_STUDENT_SELECTOR", UsersListType>
@@ -16,7 +14,6 @@ export type UPDATE_USERS_STATE = SpecificActionType<"UPDATE_USERS_STATE", UserSt
 export type UPDATE_STUDYPROGRAMME_TYPES = SpecificActionType<"UPDATE_STUDYPROGRAMME_TYPES", StudyprogrammeListType>
 export type UPDATE_STUDYPROGRAMME_STATUS_TYPE = SpecificActionType<"UPDATE_STUDYPROGRAMME_STATUS_TYPE", StudyprogrammeTypeStatusType>
 export type CLEAR_USER_SELECTOR = SpecificActionType<"CLEAR_USER_SELECTOR", Partial<UsersSelectType>>
-
 
 export interface CreateStudentTriggerType {
   (data: {
@@ -49,14 +46,6 @@ export interface UpdateStaffmemberTriggerType {
     fail?: () => any
   }): AnyActionType
 }
-
-// export interface UpdateUserGroupTriggerType {
-//   (data: {
-//     userGroup: UpdateUserType,
-//     success?: () => any,
-//     fail?: () => any
-//   }): AnyActionType
-// }
 
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
@@ -285,7 +274,6 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q?: string) {
   }
 }
 
-
 let loadUsers: LoadUsersTriggerType = function loadUsers(q?: string) {
 
   let query = { q: q };
@@ -345,8 +333,6 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(q
   let data = { q: q };
   let getStudents = q ? mApi().organizationUserManagement.students.read(data) : null;
 
-
-
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
@@ -396,7 +382,6 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: str
   let data = { q: q };
   let getStaff = q ? mApi().organizationUserManagement.staffMembers.read(data) : null;
 
-  console.log(data);
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({

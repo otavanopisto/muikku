@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.organizationmanagement.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -287,63 +289,48 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    List<String> studentIdentifiers = studentIdentifiersContainer.getStudentIdentifiers();
+    Set<SchoolDataIdentifier> allStudentIdentifiers = new HashSet<>();
     
-    if (CollectionUtils.isNotEmpty(studentIdentifiers)) {
-      Set<SchoolDataIdentifier> collect = studentIdentifiers.stream()
-          .map(studentIdentifierStr -> SchoolDataIdentifier.fromId(studentIdentifierStr))
-          .collect(Collectors.toSet());
-
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      
-      WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
-      Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
-      
-      for (SchoolDataIdentifier userIdentifier : collect) {
-        User user = userController.findUserByIdentifier(userIdentifier);
-        addUserToWorkspace(user, workspaceEntity, workspace, role);
+    if (CollectionUtils.isNotEmpty(studentIdentifiersContainer.getStudentIdentifiers())) {
+      for (String studentIdentifierStr : studentIdentifiersContainer.getStudentIdentifiers()) {
+        SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+        if (studentIdentifier != null) {
+          allStudentIdentifiers.add(studentIdentifier);
+        } else {
+          return Response.status(Status.BAD_REQUEST).entity("Malformed identifier").build();
+        }
       }
     }
     
-    return Response.noContent().build();
-  }
+    if (CollectionUtils.isNotEmpty(studentIdentifiersContainer.getStudentGroupIds())) {
+      Set<Long> studentGroupIds = studentIdentifiersContainer.getStudentGroupIds();
 
-  @POST
-  @Path("/{WORKSPACEID}/studentGroups")
-  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
-  public Response createWorkspaceStudentsFromGroup(@PathParam("WORKSPACEID") Long workspaceEntityId, 
-      StudentGroupIdentifiers studentGroupIdentifiersContainer) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    List<String> studentGroupIdentifiers = studentGroupIdentifiersContainer.getStudentGroupIdentifiers();
-    
-    if (CollectionUtils.isNotEmpty(studentGroupIdentifiers)) {
-      Set<SchoolDataIdentifier> collect = studentGroupIdentifiers.stream()
-          .map(studentIdentifierStr -> SchoolDataIdentifier.fromId(studentIdentifierStr))
+      for (Long studentGroupId : studentGroupIds) {
+        // TODO: Permissions
+        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(studentGroupId);
+        List<UserGroupUserEntity> userGroupUserEntities = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroupEntity);
+        
+        Set<SchoolDataIdentifier> filteredStudentIdentifiers = userGroupUserEntities.stream()
+          .filter(userGroupUserEntity -> Boolean.FALSE.equals(userGroupUserEntity.getArchived()))
+          .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier() != null)
+          .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().getRole() != null)
+          .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT)
+          .map(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier())
           .collect(Collectors.toSet());
-
+          
+        allStudentIdentifiers.addAll(filteredStudentIdentifiers);
+      }
+    }
+    
+    if (CollectionUtils.isNotEmpty(allStudentIdentifiers)) {
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       
       WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
       Role role = roleController.findRoleByDataSourceAndRoleEntity(workspaceEntity.getDataSource().getIdentifier(), workspaceRole);
-
-      for (SchoolDataIdentifier userIdentifier : collect) {
-        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByIdentifier(userIdentifier);
-        List<UserGroupUserEntity> userGroupUserEntities = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroupEntity);
-        
-        for (UserGroupUserEntity userGroupUserEntity : userGroupUserEntities) {
-          UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
-          User user = userController.findUserByIdentifier(userSchoolDataIdentifier.schoolDataIdentifier());
-          addUserToWorkspace(user, workspaceEntity, workspace, role);
-        }
+      
+      for (SchoolDataIdentifier userIdentifier : allStudentIdentifiers) {
+        User user = userController.findUserByIdentifier(userIdentifier);
+        addUserToWorkspace(user, workspaceEntity, workspace, role);
       }
     }
     

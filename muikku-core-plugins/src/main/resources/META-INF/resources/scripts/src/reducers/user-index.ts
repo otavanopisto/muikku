@@ -22,6 +22,8 @@ export interface UpdateUserType {
 }
 
 export interface UserType {
+
+  // Ok, but coming from backend, "id" is not a number, but a string. This might cause trouble in the future?
   id: number,
   firstName: string,
   lastName?: string,

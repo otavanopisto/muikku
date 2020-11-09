@@ -45,7 +45,6 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.doWorkspaceSearch = this.doWorkspaceSearch.bind(this);
   }
 
-
   onTabChange(id: "SUMMARY" | "USERS" | "COURSES" | "REPORTS") {
     this.setState({
       activeTab: id
@@ -55,7 +54,6 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   doUserSearch(value: string) {
     this.props.loadUsers(value);
   }
-
 
   doWorkspaceSearch(value: string) {
 

@@ -34,13 +34,12 @@
 }
 
 .tag-input__input {
-  border: 2px solid ;
   border: solid 2px $color-form-element-border;
   border-radius: 2px;
+  display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   height: $input-height;
-  display: inline-block;
   padding: 4px 8px;
   width: 100%;
 }
