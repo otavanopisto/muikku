@@ -602,6 +602,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+
+  protected void waitForPresent(final String selector, int timeOut) {
+    new WebDriverWait(getWebDriver(), timeOut).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
   
   protected void waitForPresentXPath(final String xpath) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
@@ -1026,7 +1040,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     navigate("/", false);
     waitAndClick(".button-pill--profile");
     waitAndClick(".dropdown__container .icon-sign-out");
-    waitForPresent(".button--login");
+    waitForPresent(".hero__item--frontpage", 45);
   }
   @Deprecated
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
