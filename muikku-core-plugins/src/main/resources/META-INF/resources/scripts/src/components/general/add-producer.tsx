@@ -2,15 +2,16 @@ import * as React from "react";
 import { connect, Dispatch } from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/add-producer.scss';
-
+import '~/sass/elements/wcag.scss';
 
 interface AddProducerProps {
   producers?: Array<any>,
   title? : string,
   addProducer: (name:string)=>any,
   removeProducer?: (index:number)=>any,
-  modifier?: string
+  modifier?: string,
   i18n: i18nType,
+  wcagLabel?: string,
 }
 
 interface AddProducerState {
@@ -47,7 +48,7 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
     if (input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
       this.clearInputValue();
-    } 
+    }
   }
   clearInputValue() {
     this.setState({
@@ -63,7 +64,8 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
        {this.props.title ? <h3 className="add-producer__title">{this.props.i18n.text.get(this.props.title)}</h3> : null}
       <div className="add-producer__functionality-container">
         <div className={`form-element form-element--add-producer ${this.props.modifier ? "form-element--" + this.props.modifier : ""}`}>
-          <input name="add-producer" className={`form-element__input form-element__input--add-producer ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""}`} value={this.state.currentInputValue} onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer} onChange={this.updateInputValue} placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')}  type="text" />
+          <label className="visually-hidden" htmlFor={this.props.wcagLabel && this.props.wcagLabel}>{this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')}</label>
+          <input id={this.props.wcagLabel && this.props.wcagLabel} name="add-producer" className={`form-element__input form-element__input--add-producer ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""}`} value={this.state.currentInputValue} onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer} onChange={this.updateInputValue} placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')}  type="text" />
           <div  className={`form-element__input-decoration form-element__input-decoration--add-producer ${this.props.modifier ? "form-element__input-decoration--" + this.props.modifier : ""} icon-plus`} onClick={this.addProducerByClick}></div>
         </div>
       </div>

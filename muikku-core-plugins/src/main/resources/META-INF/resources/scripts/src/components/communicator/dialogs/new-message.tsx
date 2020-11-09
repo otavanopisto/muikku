@@ -160,7 +160,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     let editorTitle = this.props.i18n.text.get('plugin.communicator.createmessage.label') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content');
 
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill wcagLabel="communicator-recipients" modifier="new-message" key="1"
+      (<InputContactsAutofill wcagLabel="communicatorRecipients" modifier="new-message" key="1"
           loaders={this.inputContactsAutofillLoaders()}
           hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}

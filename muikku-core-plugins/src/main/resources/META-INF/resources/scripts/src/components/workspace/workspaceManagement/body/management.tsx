@@ -11,10 +11,12 @@ import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import equals = require("deep-equal");
 import CopyWizardDialog from "../dialogs/copy-wizard";
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/change-image.scss';
+import '~/sass/elements/wcag.scss';
 import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
 import DeleteImageDialog from '../dialogs/delete-image';
@@ -416,201 +418,196 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
 
     return (<div className="application-panel-wrapper">
-      <div className="application-panel application-panel--workspace-management">
-        <div className="application-panel__container">
-          <div className="application-panel__header">
-            <h2 className="application-panel__header-title">{this.props.i18n.text.get("plugin.workspace.management.pageTitle")}</h2>
+      <ApplicationPanel modifier="workspace-management" title={this.props.i18n.text.get("plugin.workspace.management.pageTitle")}>
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+            <div className="application-sub-panel__item-split-container">
+              <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
+                <label htmlFor="wokspaceName" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</label>
+                <input id="wokspaceName" name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
+                  value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
+                <div className="application-sub-panel__item-actions">
+                  <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
+                  openInNewTab="_blank"
+                  className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Link>
+                  <CopyWizardDialog>
+                    <Link className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Link>
+                  </CopyWizardDialog>
+                </div>
+              </div>
+            </div>
+            <div className="application-sub-panel__item-split-container">
+              <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description">
+                <label className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.description")}</label>
+                <CKEditor editorTitle={this.props.i18n.text.get("plugin.wcag.workspaceDescription.label")} onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
+              </div>
+            </div>
           </div>
-          <div className="application-panel__body">
-            <section className="application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo")}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                <div className="application-sub-panel__item-split-container">
-                  <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                    <label htmlFor="wokspaceName" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</label>
-                    <input id="wokspaceName" name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
-                      value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
-                    <div className="application-sub-panel__item-actions">
-                      <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
-                      openInNewTab="_blank"
-                      className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Link>
-                      <CopyWizardDialog>
-                        <Link className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Link>
-                      </CopyWizardDialog>
-                    </div>
+        </section>
+        <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings application-sub-panel__header--workspace-image-settings">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+            <div className="change-image">
+              <div className="change-image__container change-image__container--workspace"  style={{backgroundImage: `url("${actualBackgroundSRC}")`, backgroundSize:`cover` }}>
+                <label className="visually-hidden" htmlFor="workspaceImage">{this.props.i18n.text.get("plugin.wcag.workspaceImage.label")}</label>
+                <input id="workspaceImage" name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
+                {this.state.workspaceHasCustomImage ?
+                <div className="change-image__actions">
+                  <Button buttonModifiers="change-image-edit button--change-image-workspace" onClick={this.editCurrentImage}>
+                    <span className="icon icon-pencil"/>
+                    {this.props.i18n.text.get("plugin.profile.editImage")}
+                  </Button>
+                    <Button buttonModifiers="change-image-delete button--change-image-workspace" onClick={this.removeCustomImage}>
+                    <span className="icon icon-trash"/>
+                    {this.props.i18n.text.get("plugin.profile.deleteImage")}
+                </Button>
+                </div>: <div className="change-image__default-content">{this.props.i18n.text.get("plugin.workspace.management.changeImage.defaultImageInfo")}</div>}
+              </div>
+              <DeleteImageDialog isOpen={this.state.isDeleteImageDialogOpen} onDelete={this.imageDeleted} onClose={()=>this.setState({isDeleteImageDialogOpen: false})} />
+              <UploadImageDialog isOpen={this.state.isImageDialogOpen}
+                b64={this.state.newWorkspaceImageB64} file={this.state.newWorkspaceImageFile}
+                onClose={()=>this.setState({isImageDialogOpen: false})} src={this.state.newWorkspaceImageSrc}
+                onImageChange={this.acceptNewImage}/>
+            </div>
+          </div>
+        </section>
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-publicity">
+              <fieldset>
+                <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity")}</legend>
+                <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input id="workspacePublish" name="publish" type="radio"
+                      checked={this.state.workspacePublished === true}
+                      onChange={this.setWorkspacePublishedTo.bind(this, true)}/>
+                    <label htmlFor="workspacePublish">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.publish")}</label>
+                  </div>
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input id="workspaceUnpublish" name="unpublish" type="radio"
+                      checked={this.state.workspacePublished === false}
+                      onChange={this.setWorkspacePublishedTo.bind(this, false)}/>
+                    <label htmlFor="workspaceUnpublish">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.unpublish")}</label>
                   </div>
                 </div>
-                <div className="application-sub-panel__item-split-container">
-                  <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description">
-                    <label className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.description")}</label>
-                    <CKEditor onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
+              </fieldset>
+            </div>
+            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-access">
+              <fieldset>
+                <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
+                <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input id="workspaceAccessMembers" name="access-members" type="radio"
+                      checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
+                      onChange={this.setWorkspaceAccessTo.bind(this, "MEMBERS_ONLY")}/>
+                    <label htmlFor="workspaceAccessMembers">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
+                  </div>
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input id="workspaceAccessLoggedin" name="access-loggedin" type="radio"
+                      checked={this.state.workspaceAccess === "LOGGED_IN"}
+                      onChange={this.setWorkspaceAccessTo.bind(this, "LOGGED_IN")}/>
+                    <label htmlFor="workspaceAccessLoggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
+                  </div>
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input id="workspaceAccessAnyone" name="access-anyone" type="radio"
+                      checked={this.state.workspaceAccess === "ANYONE"}
+                      onChange={this.setWorkspaceAccessTo.bind(this, "ANYONE")}/>
+                    <label htmlFor="workspaceAccessAnyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
                   </div>
                 </div>
-              </div>
-            </section>
-            <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings application-sub-panel__header--workspace-image-settings">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                <div className="change-image">
-                  <div className="change-image__container change-image__container--workspace"  style={{backgroundImage: `url("${actualBackgroundSRC}")`, backgroundSize:`cover` }}>
-                    <input name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
-                    {this.state.workspaceHasCustomImage ?
-                    <div className="change-image__actions">
-                      <Button buttonModifiers="change-image-edit button--change-image-workspace" onClick={this.editCurrentImage}>
-                        <span className="icon icon-pencil"/>
-                        {this.props.i18n.text.get("plugin.profile.editImage")}
-                      </Button>
-                       <Button buttonModifiers="change-image-delete button--change-image-workspace" onClick={this.removeCustomImage}>
-                        <span className="icon icon-trash"/>
-                        {this.props.i18n.text.get("plugin.profile.deleteImage")}
-                    </Button>
-                    </div>: <div className="change-image__default-content">{this.props.i18n.text.get("plugin.workspace.management.changeImage.defaultImageInfo")}</div>}
-                  </div>
-                  <DeleteImageDialog isOpen={this.state.isDeleteImageDialogOpen} onDelete={this.imageDeleted} onClose={()=>this.setState({isDeleteImageDialogOpen: false})} />
-                  <UploadImageDialog isOpen={this.state.isImageDialogOpen}
-                   b64={this.state.newWorkspaceImageB64} file={this.state.newWorkspaceImageFile}
-                   onClose={()=>this.setState({isImageDialogOpen: false})} src={this.state.newWorkspaceImageSrc}
-                   onImageChange={this.acceptNewImage}/>
-                </div>
-              </div>
-            </section>
-            <section className="application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-publicity">
-                  <fieldset>
-                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity")}</legend>
-                    <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                      <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="publish" name="publish" type="radio"
-                         checked={this.state.workspacePublished === true}
-                         onChange={this.setWorkspacePublishedTo.bind(this, true)}/>
-                        <label htmlFor="publish">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.publish")}</label>
-                      </div>
-                      <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="unpublish" name="unpublish" type="radio"
-                         checked={this.state.workspacePublished === false}
-                         onChange={this.setWorkspacePublishedTo.bind(this, false)}/>
-                        <label htmlFor="unpublish">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.unpublish")}</label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-access">
-                  <fieldset>
-                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
-                    <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                      <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="accessMembers" name="access-members" type="radio"
-                         checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
-                         onChange={this.setWorkspaceAccessTo.bind(this, "MEMBERS_ONLY")}/>
-                        <label htmlFor="accessMembers">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
-                      </div>
-                      <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="accessLoggedin" name="access-loggedin" type="radio"
-                         checked={this.state.workspaceAccess === "LOGGED_IN"}
-                         onChange={this.setWorkspaceAccessTo.bind(this, "LOGGED_IN")}/>
-                        <label htmlFor="accessLoggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
-                      </div>
-                      <div className="form-element form-element--checkbox-radiobutton">
-                        <input id="accessAnyone" name="access-anyone" type="radio"
-                         checked={this.state.workspaceAccess === "ANYONE"}
-                         onChange={this.setWorkspaceAccessTo.bind(this, "ANYONE")}/>
-                        <label htmlFor="accessAnyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-              </div>
-            </section>
-            <section className="application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-name-extension">
-                  <label htmlFor="nameEextension" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</label>
-                  <input id="nameExtension" name="name-extension" type="text" className="form-element__input form-element__input--workspace-name-extension"
-                   value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-type">
-                  <label htmlFor="workspaceType" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</label>
-                  <select id="workspaceType" name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
-                    {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
-                      <option key={type.identifier} value={type.identifier}>{type.name}</option>
+              </fieldset>
+            </div>
+          </div>
+        </section>
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-name-extension">
+              <label htmlFor="workspaceNameExtension" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</label>
+              <input id="workspaceNameExtension" name="workspace-name-extension" type="text" className="form-element__input form-element__input--workspace-name-extension"
+                value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
+            </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-type">
+              <label htmlFor="workspaceType" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</label>
+              <select id="workspaceType" name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
+                {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
+                  <option key={type.identifier} value={type.identifier}>{type.name}</option>
+                )}
+              </select>
+            </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
+              <label htmlFor="workspaceStartDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</label>
+              <DatePicker id="workspaceStartDate" className="form-element__input" onChange={this.updateStartDate}
+                maxDate={this.state.workspaceEndDate}
+                locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceStartDate}/>
+            </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-end-date">
+              <label htmlFor="workspaceEndDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</label>
+              <DatePicker id="workspaceEndDate" className="form-element__input" onChange={this.updateEndDate}
+                minDate={this.state.workspaceStartDate}
+                locale={this.props.i18n.time.getLocale()}  selected={this.state.workspaceEndDate}/>
+            </div>
+          </div>
+        </section>
+        <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+            <LicenseSelector wcagLabel="workspaceLicense" wcagDesc={this.props.i18n.text.get("plugin.wcag.workspaceLicense.label")} modifier="workspace-management" value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
+          </div>
+        </section>
+        <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
+          {this.state.workspaceProducers?
+            <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+              <AddProducer wcagLabel="workspaceProducer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
+            </div>
+          : null}
+          </section>
+          <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+
+            <div className="form-element form-element--workspace-toolbar application-sub-panel__item application-sub-panel__item--workspace-permissions">
+              <label className="visually-hidden" htmlFor="workspacePermissions">{this.props.i18n.text.get("plugin.workspace.permissions.searchUsergroups")}</label>
+              <input id="workspacePermissions" placeholder={this.props.i18n.text.get("plugin.workspace.permissions.searchUsergroups")} type="text" className="form-element__input form-element__input--subpanel-search" value={this.state.workspaceUsergroupNameFilter} onChange={this.updateWorkspaceUsergroupNameFilter}/>
+              <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
+            </div>
+
+            <div className="application-sub-panel__item application-sub-panel__item--workspace-management">
+              <fieldset>
+                <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</legend>
+
+                {/*
+                If we ever have multiple permissions to set then we need to use the following code.
+                Also input and label elements needs to have htmlFor and id attributes removed if there are more than one checkboxes
+
+                  {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
+                  <div className="what" key={pte}>{this.props.i18n.text.get("plugin.workspace.permissions.label." + pte)}</div>
+                  )}
+                */}
+
+                {this.state.workspacePermissions
+                  .filter((permission) => filterMatch(permission.userGroupName, this.state.workspaceUsergroupNameFilter)).map((permission) => {
+                  return <span className="form-element form-element--checkbox-radiobutton" key={permission.userGroupEntityId}>
+                    {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
+                      <input id={`usergroup${permission.userGroupEntityId}`} key={pte} type="checkbox" checked={permission.permissions.includes(pte)}
+                        onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
                     )}
-                  </select>
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                  <label htmlFor="workspaceStartDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</label>
-                  <DatePicker id="workspaceStartDate" className="form-element__input" onChange={this.updateStartDate}
-                    maxDate={this.state.workspaceEndDate}
-                    locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceStartDate}/>
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-end-date">
-                  <label htmlFor="workspaceEndDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</label>
-                  <DatePicker id="workspaceEndDate" className="form-element__input" onChange={this.updateEndDate}
-                    minDate={this.state.workspaceStartDate}
-                    locale={this.props.i18n.time.getLocale()}  selected={this.state.workspaceEndDate}/>
-                </div>
-              </div>
-            </section>
-            <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                <LicenseSelector modifier="workspace-management" value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
-              </div>
-            </section>
-            <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
-              {this.state.workspaceProducers?
-                <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                  <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
-                </div>
-              : null}
-             </section>
-             <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-
-                <div className="form-element form-element--workspace-toolbar application-sub-panel__item application-sub-panel__item--workspace-permissions">
-                  <input placeholder={this.props.i18n.text.get("plugin.workspace.permissions.searchUsergroups")} type="text" className="form-element__input form-element__input--subpanel-search" value={this.state.workspaceUsergroupNameFilter} onChange={this.updateWorkspaceUsergroupNameFilter}/>
-                  <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
-                </div>
-
-                <div className="application-sub-panel__item application-sub-panel__item--workspace-management">
-                  <fieldset>
-                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</legend>
-
-                    {/*
-                    If we ever have multiple permissions to set then we need to use the following code.
-                    Also input and label elements needs to have htmlFor and id attributes removed if there are more than one checkboxes
-
-                     {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                      <div className="what" key={pte}>{this.props.i18n.text.get("plugin.workspace.permissions.label." + pte)}</div>
-                     )}
-                    */}
-
-                    {this.state.workspacePermissions
-                      .filter((permission) => filterMatch(permission.userGroupName, this.state.workspaceUsergroupNameFilter)).map((permission) => {
-                      return <span className="form-element form-element--checkbox-radiobutton" key={permission.userGroupEntityId}>
-                        {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                          <input id={`usergroup${permission.userGroupEntityId}`} key={pte} type="checkbox" checked={permission.permissions.includes(pte)}
-                            onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
-                        )}
-                        <label htmlFor={`usergroup${permission.userGroupEntityId}`}>{filterHighlight(permission.userGroupName, this.state.workspaceUsergroupNameFilter)}</label>
-                      </span>
-                    })}
-                  </fieldset>
-                </div>
-              </div>
-            </section>
-            <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-              <div className="application-sub-pane__button-container">
-                <Button className="button--primary-function-save" disabled={this.state.locked} onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
-              </div>
-            </section>
+                    <label htmlFor={`usergroup${permission.userGroupEntityId}`}>{filterHighlight(permission.userGroupName, this.state.workspaceUsergroupNameFilter)}</label>
+                  </span>
+                })}
+              </fieldset>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+        <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+          <div className="application-sub-pane__button-container">
+            <Button className="button--primary-function-save" disabled={this.state.locked} onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
+          </div>
+        </section>
+      </ApplicationPanel>
     </div>);
   }
 }

@@ -282,7 +282,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
            locale={this.props.i18n.time.getLocale()}/>
         </div>
       </div>),
-      (<InputContactsAutofill wcagLabel="announcement-recipients" modifier="new-announcement-recipients" key="2" hasUserPermission={false}
+      (<InputContactsAutofill wcagLabel="announcementRecipients" modifier="new-announcement-recipients" key="2" hasUserPermission={false}
           hasGroupPermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_GROUPS}
           hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
           workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
