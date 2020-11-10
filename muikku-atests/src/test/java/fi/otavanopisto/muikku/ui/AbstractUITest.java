@@ -1676,19 +1676,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void reportWCAG() {
-    if (!System.getProperty("it.profile").equals("sauce-it")) {
-      if (this.violationList != null) {
-        if (!this.violationList.isEmpty()) {
-          String violationsString = "";          
-          for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
-            violationsString += System.getProperty("line.separator");
-            violationsString += violation.getKey();
-            violationsString += System.getProperty("line.separator");
-            violationsString += AXE.report(violation.getValue());
-            violationsString += System.getProperty("line.separator");
-          }
-          assertTrue(violationsString, false);
+    if (this.violationList != null) {
+      if (!this.violationList.isEmpty()) {
+        String violationsString = "";          
+        for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
+          violationsString += System.getProperty("line.separator");
+          violationsString += violation.getKey();
+          violationsString += System.getProperty("line.separator");
+          violationsString += AXE.report(violation.getValue());
+          violationsString += System.getProperty("line.separator");
         }
+        assertTrue(violationsString, false);
       }
     }
   }
