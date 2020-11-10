@@ -182,7 +182,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     });
 
     this.props.createWorkspace({
-      id: this.state.template.id,
+      id: this.state.template.id as number,
       name: this.state.workspaceName,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,

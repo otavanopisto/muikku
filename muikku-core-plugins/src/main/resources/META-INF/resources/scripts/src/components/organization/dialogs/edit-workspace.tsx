@@ -56,8 +56,6 @@ interface OrganizationEditWorkspaceState {
 
 class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspaceProps, OrganizationEditWorkspaceState> {
 
-  private workspaceChanged: boolean;
-
   constructor(props: OrganizationEditWorkspaceProps) {
     super(props);
 
@@ -102,28 +100,40 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.props.loadUserGroups(value);
   }
 
-  selectStudent(student: SelectItem) {
-    let newState = this.state.addStudents.concat(student);
-    this.setState({ addStudents: newState });
-  }
-
-  deleteStudent(student: SelectItem) {
-    let newState = this.state.addStudents.filter(selectedItem => selectedItem.id !== student.id);
-    this.setState({ addStudents: newState });
-  }
-
   doStaffSearch(value: string) {
     this.props.loadStaff(value);
   }
 
+  selectStudent(student: SelectItem) {
+    let studentIsDeleted = this.state.removeStudents.some(rStudent => rStudent.id === student.id);
+    let newSelectedState = this.state.selectedStudents.concat(student);
+    let newAddState = studentIsDeleted ? this.state.addStudents : this.state.addStudents.concat(student);
+    let newRemoveState = studentIsDeleted ? this.state.removeStudents.filter(rStudent => rStudent.id !== student.id) : this.state.removeStudents;
+    this.setState({ selectedStudents: newSelectedState, addStudents: newAddState, removeStudents: newRemoveState });
+  }
+
   selectStaff(staff: SelectItem) {
-    let newState = this.state.addStaff.concat(staff);
-    this.setState({ addStaff: newState });
+    let staffIsDeleted = this.state.removeStaff.some(rStaff => rStaff.id === staff.id);
+    let newSelectedState = this.state.selectedStaff.concat(staff);
+    let newAddState = staffIsDeleted ? this.state.addStaff : this.state.addStaff.concat(staff);
+    let newRemoveState = staffIsDeleted ? this.state.removeStaff.filter(rStaff => rStaff.id !== staff.id) : this.state.removeStaff;
+    this.setState({ addStaff: newAddState, selectedStaff: newSelectedState, removeStaff: newRemoveState });
   }
 
   deleteStaff(staff: SelectItem) {
-    let newState = this.state.addStaff.filter(selectedItem => selectedItem.id !== staff.id);
-    this.setState({ addStaff: newState });
+    let staffIsAdded = this.state.addStaff.some(aStaff => aStaff.id === staff.id);
+    let newSelectedState = this.state.selectedStaff.filter(selectedItem => selectedItem.id !== staff.id);
+    let newRemoveState = staffIsAdded ? this.state.removeStudents : this.state.removeStaff.concat(staff);
+    let newAddState = staffIsAdded ? this.state.addStaff.filter(aStaff => aStaff.id !== staff.id) : this.state.addStaff;
+    this.setState({ selectedStaff: newSelectedState, removeStaff: newRemoveState, addStaff: newAddState });
+  }
+
+  deleteStudent(student: SelectItem) {
+    let studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === student.id);
+    let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
+    let newRemoveState = studentIsAdded ? this.state.removeStudents : this.state.removeStudents.concat(student);
+    let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
+    this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
   }
 
   setSelectedStudents(addStudents: Array<SelectItem>) {
@@ -158,18 +168,14 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   nextStep() {
-
     if (this.state.currentStep === 1) {
-      this.workspaceChanged = this.props.currentWorkspace && this.props.currentWorkspace.id !== this.props.workspace.id;
-      if (this.state.selectedStudents.length === 0 || this.workspaceChanged) {
-        this.props.loadCurrentOrganizationWorkspaceSelectStudents(this.props.workspace, true);
-        this.setState({ studentsLoaded: false });
+      if (this.state.selectedStudents.length === 0) {
+        this.props.loadCurrentOrganizationWorkspaceSelectStudents(this.props.workspace);
       }
     }
     if (this.state.currentStep === 2) {
-      if (this.state.selectedStaff.length === 0 || this.workspaceChanged) {
-        this.props.loadCurrentOrganizationWorkspaceSelectStaff(this.props.workspace, true);
-        this.setState({ staffLoaded: false });
+      if (this.state.selectedStaff.length === 0) {
+        this.props.loadCurrentOrganizationWorkspaceSelectStaff(this.props.workspace);
       }
     }
     if (this.state.workspaceName === "") {
@@ -234,7 +240,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           </DialogRow>
         </div >;
       case 2:
-
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
@@ -244,6 +249,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         });
 
         let allItems = students.concat(groups);
+
+        if (this.props.currentWorkspace && this.props.currentWorkspace.studentsSelect && this.props.currentWorkspace.studentsSelect.state === "READY" && this.state.studentsLoaded === false) {
+          this.setState({ selectedStudents: this.props.currentWorkspace.studentsSelect.users, studentsLoaded: true });
+        }
 
         return <DialogRow modifiers="new-workspace">
           <AutofillSelector modifier="add-students"
@@ -255,6 +264,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName }
         });
+
+        if (this.props.currentWorkspace && this.props.currentWorkspace.staffMemberSelect && this.props.currentWorkspace.staffMemberSelect.state === "READY" && this.state.staffLoaded === false) {
+          this.setState({ selectedStaff: this.props.currentWorkspace.staffMemberSelect.users, staffLoaded: true });
+        }
 
         return <DialogRow modifiers="new-workspace">
           <AutofillSelector modifier="add-teachers"
@@ -324,17 +337,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   render() {
-
-    // if (this.props.currentWorkspace && this.props.currentWorkspace.students && this.state.studentsLoaded === false) {
-    //   let students: SelectItem[] = this.props.currentWorkspace.students.map(student => {
-    //     return {
-    //       id: student.userEntityId,
-    //       label: student.firstName + " " + student.lastName
-    //     }
-    //   });
-    //   this.setState({ selectedStudents: students, studentsLoaded: true });
-    // }
-
     // if (this.props.currentWorkspace && this.props.currentWorkspace.staffMembers && this.state.staffLoaded === false) {
     //   let staff: SelectItem[] = this.props.currentWorkspace.staffMembers.map(staff => {
     //     return {

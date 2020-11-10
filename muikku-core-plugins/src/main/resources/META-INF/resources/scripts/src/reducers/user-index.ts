@@ -92,6 +92,7 @@ export interface UserStaffType {
 
 export interface ShortWorkspaceUserWithActiveStatusType {
   workspaceUserEntityId: number,
+  userIdentifier: string,
   userEntityId: number,
   firstName: string,
   nickName?: string,

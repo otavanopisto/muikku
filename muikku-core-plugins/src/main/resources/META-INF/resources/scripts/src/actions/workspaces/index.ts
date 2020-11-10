@@ -10,8 +10,7 @@ import {
   MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
   WorkspacePermissionsType, WorkspaceMaterialEditorType, TemplateWorkspaceListType, MaterialContentNodeProducerType, MaterialContentNodeType,
-  WorkspaceEditModeStateType,
-  WorkspaceOrganizationFilterListType
+  WorkspaceEditModeStateType, UserSelectLoader, WorkspaceOrganizationFilterListType
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
@@ -19,8 +18,6 @@ import { SelectItem } from '~/components/base/input-select-autofill';
 import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
 import { group } from 'console';
 import userCredentials from '~/reducers/user-credentials';
-
-
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
@@ -64,6 +61,11 @@ export type UPDATE_ORGANIZATION_TEMPLATES =
 export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE =
   SpecificActionType<"UPDATE_ORGANIZATION_SELECTED_WORKSPACE", WorkspaceUpdateType>
 
+export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE =
+  SpecificActionType<"UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE", UserSelectLoader>
+
+export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE =
+  SpecificActionType<"UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE", UserSelectLoader>
 
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_HELP", MaterialContentNodeListType>;
@@ -802,20 +804,26 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
 let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStaff(workspace) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let staffMemberSelect = <Array<SelectItem>>(await promisify(mApi().user.staffMembers.read({
+      dispatch({
+        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+        payload: { staffMemberSelect: { state: "LOADING", users: [] } }
+      });
+
+      let staffMembers: UserStaffType[] = <Array<UserStaffType>>(await promisify(mApi().user.staffMembers.read({
         workspaceEntityId: workspace.id
-      }), 'callback')().then((staffmembers: UserStaffType[]) => {
-        staffmembers.map((staffMember: UserStaffType) => {
-          return {
-            id: staffMember.userEntityId,
-            label: staffMember.firstName + " " + staffMember.lastName,
-            icon: "user"
-          }
-        });
-      }));
+      }), 'callback')());
+
+      let staffMemberSelect = staffMembers.map((staffMember: UserStaffType) => {
+        return {
+          id: staffMember.id,
+          label: staffMember.firstName + " " + staffMember.lastName,
+          icon: "user"
+        }
+      });
 
       let update: WorkspaceUpdateType = {
-        staffMemberSelect, id: workspace.id
+        staffMemberSelect: { users: staffMemberSelect, state: "READY" },
+        id: workspace.id
       }
 
       dispatch({
@@ -828,11 +836,15 @@ let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTrig
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+      dispatch({
+        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+        payload: { staffMemberSelect: { state: "ERROR" } }
+      });
     }
   }
 }
 
-let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace, loadOrganizationStaff) {
+let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let staffMembers = <Array<UserStaffType>>(await promisify(mApi().user.staffMembers.read({
@@ -844,23 +856,13 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
         staffMembers
       }
 
-      if (loadOrganizationStaff === true) {
-        let updateO: WorkspaceUpdateType = {
-          staffMembers, id: workspace.id
-        };
-        dispatch({
-          type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-          payload: updateO
-        });
-      } else {
-        dispatch({
-          type: 'UPDATE_WORKSPACE',
-          payload: {
-            original: workspace,
-            update
-          }
-        });
-      }
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original: workspace,
+          update
+        }
+      });
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -870,22 +872,28 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
   }
 }
 
-
 let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStudents(workspace) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let studentsSelect = <Array<SelectItem>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')().then((students: ShortWorkspaceUserWithActiveStatusType[]) => {
-        students.map((student: ShortWorkspaceUserWithActiveStatusType) => {
-          return {
-            id: student.workspaceUserEntityId,
-            label: student.firstName + " " + student.lastName,
-            icon: "user"
-          }
-        });
-      }));
+
+      dispatch({
+        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+        payload: { studentsSelect: { state: "LOADING", users: [] } }
+      });
+
+      let students: ShortWorkspaceUserWithActiveStatusType[] = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
+
+      let selectStudents: SelectItem[] = students.map((student) => {
+        return {
+          id: student.userIdentifier,
+          label: student.firstName + " " + student.lastName,
+          icon: "user"
+        }
+      });
 
       let update: WorkspaceUpdateType = {
-        studentsSelect, id: workspace.id
+        studentsSelect: { users: selectStudents, state: "READY" },
+        id: workspace.id
       }
 
       dispatch({
@@ -897,13 +905,18 @@ let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTrigg
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load select Students'), 'error'));
+      dispatch({
+        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+        payload: { studentsSelect: { state: "ERROR" } }
+      });
+
     }
   }
 }
 
 
-let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace, loadOrganizationStudents) {
+let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let students = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
@@ -911,23 +924,14 @@ let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadS
         students
       };
 
-      if (loadOrganizationStudents === true) {
-        let updateO: WorkspaceUpdateType = {
-          students, id: workspace.id
-        };
-        dispatch({
-          type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-          payload: updateO
-        });
-      } else {
-        dispatch({
-          type: 'UPDATE_WORKSPACE',
-          payload: {
-            original: workspace,
-            update
-          }
-        });
-      }
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original: workspace,
+          update
+        }
+      });
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -1510,8 +1514,8 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
       data.success && data.success("WORKSPACE-CREATE")
 
       if (data.students.length > 0) {
-        let groupIdentifiers: number[] = [];
-        let studentIdentifiers: number[] = [];
+        let groupIdentifiers;
+        let studentIdentifiers;
 
         data.students.map(student => {
           if (student.type === "student-group") {

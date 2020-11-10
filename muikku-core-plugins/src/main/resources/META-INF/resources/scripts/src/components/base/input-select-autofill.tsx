@@ -6,7 +6,7 @@ import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
 export interface SelectItem {
-  id: number,
+  id: string | number,
   label: string,
   icon?: string,
   type?: string

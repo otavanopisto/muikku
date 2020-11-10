@@ -15,6 +15,7 @@ export interface CreateWorkspaceType {
   curriculum: string,
 }
 
+export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type LoadWorkspaceActionType = "UPDATE_WORKSPACE" | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
 
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
@@ -162,6 +163,11 @@ export interface WorkspaceProducerType {
   id?: number
 }
 
+export interface UserSelectType {
+  users?: Array<SelectItem>,
+  state?: UserSelectLoader
+}
+
 export interface WorkspaceDetailsType {
   beginDate: string,
   endDate: string,
@@ -232,12 +238,12 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
-  staffMemberSelect?: Array<SelectItem>,
+  staffMemberSelect?: UserSelectType,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
-  studentsSelect?: Array<SelectItem>,
+  studentsSelect?: UserSelectType,
   details?: WorkspaceDetailsType,
   permissions?: WorkspacePermissionsType[],
 
@@ -825,6 +831,8 @@ export default function workspaces(state: WorkspacesType = {
   return state;
 }
 
+
+
 export function organizationWorkspaces(state: WorkspacesType = {
   availableWorkspaces: [],
   templateWorkspaces: [],
@@ -883,6 +891,8 @@ export function organizationWorkspaces(state: WorkspacesType = {
       });
     }
   }
+
+
   return state;
 }
 
