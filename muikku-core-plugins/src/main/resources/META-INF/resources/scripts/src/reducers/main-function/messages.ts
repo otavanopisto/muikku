@@ -14,15 +14,8 @@ export interface MessageSignatureType {
 export interface MessageSearchResult {
   caption: string;
   communicatorMessageId: number;
-  /**
-   * Badly formatted
-   */
   created: string;
   content: string;
-
-  /**
-   * For some reason id remains being null
-   */
   id: null;
   receiver: Array<{
     readByReceiver: boolean,
@@ -35,10 +28,7 @@ export interface MessageSearchResult {
     lastName: string,
   },
   senderId: number;
-  /**
-   * TODO I can't know what tags are because the server keeps crashing
-   */
-  tags: Array<any>;
+  tags: any;
 }
 
 export interface MessageThreadLabelType {
