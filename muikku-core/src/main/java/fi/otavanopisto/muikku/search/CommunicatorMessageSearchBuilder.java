@@ -9,7 +9,7 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 
 public interface CommunicatorMessageSearchBuilder {
   
-  SearchResult search();
+  SearchResults<List<IndexedCommunicatorMessage>> search();
 	  
   String getMessage();
   

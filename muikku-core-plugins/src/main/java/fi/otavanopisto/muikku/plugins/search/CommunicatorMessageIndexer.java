@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -45,6 +46,9 @@ public class CommunicatorMessageIndexer {
   
   @Inject 
   private UserController userController;
+  
+  @Inject
+  private SessionController sessionController;
 
   public void indexMessage(CommunicatorMessage message) {
     schoolDataBridgeSessionController.startSystemSession();
@@ -100,8 +104,11 @@ public class CommunicatorMessageIndexer {
             for (CommunicatorMessageIdLabel label : labels) {
               IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
               CommunicatorLabel wholeLabel = label.getLabel();
-              labelData.setLabel(wholeLabel.getName());
-              labelsList.add(labelData);
+              
+                labelData.setLabel(wholeLabel.getName());
+                labelData.setId(wholeLabel.getId());
+                labelsList.add(labelData);
+              
             } 
             
             recipientData.setLabels(labelsList);
@@ -118,10 +125,12 @@ public class CommunicatorMessageIndexer {
 	    	
 	    	// set tags
 	    	Set<Long> tags = message.getTags();
-	    	indexedCommunicatorMessage.setTags(tags);
+	    	Set<String> strs = new HashSet<>(tags.size());
+	    	tags.forEach(i -> strs.add(i.toString()));
+	    	indexedCommunicatorMessage.setTags(strs);
 	    	
 	    	
-	    	indexedCommunicatorMessage.setSearchId(message.getId().toString());
+	    	indexedCommunicatorMessage.setSearchId(communicatorMessageId.getId());
 	        
 	    	//call method indexCommunicatorMessage
 	    	indexCommunicatorMessage(indexedCommunicatorMessage);

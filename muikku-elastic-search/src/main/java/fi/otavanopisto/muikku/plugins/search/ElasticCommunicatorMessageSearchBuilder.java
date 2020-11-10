@@ -5,12 +5,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 
 public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMessageSearchBuilder{
 
@@ -19,7 +22,7 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   }
   
   @Override
-  public SearchResult search() {
+  public SearchResults<List<IndexedCommunicatorMessage>> search() {
     return elastic.searchCommunicatorMessages(
         getMessage(),
         getCommunicatorMessageId(),

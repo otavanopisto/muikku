@@ -10,11 +10,13 @@ import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +51,10 @@ import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -60,10 +66,12 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 
@@ -669,7 +677,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult searchCommunicatorMessages(
+  public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(
       String message,
       Long communicatorMessageId,
       String caption,
@@ -681,10 +689,10 @@ public class ElasticSearchProvider implements SearchProvider {
       int start, 
       int maxResults, 
       List<Sort> sorts) {
-    if (message != null && message.isEmpty()) {
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
-    }
-    
+//    if (message != null && message.isEmpty()) {
+//      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
+//    }
+//    
     BoolQueryBuilder query = boolQuery();
     
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -714,21 +722,41 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
-      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      //List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits();
-      SearchHit[] results = searchHits.getHits();
-      for (SearchHit hit : results) {
-        Map<String, Object> hitSource = hit.getSource();
-        hitSource.put("indexType", hit.getType());
-        searchResults.add(hitSource);
-      }
       
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      ObjectMapper objectMapper = new ObjectMapper();
+      SearchHit[] results = searchHits.getHits();
+      List<IndexedCommunicatorMessage> searchResults = Arrays.stream(results)
+      .map(hit -> {
+        String source = hit.getSourceAsString();
+        System.out.println(source);
+        try {
+          return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
+        }
+        catch (JsonParseException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        catch (JsonMappingException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        return null;
+      })
+      .collect(Collectors.toList());
+      
+      SearchResults<List<IndexedCommunicatorMessage>> result = new SearchResults<List<IndexedCommunicatorMessage>>(start, maxResults, searchResults, totalHitCount);
       return result;
+      
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResults(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
   

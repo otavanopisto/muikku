@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -49,12 +51,12 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 	   ),
 	   @IndexableFieldOption (
 	     name = "tags",
-	     type = "Set<Long>",
+	     type = "Set<String>",
 	     index = "not_analyzed"
 	   )
 	 }
 )
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedCommunicatorMessage {
   
   public String getMessage() {
@@ -82,7 +84,7 @@ public class IndexedCommunicatorMessage {
   }
   
   @IndexId
-  public String getSearchId() {
+  public Long getSearchId() {
 	  return this.searchId;
   }
   
@@ -90,7 +92,7 @@ public class IndexedCommunicatorMessage {
 	  return this.created;
   }
   
-  public Set<Long> getTags(){
+  public Set<String> getTags(){
 	  return this.tags;
   }
   
@@ -118,7 +120,7 @@ public class IndexedCommunicatorMessage {
 	  this.receiver = recipientsEntityList;
   }
   
-  public void setSearchId(String searchId) {
+  public void setSearchId(Long searchId) {
 	  this.searchId = searchId;
   }
   
@@ -126,7 +128,7 @@ public class IndexedCommunicatorMessage {
 	  this.created = created;
   }
   
-  public void setTags(Set<Long> tags) {
+  public void setTags(Set<String> tags) {
 	  this.tags = tags;
   }
   
@@ -136,8 +138,8 @@ public class IndexedCommunicatorMessage {
   private long senderId;
   private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> receiver;
-  private String searchId;
+  private Long searchId;
   private Date created;
-  private Set<Long> tags;
+  private Set<String> tags;
 }
 

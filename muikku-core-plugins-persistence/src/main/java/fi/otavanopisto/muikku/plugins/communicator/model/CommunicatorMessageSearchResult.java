@@ -58,6 +58,14 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
 	  return senderId;
   }
   
+  public Boolean getReadByReceiver() {
+    return readByReceiver;
+  }
+  
+  public void setReadByReceiver(Boolean readByReceiver) {
+    this.readByReceiver = readByReceiver;
+  }
+  
   public void setCreated(String created) {
 	  this.created = created;
   }
@@ -87,6 +95,8 @@ public class CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient
   private String content;
   
   private List<IndexedCommunicatorMessageRecipient> receiver;
+  
+  private Boolean readByReceiver;
   
   private String created;
   

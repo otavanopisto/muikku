@@ -94,7 +94,8 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       
       if (userLabel == null) {
         userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
-        CommunicatorMessage message = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+        CommunicatorMessage message = communicatorController.findCommunicatorMessageById(messageId.getId());
+
         communicatorMessageIndexer.indexMessage(message);
         return Response.ok(
           restModels.restLabel(userLabel)
