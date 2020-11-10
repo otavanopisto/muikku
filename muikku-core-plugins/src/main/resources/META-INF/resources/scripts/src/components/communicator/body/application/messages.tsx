@@ -99,12 +99,12 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
         {this.props.searchMessages.map((message) => {
           return <ApplicationListItem
             key={message.communicatorMessageId}
-            className="message"
+            className={`message message--search-result ${message.readByReceiver ? "application-list__item--highlight" : ""}`}
             onClick={this.setCurrentThread.bind(this, message)}>
             <ApplicationListItemHeader modifiers="communicator-message">
               <div className={`application-list__header-primary`}>
                 <span className="application-list__header-primary-sender">{message.sender.firstName} {message.sender.lastName}</span>
-                <span className="application-list__header-primary-recipients">{message.receiver.map((recipient) => {
+                <span className="application-list__header-primary-recipients">{message.recipients.map((recipient) => {
                   return (
                     <span className="application-list__header-primary-recipient" key={recipient.userEntityId}>
                       {recipient.displayName}
