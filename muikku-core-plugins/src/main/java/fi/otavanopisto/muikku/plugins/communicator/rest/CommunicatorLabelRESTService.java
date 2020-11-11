@@ -94,7 +94,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       
       if (userLabel == null) {
         userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
-        CommunicatorMessage message = communicatorController.findCommunicatorMessageById(messageId.getId());
+        CommunicatorMessage message = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
         communicatorMessageIndexer.indexMessage(message);
         return Response.ok(
@@ -139,7 +139,8 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     if (!canAccessLabel(userEntity, label.getLabel())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+    communicatorMessageIndexer.indexMessage(message);
     communicatorController.delete(label);
     
     return Response.noContent().build();

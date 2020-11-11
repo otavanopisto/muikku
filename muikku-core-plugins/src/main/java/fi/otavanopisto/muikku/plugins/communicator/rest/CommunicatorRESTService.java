@@ -63,6 +63,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSearchResult;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -348,31 +349,29 @@ public class CommunicatorRESTService extends PluginRESTService {
           List<IndexedCommunicatorMessageRecipient> receiverList = result.getReceiver();
           
           
-          List<CommunicatorSearchResultRecipientRESTModel> recipients = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
-          List<CommunicatorMessageIdLabelRESTModel> labelsList = new ArrayList<CommunicatorMessageIdLabelRESTModel>();
+          List<CommunicatorSearchResultRecipientRESTModel> receiver = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
+          List<CommunicatorUserLabelRESTModel> labelsList = new ArrayList<CommunicatorUserLabelRESTModel>();
           for (IndexedCommunicatorMessageRecipient recipient : receiverList) {
             UserEntity loggedUser = sessionController.getLoggedUserEntity();
             if (recipient.getUserEntityId().equals(loggedUser.getId())){
               readByReceiver = recipient.getReadByReceiver();
               List<IndexedCommunicatorMessageLabels> labels = recipient.getLabels();
-              for (IndexedCommunicatorMessageLabels label : labels) {
-                label.getId();
-                CommunicatorMessageIdLabel lbl = communicatorController.findMessageIdLabelById(label.getId());
-                
-                CommunicatorMessageIdLabelRESTModel labelData = new CommunicatorMessageIdLabelRESTModel(
-                    lbl.getId(), 
-                    lbl.getUserEntity(), 
-                    lbl.getCommunicatorMessageId().getId(), 
-                    lbl.getLabel().getId(), 
-                    lbl.getLabel().getName(), 
-                    lbl.getLabel().getColor()
-                );
-                
-                labelsList.add(labelData);
-                    
+              if (labels != null) {
+                for (IndexedCommunicatorMessageLabels label : labels) {
+                  //CommunicatorMessageIdLabel lbl = communicatorController.findMessageIdLabelById(label.getId());
+                  CommunicatorUserLabel lbl = communicatorController.findUserLabelById(label.getId());
+                  CommunicatorUserLabelRESTModel labelData = new CommunicatorUserLabelRESTModel(
+                      label.getId(), 
+                      label.getLabel(), 
+                      lbl.getColor());
+                  
+                  labelsList.add(labelData);
+                      
+                }
               }
+              
             }
-            recipients.add(new CommunicatorSearchResultRecipientRESTModel(recipient.getUserEntityId(), recipient.getDisplayName()));
+            receiver.add(new CommunicatorSearchResultRecipientRESTModel(recipient.getUserEntityId(), recipient.getDisplayName()));
 
           }
           
@@ -390,7 +389,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 	              content,
 	              created, 
 	              tags, 
-	              recipients, 
+	              receiver, 
 	              readByReceiver,
 	              labelsList
 	          ));

@@ -136,7 +136,7 @@ public class CommunicatorMessageIndexer {
 	    	indexCommunicatorMessage(indexedCommunicatorMessage);
 	    	
 	    } else {
-	      logger.warning(String.format("could not index communicator message because message entity #%s/%s could not be found", message));
+	      logger.warning(String.format("could not index communicator message because message entity #%s/ %s could not be found", message));
 	    }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();

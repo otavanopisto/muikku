@@ -13,9 +13,9 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorSearchResultRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorSearchSenderRESTModel sender, 
-      String categoryName, String caption, String content, Date created, Set<String> tags, List<CommunicatorSearchResultRecipientRESTModel> recipients, Boolean readByReceiver, List<CommunicatorMessageIdLabelRESTModel> labels) {
+      String categoryName, String caption, String content, Date created, Set<String> tags, List<CommunicatorSearchResultRecipientRESTModel> receiver, Boolean readByReceiver, List<CommunicatorUserLabelRESTModel> labels) {
     super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
-    this.recipients = recipients;
+    this.receiver = receiver;
     this.sender = sender;
     this.readByreceiver = readByReceiver;
     this.content = content;
@@ -30,12 +30,12 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
     this.sender = sender;
   }
   
-  public List<CommunicatorSearchResultRecipientRESTModel> getRecipients() {
-    return recipients;
+  public List<CommunicatorSearchResultRecipientRESTModel> getReceiver() {
+    return receiver;
   }
 
-  public void setRecipients(List<CommunicatorSearchResultRecipientRESTModel> recipients) {
-    this.recipients = recipients;
+  public void setReceiver(List<CommunicatorSearchResultRecipientRESTModel> receiver) {
+    this.receiver = receiver;
   }
   
   public Boolean getReadByReceiver() {
@@ -54,17 +54,17 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
     this.content = content;
   }
   
-  public List<CommunicatorMessageIdLabelRESTModel> getLabels() {
+  public List<CommunicatorUserLabelRESTModel> getLabels() {
     return labels;
   }
 
-  public void setLabels(List<CommunicatorMessageIdLabelRESTModel> labels) {
+  public void setLabels(List<CommunicatorUserLabelRESTModel> labels) {
     this.labels = labels;
   }
 
   private CommunicatorSearchSenderRESTModel sender;
-  private List<CommunicatorSearchResultRecipientRESTModel> recipients = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
+  private List<CommunicatorSearchResultRecipientRESTModel> receiver = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
   private Boolean readByreceiver;
   private String content;
-  private List<CommunicatorMessageIdLabelRESTModel> labels;
+  private List<CommunicatorUserLabelRESTModel> labels;
 }
