@@ -130,7 +130,7 @@ public class CommunicatorMessageIndexer {
 	    	indexedCommunicatorMessage.setTags(strs);
 	    	
 	    	
-	    	indexedCommunicatorMessage.setSearchId(communicatorMessageId.getId());
+	    	indexedCommunicatorMessage.setSearchId(message.getId());
 	        
 	    	//call method indexCommunicatorMessage
 	    	indexCommunicatorMessage(indexedCommunicatorMessage);

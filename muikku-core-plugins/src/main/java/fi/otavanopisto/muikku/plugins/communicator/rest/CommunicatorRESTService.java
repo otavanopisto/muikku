@@ -212,6 +212,9 @@ public class CommunicatorRESTService extends PluginRESTService {
 
     communicatorController.trashAllThreadMessages(user, messageId);
     
+    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(messageId.getId());
+    communicatorMessageIndexer.indexMessage(message);
+    
     return Response.noContent().build();
   }
 
@@ -323,7 +326,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         List<IndexedCommunicatorMessage> results = searchResult.getResults();
         for (IndexedCommunicatorMessage result : results) {
          // CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender> communicatorMessage = new CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>();
-          Boolean readByReceiver = null;
+          Boolean readByReceiver = false;
           
           Long communicatorMessageId = result.getCommunicatorMessageId();
           Long senderId = result.getSenderId();
@@ -360,13 +363,15 @@ public class CommunicatorRESTService extends PluginRESTService {
                 for (IndexedCommunicatorMessageLabels label : labels) {
                   //CommunicatorMessageIdLabel lbl = communicatorController.findMessageIdLabelById(label.getId());
                   CommunicatorUserLabel lbl = communicatorController.findUserLabelById(label.getId());
-                  CommunicatorSearchResultLabelRESTModel labelData = new CommunicatorSearchResultLabelRESTModel(
-                      label.getId(), 
-                      label.getLabel(), 
-                      lbl.getColor());
                   
-                  labelsList.add(labelData);
-                      
+                  if (lbl != null) {
+                    CommunicatorSearchResultLabelRESTModel labelData = new CommunicatorSearchResultLabelRESTModel(
+                        label.getId(), 
+                        label.getLabel(), 
+                        lbl.getColor());
+                  
+                    labelsList.add(labelData);
+                  }
                 }
               }
               
@@ -422,6 +427,9 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
     communicatorController.trashSentMessages(user, messageId);
+    
+    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(messageId.getId());
+    communicatorMessageIndexer.indexMessage(message);
     
     return Response.noContent().build();
   }

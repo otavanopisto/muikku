@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLa
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
+import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -55,6 +56,9 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorRESTModels restModels;
+  
+  @Inject
+  private CommunicatorMessageIndexer communicatorMessageIndexer;
   
   @GET
   @Path ("/trash")
@@ -140,6 +144,8 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
 
     communicatorController.archiveTrashedMessages(user, threadId);
     
+    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(threadId.getId());
+    communicatorMessageIndexer.indexMessage(message);
     return Response.noContent().build();
   }
   
