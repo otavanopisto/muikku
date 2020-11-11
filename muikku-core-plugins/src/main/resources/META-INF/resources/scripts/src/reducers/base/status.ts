@@ -52,13 +52,11 @@ export default function status(state: StatusType={
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
     // chat listens to this event to close the connection
-    window.dispatchEvent(new Event("logout"));
+    (window as any).ON_LOGOUT &&(window as any).ON_LOGOUT();
     // remove the old session on logout
     window.sessionStorage.removeItem("strophe-bosh-session");
-    // trigger the logout with a time of grace
-    setTimeout(() => {
-      $('#logout').click();
-    }, 300);
+    // trigger the logout
+    $('#logout').click();
     return state;
   } else if (action.type === "UPDATE_STATUS_PROFILE"){
     return {...state, profile: action.payload};

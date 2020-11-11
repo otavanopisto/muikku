@@ -511,9 +511,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
       connection,
       connectionHostname: (prebind.hostname || prebindSessionHost),
     }, () => {
-      window.addEventListener("logout", this.stopChat);
+      (window as any).ON_LOGOUT = this.stopChat;
 
-      // Connect
+      // Connect)
       if (isRestore) {
         connection.restore(prebind.jid, this.onConnectionStatusChanged);
       } else {
