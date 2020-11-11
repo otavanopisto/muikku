@@ -18,8 +18,9 @@
   }
 }
 
-.message--search-result {
-  padding: 15px;
+// Using more precise selector so we donät need to create another unnecessary modifier for highlighted "search result message"
+.message--search-result.application-list__item--highlight {
+  padding: 10px 15px;
 }
 
 .message--discussion {

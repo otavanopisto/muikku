@@ -12,23 +12,28 @@ export interface MessageSignatureType {
 }
 
 export interface MessageSearchResult {
-  caption: string;
-  communicatorMessageId: number;
-  created: string;
-  content: string;
-  id: number;
+  caption: string,
+  communicatorMessageId: number,
+  created: string,
+  content: string,
+  id: number,
   readByReceiver: boolean,
   recipients: Array<{
     displayName: string,
     userEntityId: number,
+  }>,
+  labels: Array<{
+    labelColor: number,
+    id: number,
+    labelName: string,
   }>,
   sender: {
     userEntityId: number,
     firstName: string,
     lastName: string,
   },
-  senderId: number;
-  tags: any;
+  senderId: number,
+  tags: any,
 }
 
 export interface MessageThreadLabelType {
@@ -37,7 +42,7 @@ export interface MessageThreadLabelType {
   labelId: number,
   labelName: string,
   messageThreadId: number,
-  userEntityId: number
+  userEntityId: number,
 }
 export interface MessageThreadLabelUpdateType {
   id?: number,
@@ -45,7 +50,7 @@ export interface MessageThreadLabelUpdateType {
   labelId?: number,
   labelName?: string,
   messageThreadId?: number,
-  userEntityId?: number
+  userEntityId?: number,
 }
 export type MessageThreadLabelListType = Array<MessageThreadLabelType>;
 
@@ -69,7 +74,7 @@ export interface MessageThreadType {
     archetype: string,
     workspaceEntityId: number,
     workspaceExtension?: string,
-    workspaceName: string
+    workspaceName: string,
   }>
 }
 export interface MessageThreadUpdateType {
@@ -89,7 +94,7 @@ export interface MessageThreadExpandedType {
   olderThreadId?: number,
   newerThreadId?: number,
   messages: Array<MessageType>,
-  labels: MessageThreadLabelListType
+  labels: MessageThreadLabelListType,
 }
 export interface MessageType {
   caption: string,

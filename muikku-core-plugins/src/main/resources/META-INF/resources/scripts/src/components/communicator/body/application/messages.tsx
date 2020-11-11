@@ -99,7 +99,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
         {this.props.searchMessages.map((message) => {
           return <ApplicationListItem
             key={message.communicatorMessageId}
-            className={`message message--search-result ${message.readByReceiver ? "application-list__item--highlight" : ""}`}
+            className={`message message--search-result ${!message.readByReceiver ? "application-list__item--highlight" : ""}`}
             onClick={this.setCurrentThread.bind(this, message)}>
             <ApplicationListItemHeader modifiers="communicator-message">
               <div className={`application-list__header-primary`}>
@@ -119,6 +119,14 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             <ApplicationListItemBody modifiers="communicator-message">
               <span className="application-list__header-item-body">{message.caption}</span>
             </ApplicationListItemBody>
+            {message.labels.length ? <ApplicationListItemFooter modifiers="communicator-message-labels">
+              <div className="labels">{message.labels.map((label) => {
+                return <span className="label" key={label.id}>
+                  <span className="label__icon icon-tag" style={{ color: colorIntToHex(label.labelColor) }}></span>
+                  <span className="label__text">{label.labelName}</span>
+                </span>
+              })}</div>
+            </ApplicationListItemFooter> : null}
           </ApplicationListItem>
         })}
       </BodyScrollKeeper>
