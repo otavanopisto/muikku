@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.chat;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -189,7 +190,7 @@ public class ChatSyncController {
         
       // Room created, add caller + all admins and study programme leaders as its owners
       ensureUserHasOwnership(client, mucRoomEntity, owner);
-      addAdminsAsRoomOwners(client, mucRoomEntity);
+      addAdminsAsRoomOwners(client, mucRoomEntity, organizationEntityController.listLoggedUserOrganizations());
       return proposedName;
     }
     return name;
@@ -257,7 +258,7 @@ public class ChatSyncController {
             ensureUserHasOwnership(client, mucRoomEntity, userEntity);
           }
         }
-        addAdminsAsRoomOwners(client, mucRoomEntity);
+        addAdminsAsRoomOwners(client, mucRoomEntity, Arrays.asList(workspaceEntity.getOrganizationEntity()));
       }
     }
   }
@@ -404,13 +405,12 @@ public class ChatSyncController {
     return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
   }
   
-  private void addAdminsAsRoomOwners(RestApiClient client, MUCRoomEntity mucRoomEntity) {
+  private void addAdminsAsRoomOwners(RestApiClient client, MUCRoomEntity mucRoomEntity, List<OrganizationEntity> organizations) {
     SearchProvider searchProvider = getSearchProvider();
     if (searchProvider == null) {
       logger.severe("ElasticSearch missing");
       return;
     }
-    List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
     Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
     roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
     roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
