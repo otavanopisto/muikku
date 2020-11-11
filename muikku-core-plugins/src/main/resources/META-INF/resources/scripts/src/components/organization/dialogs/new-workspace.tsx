@@ -307,17 +307,19 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowContent modifiers="new-workspace">
               {this.state.selectedStaff.length > 0 ?
                 this.state.selectedStaff.map((staff) => {
-                  return <span key={staff.id} className="tag-input__selected-item">{staff.label}</span>
+                  return <span key={staff.id} className="tag-input__selected-item">
+                    {
+                      staff.icon ?
+                        <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
+                        : null
+                    }
+                    {staff.label}</span>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>
         </DialogRow>;
       default: return <div>EMPTY</div>
     }
-  }
-
-  componentDidMount() {
-    this.doTemplateSearch("");
   }
 
   render() {
