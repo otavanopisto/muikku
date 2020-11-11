@@ -350,7 +350,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           
           
           List<CommunicatorSearchResultRecipientRESTModel> receiver = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
-          List<CommunicatorUserLabelRESTModel> labelsList = new ArrayList<CommunicatorUserLabelRESTModel>();
+          List<CommunicatorSearchResultLabelRESTModel> labelsList = new ArrayList<CommunicatorSearchResultLabelRESTModel>();
           for (IndexedCommunicatorMessageRecipient recipient : receiverList) {
             UserEntity loggedUser = sessionController.getLoggedUserEntity();
             if (recipient.getUserEntityId().equals(loggedUser.getId())){
@@ -360,7 +360,7 @@ public class CommunicatorRESTService extends PluginRESTService {
                 for (IndexedCommunicatorMessageLabels label : labels) {
                   //CommunicatorMessageIdLabel lbl = communicatorController.findMessageIdLabelById(label.getId());
                   CommunicatorUserLabel lbl = communicatorController.findUserLabelById(label.getId());
-                  CommunicatorUserLabelRESTModel labelData = new CommunicatorUserLabelRESTModel(
+                  CommunicatorSearchResultLabelRESTModel labelData = new CommunicatorSearchResultLabelRESTModel(
                       label.getId(), 
                       label.getLabel(), 
                       lbl.getColor());
