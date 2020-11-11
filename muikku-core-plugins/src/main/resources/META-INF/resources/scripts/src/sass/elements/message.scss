@@ -18,6 +18,10 @@
   }
 }
 
+.message--search-result {
+  padding: 15px;
+}
+
 .message--discussion {
 
   @include breakpoint($breakpoint-pad) {

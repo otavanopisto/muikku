@@ -16,9 +16,9 @@ export interface MessageSearchResult {
   communicatorMessageId: number;
   created: string;
   content: string;
-  id: null;
-  receiver: Array<{
-    readByReceiver: boolean,
+  id: number;
+  readByReceiver: boolean,
+  recipients: Array<{
     displayName: string,
     userEntityId: number,
   }>,
