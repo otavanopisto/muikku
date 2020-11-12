@@ -236,13 +236,14 @@ public class SchoolDataSearchReindexListener {
 	    Long totalMessagesCount = communicatorController.countTotalMessages();
 	    	
 	    int communicatorIndex = getOffset("communicatorIndex");
-	      
+	    
 	    if (communicatorIndex < totalMessagesCount) {
 		    List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
 
 	      int last = Math.min(batch.size(), communicatorIndex + getBatchSize());
+	      int i;
 	      
-	      for (int i = communicatorIndex; i < last; i++) {
+	      for (i = communicatorIndex; i < last; i++) {
           CommunicatorMessage message = batch.get(i);
 	  	          
 	        try {
@@ -251,9 +252,13 @@ public class SchoolDataSearchReindexListener {
 	          logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
 	        }
 	      }
-	        
-	      logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + getBatchSize() + ")");
-	
+	      if (communicatorIndex < last) {
+	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + getBatchSize() + ")");
+	      } else {
+	         logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + totalMessagesCount + ")");
+
+	      }
+	      
 	      setOffset("communicatorIndex", communicatorIndex + getBatchSize());
 	      return false;
 	    } else
