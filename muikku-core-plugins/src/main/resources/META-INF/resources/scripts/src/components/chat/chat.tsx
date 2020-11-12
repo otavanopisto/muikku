@@ -475,7 +475,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     this.state.connection && this.state.connection.deleteHandler(this.messagesListenerHandler);
     this.state.connection && this.state.connection.disconnect("Chat is disabled");
-    window.removeEventListener("logout", this.stopChat);
+    (window as any).ON_LOGOUT = null;
   }
   async initialize() {
     this.setState({
