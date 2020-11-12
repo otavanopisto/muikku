@@ -36,20 +36,6 @@ class Workspace extends React.Component<CourseProps, CourseState>{
     this.setState({ expanded: !this.state.expanded })
   }
   render() {
-
-    // let teachers: SelectItem[] = this.props.workspace.teachers ? this.props.workspace.teachers.map((teacher, index) => {
-    //   return { label: teacher.firstName + teacher.lastName, id: parseInt(teacher.id), icon: "user" }
-    // }) : [];
-
-    // let students: SelectItem[] = this.props.workspace.students ? this.props.workspace.students.map((student, index) => {
-    //   return { label: student.firstName + student.lastName, id: student.userEntityId, icon: "user" }
-    // }) : [];
-
-    // let data = {
-    //   currentStaff: teachers,
-    //   currentStudents: students,
-    // }
-
     let actions = <div><WorkspaceDialog workspace={this.props.workspace} ><span className="icon-pencil"></span></WorkspaceDialog></div>;
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>

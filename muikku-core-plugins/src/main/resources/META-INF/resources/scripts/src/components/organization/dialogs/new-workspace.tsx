@@ -85,6 +85,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setSelectedStudents = this.setSelectedStudents.bind(this);
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
+    this.clearComponentState = this.clearComponentState.bind(this);
 
   }
 
@@ -154,7 +155,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   cancelDialog(closeDialog: () => any) {
-    this.clearComponentState();
     closeDialog();
   }
 
@@ -201,12 +201,10 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           })
         } else if (state === "DONE") {
           closeDialog();
-          this.clearComponentState();
         }
       },
       fail: () => {
         closeDialog();
-        this.clearComponentState();
       }
     });
   }
@@ -241,7 +239,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           </DialogRow>
         </div >;
       case 2:
-
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
@@ -339,11 +336,11 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       lastClick={this.lastStep.bind(this)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
-    return (<Dialog executing={this.state.executing} executeContent={executeContent} footer={footer} modifier="new-user"
+    return (<Dialog executing={this.state.executing} executeOnOpen={this.props.loadTemplates} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-user"
       title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
       content={content} >
       {this.props.children}
-    </Dialog  >
+    </Dialog>
     )
   }
 }

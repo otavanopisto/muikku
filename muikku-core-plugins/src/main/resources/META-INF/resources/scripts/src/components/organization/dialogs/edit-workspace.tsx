@@ -4,7 +4,7 @@ import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/componen
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import {
-  UpdateWorkspaceTriggerType, updateWorkspace, UpdateWorkspaceStateType, loadStudentsOfWorkspace,
+  UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, loadStudentsOfWorkspace,
   loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType
 } from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
@@ -15,6 +15,7 @@ import { UsersSelectType, } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
 import currentStudent from '~/components/guider/body/application/current-student';
 import studiesEnded from '~/components/index/body/studies-ended';
+import { equal } from 'assert';
 
 interface ValidationType {
   nameValid: number
@@ -26,7 +27,7 @@ interface OrganizationEditWorkspaceProps {
   users: UsersSelectType,
   workspace: WorkspaceType,
   currentWorkspace: WorkspaceType,
-  updateWorkspace: UpdateWorkspaceTriggerType,
+  updateOrganizationWorkspace: UpdateWorkspaceTriggerType,
   loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType,
   loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType,
   loadStudents: LoadUsersTriggerType,
@@ -196,9 +197,9 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({
       locked: true,
       executing: true
-    });
+    })
 
-    this.props.updateWorkspace({
+    this.props.updateOrganizationWorkspace({
       update: {
         name: this.state.workspaceName,
       },
@@ -396,7 +397,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     loadUserGroups: loadSelectorUserGroups,
     loadCurrentOrganizationWorkspaceSelectStudents,
     loadCurrentOrganizationWorkspaceSelectStaff,
-    updateWorkspace
+    updateOrganizationWorkspace
   }, dispatch);
 };
 

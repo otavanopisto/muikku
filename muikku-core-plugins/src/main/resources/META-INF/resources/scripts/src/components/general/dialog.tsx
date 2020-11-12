@@ -16,6 +16,7 @@ interface DialogProps {
   disableScroll?: boolean,
   footer?: (closePortal: () => any) => any,
   onOpen?: (e?: HTMLElement) => any,
+  executeOnOpen?: () => any,
   onClose?: () => any,
   isOpen?: boolean,
   onKeyStroke?(keyCode: number, closePortal: () => any): any,
@@ -50,6 +51,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         visible: true,
       });
     }, 10);
+    this.props.executeOnOpen && this.props.executeOnOpen();
     this.props.onOpen && this.props.onOpen(element);
     if (this.props.disableScroll == true) {
       document.body.style.overflow = "hidden";

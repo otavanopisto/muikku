@@ -93,7 +93,7 @@ export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<"UPDATE
 }>;
 
 export interface LoadTemplatesFromServerTriggerType {
-  (query: string): AnyActionType
+  (query?: string): AnyActionType
 }
 
 let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadTemplatesFromServer(query: string) {
@@ -526,14 +526,16 @@ export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType,
     update: WorkspaceUpdateType,
-    addStudents?: any,
-    addTeachers?: any,
-    removeStudents?: any,
-    removeTeachers?: any,
+    addStudents?: SelectItem[],
+    addTeachers?: SelectItem[],
+    removeStudents?: SelectItem[],
+    removeTeachers?: SelectItem[],
     success?: (state?: UpdateWorkspaceStateType) => any,
     fail?: () => any
   }): AnyActionType
 }
+
+
 
 export interface LoadStaffMembersOfWorkspaceTriggerType {
   (workspace: WorkspaceType, loadOrganizationStaff?: boolean): AnyActionType
@@ -799,6 +801,110 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
     }
   }
 }
+
+let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrganizationWorkspace(data) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      let actualOriginal: WorkspaceType = { ...data.workspace };
+      delete actualOriginal["studentActivity"];
+      delete actualOriginal["forumStatistics"];
+      delete actualOriginal["studentAssessments"];
+      delete actualOriginal["studentAssessmentState"];
+      delete actualOriginal["activityStatistics"];
+      delete actualOriginal["feeInfo"];
+      delete actualOriginal["assessmentRequests"];
+      delete actualOriginal["additionalInfo"];
+      delete actualOriginal["staffMembers"];
+      delete actualOriginal["students"];
+      delete actualOriginal["details"];
+      delete actualOriginal["producers"];
+      delete actualOriginal["contentDescription"];
+      delete actualOriginal["isCourseMember"];
+      delete actualOriginal["journals"];
+      delete actualOriginal["activityLogs"];
+      delete actualOriginal["permissions"];
+
+
+
+      if (data.update && !equals(actualOriginal, data.update)) {
+        await promisify(mApi().workspace.workspaces.update(data.workspace.id,
+          Object.assign(actualOriginal, data.update)), 'callback')();
+      }
+
+
+      if (data.addStudents.length > 0) {
+        let groupIdentifiers;
+        let studentIdentifiers;
+
+        data.addStudents.map(student => {
+          if (student.type === "student-group") {
+            groupIdentifiers.push(student.id);
+          }
+          if (student.type === "student") {
+            studentIdentifiers.push(student.id);
+          }
+        });
+
+        await promisify(mApi().organizationmanagement.workspaces.students
+          .create(data.workspace.id, {
+            studentIdentifiers: studentIdentifiers,
+            studentGroupIds: groupIdentifiers
+          }
+          ), 'callback')().then(
+            data.success && data.success("ADD-STUDENTS")
+          );
+      }
+
+      if (data.addTeachers.length > 0) {
+        let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
+
+        await promisify(mApi().organizationmanagement.workspaces.staff
+          .create(data.workspace.id, {
+            staffMemberIdentifiers: staffMemberIdentifiers
+          }
+          ), 'callback')().then(
+            data.success && data.success("ADD-TEACHERS")
+          );
+      }
+
+      if (data.removeStudents.length > 0) {
+        let studentIdentifiers = data.removeStudents.map(student => student.id);
+
+        await promisify(mApi().organizationmanagement.workspaces.students
+          .delete(data.workspace.id, {
+            studentIdentifiers: studentIdentifiers
+          }
+          ), 'callback')().then(
+            data.success && data.success("REMOVE-STUDENTS")
+          );
+      }
+
+      if (data.removeTeachers.length > 0) {
+        let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
+
+        await promisify(mApi().organizationmanagement.workspaces.staff
+          .delete(data.workspace.id, {
+            staffMemberIdentifiers: staffMemberIdentifiers
+          }
+          ), 'callback')().then(
+            data.success && data.success("REMOVE-TEACHERS")
+          );
+      }
+
+
+      data.success && data.success("DONE");
+
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+
+      data.fail && data.fail();
+    }
+  }
+}
+
 
 
 let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStaff(workspace) {
@@ -2260,7 +2366,7 @@ export {
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
-  loadMoreCurrentWorkspaceJournalsFromServer, createWorkspace, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
+  loadMoreCurrentWorkspaceJournalsFromServer, createWorkspace, updateOrganizationWorkspace, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,

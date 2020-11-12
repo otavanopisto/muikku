@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType } from '~/actions';
 import { StateType } from '~/reducers';
-import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
+import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType, WorkspaceUpdateType } from '~/reducers/workspaces';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -255,3 +255,4 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId: number | 
     });
   }
 }
+
