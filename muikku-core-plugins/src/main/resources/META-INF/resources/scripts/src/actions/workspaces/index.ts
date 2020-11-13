@@ -805,32 +805,11 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
 let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrganizationWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let actualOriginal: WorkspaceType = { ...data.workspace };
-      delete actualOriginal["studentActivity"];
-      delete actualOriginal["forumStatistics"];
-      delete actualOriginal["studentAssessments"];
-      delete actualOriginal["studentAssessmentState"];
-      delete actualOriginal["activityStatistics"];
-      delete actualOriginal["feeInfo"];
-      delete actualOriginal["assessmentRequests"];
-      delete actualOriginal["additionalInfo"];
-      delete actualOriginal["staffMembers"];
-      delete actualOriginal["students"];
-      delete actualOriginal["details"];
-      delete actualOriginal["producers"];
-      delete actualOriginal["contentDescription"];
-      delete actualOriginal["isCourseMember"];
-      delete actualOriginal["journals"];
-      delete actualOriginal["activityLogs"];
-      delete actualOriginal["permissions"];
 
 
-
-      if (data.update && !equals(actualOriginal, data.update)) {
-        await promisify(mApi().workspace.workspaces.update(data.workspace.id,
-          Object.assign(actualOriginal, data.update)), 'callback')();
+      if (data.update) {
+        await promisify(mApi().workspace.workspaces.update(data.workspace.id, data.update), 'callback')();
       }
-
 
       if (data.addStudents.length > 0) {
         let groupIdentifiers;
@@ -1620,15 +1599,15 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
       data.success && data.success("WORKSPACE-CREATE")
 
       if (data.students.length > 0) {
-        let groupIdentifiers;
-        let studentIdentifiers;
+        let groupIdentifiers: number[];
+        let studentIdentifiers: string[];
 
         data.students.map(student => {
           if (student.type === "student-group") {
-            groupIdentifiers.push(student.id);
+            groupIdentifiers.push(student.id as number);
           }
           if (student.type === "student") {
-            studentIdentifiers.push(student.id);
+            studentIdentifiers.push(student.id as string);
           }
         });
 

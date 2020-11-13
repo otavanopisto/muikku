@@ -291,7 +291,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
         valid = true;
       }
     }
-    this.props.updateField(name, valid, value,);
+    this.props.updateField(name, valid, value);
   }
 
   componentDidUpdate(prevProps: any) {

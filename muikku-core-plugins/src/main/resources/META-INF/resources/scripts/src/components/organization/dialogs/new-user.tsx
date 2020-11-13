@@ -49,9 +49,10 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
+    this.clearComponentState = this.clearComponentState.bind(this);
   }
 
-  updateField(value: string, valid: boolean, name: string) {
+  updateField(name: string, valid: boolean, value: string) {
     let fieldName = name;
     let fieldValue = valid ? value : "";
     let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });
@@ -71,7 +72,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
   }
 
   cancelDialog(closeDialog: () => any) {
-    this.clearComponentState();
     closeDialog();
   }
 
@@ -121,11 +121,9 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           student: data,
           success: () => {
             closeDialog();
-            this.clearComponentState();
           },
           fail: () => {
             closeDialog();
-            this.clearComponentState();
           }
         });
       }
@@ -155,11 +153,9 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
               studyProgrammeIdentifierValid: 2
             });
             closeDialog();
-            this.clearComponentState();
           },
           fail: () => {
             closeDialog();
-            this.clearComponentState();
           }
         });
       }
@@ -199,7 +195,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     let footer = (closePortal: () => any) => <FormActionsElement locked={this.state.locked} executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
-    return (<Dialog executing={this.state.executing} modifier="new-user"
+    return (<Dialog onClose={this.clearComponentState} executing={this.state.executing} modifier="new-user"
       title={this.props.i18n.text.get('plugin.organization.users.addUser.title')}
       content={content} footer={footer}>
       {this.props.children}
