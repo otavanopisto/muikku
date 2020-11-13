@@ -1041,7 +1041,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitAndClick(".button-pill--profile");
     waitAndClick(".dropdown__container .icon-sign-out");
     waitForNotVisible(".dropdown__container .icon-sign-out");
-    sleep(1000);
     navigate("/", false);
     waitForPresent(".hero__item--frontpage", 45);
   }
