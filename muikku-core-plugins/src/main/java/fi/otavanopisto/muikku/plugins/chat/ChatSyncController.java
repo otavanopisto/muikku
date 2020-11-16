@@ -219,7 +219,7 @@ public class ChatSyncController {
     RestApiClient client = getClient();
     if (client != null) {
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      String roomName = workspace.getIdentifier();
+      String roomName = "workspace-chat-" + workspace.getIdentifier();
       client.deleteMember(roomName, getOpenfireUserIdentifier(muikkuUserEntity));
     }
   }
