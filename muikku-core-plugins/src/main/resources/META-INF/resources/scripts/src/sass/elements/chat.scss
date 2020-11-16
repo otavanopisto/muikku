@@ -4,14 +4,20 @@
 @import "../base/breakpoints";
 
 .chat {
-  @include text;
-  align-items: flex-end;
-  bottom: 0;
-  display: flex;
-  justify-content: flex-end;
-  position: fixed;
-  right: 15px;
-  z-index: 9999;
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    @include text;
+    align-items: flex-end;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    right: 15px;
+    z-index: 9999;
+  }
+
+
 }
 
 // Chat bubble
