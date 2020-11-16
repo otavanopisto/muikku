@@ -57,9 +57,6 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
   @Inject
   private CommunicatorRESTModels restModels;
   
-  @Inject
-  private CommunicatorMessageIndexer communicatorMessageIndexer;
-  
   @GET
   @Path ("/trash")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -144,8 +141,6 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
 
     communicatorController.archiveTrashedMessages(user, threadId);
     
-    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(threadId.getId());
-    communicatorMessageIndexer.indexMessage(message);
     return Response.noContent().build();
   }
   

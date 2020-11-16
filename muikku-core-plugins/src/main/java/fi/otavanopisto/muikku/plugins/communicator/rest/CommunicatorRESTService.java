@@ -212,9 +212,6 @@ public class CommunicatorRESTService extends PluginRESTService {
 
     communicatorController.trashAllThreadMessages(user, messageId);
     
-    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(messageId.getId());
-    communicatorMessageIndexer.indexMessage(message);
-    
     return Response.noContent().build();
   }
 
@@ -428,8 +425,6 @@ public class CommunicatorRESTService extends PluginRESTService {
 
     communicatorController.trashSentMessages(user, messageId);
     
-    CommunicatorMessage message = communicatorController.findCommunicatorMessageById(messageId.getId());
-    communicatorMessageIndexer.indexMessage(message);
     
     return Response.noContent().build();
   }
@@ -597,8 +592,6 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
     
-    communicatorMessageIndexer.indexMessage(message); 
-    
     sendNewMessageNotifications(message);
     
     return Response.ok(
@@ -628,7 +621,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     for (CommunicatorMessageRecipient r : list) {
       communicatorController.updateRead(r, true);
-      communicatorMessageIndexer.indexMessage(r.getCommunicatorMessage()); 
     }
     return Response.noContent().build();
   }
@@ -652,7 +644,6 @@ public class CommunicatorRESTService extends PluginRESTService {
       }
       
       communicatorController.updateRead(r, false);
-      communicatorMessageIndexer.indexMessage(r.getCommunicatorMessage()); 
     }
     
     return Response.noContent().build();
@@ -745,7 +736,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, userEntity, 
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
-    communicatorMessageIndexer.indexMessage(message); 
 
     sendNewMessageNotifications(message);
     

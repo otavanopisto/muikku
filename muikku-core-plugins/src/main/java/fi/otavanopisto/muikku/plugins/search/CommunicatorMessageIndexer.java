@@ -10,7 +10,8 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdLabelDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -23,7 +24,6 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageLabels;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
-import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -38,9 +38,6 @@ public class CommunicatorMessageIndexer {
   @Inject
   private SearchIndexer indexer;
   
-  @Inject
-  private CommunicatorController communicatorController;
-  
   @Inject 
   private UserEntityController userEntityController;
   
@@ -48,7 +45,10 @@ public class CommunicatorMessageIndexer {
   private UserController userController;
   
   @Inject
-  private SessionController sessionController;
+  private CommunicatorMessageRecipientDAO communicatorMessageRecipientDAO;
+  
+  @Inject
+  private CommunicatorMessageIdLabelDAO communicatorMessageIdLabelDAO;
 
   public void indexMessage(CommunicatorMessage message) {
     schoolDataBridgeSessionController.startSystemSession();
@@ -72,48 +72,66 @@ public class CommunicatorMessageIndexer {
     	  Long senderId = message.getSender();
     	  UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
         User sender = userController.findUserByUserEntityDefaults(senderEntity);
+        
         IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
-        senderData.setFirstName(sender.getFirstName());
-        senderData.setLastName(sender.getLastName());
-        senderData.setUserEntityId(senderId);
-    	  indexedCommunicatorMessage.setSender(senderData);
-    	  indexedCommunicatorMessage.setSenderId(senderId);
-    	  
+
+        if (Boolean.TRUE.equals(message.getArchivedBySender())) {
+          senderData.setFirstName("");
+          senderData.setLastName("");
+          senderData.setUserEntityId(null);
+          indexedCommunicatorMessage.setSenderId(senderId);
+
+        } else {
+          senderData.setFirstName(sender.getFirstName());
+          senderData.setLastName(sender.getLastName());
+          senderData.setUserEntityId(senderId);
+          indexedCommunicatorMessage.setSenderId(senderId);
+        }
+
+        indexedCommunicatorMessage.setSender(senderData);
+        
     	  //set recipients
-    	  List<CommunicatorMessageRecipient> recipientsList = communicatorController.listAllCommunicatorMessageRecipients(message);
+    	  List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(message);
 	    	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
 	    	for (CommunicatorMessageRecipient recipient : recipientsList) {
           Long recipientId = recipient.getRecipient();
-          
           if(recipientId != null) {
+            
             UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
             User userRecipient = userController.findUserByUserEntityDefaults(recipientEntity);
             
             IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
             
-            //set receiver userEntityId & display name
-            recipientData.setUserEntityId(recipientId);
-            recipientData.setDisplayName(userRecipient.getDisplayName());
-          	
-            // set is message read/unread by receiver
-            recipientData.setReadByReceiver(recipient.getReadByReceiver());
-            
-            // set labels
-            List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
-            List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(recipientEntity, communicatorMessageId);
-            for (CommunicatorMessageIdLabel label : labels) {
-              IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
-              CommunicatorLabel wholeLabel = label.getLabel();
+            if (Boolean.TRUE.equals(recipient.getArchivedByReceiver())) {
               
-                labelData.setLabel(wholeLabel.getName());
-                labelData.setId(wholeLabel.getId());
-                labelsList.add(labelData);
+              continue;
+            }
+            
+              //set receiver userEntityId & display name
+              recipientData.setUserEntityId(recipientId);
+              recipientData.setDisplayName(userRecipient.getDisplayName());
+            	
+              // set is message read/unread by receiver
+              recipientData.setReadByReceiver(recipient.getReadByReceiver());
               
-            } 
+              // set labels
+              List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
+              List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
+              for (CommunicatorMessageIdLabel label : labels) {
+                IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+                CommunicatorLabel wholeLabel = label.getLabel();
+                
+                  labelData.setLabel(wholeLabel.getName());
+                  labelData.setId(wholeLabel.getId());
+                  labelsList.add(labelData);
+                
+              } 
+              
+              recipientData.setLabels(labelsList);
             
-            recipientData.setLabels(labelsList);
             
-            recipientsEntityList.add(recipientData);
+              recipientsEntityList.add(recipientData);
+            
           }
         }
 	    	
