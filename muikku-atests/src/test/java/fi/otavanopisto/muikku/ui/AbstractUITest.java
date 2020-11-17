@@ -1623,9 +1623,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-    scrollIntoView("input#access-" + workspaceAccess);
+    scrollIntoView("input#access" + workspaceAccess);
     sleep(500);
-    waitAndClick("input#access-" + workspaceAccess);
+    waitAndClick("input#" + workspaceAccess);
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
