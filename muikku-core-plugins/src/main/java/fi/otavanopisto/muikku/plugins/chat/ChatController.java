@@ -50,5 +50,9 @@ public class ChatController {
   public WorkspaceChatSettings updateWorkspaceChatSettings(WorkspaceChatSettings settings, WorkspaceChatStatus status) {
     return workspaceChatSettingsDAO.updateSettings(settings, status);
   }
+  
+  public void deleteWorkspaceChatSettings(WorkspaceChatSettings settings) {
+    workspaceChatSettingsDAO.delete(settings);
+  }
 
 }

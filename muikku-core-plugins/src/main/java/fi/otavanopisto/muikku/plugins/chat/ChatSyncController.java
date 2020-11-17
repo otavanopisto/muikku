@@ -215,6 +215,13 @@ public class ChatSyncController {
     }
   }
 
+  public void removeWorkspaceChatRoom(String identifier) {
+    RestApiClient client = getClient();
+    if (client != null) {
+      client.deleteChatRoom("workspace-chat-" + identifier);
+    }
+  }
+
   public void removeChatRoomMembership(fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity, WorkspaceEntity workspaceEntity) {
     RestApiClient client = getClient();
     if (client != null) {
@@ -274,6 +281,37 @@ public class ChatSyncController {
       }
       else {
         client.addOwner("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
+      }
+    }
+  }
+  
+  public void ensureRoomNameUpToDate(WorkspaceEntity workspaceEntity) {
+    RestApiClient client = getClient();
+    if (client != null) {
+      MUCRoomEntity mucRoomEntity = client.getChatRoom(String.format("workspace-chat-%s", workspaceEntity.getIdentifier()));
+      if (mucRoomEntity != null) {
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+        String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+        StringBuilder roomName = new StringBuilder();
+        if (!StringUtils.isBlank(subjectCode)) {
+          roomName.append(subjectCode);
+        }
+        if (workspace.getCourseNumber() != null) {
+          roomName.append(workspace.getCourseNumber());
+        }
+        if (!StringUtils.isBlank(roomName)) {
+          roomName.append(" - ");
+        }
+        if (!StringUtils.isBlank(workspace.getNameExtension())) {
+          roomName.append(workspace.getNameExtension());
+        }
+        else {
+          roomName.append(workspace.getName());
+        }
+        if (!StringUtils.equals(mucRoomEntity.getNaturalName(), roomName)) {
+          mucRoomEntity.setNaturalName(roomName.toString());
+          client.updateChatRoom(mucRoomEntity);
+        }
       }
     }
   }

@@ -11,11 +11,13 @@ import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
-public class SyncStudentEventHandler {
+public class ChatSyncEventHandler {
   
   @Inject
   private ChatSyncController chatSyncController;
@@ -28,9 +30,34 @@ public class SyncStudentEventHandler {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  // Workspace has been updated
+  public void onSchoolDataWorkspaceUpdatedEvent(@Observes SchoolDataWorkspaceUpdatedEvent event) {
+    String workspaceDataSource = event.getDataSource();
+    String workspaceIdentifier = event.getIdentifier();
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
+    WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
+    if (workspaceChatSettings != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
+      chatSyncController.ensureRoomNameUpToDate(workspaceEntity);
+    }
+  }
   
-  public synchronized void onSchoolDataWorkspaceUserDiscoveredEvent(@Observes SchoolDataWorkspaceUserDiscoveredEvent event) {
-    //kun kurssille pelmahtaa uusi opiskelija
+  // Workspace has been removed
+  public void onSchoolDataWorkspaceRemovedEvent(@Observes SchoolDataWorkspaceRemovedEvent event) {
+    String workspaceDataSource = event.getDataSource();
+    String workspaceIdentifier = event.getIdentifier();
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
+    WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
+    if (workspaceChatSettings != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
+      // Turn off chat in workspace
+      chatController.deleteWorkspaceChatSettings(workspaceChatSettings);
+      // Delete workspace chat room
+      chatSyncController.removeWorkspaceChatRoom(workspaceIdentifier);
+    }
+  }
+
+  // New student has entered a workspace
+  public void onSchoolDataWorkspaceUserDiscoveredEvent(@Observes SchoolDataWorkspaceUserDiscoveredEvent event) {
     String userIdentifier = event.getUserIdentifier();
     String userDataSource = event.getUserDataSource();
     SchoolDataIdentifier user = new SchoolDataIdentifier(userIdentifier, userDataSource);
@@ -50,7 +77,8 @@ public class SyncStudentEventHandler {
     }
   }
  
-  public synchronized void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
+  // Student has been removed from a workspace
+  public void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
     //kun kurssilta poistuu joku opiskelija    
     String userIdentifier = event.getUserIdentifier();
     String userDataSource = event.getUserDataSource();
