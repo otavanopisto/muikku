@@ -38,7 +38,7 @@ export class Room extends React.Component<IRoomProps, IRoomState> {
     let roomActionModifier = this.props.modifier ? "chat__controlbox-room-action--" + this.props.modifier : "";
     return (
       <div className="chat__controlbox-room">
-        <div className={`chat__controlbox-room-action ${roomActionModifier} icon-arrow-right`}  onClick={this.toggleRoomInfo}></div>
+        <div className={`chat__controlbox-room-action ${roomActionModifier} ${!this.state.showRoomInfo ? "icon-arrow-right" : "icon-arrow-down"}`}  onClick={this.toggleRoomInfo}></div>
         <div className="chat__controlbox-room-name" onClick={this.props.toggleJoinLeaveChatRoom}>
             {this.props.chat.roomName}
           </div>
