@@ -245,15 +245,14 @@ public class SchoolDataSearchReindexListener {
 	      
 	      for (i = communicatorIndex; i < last; i++) {
           CommunicatorMessage message = batch.get(i);
-	  	          
 	        try {
 	          communicatorMessageIndexer.indexMessage(message);
 	        } catch (Exception e) {
 	          logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
 	        }
 	      }
-	      if (communicatorIndex < last) {
-	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + getBatchSize() + ")");
+	      if (communicatorIndex < 100) {
+	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + (communicatorIndex + i) + ")");
 	      } else {
 	         logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + totalMessagesCount + ")");
 

@@ -107,31 +107,27 @@ public class CommunicatorMessageIndexer {
               continue;
             }
             
-              //set receiver userEntityId & display name
-              recipientData.setUserEntityId(recipientId);
-              recipientData.setDisplayName(userRecipient.getDisplayName());
-            	
-              // set is message read/unread by receiver
-              recipientData.setReadByReceiver(recipient.getReadByReceiver());
+            //set receiver userEntityId & display name
+            recipientData.setUserEntityId(recipientId);
+            recipientData.setDisplayName(userRecipient.getDisplayName());
+          	
+            // set is message read/unread by receiver
+            recipientData.setReadByReceiver(recipient.getReadByReceiver());
               
-              // set labels
-              List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
-              List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
-              for (CommunicatorMessageIdLabel label : labels) {
-                IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
-                CommunicatorLabel wholeLabel = label.getLabel();
-                
-                  labelData.setLabel(wholeLabel.getName());
-                  labelData.setId(wholeLabel.getId());
-                  labelsList.add(labelData);
-                
-              } 
+            // set labels
+            List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
+            List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
+            for (CommunicatorMessageIdLabel label : labels) {
+              IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+              CommunicatorLabel wholeLabel = label.getLabel();
               
-              recipientData.setLabels(labelsList);
-            
-            
-              recipientsEntityList.add(recipientData);
-            
+                labelData.setLabel(wholeLabel.getName());
+                labelData.setId(wholeLabel.getId());
+                labelsList.add(labelData);
+            } 
+              
+            recipientData.setLabels(labelsList);
+            recipientsEntityList.add(recipientData);
           }
         }
 	    	
@@ -170,7 +166,4 @@ public class CommunicatorMessageIndexer {
       logger.warning(String.format("could not index message #%s/%s//%s", indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage.getSearchId(), e));
     }
   }
-
-  
 }
-
