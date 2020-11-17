@@ -61,6 +61,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 import rocks.xmpp.core.XmppException;
@@ -110,6 +111,9 @@ public class ChatRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -353,7 +357,8 @@ public class ChatRESTService extends PluginRESTService {
     }
     
     // If chat is disabled, we simply delete the settings, freeing the nickname for someone else to use
-    
+
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserChatVisibility visibility = payload.getVisibility();
     if (visibility == UserChatVisibility.DISABLED) {
       payload.setNick(null);
@@ -361,12 +366,23 @@ public class ChatRESTService extends PluginRESTService {
       if (userChatSettings != null) {
         chatController.deleteUserChatSettings(userChatSettings);
       }
+
+      // Remove user from all workspace chat rooms
+      
+      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
+      for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+        // Ignore workspaces that don't have chat enabled
+        WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
+        if (workspaceChatSettings == null || workspaceChatSettings.getStatus() == WorkspaceChatStatus.DISABLED) {
+          continue;
+        }
+        chatSyncController.removeChatRoomMembership(userEntity, workspaceEntity);
+      }
     }
     else {
       
       // Store nick and visibility
       
-      UserEntity userEntity = sessionController.getLoggedUserEntity();
       userChatSettings = chatController.findUserChatSettings(userEntity);
       boolean syncMembership = userChatSettings == null || userChatSettings.getVisibility() != visibility;
       if (userChatSettings == null) {
