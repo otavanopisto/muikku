@@ -9,7 +9,8 @@ export interface SelectItem {
   id: string | number,
   label: string,
   icon?: string,
-  type?: string
+  type?: string,
+  disabled?: boolean
 }
 
 export interface AutofillSelectorProps {
@@ -109,7 +110,8 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
             item.label
           }
         </span>,
-        value: item
+        value: item,
+        disabled: item.disabled ? item.disabled : false
       };
     });
 

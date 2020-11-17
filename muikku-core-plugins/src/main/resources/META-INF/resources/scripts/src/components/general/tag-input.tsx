@@ -4,7 +4,8 @@ import '~/sass/elements/tag-input.scss';
 
 interface Tag {
   node: React.ReactElement<any>,
-  value: any
+  value: any,
+  disabled?: boolean,
 }
 
 interface TagInputProps {
@@ -23,7 +24,6 @@ interface TagInputProps {
 }
 
 interface TagInputState {
-
 }
 
 export default class TagInput extends React.Component<TagInputProps, TagInputState> {
@@ -39,6 +39,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
     this.focus = this.focus.bind(this);
     this.onDeleteTag = this.onDeleteTag.bind(this);
   }
+
   onKeyDown(e: React.KeyboardEvent<any>) {
     if (this.props.deleteByBackKey) {
       if (e.keyCode === 8 && this.props.inputValue === "" && this.props.tags.length > 0) {
@@ -46,6 +47,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
       }
     }
   }
+
   focus() {
     (this.refs["input"] as HTMLElement).focus();
   }
@@ -53,12 +55,15 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   blur() {
     (this.refs["input"] as HTMLElement).blur();
   }
+
   getInputHeight() {
     return (this.refs["input"] as HTMLElement).offsetHeight;
   }
+
   getInputBodyHeight() {
     return (this.refs["inputbody"] as HTMLElement).offsetHeight;
   }
+
   getSelectedHeight() {
     return (this.refs["selected"] as HTMLElement).offsetHeight;
   }
@@ -70,9 +75,13 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
       this.blur();
     }
   }
+
   onDeleteTag(tag: Tag) {
-    this.props.onDelete(tag.value);
+    if (!tag.disabled) {
+      this.props.onDelete(tag.value);
+    }
   }
+
   render() {
     return <div className={`container ${this.props.modifier ? "container--" + this.props.modifier : null} ${this.props.isFocused ? "focus" : ""}`}>
       <div className="tag-input" ref="inputbody" onClick={(e) => this.props.onFocus(e as any)}>
@@ -84,7 +93,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
 
         <div ref="selected" className="tag-input__selected-items">
           {this.props.tags.map((tag, index) => {
-            return <span key={index} className="tag-input__selected-item">
+            return <span key={index} className={`tag-input__selected-item ${tag.disabled ? "state-DISABLED" : ""}`}>
               <span className="tag-input__selected-item-label">{tag.node}</span>
               <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, tag)}></span>
             </span>

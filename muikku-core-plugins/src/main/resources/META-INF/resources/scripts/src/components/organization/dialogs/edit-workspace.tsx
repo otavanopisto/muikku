@@ -4,7 +4,7 @@ import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/componen
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import {
-  UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, loadStudentsOfWorkspace,
+  UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, SetCurrentWorkspaceTriggerType, setCurrentOrganizationWorkspace,
   loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType
 } from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
@@ -28,6 +28,7 @@ interface OrganizationEditWorkspaceProps {
   workspace: WorkspaceType,
   currentWorkspace: WorkspaceType,
   updateOrganizationWorkspace: UpdateWorkspaceTriggerType,
+  setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType,
   loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType,
   loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType,
   loadStudents: LoadUsersTriggerType,
@@ -94,6 +95,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
+    this.setSelectedWorkspace = this.setSelectedWorkspace.bind(this);
 
   }
   doStudentSearch(value: string) {
@@ -136,6 +138,11 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
     this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
   }
+
+  setSelectedWorkspace() {
+    this.props.setCurrentOrganizationWorkspace({ workspaceId: this.props.workspace.id });
+  }
+
 
   setSelectedStudents(addStudents: Array<SelectItem>) {
     this.setState({ addStudents });
@@ -373,7 +380,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       lastClick={this.lastStep.bind(this)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
-    return (<Dialog executing={this.state.executing} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-user"
+    return (<Dialog executing={this.state.executing} executeOnOpen={this.setSelectedWorkspace} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-user"
       title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.title')}
       content={content}>
       {this.props.children}
@@ -395,6 +402,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     loadStaff: loadSelectorStaff,
     loadStudents: loadSelectorStudents,
     loadUserGroups: loadSelectorUserGroups,
+    setCurrentOrganizationWorkspace,
     loadCurrentOrganizationWorkspaceSelectStudents,
     loadCurrentOrganizationWorkspaceSelectStaff,
     updateOrganizationWorkspace
