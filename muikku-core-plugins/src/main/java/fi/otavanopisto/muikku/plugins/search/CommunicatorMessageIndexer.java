@@ -98,8 +98,10 @@ public class CommunicatorMessageIndexer {
             IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
             
             recipientData.setUserEntityId(recipientId);
-            String displayName = userRecipient.getNickName() == null ? userRecipient.getDisplayName() : String.format("%s \"%s\" %s (%s)", userRecipient.getFirstName(), userRecipient.getNickName(), userRecipient.getLastName(), userRecipient.getStudyProgrammeName());
-            recipientData.setDisplayName(displayName);
+            recipientData.setFirstName(userRecipient.getFirstName());
+            recipientData.setLastName(userRecipient.getLastName());
+            recipientData.setNickName(userRecipient.getNickName());
+            recipientData.setStudyProgrammeName(userRecipient.getStudyProgrammeName());
             // set is message read/unread by receiver
             recipientData.setReadByReceiver(recipient.getReadByReceiver());
             recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());

@@ -8,9 +8,11 @@ public class CommunicatorSearchResultRecipientRESTModel {
   public CommunicatorSearchResultRecipientRESTModel() {
   }
   
-  public CommunicatorSearchResultRecipientRESTModel(Long userEntityId, String displayName) {
+  public CommunicatorSearchResultRecipientRESTModel(Long userEntityId, String firstName, String lastName, String nickName, String studyProgrammeName) {
     this.userEntityId = userEntityId;
-    this.displayName = displayName;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.nickName = nickName;
   }
 
   public Long getUserEntityId() {
@@ -21,15 +23,45 @@ public class CommunicatorSearchResultRecipientRESTModel {
     this.userEntityId = userEntityId;
   }
 
-  public String getDisplayName() {
-    return displayName;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+  
+  public String getLastName() {
+    return lastName;
+  }
+  
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+  
+  public String getNickName() {
+    return nickName;
+  }
+  
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+  
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+  
+  public void getStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
   }
 
   private Long userEntityId;
 
-  private String displayName;
+  private String firstName;
+  
+  private String lastName;
+  
+  private String nickName;
+  
+  private String studyProgrammeName;
 }

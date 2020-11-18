@@ -8,10 +8,11 @@ public class CommunicatorSearchSenderRESTModel {
   public CommunicatorSearchSenderRESTModel() {
   }
   
-  public CommunicatorSearchSenderRESTModel(Long userEntityId, String firstName, String lastName) {
+  public CommunicatorSearchSenderRESTModel(Long userEntityId, String firstName, String lastName, String nickName) {
     this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.nickName = nickName;
   }
 
   public Long getUserEntityId() {
@@ -37,10 +38,20 @@ public class CommunicatorSearchSenderRESTModel {
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
+  
+  public String getNickName() {
+    return nickName;
+  }
+  
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
 
   private Long userEntityId;
 
   private String firstName;
   
   private String lastName;
+  
+  private String nickName;
 }

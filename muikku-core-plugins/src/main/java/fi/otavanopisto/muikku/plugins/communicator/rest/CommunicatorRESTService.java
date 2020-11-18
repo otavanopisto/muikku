@@ -341,6 +341,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           senderData.setUserEntityId(sender.getUserEntityId());
           senderData.setFirstName(sender.getFirstName());
           senderData.setLastName(sender.getLastName());
+          senderData.setNickName(sender.getNickName());
           CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
           CommunicatorMessageCategory category = communicatorMessage.getCategory();
           
@@ -383,7 +384,7 @@ public class CommunicatorRESTService extends PluginRESTService {
               }
               
             }
-            receiver.add(new CommunicatorSearchResultRecipientRESTModel(recipient.getUserEntityId(), recipient.getDisplayName()));
+            receiver.add(new CommunicatorSearchResultRecipientRESTModel(recipient.getUserEntityId(), recipient.getFirstName(), recipient.getLastName(), recipient.getNickName(), recipient.getStudyProgrammeName()));
 
           }
           

@@ -20,12 +20,36 @@ public class IndexedCommunicatorMessageRecipient{
 	this.readByReceiver = readByReceiver;
   }
 
-  public String getDisplayName() {
-    return displayName;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+  
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+  
+  public String getNickName() {
+    return nickName;
+  }
+  
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+  
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+  
+  public void setStudyProgrammeName(String studyProgrammeName) {
+    this.studyProgrammeName = studyProgrammeName;
   }
   
   public List<IndexedCommunicatorMessageLabels> getLabels(){
@@ -47,11 +71,17 @@ public class IndexedCommunicatorMessageRecipient{
   
   private Long userEntityId;
 
-  private String displayName;
+  private String firstName;
+  
+  private String lastName;
+  
+  private String nickName;
 
   private Boolean readByReceiver;
   
   private Boolean archivedByReceiver;
   
   private List<IndexedCommunicatorMessageLabels> labels;
+  
+  private String studyProgrammeName;
 }
