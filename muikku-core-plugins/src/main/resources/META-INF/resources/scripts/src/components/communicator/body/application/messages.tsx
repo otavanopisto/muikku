@@ -98,7 +98,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       return <BodyScrollKeeper hidden={!!this.props.currentThread}>
         {this.props.searchMessages.map((message) => {
           return <ApplicationListItem
-            key={message.communicatorMessageId}
+            key={message.id}
             className={`message message--search-result ${!message.readByReceiver ? "application-list__item--highlight" : ""}`}
             onClick={this.setCurrentThread.bind(this, message)}>
             <ApplicationListItemHeader modifiers="communicator-message">
