@@ -26,6 +26,14 @@ public class IndexedCommunicatorMessageSender{
     this.firstName = firstName;
   }
   
+  public String getNickName() {
+    return nickName;
+  }
+  
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+  
   public Boolean getArchivedBySender() {
     return archivedBySender;
   }
@@ -39,6 +47,8 @@ public class IndexedCommunicatorMessageSender{
   private String firstName;
   
   private String lastName;
+  
+  private String nickName;
   
   private Boolean archivedBySender;
 
