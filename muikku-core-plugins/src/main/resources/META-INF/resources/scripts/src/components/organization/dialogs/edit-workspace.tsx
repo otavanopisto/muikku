@@ -11,7 +11,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
-import { UsersSelectType, } from '~/reducers/main-function/users';
+import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
 import currentStudent from '~/components/guider/body/application/current-student';
 import studiesEnded from '~/components/index/body/studies-ended';
@@ -244,7 +244,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
           </DialogRow>
         </div >;
       case 2:

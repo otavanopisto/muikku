@@ -22,7 +22,7 @@ class OrganizationUsers extends React.Component<OrganizationUsersProps, Organiza
 
   render() {
     return (<div>
-      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.teachers.empty" title="plugin.organization.users.teachers.title" users={this.props.users.staff} />
+      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.staff.empty" title="plugin.organization.users.staff.title" users={this.props.users.staff} />
       <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.students.empty" title="plugin.organization.users.students.title" users={this.props.users.students} />
     </div>)
   }

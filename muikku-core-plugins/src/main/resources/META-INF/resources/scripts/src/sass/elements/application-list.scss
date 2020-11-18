@@ -212,9 +212,15 @@
 
 
 .application-list__item-content-actions {
+
+  span {
+    cursor: pointer;
+  }
+
   // scss-lint:disable SelectorFormat
   .state-DISABLED {
     color: $color-disabled;
+    cursor: default;
   }
   // scss-lint:enable SelectorFormat
 }
@@ -346,7 +352,6 @@
 
 .application-list__item--user {
   border-top: 1px solid $color-default-item-separator-border;
-  cursor: pointer;
   padding: 10px;
 
   &:first-child {
