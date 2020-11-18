@@ -79,7 +79,6 @@ export async function loadMessagesHelper(location:string | null, query: string |
     slotUsed = "searchMessages";
   }
 
-
   //Generate the api query, our first result in the messages that we have loaded
   //because searchMessages might be null we need to consider that
   let firstResult = (initial ? 0 : ((state.messages as any)[slotUsed] && (state.messages as any)[slotUsed].length)) || 0;
