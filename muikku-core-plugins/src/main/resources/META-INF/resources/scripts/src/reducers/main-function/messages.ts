@@ -17,7 +17,9 @@ export interface MessageSearchResult {
   id: number,
   readByReceiver: boolean,
   recipients: Array<{
-    displayName: string,
+    firstName: string,
+    lastName: string,
+    nickName: string,
     userEntityId: number,
   }>,
   labels: Array<{

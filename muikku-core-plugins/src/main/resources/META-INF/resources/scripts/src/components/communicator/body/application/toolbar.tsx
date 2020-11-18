@@ -53,6 +53,7 @@ interface CommunicatorToolbarState {
 
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
   private searchTimer: NodeJS.Timer;
+  private focused: boolean;
   constructor(props: CommunicatorToolbarProps){
     super(props);
 
@@ -62,8 +63,13 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
+    this.resetSearchQuery = this.resetSearchQuery.bind(this);
     this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
+    this.onInputFocus = this.onInputFocus.bind(this);
+    this.onInputBlur = this.onInputBlur.bind(this);
+
+    this.focused = false;
 
     this.state = {
       labelFilter: "",
@@ -82,11 +88,12 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
   }
-
+  resetSearchQuery(){
+    this.updateSearchWithQuery("");
+  }
   updateSearchWithQuery(query: string){
     this.props.loadMessageThreads(null, query);
   }
-
   loadMessage(messageId: number){
     if (history.replaceState){
       history.replaceState('', '', location.hash.split("/")[0] + "/" + messageId);
@@ -128,6 +135,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         isCurrentRead: true
       });
     }
+    if (!this.focused && (nextProps.messages.query || "")  !== this.state.searchquery) {
+      this.setState({
+        searchquery: nextProps.messages.query || ""
+      });
+    }
   }
   toggleCurrentMessageReadStatus(){
     this.props.toggleMessageThreadReadStatus(this.props.messages.currentThread.messages[0].communicatorMessageId, !this.state.isCurrentRead);
@@ -135,6 +147,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       isCurrentRead: !this.state.isCurrentRead
     });
   }
+  onInputFocus() {
+    this.focused = true;
+  }
+
+  onInputBlur() {
+    this.focused = false;
+  }
+
   render(){
     let currentLocation = this.props.messages.navigation.find((item)=>{
       return (item.location === this.props.messages.location);
@@ -186,7 +206,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               </Dropdown>
             {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.state.isCurrentRead ? "envelope-open" : "envelope-alt"}`}
               onClick={this.props.messages.toolbarLock ? null : this.toggleCurrentMessageReadStatus}/> : null}
-			
+
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
             <ButtonPill buttonModifiers="next-page" icon="arrow-left"
@@ -251,12 +271,12 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "envelope-open" : "envelope-alt"}`}
         disabled={this.props.messages.selectedThreads.length < 1}
         onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
-    
+
     <div className="form-element form-element--coursepicker-toolbar">
-      <input className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
+        <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')} value={this.state.searchquery} onChange={this.setSearchQuery}/>
       <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
     </div>
-   
+
   	</ApplicationPanelToolbar>
   }
 }
