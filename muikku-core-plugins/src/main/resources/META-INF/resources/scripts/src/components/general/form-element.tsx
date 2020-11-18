@@ -145,7 +145,7 @@ export class FormWizardActions extends React.Component<FormWizardActionsProps, F
 }
 
 interface SearchFormElementProps {
-  updateField: (fieldValue: string) => any,
+  updateField: (value: string) => any,
   value?: string,
   name: string,
   placeholder?: string,
@@ -185,7 +185,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
-  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any,
+  updateField: (value: string, valid: boolean, Name: string) => any,
   value?: string,
   type?: string,
   mandatory?: boolean,
@@ -255,7 +255,7 @@ interface SelectFormElementProps {
   mandatory?: boolean,
   valid?: number,
   modifiers?: string | Array<string>,
-  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any;
+  updateField: (value: string, valid: boolean, name: string) => any;
 }
 
 interface SelectFormElementState {
@@ -291,7 +291,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
         valid = true;
       }
     }
-    this.props.updateField(name, valid, value);
+    this.props.updateField(value, valid, name);
   }
 
   componentDidUpdate(prevProps: any) {
@@ -317,7 +317,7 @@ interface EmailFormElementProps {
   label: string,
   value?: string,
   modifiers?: string | Array<string>,
-  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any;
+  updateField: (value: string, valid: boolean, name: string) => any;
   mandatory?: boolean,
   valid?: number,
 }
@@ -357,7 +357,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
         valid = true;
       }
     }
-    this.props.updateField(value, valid, e.target.name,);
+    this.props.updateField(value, valid, e.target.name);
   }
 
   componentDidUpdate(prevProps: any) {
@@ -381,7 +381,7 @@ interface SSNFormElementProps {
   label: string,
   value?: string,
   modifiers?: string | Array<string>,
-  updateField: (fieldValue: string, valid: boolean, fieldName: string) => any;
+  updateField: (value: string, valid: boolean, name: string) => any;
   mandatory?: boolean,
   valid?: number,
 }
