@@ -45,6 +45,11 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 		    index = "not_analyzed"
 		  ),
 		  @IndexableFieldOption (
+	        name = "searchId",
+	        type = "Long",
+	        index = "not_analyzed"
+	      ),
+		  @IndexableFieldOption (
 		    name = "created",
 		    type = "Date",
 		    index = "not_analyzed"
@@ -84,8 +89,8 @@ public class IndexedCommunicatorMessage {
   }
   
   @IndexId
-  public Long getSearchId() {
-	  return this.searchId;
+  public Long getId() {
+	  return this.id;
   }
   
   public Date getcreated() {
@@ -121,7 +126,7 @@ public class IndexedCommunicatorMessage {
   }
   
   public void setSearchId(Long searchId) {
-	  this.searchId = searchId;
+	  this.id = searchId;
   }
   
   public void setCreated(Date created) {
@@ -138,7 +143,7 @@ public class IndexedCommunicatorMessage {
   private long senderId;
   private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> receiver;
-  private Long searchId;
+  private Long id;
   private Date created;
   private Set<String> tags;
 }
