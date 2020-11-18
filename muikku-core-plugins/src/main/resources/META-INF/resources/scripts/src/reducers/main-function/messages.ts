@@ -1,8 +1,7 @@
 import {ActionType} from "~/actions";
 import {i18nType} from '~/reducers/base/i18n';
 
-import {WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
-import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/user-index';
+import {UserType, UserGroupListType } from '~/reducers/user-index';
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface MessageSignatureType {
@@ -10,7 +9,6 @@ export interface MessageSignatureType {
   name: string,
   signature: string
 }
-
 export interface MessageSearchResult {
   caption: string,
   communicatorMessageId: number,
@@ -31,11 +29,11 @@ export interface MessageSearchResult {
     userEntityId: number,
     firstName: string,
     lastName: string,
+    nickName: string,
   },
   senderId: number,
   tags: any,
 }
-
 export interface MessageThreadLabelType {
   id: number,
   labelColor: number,
