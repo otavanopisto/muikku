@@ -329,6 +329,14 @@ public class CommunicatorRESTService extends PluginRESTService {
           Long senderId = result.getSenderId();
           
           IndexedCommunicatorMessageSender sender = result.getSender();
+          Long recipientId = null;
+
+          Boolean isLogged = sender.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId());
+          Boolean archivedBySender = Boolean.TRUE.equals(sender.getArchivedBySender());
+          if (isLogged.equals(Boolean.TRUE) && archivedBySender.equals(Boolean.TRUE)) {
+            continue;
+          } else {
+          
           CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
           senderData.setUserEntityId(sender.getUserEntityId());
           senderData.setFirstName(sender.getFirstName());
@@ -348,12 +356,14 @@ public class CommunicatorRESTService extends PluginRESTService {
           
           List<IndexedCommunicatorMessageRecipient> receiverList = result.getReceiver();
           
-          
           List<CommunicatorSearchResultRecipientRESTModel> receiver = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
           List<CommunicatorSearchResultLabelRESTModel> labelsList = new ArrayList<CommunicatorSearchResultLabelRESTModel>();
           for (IndexedCommunicatorMessageRecipient recipient : receiverList) {
             UserEntity loggedUser = sessionController.getLoggedUserEntity();
             if (recipient.getUserEntityId().equals(loggedUser.getId())){
+              if (Boolean.TRUE.equals(recipient.getArchivedByReceiver())) {
+                recipientId = recipient.getUserEntityId();
+              }
               readByReceiver = recipient.getReadByReceiver();
               List<IndexedCommunicatorMessageLabels> labels = recipient.getLabels();
               if (labels != null) {
@@ -377,6 +387,9 @@ public class CommunicatorRESTService extends PluginRESTService {
 
           }
           
+          if (recipientId != null && recipientId.equals(sessionController.getLoggedUserEntity().getId())) {
+            continue;
+          }
           if (communicatorMessageId != null) {
 	          
 	         Long id = communicatorMessage.getId();
@@ -398,6 +411,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 	          
 		   //     communicatorMessages1.add(communicatorMessage);
           }
+        }
         }
       } finally {
         	

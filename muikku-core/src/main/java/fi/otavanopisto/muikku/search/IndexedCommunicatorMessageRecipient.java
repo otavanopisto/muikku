@@ -35,6 +35,14 @@ public class IndexedCommunicatorMessageRecipient{
   public void setLabels(List<IndexedCommunicatorMessageLabels> labels) {
 	this.labels = labels;
   }
+  
+  public Boolean getArchivedByReceiver() {
+    return archivedByReceiver;
+  }
+  
+  public void setArchivedByReceiver(Boolean archivedByReceiver) {
+    this.archivedByReceiver = archivedByReceiver;
+  }
 
   
   private Long userEntityId;
@@ -42,6 +50,8 @@ public class IndexedCommunicatorMessageRecipient{
   private String displayName;
 
   private Boolean readByReceiver;
+  
+  private Boolean archivedByReceiver;
   
   private List<IndexedCommunicatorMessageLabels> labels;
 }

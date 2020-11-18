@@ -75,23 +75,28 @@ public class CommunicatorMessageIndexer {
         
         IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
 
-        if (Boolean.TRUE.equals(message.getArchivedBySender())) {
-          senderData.setFirstName("");
-          senderData.setLastName("");
-          senderData.setUserEntityId(null);
-          indexedCommunicatorMessage.setSenderId(senderId);
-
-        } else {
+//        if (Boolean.TRUE.equals(message.getArchivedBySender())) {
+//         // senderData.setFirstName("");
+//         // senderData.setLastName("");
+//         // senderData.setUserEntityId(null);
+//          senderData.setArchivedBySender(message.getArchivedBySender());
+//          indexedCommunicatorMessage.setSenderId(senderId);
+//
+//        } else {
           senderData.setFirstName(sender.getFirstName());
           senderData.setLastName(sender.getLastName());
           senderData.setUserEntityId(senderId);
           indexedCommunicatorMessage.setSenderId(senderId);
-        }
+          indexedCommunicatorMessage.setSenderId(senderId);
+          senderData.setArchivedBySender(message.getArchivedBySender());
+
+//        }
 
         indexedCommunicatorMessage.setSender(senderData);
         
     	  //set recipients
-    	  List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(message);
+    	  List<CommunicatorMessageRecipient> recipientsList1 = communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(message);
+    	  List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessage(message);
 	    	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
 	    	for (CommunicatorMessageRecipient recipient : recipientsList) {
           Long recipientId = recipient.getRecipient();
@@ -102,17 +107,18 @@ public class CommunicatorMessageIndexer {
             
             IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
             
-            if (Boolean.TRUE.equals(recipient.getArchivedByReceiver())) {
-              
-              continue;
-            }
-            
+//            if (Boolean.TRUE.equals(recipient.getArchivedByReceiver())) {
+//              
+//              continue;
+//            }
+//            
             //set receiver userEntityId & display name
             recipientData.setUserEntityId(recipientId);
             recipientData.setDisplayName(userRecipient.getDisplayName());
           	
             // set is message read/unread by receiver
             recipientData.setReadByReceiver(recipient.getReadByReceiver());
+            recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
               
             // set labels
             List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();

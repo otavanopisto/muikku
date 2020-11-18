@@ -26,10 +26,20 @@ public class IndexedCommunicatorMessageSender{
     this.firstName = firstName;
   }
   
+  public Boolean getArchivedBySender() {
+    return archivedBySender;
+  }
+  
+  public void setArchivedBySender(Boolean archivedBySender) {
+    this.archivedBySender = archivedBySender;
+  }
+  
   private Long userEntityId;
 
   private String firstName;
   
   private String lastName;
+  
+  private Boolean archivedBySender;
 
 }

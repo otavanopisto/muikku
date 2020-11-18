@@ -174,8 +174,7 @@ public class CommunicatorController {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
     // Clean duplicates from recipient list
     cleanDuplicateRecipients(userRecipients);
-    
-    communicatorMessageIndexer.indexMessage(message); ;
+     
 
     Set<Long> recipientIds = new HashSet<Long>();
     
@@ -210,6 +209,7 @@ public class CommunicatorController {
                 recipientIds.add(recipient.getId());
                 communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
               }
+
             }
           }
         }
@@ -268,7 +268,8 @@ public class CommunicatorController {
     if (CollectionUtils.isEmpty(recipientIds)) {
       logger.log(Level.SEVERE, String.format("Message %d contains no recipients", message.getId()));
     }
-    
+    communicatorMessageIndexer.indexMessage(message);
+
     return message;
   }
 
@@ -521,6 +522,9 @@ public class CommunicatorController {
   
   public CommunicatorMessageIdLabel findMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId,
       CommunicatorLabel label) {
+    CommunicatorMessageId threadId = this.findCommunicatorMessageId(messageId.getId());
+    CommunicatorMessage message = this.findCommunicatorMessageById(messageId.getId());
+    communicatorMessageIndexer.indexMessage(message);
     return communicatorMessageIdLabelDAO.findBy(userEntity, messageId, label);
   }
 
@@ -529,7 +533,8 @@ public class CommunicatorController {
   }
   
   public void delete(CommunicatorMessageIdLabel messageIdLabel) {
-    CommunicatorMessageId messageId = this.findCommunicatorMessageId(messageIdLabel.getCommunicatorMessageId().getId());
+    
+    CommunicatorMessageId messageId = this.findCommunicatorMessageId(messageIdLabel.getId());
     CommunicatorMessage message = this.findCommunicatorMessageById(messageId.getId());
     communicatorMessageIndexer.indexMessage(message);
     communicatorMessageIdLabelDAO.delete(messageIdLabel);
