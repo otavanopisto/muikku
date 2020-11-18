@@ -11,11 +11,8 @@ import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
-import { UsersSelectType, } from '~/reducers/main-function/users';
+import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType } from '~/reducers/workspaces';
-import currentStudent from '~/components/guider/body/application/current-student';
-import studiesEnded from '~/components/index/body/studies-ended';
-import { equal } from 'assert';
 
 interface ValidationType {
   nameValid: number
@@ -252,7 +249,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
           </DialogRow>
         </div >;
       case 2:
@@ -362,16 +359,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   render() {
-    // if (this.props.currentWorkspace && this.props.currentWorkspace.staffMembers && this.state.staffLoaded === false) {
-    //   let staff: SelectItem[] = this.props.currentWorkspace.staffMembers.map(staff => {
-    //     return {
-    //       id: staff.userEntityId,
-    //       label: staff.firstName + " " + staff.lastName
-    //     }
-    //   });
-    //   this.setState({ selectedStaff: staff, staffLoaded: true });
-    // }
-
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
     let executeContent = <div><div className={`dialog__executer ${this.state.workspaceUpdated === true ? "dialog__executer state-DONE" : ""}`}>Create workspace</div>
       <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>Add students</div>
