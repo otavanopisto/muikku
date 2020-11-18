@@ -86,7 +86,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
-
   }
 
   doTemplateSearch(value: string) {

@@ -12,7 +12,7 @@ import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType, } from '~/reducers/main-function/users';
-import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
+import { WorkspaceUpdateType, WorkspaceType } from '~/reducers/workspaces';
 import currentStudent from '~/components/guider/body/application/current-student';
 import studiesEnded from '~/components/index/body/studies-ended';
 import { equal } from 'assert';
@@ -51,9 +51,11 @@ interface OrganizationEditWorkspaceState {
   totalSteps: number,
   executing: boolean,
   validation: ValidationType,
-  workspaceCreated: boolean,
+  workspaceUpdated: boolean,
   studentsAdded: boolean,
   staffAdded: boolean,
+  studentsRemoved: boolean,
+  staffRemoved: boolean,
 }
 
 class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspaceProps, OrganizationEditWorkspaceState> {
@@ -78,9 +80,11 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       validation: {
         nameValid: 2
       },
-      workspaceCreated: false,
+      workspaceUpdated: false,
       studentsAdded: false,
       staffAdded: false,
+      studentsRemoved: false,
+      staffRemoved: false,
     };
 
     // TODO: amount of these methods can be halved
@@ -165,7 +169,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       selectedStudents: [],
       removeStaff: [],
       removeStudents: [],
-      workspaceCreated: false,
+      workspaceUpdated: false,
       studentsAdded: false,
       staffAdded: false,
     });
@@ -205,12 +209,16 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       locked: true,
       executing: true
     })
+    let payload: WorkspaceUpdateType = {};
+
+    if (this.props.currentWorkspace.name !== this.state.workspaceName) {
+      payload = { name: this.state.workspaceName }
+    }
+
 
     this.props.updateOrganizationWorkspace({
-      update: {
-        name: this.state.workspaceName,
-      },
-      workspace: this.props.workspace,
+      update: payload,
+      workspace: this.props.currentWorkspace,
       removeStudents: this.state.removeStudents,
       removeTeachers: this.state.removeStaff,
       addStudents: this.state.addStudents,
@@ -218,7 +226,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       success: (state: UpdateWorkspaceStateType) => {
         if (state === "WORKSPACE-UPDATE") {
           this.setState({
-            workspaceCreated: true
+            workspaceUpdated: true
           });
         } else if (state === "ADD-STUDENTS") {
           this.setState({
@@ -365,10 +373,12 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     // }
 
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceCreated === true ? "dialog__executer state-DONE" : ""}`}>Create workspace</div>
+    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceUpdated === true ? "dialog__executer state-DONE" : ""}`}>Create workspace</div>
       <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>Add students</div>
       <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>Add teachers</div>
-      <div className={`dialog__executer`}>Done</div></div>;
+      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>Add students</div>
+      <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>Add teachers</div></div>;
+
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.state.totalSteps}
       executeLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.execute.label')}

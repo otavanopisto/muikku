@@ -833,21 +833,30 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
+      let originalWorkspace = data.workspace;
+
+      // Take off data that'll cramp the update
+      delete originalWorkspace["staffMemberSelect"];
+      delete originalWorkspace["studentsSelect"];
 
       if (data.update) {
-        await promisify(mApi().workspace.workspaces.update(data.workspace.id, data.update), 'callback')();
+        await promisify(mApi().workspace.workspaces.update(data.workspace.id,
+          Object.assign(data.workspace, data.update)
+        ), 'callback')().then(
+          data.success && data.success("WORKSPACE-UPDATE")
+        );
       }
 
       if (data.addStudents.length > 0) {
-        let groupIdentifiers;
-        let studentIdentifiers;
+        let groupIdentifiers: number[] = [];
+        let studentIdentifiers: string[] = [];
 
         data.addStudents.map(student => {
           if (student.type === "student-group") {
-            groupIdentifiers.push(student.id);
+            groupIdentifiers.push(student.id as number);
           }
           if (student.type === "student") {
-            studentIdentifiers.push(student.id);
+            studentIdentifiers.push(student.id as string);
           }
         });
 
