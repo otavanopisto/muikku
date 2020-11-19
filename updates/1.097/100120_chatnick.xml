@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>drop table if exists UserChatSettings;</sql>
+  <sql>create table UserChatSettings (id bigint not null auto_increment, nick varchar(255) not null, userEntityId bigint not null, visibility varchar(255) not null, primary key (id));</sql>
+  <sql>alter table UserChatSettings add constraint UK_qtq9c9abhvel1myhmhyr3ues3 unique (nick);</sql>
+  <sql>alter table UserChatSettings add constraint UK_mu7g56eukjwnv6hdk4sc7kpw1 unique (userEntityId);</sql>
+</update>

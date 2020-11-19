@@ -229,13 +229,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
   //When we mount we need to register the websocket event for the answer saved
   componentWillMount(){
-    this.props.websocketState.websocket && this.props.websocketState.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
-    this.props.websocketState.websocket && this.props.websocketState.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+    if (this.props.websocketState.websocket) {
+      this.props.websocketState.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
+      this.props.websocketState.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+    }
   }
   //and we unregister that on unmount and of course unmount all the will be orphaned react components in the dom
   componentWillUnmount(){
-    this.props.websocketState.websocket && this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
-    this.props.websocketState.websocket && this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+    if (this.props.websocketState.websocket) {
+      this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
+      this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
+    }
   }
   //when an answer is saved from the server, as in the websocket calls this
   onAnswerSavedAtServer(data: any){
@@ -343,6 +347,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   //Ok so this is what the element calls every time that changes
   onValueChange(context: React.Component<any, any>, name: string, newValue: any){
+    if (!this.props.websocketState.websocket) {
+      // can't do anything if no websocket
+      return;
+    }
+
     //the context is basically the react component, the name the fieldName, and the newValue the value we use
 
     //so we check if it's not modified and if it is, we mark it as modified
