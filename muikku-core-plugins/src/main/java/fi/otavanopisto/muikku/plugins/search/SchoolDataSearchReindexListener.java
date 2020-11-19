@@ -240,30 +240,25 @@ public class SchoolDataSearchReindexListener {
 	    if (communicatorIndex < totalMessagesCount) {
 		    List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
 
-	      int last = Math.min(batch.size(), communicatorIndex + getBatchSize());
-	      int i;
-	      
-	      for (i = communicatorIndex; i < last; i++) {
-          CommunicatorMessage message = batch.get(i);
+	      for (CommunicatorMessage msg : batch) {
+          CommunicatorMessage message = msg;
 	        try {
 	          communicatorMessageIndexer.indexMessage(message);
+	          communicatorIndex++;
 	        } catch (Exception e) {
 	          logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
 	        }
 	      }
-	      if (communicatorIndex < 100) {
-	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + (communicatorIndex + i) + ")");
-	      } else {
-	         logger.log(Level.INFO, "Reindexed batch of communicator message (" + communicatorIndex + "-" + totalMessagesCount + ")");
-
+	      if (communicatorIndex < (totalMessagesCount + 1)) {
+	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + getOffset("communicatorIndex") + "-" + communicatorIndex + ")");
 	      }
 	      
-	      setOffset("communicatorIndex", communicatorIndex + getBatchSize());
+	      setOffset("communicatorIndex", communicatorIndex);
 	      return false;
 	    } else
 	      return true;
     } catch (Exception ex) {
-	    logger.log(Level.SEVERE, "Could not finish indexing usergroup entities.", ex);
+	    logger.log(Level.SEVERE, "Could not finish indexing communicator messages.", ex);
 	    return true;
 	  }
 	}
