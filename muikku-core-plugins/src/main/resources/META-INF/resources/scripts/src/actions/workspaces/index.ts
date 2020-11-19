@@ -555,11 +555,13 @@ export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType,
     update: WorkspaceUpdateType,
+    activeFilters?: WorkspacesActiveFiltersType,
     addStudents?: SelectItem[],
     addTeachers?: SelectItem[],
     removeStudents?: SelectItem[],
     removeTeachers?: SelectItem[],
     success?: (state?: UpdateWorkspaceStateType) => any,
+    executeOnSuccess?: () => any;
     fail?: () => any
   }): AnyActionType
 }
@@ -906,9 +908,9 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         //   );
       }
 
+      //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 
       data.success && data.success("DONE");
-
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;

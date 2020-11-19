@@ -172,6 +172,9 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       studentsAdded: false,
       staffAdded: false,
     });
+
+    setTimeout(async () => this.props.loadWorkspaces(this.props.activeFilters, true), 2000);
+
   }
 
   cancelDialog(closeDialog: () => any) {
@@ -235,10 +238,9 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         } else if (state === "ADD-TEACHERS") {
           this.setState({
             staffAdded: true
-          })
+          });
         } else if (state === "DONE") {
           closeDialog();
-          setTimeout(async () => await this.props.loadWorkspaces(this.props.activeFilters, true), 2000);
         }
       },
       fail: () => {
