@@ -320,9 +320,9 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
   render() {
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceCreated === true ? "dialog__executer state-DONE" : ""}`}>Create workspace</div>
-      <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>Add students</div>
-      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>Add teachers</div>
+    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceCreated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.createWorkspace')}</div>
+      <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addStudents')}</div>
+      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers')}</div>
     </div>;
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.state.totalSteps}

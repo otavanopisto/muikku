@@ -5,14 +5,14 @@ import { FormWizardActions, InputFormElement, SearchFormElement } from '~/compon
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import {
   UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, SetCurrentWorkspaceTriggerType, setCurrentOrganizationWorkspace,
-  loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType
+  loadCurrentOrganizationWorkspaceSelectStaff, loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType
 } from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType } from '~/reducers/main-function/users';
-import { WorkspaceUpdateType, WorkspaceType } from '~/reducers/workspaces';
+import { WorkspaceUpdateType, WorkspaceType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 
 interface ValidationType {
   nameValid: number
@@ -24,6 +24,7 @@ interface OrganizationEditWorkspaceProps {
   users: UsersSelectType,
   workspace: WorkspaceType,
   currentWorkspace: WorkspaceType,
+  activeFilters: WorkspacesActiveFiltersType,
   updateOrganizationWorkspace: UpdateWorkspaceTriggerType,
   setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType,
   loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType,
@@ -31,6 +32,7 @@ interface OrganizationEditWorkspaceProps {
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
   loadUserGroups: LoadUsersTriggerType,
+  loadWorkspaces: LoadWorkspacesFromServerTriggerType
 }
 
 interface OrganizationEditWorkspaceState {
@@ -216,6 +218,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.props.updateOrganizationWorkspace({
       update: payload,
       workspace: this.props.currentWorkspace,
+      activeFilters: this.props.activeFilters,
       removeStudents: this.state.removeStudents,
       removeTeachers: this.state.removeStaff,
       addStudents: this.state.addStudents,
@@ -235,6 +238,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           })
         } else if (state === "DONE") {
           closeDialog();
+          setTimeout(async () => await this.props.loadWorkspaces(this.props.activeFilters, true), 2000);
         }
       },
       fail: () => {
@@ -360,11 +364,11 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   render() {
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceUpdated === true ? "dialog__executer state-DONE" : ""}`}>Create workspace</div>
-      <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>Add students</div>
-      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>Add teachers</div>
-      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>Add students</div>
-      <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>Add teachers</div></div>;
+    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
+      <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.addStudents')}</div>
+      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.addTeachers')}</div>
+      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents')}</div>
+      <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeTeachers')}</div></div>;
 
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.state.totalSteps}
@@ -402,7 +406,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     setCurrentOrganizationWorkspace,
     loadCurrentOrganizationWorkspaceSelectStudents,
     loadCurrentOrganizationWorkspaceSelectStaff,
-    updateOrganizationWorkspace
+    updateOrganizationWorkspace,
+    loadWorkspaces: loadWorkspacesFromServer
   }, dispatch);
 };
 

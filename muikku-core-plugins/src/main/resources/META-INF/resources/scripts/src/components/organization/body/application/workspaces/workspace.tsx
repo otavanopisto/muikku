@@ -6,7 +6,7 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
-import { WorkspaceType } from '~/reducers/workspaces';
+import { WorkspacesActiveFiltersType, WorkspaceType } from '~/reducers/workspaces';
 import WorkspaceDialog from '~/components/organization/dialogs/edit-workspace';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 import { SelectItem } from '~/components/base/input-select-autofill';
@@ -15,7 +15,8 @@ import workspace from '~/reducers/workspace';
 interface CourseProps {
   i18n: i18nType,
   status: StatusType,
-  workspace: WorkspaceType
+  workspace: WorkspaceType,
+  activeFilters: WorkspacesActiveFiltersType
 }
 
 interface CourseState {
@@ -36,7 +37,7 @@ class Workspace extends React.Component<CourseProps, CourseState>{
     this.setState({ expanded: !this.state.expanded })
   }
   render() {
-    let actions = <div><WorkspaceDialog workspace={this.props.workspace} ><span className="icon-pencil"></span></WorkspaceDialog></div>;
+    let actions = <div><WorkspaceDialog activeFilters={this.props.activeFilters} workspace={this.props.workspace} ><span className="icon-pencil"></span></WorkspaceDialog></div>;
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="application-list__header-icon icon-books"></span>
@@ -74,6 +75,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status,
+    activeFilters: state.organizationWorkspaces.activeFilters
   }
 };
 
