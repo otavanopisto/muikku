@@ -15,9 +15,6 @@ import {
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 import { SelectItem } from '~/components/base/input-select-autofill';
-import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
-import { group } from 'console';
-import userCredentials from '~/reducers/user-credentials';
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
@@ -824,7 +821,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.save.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -915,7 +912,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.save.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -959,7 +956,7 @@ let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTrig
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.organization.workspaces.notification.selectStaff.error'), 'error'));
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
         payload: { staffMemberSelect: { state: "ERROR" } }
@@ -991,7 +988,7 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.organization.workspaces.notification.selectStaff.error'), 'error'));
     }
   }
 }
@@ -1030,7 +1027,7 @@ let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTrigg
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load select Students'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.organization.workspaces.notification.selectStudents.error'), 'error'));
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
         payload: { studentsSelect: { state: "ERROR" } }
@@ -1061,7 +1058,7 @@ let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadS
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load students'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.organization.workspaces.notification.selectStudents.error'), 'error'));
     }
   }
 }
@@ -1112,7 +1109,7 @@ let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspace
         });
       }
       data.fail && data.fail();
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to toggle student state'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.users.student.archive.error'), 'error'));
     }
   }
 }
@@ -1131,7 +1128,7 @@ let loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType = functi
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load materials'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.materials.notification.load.error'), 'error'));
     }
   }
 }
@@ -1150,7 +1147,7 @@ let loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType = function loadWho
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load help'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.helpPage.notification.load.error'), 'error'));
     }
   }
 }
@@ -1201,7 +1198,7 @@ let loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load material composite replies'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.materials.notification.compositeRepliesLoad.error'), 'error'));
     }
   }
 }
@@ -1243,7 +1240,7 @@ let updateAssignmentState: UpdateAssignmentStateTriggerType = function updateAss
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to deliver to the server'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.materials.notification.compositeRepliesUpdate.error'), 'error'));
     }
   }
 }
@@ -1373,7 +1370,7 @@ let createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentW
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.journal.notification.create.error'), 'error'));
       data.fail && data.fail();
     }
   }
@@ -1413,7 +1410,7 @@ let updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWor
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.journal.notification.update.error'), 'error'));
       data.fail && data.fail();
     }
   }
@@ -1449,7 +1446,7 @@ let deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWor
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.journal.notification.delete.error'), 'error'));
       data.fail && data.fail();
     }
   }
@@ -1477,7 +1474,7 @@ let loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorkspa
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to fetch workspace details'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.details.load.error'), 'error'));
     }
   }
 }
@@ -1508,7 +1505,7 @@ let updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentW
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.details.update.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1562,7 +1559,7 @@ let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurr
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.producers.update.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1585,7 +1582,7 @@ let loadWorkspaceTypes: LoadWorkspaceTypesTriggerType = function loadWorkspaceTy
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to fetch workspace types'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.types.load.error'), 'error'));
     }
   }
 }
@@ -1616,7 +1613,7 @@ let deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType = functi
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete workspace image'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.workspaceImage.delete.error'), 'error'));
     }
   }
 }
@@ -1684,7 +1681,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.organization.workspaces.notification.workspace.create.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1749,7 +1746,7 @@ let copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType = function copyCurrent
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to clone workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.workspace.copy.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1795,7 +1792,7 @@ let updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType 
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace images'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.workspaceImage.update.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1827,7 +1824,7 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load current workspace user group permissions'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.usergroupPermissions.load.error'), 'error'));
     }
   }
 }
@@ -1879,7 +1876,7 @@ let updateCurrentWorkspaceUserGroupPermission: UpdateCurrentWorkspaceUserGroupPe
           }
         }
       });
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update permission value'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.notification.usergroupPermissions.update.error'), 'error'));
     }
   }
 }
