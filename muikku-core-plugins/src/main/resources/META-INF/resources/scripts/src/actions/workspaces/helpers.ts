@@ -9,7 +9,7 @@ import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, Works
 const MAX_LOADED_AT_ONCE = 26;
 const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
-export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType | null, initial: boolean, loadOrganizationWorkspaces: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
+export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType | null, initial: boolean, refresh: boolean, loadOrganizationWorkspaces: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   let state: StateType = getState();
 
   // This "WorkspacesType" annoys me. It's used in the organization workspaces,
@@ -29,7 +29,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
 
   //Avoid loading courses again for the first time if it's the same location
 
-  if (initial && filters === workspaces.activeFilters && workspaces.state === "READY") {
+  if (initial && filters === workspaces.activeFilters && workspaces.state === "READY" && !refresh) {
     return;
   }
 

@@ -9,8 +9,6 @@ import { StateType } from '~/reducers';
 import { WorkspacesActiveFiltersType, WorkspaceType } from '~/reducers/workspaces';
 import WorkspaceDialog from '~/components/organization/dialogs/edit-workspace';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
-import { SelectItem } from '~/components/base/input-select-autofill';
-import workspace from '~/reducers/workspace';
 
 interface CourseProps {
   i18n: i18nType,

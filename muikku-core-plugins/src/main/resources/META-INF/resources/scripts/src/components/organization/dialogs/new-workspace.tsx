@@ -3,14 +3,14 @@ import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
-import { loadTemplatesFromServer, LoadTemplatesFromServerTriggerType, CreateWorkspaceTriggerType, createWorkspace, CreateWorkspaceStateType } from '~/actions/workspaces';
+import { loadTemplatesFromServer, LoadTemplatesFromServerTriggerType, loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType, CreateWorkspaceTriggerType, createWorkspace, CreateWorkspaceStateType } from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType } from '~/reducers/main-function/users';
-import { CreateWorkspaceType, WorkspaceType } from '~/reducers/workspaces';
+import { CreateWorkspaceType, WorkspaceType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import '~/sass/elements/course.scss';
 
 interface ValidationType {
@@ -24,11 +24,13 @@ interface OrganizationNewWorkspaceProps {
   data?: CreateWorkspaceType,
   users: UsersSelectType,
   templates: WorkspaceType[],
+  activeFilters: WorkspacesActiveFiltersType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
   loadUserGroups: LoadUsersTriggerType,
   loadTemplates: LoadTemplatesFromServerTriggerType
   createWorkspace: CreateWorkspaceTriggerType,
+  loadWorkspaces: LoadWorkspacesFromServerTriggerType
 }
 
 interface OrganizationNewWorkspaceState {
@@ -199,6 +201,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             staffAdded: true
           })
         } else if (state === "DONE") {
+          setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
           closeDialog();
         }
       },
@@ -358,7 +361,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     loadStudents: loadSelectorStudents,
     loadUserGroups: loadSelectorUserGroups,
     loadTemplates: loadTemplatesFromServer,
-    createWorkspace
+    createWorkspace,
+    loadWorkspaces: loadWorkspacesFromServer
   }, dispatch);
 };
 

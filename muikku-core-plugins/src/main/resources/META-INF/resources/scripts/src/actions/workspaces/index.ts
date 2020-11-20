@@ -497,7 +497,7 @@ let cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType = functi
 }
 
 export interface LoadWorkspacesFromServerTriggerType {
-  (filters: WorkspacesActiveFiltersType, organizationWorkspaces: boolean): AnyActionType
+  (filters: WorkspacesActiveFiltersType, organizationWorkspaces: boolean, refresh: boolean): AnyActionType
 }
 
 export interface LoadMoreWorkspacesFromServerTriggerType {
@@ -583,16 +583,16 @@ export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   }): AnyActionType
 }
 
-let loadWorkspacesFromServer: LoadWorkspacesFromServerTriggerType = function loadWorkspacesFromServer(filters, organizationWorkspaces) {
-  return loadWorkspacesHelper.bind(this, filters, true, organizationWorkspaces);
+let loadWorkspacesFromServer: LoadWorkspacesFromServerTriggerType = function loadWorkspacesFromServer(filters, organizationWorkspaces, refresh) {
+  return loadWorkspacesHelper.bind(this, filters, true, refresh, organizationWorkspaces);
 }
 
 let loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer() {
-  return loadWorkspacesHelper.bind(this, null, false, false);
+  return loadWorkspacesHelper.bind(this, null, false, false, false);
 }
 
 let loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer() {
-  return loadWorkspacesHelper.bind(this, null, false, true);
+  return loadWorkspacesHelper.bind(this, null, false, false, true);
 }
 
 let loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType = function loadCurrentWorkspaceJournalsFromServer(userEntityId) {

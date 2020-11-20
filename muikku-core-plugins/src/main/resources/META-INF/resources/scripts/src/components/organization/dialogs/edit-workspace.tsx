@@ -5,7 +5,7 @@ import { FormWizardActions, InputFormElement, SearchFormElement } from '~/compon
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import {
   UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, SetCurrentWorkspaceTriggerType, setCurrentOrganizationWorkspace,
-  loadCurrentOrganizationWorkspaceSelectStaff, loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType
+  loadCurrentOrganizationWorkspaceSelectStaff, LoadWorkspacesFromServerTriggerType, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType, loadWorkspacesFromServer
 } from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
@@ -172,9 +172,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       studentsAdded: false,
       staffAdded: false,
     });
-
-    setTimeout(async () => this.props.loadWorkspaces(this.props.activeFilters, true), 2000);
-
   }
 
   cancelDialog(closeDialog: () => any) {
@@ -240,6 +237,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
             staffAdded: true
           });
         } else if (state === "DONE") {
+          setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
           closeDialog();
         }
       },

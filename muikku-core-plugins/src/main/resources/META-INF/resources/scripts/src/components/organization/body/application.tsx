@@ -26,7 +26,8 @@ import { loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType } from '~
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>,
   loadUsers: LoadUsersTriggerType,
-  loadWorkspaces: LoadWorkspacesFromServerTriggerType
+  loadWorkspaces: LoadWorkspacesFromServerTriggerType,
+  activeFilters: WorkspacesActiveFiltersType
   i18n: i18nType
 }
 
@@ -66,13 +67,13 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
       baseFilter: "ALL_COURSES"
     }
 
-    this.props.loadWorkspaces(filters, true);
+    this.props.loadWorkspaces(filters, true, false);
   }
 
   render() {
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
     let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
-    let coursesPrimaryAction = <WorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
+    let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
         <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="OrganizationWorkspaceSearch" updateField={this.doWorkspaceSearch} ></SearchFormElement>
@@ -117,7 +118,8 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    activeFilters: state.organizationWorkspaces.activeFilters
   }
 };
 

@@ -59,7 +59,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     workspacesState: state.organizationWorkspaces.state,
     workspacesHasMore: state.organizationWorkspaces.hasMore,
-    workspaces: state.organizationWorkspaces.availableWorkspaces
+    workspaces: state.organizationWorkspaces.availableWorkspaces,
   }
 };
 
