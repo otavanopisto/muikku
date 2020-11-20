@@ -60,4 +60,6 @@ public interface CommunicatorMessageSearchBuilder {
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
 
   CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
+
+  CommunicatorMessageSearchBuilder setReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
 }

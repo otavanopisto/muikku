@@ -86,6 +86,12 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
 	}
 	
 	@Override
+  public CommunicatorMessageSearchBuilder setReceiver(List<IndexedCommunicatorMessageRecipient> receiver) {
+    this.receiver = receiver;
+    return this;
+  }
+	
+	@Override
 	public Long getSearchId() {
 	  return searchId;
 	}
