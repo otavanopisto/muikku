@@ -2,7 +2,6 @@ import Websocket from '~/util/websocket';
 import mApi from '~/lib/mApi';
 import {Action} from 'redux';
 import { updateUnreadMessageThreadsCount } from '~/actions/main-function/messages';
-import converse from '~/lib/converse';
 import { StateType } from '~/reducers';
 import { Store } from 'redux';
 import $ from '~/lib/jquery';
@@ -16,7 +15,6 @@ function getOptionValue(option: boolean){
 }
 
 export default function(store: Store<StateType>, options: {
-  setupChat?: boolean,
   setupMessages?: boolean
 } = {}){
   let state:StateType = store.getState();

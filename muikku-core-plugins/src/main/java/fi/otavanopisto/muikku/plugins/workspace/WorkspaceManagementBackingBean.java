@@ -63,9 +63,7 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
       return NavigationRules.ACCESS_DENIED;
     }
     
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
     
     if (userChatSettings != null && userChatSettings.getVisibility().equals(UserChatVisibility.VISIBLE_TO_ALL)) {
       workspaceChatSettings = true;

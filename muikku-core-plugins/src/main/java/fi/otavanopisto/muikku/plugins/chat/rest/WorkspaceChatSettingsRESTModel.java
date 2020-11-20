@@ -1,26 +1,16 @@
-package fi.otavanopisto.muikku.plugins.chat;
+package fi.otavanopisto.muikku.plugins.chat.rest;
 
-import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 
-public class WorkspaceChatSettingsRestModel {
+public class WorkspaceChatSettingsRESTModel {
 
-  public WorkspaceChatSettingsRestModel() {
+  public WorkspaceChatSettingsRESTModel() {
     
   }
   
-  public WorkspaceChatSettingsRestModel(Long id, Long workspaceEntityId, WorkspaceChatStatus chatStatus) {
-    this.id = id;
+  public WorkspaceChatSettingsRESTModel(Long workspaceEntityId, WorkspaceChatStatus chatStatus) {
     this.workspaceEntityId = workspaceEntityId;
     this.chatStatus = chatStatus;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public Long getWorkspaceEntityId() {
@@ -38,8 +28,6 @@ public class WorkspaceChatSettingsRestModel {
   public void setChatStatus(WorkspaceChatStatus chatStatus) {
     this.chatStatus = chatStatus;
   }
-
-  private Long id;
 
   private Long workspaceEntityId;
 

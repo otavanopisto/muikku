@@ -10,6 +10,8 @@ import announcements from './announcements';
 import discussion from './discussion';
 import userIndex from './user-index';
 
+import profile from './main-function/profile';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -19,6 +21,7 @@ export default combineReducers({
   status,
   websocket,
   title,
+  profile,
 
   workspaces,
   announcements,
