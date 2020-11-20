@@ -57,8 +57,12 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSign
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
+import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -112,6 +116,9 @@ public class CommunicatorController {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject 
+  private UserEntityController userEntityController;
   
   @Inject
   @Any
@@ -268,7 +275,10 @@ public class CommunicatorController {
     if (CollectionUtils.isEmpty(recipientIds)) {
       logger.log(Level.SEVERE, String.format("Message %d contains no recipients", message.getId()));
     }
-    communicatorMessageIndexer.indexMessage(message);
+    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(sender, message.getCommunicatorMessageId());
+    for(CommunicatorMessage msg : communicatorMessages) {
+      communicatorMessageIndexer.indexMessage(msg);
+    }
 
     return message;
   }
@@ -431,6 +441,28 @@ public class CommunicatorController {
    * @param messageId
    * @return
    */
+  public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+    Set<CommunicatorMessage> result = new TreeSet<>(new Comparator<CommunicatorMessage>() {
+      @Override
+      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
+        if (o1 == null || o1.getId() == null) {
+          if (o2 == null || o2.getId() == null) {
+            return 0;
+          } else {
+            return -1;
+          }
+        }
+        
+        return o1.getId().compareTo(o2.getId());
+      }
+    });
+    
+    result.addAll(communicatorMessageDAO.listMessagesInSentThread(user, messageId));
+    result.addAll(communicatorMessageDAO.listMessagesInThread(user, messageId));
+    
+    return new ArrayList<>(result);
+  }
+
   public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId, Boolean trashed) {
     Set<CommunicatorMessage> result = new TreeSet<>(new Comparator<CommunicatorMessage>() {
       @Override
@@ -452,10 +484,13 @@ public class CommunicatorController {
     
     return new ArrayList<>(result);
   }
-
+  
   public CommunicatorMessageRecipient updateRead(CommunicatorMessageRecipient recipient, boolean value) {
-
-    communicatorMessageIndexer.indexMessage(recipient.getCommunicatorMessage()); 
+    UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, recipient.getCommunicatorMessage().getCommunicatorMessageId());
+    for(CommunicatorMessage message : communicatorMessages) {
+      communicatorMessageIndexer.indexMessage(message);
+    }
     return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
   }
 
@@ -511,8 +546,10 @@ public class CommunicatorController {
   /* MessageIdLabel */
   
   public CommunicatorMessageIdLabel createMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId, CommunicatorLabel label) {
-    CommunicatorMessage message = this.findCommunicatorMessageById(messageId.getId());
-    communicatorMessageIndexer.indexMessage(message);
+    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, messageId);
+    for(CommunicatorMessage message : communicatorMessages) {
+      communicatorMessageIndexer.indexMessage(message);
+    }
     return communicatorMessageIdLabelDAO.create(userEntity, messageId, label);
   }
 
@@ -522,9 +559,6 @@ public class CommunicatorController {
   
   public CommunicatorMessageIdLabel findMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId,
       CommunicatorLabel label) {
-    CommunicatorMessageId threadId = this.findCommunicatorMessageId(messageId.getId());
-    CommunicatorMessage message = this.findCommunicatorMessageById(messageId.getId());
-    communicatorMessageIndexer.indexMessage(message);
     return communicatorMessageIdLabelDAO.findBy(userEntity, messageId, label);
   }
 
@@ -533,10 +567,13 @@ public class CommunicatorController {
   }
   
   public void delete(CommunicatorMessageIdLabel messageIdLabel) {
-    
-    CommunicatorMessageId messageId = this.findCommunicatorMessageId(messageIdLabel.getId());
-    CommunicatorMessage message = this.findCommunicatorMessageById(messageId.getId());
-    communicatorMessageIndexer.indexMessage(message);
+    Long userEntityId = messageIdLabel.getUserEntity();
+    UserEntity user = userEntityController.findUserEntityById(userEntityId);
+    CommunicatorMessageId messageId = this.findCommunicatorMessageId(messageIdLabel.getCommunicatorMessageId().getId());
+    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(user, messageId);
+    for (CommunicatorMessage message : communicatorMessages) {
+      communicatorMessageIndexer.indexMessage(message);
+    }
     communicatorMessageIdLabelDAO.delete(messageIdLabel);
   }
   

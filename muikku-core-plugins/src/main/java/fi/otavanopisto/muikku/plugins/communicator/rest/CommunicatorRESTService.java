@@ -383,6 +383,8 @@ public class CommunicatorRESTService extends PluginRESTService {
                 }
               }
               
+            } else {
+              readByReceiver = true;
             }
             receiver.add(new CommunicatorSearchResultRecipientRESTModel(recipient.getUserEntityId(), recipient.getFirstName(), recipient.getLastName(), recipient.getNickName(), recipient.getStudyProgrammeName()));
 
