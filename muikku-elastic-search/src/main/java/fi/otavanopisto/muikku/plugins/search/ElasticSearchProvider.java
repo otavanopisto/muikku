@@ -690,16 +690,13 @@ public class ElasticSearchProvider implements SearchProvider {
       int start, 
       int maxResults, 
       List<Sort> sorts) {
-//    if (message != null && message.isEmpty()) {
-//      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
-//    }
-//    
     BoolQueryBuilder query = boolQuery();
     
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     Long id = loggedUser.getId();
     String idToString = String.valueOf(id);
     
+    message = sanitizeSearchString(message);
     
     query.must(boolQuery()
     		.must(QueryBuilders.queryStringQuery("*" + message + "*"))

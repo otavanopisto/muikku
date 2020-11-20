@@ -12,9 +12,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.EJB;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -57,11 +55,8 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSign
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
-import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -486,12 +481,15 @@ public class CommunicatorController {
   }
   
   public CommunicatorMessageRecipient updateRead(CommunicatorMessageRecipient recipient, boolean value) {
-    UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, recipient.getCommunicatorMessage().getCommunicatorMessageId());
-    for(CommunicatorMessage message : communicatorMessages) {
-      communicatorMessageIndexer.indexMessage(message);
+    try {
+      return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
+    } finally {
+      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+      List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, recipient.getCommunicatorMessage().getCommunicatorMessageId());
+      for(CommunicatorMessage message : communicatorMessages) {
+        communicatorMessageIndexer.indexMessage(message);
+      }
     }
-    return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
   }
 
   public CommunicatorMessage postMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients) {
@@ -540,17 +538,33 @@ public class CommunicatorController {
   }
   
   public CommunicatorUserLabel updateUserLabel(CommunicatorUserLabel userLabel, String name, Long color) {
-    return communicatorUserLabelDAO.update(userLabel, name, color);
+    try {
+      return communicatorUserLabelDAO.update(userLabel, name, color);
+    } finally {
+      List<CommunicatorMessageIdLabel> messageIdLabels = communicatorMessageIdLabelDAO.listByLabel(userLabel);
+      UserEntity userEntity = userEntityController.findUserEntityById(userLabel.getUserEntity());
+
+      for (CommunicatorMessageIdLabel messageIdLabel : messageIdLabels) {
+        messageIdLabel.getCommunicatorMessageId();
+        List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, messageIdLabel.getCommunicatorMessageId());
+        for(CommunicatorMessage message : communicatorMessages) {
+          communicatorMessageIndexer.indexMessage(message);
+        }
+      }
+    }
   }
 
   /* MessageIdLabel */
   
   public CommunicatorMessageIdLabel createMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId, CommunicatorLabel label) {
-    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, messageId);
-    for(CommunicatorMessage message : communicatorMessages) {
-      communicatorMessageIndexer.indexMessage(message);
+    try {
+      return communicatorMessageIdLabelDAO.create(userEntity, messageId, label);
+    } finally {
+      List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, messageId);
+      for(CommunicatorMessage message : communicatorMessages) {
+        communicatorMessageIndexer.indexMessage(message);
+      }
     }
-    return communicatorMessageIdLabelDAO.create(userEntity, messageId, label);
   }
 
   public CommunicatorMessageIdLabel findMessageIdLabelById(Long id) {
