@@ -112,7 +112,7 @@
     },
     
     _createTicket: function (callback) {
-      mApi().websocket.ticket.create()
+      mApi().websocket.ticket.read()
         .callback($.proxy(function (err, ticket) {
           if (!err) {
             callback(ticket.ticket);
