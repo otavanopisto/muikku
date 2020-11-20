@@ -6,6 +6,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 @Stateless
 public class CreatedUserEntityFinder {
@@ -14,8 +15,8 @@ public class CreatedUserEntityFinder {
   private UserEntityController userEntityController;
 
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-  public UserEntity findCreatedUserEntity(String schoolDataSource, String identifier) {
-    return userEntityController.findUserEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
+  public UserEntity findCreatedUserEntity(SchoolDataIdentifier identifier) {
+    return userEntityController.findUserEntityByUserIdentifier(identifier);
   }
   
 }

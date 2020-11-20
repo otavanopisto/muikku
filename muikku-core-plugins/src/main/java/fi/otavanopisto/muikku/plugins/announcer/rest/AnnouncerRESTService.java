@@ -438,6 +438,11 @@ public class AnnouncerRESTService extends PluginRESTService {
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {
+      // #5170: Skip archived user groups 
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(announcementUserGroup.getUserGroupEntityId());
+      if (userGroupEntity == null || Boolean.TRUE.equals(userGroupEntity.getArchived())) {
+        continue;
+      }
       userGroupEntityIds.add(announcementUserGroup.getUserGroupEntityId());
     }
     restModel.setUserGroupEntityIds(userGroupEntityIds);

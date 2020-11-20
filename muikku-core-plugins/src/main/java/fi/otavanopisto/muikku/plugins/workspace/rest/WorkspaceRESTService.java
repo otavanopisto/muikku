@@ -71,6 +71,12 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.ChatSyncController;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
@@ -249,6 +255,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private ChatSyncController chatSyncController;
+  
+  @Inject
+  private ChatController chatController;
   
   @GET
   @Path("/workspaceTypes")
@@ -2802,6 +2814,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
     userIndexer.indexUser(userSchoolDataIdentifier.getDataSource().getIdentifier(), userSchoolDataIdentifier.getIdentifier());
+    
+    // If workspace and student have chat enabled, toggle room membership accordingly
+    
+    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspaceEntity);
+    if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
+      // Workspace has chat enabled
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(
+          workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
+      if (userEntity != null) {
+        UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
+        if (userChatSettings != null && userChatSettings.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL) {
+          // Student has chat enabled
+          if (workspaceStudentRestModel.getActive()) {
+            chatSyncController.syncWorkspaceUser(workspaceEntity, userEntity);
+          }
+          else {
+            chatSyncController.removeChatRoomMembership(userEntity, workspaceEntity);
+          }
+        }
+      }
+    }
 
     return Response.noContent().build();
   }

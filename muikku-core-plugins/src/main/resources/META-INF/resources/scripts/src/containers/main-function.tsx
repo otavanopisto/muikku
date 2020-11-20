@@ -32,7 +32,7 @@ import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -44,6 +44,8 @@ import { updateHops } from '~/actions/main-function/hops';
 import { updateStatistics } from '~/actions/main-function/records/statistics';
 import { updateYO, updateMatriculationSubjectEligibility } from '~/actions/main-function/records/yo';
 import { updateSummary } from '~/actions/main-function/records/summary';
+
+import Chat from '../components/chat/chat';
 
 interface MainFunctionProps {
   store: Store<StateType>,
@@ -224,7 +226,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
+
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
+
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
@@ -258,6 +262,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false);
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <CousePickerBody />
@@ -266,13 +272,14 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderIndexBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 6));
+      this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 6));
 
       this.props.store.dispatch(loadAnnouncementsAsAClient() as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <IndexBody />
@@ -282,7 +289,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
 
@@ -313,6 +320,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         }
       }) as Action);
 
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <OrganizationAdministrationBody />
   }
@@ -320,7 +328,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderCommunicatorBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadNewlyReceivedMessage);
+      this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadNewlyReceivedMessage);
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -343,6 +351,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
           this.loadCommunicatorData(currentLocation);
         }
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <CommunicatorBody />
@@ -351,13 +361,14 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderDiscussionBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.forum.pageTitle')));
+
       this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
 
       this.props.store.dispatch(loadDiscussionAreasFromServer(() => {
@@ -365,6 +376,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         let currentLocation = window.location.hash.replace("#", "").split("/");
         this.loadDiscussionData(currentLocation);
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <DiscussionBody />
   }
@@ -372,11 +385,14 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderAnnouncementsBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcements.pageTitle')));
       this.props.store.dispatch(loadAnnouncementsAsAClient({ hideWorkspaceAnnouncements: "false" }, (announcements: AnnouncementListType) => { announcements }) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <AnnouncementsBody />
   }
@@ -384,7 +400,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderAnnouncerBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -397,6 +413,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else {
         this.loadAnnouncerData(window.location.hash.replace("#", "").split("/"));
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <AnnouncerBody />
@@ -405,13 +423,15 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderGuiderBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
 
       this.loadGuiderData();
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <GuiderBody />
   }
@@ -419,7 +439,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderProfileBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.profile.profile')));
 
@@ -430,6 +450,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else {
         this.props.store.dispatch(loadProfileAddress() as Action);
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <ProfileBody />
@@ -438,10 +460,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderRecordsBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket.restoreEventListeners(); this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      this.props.websocket && this.props.websocket.restoreEventListeners(); this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <RecordsBody />
@@ -450,16 +473,17 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   render() {
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
-      <Route exact path="/" render={this.renderIndexBody} />
-      <Route path="/organization" render={this.renderOrganizationAdministrationBody} />
-      <Route path="/coursepicker" render={this.renderCoursePickerBody} />
-      <Route path="/communicator" render={this.renderCommunicatorBody} />
-      <Route path="/discussion" render={this.renderDiscussionBody} />
-      <Route path="/announcements" render={this.renderAnnouncementsBody} />
-      <Route path="/announcer" render={this.renderAnnouncerBody} />
-      <Route path="/guider" render={this.renderGuiderBody} />
-      <Route path="/profile" render={this.renderProfileBody} />
+      <Route exact path="/" render={this.renderIndexBody}/>
+      <Route path="/organization" render={this.renderOrganizationAdministrationBody}/>
+      <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
+      <Route path="/communicator" render={this.renderCommunicatorBody}/>
+      <Route path="/discussion" render={this.renderDiscussionBody}/>
+      <Route path="/announcements" render={this.renderAnnouncementsBody}/>
+      <Route path="/announcer" render={this.renderAnnouncerBody}/>
+      <Route path="/guider" render={this.renderGuiderBody}/>
+      <Route path="/profile" render={this.renderProfileBody}/>
       <Route path="/records" render={this.renderRecordsBody} />
+      <Chat/>
     </div></BrowserRouter>);
   }
 }

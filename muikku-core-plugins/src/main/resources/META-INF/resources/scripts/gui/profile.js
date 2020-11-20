@@ -40,8 +40,7 @@
     },
     
     _setVisibility: function(visibility) {
-      var userIdentifier = MUIKKU_LOGGED_USER;
-      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function () {
+      mApi().chat.settings.update({visibility: visibility}).callback($.proxy(function () {
         location.reload();
       }, this));
     }
@@ -361,7 +360,7 @@
     
     mApi().user.properties.read(
       MUIKKU_LOGGED_USER_ID, {
-        properties: 'profile-phone,profile-vacation-start,profile-vacation-end'  
+        properties: 'profile-phone,profile-vacation-start,profile-vacation-end, profile-chat-enabled'  
       })
       .callback($.proxy(function(err, properties) {
 
@@ -379,6 +378,8 @@
         if (props['profile-vacation-end']) {
           $('input[name="profile-vacation-end"]').datepicker('setDate', moment(props['profile-vacation-end']).toDate());
         }
+        
+        $('select[name="profile-chat-enabled"]').val(props['profile-chat-enabled']);
 
       }, this));
     
@@ -393,6 +394,8 @@
       
       var vacationEndDate = $('input[name="profile-vacation-end"]').datepicker('getDate');
       mApi().user.property.create({key: 'profile-vacation-end', value: vacationEndDate == null ? null : vacationEndDate.toISOString()});
+      
+      mApi().user.property.create({key: 'profile-chat-enabled', value: $('select[name="profile-chat-enabled"]').val()});
       
       $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.profile.properties.saved"));      
     }, this));
