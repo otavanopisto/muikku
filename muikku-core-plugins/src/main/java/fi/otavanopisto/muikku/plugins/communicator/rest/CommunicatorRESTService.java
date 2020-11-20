@@ -322,7 +322,6 @@ public class CommunicatorRESTService extends PluginRESTService {
       try {
         List<IndexedCommunicatorMessage> results = searchResult.getResults();
         for (IndexedCommunicatorMessage result : results) {
-         // CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender> communicatorMessage = new CommunicatorMessageSearchResult<IndexedCommunicatorMessageRecipient, IndexedCommunicatorMessageSender>();
           Boolean readByReceiver = false;
           
           Long communicatorMessageId = result.getCommunicatorMessageId();
