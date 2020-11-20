@@ -335,7 +335,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           Boolean archivedBySender = Boolean.TRUE.equals(sender.getArchivedBySender());
           if (isLogged.equals(Boolean.TRUE) && archivedBySender.equals(Boolean.TRUE)) {
             continue;
-          } else {
+          } 
           
           CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
           senderData.setUserEntityId(sender.getUserEntityId());
@@ -369,7 +369,6 @@ public class CommunicatorRESTService extends PluginRESTService {
               List<IndexedCommunicatorMessageLabels> labels = recipient.getLabels();
               if (labels != null) {
                 for (IndexedCommunicatorMessageLabels label : labels) {
-                  //CommunicatorMessageIdLabel lbl = communicatorController.findMessageIdLabelById(label.getId());
                   CommunicatorUserLabel lbl = communicatorController.findUserLabelById(label.getId());
                   
                   if (lbl != null) {
@@ -411,10 +410,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 	              readByReceiver,
 	              labelsList
 	          ));
-	          
-		   //     communicatorMessages1.add(communicatorMessage);
           }
-        }
         }
       } finally {
         	
