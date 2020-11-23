@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
-import { StudentUserAddressType, UserWithSchoolDataType } from "~/reducers/user-index";
+import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType } from "~/reducers/main-function/user-index";
+
 
 export interface ProfileType {
   properties: {
@@ -7,13 +8,15 @@ export interface ProfileType {
   },
   username?: string,
   addresses?: Array<StudentUserAddressType>,
-  student?: UserWithSchoolDataType
+  student?: UserWithSchoolDataType,
+  chatSettings?: UserChatSettingsType
 }
 
 export default function profile(state: ProfileType = {
   properties: {},
   username: null,
-  addresses: null
+  addresses: null,
+  chatSettings: null,
 }, action: ActionType): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY"){
     let newProperties = {...state.properties}
@@ -32,6 +35,10 @@ export default function profile(state: ProfileType = {
   } else if (action.type === "SET_PROFILE_STUDENT"){
     return {...state, ...{
       student: action.payload
+    }}
+  } else if (action.type === "SET_PROFILE_CHAT_SETTINGS"){
+    return {...state, ...{
+      chatSettings: action.payload
     }}
   }
   return state;

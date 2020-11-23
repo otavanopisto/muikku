@@ -171,6 +171,8 @@ export interface WorkspaceStudentAssessmentStateType {
   text?: string
 }
 
+export type WorkspaceChatStatusType = "ENABLED" | "DISABLED";
+
 export interface WorkspacePermissionsType {
   workspaceEntityId: number,
   userGroupEntityId: number,
@@ -192,6 +194,7 @@ export interface WorkspaceType {
   published: boolean,
   subjectIdentifier: string | number,
   urlName: string,
+  chatStatus?: WorkspaceChatStatusType,
 
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
@@ -347,7 +350,6 @@ export interface WorkspacesType {
   currentMaterialsReplies: MaterialCompositeRepliesListType,
   editMode: WorkspaceEditModeStateType,
   materialEditor: WorkspaceMaterialEditorType,
-
 }
 
 export interface OrganizationWorkspacesType {
@@ -357,7 +359,7 @@ export interface OrganizationWorkspacesType {
   activeFilters: OrganizationWorkspacesActiveFiltersType,
   hasMore: boolean,
   toolbarLock: boolean,
-  types?: Array<WorkspaceTypeType>
+  types?: Array<WorkspaceTypeType>,
 }
 
 export type WorkspacesPatchType = Partial<WorkspacesType>;
@@ -373,13 +375,13 @@ export interface MaterialAssignmentType {
   assignmentType: "EXERCISE" | "EVALUATED",
   correctAnswers: string,
   path: string,
-  title: string
+  title: string,
 }
 
 export interface MaterialContentNodeProducerType {
-  id: number;
-  name: string;
-  materialId: number;
+  id: number,
+  name: string,
+  materialId: number,
 }
 
 export interface MaterialContentNodeType {
