@@ -720,7 +720,6 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
-      //List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
       SearchHits searchHits = response.getHits();
       long totalHitCount = searchHits.getTotalHits();
       
@@ -729,20 +728,16 @@ public class ElasticSearchProvider implements SearchProvider {
       List<IndexedCommunicatorMessage> searchResults = Arrays.stream(results)
       .map(hit -> {
         String source = hit.getSourceAsString();
-        System.out.println(source);
         try {
           return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
         }
         catch (JsonParseException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         catch (JsonMappingException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         return null;

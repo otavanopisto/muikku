@@ -1,16 +1,10 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.ejb.Stateful;
@@ -45,7 +39,6 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
@@ -60,7 +53,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLa
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSearchResult;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
@@ -68,10 +60,8 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -81,7 +71,6 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
-import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageLabels;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
@@ -136,9 +125,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
-  
-  @Inject
-  private CommunicatorMessageIndexer communicatorMessageIndexer;
   
   @GET
   @Path ("/items")
@@ -334,7 +320,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           Boolean archivedBySender = Boolean.TRUE.equals(sender.getArchivedBySender());
           if (isLogged.equals(Boolean.TRUE) && archivedBySender.equals(Boolean.TRUE)) {
             continue;
-          } 
+          } else {
           
           CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
           senderData.setUserEntityId(sender.getUserEntityId());
@@ -349,9 +335,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           String content = result.getMessage();
           
           Date created = result.getcreated();
-          
-          String createdDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(created);
-          
+                    
           Set<String> tags = result.getTags();
           
           List<IndexedCommunicatorMessageRecipient> receiverList = result.getReceiver();
@@ -409,12 +393,13 @@ public class CommunicatorRESTService extends PluginRESTService {
 	              readByReceiver,
 	              labelsList
 	          ));
+	          
           }
+        }
         }
       } finally {
         	
         if (communicatorMessages == null) {
-          // TODO: return 200 & empty list instead of 204
           return Response.noContent().build();
         }
       }  

@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
@@ -45,10 +44,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 		    index = "not_analyzed"
 		  ),
 		  @IndexableFieldOption (
-	        name = "searchId",
-	        type = "Long",
-	        index = "not_analyzed"
-	      ),
+	      name = "searchId",
+	      type = "Long",
+	      index = "not_analyzed"
+	    ),
 		  @IndexableFieldOption (
 		    name = "created",
 		    type = "Date",
