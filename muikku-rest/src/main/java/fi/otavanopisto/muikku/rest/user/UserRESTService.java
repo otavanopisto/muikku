@@ -1343,7 +1343,8 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
         
     if (response.ok()) {
-      UserEntity userEntity = findCreatedUserEntity(response.getEntity().getIdentifier());
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(response.getEntity().getIdentifier());
+      UserEntity userEntity = findCreatedUserEntity(identifier);
       if (userEntity != null) {
 
         // Mail about credential creation
@@ -1470,7 +1471,8 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StudentPayload> response = userController.createStudent(dataSource, payload);
         
     if (response.ok()) {
-      UserEntity userEntity = findCreatedUserEntity(response.getEntity().getIdentifier());
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(response.getEntity().getIdentifier());
+      UserEntity userEntity = findCreatedUserEntity(identifier);
       if (userEntity != null) {
 
         // Mail about credential creation
@@ -2016,11 +2018,11 @@ public class UserRESTService extends AbstractRESTService {
     }
   }
   
-  private UserEntity findCreatedUserEntity(String identifier) {
+  private UserEntity findCreatedUserEntity(SchoolDataIdentifier identifier) {
     UserEntity userEntity = null;
     long timeoutTime = System.currentTimeMillis() + 30000;    
     while (userEntity == null) {
-      userEntity = createdUserEntityFinder.findCreatedUserEntity(sessionController.getLoggedUserSchoolDataSource(), identifier);
+      userEntity = createdUserEntityFinder.findCreatedUserEntity(identifier);
       if (System.currentTimeMillis() > timeoutTime) {
         logger.severe(String.format("Timeout waiting for created UserEntity for identifier %s", identifier));
         return null;

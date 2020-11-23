@@ -41,7 +41,7 @@ public class RestApiClient {
 	 */
 	public RestApiClient(String url, int port, AuthenticationToken authenticationToken) {
 		if (!url.startsWith("http")) {
-			url = "http://" + url;
+			url = "https://" + url;
 		}
 		restClient = new RestClientBuilder(url + ":" + port).authenticationToken(authenticationToken)
 				.connectionTimeout(5000).build();

@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.chat;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.WorkspaceChatSettingsDAO;
@@ -9,41 +10,49 @@ import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-
 
 public class ChatController {
   
   @Inject
   private UserChatSettingsDAO userChatSettingsDAO;
+  
   @Inject
   private WorkspaceChatSettingsDAO workspaceChatSettingsDAO;
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
-  public UserChatSettings findUserChatSettings(SchoolDataIdentifier userIdentifier) {
-    return userChatSettingsDAO.findByUser(userIdentifier);
+
+  public UserChatSettings findUserChatSettings(UserEntity userEntity) {
+    return userChatSettingsDAO.findByUserEntityId(userEntity.getId());
   }
 
-  public UserChatSettings createUserChatSettings(SchoolDataIdentifier userIdentifier, UserChatVisibility visibility) {
-    return userChatSettingsDAO.create(userIdentifier.toId(), visibility);
+  public UserChatSettings findUserChatSettingsByNick(String nick) {
+    return userChatSettingsDAO.findByNick(nick);
   }
 
-  public UserChatSettings updateUserChatSettings(UserChatSettings settings, UserChatVisibility visibility) {
-    return userChatSettingsDAO.updateVisibility(settings, visibility);
-  }
-  
-  public WorkspaceChatSettings findWorkspaceChatSettings(Long workspaceEntityId) {
-    return workspaceChatSettingsDAO.findByWorkspace(workspaceEntityId);
+  public UserChatSettings createUserChatSettings(UserEntity userEntity, UserChatVisibility visibility, String nick) {
+    return userChatSettingsDAO.create(userEntity.getId(), visibility, nick);
   }
 
-  public WorkspaceChatSettings createWorkspaceChatSettings(Long workspaceEntity, WorkspaceChatStatus status) {    
-    return workspaceChatSettingsDAO.create(workspaceEntity, status);
+  public void deleteUserChatSettings(UserChatSettings userChatSettings) {
+    userChatSettingsDAO.delete(userChatSettings);
+  }
+
+  public UserChatSettings updateNickAndVisibility(UserChatSettings settings, String nick, UserChatVisibility visibility) {
+    return userChatSettingsDAO.updateNickAndVisibility(settings, nick, visibility);
+  }
+
+  public WorkspaceChatSettings findWorkspaceChatSettings(WorkspaceEntity workspaceEntity) {
+    return workspaceChatSettingsDAO.findByWorkspace(workspaceEntity.getId());
+  }
+
+  public WorkspaceChatSettings createWorkspaceChatSettings(WorkspaceEntity workspaceEntity, WorkspaceChatStatus status) {    
+    return workspaceChatSettingsDAO.create(workspaceEntity.getId(), status);
   }
 
   public WorkspaceChatSettings updateWorkspaceChatSettings(WorkspaceChatSettings settings, WorkspaceChatStatus status) {
     return workspaceChatSettingsDAO.updateSettings(settings, status);
   }
+  
+  public void deleteWorkspaceChatSettings(WorkspaceChatSettings settings) {
+    workspaceChatSettingsDAO.delete(settings);
+  }
+
 }
