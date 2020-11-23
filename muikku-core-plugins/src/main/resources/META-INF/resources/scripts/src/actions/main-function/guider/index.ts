@@ -225,7 +225,9 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
           .then((files:Array<UserFileType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
           }),
+// Removed until it works correctly
           // VOPS disabled until studies view redesign
+
 //        promisify(mApi().records.vops.read(id), 'callback')()
 //          .then((vops:VOPSDataType)=>{
 //            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})

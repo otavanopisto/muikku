@@ -29,6 +29,12 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $button-desktop-font-size;
   }
+
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-disabled-background;
+    cursor: default;
+  }
 }
 
 .button-image {
@@ -394,6 +400,32 @@
   padding-top: 5px;
   white-space: normal;
   width: 100%;
+}
+
+.button--yo-signup {
+  background-color: $color-yo-sign-up;
+  color: $color-yo-sign-up-contrast;
+  height: $button-primary-height;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+    width: auto;
+
+    &:hover,
+    &.hover {
+      background-color: darken($color-yo-sign-up, 10%);
+    }
+
+    &:active,
+    &.active {
+      background-color: darken($color-yo-sign-up, 20%);
+    }
+  }
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
 }
 
 .button--primary-function {

@@ -8,6 +8,18 @@
   width: 100%;
 }
 
+.profile-element__label {
+  display: block;
+  font-weight: 600;
+  padding-bottom: 2px;
+}
+
+.profile-element__description {
+  font-size: 0.8125rem;
+  font-style: italic;
+  margin: 4px 0 0;
+}
+
 .profile-element__user-picture-container {
   align-items: center;
   display: flex;
@@ -67,9 +79,13 @@
 }
 
 .profile-element__title {
-  font-size: 1.6rem;
+  font-size: 1.25rem;
   font-weight: 300;
   padding-bottom: 20px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+  }
 }
 
 .profile-element__label {

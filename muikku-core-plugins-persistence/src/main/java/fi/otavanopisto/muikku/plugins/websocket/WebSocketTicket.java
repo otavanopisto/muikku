@@ -66,6 +66,7 @@ public class WebSocketTicket {
   @Column (nullable = false, length = 255, unique = true)
   private String ticket;
   
+  @NotNull
   @Column (name = "user_id")
   private Long user;
 

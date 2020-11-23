@@ -6,7 +6,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +56,7 @@ import fi.otavanopisto.pyramus.rest.model.Organization;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
 import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
@@ -531,7 +535,10 @@ public class PyramusMock {
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
         }
         
-        stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
+        stubFor(get(urlPathEqualTo("/1/students/students"))
+            .withQueryParam("filterArchived", equalTo("false"))
+            .withQueryParam("firstResult", matching(".*"))
+            .withQueryParam("maxResults", matching(".*"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(studentsList))
@@ -565,7 +572,8 @@ public class PyramusMock {
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));
         }
         
-        stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))
+        stubFor(get(urlPathEqualTo("/1/persons/persons"))
+            .withQueryParam("filterArchived", matching(".*"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(pmock.persons))
@@ -904,13 +912,27 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(courseArrayJson)
             .withStatus(200)));
-        
+
         stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(courseArrayJson)
-            .withStatus(200)));
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(courseArrayJson)
+              .withStatus(200)));
        
+        return this;
+      }
+
+      public Builder mockStudentCourseStats(Long studentId, int completedCourses) throws JsonProcessingException {
+        StudentCourseStats studentCourseStats = new StudentCourseStats();
+        studentCourseStats.setNumberCompletedCourses(completedCourses);
+        stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courseStats", studentId)))
+            .withQueryParam("educationTypeCode", matching(".*"))
+            .withQueryParam("educationSubtypeCode", matching(".*"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(studentCourseStats))
+              .withStatus(200)));
+        
         return this;
       }
       
@@ -1082,6 +1104,24 @@ public class PyramusMock {
             }
           }
         }
+        return this;
+      }
+      
+      public Builder mockYourself() throws JsonProcessingException {
+        ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
+        List<StubMapping> mappings = listAllStubMappings.getMappings();
+        List<String> mappingStrings = new ArrayList<>();
+        for (StubMapping mapping : mappings) {
+          mappingStrings.add("<div>");
+          mappingStrings.add(mapping.toString());
+          mappingStrings.add("</div>");
+        }
+        
+        stubFor(get(urlEqualTo("/1/me"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "text/html")
+              .withBody(pmock.objectMapper.writeValueAsString(mappingStrings))
+              .withStatus(200)));
         return this;
       }
       

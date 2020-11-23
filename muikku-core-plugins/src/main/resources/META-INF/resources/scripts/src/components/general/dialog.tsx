@@ -47,7 +47,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   onOpen(element: HTMLElement) {
     setTimeout(() => {
       this.setState({
-        visible: true
+        visible: true,
       });
     }, 10);
     this.props.onOpen && this.props.onOpen(element);

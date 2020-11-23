@@ -71,6 +71,12 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.ChatSyncController;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
@@ -249,6 +255,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private ChatSyncController chatSyncController;
+  
+  @Inject
+  private ChatController chatController;
   
   @GET
   @Path("/workspaceTypes")
@@ -1927,10 +1939,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(content)
-      .type(answerFile.getContentType())
-      .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
-      .build();
+    if (StringUtils.isEmpty(answerFile.getContentType())) {
+      return Response.ok(content)
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .build();
+    }
+    else {
+      return Response.ok(content)
+        .type(answerFile.getContentType())
+        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .build();
+    }
   }
 
   @GET
@@ -2133,10 +2152,17 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (content == null) {
         return Response.status(Status.NOT_FOUND).build();
       }
-      return Response.ok(content)
-        .type(answerClip.getContentType())
-        .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
-        .build();
+      if (StringUtils.isEmpty(answerClip.getContentType())) {
+        return Response.ok(content)
+          .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
+          .build();
+      }
+      else {
+        return Response.ok(content)
+          .type(answerClip.getContentType())
+          .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
+          .build();
+      }
     }
     
     return Response.status(Status.NOT_FOUND).build();
@@ -2788,6 +2814,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
     userIndexer.indexUser(userSchoolDataIdentifier.getDataSource().getIdentifier(), userSchoolDataIdentifier.getIdentifier());
+    
+    // If workspace and student have chat enabled, toggle room membership accordingly
+    
+    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspaceEntity);
+    if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
+      // Workspace has chat enabled
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(
+          workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
+      if (userEntity != null) {
+        UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
+        if (userChatSettings != null && userChatSettings.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL) {
+          // Student has chat enabled
+          if (workspaceStudentRestModel.getActive()) {
+            chatSyncController.syncWorkspaceUser(workspaceEntity, userEntity);
+          }
+          else {
+            chatSyncController.removeChatRoomMembership(userEntity, workspaceEntity);
+          }
+        }
+      }
+    }
 
     return Response.noContent().build();
   }
@@ -3155,9 +3202,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    if (StringUtils.isBlank(entity.getContentType())) {
-      return Response.status(Status.BAD_REQUEST).entity("contentType is missing").build();
-    }
     if (StringUtils.isBlank(entity.getFileIdentifier())) {
       return Response.status(Status.BAD_REQUEST).entity("identifier is missing").build();
     }
@@ -3264,12 +3308,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
-    return Response.ok()
+    if (StringUtils.isEmpty(contentType)) {
+      return Response.ok()
+        .cacheControl(cacheControl)
+        .tag(tag)
+        .entity(output)
+        .build();
+    }
+    else {
+      return Response.ok()
         .cacheControl(cacheControl)
         .tag(tag)
         .type(contentType)
         .entity(output)
         .build();
+    }
   }
   
   @DELETE

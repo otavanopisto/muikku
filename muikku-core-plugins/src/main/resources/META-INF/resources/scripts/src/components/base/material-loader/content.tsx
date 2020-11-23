@@ -57,7 +57,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
       {
         props.loadCompositeReplies && typeof props.compositeReplies === "undefined" ? null :
           <Base material={props.material} i18n={props.i18n} status={props.status}
-            workspace={props.workspace} websocket={props.websocket} onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(this, props)}
+            workspace={props.workspace} websocketState={props.websocket} onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(this, props)}
             onModification={onModification.bind(this, props)}
             readOnly={props.readOnly || (props.answerable && props.stateConfiguration && props.stateConfiguration['fields-read-only'])}
             compositeReplies={props.compositeReplies} displayCorrectAnswers={props.answersVisible}

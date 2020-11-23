@@ -56,21 +56,6 @@ public class WorkspaceMaterialFileFieldAnswerFileDAO extends CorePluginsDAO<Work
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public WorkspaceMaterialFileFieldAnswerFile updateFileId(WorkspaceMaterialFileFieldAnswerFile workspaceMaterialFileFieldAnswerFile, String fileId) {
-    workspaceMaterialFileFieldAnswerFile.setFileId(fileId);
-    return persist(workspaceMaterialFileFieldAnswerFile);
-  }
-
-  public WorkspaceMaterialFileFieldAnswerFile updateFileName(WorkspaceMaterialFileFieldAnswerFile workspaceMaterialFileFieldAnswerFile, String fileName) {
-    workspaceMaterialFileFieldAnswerFile.setFileName(fileName);
-    return persist(workspaceMaterialFileFieldAnswerFile);
-  }
-
-  public WorkspaceMaterialFileFieldAnswerFile updateContentType(WorkspaceMaterialFileFieldAnswerFile workspaceMaterialFileFieldAnswerFile, String contentType) {
-    workspaceMaterialFileFieldAnswerFile.setContentType(contentType);
-    return persist(workspaceMaterialFileFieldAnswerFile);
-  }
-
   public WorkspaceMaterialFileFieldAnswerFile updateContent(WorkspaceMaterialFileFieldAnswerFile workspaceMaterialFileFieldAnswerFile, byte[] content) {
     workspaceMaterialFileFieldAnswerFile.setContent(content);
     return persist(workspaceMaterialFileFieldAnswerFile);

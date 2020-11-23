@@ -59,7 +59,7 @@ const CKEditorConfig = (
   entities_latin: false,
   entities_greek: false,
   language: locale,
-  language_list: ['fi:Suomi', 'en:Englanti', 'de:Saksa', 'fr:Ranska', 'it:Italia', 'ru:Venäjä', 'sv:Ruotsi'],
+  language_list: ['fi:Suomi', 'en:Englanti', 'sv:Ruotsi', 'de:Saksa', 'es:Espanja', 'ru:Venäjä', 'ja:Japani', 'fr:Ranska', 'it:Italia',  'la:Latina', 'el:Kreikka'],
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
   format_tags : 'p;h3;h4',
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
@@ -114,12 +114,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       height: 0
     }
   }
-
   updateHeight(offset?: number) {
     let heightOffset:number = offset ? offset : 0;
     this.setState({height: window.innerHeight - heightOffset});
   }
-
   refreshAttachments() {
     if (this.props.editorState.currentNodeValue && this.props.editorState.currentNodeWorkspace) {
       // due to a ckeditor bug I cannot know when the image has done uploading
@@ -129,7 +127,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       }, 3000);
     }
   }
-
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       uploading: true
@@ -150,13 +147,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       }
     })
   }
-
   changeTab(tab: string) {
     this.setState({tab});
   }
-
   toggleHiddenStatus() {
-
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
@@ -166,7 +160,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-
   toggleViewRestrictionStatus() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -177,7 +170,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-
   cycleAssignmentType() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -190,7 +182,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-
   cycleCorrectAnswers() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -204,7 +195,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -215,7 +205,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
   updateContent(content: string) {
     // TODO content update plug-in is all
     // going through the collaboration plug-in
@@ -231,7 +220,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
   close() {
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.editorState,
@@ -242,7 +230,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       producerEntryName: "",
     })
   }
-
   publish() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -250,7 +237,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       update: this.props.editorState.currentDraftNodeValue,
     });
   }
-
   revert() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -259,7 +245,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
   removeProducer(index: number) {
     const newProducers = [...(this.props.editorState.currentDraftNodeValue.producers || [])];
     newProducers.splice(index, 1);
@@ -273,7 +258,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
   addProducer(name: string) {
     const newProducers = [...(this.props.editorState.currentDraftNodeValue.producers || [])];
     newProducers.push({
@@ -295,7 +279,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
   updateLicense(newLicense: string) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -306,17 +289,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
   componentDidMount() {
     let offset:number =  40;
     this.updateHeight(offset);
     window.addEventListener('resize', () => this.updateHeight(offset));
   }
-
   componentWillUnMount() {
     window.removeEventListener('resize', () => this.updateHeight);
   }
-
   render(){
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
@@ -420,7 +400,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </div> : null
           }
           {!this.props.editorState.section && this.props.editorState.canEditContent && this.props.editorState.opened ? <div id="materialEditorContainer" className="material-editor__editor-container">
-            <CKEditor ancestorSpacings={35} ancestorHeight={this.state.height} configuration={CKEditorConfig(
+            <CKEditor ancestorHeight={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,

@@ -131,37 +131,41 @@
     height: 1rem;
     justify-content: center;
     margin: 5px;
-    vertical-align: middle;
     width: 1rem;
-  }
-
-  input[type="checkbox"]:focus {
-    outline: 5px;
   }
 
   input[type="checkbox"]:checked::after {
     color: $color-default;
     content: "\e639";
     font-family: muikku;
-    font-size: $text-desktop-font-size;
+    font-size: 0.875rem;
+  }
+
+  input:checked {
+    background-color: $color-form-element-selected;
+  }
+
+  input:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: muikku;
+    font-size: 0.875rem;
   }
 }
 
 .filter-item--assignments {
+
   input[type="checkbox"] {
     border-color: $color-assignment;
   }
 
-  input[type="checkbox"]:checked {
+  input:checked {
     background-color: $color-assignment;
-  }
-
-  input[type="checkbox"]:checked::after {
-    content: "";
   }
 }
 
 .filter-item--logins {
+
   input[type="checkbox"] {
     border-color: $color-default-contrast;
   }
@@ -169,13 +173,10 @@
   input[type="checkbox"]:checked {
     background-color: $color-default-contrast;
   }
-
-  input[type="checkbox"]:checked::after {
-    content: "";
-  }
 }
 
 .filter-item--exercises {
+
   input[type="checkbox"] {
     border-color: $color-exercise;
   }
@@ -183,13 +184,10 @@
   input[type="checkbox"]:checked {
     background-color: $color-exercise;
   }
-
-  input[type="checkbox"]:checked::after {
-    content: "";
-  }
 }
 
 .filter-item--visits {
+
   input[type="checkbox"] {
     border-color: $color-workspace;
   }
@@ -197,13 +195,10 @@
   input[type="checkbox"]:checked {
     background-color: $color-workspace;
   }
-
-  input[type="checkbox"]:checked::after {
-    content: "";
-  }
 }
 
-.filter-item--forum-messages {
+.filter-item--discussion-messages {
+
   input[type="checkbox"] {
     border-color: $color-primary;
   }
@@ -211,13 +206,10 @@
   input[type="checkbox"]:checked {
     background-color: $color-primary;
   }
-
-  input[type="checkbox"]:checked::after {
-    content: "";
-  }
 }
 
 .filter-item--workspaces {
+
   input[type="checkbox"] {
     border-color: $color-main-function-application-list-item-checkbox-border;
   }

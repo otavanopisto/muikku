@@ -69,6 +69,12 @@
   }
 }
 
+
+@mixin mainfunction-subpanel-title {
+  font-size: 1.1875rem;
+  font-weight: 400;
+}
+
 @mixin workspace-subpanel-title {
   font-size: 1.225rem;
   font-weight: 300;
@@ -82,21 +88,6 @@
 }
 
 @mixin form-element-input-search-decoration {
-  align-items: center;
-  display: flex;
-  font-size: 1rem;
-  height: 2.25rem;
-  justify-content: center;
-  width: 2.25rem;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.25rem;
-    height: 2.5rem;
-    width: 2.5rem;
-  }
-}
-
-@mixin form-element-input-add-producers-decoration {
   align-items: center;
   display: flex;
   font-size: 1rem;
@@ -128,7 +119,6 @@
   }
 }
 
-
 @mixin load-animation {
   animation: spin 2s linear infinite;
   border: #{$loader-border-width}px solid $color-loader-empty-ring;
@@ -151,5 +141,13 @@
     100% {
       transform: rotate(360deg);
     }
+
+@mixin chat-pulse {
+  $animation-name: unique-id();
+  animation-name: $animation-name;
+
+  @keyframes #{$animation-name} {
+    @content;
+
   }
 }

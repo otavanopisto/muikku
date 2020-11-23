@@ -18,19 +18,19 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   buttonAs?: any,
   buttonModifiers?: string | Array<string>,
   className?: string,
+  title? : string,
   disabled?: boolean,
   disablePropagation?: boolean,
   as?: string,
   href?: string,
   to?: string,
   openInNewTab?: string,
-  title?: string
 }
 
 interface ButtonState {
 }
 
-export default class Button  extends React.Component<ButtonProps, ButtonState> {
+export default class Button extends React.Component<ButtonProps, ButtonState> {
   render(){
     let Element:any = this.props.buttonAs || Link;
     let elementProps:any = Object.assign({}, this.props);
