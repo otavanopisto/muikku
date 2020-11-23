@@ -73,7 +73,6 @@ interface IOpenChatJID {
 interface IChatState {
   connection: Strophe.Connection;
   connectionHostname: string;
-
   isInitialized: boolean,
   availableMucRooms: IAvailableChatRoomType[],
   showControlBox: boolean,
