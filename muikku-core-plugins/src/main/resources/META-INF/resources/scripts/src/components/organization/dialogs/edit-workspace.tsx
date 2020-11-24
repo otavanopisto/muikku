@@ -213,7 +213,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       payload = { name: this.state.workspaceName }
     }
 
-
     this.props.updateOrganizationWorkspace({
       update: payload,
       workspace: this.props.currentWorkspace,

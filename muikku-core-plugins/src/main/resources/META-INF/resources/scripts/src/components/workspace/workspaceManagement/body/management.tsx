@@ -362,7 +362,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       payload = Object.assign({ producers: workspaceMaterialProducers }, payload);
     }
 
-
     // Chat
     let workspaceChatStatus = this.state.workspaceChatStatus;
 

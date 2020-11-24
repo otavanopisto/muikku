@@ -877,8 +877,5 @@ export function organizationWorkspaces(state: WorkspacesType = {
       });
     }
   }
-
-
   return state;
 }
-
