@@ -68,12 +68,12 @@
   padding: 0;
 }
 
-
 .application-list__title {
   @include mainfunction-subpanel-title;
 }
 
 .application-list__header-icon {
+
   color: $color-course-icon;
   display: inline-flex;
   flex-basis: auto;
@@ -465,6 +465,7 @@
     flex-shrink: 0;
   }
 }
+
 .application-list__item-content-aside--course {
   padding: 15px 0;
 
