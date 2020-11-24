@@ -19,9 +19,10 @@ const USER_INFO_CACHE: {
 interface IChatMessageProps {
   canToggleInfo: boolean;
   message: IBareMessageType;
-  deleted?: boolean;
-  deletedTime?: string;
   i18n: i18nType,
+  casnModerate?: boolean,
+  sendMessageDeleteToChatRoom?: (stanzaId: string) => void;
+  sendMessageEditToChatRoom?: (stanzaId: string) => void;
 }
 
 interface IChatMessageState {
@@ -86,8 +87,13 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       </div>
       <div className="chat__message-content-container">
         <div className="chat__message-content">
-          {this.props.deleted ? <i>{this.props.i18n.text.get("plugin.chat.message.deleted")} {this.props.i18n.time.formatDaily(this.props.deletedTime)}</i>  : this.props.message.message}
+          {this.props.message.message}
         </div>
+        {this.props.casnModerate &&
+          <div className="chat__message-footer">
+            <span className="icon-trash" onClick={this.props.sendMessageDeleteToChatRoom.bind(this.props.message.stanzaId)}></span>
+            <span className="icon-pencil" onClick={this.props.sendMessageEditToChatRoom.bind(this.props.message.stanzaId)}></span>
+          </div>}
       </div>
     </div>
     );

@@ -51,6 +51,7 @@ interface IGroupChatState {
   deleteDialogOpen: boolean;
 
   currentMessageToBeSent: string;
+  currentEditedMessageToBeSent: string;
 }
 
 export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState> {
@@ -87,6 +88,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       updateFailed: false,
 
       currentMessageToBeSent: "",
+      currentEditedMessageToBeSent: "",
 
       deleteDialogOpen: false,
     }
@@ -115,6 +117,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
+
+    this.updateEditedMessage = this.updateEditedMessage.bind(this);
+    this.sendMessageDeleteToChatRoom = this.sendMessageDeleteToChatRoom.bind(this);
+    this.sendMessageEditToChatRoom = this.sendMessageEditToChatRoom.bind(this);
   }
 
   setFocusToMessageField() {
@@ -169,6 +175,44 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       this.setState({
         currentMessageToBeSent: "",
       }, this.scrollToBottom.bind(this, "smooth"));
+    }
+  }
+
+  // custom EDIT and DELETE message update
+  updateEditedMessage(stanzaId: string, text: string) {
+    // this.state.messages
+  }
+
+  // Custom Message DELETE (this is just message edit with predefined text)
+  sendMessageDeleteToChatRoom(stanzaId: string) {
+
+    const text = this.props.i18n.text.get("plugin.chat.rooms.messageDelete");
+
+    if (text) {
+      this.props.connection.send($msg({
+        from: this.props.connection.jid,
+        to: this.props.chat.roomJID,
+        type: "groupchat",
+      }).c("body", { "otavanopisto-replace": stanzaId}, text));
+
+      this.updateEditedMessage(stanzaId, text);
+    }
+  }
+
+  // Custom Message EDIT
+  sendMessageEditToChatRoom(stanzaId: string, event: React.FormEvent) {
+    event && event.preventDefault();
+
+    const text = this.state.currentEditedMessageToBeSent.trim();
+
+    if (text) {
+      this.props.connection.send($msg({
+        from: this.props.connection.jid,
+        to: this.props.chat.roomJID,
+        type: "groupchat",
+      }).c("body", { "otavanopisto-replace": stanzaId}, text));
+
+      this.updateEditedMessage(stanzaId, text);
     }
   }
 
@@ -300,11 +344,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         date = new Date();
       }
 
-      const id = stanza.querySelector("stanza-id").getAttribute("id");
+      const stanzaId = stanza.querySelector("stanza-id").getAttribute("id");
 
       // message is already loaded, this can happen when the server
       // broadcasts messages twice, as when you change your presense
-      if (this.state.messages.find((m) => m.id === id)) {
+      if (this.state.messages.find((m) => m.stanzaId === stanzaId)) {
         return true;
       }
 
@@ -320,7 +364,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
-        id,
+        stanzaId,
         timestamp: date,
         userId,
         isSelf: userId === this.props.connection.jid.split("@")[0],
@@ -510,6 +554,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       xmlns: "otavanopisto:chat:history",
     }).c("type", {}, "groupchat")
     .c("with", {}, this.props.chat.roomJID)
+    .c("includeStanzaIds")
     .c("max", {}, "25");
 
     if (this.state.lastMessageStamp) {
@@ -519,8 +564,12 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
       let lastMessageStamp: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
+
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
-        const id = historyMessage.querySelector("id").textContent;
+        const stanzaId = historyMessage.querySelector("stanzaId").textContent;
+
+        const deletedMessagesStanzaId = 0 ;
+
         const stamp = historyMessage.querySelector("timestamp").textContent;
         if (index === 0) {
           lastMessageStamp = stamp;
@@ -534,7 +583,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         const messageReceived: IBareMessageType = {
           nick,
           message,
-          id,
+          stanzaId,
           timestamp: date,
           userId,
           isSelf: userId === this.props.connection.jid.split("@")[0],
@@ -634,9 +683,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message) => <ChatMessage key={message.id}
+                  {this.state.messages.map((message) => <ChatMessage casnModerate={true} key={message.stanzaId}
                     canToggleInfo={!this.state.isStudent}
-                    message={message} i18n={this.props.i18n} />)}
+                    message={message} i18n={this.props.i18n}
+                    sendMessageDeleteToChatRoom={this.sendMessageDeleteToChatRoom.bind(this, message.stanzaId)}
+                    sendMessageEditToChatRoom={this.sendMessageDeleteToChatRoom.bind(this, message.stanzaId)} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">

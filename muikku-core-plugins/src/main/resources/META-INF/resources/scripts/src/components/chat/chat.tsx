@@ -60,7 +60,7 @@ export interface IBareMessageType {
   // for a given message and might be null, until the occupants list is ready
   userId: string;
   timestamp: Date;
-  id: string;
+  stanzaId: string;
   isSelf: boolean;
 }
 
@@ -521,6 +521,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       this.listExistantChatRooms();
     });
+
+    connection.rawInput = function (data) { console.log('RECV:' + data); };
+    connection.rawOutput = function (data) { console.log('SENT:' + data); };
+
   }
   render() {
     if (!this.state.isInitialized || !this.state.connection) {

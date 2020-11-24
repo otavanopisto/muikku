@@ -145,7 +145,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       const newMessage = {
         nick: null as string,
         message: text,
-        id: null as string,
+        stanzaId: null as string,
         timestamp: new Date(),
         userId: this.props.connection.jid.split("@")[0],
         isSelf: true,
@@ -173,12 +173,12 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       const content = body.textContent;
       const date = new Date();
       const userId = from.split("@")[0];
-      const id: string = null;
+      const stanzaId: string = null;
 
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
-        id,
+        stanzaId,
         timestamp: date,
         userId,
         isSelf: userId === this.props.connection.jid.split("@")[0],
@@ -274,8 +274,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       let lastMessageStamp: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
-        const id = historyMessage.querySelector("id").textContent;
+        const stanzaId: string = null;
         const stamp = historyMessage.querySelector("timestamp").textContent;
+
         if (index === 0) {
           lastMessageStamp = stamp;
         }
@@ -288,7 +289,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         const messageReceived: IBareMessageType = {
           nick,
           message,
-          id,
+          stanzaId,
           timestamp: date,
           userId,
           isSelf: userId === this.props.connection.jid.split("@")[0],
@@ -361,7 +362,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
               <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
                   {this.state.messages.map((message, index) => <ChatMessage key={index}
                     canToggleInfo={!this.state.isStudent}
-                    messsage={message} i18n={this.props.i18n} />)}
+                    message={message} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>
