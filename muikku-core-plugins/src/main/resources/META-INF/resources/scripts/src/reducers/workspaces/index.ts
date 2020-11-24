@@ -17,7 +17,6 @@ export interface CreateWorkspaceType {
 
 export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type LoadWorkspaceActionType = "UPDATE_WORKSPACE" | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
-
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
@@ -197,7 +196,6 @@ export interface WorkspacePermissionsType {
 }
 
 export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;
-
 
 export interface TemplateWorkspaceType {
   id: number,
@@ -820,8 +818,6 @@ export default function workspaces(state: WorkspacesType = {
   }
   return state;
 }
-
-
 
 export function organizationWorkspaces(state: WorkspacesType = {
   availableWorkspaces: [],

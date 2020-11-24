@@ -146,7 +146,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.props.setCurrentOrganizationWorkspace({ workspaceId: this.props.workspace.id });
   }
 
-
   setSelectedStudents(addStudents: Array<SelectItem>) {
     this.setState({ addStudents });
   }
