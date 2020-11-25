@@ -3,7 +3,7 @@ on:
   push:
     branches: [5204-github-actions-testing]
 jobs:
-  course-tests:
+  testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

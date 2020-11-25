@@ -1,4 +1,4 @@
-name: Course Picker headless tests
+name: Course Materials headless tests
 on: 
   push:
     branches: [5204-github-actions-testing]
@@ -24,4 +24,4 @@ jobs:
       - name: Test with headless chrome
         run: |
             cd muikku-atests
-            mvn verify -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser=chrome_headless -Dit.package="course/picker" -Pui-it
+            mvn verify -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser=chrome_headless -Dit.package="course/materials" -Pui-it
