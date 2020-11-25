@@ -74,7 +74,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   }
 
   setFocusToMessageField() {
-    this.messageField.focus();
+    this.messageField && this.messageField.focus();
   }
 
   componentDidMount() {

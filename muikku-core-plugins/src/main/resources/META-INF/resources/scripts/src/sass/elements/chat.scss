@@ -16,8 +16,6 @@
     right: 15px;
     z-index: 9999;
   }
-
-
 }
 
 // Chat bubble
@@ -691,15 +689,11 @@
 .chat__message--sender-me {
 
   .chat__message-meta {
-    text-align: right;
+      justify-content: flex-end;
   }
 
   .chat__message-content-container {
     text-align: right;
-  }
-
-  .chat__message-action-container {
-    justify-content: flex-end;
   }
 }
 
@@ -707,19 +701,17 @@
 .chat__message--sender-them {
 
   .chat__message-meta {
-    text-align: left;
+      justify-content: flex-start;
   }
 
   .chat__message-content-container {
     text-align: left;
   }
-
-  .chat__message-action-container {
-    justify-content: flex-start;
-  }
 }
 
 .chat__message-meta {
+  align-items: center;
+  display: flex;
   margin: 0 0 4px;
 }
 
@@ -747,6 +739,21 @@
   font-style: italic;
   font-weight: 400;
   padding: 0 0 0 4px;
+}
+
+.chat__message-actions {
+  line-height: 1;
+  padding: 2px 0 0;
+}
+
+.chat__message-action {
+  cursor: pointer;
+  font-size: 0.8125rem;
+  padding: 2px;
+}
+
+.chat__message-content-container {
+  position: relative;
 }
 
 // Default style for 'sender-them' messages

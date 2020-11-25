@@ -11,41 +11,35 @@ import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { bindActionCreators } from 'redux';
 
-interface DeleteRoomDialogProps {
+interface DeleteMessageDialogProps {
   i18n: i18nType,
 
-  chat: IAvailableChatRoomType;
-
   displayNotification: DisplayNotificationTriggerType;
-
   isOpen: boolean,
   onClose: ()=>any,
-  onDelete: ()=>any;
+  onDelete: ()=>any,
 }
 
-interface DeleteRoomDialogState {
+interface DeleteMessageDialogState {
 
 }
 
-class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoomDialogState> {
+class DeleteMessageDialog extends React.Component<DeleteMessageDialogProps, DeleteMessageDialogState> {
   private unmounted: boolean = false;
-  constructor(props: DeleteRoomDialogProps){
+  constructor(props: DeleteMessageDialogProps){
     super(props);
 
     this.delete = this.delete.bind(this);
   }
   async delete(closeDialog: ()=>any){
     try {
-      await (promisify(mApi().chat.publicRoom.del({
-        name: this.props.chat.roomJID.split("@")[0],
-      }), 'callback')());
       if (!this.unmounted) {
         closeDialog();
       }
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.deleteSuccess", this.props.chat.roomName), "success");
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.messageDeleteSuccess"), "success");
       this.props.onDelete();
     } catch {
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.deleteFail", this.props.chat.roomName), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.messageDeleteFail"), "error");
     }
   }
   componentWillUnmount() {
@@ -53,19 +47,19 @@ class DeleteRoomDialog extends React.Component<DeleteRoomDialogProps, DeleteRoom
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-      <span dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get('plugin.chat.rooms.deleteRoomDesc', this.props.chat.roomName)}}></span>
+      <span dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get('plugin.chat.messages.deleteMessageDesc')}}></span>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
         <Button buttonModifiers={["fatal","standard-ok"]} onClick={this.delete.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.chat.button.delete')}
+          {this.props.i18n.text.get('plugin.chat.button.deleteRMessage')}
         </Button>
         <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog}>
           {this.props.i18n.text.get('plugin.chat.button.cancel')}
         </Button>
       </div>
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} title={this.props.i18n.text.get('plugin.chat.rooms.deleteRoomTitle')}
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} title={this.props.i18n.text.get('plugin.chat.messages.deleteMessageTitle')}
       content={content} footer={footer} modifier="delete-room"/>
   }
 }
@@ -83,4 +77,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DeleteRoomDialog);
+)(DeleteMessageDialog);

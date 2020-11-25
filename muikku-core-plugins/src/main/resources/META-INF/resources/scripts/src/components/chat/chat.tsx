@@ -198,7 +198,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         ]),
       }, this.joinChatRoom.bind(this, roomJID));
     } catch (err) {
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.createFail"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.roomCreateFail"), "error");
     }
 
     this.toggleCreateChatRoomForm();
