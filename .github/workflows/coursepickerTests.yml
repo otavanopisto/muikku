@@ -1,4 +1,4 @@
-name: Headless tests
+name: CoursePicker headless tests
 on: 
   push:
     branches: [5204-github-actions-testing]
