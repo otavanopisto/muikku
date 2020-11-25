@@ -177,7 +177,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       }, this.scrollToBottom.bind(this, "smooth"));
     }
   }
-  // Custom Message DELETE (this is just message edit with predefined text)
+  // Custom Message DELETE, we send empty stanza with custom attribute
+  // Attribute contains stanzaId that is from original 'to be deleted' mmessage
   deleteMessage(stanzaId: string) {
 
     this.props.connection.send($msg({
@@ -186,8 +187,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       type: "groupchat",
     }).c("body", { "otavanopisto-delete": stanzaId}));
   }
-
-  // Custom Message EDIT
+  // Custom Message EDIT, we send new stanza with new content and with custom attribute
+  // Attribute contains stanzaId that is from original 'to be edited' mmessage
   editMessage(stanzaId: string, event: React.FormEvent) {
     event && event.preventDefault();
 
@@ -671,8 +672,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   {this.state.messages.map((message) => <ChatMessage deleted={this.state.messageDeleted} canModerate={!this.state.isStudent} key={message.stanzaId}
                     canToggleInfo={!this.state.isStudent}
                     message={message} i18n={this.props.i18n}
-                    deleteMessage={this.deleteMessage.bind(message.stanzaId)}
-                    editMessage={this.editMessage.bind(message.stanzaId)} />)}
+                    deleteMessage={this.deleteMessage.bind(message.stanzaId)} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">

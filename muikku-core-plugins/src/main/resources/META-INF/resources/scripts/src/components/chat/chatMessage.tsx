@@ -27,7 +27,6 @@ interface IChatMessageProps {
   deleted?: boolean,
   deletedTime?: string,
   deleteMessage?: (stanzaId: string) => void,
-  editMessage?: (stanzaId: string) => void,
 }
 
 interface IChatMessageState {
