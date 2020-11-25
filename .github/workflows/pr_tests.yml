@@ -1,0 +1,21 @@
+name: Headless tests
+on: 
+  push:
+    branches: [5204-github-actions-testing]
+jobs:
+  build-muikku:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run: mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
