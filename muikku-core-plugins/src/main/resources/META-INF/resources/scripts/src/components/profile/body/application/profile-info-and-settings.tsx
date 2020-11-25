@@ -6,7 +6,7 @@ import { StatusType } from '~/reducers/base/status';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { ProfileType } from '~/reducers/main-function/profile';
-import { saveProfileProperty, SaveProfilePropertyTriggerType } from '~/actions/main-function/profile';
+import { saveProfileProperty, SaveProfilePropertyTriggerType, updateProfileChatSettings, UpdateProfileChatSettingsTriggerType} from '~/actions/main-function/profile';
 import { bindActionCreators } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import moment from '~/lib/moment';
@@ -41,13 +41,16 @@ interface ProfileInfoAndSettingsProps {
   status: StatusType,
   profile: ProfileType,
   saveProfileProperty: SaveProfilePropertyTriggerType,
-  displayNotification: DisplayNotificationTriggerType
+  displayNotification: DisplayNotificationTriggerType,
+  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType
 }
 
 interface ProfileInfoAndSettingsState {
   profileVacationStart: any,
   profileVacationEnd: any,
-  phoneNumber: string
+  phoneNumber: string,
+  chatVisibility: string,
+  chatNickname: string
 }
 
 class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps, ProfileInfoAndSettingsState> {
@@ -56,12 +59,16 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
     this.handleDateChange = this.handleDateChange.bind(this);
     this.onPhoneChange = this.onPhoneChange.bind(this);
+    this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
+    this.onChatNicknameChange = this.onChatNicknameChange.bind(this);
     this.save = this.save.bind(this);
 
     this.state = {
       profileVacationStart: (props.profile.properties['profile-vacation-start'] && moment(props.profile.properties['profile-vacation-start'])) || null,
       profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
-      phoneNumber: props.profile.properties['profile-phone'] || ""
+      phoneNumber: props.profile.properties['profile-phone'] || "",
+      chatVisibility: (props.profile.chatSettings && props.profile.chatSettings.visibility) || null,
+      chatNickname: (props.profile.chatSettings && props.profile.chatSettings.nick) || ""
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){
@@ -85,6 +92,26 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         phoneNumber: nextProps.profile.properties['profile-phone']
       });
     }
+
+    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.visibility &&
+        (!this.props.profile.chatSettings ||
+        this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility)){
+      this.setState({
+        chatVisibility: nextProps.profile.chatSettings.visibility
+      });
+    } else if (!nextProps.profile.chatSettings || typeof nextProps.profile.chatSettings.visibility === "undefined"){
+      this.setState({
+        chatVisibility: "DISABLED"
+      });
+    }
+
+    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.nick &&
+        (!this.props.profile.chatSettings ||
+          this.props.profile.chatSettings.nick !== nextProps.profile.chatSettings.nick)){
+      this.setState({
+        chatNickname: nextProps.profile.chatSettings.nick
+      });
+    }
   }
   handleDateChange(stateLocation: string, newDate: any){
     let nState:any = {};
@@ -96,30 +123,64 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       phoneNumber: e.target.value
     });
   }
+  onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>){
+    this.setState({
+      chatVisibility: e.target.value
+    });
+  }
+  onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>){
+    this.setState({
+      chatNickname: e.target.value
+    });
+  }
   save(){
     let totals = 0;
     let done = 0;
-    let cb = ()=>{
+    let fail: boolean = false;
+    const cb = ()=>{
       done++;
-      if (totals === done){
+      if (totals === done && !fail){
         this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
       }
     }
-    if (this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart){
-      totals++;
-      this.props.saveProfileProperty('profile-vacation-start', this.state.profileVacationStart ? this.state.profileVacationStart.toISOString() : null, cb);
+    const failCB = () => {
+      fail = true;
+      done++;
     }
 
-    if (this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd){
-      totals++;
-      this.props.saveProfileProperty('profile-vacation-end', this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null, cb);
+    if (!this.props.status.isStudent) {
+      if (this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart){
+        totals++;
+        this.props.saveProfileProperty('profile-vacation-start', this.state.profileVacationStart ? this.state.profileVacationStart.toISOString() : null, cb);
+      }
     }
 
-    if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber){
-      totals++;
-      this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
+    if (!this.props.status.isStudent) {
+      if (this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd){
+        totals++;
+        this.props.saveProfileProperty('profile-vacation-end', this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null, cb);
+      }
+    }
+
+    if (!this.props.status.isStudent) {
+      if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber){
+        totals++;
+        this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
+      }
+    }
+    if (this.props.profile.chatSettings) {
+      if (((this.props.profile.chatSettings.visibility || null) !== this.state.chatVisibility) || ((this.props.profile.chatSettings.nick || null) !== this.state.chatNickname)){
+        totals++;
+        this.props.updateProfileChatSettings({
+          visibility: this.state.chatVisibility,
+          nick: this.state.chatNickname,
+          success: cb,
+          fail: failCB,
+        });
+      }
     }
   }
+
   render(){
     let studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd){
@@ -140,7 +201,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
         <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
         value={studyTimeEndValues}/>
-
+      <form>
         <div className="profile-element__item">
           <UpdateUsernamePasswordDialog>
             <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
@@ -151,28 +212,48 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           <UpdateAddressDialog>
             <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
           </UpdateAddressDialog>
-        </div> : <form>
-          <div className="profile-element__item">
-            <label htmlFor="profilePhoneNumber" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
-            <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
-          </div>
-          <div className="profile-element__item">
-            <label htmlFor="profileVacationStart" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
+        </div> : null}
+
+        {!this.props.status.isStudent ?
+        <div className="profile-element__item">
+          <label htmlFor="profilePhoneNumber" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+          <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
+        </div> : null}
+
+        {!this.props.status.isStudent ?
+        <div className="profile-element__item">
+          <label htmlFor="profileVacationStart" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
             <DatePicker id="profileVacationStart" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
-             maxDate={this.state.profileVacationEnd || null}
-             locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
-          </div>
-          <div className="profile-element__item">
-            <label htmlFor="profileVacationEnd" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
+            maxDate={this.state.profileVacationEnd || null}
+            locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
+        </div> : null}
+
+        {!this.props.status.isStudent ?
+        <div className="profile-element__item">
+          <label htmlFor="profileVacationEnd" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
             <DatePicker id="profileVacationEnd" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
-             minDate={this.state.profileVacationStart || null}
-             locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
-           </div>
-          <div className="profile-element__item">
-            <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
-          </div>
-        </form>}
-    </div>);
+            minDate={this.state.profileVacationStart || null}
+            locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
+          </div> : null}
+
+        <div className="profile-element__item">
+          <label htmlFor="chatVisibility" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
+          <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
+            <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
+            <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
+          </select>
+        </div>
+
+        <div className="profile-element__item">
+          <label htmlFor="chatNickname" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
+          <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
+          <div className="profile-element__description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
+        </div>
+        <div className="profile-element__item">
+          <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+        </div>
+      </form>
+  </div>);
   }
 }
 
@@ -185,7 +266,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({saveProfileProperty, displayNotification}, dispatch);
+  return bindActionCreators({saveProfileProperty, displayNotification, updateProfileChatSettings}, dispatch);
 };
 
 export default connect(
