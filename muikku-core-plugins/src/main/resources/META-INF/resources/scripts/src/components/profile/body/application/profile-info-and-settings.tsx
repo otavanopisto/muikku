@@ -190,17 +190,17 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       }
     }
     return (<div className="profile-element">
-        <h2 className="profile-element__title">{this.props.status.profile.displayName}</h2>
-        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
-          value={this.props.status.profile.emails}/>
-        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
-         value={this.props.status.profile.addresses}/>
-        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
-         value={this.props.status.profile.phoneNumbers}/>
-        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
-        value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
-        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
-        value={studyTimeEndValues}/>
+      <h2 className="profile-element__title">{this.props.status.profile.displayName}</h2>
+      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
+        value={this.props.status.profile.emails}/>
+      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
+        value={this.props.status.profile.addresses}/>
+      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
+        value={this.props.status.profile.phoneNumbers}/>
+      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
+      value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
+      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
+      value={studyTimeEndValues}/>
       <form>
         <div className="profile-element__item">
           <UpdateUsernamePasswordDialog>
@@ -253,7 +253,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
         </div>
       </form>
-  </div>);
+    </div>);
   }
 }
 
