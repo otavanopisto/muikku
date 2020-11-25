@@ -119,7 +119,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
-    this.updateMessage = this.updateMessage.bind(this);
     this.deleteMessage = this.deleteMessage.bind(this);
     this.editMessage = this.editMessage.bind(this);
   }
@@ -178,24 +177,14 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       }, this.scrollToBottom.bind(this, "smooth"));
     }
   }
-  // custom EDIT and DELETE message update
-  updateMessage(stanzaId: string, text: string) {
-
-  }
   // Custom Message DELETE (this is just message edit with predefined text)
   deleteMessage(stanzaId: string) {
 
-    const text = this.props.i18n.text.get("plugin.chat.messages.messageIsDeleted");
-
-    if (text) {
-      this.props.connection.send($msg({
-        from: this.props.connection.jid,
-        to: this.props.chat.roomJID,
-        type: "groupchat",
-      }).c("body", { "otavanopisto-delete": stanzaId}, text));
-
-      this.updateMessage(stanzaId, text);
-    }
+    this.props.connection.send($msg({
+      from: this.props.connection.jid,
+      to: this.props.chat.roomJID,
+      type: "groupchat",
+    }).c("body", { "otavanopisto-delete": stanzaId}));
   }
 
   // Custom Message EDIT
@@ -210,8 +199,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         to: this.props.chat.roomJID,
         type: "groupchat",
       }).c("body", { "otavanopisto-edit": stanzaId}, text));
-
-      this.updateMessage(stanzaId, text);
     }
   }
 
