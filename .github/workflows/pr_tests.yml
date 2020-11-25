@@ -19,3 +19,11 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
+  test-coursepicker:
+    needs: build-muikku
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test with headless chrome
+        run: |
+          cd muikku-atests
+          mvn clean verify -Pui-it -Dit.test=CoursePickerTestsIT
