@@ -340,7 +340,7 @@ public class CommunicatorController {
   }
   
   public Long countTotalMessages() {
-  	return communicatorMessageDAO.count();
+    return communicatorMessageDAO.count();
   }
   
   public List<CommunicatorMessageTemplate> listMessageTemplates(UserEntity user) {
@@ -512,7 +512,7 @@ public class CommunicatorController {
   }
   
   public List<CommunicatorMessage> listAllMessages(int firstResult, int maxResults) {
-  	return communicatorMessageDAO.listAll(firstResult, maxResults);
+    return communicatorMessageDAO.listAll(firstResult, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listAllRecipients() {

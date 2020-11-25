@@ -13,11 +13,11 @@ public class IndexedCommunicatorMessageRecipient{
   }
   
   public Boolean getReadByReceiver() {
-	return readByReceiver;
+    return readByReceiver;
   }
   
   public void setReadByReceiver(Boolean readByReceiver) {
-	this.readByReceiver = readByReceiver;
+    this.readByReceiver = readByReceiver;
   }
 
   public String getLastName() {
@@ -53,11 +53,11 @@ public class IndexedCommunicatorMessageRecipient{
   }
   
   public List<IndexedCommunicatorMessageLabels> getLabels(){
-	  return this.labels;
+    return this.labels;
   }
   
   public void setLabels(List<IndexedCommunicatorMessageLabels> labels) {
-	this.labels = labels;
+    this.labels = labels;
   }
   
   public Boolean getArchivedByReceiver() {

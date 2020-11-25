@@ -281,7 +281,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/searchItems/")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response messageSearchFromInbox(
-	    @QueryParam("message") String message,
+      @QueryParam("message") String message,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
 	
@@ -299,11 +299,11 @@ public class CommunicatorRESTService extends PluginRESTService {
       }
       
       searchResult = searchProvider.searchCommunicatorMessages()
-    		  .setSorts(sorts)
-    		  .setMaxResults(maxResults)
-    		  .setFirstResult(firstResult)
-    		  .setMessage(message)
-    	    .search();
+          .setSorts(sorts)
+          .setMaxResults(maxResults)
+          .setFirstResult(firstResult)
+          .setMessage(message)
+          .search();
       
       try {
         List<IndexedCommunicatorMessage> results = searchResult.getResults();

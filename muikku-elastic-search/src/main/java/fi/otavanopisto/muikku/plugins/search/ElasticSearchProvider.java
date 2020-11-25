@@ -43,9 +43,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
@@ -61,19 +59,18 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -106,7 +103,7 @@ public class ElasticSearchProvider implements SearchProvider {
     } else {
       portNumber = 9300;
     }
-	
+  
     Settings settings = Settings.settingsBuilder()
         .put("cluster.name", clusterName).build();
     try {
@@ -699,7 +696,7 @@ public class ElasticSearchProvider implements SearchProvider {
     message = sanitizeSearchString(message);
     
     query.must(boolQuery()
-    		.must(QueryBuilders.queryStringQuery("*" + message + "*"))
+        .must(QueryBuilders.queryStringQuery("*" + message + "*"))
         .should(termsQuery("senderId", idToString))
         .should(termsQuery("receiver.userEntityId", idToString))
         .minimumNumberShouldMatch(1));

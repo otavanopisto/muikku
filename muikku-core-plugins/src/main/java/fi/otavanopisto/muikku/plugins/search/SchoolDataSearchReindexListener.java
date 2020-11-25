@@ -232,36 +232,38 @@ public class SchoolDataSearchReindexListener {
   }
   
   private boolean reindexCommunicatorMessages() {
-	  try {
-	    Long totalMessagesCount = communicatorController.countTotalMessages();
-	    	
-	    int communicatorIndex = getOffset("communicatorIndex");
-	    
-	    if (communicatorIndex < totalMessagesCount) {
-		    List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
+    try {
+      Long totalMessagesCount = communicatorController.countTotalMessages();
+        
+      int communicatorIndex = getOffset("communicatorIndex");
+      
+      if (communicatorIndex < totalMessagesCount) {
+        List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
 
-	      for (CommunicatorMessage msg : batch) {
+        for (CommunicatorMessage msg : batch) {
           CommunicatorMessage message = msg;
-	        try {
-	          communicatorMessageIndexer.indexMessage(message);
-	          communicatorIndex++;
-	        } catch (Exception e) {
-	          logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
-	        }
-	      }
-	      if (communicatorIndex < (totalMessagesCount + 1)) {
-	        logger.log(Level.INFO, "Reindexed batch of communicator message (" + getOffset("communicatorIndex") + "-" + communicatorIndex + ")");
-	      }
-	      
-	      setOffset("communicatorIndex", communicatorIndex);
-	      return false;
-	    } else
-	      return true;
+          try {
+            communicatorMessageIndexer.indexMessage(message);
+            communicatorIndex++;
+          } catch (Exception e) {
+            logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
+          }
+        }
+
+        if (communicatorIndex < (totalMessagesCount + 1)) {
+          logger.log(Level.INFO, "Reindexed batch of communicator message (" + getOffset("communicatorIndex") + "-" + communicatorIndex + ")");
+        }
+        
+        setOffset("communicatorIndex", communicatorIndex);
+        return false;
+      } else {
+        return true;
+      }
     } catch (Exception ex) {
-	    logger.log(Level.SEVERE, "Could not finish indexing communicator messages.", ex);
-	    return true;
-	  }
-	}
+      logger.log(Level.SEVERE, "Could not finish indexing communicator messages.", ex);
+      return true;
+    }
+  }
   
   private int getBatchSize() {
     return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data", "school-data.reindexer.batch"), DEFAULT_BATCH_SIZE);

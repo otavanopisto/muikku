@@ -54,22 +54,22 @@ public class CommunicatorMessageIndexer {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       if (message != null) {
-      	IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
-
-    	  //set message
-    	  indexedCommunicatorMessage.setMessage(message.getContent());
-    	  
-    	  //set communicatorMessageId
-    	  CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
-    	  Long messageId = communicatorMessageId.getId();
-    	  indexedCommunicatorMessage.setCommunicatorMessageId(messageId);
-      	
-    	  //set caption
-    	  indexedCommunicatorMessage.setCaption(message.getCaption());
-    	  
-    	  //set sender
-    	  Long senderId = message.getSender();
-    	  UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
+        IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
+  
+        //set message
+        indexedCommunicatorMessage.setMessage(message.getContent());
+      	  
+        //set communicatorMessageId
+        CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
+        Long messageId = communicatorMessageId.getId();
+        indexedCommunicatorMessage.setCommunicatorMessageId(messageId);
+        	
+        //set caption
+        indexedCommunicatorMessage.setCaption(message.getCaption());
+      	  
+        //set sender
+        Long senderId = message.getSender();
+        UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
         User sender = userController.findUserByUserEntityDefaults(senderEntity);
         
         IndexedCommunicatorMessageSender senderData = new IndexedCommunicatorMessageSender();
@@ -84,13 +84,13 @@ public class CommunicatorMessageIndexer {
 
         indexedCommunicatorMessage.setSender(senderData);
         
-    	  //set recipients
-    	  List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(message);
-	    	List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
-	    	for (CommunicatorMessageRecipient recipient : recipientsList) {
+        //set recipients
+        List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(message);
+        List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
+        for (CommunicatorMessageRecipient recipient : recipientsList) {
           Long recipientId = recipient.getRecipient();
           
-          if(recipientId != null) {
+          if (recipientId != null) {
             UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
             User userRecipient = userController.findUserByUserEntityDefaults(recipientEntity);
             
@@ -122,27 +122,25 @@ public class CommunicatorMessageIndexer {
           }
         }
 	    	
-    	  indexedCommunicatorMessage.setReceiver(recipientsEntityList);
+        indexedCommunicatorMessage.setReceiver(recipientsEntityList);
 	    	
-	    	// set created
-	    	Date created = message.getCreated();
-	    	indexedCommunicatorMessage.setCreated(created);
+        // set created
+        Date created = message.getCreated();
+        indexedCommunicatorMessage.setCreated(created);
 	    	
-	    	// set tags
-	    	Set<Long> tags = message.getTags();
-	    	Set<String> strs = new HashSet<>(tags.size());
-	    	tags.forEach(i -> strs.add(i.toString()));
-	    	indexedCommunicatorMessage.setTags(strs);
+        // set tags
+        Set<Long> tags = message.getTags();
+        Set<String> strs = new HashSet<>(tags.size());
+        tags.forEach(i -> strs.add(i.toString()));
+        indexedCommunicatorMessage.setTags(strs);
 	    	
-	    	
-	    	indexedCommunicatorMessage.setSearchId(message.getId());
+        indexedCommunicatorMessage.setSearchId(message.getId());
 	        
-	    	//call method indexCommunicatorMessage
-	    	indexCommunicatorMessage(indexedCommunicatorMessage);
-	    	
-	    } else {
-	      logger.warning(String.format("could not index communicator message because message entity #%s/ %s could not be found", message));
-	    }
+        //call method indexCommunicatorMessage
+        indexCommunicatorMessage(indexedCommunicatorMessage);
+      } else {
+        logger.warning(String.format("could not index communicator message because message entity #%s/ %s could not be found", message));
+      }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
