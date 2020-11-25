@@ -104,11 +104,9 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
   onMessageDeleted() {
     this.props.deleteMessage(this.props.message.stanzaId);
   }
-  render() {
-    const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
-    const messageDeletedClass = this.props.deleted ? "chat__message--deleted" : "";
 
-    const items: Array<any> = [
+  getMessageModerationListDropdown() {
+    const messageModerationItemsOptions: Array<any> = [
       {
         icon: "trash",
         text: 'plugin.chat.messages.deleteMessage',
@@ -117,9 +115,20 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       {
         icon: "pencil",
         text: 'plugin.chat.messages.editMessage',
-        onClick: null
+        onClick: null,
       }
     ]
+
+    if (!this.props.message.isSelf) {
+      messageModerationItemsOptions.pop();
+    }
+
+    return messageModerationItemsOptions;
+  }
+
+  render() {
+    const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
+    const messageDeletedClass = this.props.deleted ? "chat__message--deleted" : "";
 
     return (<div className={`chat__message chat__message--${senderClass} ${messageDeletedClass}`}>
       <div className="chat__message-meta">
@@ -133,7 +142,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         </span>
         {(this.props.canModerate || this.props.message.isSelf) && !this.props.deleted ?
           <span className="chat__message-actions">
-            <Dropdown modifier="chat" items={items.map((item) => {
+            <Dropdown modifier="chat" items={this.getMessageModerationListDropdown().map((item) => {
               return (closeDropdown: () => any) => {
                 return <Link href={item.href} to={item.to ? item.href : null}
                   className={`link link--full link--chat-dropdown`}

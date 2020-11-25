@@ -192,7 +192,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         from: this.props.connection.jid,
         to: this.props.chat.roomJID,
         type: "groupchat",
-      }).c("body", { "otavanopisto-replace": stanzaId}, text));
+      }).c("body", { "otavanopisto-delete": stanzaId}, text));
 
       this.updateMessage(stanzaId, text);
     }
@@ -209,7 +209,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         from: this.props.connection.jid,
         to: this.props.chat.roomJID,
         type: "groupchat",
-      }).c("body", { "otavanopisto-replace": stanzaId}, text));
+      }).c("body", { "otavanopisto-edit": stanzaId}, text));
 
       this.updateMessage(stanzaId, text);
     }
