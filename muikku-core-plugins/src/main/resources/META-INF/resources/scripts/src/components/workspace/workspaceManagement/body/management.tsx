@@ -483,7 +483,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           </div>
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceVisibilitySectionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
             <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-publicity">
               <fieldset>
