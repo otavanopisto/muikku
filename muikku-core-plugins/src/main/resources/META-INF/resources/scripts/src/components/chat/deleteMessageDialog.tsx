@@ -5,9 +5,6 @@ import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import '~/sass/elements/buttons.scss';
 import Button from '~/components/general/button';
-import { IAvailableChatRoomType } from './chat';
-import mApi from '~/lib/mApi';
-import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { bindActionCreators } from 'redux';
 

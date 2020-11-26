@@ -189,10 +189,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
   // Custom Message EDIT, we send new stanza with new content and with custom attribute
   // Attribute contains stanzaId that is from original 'to be edited' mmessage
-  editMessage(stanzaId: string, event: React.FormEvent) {
+  editMessage(stanzaId: string, textContent: string, event: React.FormEvent) {
     event && event.preventDefault();
 
-    const text = this.state.currentEditedMessageToBeSent.trim();
+    const text = textContent.trim();
 
     if (text) {
       this.props.connection.send($msg({
@@ -202,7 +202,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       }).c("body", { "otavanopisto-edit": stanzaId}, text));
     }
   }
-
   // Set chat room configurations
   async setChatroomConfiguration(event: React.FormEvent) {
     event.preventDefault();
@@ -672,6 +671,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   {this.state.messages.map((message) => <ChatMessage deleted={this.state.messageDeleted} canModerate={!this.state.isStudent} key={message.stanzaId}
                     canToggleInfo={!this.state.isStudent}
                     message={message} i18n={this.props.i18n}
+                    editMessage={this.editMessage.bind(message.stanzaId)}
                     deleteMessage={this.deleteMessage.bind(message.stanzaId)} />)}
                   <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
                 </div>

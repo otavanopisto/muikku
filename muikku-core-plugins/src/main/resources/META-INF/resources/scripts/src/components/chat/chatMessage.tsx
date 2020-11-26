@@ -3,7 +3,7 @@ import * as React from 'react'
 import '~/sass/elements/chat.scss';
 import mApi from '~/lib/mApi';
 import promisify from '~/util/promisify';
-import { IAvailableChatRoomType, IBareMessageType } from './chat';
+import { IBareMessageType } from './chat';
 import { i18nType } from '~/reducers/base/i18n';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
@@ -26,6 +26,7 @@ interface IChatMessageProps {
   canModerate?: boolean,
   deleted?: boolean,
   deletedTime?: string,
+  editMessage?: (stanzaId: string, textContent: string) => void,
   deleteMessage?: (stanzaId: string) => void,
 }
 
@@ -36,7 +37,11 @@ interface IChatMessageState {
   showRemoveButton: boolean,
 
   messageDeleted: boolean,
-  currentEditedMessageToBeSent: string,
+
+  currentEditedMessageTextContent: string,
+  currentEditedMessageStanzaId: string,
+  messageIsInEditMode : boolean,
+
   deleteMessageDialogOpen: boolean,
 }
 
@@ -54,12 +59,16 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       showRemoveButton: false,
       messageDeleted: false,
       deleteMessageDialogOpen: false,
-      currentEditedMessageToBeSent: "",
+      currentEditedMessageTextContent: "",
+      currentEditedMessageStanzaId: "",
+      messageIsInEditMode: false,
     }
 
     this.toggleInfo = this.toggleInfo.bind(this);
     this.toggleDeleteMessageDialog = this.toggleDeleteMessageDialog.bind(this);
     this.onMessageDeleted = this.onMessageDeleted.bind(this);
+    this.toggleMessageEditMode = this.toggleMessageEditMode.bind(this);
+    this.onMessageEdited = this.onMessageEdited.bind(this);
   }
   async toggleInfo() {
     if (this.state.showInfo) {
@@ -113,15 +122,40 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       {
         icon: "pencil",
         text: 'plugin.chat.messages.editMessage',
-        onClick: null,
+        onClick: this.toggleMessageEditMode,
       }
     ]
 
+    // Student/staff member can only edit their own messages
     if (!this.props.message.isSelf) {
       messageModerationItemsOptions.pop();
     }
 
     return messageModerationItemsOptions;
+  }
+  toggleMessageEditMode() {
+    if (this.state.messageIsInEditMode) {
+      this.setState({
+        messageIsInEditMode: false,
+        currentEditedMessageTextContent: "",
+        currentEditedMessageStanzaId: "",
+      });
+    } else {
+      this.setState({
+        messageIsInEditMode: true,
+      });
+    }
+  }
+  setEditedMessageData(stanzaId: string, textContent: string){
+    this.setState({
+      currentEditedMessageStanzaId: stanzaId,
+      currentEditedMessageTextContent: textContent,
+    });
+
+    this.onMessageEdited();
+  }
+  onMessageEdited() {
+    this.props.editMessage(this.state.currentEditedMessageStanzaId, this.state.currentEditedMessageTextContent);
   }
   render() {
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
@@ -153,11 +187,24 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
             </Dropdown>
           </span> : null}
       </div>
-      <div className="chat__message-content-container">
-        <div className="chat__message-content">
-          {this.props.message.message}
+      {this.state.messageIsInEditMode ?
+        <div className="chat__message-content-container">
+          <div className="chat__message-content chat__message-content--edit-mode" contentEditable>
+            {this.props.message.message}
+          </div>
+          <div className="chat__message-footer">
+            <span className="chat__message-footer-action" onClick={this.toggleMessageEditMode}>{this.props.i18n.text.get("plugin.chat.messages.editMessage.cancelLink")}</span>
+            <span>{this.props.i18n.text.get("plugin.chat.messages.editMessage.orText")}</span>
+            <span className="chat__message-footer-action" onClick={this.onMessageEdited}>{this.props.i18n.text.get("plugin.chat.messages.editMessage.saveLink")}</span>
+          </div>
         </div>
-      </div>
+        :
+        <div className="chat__message-content-container">
+          <div className="chat__message-content">
+            {this.props.message.message}
+          </div>
+        </div>
+      }
       <DeleteMessageDialog isOpen={this.state.deleteMessageDialogOpen} onClose={this.toggleDeleteMessageDialog} onDelete={this.onMessageDeleted} />
     </div>
     );

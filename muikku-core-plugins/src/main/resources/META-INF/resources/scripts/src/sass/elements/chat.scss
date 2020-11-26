@@ -764,6 +764,22 @@
   display: inline-block;
   padding: 5px 8px;
   text-align: left;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.chat__message-footer {
+  font-size: 0.8125rem;
+}
+
+.chat__message-footer-action {
+  color: $color-link-default-text;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.chat__message-content--edit-mode {
+  background-color: $color-default-contrast;
+  display: block;
 }
 
 // Workspace Room's specific 'sender-me' messages
@@ -778,6 +794,11 @@
     .chat__message-content {
       background: $color-chat-workspace-room-main-color;
       color: $color-default;
+    }
+
+    .chat__message-content--edit-mode {
+      background-color: $color-default-contrast;
+      display: block;
     }
   }
 }
@@ -794,6 +815,11 @@
     .chat__message-content {
       background: $color-chat-other-room-main-color;
       color: $color-default;
+    }
+
+    .chat__message-content--edit-mode {
+      background-color: $color-default-contrast;
+      display: block;
     }
   }
 }
