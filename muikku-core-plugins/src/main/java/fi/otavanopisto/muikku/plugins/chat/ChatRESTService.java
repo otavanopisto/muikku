@@ -494,13 +494,17 @@ public class ChatRESTService extends PluginRESTService {
   
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
-  @RESTPermit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRESTModel workspaceChatSettings) {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
   
     if (!workspaceEntityId.equals(workspaceChatSettings.getWorkspaceEntityId())) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_DETAILS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceChatStatus status = workspaceChatSettings.getChatStatus();
