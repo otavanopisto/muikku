@@ -137,22 +137,12 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     if (this.state.messageIsInEditMode) {
       this.setState({
         messageIsInEditMode: false,
-        currentEditedMessageTextContent: "",
-        currentEditedMessageStanzaId: "",
       });
     } else {
       this.setState({
         messageIsInEditMode: true,
       });
     }
-  }
-  setEditedMessageData(stanzaId: string, textContent: string){
-    this.setState({
-      currentEditedMessageStanzaId: stanzaId,
-      currentEditedMessageTextContent: textContent,
-    });
-
-    this.onMessageEdited();
   }
   onMessageEdited() {
     this.props.editMessage(this.state.currentEditedMessageStanzaId, this.state.currentEditedMessageTextContent);
