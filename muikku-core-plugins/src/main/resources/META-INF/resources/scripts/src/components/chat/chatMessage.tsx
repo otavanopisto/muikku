@@ -27,7 +27,6 @@ interface IChatMessageProps {
   deleted?: boolean,
   deletedTime?: string,
   deleteMessage?: (stanzaId: string) => void,
-  editMessage?: (stanzaId: string) => void,
 }
 
 interface IChatMessageState {
@@ -104,7 +103,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
   onMessageDeleted() {
     this.props.deleteMessage(this.props.message.stanzaId);
   }
-
   getMessageModerationListDropdown() {
     const messageModerationItemsOptions: Array<any> = [
       {
@@ -125,7 +123,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
 
     return messageModerationItemsOptions;
   }
-
   render() {
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
     const messageDeletedClass = this.props.deleted ? "chat__message--deleted" : "";
