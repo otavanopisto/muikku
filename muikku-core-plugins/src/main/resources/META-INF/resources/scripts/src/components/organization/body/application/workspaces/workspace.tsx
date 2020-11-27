@@ -38,7 +38,7 @@ class Workspace extends React.Component<CourseProps, CourseState>{
     let actions = <div><WorkspaceDialog activeFilters={this.props.activeFilters} workspace={this.props.workspace} ><span className="icon-pencil"></span></WorkspaceDialog></div>;
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
-        <span className="application-list__header-icon icon-books"></span>
+        <span className={`application-list__header-icon icon-books ${!this.props.workspace.published ? "state-UNPUBLISHED" : ""}`}></span>
         <span className="application-list__header-primary">{this.props.workspace.name} {this.props.workspace.nameExtension ? "(" + this.props.workspace.nameExtension + ")" : null}</span>
         <span className="application-list__header-secondary">{actions}</span>
       </ApplicationListItemHeader>

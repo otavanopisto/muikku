@@ -81,6 +81,12 @@
   flex-shrink: 0;
   font-size: 1.25rem;
   margin-right: 10px;
+
+// scss-lint:disable SelectorFormat
+  &.state-UNPUBLISHED {
+    color: $color-disabled;
+  }
+// scss-lint:enable SelectorFormat
 }
 
 .application-list__header-icon--notification-1 {
