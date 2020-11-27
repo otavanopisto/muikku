@@ -64,7 +64,7 @@
 // Chat Minimized
 .chat__minimized {
   align-items: center;
-  border-radius: 5px 5px 0 0;
+  border-radius: 2px 2px 0 0;
   color: $color-default;
   display: flex;
   flex-flow: row nowrap;
@@ -154,7 +154,7 @@
 // Chat Panels
 .chat__panel {
   background-color: $color-default;
-  border-radius: 5px 5px 0 0;
+  border-radius: 2px 2px 0 0;
   border-top: 4px solid $color-default;
   bottom: 0;
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
@@ -190,7 +190,7 @@
 .chat__panel-header {
   align-items: center;
   background-color: $color-default;
-  border-radius: 5px 5px 0 0;
+  border-radius: 2px 2px 0 0;
   box-shadow: 0 2px 0 $color-chat-panel-header-shadow;
   color: $color-default-contrast;
   display: flex;
@@ -329,7 +329,7 @@
 .chat__controlbox-user-status {
   background: $color-default;
   border: 2px solid $color-default-separator-border;
-  border-radius: 5px;
+  border-radius: 2px;
   margin: 0 0 15px;
   padding: 5px;
   width: 100%;
@@ -403,7 +403,7 @@
 
 .chat__controlbox-room-description {
   background: $color-chat-room-description-background;
-  border-radius: 3px;
+  border-radius: 2px;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
@@ -425,7 +425,7 @@
 .chat__subpanel-header {
   align-items: center;
   background-color: $color-default;
-  border-radius: 5px 5px 0 0;
+  border-radius: 2px 2px 0 0;
   color: $color-default-contrast;
   display: flex;
   flex-basis: 0;
@@ -468,7 +468,7 @@
 
 .chat__textfield {
   border: 2px solid $color-chat-controlbox-main-color;
-  border-radius: 3px;
+  border-radius: 2px;
   font-size: 0.8125rem;
   font-weight: 400;
   line-height: 1.125rem;
@@ -495,7 +495,7 @@
 
 .chat__memofield {
   border: 2px solid $color-chat-controlbox-main-color;
-  border-radius: 3px;
+  border-radius: 2px;
   font-size: 0.8125rem;
   font-weight: 400;
   height: 80px;
@@ -522,7 +522,7 @@
   -webkit-appearance: none;
   appearance: none;
   border: 2px solid $color-chat-other-room-main-color;
-  border-radius: 3px;
+  border-radius: 2px;
   display: flex;
   height: 1rem;
   justify-content: center;
@@ -543,7 +543,7 @@
 
 .chat__submit {
   border: 0;
-  border-radius: 3px;
+  border-radius: 2px;
   color: $color-default;
   cursor: pointer;
   font-size: 0.875rem;
@@ -716,7 +716,7 @@
 }
 
 .chat__message-meta-sender {
-  font-weight: 600;
+  font-weight: 400;
   padding: 0 2px;
 }
 
@@ -759,9 +759,10 @@
 // Default style for 'sender-them' messages
 .chat__message-content {
   background: $color-chat-message-default-background;
-  border-radius: 10px;
+  border-radius: 2px;
   color: $color-default-contrast;
   display: inline-block;
+  margin: 0 20px 0 0;
   padding: 5px 8px;
   text-align: left;
   transition: background-color 0.3s ease-in-out;
@@ -783,17 +784,14 @@
 
   .chat__message--sender-me {
 
-    .chat__message-meta-sender {
-      color: $color-chat-workspace-room-main-color;
-    }
-
     .chat__message-content {
-      background: $color-chat-workspace-room-main-color;
-      color: $color-default;
+      background: lighten($color-chat-workspace-room-main-color, 50%);
+      color: $color-default-contrast;
+      margin: 0 0 0 20px;
     }
 
     .chat__message-content--edit-mode {
-      background-color: $color-default-contrast;
+      background: lighten($color-chat-workspace-room-main-color, 30%);
     }
   }
 }
@@ -803,17 +801,14 @@
 
   .chat__message--sender-me {
 
-    .chat__message-meta-sender {
-      color: $color-chat-other-room-main-color;
-    }
-
     .chat__message-content {
-      background: $color-chat-other-room-main-color;
-      color: $color-default;
+      background: lighten($color-chat-other-room-main-color, 50%);
+      color: $color-default-contrast;
+      margin: 0 0 0 20px;
     }
 
     .chat__message-content--edit-mode {
-      background-color: $color-default-contrast;
+      background-color: lighten($color-chat-other-room-main-color, 30%);
     }
   }
 }
@@ -823,13 +818,10 @@
 
   .chat__message--sender-me {
 
-    .chat__message-meta-sender {
-      color: $color-chat-private-main-color;
-    }
-
     .chat__message-content {
-      background: $color-chat-private-main-color;
-      color: $color-default;
+      background: lighten($color-chat-private-main-color, 40%);
+      color: $color-default-contrast;
+      margin: 0 0 0 20px;
     }
   }
 }
@@ -842,19 +834,6 @@
   justify-content: flex-end;
   margin: 0 0 5px;
   padding: 5px;
-}
-
-.chat__message-delete {
-  align-items: center;
-  border-radius: 5px;
-  color: $color-fatal;
-  cursor: pointer;
-  display: flex;
-  flex-basis: auto;
-  flex-flow: row nowrap;
-  flex-grow: 0;
-  flex-shrink: 0;
-  line-height: 1;
 }
 
 // Chat subpanel notifications
