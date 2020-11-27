@@ -1,4 +1,4 @@
-name: Announcer headless tests
+name: Announcer sauce tests
 on: 
   push:
     branches: [5204-github-actions-testing]
@@ -22,8 +22,12 @@ jobs:
         run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
       - uses: saucelabs/sauce-connect-action@master
         with:
-          username: ${{ secrets.JOTAIN_SALAISTA }}
-          accessKey: ${{ secrets.JOTAIN_SALAISTA2 }}
+          username: ${{ secrets.SAUCE_USERNAME }}
+          accessKey: ${{ secrets.SAUCE_KEY }}
           noSSLBumpDomains: "127.0.0.1,localhost,dev.muikku.fi"
           tunnelIdentifier: github-action-muikku-tunnel
           scVersion: 4.6.2
+      - name: Test with chrome
+        run: |
+            cd muikku-atests
+            mvn verify -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="chrome" -Dit.browser.version="latest" -Dit.browser.resolution="1280x1024" -Dit.platform="Windows 10" -Dit.package="announcer" -Dit.sauce.username=${{ secrets.TEST_USERNAME }} -Dit.sauce.accessKey=${{ secrets.TEST_KEY }} -Dit.sauce.tunnelId= -Psauce-it;
