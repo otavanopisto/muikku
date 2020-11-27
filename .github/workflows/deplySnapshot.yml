@@ -1,4 +1,4 @@
-name: Snapshot ${{ github.event.head_commit.message }}deploy
+name: Snapshot deploy
 on: 
   push:
     branches: [5204-github-actions-testing]
