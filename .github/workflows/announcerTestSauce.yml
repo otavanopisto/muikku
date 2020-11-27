@@ -21,7 +21,7 @@ jobs:
       - name: Set Muikku host
         run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
       - uses: saucelabs/sauce-connect-action@master
-          with:
+        with:
           username: ${{ secrets.JOTAIN_SALAISTA }}
           accessKey: ${{ secrets.JOTAIN_SALAISTA2 }}
           noSSLBumpDomains: "127.0.0.1,localhost,dev.muikku.fi"
