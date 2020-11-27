@@ -318,7 +318,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       capabilities.setCapability("screenResolution", browserResolution);
     }
  
-    if (getSauceTunnelId() != null) {
+    if (StringUtils.isEmpty(getSauceTunnelId())) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
 //    
