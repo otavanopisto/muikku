@@ -15,6 +15,8 @@ export interface CreateWorkspaceType {
   curriculum: string,
 }
 
+
+
 export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type LoadWorkspaceActionType = "UPDATE_WORKSPACE" | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
@@ -268,6 +270,7 @@ export type WorkspaceListType = Array<WorkspaceType>;
 
 export type WorkspaceBaseFilterType = "ALL_COURSES" | "MY_COURSES" | "AS_TEACHER";
 
+
 export interface WorkspaceEducationFilterType {
   identifier: string,
   name: string
@@ -285,20 +288,28 @@ export interface WorkspaceOrganizationFilterType {
   name: string
 }
 
+export interface WorkspaceStateFilterType {
+  identifier: string,
+  name: string
+}
+
 export type WorkspaceCurriculumFilterListType = Array<WorkspaceCurriculumFilterType>;
 export type WorkspaceOrganizationFilterListType = Array<WorkspaceOrganizationFilterType>;
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
+export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
 
 export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
   organizations?: WorkspaceOrganizationFilterListType,
-  baseFilters?: WorkspaceBaseFilterListType
+  baseFilters?: WorkspaceBaseFilterListType,
+  stateFilters?: WorkspaceStateFilterListType;
 }
 
 export interface OrganizationWorkspacesAvailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
+  stateFilters?: WorkspaceStateFilterListType;
 }
 
 export type WorkspacesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -314,8 +325,9 @@ export interface WorkspacesActiveFiltersType {
   curriculumFilters: Array<string>,
   query: string,
   templates?: string,
-  baseFilter?: WorkspaceBaseFilterType
+  baseFilter?: WorkspaceBaseFilterType,
   organizationFilters?: Array<string>,
+  stateFilters?: Array<string>
 }
 
 export interface WorkspaceTypeType {
@@ -609,6 +621,13 @@ export default function workspaces(state: WorkspacesType = {
         educationTypes: action.payload
       })
     });
+
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES") {
+    return Object.assign({}, state, {
+      availableFilters: Object.assign({}, state.availableFilters, {
+        stateFilters: action.payload
+      })
+    });
   } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
@@ -826,11 +845,13 @@ export function organizationWorkspaces(state: WorkspacesType = {
   availableFilters: {
     educationTypes: [],
     curriculums: [],
+    stateFilters: [],
   },
   state: "LOADING",
   activeFilters: {
     educationFilters: [],
     curriculumFilters: [],
+    stateFilters: [],
     query: "",
   },
   hasMore: false,
@@ -838,10 +859,18 @@ export function organizationWorkspaces(state: WorkspacesType = {
   types: null,
 
 }, action: ActionType): WorkspacesType {
+
   if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         educationTypes: action.payload
+      })
+    });
+  }
+  else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES") {
+    return Object.assign({}, state, {
+      availableFilters: Object.assign({}, state.availableFilters, {
+        stateFilters: action.payload
       })
     });
   }

@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType } from '~/actions';
 import { StateType } from '~/reducers';
-import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType, WorkspaceUpdateType } from '~/reducers/workspaces';
+import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType, WorkspaceUpdateType, organizationWorkspaces } from '~/reducers/workspaces';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -77,6 +77,8 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   } else if (actualFilters.baseFilter === "AS_TEACHER") {
     myWorkspaces = true;
     includeUnpublished = true;
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters.includes("unpublished")) {
+    includeUnpublished = true;
   }
 
   let params = {
@@ -89,6 +91,10 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     curriculums: actualFilters.curriculumFilters,
     organizations: actualFilters.organizationFilters,
     includeUnpublished
+  }
+
+  if (actualFilters.query) {
+    (params as any).q = actualFilters.query;
   }
 
   if (actualFilters.query) {

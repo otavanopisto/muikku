@@ -14,7 +14,7 @@ import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messag
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/user-index';
 import { UserType } from '~/reducers/user-index';
-import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
+import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, setWorkspaceStateFilters, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
 import { loadUsers, loadStudyprogrammes } from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
@@ -206,6 +206,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
       organizationFilters: originalData.o || [],
+      stateFilters: originalData.p || [],
       templates: originalData.t || [],
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
@@ -290,8 +291,15 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderOrganizationAdministrationBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      let stateFilters = [
+        {
+          identifier: "unpublished",
+          name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.label')
+        }
+      ];
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(setWorkspaceStateFilters(true, stateFilters) as Action);
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
 
@@ -315,7 +323,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
           if (user.curriculumIdentifier) {
             defaultSelections["c"] = [user.curriculumIdentifier];
           }
-          if (defaultSelections.c || defaultSelections.o) {
+          if (defaultSelections.c) {
             location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
           } else {
             this.loadCoursePickerData(currentLocationData, true, false);

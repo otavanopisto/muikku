@@ -5,11 +5,11 @@ import { WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Works
 import { AnyActionType, SpecificActionType } from '~/actions';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
-import { UserStaffType, ShortWorkspaceUserWithActiveStatusType, UserType } from '~/reducers/user-index';
+import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import {
   MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
-  WorkspacePermissionsType, WorkspaceMaterialEditorType, TemplateWorkspaceListType, MaterialContentNodeProducerType, MaterialContentNodeType,
+  WorkspacePermissionsType, WorkspaceMaterialEditorType, WorkspaceStateFilterListType, MaterialContentNodeProducerType, MaterialContentNodeType,
   WorkspaceEditModeStateType, UserSelectLoader, WorkspaceOrganizationFilterListType
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
@@ -30,6 +30,7 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
 export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES", WorkspaceStateFilterListType>
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS", WorkspaceOrganizationFilterListType>
 export type UPDATE_WORKSPACES_ACTIVE_FILTERS =
   SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
@@ -45,6 +46,7 @@ export type UPDATE_WORKSPACE =
 
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES", WorkspaceStateFilterListType>
 export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS =
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
 export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS =
@@ -544,9 +546,15 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   (loadOrganizationWorkspaces: boolean): AnyActionType
 }
 
+export interface setFiltersTriggerType {
+  (loadOrganizationWorkspaceFilters: boolean, filters: WorkspaceStateFilterListType): AnyActionType
+}
+
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (loadOrganizationWorkspaceFilters: boolean, callback?: (curriculums: WorkspaceCurriculumFilterListType) => any): AnyActionType
 }
+
+
 
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
   (callback?: (organizations: WorkspaceOrganizationFilterListType) => any): AnyActionType;
@@ -602,6 +610,22 @@ let loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServ
 
 let loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType = function loadMoreCurrentWorkspaceJournalsFromServer() {
   return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
+}
+
+let setWorkspaceStateFilters: setFiltersTriggerType = function setWorkspaceStateFilters(loadOrganizationWorkspaceFilters, filters) {
+  return (dispatch: (arg: AnyActionType) => any) => {
+    if (loadOrganizationWorkspaceFilters) {
+      return dispatch({
+        type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
+        payload: filters
+      })
+    } else {
+      return dispatch({
+        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
+        payload: filters
+      })
+    }
+  }
 }
 
 let loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFiltersFromServerTriggerType = function loadUserWorkspaceEducationFiltersFromServer(loadOrganizationWorkspaceFilters) {
@@ -2413,7 +2437,7 @@ let updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType = func
 }
 
 export {
-  loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer,
+  loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, setWorkspaceStateFilters,
   loadUserWorkspaceOrganizationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   setCurrentOrganizationWorkspace, loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
@@ -2424,6 +2448,6 @@ export {
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, loadMoreOrganizationWorkspacesFromServer, loadTemplatesFromServer, updateWorkspaceEditModeState, loadWholeWorkspaceHelp,
-  setWholeWorkspaceHelp
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, loadMoreOrganizationWorkspacesFromServer,
+  loadTemplatesFromServer, updateWorkspaceEditModeState, loadWholeWorkspaceHelp, setWholeWorkspaceHelp
 }
