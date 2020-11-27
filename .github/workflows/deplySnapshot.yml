@@ -1,4 +1,4 @@
-name: Snapshot deploy
+name: Snapshot ${{ github.event.head_commit.message }}deploy
 on: 
   push:
     branches: [5204-github-actions-testing]
@@ -9,10 +9,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Release or Not
         run: |
-            commitmessageGitLog=`git log --pretty=format:"%s" -1`
-            echo $commitmessageGitLog
-            commitmessageFromEvent=${{ github.event.head_commit.message }}
-            echo $commitmessageFromEvent
+            echo "This is the commit message: ${{ github.event.head_commit.message }}"
 #            if [[ ($commitmessage != *"[maven-release-plugin] prepare release"*) ]]; then
 #              return 1;
 #            fi; 
