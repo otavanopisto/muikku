@@ -36,7 +36,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   private messagesEnd: React.RefObject<HTMLDivElement>;
   private isScrollDetached: boolean = false;
   private chatRef: React.RefObject<HTMLDivElement>;
-  private messageField: any = null;
 
   constructor(props: IPrivateChatProps) {
     super(props);
@@ -68,13 +67,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
     this.requestPrescense = this.requestPrescense.bind(this);
-    this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
-  }
-
-  setFocusToMessageField() {
-    this.messageField && this.messageField.focus();
   }
 
   componentDidMount() {
@@ -87,7 +81,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
     this.requestPrescense();
     this.obtainNick();
-    this.setFocusToMessageField();
     this.loadMessages();
   }
 
@@ -375,7 +368,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}
                 onBlur={this.onTextFieldBlur}
-                ref={(input) => { this.messageField = input; }}/>
+                  ref={ref => ref && ref.focus()}/>
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
           </div>

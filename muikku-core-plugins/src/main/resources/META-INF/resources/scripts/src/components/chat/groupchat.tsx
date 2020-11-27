@@ -63,7 +63,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   private isScrollDetached: boolean = false;
   private chatRef: React.RefObject<HTMLDivElement>;
   private unmounted: boolean = false;
-  private messageField: any = null;
 
   constructor(props: IGroupChatProps) {
     super(props);
@@ -116,15 +115,10 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
     this.toggleDeleteMUCDialog = this.toggleDeleteMUCDialog.bind(this);
     this.onMUCDeleted = this.onMUCDeleted.bind(this);
-    this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
     this.deleteMessage = this.deleteMessage.bind(this);
     this.editMessage = this.editMessage.bind(this);
-  }
-
-  setFocusToMessageField() {
-    this.messageField && this.messageField.focus();
   }
 
   toggleDeleteMUCDialog(e?: React.MouseEvent) {
@@ -500,7 +494,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
   componentDidMount() {
     this.joinRoom();
-    this.setFocusToMessageField();
     this.loadMessages();
   }
   componentWillUnmount() {
@@ -706,7 +699,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
                   onChange={this.setCurrentMessageToBeSent}
                   value={this.state.currentMessageToBeSent}
-                  ref={(input) => { this.messageField = input; }}/>
+                  ref={ref => ref && ref.focus()}/>
                 <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)

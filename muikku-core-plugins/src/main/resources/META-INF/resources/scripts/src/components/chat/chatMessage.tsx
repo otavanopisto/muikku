@@ -47,6 +47,7 @@ interface IChatMessageState {
 
 export class ChatMessage extends React.Component<IChatMessageProps, IChatMessageState> {
   private unmounted: boolean = false;
+  private messageEditField: any = null;
 
   constructor(props: IChatMessageProps){
     super(props);
@@ -69,6 +70,8 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     this.onMessageDeleted = this.onMessageDeleted.bind(this);
     this.toggleMessageEditMode = this.toggleMessageEditMode.bind(this);
     this.onMessageEdited = this.onMessageEdited.bind(this);
+    this.setFocusToMessageEditField = this.setFocusToMessageEditField.bind(this);
+    this.placeCaretToEnd = this.placeCaretToEnd.bind(this);
   }
   async toggleInfo() {
     if (this.state.showInfo) {
@@ -96,7 +99,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
-    componentWillUnmount() {
+  componentWillUnmount() {
     this.unmounted = true;
   }
   toggleDeleteMessageDialog(e?: React.MouseEvent) {
@@ -144,8 +147,22 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
+  setFocusToMessageEditField() {
+    this.messageEditField && this.messageEditField.focus();
+  }
   onMessageEdited() {
     this.props.editMessage(this.state.currentEditedMessageStanzaId, this.state.currentEditedMessageTextContent);
+  }
+  componentDidUpdate(){
+    //this.setFocusToMessageEditField();
+  }
+  placeCaretToEnd(e: Element){
+    let range = document.createRange();
+    range.setStart(e, e.childNodes.length);
+    range.setEnd(e, e.childNodes.length);
+    let sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
   render() {
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
@@ -179,7 +196,9 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       </div>
       {this.state.messageIsInEditMode ?
         <div className="chat__message-content-container">
-          <div className="chat__message-content chat__message-content--edit-mode" contentEditable>
+          <div className="chat__message-content chat__message-content--edit-mode" contentEditable
+            ref={ref => ref && ref.focus()}
+            onFocus={(el: any) => this.placeCaretToEnd(el.currentTarget)}>
             {this.props.message.message}
           </div>
           <div className="chat__message-footer">
