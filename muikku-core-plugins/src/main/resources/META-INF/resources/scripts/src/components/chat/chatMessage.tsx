@@ -70,7 +70,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     this.onMessageDeleted = this.onMessageDeleted.bind(this);
     this.toggleMessageEditMode = this.toggleMessageEditMode.bind(this);
     this.onMessageEdited = this.onMessageEdited.bind(this);
-    this.setFocusToMessageEditField = this.setFocusToMessageEditField.bind(this);
     this.placeCaretToEnd = this.placeCaretToEnd.bind(this);
   }
   async toggleInfo() {
@@ -147,14 +146,8 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       });
     }
   }
-  setFocusToMessageEditField() {
-    this.messageEditField && this.messageEditField.focus();
-  }
   onMessageEdited() {
     this.props.editMessage(this.state.currentEditedMessageStanzaId, this.state.currentEditedMessageTextContent);
-  }
-  componentDidUpdate(){
-    //this.setFocusToMessageEditField();
   }
   placeCaretToEnd(e: Element){
     let range = document.createRange();
