@@ -131,8 +131,9 @@ public class SchoolDataSearchReindexListener {
       }
       
       if (allDone && tasks.contains(Task.COMMUNICATORMESSAGES)) {
-          allDone = allDone && reindexCommunicatorMessages();
-        }
+        allDone = allDone && reindexCommunicatorMessages();
+      }
+      
       if (!allDone) {
         startTimer(getTimeout());
       } else {
