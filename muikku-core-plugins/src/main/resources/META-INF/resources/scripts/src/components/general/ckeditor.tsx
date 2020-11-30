@@ -59,7 +59,7 @@ interface CKEditorState {
 const extraConfig = (props: CKEditorProps) => ({
   height: 0,
   startupFocus: props.autofocus,
-  title: props.editorTitle,
+  title: props.editorTitle ? props.editorTitle : "",
   allowedContent: true,
   entities_latin: false,
   entities_greek: false,
