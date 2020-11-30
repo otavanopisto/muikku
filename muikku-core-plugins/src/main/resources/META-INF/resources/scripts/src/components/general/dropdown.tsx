@@ -18,7 +18,7 @@ interface DropdownProps {
   onOpen?: ()=>any,
   onClose?: ()=>any,
   onClick?: ()=>any,
-  alignSelf?: "left" | "center",
+  alignSelf?: "left" | "center" | "right",
 }
 
 interface DropdownState {
@@ -71,6 +71,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       left = position.left;
     } else if (this.props.alignSelf === 'center') {
       left = position.left - ($dropdown.outerWidth() / 2) + ($target.outerWidth() / 2);
+    } else if (this.props.alignSelf === 'right') {
+      left = position.left - $dropdown.outerWidth() + $target.outerWidth();
     } else {
       if (targetIsWiderThanDropdown) {
         left = position.left + ($target.outerWidth() / 2) - ($dropdown.outerWidth() / 2);
@@ -100,6 +102,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
     else if (this.props.alignSelf === 'center') {
       arrowLeft = $dropdown.outerWidth() / 2 - ($arrow.outerWidth() / 2);
+    } else if (this.props.alignSelf === 'right') {
+      arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth() / 2);
     } else {
       if (targetIsWiderThanDropdown) {
         arrowLeft = ($dropdown.outerWidth() / 2) - ($arrow.outerWidth() / 2);
