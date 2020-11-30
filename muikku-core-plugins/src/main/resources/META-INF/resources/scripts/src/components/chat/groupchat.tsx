@@ -3,6 +3,7 @@ import * as React from 'react'
 import mApi from '~/lib/mApi';
 import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/chat.scss';
+// import '~/sass/elements/wcag.scss';
 import promisify from '~/util/promisify';
 import { IAvailableChatRoomType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
 import { ChatMessage } from './chatMessage';
@@ -619,90 +620,93 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
             <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
-            <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
-              <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
-                <div className="chat__panel-header-title">{this.props.chat.roomName}</div>
-                <div onClick={this.toggleOccupantsList} className="chat__button chat__button--occupants icon-users"></div>
-                <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
-                {this.state.isOwner ? <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--room-settings icon-cogs"></div> : null}
-                <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
+          <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
+            <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
+              <div className="chat__panel-header-title">{this.props.chat.roomName}</div>
+              <div onClick={this.toggleOccupantsList} className="chat__button chat__button--occupants icon-users"></div>
+              <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
+              {this.state.isOwner ? <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--room-settings icon-cogs"></div> : null}
+              <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
+            </div>
+
+            {this.state.openChatSettings && <div className="chat__subpanel">
+              <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
+                <div className="chat__subpanel-title">{this.props.i18n.text.get("plugin.chat.room.settingsTitle")}</div>
+                <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--close icon-cross"></div>
               </div>
-
-              {this.state.openChatSettings && <div className="chat__subpanel">
-                <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
-                  <div className="chat__subpanel-title">Huoneen asetukset</div>
-                  <div onClick={this.toggleChatRoomSettings} className="chat__button chat__button--close icon-cross"></div>
-                </div>
-                <div className="chat__subpanel-body">
-                  <form onSubmit={this.setChatroomConfiguration}>
-                    <div className="chat__subpanel-row">
-                      <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
-                      <input className={`chat__textfield chat__textfield--${chatRoomTypeClassName}`} name="newroomName" disabled={this.props.chat.roomJID.startsWith("workspace-") ? true : null} value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
-                    </div>
-                    <div className="chat__subpanel-row">
-                      <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
-                      <textarea className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField || ""} onChange={this.updateRoomDescField}></textarea>
-                    </div>
-                    {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
-                      <label className="chat__label">Pysyvä huone: </label>
-                      <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
-                    </div>} */}
-                    <div className="chat__subpanel-row chat__subpanel-row--buttonset">
-                      <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
-                      {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteMUCDialog}>{this.props.i18n.text.get("plugin.chat.button.deleteRoom")}</button>}
-                    </div>
-                  </form>
-
-                  <div>
-                    {this.state.updateFailed ? "failed" : null}
+              <div className="chat__subpanel-body">
+                <form onSubmit={this.setChatroomConfiguration}>
+                  <div className="chat__subpanel-row">
+                    <label htmlFor={`chatRoomName-${this.props.chat.roomJID.split("@")[0]}`} className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
+                    <input id={`chatRoomName-${this.props.chat.roomJID.split("@")[0]}`} className={`chat__textfield chat__textfield--${chatRoomTypeClassName}`} name="newroomName" disabled={this.props.chat.roomJID.startsWith("workspace-") ? true : null} value={this.state.roomNameField} onChange={this.updateRoomNameField} type="text"></input>
                   </div>
+                  <div className="chat__subpanel-row">
+                    <label htmlFor={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
+                    <textarea id={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField || ""} onChange={this.updateRoomDescField}></textarea>
+                  </div>
+                  {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                    <label className="chat__label">Pysyvä huone: </label>
+                    <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
+                  </div>} */}
+                  <div className="chat__subpanel-row chat__subpanel-row--buttonset">
+                    <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
+                    {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteMUCDialog}>{this.props.i18n.text.get("plugin.chat.button.deleteRoom")}</button>}
+                  </div>
+                </form>
+
+                <div>
+                  {this.state.updateFailed ? "failed" : null}
+                </div>
+              </div>
+            </div>}
+
+            <div className="chat__panel-body chat__panel-body--chatroom">
+              <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
+                {this.state.messages.map((message) => <ChatMessage deleted={this.state.messageDeleted} canModerate={!this.state.isStudent} key={message.stanzaId}
+                  canToggleInfo={!this.state.isStudent}
+                  message={message} i18n={this.props.i18n}
+                  editMessage={this.editMessage.bind(message.stanzaId)}
+                  deleteMessage={this.deleteMessage.bind(message.stanzaId)} />)}
+                <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
+              </div>
+              {this.state.showOccupantsList && <div className="chat__occupants-container">
+                <div className="chat__occupants-staff">
+                  {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
+                  {staffOccupants.map((staffOccupant) =>
+                    <div
+                      title={this.props.i18n.text.get("plugin.chat.state." + staffOccupant.occupant.precense)}
+                      className="chat__occupants-item chat__occupants-item--has-access-to-pm"
+                      onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
+                      <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>
+                  )}
+                </div>
+                <div className="chat__occupants-student">
+                  {studentOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.students")}</div> : ""}
+                  {studentOccupants.map((studentOccupant) =>
+                    <div
+                      title={this.props.i18n.text.get("plugin.chat.state." + studentOccupant.occupant.precense)}
+                      className={`chat__occupants-item ${!this.state.isStudent && "chat__occupants-item--has-access-to-pm"} `}
+                      onClick={this.state.isStudent ? null : this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)}
+                      key={studentOccupant.occupant.userId}>
+                      <span className={"chat__online-indicator chat__online-indicator--" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
                 </div>
               </div>}
-
-              <div className="chat__panel-body chat__panel-body--chatroom">
-                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message) => <ChatMessage deleted={this.state.messageDeleted} canModerate={!this.state.isStudent} key={message.stanzaId}
-                    canToggleInfo={!this.state.isStudent}
-                    message={message} i18n={this.props.i18n}
-                    editMessage={this.editMessage.bind(message.stanzaId)}
-                    deleteMessage={this.deleteMessage.bind(message.stanzaId)} />)}
-                  <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
-                </div>
-                {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  <div className="chat__occupants-staff">
-                    {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
-                    {staffOccupants.map((staffOccupant) =>
-                      <div
-                        title={this.props.i18n.text.get("plugin.chat.state." + staffOccupant.occupant.precense)}
-                        className="chat__occupants-item chat__occupants-item--has-access-to-pm"
-                        onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
-                        <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>
-                    )}
-                  </div>
-                  <div className="chat__occupants-student">
-                    {studentOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.students")}</div> : ""}
-                    {studentOccupants.map((studentOccupant) =>
-                      <div
-                        title={this.props.i18n.text.get("plugin.chat.state." + studentOccupant.occupant.precense)}
-                        className={`chat__occupants-item ${!this.state.isStudent && "chat__occupants-item--has-access-to-pm"} `}
-                        onClick={this.state.isStudent ? null : this.props.joinPrivateChat.bind(this, studentOccupant.occupant.jid, null)}
-                        key={studentOccupant.occupant.userId}>
-                        <span className={"chat__online-indicator chat__online-indicator--" + studentOccupant.occupant.precense}></span>{studentOccupant.occupant.nick}</div>)}
-                  </div>
-                </div>}
-              </div>
-              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
-                <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-                <textarea
-                  className="chat__memofield chat__memofield--muc-message"
-                  onKeyDown={this.onEnterPress}
-                  placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
-                  onChange={this.setCurrentMessageToBeSent}
-                  value={this.state.currentMessageToBeSent}
-                  ref={ref => ref && ref.focus()}/>
-                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
-              </form>
-            </div>)
+            </div>
+            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
+              <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
+              {/* Need wcag.scss from another WIP branch
+              <label htmlFor={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label> */}
+              <textarea
+                id={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`}
+                className="chat__memofield chat__memofield--muc-message"
+                onKeyDown={this.onEnterPress}
+                placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
+                onChange={this.setCurrentMessageToBeSent}
+                value={this.state.currentMessageToBeSent}
+                ref={ref => ref && ref.focus()}/>
+              <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
+            </form>
+          </div>)
         }
 
         <DeleteRoomDialog isOpen={this.state.deleteMUCDialogOpen} onClose={this.toggleDeleteMUCDialog} chat={this.props.chat} onDelete={this.onMUCDeleted}/>

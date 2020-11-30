@@ -198,7 +198,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         ]),
       }, this.joinChatRoom.bind(this, roomJID));
     } catch (err) {
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.roomCreateFail"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugin.chat.notification.roomCreateFail"), "error");
     }
 
     this.toggleCreateChatRoomForm();
@@ -575,8 +575,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
               <div className="chat__subpanel-body">
                 <form onSubmit={this.createAndJoinChatRoom}>
                   <div className="chat__subpanel-row">
-                  <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
+                    <label htmlFor="newChatRoomName" className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
                     <input
+                      id="newChatRoomName"
                       className="chat__textfield"
                       type="text"
                       value={this.state.roomNameField}
@@ -584,8 +585,9 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     />
                   </div>
                   <div className="chat__subpanel-row">
-                    <label className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
+                    <label htmlFor="newChatRoomDesc" className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
                     <textarea
+                      id="newChatRoomDesc"
                       className="chat__memofield"
                       value={this.state.roomDescField}
                       onChange={this.updateRoomDescField}
