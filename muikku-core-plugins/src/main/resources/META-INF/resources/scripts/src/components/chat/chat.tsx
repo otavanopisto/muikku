@@ -572,7 +572,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         {/* Chat controlbox */}
         {this.state.showControlBox && <div className="chat__panel chat__panel--controlbox">
           <div className="chat__panel-header chat__panel-header--controlbox">
-            <Dropdown modifier="chat" items={this.setUserAvailabilityDropdown().map((item) => {
+            <Dropdown alignSelf="left" modifier="chat" items={this.setUserAvailabilityDropdown().map((item) => {
               return (closeDropdown: () => any) => {
                 return <Link className={`link link--full link--chat-dropdown link--chat-availability-${item.modifier}`}
                   onClick={(...args: any[]) => { closeDropdown(); item.onClick && item.onClick(...args) }}>

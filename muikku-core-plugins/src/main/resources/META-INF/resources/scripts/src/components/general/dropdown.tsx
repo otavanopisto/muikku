@@ -17,7 +17,8 @@ interface DropdownProps {
   persistent?:boolean,
   onOpen?: ()=>any,
   onClose?: ()=>any,
-  onClick?: ()=>any
+  onClick?: ()=>any,
+  alignSelf?: "left" | "center",
 }
 
 interface DropdownState {
@@ -36,7 +37,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     this.onOpen = this.onOpen.bind(this);
     this.beforeClose = this.beforeClose.bind(this);
     this.close = this.close.bind(this);
-    
+
     this.state = {
       top: null,
       left: null,
@@ -52,11 +53,11 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     if (!(activator instanceof HTMLElement)){
       activator = findDOMNode(activator);
     }
-    
+
     const $target = $(activator);
     const $arrow = $(this.refs["arrow"]);
     const $dropdown = $(this.refs["dropdown"]);
-      
+
     const position = activator.getBoundingClientRect();
     const windowWidth = $(window).width();
     const windowHeight = $(window).height();
@@ -64,15 +65,23 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     const targetIsWiderThanDropdown = $target.outerWidth() > $dropdown.outerWidth();
     const spaceLeftInBottom = windowHeight - position.top - position.height;
     const notEnoughSpaceInBottom = spaceLeftInBottom < $dropdown.outerHeight() + 5;
-    
+
     let left = null;
-    if (targetIsWiderThanDropdown) {
-      left = position.left + $target.outerWidth()/2 - ($dropdown.outerWidth()/2);
-    } else if (moreSpaceInTheLeftSide){
-      left = position.left - $dropdown.outerWidth() + $target.outerWidth();
-    } else {
+    if (this.props.alignSelf === 'left') {
       left = position.left;
+    } else if (this.props.alignSelf === 'center') {
+      left = position.left - ($dropdown.outerWidth() / 2) + ($target.outerWidth() / 2);
+    } else {
+      if (targetIsWiderThanDropdown) {
+        left = position.left + ($target.outerWidth() / 2) - ($dropdown.outerWidth() / 2);
+      } else if (moreSpaceInTheLeftSide) {
+        left = position.left - $dropdown.outerWidth() + $target.outerWidth();
+      } else {
+        left = position.left;
+      }
     }
+
+
     let top = null;
     let bottom = null;
     if (notEnoughSpaceInBottom) {
@@ -80,24 +89,32 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     } else {
       top = position.top + $target.outerHeight() + 5;
     }
-    
+
     let arrowLeft = null;
     let arrowRight = null;
     let arrowTop = null;
     let reverseArrow = false;
-    if (targetIsWiderThanDropdown) {
-      arrowLeft = ($dropdown.outerWidth() / 2) - ($arrow.outerWidth()/2);
-    } else if (moreSpaceInTheLeftSide){
-      arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
-    } else {
-      arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
+
+    if (this.props.alignSelf === 'left') {
+      arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth() / 2);
     }
-    
+    else if (this.props.alignSelf === 'center') {
+      arrowLeft = $dropdown.outerWidth() / 2 - ($arrow.outerWidth() / 2);
+    } else {
+      if (targetIsWiderThanDropdown) {
+        arrowLeft = ($dropdown.outerWidth() / 2) - ($arrow.outerWidth() / 2);
+      } else if (moreSpaceInTheLeftSide){
+        arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth() / 2);
+      } else {
+        arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth() / 2);
+      }
+    }
+
     if (notEnoughSpaceInBottom) {
       arrowTop = $dropdown.outerHeight();
       reverseArrow = true;
     }
-    
+
     this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, visible: true}, this.props.onOpen);
   }
   beforeClose(DOMNode : HTMLElement, removeFromDOM: Function){
@@ -121,12 +138,12 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       portalProps.openByHoverOn = elementCloned;
       portalProps.openByHoverIsClickToo = this.props.openByHoverIsClickToo;
     }
-    
+
     portalProps.closeOnEsc = true;
     portalProps.closeOnOutsideClick = true;
     portalProps.closeOnScroll = !this.props.persistent;
     portalProps.onClose = this.props.onClose;
-    
+
     return <Portal ref="portal" {...portalProps} onOpen={this.onOpen} beforeClose={this.beforeClose}>
       <div ref="dropdown"
         style={{
