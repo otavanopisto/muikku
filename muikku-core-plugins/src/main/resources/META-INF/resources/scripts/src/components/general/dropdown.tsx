@@ -85,7 +85,6 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
 
 
     let top = null;
-    let bottom = null;
     if (notEnoughSpaceInBottom) {
       top = position.top - 5 - $dropdown.outerHeight();
     } else {

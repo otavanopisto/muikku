@@ -199,7 +199,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   font-size: 1rem;
-  padding: 10px;
+  padding: 10px 5px;
   z-index: 2;
 }
 
@@ -211,6 +211,7 @@
   flex-shrink: 1;
   font-size: 0.875rem;
   overflow: hidden;
+  padding: 0 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -246,7 +247,8 @@
   flex-basis: 0;
   flex-grow: 0;
   flex-shrink: 0;
-  margin: 0 0 0 10px;
+  margin: 0 0 0 5px;
+  padding: 0 5px;
   transition: color 0.2s ease-in-out;
 }
 
