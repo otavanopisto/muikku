@@ -2,8 +2,6 @@ name: Announcer sauce tests
 on: 
   push:
     branches: [5204-github-actions-testing]
-env:
-  TUNNEL_ID: ${{env.GITHUB_ACTION}}
 jobs:
   testing:
     runs-on: ubuntu-latest
