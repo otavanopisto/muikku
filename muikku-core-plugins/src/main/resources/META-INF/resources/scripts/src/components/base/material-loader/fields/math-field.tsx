@@ -48,15 +48,16 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   setValue(newValue: string){
-    this.props.onChange && this.props.onChange(this, this.props.content.name, newValue);
     this.setState({
       value: newValue
     });
+    this.props.onChange && this.props.onChange(this, this.props.content.name, newValue);
   }
   render(){
     // NOTE you cannot change the formula class name unless you want to break backwards compatibility
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
     // this means old formulas will 100% fail to parse
+    console.log("render with", this.state.value);
     return <div>
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <MathField ref="base" className="material-page__mathfield"
