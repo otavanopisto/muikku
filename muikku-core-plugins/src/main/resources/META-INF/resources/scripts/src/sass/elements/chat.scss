@@ -250,17 +250,34 @@
   transition: color 0.2s ease-in-out;
 }
 
+.chat__button--availability-chat {
+  color: $color-chat-user-status-online;
+}
+
+.chat__button--availability-away {
+  color: $color-chat-user-status-away;
+}
+
+.chat__button--availability-dnd {
+  color: $color-chat-user-status-dnd;
+}
+
+.chat__button--availability-xa {
+  color: $color-chat-user-status-offline;
+}
+
 // Controlbox specific icon colors
 .chat__panel-header--controlbox,
 .chat__subpanel-header--new-room {
   box-shadow: none;
   justify-content: flex-end;
 
+  .chat__button--availability {
+    margin: 0 auto 0 0;
+  }
+
   .chat__button--new-room {
     color: $color-chat-controlbox-main-color;
-    flex-basis: auto;
-    flex-grow: 1;
-    margin: 0;
   }
 
   .chat__button--close {

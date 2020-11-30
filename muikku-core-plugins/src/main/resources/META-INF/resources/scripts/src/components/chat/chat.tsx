@@ -10,6 +10,8 @@ import { UserChatSettingsType } from '~/reducers/main-function/user-index';
 import promisify from "~/util/promisify";
 import { PrivateChat } from './privateChat';
 import { i18nType } from '~/reducers/base/i18n';
+import Link from '~/components/general/link';
+import Dropdown from '~/components/general/dropdown';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { bindActionCreators } from 'redux';
 
@@ -143,6 +145,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     this.onConnectionStatusChanged = this.onConnectionStatusChanged.bind(this);
     this.stopChat = this.stopChat.bind(this);
     this.removeChatRoom = this.removeChatRoom.bind(this);
+    this.setUserAvailabilityDropdown = this.setUserAvailabilityDropdown.bind(this)
   }
 
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -343,13 +346,41 @@ class Chat extends React.Component<IChatProps, IChatState> {
   getNotWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter((room) => !room.roomJID.startsWith("workspace-"));
   }
-  setUserAvailability(e: React.ChangeEvent<HTMLSelectElement>) {
-    const newStatus = e.target.value;
+  setUserAvailability(newStatus: string) {
     this.state.connection.send($pres().c("show", {}, newStatus));
     this.setState({
       selectedUserPresence: newStatus as any,
     });
     window.sessionStorage.setItem("selectedUserPresence", JSON.stringify(newStatus));
+  }
+  setUserAvailabilityDropdown() {
+    const setUserAvailabilityItems: Array<any> = [
+      {
+        icon: "user",
+        text: 'plugin.chat.state.chat',
+        onClick: this.setUserAvailability.bind(this, "chat"),
+        modifier: "chat",
+      },
+      {
+        icon: "user",
+        text: 'plugin.chat.state.away',
+        onClick: this.setUserAvailability.bind(this, "away"),
+        modifier: "away",
+      },
+      {
+        icon: "user",
+        text: 'plugin.chat.state.dnd',
+        onClick: this.setUserAvailability.bind(this, "dnd"),
+        modifier: "dnd",
+      },
+      {
+        icon: "user",
+        text: 'plugin.chat.state.xa',
+        onClick: this.setUserAvailability.bind(this, "xa"),
+        modifier: "xa",
+      }
+    ]
+    return setUserAvailabilityItems;
   }
   componentDidMount() {
     if (this.props.settings && this.props.settings.visibility === "VISIBLE_TO_ALL") {
@@ -541,18 +572,24 @@ class Chat extends React.Component<IChatProps, IChatState> {
         {/* Chat controlbox */}
         {this.state.showControlBox && <div className="chat__panel chat__panel--controlbox">
           <div className="chat__panel-header chat__panel-header--controlbox">
+            <Dropdown modifier="chat" items={this.setUserAvailabilityDropdown().map((item) => {
+              return (closeDropdown: () => any) => {
+                return <Link className={`link link--full link--chat-dropdown link--chat-availability-${item.modifier}`}
+                  onClick={(...args: any[]) => { closeDropdown(); item.onClick && item.onClick(...args) }}>
+                  <span className={`link__icon icon-${item.icon}`}></span>
+                  <span>{this.props.i18n.text.get(item.text)}</span>
+                </Link>
+              }
+            })}>
+              <span className={`chat__button chat__button--availability chat__button--availability-${this.state.selectedUserPresence} icon-user`}></span>
+            </Dropdown>
+
             {!this.state.isStudent && <span onClick={this.toggleCreateChatRoomForm} className="chat__button chat__button--new-room icon-plus"></span>}
+
             <span onClick={this.toggleControlBox} className="chat__button chat__button--close icon-cross"></span>
           </div>
 
           <div className="chat__panel-body chat__panel-body--controlbox">
-            <select value={this.state.selectedUserPresence} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${this.state.selectedUserPresence}`}>
-              <option value="chat">{this.props.i18n.text.get("plugin.chat.state.chat")}</option>
-              <option value="away">{this.props.i18n.text.get("plugin.chat.state.away")}</option>
-              <option value="dnd">{this.props.i18n.text.get("plugin.chat.state.dnd")}</option>
-              <option value="xa">{this.props.i18n.text.get("plugin.chat.state.xa")}</option>
-            </select>
-
             <div className="chat__controlbox-rooms-heading">{this.props.i18n.text.get("plugin.chat.rooms.others")}</div>
             <div className="chat__controlbox-rooms-listing">
               {this.getNotWorkspaceMucRooms().length > 0 ?
