@@ -228,13 +228,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
-
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-      let currentLocationHasData = Object.keys(currentLocationData).length;
+      let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
       if (currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
@@ -294,7 +293,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       let stateFilters = [
         {
           identifier: "unpublished",
-          name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.label')
+          name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.unpublished.label')
         }
       ];
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
@@ -306,30 +305,34 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
       let currentLocationHasData = Object.keys(currentLocationData).length;
 
-      if (currentLocationHasData) {
 
-        // Todo: this is not for coursepicker anymore
+      this.loadCoursePickerData(currentLocationData, true, false);
+      // if (currentLocationHasData) {
 
-        this.loadCoursePickerData(currentLocationData, true, false);
-      }
+      //   // Todo: this is not for coursepicker anymore
+
+      //   this.loadCoursePickerData(currentLocationData, true, false);
+      // } else {
+      //   this.loadCoursePickerData(null, true, false);
+      // }
 
       let state: StateType = this.props.store.getState();
       this.props.store.dispatch(loadUsers() as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
 
-      this.props.store.dispatch(loadLoggedUser((user: UserType) => {
-        if (!currentLocationHasData) {
-          let defaultSelections: any = {};
-          if (user.curriculumIdentifier) {
-            defaultSelections["c"] = [user.curriculumIdentifier];
-          }
-          if (defaultSelections.c) {
-            location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
-          } else {
-            this.loadCoursePickerData(currentLocationData, true, false);
-          }
-        }
-      }) as Action);
+      // this.props.store.dispatch(loadLoggedUser((user: UserType) => {
+      //   if (!currentLocationHasData) {
+      //     let defaultSelections: any = {};
+      //     if (user.curriculumIdentifier) {
+      //       defaultSelections["c"] = [user.curriculumIdentifier];
+      //     }
+      //     if (defaultSelections.c) {
+      //       location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+      //     } else {
+      //       this.loadCoursePickerData(currentLocationData, true, false);
+      //     }
+      //   }
+      // }) as Action);
 
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
