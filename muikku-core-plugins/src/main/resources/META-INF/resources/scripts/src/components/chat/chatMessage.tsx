@@ -28,6 +28,7 @@ interface IChatMessageProps {
   deletedTime?: string,
   editMessage?: (stanzaId: string, textContent: string) => void,
   deleteMessage?: (stanzaId: string) => void,
+  chatType: string,
 }
 
 interface IChatMessageState {
@@ -171,7 +172,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         <span className="chat__message-meta-timestamp">
           {this.props.i18n.time.formatDaily(this.props.message.timestamp)}
         </span>
-        {(this.props.canModerate || this.props.message.isSelf) && !this.props.deleted ?
+        {(this.props.canModerate || this.props.message.isSelf) && !this.props.deleted && this.props.chatType != "private" ?
           <span className="chat__message-actions">
             <Dropdown modifier="chat" items={this.getMessageModerationListDropdown().map((item) => {
               return (closeDropdown: () => any) => {

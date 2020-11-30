@@ -661,7 +661,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message) => <ChatMessage deleted={this.state.messageDeleted} canModerate={!this.state.isStudent} key={message.stanzaId}
+                  {this.state.messages.map((message) => <ChatMessage
+                    chatType="group"
+                    deleted={this.state.messageDeleted}
+                    canModerate={!this.state.isStudent}
+                    key={message.stanzaId}
                     canToggleInfo={!this.state.isStudent}
                     message={message} i18n={this.props.i18n}
                     editMessage={this.editMessage.bind(message.stanzaId)}
