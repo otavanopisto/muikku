@@ -354,7 +354,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message, index) => <ChatMessage key={index}
+                  {this.state.messages.map((message, index) => <ChatMessage
+                    key={index}
+                    chatType="private"
                     canToggleInfo={!this.state.isStudent}
                     message={message} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
