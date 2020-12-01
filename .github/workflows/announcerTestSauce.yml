@@ -40,4 +40,4 @@ jobs:
        id: getscpid
        run: echo "::set-output name=scpid::$(cat /tmp/sc_client.pid)"
      - name: Shut Down Sauce Connect Tunnel
-       run: kill -9 ${{ steps.getscpid.outputs.scpid }}
+       run: kill -2 ${{ steps.getscpid.outputs.scpid }}
