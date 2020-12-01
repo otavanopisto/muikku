@@ -62,6 +62,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
       educationFilters: [],
       curriculumFilters: [],
       organizationFilters: [],
+      stateFilters: [],
       templates: "ONLY_WORKSPACES",
       query: value,
       baseFilter: "ALL_COURSES"
