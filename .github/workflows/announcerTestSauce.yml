@@ -37,7 +37,7 @@ jobs:
            cd muikku-atests
            mvn verify -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="chrome" -Dit.browser.version="latest" -Dit.browser.resolution="1280x1024" -Dit.platform="Windows 10" -Dit.package="announcer" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
      - name: Read sc_client.pid file
-        id: getscpid
-        run: echo "::set-output name=scpid::$(cat /tmp/sc_client.pid)"
+       id: getscpid
+       run: echo "::set-output name=scpid::$(cat /tmp/sc_client.pid)"
      - name: Shut Down Sauce Connect Tunnel
        run: kill -9 ${{ steps.getscpid.outputs.scpid }}
