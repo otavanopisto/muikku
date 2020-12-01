@@ -96,7 +96,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
     let validation: ValidationType = Object.assign(this.state.validation, { templateSelected: true });
-    this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name } });
+    this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name }, workspaceName: e.target.name });
   }
 
   doStudentSearch(value: string) {
