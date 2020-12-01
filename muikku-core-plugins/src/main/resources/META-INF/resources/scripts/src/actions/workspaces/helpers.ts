@@ -77,7 +77,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   } else if (actualFilters.baseFilter === "AS_TEACHER") {
     myWorkspaces = true;
     includeUnpublished = true;
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters.includes("unpublished")) {
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
     includeUnpublished = true;
   }
 
@@ -91,10 +91,6 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     curriculums: actualFilters.curriculumFilters,
     organizations: actualFilters.organizationFilters,
     includeUnpublished
-  }
-
-  if (actualFilters.query) {
-    (params as any).q = actualFilters.query;
   }
 
   if (actualFilters.query) {

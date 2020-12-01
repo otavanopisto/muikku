@@ -214,6 +214,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization, refresh) as Action);
   }
 
+
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
@@ -241,26 +242,35 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
       let state: StateType = this.props.store.getState();
 
-      if (state.status.loggedIn) {
-        this.props.store.dispatch(loadLoggedUser((user: UserType) => {
-          if (!currentLocationHasData) {
-            let defaultSelections: any = {};
-            if (user.curriculumIdentifier) {
-              defaultSelections["c"] = [user.curriculumIdentifier];
-            }
-            if (user.organizationIdentifier) {
-              defaultSelections["o"] = [user.organizationIdentifier];
-            }
+      let loadCoursepickerDataByUser = (user: UserType) => {
+        if (!currentLocationHasData) {
+          let defaultSelections: any = {};
+          if (user.curriculumIdentifier) {
+            defaultSelections["c"] = [user.curriculumIdentifier];
+          }
+          if (user.organizationIdentifier) {
+            defaultSelections["o"] = [user.organizationIdentifier];
+          }
 
-            if (defaultSelections.c || defaultSelections.o) {
-              location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
-            } else {
-              this.loadCoursePickerData(currentLocationData, false, false);
-            }
+          if (defaultSelections.c || defaultSelections.o) {
+            location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
           } else {
             this.loadCoursePickerData(currentLocationData, false, false);
           }
-        }) as Action);
+        } else {
+          this.loadCoursePickerData(currentLocationData, false, false);
+        }
+      }
+
+      if (state.status.loggedIn) {
+        if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
+          this.props.store.dispatch(loadLoggedUser((user: UserType) => {
+            loadCoursepickerDataByUser(user);
+          }) as Action);
+        } else {
+          let user = state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier];
+          loadCoursepickerDataByUser(user);
+        }
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
       }
@@ -301,10 +311,44 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(setWorkspaceStateFilters(true, stateFilters) as Action);
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
-
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
+      let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
-      this.loadCoursePickerData(currentLocationData, true, false);
+      if (currentLocationHasData) {
+        this.loadCoursePickerData(currentLocationData, true, false);
+      }
+
+      let state: StateType = this.props.store.getState();
+
+      let loadWorkspacesByUser = (user: UserType) => {
+        if (!currentLocationHasData) {
+          let defaultSelections: any = {};
+          if (user.organizationIdentifier) {
+            defaultSelections["o"] = [user.organizationIdentifier];
+          }
+          if (defaultSelections.c || defaultSelections.o) {
+            location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+          } else {
+            this.loadCoursePickerData(currentLocationData, true, false);
+          }
+        } else {
+          this.loadCoursePickerData(currentLocationData, true, false);
+        }
+      }
+
+      if (state.status.loggedIn) {
+        if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
+          this.props.store.dispatch(loadLoggedUser((user: UserType) => {
+            loadWorkspacesByUser(user);
+          }) as Action);
+        } else {
+          let user = state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier];
+          loadWorkspacesByUser(user);
+        }
+      } else if (!currentLocationHasData) {
+        this.loadCoursePickerData(currentLocationData, true, false);
+      }
+
       this.props.store.dispatch(loadUsers() as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
