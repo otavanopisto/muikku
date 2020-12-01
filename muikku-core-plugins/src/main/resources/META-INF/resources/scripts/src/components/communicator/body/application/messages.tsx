@@ -69,7 +69,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     }
 
     return thread.recipients.map((recipient) => {
-      if (recipient.userId === userId) {
+      if (recipient.userEntityId === userId) {
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
       return getName(recipient as any, !this.props.status.isStudent);

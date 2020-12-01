@@ -56,11 +56,13 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResults;
@@ -72,10 +74,6 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageLabels;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 
 @Path("/communicator")
 @RequestScoped
@@ -286,6 +284,8 @@ public class CommunicatorRESTService extends PluginRESTService {
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
   
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    
     List<CommunicatorSearchResultRESTModel> communicatorMessages = new ArrayList<CommunicatorSearchResultRESTModel>();
     
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
@@ -322,52 +322,32 @@ public class CommunicatorRESTService extends PluginRESTService {
         if (isLogged.equals(Boolean.TRUE) && archivedBySender.equals(Boolean.TRUE)) {
           continue;
         } else {
-        
           CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
           senderData.setUserEntityId(sender.getUserEntityId());
           senderData.setFirstName(sender.getFirstName());
           senderData.setLastName(sender.getLastName());
           senderData.setNickName(sender.getNickName());
+          
           CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
           CommunicatorMessageCategory category = communicatorMessage.getCategory();
           
           String caption = result.getCaption();
           String content = result.getMessage();
           Date created = result.getcreated();
-          Set<String> tags = result.getTags();
           
           List<IndexedCommunicatorMessageRecipient> receiverList = result.getReceiver();
           
-          List<CommunicatorSearchResultRecipientRESTModel> receiver = new ArrayList<CommunicatorSearchResultRecipientRESTModel>();
-          List<CommunicatorSearchResultLabelRESTModel> labelsList = new ArrayList<CommunicatorSearchResultLabelRESTModel>();
+          // TODO filter the archived ones in the search
           for (IndexedCommunicatorMessageRecipient recipient : receiverList) {
-            UserEntity loggedUser = sessionController.getLoggedUserEntity();
             if (recipient.getUserEntityId().equals(loggedUser.getId())){
               if (Boolean.TRUE.equals(recipient.getArchivedByReceiver())) {
                 recipientId = recipient.getUserEntityId();
               }
               readByReceiver = recipient.getReadByReceiver();
-              List<IndexedCommunicatorMessageLabels> labels = recipient.getLabels();
-              if (labels != null) {
-                for (IndexedCommunicatorMessageLabels label : labels) {
-                  CommunicatorUserLabel lbl = communicatorController.findUserLabelById(label.getId());
-                  
-                  if (lbl != null) {
-                    CommunicatorSearchResultLabelRESTModel labelData = new CommunicatorSearchResultLabelRESTModel(
-                        label.getId(), 
-                        label.getLabel(), 
-                        lbl.getColor());
-                  
-                    labelsList.add(labelData);
-                  }
-                }
-              }
               
             } else {
               readByReceiver = true;
             }
-            
-            receiver.add(new CommunicatorSearchResultRecipientRESTModel(recipient.getUserEntityId(), recipient.getFirstName(), recipient.getLastName(), recipient.getNickName(), recipient.getStudyProgrammeName()));
           }
           
           if (recipientId != null && recipientId.equals(sessionController.getLoggedUserEntity().getId())) {
@@ -375,11 +355,22 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
           
           if (communicatorMessageId != null) {
-            Long id = communicatorMessage.getId();
+            Set<String> tags = communicatorController.tagIdsToStr(communicatorMessage.getTags());
+            
+            List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
+            List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(communicatorMessage);
+            List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(communicatorMessage);
+
+            List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
+            List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
+            List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
+
+            List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessage.getCommunicatorMessageId());
+            List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
             
             communicatorMessages.add(new CommunicatorSearchResultRESTModel(
-                id, 
-                communicatorMessageId, 
+                communicatorMessage.getId(), 
+                communicatorMessage.getCommunicatorMessageId().getId(), 
                 senderId, 
                 senderData, 
                 category.getName(), 
@@ -387,9 +378,13 @@ public class CommunicatorRESTService extends PluginRESTService {
                 content,
                 created, 
                 tags, 
-                receiver, 
+                
+                restRecipients, 
+                restUserGroupRecipients, 
+                restWorkspaceRecipients, 
+                
                 readByReceiver,
-                labelsList
+                restLabels
             ));
           }
         }

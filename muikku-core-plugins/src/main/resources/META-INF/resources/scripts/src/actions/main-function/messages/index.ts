@@ -253,7 +253,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         //and only if one of the receivers is us, otherwise it's always active for when a message is sent
         const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
         const weAreOneOfTheRecepients = result.recipients
-          .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
+          .find(( recipient: MessageRecepientType ) => {return recipient.userEntityId === status.userId});
         const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && weAreOneOfTheRecepients;
         const weAreInSentLocation = state.messages.location === "sent";
         const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;

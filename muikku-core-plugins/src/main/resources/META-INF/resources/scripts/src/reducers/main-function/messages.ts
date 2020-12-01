@@ -13,15 +13,8 @@ export interface MessageSearchResult {
   caption: string,
   communicatorMessageId: number,
   created: string,
-  content: string,
   id: number,
   readByReceiver: boolean,
-  recipients: Array<{
-    firstName: string,
-    lastName: string,
-    nickName: string,
-    userEntityId: number,
-  }>,
   labels: Array<{
     labelColor: number,
     id: number,
@@ -35,6 +28,9 @@ export interface MessageSearchResult {
   },
   senderId: number,
   tags: any,
+  recipients?: Array<MessageRecepientType>,
+  userGroupRecipients?: UserGroupListType,
+  workspaceRecipients?: Array<MessageWorkspaceRecipientType>,
 }
 export interface MessageThreadLabelType {
   id: number,
@@ -109,20 +105,21 @@ export interface MessageType {
   senderId: number,
   tags: any,
   userGroupRecipients: UserGroupListType,
-  workspaceRecipients: Array<{
-    archetype: string,
-    workspaceEntityId: number,
-    workspaceExtension?: string,
-    workspaceName: string
-  }>
+  workspaceRecipients: Array<MessageWorkspaceRecipientType>
 }
 export interface MessageRecepientType {
   communicatorMessageId: number,
-  userId: number,
+  userEntityId: number,
   nickName?: string | null,
   firstName: string,
   lastName?: string | null,
   recipientId: number
+}
+export interface MessageWorkspaceRecipientType {
+  archetype: string,
+  workspaceEntityId: number,
+  workspaceExtension?: string,
+  workspaceName: string,
 }
 export type MessageThreadListType = Array<MessageThreadType>;
 
