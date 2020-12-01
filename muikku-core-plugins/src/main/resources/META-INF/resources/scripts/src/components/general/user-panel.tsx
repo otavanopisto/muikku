@@ -29,12 +29,13 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   }
 
   render() {
-
+    // TODO make this more generic - remove "organization-stuff"
     return (
       <ApplicationSubPanel i18n={this.props.i18n} modifier="organization-users" bodyModifier="organization-users" title={this.props.i18n.text.get(this.props.title)}>
         {this.props.users.length > 0 ?
           <ApplicationList >
             {this.props.users && this.props.users.map((user) => {
+
               let aside = <Avatar id={user.userEntityId} hasImage={user.hasImage} firstName={user.firstName} />;
               let data = {
                 firstName: user.firstName,
@@ -45,10 +46,19 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
                 studyProgrammeIdentifier: user.studyProgrammeIdentifier
               }
               let actions = data.role == "STUDENT" ? <div><StudentDialog data={data}><span className="icon-pencil"></span></StudentDialog></div> : data.role === "ADMINISTRATOR" ? <div title={data.role}><span className="state-DISABLED icon-pencil"></span></div> : <div><StaffDialog data={data}><span className="icon-pencil"></span></StaffDialog></div>;
+              let ro
               return <ApplicationListItem key={user.id} modifiers="user">
                 <ApplicationListItemContentWrapper modifiers="user" actions={actions} mainModifiers="user" asideModifiers="user" aside={aside}>
-                  <ApplicationListItemContentData modifiers="primary">{getName(user, true)}</ApplicationListItemContentData>
-                  <ApplicationListItemContentData modifiers="secondary">{user.email}</ApplicationListItemContentData>
+                  <ApplicationListItemContentData modifiers="primary">
+                    <span>{getName(user, true)}</span>
+                    <span>
+                      ({user.role ? this.props.i18n.text.get("plugin.organization.users.role." + user.role) : null}
+                      {user.studyProgrammeName ? user.studyProgrammeName : null})
+                    </span>
+                  </ApplicationListItemContentData>
+                  <ApplicationListItemContentData modifiers="secondary">
+                    <span>{user.email}</span>
+                  </ApplicationListItemContentData>
                 </ApplicationListItemContentWrapper>
               </ApplicationListItem>
             })}

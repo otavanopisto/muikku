@@ -216,6 +216,9 @@
   display: inline-block;
 }
 
+.application-list__item-content > span:not(:first-child) {
+  margin-left: 5px;
+}
 
 .application-list__item-content-actions {
 

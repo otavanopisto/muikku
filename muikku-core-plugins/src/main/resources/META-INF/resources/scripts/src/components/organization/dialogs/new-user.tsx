@@ -167,11 +167,11 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       <div>
         <DialogRow modifiers="new-user">
           <SelectFormElement name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField}>
-            <option value="STUDENT">{this.props.i18n.text.get('plugin.organization.users.addUser.role.student')}</option>
-            <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
-            <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
-            <option value="STUDY_GUIDER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.studyGuider')}</option>
-            <option value="STUDY_PROGRAMME_LEADER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.studyProgrammeLeader')}</option>
+            <option value="STUDENT">{this.props.i18n.text.get('plugin.organization.users.role.STUDENT')}</option>
+            <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.role.MANAGER')}</option>
+            <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.role.TEACHER')}</option>
+            <option value="STUDY_GUIDER">{this.props.i18n.text.get('plugin.organization.users.role.STUDY_GUIDER')}</option>
+            <option value="STUDY_PROGRAMME_LEADER">{this.props.i18n.text.get('plugin.organization.users.role.STUDY_PROGRAMME_LEADER')}</option>
           </SelectFormElement>
         </DialogRow>
         <DialogRow modifiers="new-user">
