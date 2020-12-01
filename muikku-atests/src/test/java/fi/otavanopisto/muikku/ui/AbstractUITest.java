@@ -1008,7 +1008,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void login() {
-    getWebDriver().get("https://google.com");
     navigate("/login?authSourceId=1", false);
     waitForVisible(".navbar .button-pill--profile");
   }
