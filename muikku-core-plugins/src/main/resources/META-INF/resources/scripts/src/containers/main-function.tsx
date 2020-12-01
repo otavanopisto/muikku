@@ -303,37 +303,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-      let currentLocationHasData = Object.keys(currentLocationData).length;
-
 
       this.loadCoursePickerData(currentLocationData, true, false);
-      // if (currentLocationHasData) {
-
-      //   // Todo: this is not for coursepicker anymore
-
-      //   this.loadCoursePickerData(currentLocationData, true, false);
-      // } else {
-      //   this.loadCoursePickerData(null, true, false);
-      // }
-
-      let state: StateType = this.props.store.getState();
       this.props.store.dispatch(loadUsers() as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
-
-      // this.props.store.dispatch(loadLoggedUser((user: UserType) => {
-      //   if (!currentLocationHasData) {
-      //     let defaultSelections: any = {};
-      //     if (user.curriculumIdentifier) {
-      //       defaultSelections["c"] = [user.curriculumIdentifier];
-      //     }
-      //     if (defaultSelections.c) {
-      //       location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
-      //     } else {
-      //       this.loadCoursePickerData(currentLocationData, true, false);
-      //     }
-      //   }
-      // }) as Action);
-
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <OrganizationAdministrationBody />
