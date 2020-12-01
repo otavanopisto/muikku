@@ -28,10 +28,10 @@ jobs:
        run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
      - name: Check sauce connect
        run: |
-            while [ ! -f /tmp/sc_ready ]; do
-              echo "Waiting for Sauce Connect..."
-              sleep 5;
-            done;
+           while [ ! -f /tmp/sc_ready ]; do
+             echo "Waiting for Sauce Connect..."
+             sleep 5;
+           done;
      - name: Test with chrome
        run: |
            cd muikku-atests
