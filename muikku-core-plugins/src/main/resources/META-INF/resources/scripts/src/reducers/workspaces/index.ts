@@ -15,8 +15,6 @@ export interface CreateWorkspaceType {
   curriculum: string,
 }
 
-
-
 export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type LoadWorkspaceActionType = "UPDATE_WORKSPACE" | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
@@ -269,7 +267,6 @@ export interface WorkspaceMaterialReferenceType {
 export type WorkspaceListType = Array<WorkspaceType>;
 
 export type WorkspaceBaseFilterType = "ALL_COURSES" | "MY_COURSES" | "AS_TEACHER";
-
 
 export interface WorkspaceEducationFilterType {
   identifier: string,
