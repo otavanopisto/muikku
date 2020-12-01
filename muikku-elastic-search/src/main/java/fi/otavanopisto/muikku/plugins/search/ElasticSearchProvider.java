@@ -10,7 +10,6 @@ import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
@@ -49,8 +48,6 @@ import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -728,14 +725,9 @@ public class ElasticSearchProvider implements SearchProvider {
         try {
           return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
         }
-        catch (JsonParseException e) {
-          e.printStackTrace();
-        }
-        catch (JsonMappingException e) {
-          e.printStackTrace();
-        }
-        catch (IOException e) {
-          e.printStackTrace();
+        catch (Exception e) {
+          String documentId = hit != null ? hit.getId() : null;
+          logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
         }
         return null;
       })
@@ -746,7 +738,7 @@ public class ElasticSearchProvider implements SearchProvider {
       
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResults(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResults<List<IndexedCommunicatorMessage>>(0, 0, new ArrayList<IndexedCommunicatorMessage>(), 0); 
     }
   }
   
