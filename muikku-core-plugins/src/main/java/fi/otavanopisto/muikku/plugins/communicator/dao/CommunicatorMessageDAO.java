@@ -476,15 +476,13 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
     CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
-    Root<CommunicatorMessage> communicatorMessage = criteria.from(CommunicatorMessage.class);
     Root<CommunicatorMessageRecipient> recipient = criteria.from(CommunicatorMessageRecipient.class);
-    Join<CommunicatorMessageRecipient, CommunicatorMessage> recipientMessage = 
-        criteriaBuilder.treat(recipient.join(CommunicatorMessageRecipient_.communicatorMessage), CommunicatorMessage.class);
+    Join<CommunicatorMessageRecipient, CommunicatorMessage> communicatorMessage = recipient.join(CommunicatorMessageRecipient_.communicatorMessage);
+    
     criteria.select(communicatorMessage);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(communicatorMessage.get(CommunicatorMessage_.id), recipientMessage.get(CommunicatorMessage_.id)),
-            criteriaBuilder.equal(recipientMessage.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+            criteriaBuilder.equal(communicatorMessage.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
             criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.recipient), user.getId())
         )
     );
