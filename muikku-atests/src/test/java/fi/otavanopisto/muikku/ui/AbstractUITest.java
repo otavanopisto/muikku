@@ -318,7 +318,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       capabilities.setCapability("screenResolution", browserResolution);
     }
  
-    if (StringUtils.isEmpty(getSauceTunnelId())) {
+    if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
 //    
@@ -1008,6 +1008,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void login() {
+    getWebDriver().get("https://google.com");
     navigate("/login?authSourceId=1", false);
     waitForVisible(".navbar .button-pill--profile");
   }
