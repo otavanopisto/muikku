@@ -13,6 +13,7 @@ import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
+import { isThisTypeNode } from 'typescript';
 
 interface ValidationType {
   nameValid: number
@@ -37,6 +38,7 @@ interface OrganizationEditWorkspaceProps {
 
 interface OrganizationEditWorkspaceState {
   workspaceName: string,
+  workspaceNameExtension: string,
   locked: boolean,
   currentStep: number,
   addStaff: SelectItem[],
@@ -47,7 +49,6 @@ interface OrganizationEditWorkspaceState {
   selectedStudents: SelectItem[],
   staffLoaded: boolean,
   studentsLoaded: boolean,
-  totalSteps: number,
   executing: boolean,
   validation: ValidationType,
   workspaceUpdated: boolean,
@@ -59,11 +60,14 @@ interface OrganizationEditWorkspaceState {
 
 class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspaceProps, OrganizationEditWorkspaceState> {
 
+  private totalSteps: number;
+
   constructor(props: OrganizationEditWorkspaceProps) {
     super(props);
-
+    this.totalSteps = 4;
     this.state = {
       workspaceName: this.props.workspace.name,
+      workspaceNameExtension: this.props.workspace.nameExtension,
       selectedStaff: [],
       selectedStudents: [],
       addStaff: [],
@@ -73,12 +77,12 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       staffLoaded: false,
       studentsLoaded: false,
       locked: false,
-      totalSteps: 4,
       currentStep: 1,
       executing: false,
       validation: {
         nameValid: 2
       },
+
       workspaceUpdated: false,
       studentsAdded: false,
       staffAdded: false,
@@ -96,6 +100,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.deleteStudent = this.deleteStudent.bind(this);
     this.setSelectedStudents = this.setSelectedStudents.bind(this);
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
+    this.setWorkspaceNameExtension = this.setWorkspaceNameExtension.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
     this.setSelectedWorkspace = this.setSelectedWorkspace.bind(this);
@@ -154,6 +159,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ locked: false, workspaceName: value });
   }
 
+  setWorkspaceNameExtension(value: string) {
+    this.setState({ workspaceNameExtension: value });
+  }
+
   clearComponentState() {
     this.setState({
       locked: false,
@@ -210,7 +219,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let payload: WorkspaceUpdateType = {};
 
     if (this.props.currentWorkspace.name !== this.state.workspaceName) {
-      payload = { name: this.state.workspaceName }
+      payload = { name: this.state.workspaceName, nameExtension: this.state.workspaceNameExtension }
     }
 
     this.props.updateOrganizationWorkspace({
@@ -252,6 +261,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         return <div>
           <DialogRow modifiers="edit-workspace">
             <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement updateField={this.setWorkspaceNameExtension} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
           </DialogRow>
         </div >;
       case 2:
@@ -269,7 +279,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           this.setState({ selectedStudents: this.props.currentWorkspace.studentsSelect.users, studentsLoaded: true });
         }
 
-        return <DialogRow modifiers="new-workspace">
+        return <DialogRow modifiers="edit-workspace">
           <AutofillSelector modifier="add-students"
             loader={this.doStudentSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
@@ -284,14 +294,14 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           this.setState({ selectedStaff: this.props.currentWorkspace.staffMemberSelect.users, staffLoaded: true });
         }
 
-        return <DialogRow modifiers="new-workspace">
+        return <DialogRow modifiers="edit-workspace">
           <AutofillSelector modifier="add-teachers"
             loader={this.doStaffSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
             selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 4:
-        return <DialogRow modifiers="new-workspace">
+        return <DialogRow modifiers="edit-workspace-summary">
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
             <DialogRowContent modifiers="new-workspace">
@@ -369,7 +379,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeTeachers')}</div></div>;
 
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
-      currentStep={this.state.currentStep} totalSteps={this.state.totalSteps}
+      currentStep={this.state.currentStep} totalSteps={this.totalSteps}
       executeLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.execute.label')}
       nextLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.next.label')}
       lastLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.last.label')}

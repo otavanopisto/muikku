@@ -15,7 +15,8 @@ import '~/sass/elements/course.scss';
 
 interface ValidationType {
   templateSelected: boolean,
-  nameValid: number
+  nameValid: number,
+  nameExtensionValid: 2
 }
 
 interface OrganizationNewWorkspaceProps {
@@ -36,11 +37,11 @@ interface OrganizationNewWorkspaceProps {
 interface OrganizationNewWorkspaceState {
   template: SelectItem,
   workspaceName: string,
+  workspaceNameExtension: string,
   locked: boolean,
   currentStep: number,
   selectedStaff: SelectItem[],
   selectedStudents: SelectItem[],
-  totalSteps: number,
   executing: boolean,
   validation: ValidationType,
   workspaceCreated: boolean,
@@ -50,11 +51,14 @@ interface OrganizationNewWorkspaceState {
 
 class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceProps, OrganizationNewWorkspaceState> {
 
+  private totalSteps: number;
+
   constructor(props: OrganizationNewWorkspaceProps) {
     super(props);
-
+    this.totalSteps = 4;
     this.state = {
       workspaceName: "",
+      workspaceNameExtension: "",
       template: {
         id: null,
         label: ""
@@ -62,12 +66,12 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       selectedStaff: [],
       selectedStudents: [],
       locked: false,
-      totalSteps: 4,
       currentStep: 1,
       executing: false,
       validation: {
         templateSelected: false,
-        nameValid: 2
+        nameValid: 2,
+        nameExtensionValid: 2
       },
       workspaceCreated: false,
       studentsAdded: false,
@@ -86,6 +90,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.deleteStudent = this.deleteStudent.bind(this);
     this.setSelectedStudents = this.setSelectedStudents.bind(this);
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
+    this.setWorkspaceNameExtension = this.setWorkspaceNameExtension.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
   }
@@ -136,15 +141,21 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ locked: false, workspaceName: value });
   }
 
+  setWorkspaceNameExtension(value: string) {
+    this.setState({ workspaceNameExtension: value });
+  }
+
   clearComponentState() {
     this.setState({
       template: null,
       validation: {
         templateSelected: false,
-        nameValid: 2
+        nameValid: 2,
+        nameExtensionValid: 2
       },
       locked: false,
       workspaceName: "",
+      workspaceNameExtension: "",
       executing: false,
       currentStep: 1,
       selectedStaff: [],
@@ -185,6 +196,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.props.createWorkspace({
       id: this.state.template.id as number,
       name: this.state.workspaceName,
+      nameExtension: this.state.workspaceNameExtension,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,
       success: (state: CreateWorkspaceStateType) => {
@@ -212,7 +224,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   wizardSteps(page: number) {
-
     switch (page) {
       case 1:
         return <div>
@@ -220,7 +231,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
           <DialogRow modifiers="new-workspace">
-            <InputFormElement mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
@@ -270,7 +282,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 4:
-        return <DialogRow modifiers="new-workspace">
+        return <DialogRow modifiers="new-workspace-summary">
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
             <DialogRowContent modifiers="new-workspace">
@@ -328,7 +340,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers')}</div>
     </div>;
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
-      currentStep={this.state.currentStep} totalSteps={this.state.totalSteps}
+      currentStep={this.state.currentStep} totalSteps={this.totalSteps}
       executeLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.execute.label')}
       nextLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.next.label')}
       lastLabel={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.last.label')}

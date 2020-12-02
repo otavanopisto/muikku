@@ -250,6 +250,15 @@
   justify-content: flex-start;
 }
 
+.dialog__content-row--new-workspace,
+.dialog__content-row--edit-workspace  {
+  display: flex;
+
+  .form-element:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
 // wonder what this is, needs to be checked
 
 .dialog__content-row--label {
