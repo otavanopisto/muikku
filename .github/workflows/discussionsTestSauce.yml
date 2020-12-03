@@ -1,14 +1,12 @@
 name: Discussions sauce tests
-on: 
-  repository_dispatch:
-    types: [trigger-discussions-sauce-test]
+on: [workflow_dispatch]
 jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.client_payload.sha }}
+          ref: ${{ github.event.inputs.sha }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:

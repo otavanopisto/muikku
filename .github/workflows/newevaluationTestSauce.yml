@@ -1,14 +1,12 @@
 name: New evaluation sauce tests
-on: 
-  push:
-    branches: [5204-github-actions-testing]
+on: [workflow_dispatch]
 jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.client_payload.sha }}
+          ref: ${{ github.event.inputs.sha }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -48,11 +46,3 @@ jobs:
                 echo "Waiting for Sauce Connect to close..."
                 sleep 5;
               done;
-      - name: Trigger next workflow
-        if: success()
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_GHA_PAT }}
-          repository: ${{ github.repository }}
-          event-type: trigger-tor-sauce-test
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
