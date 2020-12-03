@@ -11,20 +11,19 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -882,6 +881,11 @@ public class PyramusMock {
       
       public Builder addCourse(Course course) {
         pmock.courses.add(course);
+        return this;
+      }
+
+      public Builder removeCourse(Long courseId) {
+        pmock.courses.removeIf(course -> Objects.equals(course.getId(), courseId));
         return this;
       }
       

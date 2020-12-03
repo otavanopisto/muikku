@@ -161,7 +161,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       (<InputContactsAutofill modifier="new-message" key="1"
           loaders={this.inputContactsAutofillLoaders()}
           hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
-          hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+          hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_WORKSPACE_MESSAGING}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
           selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
           showFullNames={!this.props.status.isStudent}/>),
