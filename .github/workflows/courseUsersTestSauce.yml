@@ -1,14 +1,12 @@
 name: Course users sauce tests
 on: 
-  repository_dispatch:
-    types: [trigger-course-users-sauce-test]
+  push:
+    branches: [5204-github-actions-testing] 
 jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.client_payload.sha }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -48,3 +46,9 @@ jobs:
                 echo "Waiting for Sauce Connect to close..."
                 sleep 5;
               done;
+      - name: Dispatch next workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Course sauce tests
+          inputs: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          token: ${{ secrets.REPO_GHA_PAT }}

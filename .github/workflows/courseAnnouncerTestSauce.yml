@@ -46,11 +46,9 @@ jobs:
                 echo "Waiting for Sauce Connect to close..."
                 sleep 5;
               done;
-      - name: Trigger next workflow
-        if: success()
-        uses: peter-evans/repository-dispatch@v1.1.3
+      - name: Dispatch next workflow
+        uses: benc-uk/workflow-dispatch@v1
         with:
+          workflow: Course journal sauce tests
+          inputs: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
           token: ${{ secrets.REPO_GHA_PAT }}
-          repository: ${{ github.repository }}
-          event-type: trigger-course-journal-sauce-test
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

@@ -51,3 +51,4 @@ jobs:
         with:
           workflow: Index page sauce tests
           inputs: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          token: ${{ secrets.REPO_GHA_PAT }}

@@ -46,8 +46,9 @@ jobs:
                 echo "Waiting for Sauce Connect to close..."
                 sleep 5;
               done;
-      - name: Workflow Dispatch
+      - name: Dispatch next workflow 
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Discussions sauce tests
           inputs: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          token: ${{ secrets.REPO_GHA_PAT }}
