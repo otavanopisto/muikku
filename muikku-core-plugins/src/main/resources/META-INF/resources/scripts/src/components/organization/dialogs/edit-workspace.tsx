@@ -223,7 +223,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     }
 
     if (this.props.currentWorkspace.nameExtension !== this.state.workspaceNameExtension) {
-      payload = Object.assign(payload, { nameExtension: this.state.workspaceNameExtension });
+      Object.assign(payload, { nameExtension: this.state.workspaceNameExtension });
     }
 
     this.props.updateOrganizationWorkspace({
@@ -309,9 +309,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
             <DialogRowContent modifiers="new-workspace">
-              {this.state.workspaceName !== "" ?
-                <div>{this.state.workspaceName}</div>
-                : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.workspaceName')}</div>}
+              <div>{this.state.workspaceName} {this.state.workspaceNameExtension ? "(" + this.state.workspaceNameExtension + ")" : null}</div>
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
