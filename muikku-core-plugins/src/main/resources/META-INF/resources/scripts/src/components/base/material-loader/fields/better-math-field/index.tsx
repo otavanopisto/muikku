@@ -10,12 +10,12 @@ interface MathFieldProps {
   value: string,
   onChange: (value: string)=>any,
   i18n: {
-    basicsAndSymbols: string,
-    algebra: string,
+    symbols: string,
+    relations: string,
     geometryAndVectors: string,
-    logic: string,
-    moreMath: string,
-    mathOperations: string
+    setTheoryNotation: string,
+    mathFormulas: string,
+    operators: string
   },
   toolbarAlwaysVisible?: boolean,
   dontLoadACE?: boolean,

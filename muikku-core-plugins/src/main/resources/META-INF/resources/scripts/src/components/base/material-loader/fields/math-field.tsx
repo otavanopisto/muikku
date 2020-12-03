@@ -65,12 +65,12 @@ export default class TextField extends React.Component<MathFieldProps, MathField
       formulaClassName="material-page__mathfield-formula"
       editorClassName="material-page__mathfield-editor"
       toolbarClassName="material-page__mathfield-toolbar" i18n={{
-        basicsAndSymbols: this.props.i18n.text.get("plugin.workspace.mathField.basicsAndSymbols"),
-        algebra: this.props.i18n.text.get("plugin.workspace.mathField.algebra"),
+        symbols: this.props.i18n.text.get("plugin.workspace.mathField.symbols"),
+        relations: this.props.i18n.text.get("plugin.workspace.mathField.relations"),
         geometryAndVectors: this.props.i18n.text.get("plugin.workspace.mathField.geometryAndVectors"),
-        logic: this.props.i18n.text.get("plugin.workspace.mathField.logic"),
-        moreMath: this.props.i18n.text.get("plugin.workspace.mathField.moreMath"),
-        mathOperations: this.props.i18n.text.get("plugin.workspace.mathField.mathOperations"),
+        setTheoryNotation: this.props.i18n.text.get("plugin.workspace.mathField.setTheoryNotation"),
+        mathFormulas: this.props.i18n.text.get("plugin.workspace.mathField.addMathFormula"),
+        operators: this.props.i18n.text.get("plugin.workspace.mathField.operators"),
       }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly}
       dontLoadMQ={this.props.readOnly}/>
     </div>

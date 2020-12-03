@@ -422,7 +422,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.aceEditor = (window as any).ace.edit(editor);
     this.aceEditor.session.setMode("ace/mode/latex");
     this.aceEditor.renderer.setShowGutter(false);
-    this.aceEditor.renderer.setOption("fontSize", "20px");
+    //this.aceEditor.renderer.setOption("fontSize", "20px");
     this.aceEditor.session.setUseWrapMode(true);
     this.aceEditor.on("focus", this.onAceEditorFocus);
     this.aceEditor.on("input", this.onAceEditorInput);
@@ -558,17 +558,15 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (this.props.readOnly) {
       return;
     }
-    //console.log("checking the focus at", e.target);
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render() {
-    // console.log("RENDER");
     return <div className={this.props.className}
       contentEditable={!this.props.readOnly}
       spellCheck={false}
       onFocus={this.onFocusField}
       ref="input"
-      onBlur={this.onBlurField}
+      //onBlur={this.onBlurField}
       onInput={this.onChange}
       onMouseDown={this.checkTheFocus}
     />
