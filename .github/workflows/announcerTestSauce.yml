@@ -50,5 +50,5 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Communicator sauce tests
-          inputs: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          inputs: '{ "ref": "${{ github.ref }}", "sha": "${{ github.sha }}" }'
           token: ${{ secrets.REPO_GHA_PAT }}
