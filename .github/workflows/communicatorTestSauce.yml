@@ -1,5 +1,5 @@
 name: Communicator sauce tests
-on: 
+on:
   workflow_dispatch:
     inputs:
       commit:
