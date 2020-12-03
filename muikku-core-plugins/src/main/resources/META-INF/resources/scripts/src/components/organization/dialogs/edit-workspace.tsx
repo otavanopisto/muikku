@@ -219,7 +219,11 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let payload: WorkspaceUpdateType = {};
 
     if (this.props.currentWorkspace.name !== this.state.workspaceName) {
-      payload = { name: this.state.workspaceName, nameExtension: this.state.workspaceNameExtension }
+      payload = { name: this.state.workspaceName }
+    }
+
+    if (this.props.currentWorkspace.nameExtension !== this.state.workspaceNameExtension) {
+      payload = Object.assign(payload, { nameExtension: this.state.workspaceNameExtension });
     }
 
     this.props.updateOrganizationWorkspace({
