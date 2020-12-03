@@ -1,5 +1,10 @@
 name: Discussions sauce tests
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'SHA of commit to test'
+        required: true
 jobs:
   testing:
     runs-on: ubuntu-latest
