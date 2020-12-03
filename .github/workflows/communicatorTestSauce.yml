@@ -1,12 +1,16 @@
 name: Communicator sauce tests
 on: [workflow_dispatch]
+  inputs:
+    commit:
+      description: 'SHA of commit to test'
+      required: true
 jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.sha }}
+          ref: ${{ github.event.inputs.commit }}"
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -50,5 +54,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Discussions sauce tests
-          inputs: '{ "ref": "${{ github.ref }}", "sha": "${{ github.sha }}" }'
           token: ${{ secrets.REPO_GHA_PAT }}
