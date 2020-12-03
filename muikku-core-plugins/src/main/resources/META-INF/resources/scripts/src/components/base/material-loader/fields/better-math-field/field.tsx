@@ -566,7 +566,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       spellCheck={false}
       onFocus={this.onFocusField}
       ref="input"
-      //onBlur={this.onBlurField}
+      onBlur={this.onBlurField}
       onInput={this.onChange}
       onMouseDown={this.checkTheFocus}
     />

@@ -6,9 +6,11 @@
 .material-page__mathfield-toolbar {
   background-color: $color-math-exercise-toolbar-default-background;
   border-bottom: $color-math-exercise-toolbar-default-border;
-  box-shadow: 0 2px 4px $color-math-exercise-toolbar-default-shadow;
+  box-shadow: 0 4px 10px $color-math-exercise-toolbar-default-shadow;
   height: auto;
   left: 0;
+  max-height: 40%;
+  overflow: auto;
   padding: 10px 0;
   position: fixed;
   right: 0;
@@ -16,6 +18,7 @@
   z-index: 9999;
 
   @include breakpoint($breakpoint-pad) {
+    max-height: 100%;
     top: $navbar-desktop-height;
   }
 }
@@ -52,10 +55,16 @@
   font-size: 1rem;
   height: 35px;
   justify-content: center;
-  position: absolute;
-  right: 10px;
-  top: 32px;
+  position: fixed;
+  right: 5px;
+  top: 5px;
   width: 35px;
+
+   @include breakpoint($breakpoint-pad) {
+    position: absolute;
+    right: 10px;
+    top: 32px;
+  }
 }
 
 // Labels for symbol groups and math
@@ -150,18 +159,22 @@
   border-radius: 3px;
   box-shadow: 0 0 10px $color-math-editor-boxshadow;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: flex-start;
   margin: 10px 5px;
   outline: none;
   position: relative;
   transition: box-shadow 0.3s ease-in-out, border 0.3s ease-in-out;
   width: calc(100% - 10px);
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
 }
 
 .material-page__mathfield-editor--formula-container {
   display: flex;
-  flex-basis: 50%;
+  flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
   min-height: 4rem;
@@ -182,11 +195,15 @@
     }
   }
   // scss-lint:enable SelectorFormat
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
 .material-page__mathfield-editor--formula-text-editor {
   display: flex;
-  flex-basis: 50%;
+  flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
   min-height: 4rem;
@@ -238,5 +255,9 @@
     }
   }
   // scss-lint:enable SelectorFormat
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
