@@ -39,8 +39,6 @@ interface IChatMessageState {
 
   messageDeleted: boolean,
 
-  currentEditedMessageTextContent: string,
-  currentEditedMessageStanzaId: string,
   messageIsInEditMode : boolean,
 
   deleteMessageDialogOpen: boolean,
@@ -48,7 +46,7 @@ interface IChatMessageState {
 
 export class ChatMessage extends React.Component<IChatMessageProps, IChatMessageState> {
   private unmounted: boolean = false;
-  private messageEditField: any = null;
+  private contentEditableRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: IChatMessageProps){
     super(props);
@@ -61,10 +59,10 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       showRemoveButton: false,
       messageDeleted: false,
       deleteMessageDialogOpen: false,
-      currentEditedMessageTextContent: "",
-      currentEditedMessageStanzaId: "",
       messageIsInEditMode: false,
     }
+
+    this.contentEditableRef = React.createRef();
 
     this.toggleInfo = this.toggleInfo.bind(this);
     this.toggleDeleteMessageDialog = this.toggleDeleteMessageDialog.bind(this);
@@ -144,13 +142,19 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     } else {
       this.setState({
         messageIsInEditMode: true,
+      }, () => {
+        this.contentEditableRef.current.focus();
       });
     }
   }
-  onMessageEdited() {
-    this.props.editMessage(this.state.currentEditedMessageStanzaId, this.state.currentEditedMessageTextContent);
+  onMessageEdited(e: React.MouseEvent) {
+    e.preventDefault();
+    const textContent = this.contentEditableRef.current.textContent;
+    this.toggleMessageEditMode();
+    this.props.editMessage(this.props.message.stanzaId, textContent);
   }
-  placeCaretToEnd(e: Element){
+  placeCaretToEnd(event: React.FocusEvent){
+    const e = event.currentTarget;
     let range = document.createRange();
     range.setStart(e, e.childNodes.length);
     range.setEnd(e, e.childNodes.length);
@@ -191,8 +195,8 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       {this.state.messageIsInEditMode ?
         <div className="chat__message-content-container">
           <div className="chat__message-content chat__message-content--edit-mode" contentEditable
-            ref={ref => ref && ref.focus()}
-            onFocus={(el: any) => this.placeCaretToEnd(el.currentTarget)}>
+            ref={this.contentEditableRef}
+            onFocus={this.placeCaretToEnd}>
             {this.props.message.message}
           </div>
           <div className="chat__message-footer">
