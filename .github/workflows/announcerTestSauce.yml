@@ -50,6 +50,6 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Communicator sauce tests
-          inputs: '{ "commit": "${{ github.sha }}" }'
+          # inputs: '{ "commit": "${{ github.sha }}" }'
           # inputs: '{ "commit": "${{github.event.pull_request.head.sha}}" }'
           token: ${{ secrets.REPO_GHA_PAT }}
