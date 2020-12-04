@@ -104,13 +104,29 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             <ApplicationListItemHeader modifiers="communicator-message">
               <div className={`application-list__header-primary`}>
                 <span className="application-list__header-primary-sender">{message.sender.firstName} {message.sender.nickName && '"' + message.sender.nickName + '"'} {message.sender.lastName}</span>
-                <span className="application-list__header-primary-recipients">{message.recipients.map((recipient) => {
-                  return (
-                    <span className="application-list__header-primary-recipient" key={recipient.userEntityId}>
-                      {recipient.firstName} {recipient.nickName && '"' + recipient.nickName + '"'} {recipient.lastName}
-                    </span>
-                  )
-                })}</span>
+                <span className="application-list__header-primary-recipients">
+                  {message.recipients.map((recipient) => {
+                    return (
+                      <span className="application-list__header-primary-recipient" key={recipient.userEntityId}>
+                        {recipient.firstName} {recipient.nickName && '"' + recipient.nickName + '"'} {recipient.lastName}
+                      </span>
+                    )
+                  })}
+                  {message.userGroupRecipients.map((userGroupRecepient) => {
+                    return (
+                      <span key={userGroupRecepient.id}>
+                        {userGroupRecepient.name}
+                      </span>
+                    )
+                  })}
+                  {message.workspaceRecipients.map((workspaceRecepient) => {
+                    return (
+                      <span key={workspaceRecepient.workspaceEntityId}>
+                        {workspaceRecepient.workspaceName}
+                      </span>
+                    )
+                  })}
+                </span>
               </div>
               <div className="application-list__header-item-date">
                 {this.props.i18n.time.format(message.created)}
