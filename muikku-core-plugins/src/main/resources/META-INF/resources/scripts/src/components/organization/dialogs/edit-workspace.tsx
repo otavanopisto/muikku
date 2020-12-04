@@ -12,8 +12,9 @@ import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType } from '~/reducers/main-function/users';
-import { WorkspaceUpdateType, WorkspaceType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
+import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { isThisTypeNode } from 'typescript';
+import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
 
 interface ValidationType {
   nameValid: number
@@ -39,6 +40,7 @@ interface OrganizationEditWorkspaceProps {
 interface OrganizationEditWorkspaceState {
   workspaceName: string,
   workspaceNameExtension: string,
+  workspaceAccess: WorkspaceAccessType,
   locked: boolean,
   currentStep: number,
   addStaff: SelectItem[],
@@ -68,6 +70,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.state = {
       workspaceName: this.props.workspace.name,
       workspaceNameExtension: this.props.workspace.nameExtension,
+      workspaceAccess: this.props.currentWorkspace ? this.props.currentWorkspace.access : null,
       selectedStaff: [],
       selectedStudents: [],
       addStaff: [],
@@ -148,7 +151,12 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   setSelectedWorkspace() {
-    this.props.setCurrentOrganizationWorkspace({ workspaceId: this.props.workspace.id });
+    this.props.setCurrentOrganizationWorkspace({
+      workspaceId: this.props.workspace.id,
+      success: (workspace: WorkspaceType) => {
+        this.setState({ workspaceAccess: workspace.access });
+      }
+    });
   }
 
   setSelectedStudents(addStudents: Array<SelectItem>) {
@@ -161,6 +169,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   setWorkspaceNameExtension(value: string) {
     this.setState({ workspaceNameExtension: value });
+  }
+
+  setWorkspaceAccess(value: WorkspaceAccessType) {
+    this.setState({ workspaceAccess: value });
   }
 
   clearComponentState() {
@@ -226,6 +238,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       Object.assign(payload, { nameExtension: this.state.workspaceNameExtension });
     }
 
+    if (this.props.currentWorkspace.access !== this.state.workspaceAccess) {
+      Object.assign(payload, { access: this.state.workspaceAccess });
+    }
+
     this.props.updateOrganizationWorkspace({
       update: payload,
       workspace: this.props.currentWorkspace,
@@ -266,6 +282,31 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           <DialogRow modifiers="edit-workspace">
             <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
             <InputFormElement updateField={this.setWorkspaceNameExtension} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
+          </DialogRow>
+          <DialogRow>
+            <fieldset>
+              <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input id="access-members" name="access-members" type="radio"
+                    checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
+                    onChange={this.setWorkspaceAccess.bind(this, "MEMBERS_ONLY")} />
+                  <label htmlFor="access-members">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
+                </div>
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input id="access-loggedin" name="access-loggedin" type="radio"
+                    checked={this.state.workspaceAccess === "LOGGED_IN"}
+                    onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")} />
+                  <label htmlFor="access-loggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
+                </div>
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input id="access-anyone" name="access-anyone" type="radio"
+                    checked={this.state.workspaceAccess === "ANYONE"}
+                    onChange={this.setWorkspaceAccess.bind(this, "ANYONE")} />
+                  <label htmlFor="access-anyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
+                </div>
+              </div>
+            </fieldset>
           </DialogRow>
         </div >;
       case 2:

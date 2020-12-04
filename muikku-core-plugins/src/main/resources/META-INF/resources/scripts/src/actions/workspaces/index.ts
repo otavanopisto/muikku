@@ -297,6 +297,7 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
         payload: workspace
       });
 
+      data.success && data.success(workspace);
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -1370,6 +1371,7 @@ export interface CreateWorkspaceTriggerType {
   (data: {
     id: number,
     name?: string,
+    access?: string,
     nameExtension?: string,
     students: SelectItem[],
     staff?: SelectItem[],
@@ -1692,6 +1694,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           {
             name: data.name,
             nameExtension: data.nameExtension,
+            access: data.access
           },
           {
             sourceWorkspaceEntityId: data.id

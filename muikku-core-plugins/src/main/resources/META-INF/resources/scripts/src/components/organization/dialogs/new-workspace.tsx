@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
 import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
 import { UsersSelectType } from '~/reducers/main-function/users';
-import { CreateWorkspaceType, WorkspaceType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
+import { CreateWorkspaceType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import '~/sass/elements/course.scss';
 
 interface ValidationType {
@@ -37,6 +37,7 @@ interface OrganizationNewWorkspaceProps {
 interface OrganizationNewWorkspaceState {
   template: SelectItem,
   workspaceName: string,
+  workspaceAccess: WorkspaceAccessType,
   workspaceNameExtension: string,
   locked: boolean,
   currentStep: number,
@@ -58,6 +59,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.totalSteps = 4;
     this.state = {
       workspaceName: "",
+      workspaceAccess: "MEMBERS_ONLY",
       workspaceNameExtension: "",
       template: {
         id: null,
@@ -90,6 +92,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.deleteStudent = this.deleteStudent.bind(this);
     this.setSelectedStudents = this.setSelectedStudents.bind(this);
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
+    this.setWorkspaceAccess = this.setWorkspaceAccess.bind(this);
     this.setWorkspaceNameExtension = this.setWorkspaceNameExtension.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
@@ -139,6 +142,10 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
   setWorkspaceName(value: string) {
     this.setState({ locked: false, workspaceName: value });
+  }
+
+  setWorkspaceAccess(value: WorkspaceAccessType) {
+    this.setState({ workspaceAccess: value });
   }
 
   setWorkspaceNameExtension(value: string) {
@@ -197,6 +204,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       id: this.state.template.id as number,
       name: this.state.workspaceName,
       nameExtension: this.state.workspaceNameExtension,
+      access: this.state.workspaceAccess,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,
       success: (state: CreateWorkspaceStateType) => {
@@ -226,14 +234,10 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   wizardSteps(page: number) {
     switch (page) {
       case 1:
-        return <div>
+        return <form>
           <DialogRow modifiers="new-workspace" >
             <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
-          <DialogRow modifiers="new-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
-            <InputFormElement updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
-          </DialogRow>
           <DialogRow modifiers="new-workspace">
             <ApplicationList>
               {this.props.templates.length > 0 ?
@@ -251,7 +255,36 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
                 : <div className="empty">{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}</div>}
             </ApplicationList>
           </DialogRow>
-        </div >;
+          <DialogRow modifiers="new-workspace">
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
+          </DialogRow>
+          <DialogRow modifiers="new-workspace">
+            <fieldset>
+              <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input id="access-members" name="access-members" type="radio"
+                    checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
+                    onChange={this.setWorkspaceAccess.bind(this, "MEMBERS_ONLY")} />
+                  <label htmlFor="access-members">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
+                </div>
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input id="access-loggedin" name="access-loggedin" type="radio"
+                    checked={this.state.workspaceAccess === "LOGGED_IN"}
+                    onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")} />
+                  <label htmlFor="access-loggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
+                </div>
+                <div className="form-element form-element--checkbox-radiobutton">
+                  <input id="access-anyone" name="access-anyone" type="radio"
+                    checked={this.state.workspaceAccess === "ANYONE"}
+                    onChange={this.setWorkspaceAccess.bind(this, "ANYONE")} />
+                  <label htmlFor="access-anyone">{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
+                </div>
+              </div>
+            </fieldset>
+          </DialogRow>
+        </form >;
       case 2:
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
