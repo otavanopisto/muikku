@@ -29,7 +29,7 @@ public class CourseBuilder {
   private Double distanceTeachingDays = (double) 15;
   private Double assessingHours = (double) 45;
   private Double planningHours = (double) 45;
-  private OffsetDateTime enrolmentTimeEnd = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);;
+  private OffsetDateTime enrolmentTimeEnd = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
   private Long creatorId = (long) 1;
   private Long lastModifierId = (long) 1;
   private Long subjectId = (long) 1;

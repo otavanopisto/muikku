@@ -21,6 +21,8 @@ import WorkspaceManagementBody from '~/components/workspace/workspaceManagement'
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
 import WorkspacePermissionsBody from '~/components/workspace/workspacePermissions';
 
+import Chat from '../components/chat/chat';
+
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,
   setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -30,12 +32,14 @@ import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMat
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
+  loadWorkspaceChatStatus,
   loadWholeWorkspaceHelp} from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 import { displayNotification } from '~/actions/base/notifications';
+import { loadProfileChatSettings } from '~/actions/main-function/profile';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -267,6 +271,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
         (window as any).CKEDITOR.disableAutoInline = true;
       });
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -291,6 +297,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.loadWorkspaceHelpData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}
@@ -299,7 +307,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceDiscussions(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
@@ -315,6 +324,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         let currentLocation = window.location.hash.replace("#","").split("/");
         this.loadWorkspaceDiscussionData(currentLocation);
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceDiscussionBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -322,7 +333,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceAnnouncements(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.announcements.pageTitle')));
 
@@ -333,13 +345,16 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       }) as Action);
 
       this.loadWorkspaceAnnouncementsData(parseInt(window.location.hash.replace("#","")));
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <WorkspaceAnnouncementsBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
   renderWorkspaceAnnouncer(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
@@ -355,6 +370,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       } else {
         this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <WorkspaceAnnouncerBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
@@ -439,6 +456,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           ) as Action);
         }
       }
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
@@ -451,7 +470,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceUsers(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -472,6 +491,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           }
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceUsersBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -479,7 +500,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceJournal(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -504,6 +525,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           }
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceJournalBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -511,7 +534,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspaceManagement(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -529,8 +552,11 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
             this.props.store.dispatch(loadWorkspaceDetailsInCurrentWorkspace() as Action);
           }
+          this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspaceManagementBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -538,7 +564,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   renderWorkspacePermissions(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
+      this.props.websocket && this.props.websocket.restoreEventListeners();
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.permissions.pageTitle')));
@@ -548,6 +574,8 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.props.store.dispatch(loadCurrentWorkspaceUserGroupPermissions() as Action);
         }
       }) as Action);
+
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <WorkspacePermissionsBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -566,6 +594,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       <Route path="/workspace/:workspaceUrl/journal" render={this.renderWorkspaceJournal}/>
       <Route path="/workspace/:workspaceUrl/workspace-management" render={this.renderWorkspaceManagement}/>
       <Route path="/workspace/:workspaceUrl/permissions" render={this.renderWorkspacePermissions}/>
+      <Chat />
     </div></BrowserRouter>);
   }
 }

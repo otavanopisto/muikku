@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,6 +54,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.deque.axe.AXE;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -69,7 +72,6 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
-import fi.otavanopisto.muikku.WorkspaceAccess;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
@@ -81,6 +83,8 @@ import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.atests.WorkspaceJournalEntry;
+import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
@@ -89,6 +93,8 @@ import static java.lang.Math.toIntExact;
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
   private static final long TEST_START_TIME = System.currentTimeMillis();
+  
+  protected static final URL scriptUrl = AbstractWCAGTest.class.getResource("/axe.min.js");
   
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
@@ -602,6 +608,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+
+  protected void waitForPresent(final String selector, int timeOut) {
+    new WebDriverWait(getWebDriver(), timeOut).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
   
   protected void waitForPresentXPath(final String xpath) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
@@ -637,6 +657,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void clickXPath(String xpath) {
     getWebDriver().findElement(By.xpath(xpath)).click();
+  }
+  
+  protected void clickLinkWithText(String text) {
+    getWebDriver().findElement(By.linkText(text)).click();
   }
   
   protected void waitForClickable(final String selector) {
@@ -1026,7 +1050,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     navigate("/", false);
     waitAndClick(".button-pill--profile");
     waitAndClick(".dropdown__container .icon-sign-out");
-    waitForPresent("body");
+    waitForNotVisible(".dropdown__container .icon-sign-out");
+    navigate("/", false);
+    waitForPresent(".hero__item--frontpage", 45);
   }
   @Deprecated
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
@@ -1230,8 +1256,40 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .delete("/test/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads/{ID}", groupId, discussionId, id)
       .then()
       .statusCode(204);
-  }  
+  } 
 
+  protected WorkspaceJournalEntry createJournalEntry(Long workspaceId, String userEmail, String html, String title) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    WorkspaceJournalEntry payload = new WorkspaceJournalEntry();
+    payload.setWorkspaceEntityId(workspaceId);
+    payload.setHtml(html);
+    payload.setTitle(title);
+    payload.setCreated(Date.from(Instant.now()));
+    payload.setArchived(false);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces/{WORKSPACEID}/journal/{AUTHOREMAIL}", workspaceId, userEmail);
+    
+    response.then()
+      .statusCode(200);
+      
+    WorkspaceJournalEntry workspaceJournalEntry = objectMapper.readValue(response.asString(), WorkspaceJournalEntry.class);
+    assertNotNull(workspaceJournalEntry);
+    assertNotNull(workspaceJournalEntry.getId());
+    
+    return workspaceJournalEntry;
+  }
+  
+  protected void deleteJournalEntry(WorkspaceJournalEntry journalEntry) {
+    asAdmin()
+    .delete("/test/journal/{ID}", journalEntry.getId())
+    .then()
+    .statusCode(204);
+  }
+  
   protected void reindex() {
     asAdmin().get("/test/reindex").then().statusCode(200);    
   }
@@ -1633,11 +1691,42 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     sleep(500);
   }
   
+  protected void reportWCAG() {
+    if (this.violationList != null) {
+      if (!this.violationList.isEmpty()) {
+        String violationsString = "";          
+        for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
+          violationsString += System.getProperty("line.separator");
+          violationsString += violation.getKey();
+          violationsString += System.getProperty("line.separator");
+          violationsString += AXE.report(violation.getValue());
+          violationsString += System.getProperty("line.separator");
+        }
+        assertTrue(violationsString, false);
+      }
+    }
+  }
+
+  protected void testAccessibility(String testView) {
+    if (this.violationList == null) {
+      this.violationList = new HashMap<String, JSONArray>();
+    }
+    this.violationList.put(testView, new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
+  }
+
+  protected void testAccessibility() {
+    if (this.violationList == null) {
+      this.violationList = new HashMap<String, JSONArray>();
+    }
+    this.violationList.put("default", new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
+  }
+  
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
   
   private String sessionId;
   private WebDriver webDriver;
-
+  protected Map<String, JSONArray> violationList;
+  
 }
