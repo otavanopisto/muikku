@@ -104,24 +104,24 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             <ApplicationListItemHeader modifiers="communicator-message">
               <div className={`application-list__header-primary`}>
                 <span className="application-list__header-primary-sender">{message.sender.firstName} {message.sender.nickName && '"' + message.sender.nickName + '"'} {message.sender.lastName}</span>
-                <span className="application-list__header-primary-recipients">
+                <span className="application-list__header-recipients">
                   {message.recipients.map((recipient) => {
                     return (
-                      <span className="application-list__header-primary-recipient" key={recipient.userEntityId}>
+                      <span className="application-list__header-recipient" key={recipient.userEntityId}>
                         {recipient.firstName} {recipient.nickName && '"' + recipient.nickName + '"'} {recipient.lastName}
                       </span>
                     )
                   })}
                   {message.userGroupRecipients.map((userGroupRecepient) => {
                     return (
-                      <span key={userGroupRecepient.id}>
+                      <span className="application-list__header-recipient" key={userGroupRecepient.id}>
                         {userGroupRecepient.name}
                       </span>
                     )
                   })}
                   {message.workspaceRecipients.map((workspaceRecepient) => {
                     return (
-                      <span key={workspaceRecepient.workspaceEntityId}>
+                      <span className="application-list__header-recipient" key={workspaceRecepient.workspaceEntityId}>
                         {workspaceRecepient.workspaceName}
                       </span>
                     )

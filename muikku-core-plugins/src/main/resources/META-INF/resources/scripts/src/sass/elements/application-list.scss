@@ -118,9 +118,9 @@
   }
 }
 
-.application-list__header-primary-recipients {
+.application-list__header-recipients {
 
-  .application-list__header-primary-recipient:not(:last-child) {
+  .application-list__header-recipient:not(:last-child) {
 
     &::after {
       content: ",";
