@@ -19,6 +19,7 @@
 
   @include breakpoint($breakpoint-pad) {
     max-height: 100%;
+    overflow: visible;
     top: $navbar-desktop-height;
   }
 }
@@ -60,7 +61,7 @@
   top: 5px;
   width: 35px;
 
-   @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-pad) {
     position: absolute;
     right: 10px;
     top: 32px;
@@ -177,7 +178,7 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
-  min-height: 4rem;
+  min-height: 6rem;
   position: relative;
   z-index: 99;
 
@@ -206,7 +207,7 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
-  min-height: 4rem;
+  min-height: 6rem;
   position: relative;
   z-index: 99;
 
@@ -215,7 +216,9 @@
   .ace_editor {
     border: 1px solid $color-default;
     color: $color-default-contrast;
+    // scss-lint:disable ImportantRule
     font-size: 1.125rem !important;
+    // scss-lint:enable ImportantRule
     overflow: visible;
     padding: 5px 10px;
     width: 100%;
@@ -226,32 +229,44 @@
       box-shadow: none;
     }
 
+    // scss-lint:disable SelectorDepth
     .ace_marker-layer .ace_active-line {
-      background: transparent;
+      background: $color-math-editor-active-line-background;
+      // scss-lint:disable ImportantRule
+      left: 5px !important;
+      // scss-lint:enable ImportantRule
     }
+    // scss-lint:enable SelectorDepth
 
     // LaTeX cursor
     .ace_cursor {
       margin: 0 0 0 2px;
     }
 
-    .ace_storage,
-    .ace_keyword,
-    .ace_variable,
-    .ace_constant {
-      color: $color-default-contrast;
+    .ace_storage {
+      color: $color-math-editor-line-storage-color;
     }
 
+    .ace_keyword {
+      color: $color-math-editor-line-keyword-color;
+    }
+
+    .ace_variable {
+      color: $color-math-editor-line-variable-color;
+    }
+
+    .ace_constant {
+      color: $color-math-editor-line-constant-color;
+    }
+
+    // scss-lint:disable SelectorDepth
     .ace_hidden-cursors .ace_cursor {
       visibility: hidden;
     }
+    // scss-lint:enable SelectorDepth
 
     .ace_invisible {
       color: $color-default-helper;
-    }
-
-    .ace_scroller {
-      padding: 5px;
     }
   }
   // scss-lint:enable SelectorFormat

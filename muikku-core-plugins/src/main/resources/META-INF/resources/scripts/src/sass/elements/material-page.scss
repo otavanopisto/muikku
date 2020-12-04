@@ -504,9 +504,9 @@
   @include taskfield-text;
   @include taskfield-defaults;
   box-sizing: content-box;
-  min-height: 100px;
   margin: 4px;
   max-width: calc(100% - 8px);
+  min-height: 7.25rem;
   padding: 5px;
 
   &.focused,
