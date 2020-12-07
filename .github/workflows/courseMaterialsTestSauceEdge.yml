@@ -1,5 +1,7 @@
 name: Course materials sauce tests Edge
-on: 
+on:
+  push:
+    branches: [5204-github-actions-testing]
   workflow_dispatch:
     inputs:
       commit:
