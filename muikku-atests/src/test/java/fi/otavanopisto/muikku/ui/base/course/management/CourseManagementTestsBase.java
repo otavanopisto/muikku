@@ -190,10 +190,10 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        scrollIntoView("input[name=\"name-extension\"]");
-        waitAndClick("input[name=\"name-extension\"]");
-        clearElement("input[name=\"name-extension\"]");
-        sendKeys("input[name=\"name-extension\"]", "For Test");
+        scrollIntoView("input[name=\"workspace-name-extension\"]");
+        waitAndClick("input[name=\"workspace-name-extension\"]");
+        clearElement("input[name=\"workspace-name-extension\"]");
+        sendKeys("input[name=\"workspace-name-extension\"]", "For Test");
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
