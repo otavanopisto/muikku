@@ -214,7 +214,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization, refresh) as Action);
   }
 
-
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
