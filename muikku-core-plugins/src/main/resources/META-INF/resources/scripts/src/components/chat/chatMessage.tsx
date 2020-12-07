@@ -70,6 +70,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     this.toggleMessageEditMode = this.toggleMessageEditMode.bind(this);
     this.onMessageEdited = this.onMessageEdited.bind(this);
     this.placeCaretToEnd = this.placeCaretToEnd.bind(this);
+    this.onContentEditableKeyDown = this.onContentEditableKeyDown.bind(this);
   }
   async toggleInfo() {
     if (this.state.showInfo) {
@@ -162,6 +163,16 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     sel.removeAllRanges();
     sel.addRange(range);
   }
+  onContentEditableKeyDown(event: React.KeyboardEvent) {
+    if (event.key === "Enter") {
+      event.stopPropagation();
+      this.onMessageEdited(event as any);
+    } else if (event.key === "Escape") {
+      event.stopPropagation();
+      event.preventDefault();
+      this.toggleMessageEditMode();
+    }
+  }
   render() {
     const senderClass = this.props.message.isSelf ? "sender-me" : "sender-them";
     const messageDeletedClass = this.props.deleted ? "chat__message--deleted" : "";
@@ -192,11 +203,14 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
             </Dropdown>
           </span> : null}
       </div>
-      {this.state.messageIsInEditMode ?
-        <div className="chat__message-content-container">
-          <div className="chat__message-content chat__message-content--edit-mode" contentEditable
+      {this.state.messageIsInEditMode && !this.props.message.deleted ?
+        <div className="chat__message-content-container" key="editable">
+          <div
+            className="chat__message-content chat__message-content--edit-mode" contentEditable
             ref={this.contentEditableRef}
-            onFocus={this.placeCaretToEnd}>
+            onFocus={this.placeCaretToEnd}
+            onKeyDown={this.onContentEditableKeyDown}
+          >
             {this.props.message.message}
           </div>
           <div className="chat__message-footer">
@@ -206,10 +220,13 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
           </div>
         </div>
         :
-        <div className="chat__message-content-container">
+        <div className="chat__message-content-container" key="nonEditable">
           <div className="chat__message-content">
-            {this.props.message.message}
+            {this.props.message.deleted ? <i>{this.props.i18n.text.get("plugin.chat.messages.deleted")}</i> : this.props.message.message}
           </div>
+          {this.props.message.edited ? <div className="chat__message-edited-info">
+            {this.props.i18n.text.get("plugin.chat.messages.edited", this.props.message.edited.nick)}
+          </div> : null}
         </div>
       }
       <DeleteMessageDialog isOpen={this.state.deleteMessageDialogOpen} onClose={this.toggleDeleteMessageDialog} onDelete={this.onMessageDeleted} />
