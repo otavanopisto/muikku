@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -66,6 +67,8 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort.Order;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -301,8 +304,11 @@ public class CommunicatorRESTService extends PluginRESTService {
         return Response.ok(Collections.emptyList()).build();
       }
       
+      List<Sort> sorts = Arrays.asList(new Sort("created", Order.DESC));
+      
       SearchResults<List<IndexedCommunicatorMessage>> searchResult = searchProvider.searchCommunicatorMessages()
           .setQueryString(queryString)
+          .setSorts(sorts)
           .setMaxResults(maxResults)
           .setFirstResult(firstResult)
           .search();

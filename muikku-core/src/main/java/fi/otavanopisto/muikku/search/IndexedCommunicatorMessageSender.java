@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.search;
 
+import java.util.List;
+
 public class IndexedCommunicatorMessageSender{
 
   public Long getUserEntityId() {
@@ -42,6 +44,14 @@ public class IndexedCommunicatorMessageSender{
     this.archivedBySender = archivedBySender;
   }
   
+  public List<IndexedCommunicatorMessageLabels> getLabels() {
+    return labels;
+  }
+
+  public void setLabels(List<IndexedCommunicatorMessageLabels> labels) {
+    this.labels = labels;
+  }
+
   private Long userEntityId;
 
   private String firstName;
@@ -50,6 +60,8 @@ public class IndexedCommunicatorMessageSender{
   
   private String nickName;
   
+  private List<IndexedCommunicatorMessageLabels> labels;
+
   private Boolean archivedBySender;
 
 }

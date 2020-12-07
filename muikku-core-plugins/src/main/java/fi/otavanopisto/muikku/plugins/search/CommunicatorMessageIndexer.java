@@ -78,6 +78,20 @@ public class CommunicatorMessageIndexer {
           senderData.setNickName(sender.getNickName());
           senderData.setUserEntityId(senderId);
           senderData.setArchivedBySender(message.getArchivedBySender());
+          
+          List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
+          List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(senderEntity, communicatorMessageId);
+          for (CommunicatorMessageIdLabel label : labels) {
+            IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+            CommunicatorLabel wholeLabel = label.getLabel();
+            
+            labelData.setLabel(wholeLabel.getName());
+            labelData.setId(wholeLabel.getId());
+            labelsList.add(labelData);
+          } 
+            
+          senderData.setLabels(labelsList);
+          
           indexedCommunicatorMessage.setSender(senderData);
         }
         

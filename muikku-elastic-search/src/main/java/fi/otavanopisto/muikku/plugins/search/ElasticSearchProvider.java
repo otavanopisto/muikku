@@ -690,7 +690,26 @@ public class ElasticSearchProvider implements SearchProvider {
     
     queryString = sanitizeSearchString(queryString);
     query.must(boolQuery()
-        .must(QueryBuilders.queryStringQuery("*" + queryString + "*").field("caption").field("message"))
+        .must(
+            boolQuery()
+              .should(QueryBuilders.queryStringQuery("*" + queryString + "*")
+                .field("caption")
+                .field("message")
+                .field("sender.firstName")
+                .field("sender.nickName")
+                .field("sender.lastName"))
+              .should(
+                  boolQuery()
+                    .must(termsQuery("sender.userEntityId", loggedUserIdStr))
+                    .must(QueryBuilders.queryStringQuery("*" + queryString + "*")
+                        .field("sender.labels.label")))
+              .should(
+                  boolQuery()
+                    .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
+                    .must(QueryBuilders.queryStringQuery("*" + queryString + "*")
+                        .field("recipients.labels.label")))
+              .minimumNumberShouldMatch(1)
+        )
         .should(
             boolQuery()
               .must(termsQuery("sender.userEntityId", loggedUserIdStr))
