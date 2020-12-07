@@ -277,7 +277,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
     </div>
 
-  	</ApplicationPanelToolbar>
+    </ApplicationPanelToolbar>
   }
 }
 
