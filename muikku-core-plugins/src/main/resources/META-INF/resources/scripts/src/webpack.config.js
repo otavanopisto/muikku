@@ -15,7 +15,6 @@ let plugins = [
 ];
 
 if (process.env.NODE_ENV === "production"){
-	console.log("minifying and removing duplications");
 	plugins.push(new webpack.optimize.DedupePlugin())
 	plugins.push(new webpack.optimize.UglifyJsPlugin({
         	output: {
@@ -31,7 +30,6 @@ if (process.env.NODE_ENV === "production"){
 let rules = [];
 
 if (process.env.NODE_ENV === "production"){
-	console.log("avoiding redux logger and devtools extension");
 	rules.push({test: path.resolve(__dirname, "node_modules/redux-logger"), loader: "null-loader"});
 	rules.push({test: path.resolve(__dirname, "node_modules/redux-devtools-extension"), loader: "null-loader"});
 }
@@ -53,12 +51,10 @@ plugins.push(new ExtractTextPlugin({
 }))
 
 if (process.env.NODE_ENV !== "production") {
-	console.log("using source-map-loader");
 	rules.push({ enforce: "pre", test: /\.ts|\.tsx$/, loader: "source-map-loader" });
 }
 
 if (process.env.NODE_ENV !== "production") {
-	console.log("setting devtool as source map");
 	plugins.push(new webpack.EvalSourceMapDevToolPlugin({
 		exclude: [
 			'node_modules/*.js'

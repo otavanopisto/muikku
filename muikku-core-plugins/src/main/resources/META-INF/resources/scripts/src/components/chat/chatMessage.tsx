@@ -172,8 +172,8 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
           {this.props.i18n.time.formatDaily(this.props.message.timestamp)}
         </span>
         {(this.props.canModerate || this.props.message.isSelf) && !this.props.deleted && this.props.chatType != "private" ?
-          <span className="chat__message-actions">
-            <Dropdown modifier="chat" items={this.getMessageModerationListDropdown().map((item) => {
+          <span className={`chat__message-actions ${this.props.message.isSelf ? "chat__message-actions--sender-me" : "chat__message-actions--sender-them"}`}>
+            <Dropdown alignSelf={this.props.message.isSelf ? "right" : "left"} modifier="chat" items={this.getMessageModerationListDropdown().map((item) => {
               return (closeDropdown: () => any) => {
                 return <Link href={item.href} to={item.to ? item.href : null}
                   className={`link link--full link--chat-dropdown`}

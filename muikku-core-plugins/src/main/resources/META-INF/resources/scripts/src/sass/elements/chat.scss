@@ -766,6 +766,15 @@
   padding: 1px 0 0;
 }
 
+.chat__message-actions--sender-me {
+  margin-right: -6px;
+}
+
+.chat__message-actions--sender-them {
+  margin-left: -6px;
+  order: -1;
+}
+
 .chat__message-action {
   cursor: pointer;
   font-size: 0.8125rem;
