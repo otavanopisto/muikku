@@ -7,6 +7,7 @@ import mApi from '~/lib/mApi';
 import MatriculationSubjectType from "./matriculation-subject-type";
 import Link from '~/components/general/link';
 import '~/sass/elements/wcag.scss';
+import Button from '~/components/general/button';
 
 /**
  * Interface representing MatriculationSubjectsList component properties
@@ -155,7 +156,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
               return <option key={index} value={subject.code}>{this.getMatriculationSubjectNameByCode(subject.code)}</option>
             })}
           </select>
-          <Link className="button button--primary-function-content" onClick={this.handleMatriculationSubjectRemove.bind(this, index)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectRemove")}</Link>
+          <Button buttonModifiers={["primary-function-content", "remove-subject-row"]} onClick={this.handleMatriculationSubjectRemove.bind(this, index)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectRemove")}</Button>
         </div>
       );
     });
@@ -164,7 +165,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
       <div className="form-element__custom-element">
         {matriculationSubjectInputs}
         <div className="form-element__button-container">
-          <Link className="button button--primary-function-content" onClick={this.handleMatriculationSubjectAdd.bind(this)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectAdd")}</Link>
+          <Button buttonModifiers={["primary-function-content", "add-subject-row"]} onClick={this.handleMatriculationSubjectAdd.bind(this)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectAdd")}</Button>
         </div>
       </div>
     );

@@ -248,12 +248,17 @@ public class ChatRESTService extends PluginRESTService {
   
   @GET
   @Path("/settings")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response chatSettingsGet() {
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getUserChatSettings() {
     ChatSettingsRESTModel result = new ChatSettingsRESTModel();
-    result.setNick(userChatSettings == null ? null : userChatSettings.getNick());
-    result.setVisibility(userChatSettings == null ? UserChatVisibility.DISABLED : userChatSettings.getVisibility());
+    UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
+    if (userChatSettings != null) {
+      result.setNick(userChatSettings.getNick());
+      result.setVisibility(userChatSettings.getVisibility());
+    }
+    else {
+      result.setVisibility(UserChatVisibility.DISABLED);
+    }
     return Response.ok(result).build();
   }
   
@@ -480,8 +485,8 @@ public class ChatRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaceChatSettings/{workspaceEntityId}")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response workspaceChatSettingsGet(@PathParam("workspaceEntityId") Long workspaceEntityId) {
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getWorkspaceChatSettings(@PathParam("workspaceEntityId") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity != null) {
       WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
@@ -494,13 +499,17 @@ public class ChatRESTService extends PluginRESTService {
   
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
-  @RESTPermit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRESTModel workspaceChatSettings) {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
   
     if (!workspaceEntityId.equals(workspaceChatSettings.getWorkspaceEntityId())) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceChatStatus status = workspaceChatSettings.getChatStatus();

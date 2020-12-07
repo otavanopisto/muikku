@@ -53,6 +53,10 @@ public class WorkspaceJournalController {
     workspaceJournalEntryDAO.updateArchived(workspaceJournalEntry, Boolean.TRUE);
   }
   
+  public void delete(WorkspaceJournalEntry workspaceJournalEntry) {
+    workspaceJournalEntryDAO.delete(workspaceJournalEntry);
+  }
+  
   public WorkspaceJournalComment createComment(WorkspaceJournalEntry journalEntry, WorkspaceJournalComment parent, String comment, Long authorId) {
     return workspaceJournalCommentDAO.create(journalEntry, parent, comment,  authorId);
   }
