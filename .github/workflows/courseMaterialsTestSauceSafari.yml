@@ -1,4 +1,4 @@
-name: Discussions sauce tests
+name: Course materials sauce tests Safari
 on: 
   workflow_dispatch:
     inputs:
@@ -40,7 +40,7 @@ jobs:
       - name: Test with chrome
         run: |
             cd muikku-atests
-            mvn verify -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="chrome" -Dit.browser.version="latest" -Dit.browser.resolution="1280x1024" -Dit.platform="Windows 10" -Dit.package="discussions" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
+            mvn verify -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="safari" -Dit.browser.version="latest" -Dit.browser.resolution="1024x768" -Dit.platform="OS X 10.11" -Dit.package="course/materials" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
       - name: Read sc_client.pid file
         if: ${{ always() }}
         id: getscpid
@@ -53,10 +53,3 @@ jobs:
                 echo "Waiting for Sauce Connect to close..."
                 sleep 5;
               done;
-      - name: Dispatch next workflow 
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: Course materials sauce tests Safari
-          inputs: '{ "commit": "${{ github.event.inputs.commit }}" }'
-          token: ${{ secrets.REPO_GHA_PAT }}
-
