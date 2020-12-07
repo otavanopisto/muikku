@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.search;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -14,18 +14,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
   name = "IndexedCommunicatorMessage",
     options = {
       @IndexableFieldOption (
-        name = "message",
-        type = "string",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-        name = "communicatorMessageId",
+        name = "communicatorMessageThreadId",
         type = "Long",
-        index = "not_analyzed"
-      ),
-      @IndexableFieldOption (
-        name = "caption",
-        type = "string",
         index = "not_analyzed"
       ),
       @IndexableFieldOption (
@@ -39,7 +29,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         index = "not_analyzed"
       ),
       @IndexableFieldOption (
-        name = "receiver",
+        name = "recipients",
         type = "List<IndexedCommunicatorMessageRecipient>",
         index = "not_analyzed"
       ),
@@ -52,11 +42,6 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         name = "created",
         type = "Date",
         index = "not_analyzed"
-     ),
-     @IndexableFieldOption (
-       name = "tags",
-       type = "Set<String>",
-       index = "not_analyzed"
      )
    }
 )
@@ -67,8 +52,8 @@ public class IndexedCommunicatorMessage {
     return this.message;
   }
   
-  public Long getCommunicatorMessageId() {
-    return this.communicatorMessageId;
+  public Long getCommunicatorMessageThreadId() {
+    return this.communicatorMessageThreadId;
   }
   
   public String getCaption() {
@@ -79,8 +64,8 @@ public class IndexedCommunicatorMessage {
     return this.sender;
   }
   
-  public List<IndexedCommunicatorMessageRecipient> getReceiver() {
-    return this.receiver;
+  public List<IndexedCommunicatorMessageRecipient> getRecipients() {
+    return this.recipients;
   }
   
   @IndexId
@@ -92,16 +77,12 @@ public class IndexedCommunicatorMessage {
     return this.created;
   }
   
-  public Set<String> getTags(){
-    return this.tags;
-  }
-  
   public void setMessage(String message) {
     this.message = message;
   }
   
-  public void setCommunicatorMessageId(Long communicatorMessageId) {
-    this.communicatorMessageId = communicatorMessageId;
+  public void setCommunicatorMessageThreadId(Long communicatorMessageThreadId) {
+    this.communicatorMessageThreadId = communicatorMessageThreadId;
   }
   
   public void setCaption(String caption) {
@@ -112,8 +93,8 @@ public class IndexedCommunicatorMessage {
     this.sender = sender;
   }
   
-  public void setReceiver(List<IndexedCommunicatorMessageRecipient> recipientsEntityList) {
-    this.receiver = recipientsEntityList;
+  public void setRecipients(List<IndexedCommunicatorMessageRecipient> recipientsEntityList) {
+    this.recipients = recipientsEntityList;
   }
   
   public void setSearchId(Long searchId) {
@@ -124,17 +105,11 @@ public class IndexedCommunicatorMessage {
     this.created = created;
   }
   
-  public void setTags(Set<String> tags) {
-    this.tags = tags;
-  }
-  
-  private String message;
-  private Long communicatorMessageId;
-  private String caption;
-  private IndexedCommunicatorMessageSender sender;
-  private List<IndexedCommunicatorMessageRecipient> receiver;
   private Long id;
+  private Long communicatorMessageThreadId;
   private Date created;
-  private Set<String> tags;
+  private String caption;
+  private String message;
+  private IndexedCommunicatorMessageSender sender;
+  private List<IndexedCommunicatorMessageRecipient> recipients = new ArrayList<>();
 }
-

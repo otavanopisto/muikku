@@ -315,7 +315,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         if (loggedUser.getId().equals(sender.getUserEntityId())) {
           communicatorMessageRead = true;
         } else {
-          IndexedCommunicatorMessageRecipient recipient = result.getReceiver().stream()
+          IndexedCommunicatorMessageRecipient recipient = result.getRecipients().stream()
             .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
             .findFirst()
             .orElse(null);

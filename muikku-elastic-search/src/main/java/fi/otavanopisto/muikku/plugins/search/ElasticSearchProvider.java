@@ -675,7 +675,7 @@ public class ElasticSearchProvider implements SearchProvider {
       String queryString,
       long senderId,
       IndexedCommunicatorMessageSender sender,
-      List<IndexedCommunicatorMessageRecipient> receiver,
+      List<IndexedCommunicatorMessageRecipient> recipients,
       Long searchId,
       Date created,
       Set<Long> tags,
@@ -689,17 +689,16 @@ public class ElasticSearchProvider implements SearchProvider {
     String loggedUserIdStr = String.valueOf(loggedUserId);
     
     queryString = sanitizeSearchString(queryString);
-    
     query.must(boolQuery()
-        .must(QueryBuilders.queryStringQuery("*" + queryString + "*"))
+        .must(QueryBuilders.queryStringQuery("*" + queryString + "*").field("caption").field("message"))
         .should(
             boolQuery()
               .must(termsQuery("sender.userEntityId", loggedUserIdStr))
               .must(termsQuery("sender.archivedBySender", Boolean.FALSE)))
         .should(
             boolQuery()
-              .must(termsQuery("receiver.userEntityId", loggedUserIdStr))
-              .must(termsQuery("receiver.archivedByReceiver", Boolean.FALSE)))
+              .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
+              .must(termsQuery("recipients.archivedByReceiver", Boolean.FALSE)))
         .minimumNumberShouldMatch(1));
     
     try {

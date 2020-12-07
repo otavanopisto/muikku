@@ -241,8 +241,7 @@ public class SchoolDataSearchReindexListener {
       if (communicatorIndex < totalMessagesCount) {
         List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
 
-        for (CommunicatorMessage msg : batch) {
-          CommunicatorMessage message = msg;
+        for (CommunicatorMessage message : batch) {
           try {
             communicatorMessageIndexer.indexMessage(message);
             communicatorIndex++;
@@ -252,7 +251,7 @@ public class SchoolDataSearchReindexListener {
         }
 
         if (communicatorIndex < (totalMessagesCount + 1)) {
-          logger.log(Level.INFO, "Reindexed batch of communicator message (" + getOffset("communicatorIndex") + "-" + communicatorIndex + ")");
+          logger.log(Level.INFO, "Reindexed batch of communicator messages (" + getOffset("communicatorIndex") + "-" + communicatorIndex + ")");
         }
         
         setOffset("communicatorIndex", communicatorIndex);

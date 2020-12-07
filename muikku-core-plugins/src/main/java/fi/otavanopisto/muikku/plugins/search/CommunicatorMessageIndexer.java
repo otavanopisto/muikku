@@ -2,9 +2,7 @@ package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -26,6 +24,7 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 public class CommunicatorMessageIndexer {
   
@@ -61,8 +60,7 @@ public class CommunicatorMessageIndexer {
       	  
         //set communicatorMessageId
         CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
-        Long messageId = communicatorMessageId.getId();
-        indexedCommunicatorMessage.setCommunicatorMessageId(messageId);
+        indexedCommunicatorMessage.setCommunicatorMessageThreadId(communicatorMessageId.getId());
         	
         //set caption
         indexedCommunicatorMessage.setCaption(message.getCaption());
@@ -89,17 +87,16 @@ public class CommunicatorMessageIndexer {
         for (CommunicatorMessageRecipient recipient : recipientsList) {
           Long recipientId = recipient.getRecipient();
           UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
-          User userRecipient = (recipientEntity != null && Boolean.FALSE.equals(recipientEntity.getArchived())) 
-              ? userController.findUserByUserEntityDefaults(recipientEntity) : null;
+          UserEntityName recipientName = userEntityController.getName(recipientEntity);
 
-          if (userRecipient != null) {
+          if (recipientName != null) {
             IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
             
             recipientData.setUserEntityId(recipientId);
-            recipientData.setFirstName(userRecipient.getFirstName());
-            recipientData.setLastName(userRecipient.getLastName());
-            recipientData.setNickName(userRecipient.getNickName());
-            recipientData.setStudyProgrammeName(userRecipient.getStudyProgrammeName());
+            recipientData.setFirstName(recipientName.getFirstName());
+            recipientData.setLastName(recipientName.getLastName());
+            recipientData.setNickName(recipientName.getNickName());
+            recipientData.setStudyProgrammeName(recipientName.getStudyProgrammeName());
             // set is message read/unread by receiver
             recipientData.setReadByReceiver(recipient.getReadByReceiver());
             recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
@@ -121,17 +118,11 @@ public class CommunicatorMessageIndexer {
           }
         }
 	    	
-        indexedCommunicatorMessage.setReceiver(recipientsEntityList);
+        indexedCommunicatorMessage.setRecipients(recipientsEntityList);
 	    	
         // set created
         Date created = message.getCreated();
         indexedCommunicatorMessage.setCreated(created);
-	    	
-        // set tags
-        Set<Long> tags = message.getTags();
-        Set<String> strs = new HashSet<>(tags.size());
-        tags.forEach(i -> strs.add(i.toString()));
-        indexedCommunicatorMessage.setTags(strs);
 	    	
         indexedCommunicatorMessage.setSearchId(message.getId());
 	        

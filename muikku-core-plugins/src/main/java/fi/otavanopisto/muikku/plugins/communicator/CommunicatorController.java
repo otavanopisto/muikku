@@ -177,7 +177,6 @@ public class CommunicatorController {
     // Clean duplicates from recipient list
     cleanDuplicateRecipients(userRecipients);
      
-
     Set<Long> recipientIds = new HashSet<Long>();
     
     for (UserEntity recipient : userRecipients) {
@@ -270,11 +269,9 @@ public class CommunicatorController {
     if (CollectionUtils.isEmpty(recipientIds)) {
       logger.log(Level.SEVERE, String.format("Message %d contains no recipients", message.getId()));
     }
-    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(sender, message.getCommunicatorMessageId());
-    for(CommunicatorMessage msg : communicatorMessages) {
-      communicatorMessageIndexer.indexMessage(msg);
-    }
 
+    communicatorMessageIndexer.indexMessage(message);
+    
     return message;
   }
 
@@ -481,15 +478,9 @@ public class CommunicatorController {
   }
   
   public CommunicatorMessageRecipient updateReadByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
-    try {
-      return communicatorMessageRecipientDAO.updateReadByReceiver(recipient, value);
-    } finally {
-      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-      List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, recipient.getCommunicatorMessage().getCommunicatorMessageId());
-      for(CommunicatorMessage message : communicatorMessages) {
-        communicatorMessageIndexer.indexMessage(message);
-      }
-    }
+    CommunicatorMessageRecipient communicatorMessageRecipient = communicatorMessageRecipientDAO.updateReadByReceiver(recipient, value);
+    communicatorMessageIndexer.indexMessage(communicatorMessageRecipient.getCommunicatorMessage());
+    return communicatorMessageRecipient;
   }
 
   public CommunicatorMessage postMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients) {

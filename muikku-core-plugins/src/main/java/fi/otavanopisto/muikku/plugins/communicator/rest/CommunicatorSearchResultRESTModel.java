@@ -23,7 +23,7 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
     this.userGroupRecipients = userGroupRecipients;
     this.workspaceRecipients = workspaceRecipients;
     this.sender = sender;
-    this.readByreceiver = readByReceiver;
+    this.readByReceiver = readByReceiver;
     this.labels = labels;
   }
 
@@ -36,11 +36,11 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
   }
   
   public Boolean getReadByReceiver() {
-    return readByreceiver;
+    return readByReceiver;
   }
   
   public void setReadByReceiver(Boolean readByReceiver) {
-    this.readByreceiver = readByReceiver;
+    this.readByReceiver = readByReceiver;
   }
   
   public List<CommunicatorMessageIdLabelRESTModel> getLabels() {
@@ -76,7 +76,7 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
   }
 
   private CommunicatorSearchSenderRESTModel sender;
-  private Boolean readByreceiver;
+  private Boolean readByReceiver;
   private List<CommunicatorMessageIdLabelRESTModel> labels;
   private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
   private List<UserGroup> userGroupRecipients;

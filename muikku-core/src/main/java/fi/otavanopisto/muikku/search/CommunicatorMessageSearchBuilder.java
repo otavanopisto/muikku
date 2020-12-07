@@ -22,7 +22,7 @@ public interface CommunicatorMessageSearchBuilder {
   
   CommunicatorMessageSearchBuilder setTags(Set<Long> tags);
   
-  List<IndexedCommunicatorMessageRecipient> getReceiver();
+  List<IndexedCommunicatorMessageRecipient> getRecipients();
   
   Long getSearchId();
   
@@ -50,7 +50,5 @@ public interface CommunicatorMessageSearchBuilder {
 
   CommunicatorMessageSearchBuilder setSorts(List<Sort> sorts);
 
-  CommunicatorMessageSearchBuilder addReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
-
-  CommunicatorMessageSearchBuilder setReceiver(List<IndexedCommunicatorMessageRecipient> receiver);
+  CommunicatorMessageSearchBuilder setRecipients(List<IndexedCommunicatorMessageRecipient> recipients);
 }
