@@ -480,9 +480,9 @@ public class CommunicatorController {
     return new ArrayList<>(result);
   }
   
-  public CommunicatorMessageRecipient updateRead(CommunicatorMessageRecipient recipient, boolean value) {
+  public CommunicatorMessageRecipient updateReadByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
     try {
-      return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
+      return communicatorMessageRecipientDAO.updateReadByReceiver(recipient, value);
     } finally {
       UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
       List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, recipient.getCommunicatorMessage().getCommunicatorMessageId());

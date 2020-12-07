@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -64,7 +66,6 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -88,6 +89,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @BaseUrl
   private String baseUrl;
  
+  @Inject
+  private Logger logger;
+  
   @Inject
   private SessionController sessionController;
   
@@ -280,7 +284,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/searchItems/")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response messageSearchFromInbox(
-      @QueryParam("message") String message,
+      @QueryParam("q") String queryString,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
   
@@ -291,103 +295,81 @@ public class CommunicatorRESTService extends PluginRESTService {
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
-      SearchResults<List<IndexedCommunicatorMessage>> searchResult = null;
       
-      List<Sort> sorts = null;
-      
-      if (message.isEmpty() || message == null) {
+      if (StringUtils.isEmpty(queryString)) {
         // Empty list if query string is empty
         return Response.ok(Collections.emptyList()).build();
       }
       
-      searchResult = searchProvider.searchCommunicatorMessages()
-          .setSorts(sorts)
+      SearchResults<List<IndexedCommunicatorMessage>> searchResult = searchProvider.searchCommunicatorMessages()
+          .setQueryString(queryString)
           .setMaxResults(maxResults)
           .setFirstResult(firstResult)
-          .setMessage(message)
           .search();
       
       List<IndexedCommunicatorMessage> results = searchResult.getResults();
       for (IndexedCommunicatorMessage result : results) {
-        Boolean readByReceiver = false;
-        
-        Long communicatorMessageId = result.getCommunicatorMessageId();
-        Long senderId = result.getSenderId();
-        
         IndexedCommunicatorMessageSender sender = result.getSender();
-        Long recipientId = null;
 
-        Boolean isLogged = sender.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId());
-        Boolean archivedBySender = Boolean.TRUE.equals(sender.getArchivedBySender());
-        if (isLogged.equals(Boolean.TRUE) && archivedBySender.equals(Boolean.TRUE)) {
-          continue;
+        boolean communicatorMessageRead;
+        if (loggedUser.getId().equals(sender.getUserEntityId())) {
+          communicatorMessageRead = true;
         } else {
-          CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
-          senderData.setUserEntityId(sender.getUserEntityId());
-          senderData.setFirstName(sender.getFirstName());
-          senderData.setLastName(sender.getLastName());
-          senderData.setNickName(sender.getNickName());
+          IndexedCommunicatorMessageRecipient recipient = result.getReceiver().stream()
+            .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
+            .findFirst()
+            .orElse(null);
           
-          CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
-          CommunicatorMessageCategory category = communicatorMessage.getCategory();
-          
-          String caption = result.getCaption();
-          String content = result.getMessage();
-          Date created = result.getcreated();
-          
-          List<IndexedCommunicatorMessageRecipient> receiverList = result.getReceiver();
-          
-          // TODO filter the archived ones in the search
-          for (IndexedCommunicatorMessageRecipient recipient : receiverList) {
-            if (recipient.getUserEntityId().equals(loggedUser.getId())){
-              if (Boolean.TRUE.equals(recipient.getArchivedByReceiver())) {
-                recipientId = recipient.getUserEntityId();
-              }
-              readByReceiver = recipient.getReadByReceiver();
-              
-            } else {
-              readByReceiver = true;
-            }
-          }
-          
-          if (recipientId != null && recipientId.equals(sessionController.getLoggedUserEntity().getId())) {
+          if (recipient != null) {
+            communicatorMessageRead = recipient.getReadByReceiver();
+          } else {
+            logger.log(Level.SEVERE, String.format("User %d is not a recipient of message %d.", loggedUser.getId(), result.getId()));
             continue;
           }
-          
-          if (communicatorMessageId != null) {
-            Set<String> tags = communicatorController.tagIdsToStr(communicatorMessage.getTags());
-            
-            List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
-            List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(communicatorMessage);
-            List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(communicatorMessage);
-
-            List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
-            List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
-            List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
-
-            List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessage.getCommunicatorMessageId());
-            List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
-            
-            communicatorMessages.add(new CommunicatorSearchResultRESTModel(
-                communicatorMessage.getId(), 
-                communicatorMessage.getCommunicatorMessageId().getId(), 
-                senderId, 
-                senderData, 
-                category.getName(), 
-                caption, 
-                content,
-                created, 
-                tags, 
-                
-                restRecipients, 
-                restUserGroupRecipients, 
-                restWorkspaceRecipients, 
-                
-                readByReceiver,
-                restLabels
-            ));
-          }
         }
+        
+        CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
+        senderData.setUserEntityId(sender.getUserEntityId());
+        senderData.setFirstName(sender.getFirstName());
+        senderData.setLastName(sender.getLastName());
+        senderData.setNickName(sender.getNickName());
+        
+        CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
+        CommunicatorMessageCategory category = communicatorMessage.getCategory();
+        
+        String caption = result.getCaption();
+        String content = result.getMessage();
+        Date created = result.getcreated();
+        
+        Set<String> tags = communicatorController.tagIdsToStr(communicatorMessage.getTags());
+
+        List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
+        List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(communicatorMessage);
+        List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(communicatorMessage);
+
+        List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
+        List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
+        List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
+
+        List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessage.getCommunicatorMessageId());
+        List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+        
+        communicatorMessages.add(new CommunicatorSearchResultRESTModel(
+            communicatorMessage.getId(), 
+            communicatorMessage.getCommunicatorMessageId().getId(), 
+            sender.getUserEntityId(), 
+            senderData, 
+            category.getName(), 
+            caption, 
+            content,
+            created, 
+            tags, 
+            restRecipients, 
+            restUserGroupRecipients, 
+            restWorkspaceRecipients, 
+            communicatorMessageRead,
+            restLabels
+        ));
       }
     }
     
@@ -603,7 +585,9 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
     
     for (CommunicatorMessageRecipient r : list) {
-      communicatorController.updateRead(r, true);
+      if (!Boolean.TRUE.equals(r.getReadByReceiver())) {
+        communicatorController.updateReadByReceiver(r, true);
+      }
     }
     return Response.noContent().build();
   }
@@ -626,7 +610,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           continue;
       }
       
-      communicatorController.updateRead(r, false);
+      communicatorController.updateReadByReceiver(r, false);
     }
     
     return Response.noContent().build();

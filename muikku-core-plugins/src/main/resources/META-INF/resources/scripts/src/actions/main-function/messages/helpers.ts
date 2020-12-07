@@ -121,7 +121,7 @@ export async function loadMessagesHelper(location:string | null, query: string |
     if (searchQuery) {
       const queryParams = {
         ...params,
-        message: searchQuery,
+        q: searchQuery,
       }
       results = <MessageSearchResult[]>await promisify(mApi().communicator.searchItems.read(queryParams), 'callback')();
     } else if (item.type !== "label"){

@@ -75,10 +75,6 @@ public class IndexedCommunicatorMessage {
     return this.caption;
   }
   
-  public long getSenderId() {
-    return this.senderId;
-  }
-  
   public IndexedCommunicatorMessageSender getSender() {
     return this.sender;
   }
@@ -112,10 +108,6 @@ public class IndexedCommunicatorMessage {
     this.caption = caption;
   }
   
-  public void setSenderId(long senderId) {
-    this.senderId = senderId;
-  }
-  
   public void setSender(IndexedCommunicatorMessageSender sender) {
     this.sender = sender;
   }
@@ -139,7 +131,6 @@ public class IndexedCommunicatorMessage {
   private String message;
   private Long communicatorMessageId;
   private String caption;
-  private long senderId;
   private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> receiver;
   private Long id;

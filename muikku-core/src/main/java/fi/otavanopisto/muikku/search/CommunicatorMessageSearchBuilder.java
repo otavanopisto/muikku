@@ -10,13 +10,9 @@ public interface CommunicatorMessageSearchBuilder {
   
   SearchResults<List<IndexedCommunicatorMessage>> search();
 	  
-  String getMessage();
+  String getQueryString();
   
-  CommunicatorMessageSearchBuilder setMessage(String message);
-  
-  Long getCommunicatorMessageId();
-
-  CommunicatorMessageSearchBuilder setCommunicatorMessageId(Long communicatorMessageId);
+  CommunicatorMessageSearchBuilder setQueryString(String queryString);
   
   Date getCreated();
   
@@ -26,10 +22,6 @@ public interface CommunicatorMessageSearchBuilder {
   
   CommunicatorMessageSearchBuilder setTags(Set<Long> tags);
   
-  String getCaption();
-  
-  CommunicatorMessageSearchBuilder setCaption(String caption);
-
   List<IndexedCommunicatorMessageRecipient> getReceiver();
   
   Long getSearchId();

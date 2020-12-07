@@ -672,9 +672,7 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(
-      String message,
-      Long communicatorMessageId,
-      String caption,
+      String queryString,
       long senderId,
       IndexedCommunicatorMessageSender sender,
       List<IndexedCommunicatorMessageRecipient> receiver,
@@ -687,15 +685,21 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    Long id = loggedUser.getId();
-    String idToString = String.valueOf(id);
+    Long loggedUserId = loggedUser.getId();
+    String loggedUserIdStr = String.valueOf(loggedUserId);
     
-    message = sanitizeSearchString(message);
+    queryString = sanitizeSearchString(queryString);
     
     query.must(boolQuery()
-        .must(QueryBuilders.queryStringQuery("*" + message + "*"))
-        .should(termsQuery("senderId", idToString))
-        .should(termsQuery("receiver.userEntityId", idToString))
+        .must(QueryBuilders.queryStringQuery("*" + queryString + "*"))
+        .should(
+            boolQuery()
+              .must(termsQuery("sender.userEntityId", loggedUserIdStr))
+              .must(termsQuery("sender.archivedBySender", Boolean.FALSE)))
+        .should(
+            boolQuery()
+              .must(termsQuery("receiver.userEntityId", loggedUserIdStr))
+              .must(termsQuery("receiver.archivedByReceiver", Boolean.FALSE)))
         .minimumNumberShouldMatch(1));
     
     try {

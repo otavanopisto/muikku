@@ -130,7 +130,7 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public CommunicatorMessageRecipient updateRecipientRead(CommunicatorMessageRecipient recipient, Boolean value) {
+  public CommunicatorMessageRecipient updateReadByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
     recipient.setReadByReceiver(value);
     
     getEntityManager().persist(recipient);

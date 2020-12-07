@@ -12,7 +12,7 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResults;
 
-public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMessageSearchBuilder{
+public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMessageSearchBuilder {
 
   public ElasticCommunicatorMessageSearchBuilder(ElasticSearchProvider elastic) {
     this.elastic = elastic;
@@ -21,9 +21,7 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
   @Override
   public SearchResults<List<IndexedCommunicatorMessage>> search() {
     return elastic.searchCommunicatorMessages(
-        getMessage(),
-        getCommunicatorMessageId(),
-        getCaption(),
+        getQueryString(),
         getSenderId(),
         getSender(),
         getReceiver(),
@@ -38,39 +36,6 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
 
   private ElasticSearchProvider elastic;
 
-  @Override
-  public String getMessage() {
-    return message;
-  }
-  
-  @Override
-  public CommunicatorMessageSearchBuilder setMessage(String message) {
-    this.message = message;
-    return this;
-  }
-  
-  @Override
-  public Long getCommunicatorMessageId() {
-    return communicatorMessageId;
-  }
-  
-  @Override
-  public CommunicatorMessageSearchBuilder setCommunicatorMessageId(Long communicatorMessageId) {
-    this.communicatorMessageId = communicatorMessageId;
-    return this;
-  }
-  
-  @Override
-  public String getCaption() {
-    return caption;
-  }
-  
-  @Override
-  public CommunicatorMessageSearchBuilder setCaption(String caption) {
-    this.caption = caption;
-    return this;
-  }
-  
   @Override
   public List<IndexedCommunicatorMessageRecipient> getReceiver() {
     return receiver;
@@ -186,10 +151,17 @@ public class ElasticCommunicatorMessageSearchBuilder implements CommunicatorMess
     this.sort = sorts;
     return this;
   }
-  
-  private String message;
-  private Long communicatorMessageId;
-  private String caption;
+
+  public String getQueryString() {
+    return queryString;
+  }
+
+  public ElasticCommunicatorMessageSearchBuilder setQueryString(String queryString) {
+    this.queryString = queryString;
+    return this;
+  }
+
+  private String queryString;
   private long senderId;
   private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> receiver;

@@ -79,7 +79,6 @@ public class CommunicatorMessageIndexer {
           senderData.setLastName(sender.getLastName());
           senderData.setNickName(sender.getNickName());
           senderData.setUserEntityId(senderId);
-          indexedCommunicatorMessage.setSenderId(senderId);
           senderData.setArchivedBySender(message.getArchivedBySender());
           indexedCommunicatorMessage.setSender(senderData);
         }
@@ -89,39 +88,36 @@ public class CommunicatorMessageIndexer {
         List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
         for (CommunicatorMessageRecipient recipient : recipientsList) {
           Long recipientId = recipient.getRecipient();
-          
-          if (recipientId != null) {
-            UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
-            User userRecipient = (recipientEntity != null && Boolean.FALSE.equals(recipientEntity.getArchived())) 
-                ? userController.findUserByUserEntityDefaults(recipientEntity) : null;
+          UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
+          User userRecipient = (recipientEntity != null && Boolean.FALSE.equals(recipientEntity.getArchived())) 
+              ? userController.findUserByUserEntityDefaults(recipientEntity) : null;
+
+          if (userRecipient != null) {
+            IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
             
-            if (userRecipient != null) {
-              IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
+            recipientData.setUserEntityId(recipientId);
+            recipientData.setFirstName(userRecipient.getFirstName());
+            recipientData.setLastName(userRecipient.getLastName());
+            recipientData.setNickName(userRecipient.getNickName());
+            recipientData.setStudyProgrammeName(userRecipient.getStudyProgrammeName());
+            // set is message read/unread by receiver
+            recipientData.setReadByReceiver(recipient.getReadByReceiver());
+            recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
               
-              recipientData.setUserEntityId(recipientId);
-              recipientData.setFirstName(userRecipient.getFirstName());
-              recipientData.setLastName(userRecipient.getLastName());
-              recipientData.setNickName(userRecipient.getNickName());
-              recipientData.setStudyProgrammeName(userRecipient.getStudyProgrammeName());
-              // set is message read/unread by receiver
-              recipientData.setReadByReceiver(recipient.getReadByReceiver());
-              recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
-                
-              // set labels
-              List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
-              List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
-              for (CommunicatorMessageIdLabel label : labels) {
-                IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
-                CommunicatorLabel wholeLabel = label.getLabel();
-                
-                labelData.setLabel(wholeLabel.getName());
-                labelData.setId(wholeLabel.getId());
-                labelsList.add(labelData);
-              } 
-                
-              recipientData.setLabels(labelsList);
-              recipientsEntityList.add(recipientData);
-            }
+            // set labels
+            List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
+            List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
+            for (CommunicatorMessageIdLabel label : labels) {
+              IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+              CommunicatorLabel wholeLabel = label.getLabel();
+              
+              labelData.setLabel(wholeLabel.getName());
+              labelData.setId(wholeLabel.getId());
+              labelsList.add(labelData);
+            } 
+              
+            recipientData.setLabels(labelsList);
+            recipientsEntityList.add(recipientData);
           }
         }
 	    	
