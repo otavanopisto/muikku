@@ -39,10 +39,10 @@ jobs:
                 echo "Waiting for Sauce Connect..."
                 sleep 5;
               done;
-      - name: Test with chrome
+      - name: Tests
         run: |
             cd muikku-atests
-            mvn verify -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="safari" -Dit.browser.version="latest" -Dit.browser.resolution="1024x768" -Dit.platform="OS X 10.11" -Dit.package="course/materials" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
+            mvn verify -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="safari" -Dit.browser.version="latest" -Dit.browser.resolution="1024x768" -Dit.platform="macOS 10.14" -Dit.package="course/materials" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
       - name: Read sc_client.pid file
         if: ${{ always() }}
         id: getscpid

@@ -39,7 +39,7 @@ jobs:
                 echo "Waiting for Sauce Connect..."
                 sleep 5;
               done;
-      - name: Test with chrome
+      - name: Tests
         run: |
             cd muikku-atests
             mvn verify -Psauce-it -Dmaven.javadoc.skip=true -Dsource.skip=true -Dit.browser="microsoftedge" -Dit.browser.version="latest" -Dit.browser.resolution="1280x1024" -Dit.platform="Windows 10" -Dit.package="course/materials" -Dit.sauce.username=${{secrets.SAUCE_USERNAME}} -Dit.sauce.accessKey=${{secrets.SAUCE_KEY}} -Dit.sauce.tunnelId=${{github.run_id}}
