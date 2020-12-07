@@ -174,4 +174,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     return persist(workspaceJournalEntry);
   }
 
+  public void delete(WorkspaceJournalEntry workspaceJournalEntry) {
+    super.delete(workspaceJournalEntry);
+  }
 }
