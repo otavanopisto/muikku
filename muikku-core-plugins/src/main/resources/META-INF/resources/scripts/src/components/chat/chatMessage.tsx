@@ -150,9 +150,18 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
   }
   onMessageEdited(e: React.MouseEvent) {
     e.preventDefault();
-    const textContent = this.contentEditableRef.current.textContent;
+    let finalText: string = "";
+    const childNodes = this.contentEditableRef.current.childNodes;
+    childNodes.forEach((n: Node, index) => {
+      finalText += n.textContent;
+      const isLast = childNodes.length - 1 === index;
+      if ((n as HTMLElement).tagName && !isLast) {
+        finalText += "\n";
+      }
+    });
+
     this.toggleMessageEditMode();
-    this.props.editMessage(this.props.message.stanzaId, textContent);
+    this.props.editMessage(this.props.message.stanzaId, finalText);
   }
   placeCaretToEnd(event: React.FocusEvent){
     const e = event.currentTarget;
@@ -164,7 +173,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
     sel.addRange(range);
   }
   onContentEditableKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.stopPropagation();
       this.onMessageEdited(event as any);
     } else if (event.key === "Escape") {
