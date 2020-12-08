@@ -204,8 +204,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
             className="chat__message-content chat__message-content--edit-mode" contentEditable
             ref={this.contentEditableRef}
             onFocus={this.placeCaretToEnd}
-            onKeyDown={this.onContentEditableKeyDown}
-          >
+            onKeyDown={this.onContentEditableKeyDown}>
             {this.props.message.message}
           </div>
           <div className="chat__message-footer">
@@ -218,10 +217,10 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         <div className="chat__message-content-container" key="nonEditable">
           <div className="chat__message-content">
             {this.props.message.deleted ? <i>{this.props.i18n.text.get("plugin.chat.messages.messageIsDeleted")}</i> : this.props.message.message}
+            {this.props.message.edited && <div className="chat__message-edited-info">
+              {this.props.i18n.text.get("plugin.chat.messages.edited")} {this.props.i18n.time.formatDaily(this.props.message.edited.timestamp)}
+            </div>}
           </div>
-          {this.props.message.edited ? <div className="chat__message-edited-info">
-            {this.props.i18n.text.get("plugin.chat.messages.edited", this.props.message.edited.nick)}
-          </div> : null}
         </div>
       }
       <DeleteMessageDialog isOpen={this.state.deleteMessageDialogOpen} onClose={this.toggleDeleteMessageDialog} onDelete={this.onMessageDeleted} />
