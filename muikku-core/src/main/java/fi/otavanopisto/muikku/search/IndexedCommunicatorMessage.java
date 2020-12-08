@@ -73,7 +73,7 @@ public class IndexedCommunicatorMessage {
     return this.id;
   }
   
-  public Date getcreated() {
+  public Date getCreated() {
     return this.created;
   }
   
