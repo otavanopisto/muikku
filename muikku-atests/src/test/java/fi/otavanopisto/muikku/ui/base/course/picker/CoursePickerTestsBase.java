@@ -44,11 +44,11 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(2)");
         waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(3)");
 //      Search field
-        waitForPresentAndVisible(".application-panel__toolbar-actions-main input");
+        waitForVisible(".application-panel__toolbar-actions-main input");
 //      Side navigation
-        waitForPresentAndVisible(".application-panel__helper-container");
+        waitForVisible(".application-panel__helper-container");
 //      Course list and course
-        waitForPresentAndVisible(".application-panel__main-container .application-list__item.course");
+        waitForVisible(".application-panel__main-container .application-list__item.course");
         boolean elementExists = getWebDriver().findElements(By.cssSelector(".application-panel__main-container .application-list__item.course")).size() > 0;
         assertTrue(elementExists);
       } finally {
@@ -74,10 +74,10 @@ public class CoursePickerTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       try {
         navigate("/coursepicker", false);
-        waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+        waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
 //        refresh();
-        waitForPresentAndVisible("div.application-panel__main-container.loader-empty .application-list__item-header--course");
-        waitAndClick("div.application-panel__main-container.loader-empty .application-list__item-header--course");
+//        waitForVisible("div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitAndClick("div.application-panel__main-container .application-list__item-header--course");
         assertText(".course--open .application-list__item-body--course article", "test course for testing");
       } finally {
         deleteWorkspace(workspace.getId());
