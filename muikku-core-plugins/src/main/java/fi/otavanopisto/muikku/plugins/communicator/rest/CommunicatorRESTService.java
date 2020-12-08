@@ -343,10 +343,6 @@ public class CommunicatorRESTService extends PluginRESTService {
         CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
         CommunicatorMessageCategory category = communicatorMessage.getCategory();
         
-        String caption = result.getCaption();
-        String content = result.getMessage();
-        Date created = result.getcreated();
-        
         Set<String> tags = communicatorController.tagIdsToStr(communicatorMessage.getTags());
 
         List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
@@ -366,9 +362,9 @@ public class CommunicatorRESTService extends PluginRESTService {
             sender.getUserEntityId(), 
             senderData, 
             category.getName(), 
-            caption, 
-            content,
-            created, 
+            result.getCaption(), 
+            null, // Content is not relevant for search results
+            result.getCreated(), 
             tags, 
             restRecipients, 
             restUserGroupRecipients, 
