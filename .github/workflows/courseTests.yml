@@ -1,7 +1,7 @@
 name: Course headless tests
-on: 
-  push:
-    branches: [5204-github-actions-testing]
+on:
+  pull_request:
+    branches: [devel]
 jobs:
   testing:
     runs-on: ubuntu-latest

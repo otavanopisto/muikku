@@ -1,7 +1,7 @@
 name: Course Management headless tests
 on: 
-  push:
-    branches: [5204-github-actions-testing]
+  pull_request:
+    branches: [devel]
 jobs:
   testing:
     runs-on: ubuntu-latest
