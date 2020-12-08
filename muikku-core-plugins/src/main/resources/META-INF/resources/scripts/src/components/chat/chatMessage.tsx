@@ -217,7 +217,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
         :
         <div className="chat__message-content-container" key="nonEditable">
           <div className="chat__message-content">
-            {this.props.message.deleted ? <i>{this.props.i18n.text.get("plugin.chat.messages.deleted")}</i> : this.props.message.message}
+            {this.props.message.deleted ? <i>{this.props.i18n.text.get("plugin.chat.messages.messageIsDeleted")}</i> : this.props.message.message}
           </div>
           {this.props.message.edited ? <div className="chat__message-edited-info">
             {this.props.i18n.text.get("plugin.chat.messages.edited", this.props.message.edited.nick)}
