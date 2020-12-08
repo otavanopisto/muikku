@@ -39,6 +39,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.oldOverflow = null;
     this.state = { visible: false }
   }
+
   onOverlayClick(close: () => any, e: Event) {
     if (e.target === e.currentTarget) {
       close();
