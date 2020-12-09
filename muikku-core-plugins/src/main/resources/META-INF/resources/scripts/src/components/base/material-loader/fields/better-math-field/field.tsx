@@ -77,7 +77,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     loadMathJax();
     this.createMarkup();
 
-    document.execCommand("enableObjectResizing", false);
+    document.execCommand("enableObjectResizing", false, "false");
 
     if (!this.props.readOnly) {
       document.body.addEventListener('click', this.handleAllClicks);
