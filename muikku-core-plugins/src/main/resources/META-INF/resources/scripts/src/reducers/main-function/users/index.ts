@@ -16,9 +16,14 @@ export interface StudyprogrammeType {
   name: string
 }
 
+export interface UserPaneUsersType {
+  list: UsersListType,
+  totalUserCount?: number
+}
+
 export interface UsersType {
-  students: UsersListType,
-  staff: UsersListType,
+  students: UserPaneUsersType,
+  staff: UserPaneUsersType,
 }
 
 export interface UsersSelectType {
@@ -30,8 +35,12 @@ export interface UsersSelectType {
 // Do not delete, this is for organization
 
 export default function users(state: UsersType = {
-  students: [],
-  staff: [],
+  students: {
+    list: []
+  },
+  staff: {
+    list: []
+  },
 }, action: ActionType): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
