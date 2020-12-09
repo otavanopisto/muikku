@@ -119,7 +119,9 @@
   }
 }
 
+
 @mixin load-animation($size: $loader-size) {
+
   animation: spin 2s linear infinite;
   border: #{$loader-border-width}px solid $color-loader-empty-ring;
   border-radius: 50%;
@@ -143,6 +145,7 @@
     }
   }
 }
+
 
 @mixin chat-pulse {
   $animation-name: unique-id();

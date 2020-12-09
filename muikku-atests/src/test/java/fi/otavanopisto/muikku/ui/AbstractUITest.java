@@ -411,7 +411,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForVisible(String selector) {
-    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), 30).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           WebElement element = findElement(selector);
