@@ -1,5 +1,5 @@
 #!/bin/sh
-if [[ $test_suite = "headless" && $it_profile = "ui-it" ]]; then
+if [[ $it_profile = "ui-it" || $it_profile = "wcag" ]]; then
   pushd .;
   cd ~
   wget https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip
