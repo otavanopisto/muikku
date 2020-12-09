@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     # inputs:
     #   commit:
-    #     description: 'SHA of commit to test'
+    #     description: 'SHA of commit to test. PR merge.'
     #     required: true
 jobs:
   testing:
