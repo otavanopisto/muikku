@@ -16,14 +16,15 @@ export interface StudyprogrammeType {
   name: string
 }
 
-export interface UserPaneUsersType {
+export interface UserPanelUsersType {
   list: UsersListType,
-  totalUserCount?: number
+  totalUserCount?: number,
+  searchString?: string
 }
 
 export interface UsersType {
-  students: UserPaneUsersType,
-  staff: UserPaneUsersType,
+  students: UserPanelUsersType,
+  staff: UserPanelUsersType,
 }
 
 export interface UsersSelectType {
