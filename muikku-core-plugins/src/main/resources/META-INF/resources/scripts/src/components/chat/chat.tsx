@@ -529,10 +529,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       this.listExistantChatRooms();
     });
-
-    connection.rawInput = function (data) { console.log('RECV:' + data); };
-    connection.rawOutput = function (data) { console.log('SENT:' + data); };
-
   }
   render() {
     if (!this.state.isInitialized || !this.state.connection) {
