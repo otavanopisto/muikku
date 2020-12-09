@@ -46,7 +46,6 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
   constructor(props: IChatMessageProps){
     super(props);
 
-
     this.state = {
       showInfo: false,
       realName: null,
