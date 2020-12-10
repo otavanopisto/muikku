@@ -1,7 +1,7 @@
 name: Course announcer sauce tests
 on: 
-  push:
-    branches: [5204-github-actions-testing]
+  pull_request:
+    branches: [master]
 jobs:
   testing:
     runs-on: ubuntu-latest
@@ -53,4 +53,5 @@ jobs:
         with:
           workflow: Course journal sauce tests
           inputs: '{ "commit": "${{ github.sha }}" }'
+          ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.REPO_GHA_PAT }}

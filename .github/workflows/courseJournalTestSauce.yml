@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       commit:
-        description: 'SHA of commit to test'
+        description: 'Commit to test.'
         required: true
 jobs:
   testing:
