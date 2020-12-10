@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       commit:
-        description: 'SHA of commit to test'
+        description: 'Commit to test'
         required: true
 jobs:
   testing:
@@ -58,4 +58,5 @@ jobs:
         with:
           workflow: Course materials sauce tests
           inputs: '{ "commit": "${{ github.event.inputs.commit }}" }'
+          ref: ${{ github.sha }}
           token: ${{ secrets.REPO_GHA_PAT }}
