@@ -1,7 +1,7 @@
 name: Flags sauce tests
 on: 
   pull_request:
-    branches: [5204-github-actions-testing]
+    branches: [master]
 jobs:
   testing:
     runs-on: ubuntu-latest
