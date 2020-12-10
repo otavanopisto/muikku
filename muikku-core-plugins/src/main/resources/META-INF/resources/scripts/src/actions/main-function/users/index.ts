@@ -52,7 +52,7 @@ export interface LoadStudyprogrammesTriggerType {
 }
 
 export interface LoadUsersTriggerType {
-  (q?: string): AnyActionType
+  (q: string | null, first?: number, last?: number): AnyActionType
 }
 
 let createStudent: CreateStudentTriggerType = function createStudent(data) {
@@ -199,10 +199,13 @@ let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprog
   }
 }
 
-let loadStudents: LoadUsersTriggerType = function loadStudents(q?: string) {
+let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null, first: number | null, last: number | null) {
 
-  let data = { q: q };
-  let getStudents = q ? mApi().organizationUserManagement.students.read(data) : mApi().organizationUserManagement.students.read();
+  let data = {
+    q: q ? q : null,
+    firstResult: first ? first : null,
+    lastResult: last ? last : null
+  };
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -211,9 +214,10 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(q?: string) {
         payload: null
       });
 
-      await promisify(getStudents, 'callback')().then((users: UsersListType) => {
+      await promisify(mApi().organizationUserManagement.students.read(data), 'callback')().then((users: UsersListType) => {
         let payload: UserPanelUsersType = {
-          list: users
+          list: users,
+          searchString: data.q
         }
         dispatch({
           type: "UPDATE_STUDENT_USERS",
@@ -244,10 +248,13 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(q?: string) {
   }
 }
 
-let loadStaff: LoadUsersTriggerType = function loadStaff(q?: string) {
+let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first: number | null, last: number | null) {
 
-  let data = { q: q };
-  let getStaff = q ? mApi().organizationUserManagement.staffMembers.read(data) : mApi().organizationUserManagement.staffMembers.read();
+  let data = {
+    q: q ? q : null,
+    firstResult: first ? first : null,
+    lastResult: last ? last : null
+  };
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -256,9 +263,10 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q?: string) {
         payload: null
       });
 
-      await promisify(getStaff, 'callback')().then((users: UsersListType) => {
+      await promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')().then((users: UsersListType) => {
         let payload: UserPanelUsersType = {
-          list: users
+          list: users,
+          searchString: data.q
         }
         dispatch({
           type: "UPDATE_STAFF_USERS",

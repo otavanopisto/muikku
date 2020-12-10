@@ -34,7 +34,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   constructor(props: UserPanelProps) {
     super(props);
     this.maxUsers = 100;
-    this.usersPerPage = this.props.usersPerPage ? this.props.usersPerPage : 30;
+    this.usersPerPage = this.props.usersPerPage ? this.props.usersPerPage : 10;
     this.getToPage = this.getToPage.bind(this);
     this.pages = Math.trunc(this.maxUsers / this.usersPerPage);
     this.state = {
@@ -43,8 +43,19 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   }
 
   getToPage(n: number) {
+    let pageStart: number = (n - 1) * this.usersPerPage + 1;
+    let pageEnd: number = n * this.usersPerPage;
+    let query: string = this.props.searchString ? this.props.searchString : null;
     this.setState({ currentPage: n });
+    this.props.pageChange(query, pageStart, pageEnd)
   }
+
+  componentDidUpdate(prevProps: UserPanelProps) {
+    if (this.state.currentPage !== 1 && prevProps.searchString !== this.props.searchString) {
+      this.setState({ currentPage: 1 });
+    }
+  }
+
   render() {
 
     return (

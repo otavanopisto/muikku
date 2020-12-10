@@ -3,27 +3,38 @@ import { StateType } from '~/reducers';
 import { connect, Dispatch } from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import UserPanel from '~/components/general/user-panel';
-import { ButtonPill } from '~/components/general/button';
-import { UsersType } from '~/reducers/main-function/users';
-
+import { bindActionCreators } from 'redux';
+import users, { UsersType } from '~/reducers/main-function/users';
+import { LoadUsersTriggerType, loadStudents, loadStaff } from '~/actions/main-function/users';
 interface OrganizationUsersProps {
-  i18n: i18nType
-  users: UsersType
+  i18n: i18nType,
+  users: UsersType,
+  loadStaff: LoadUsersTriggerType,
+  loadStudents: LoadUsersTriggerType
 }
 
 interface OrganizationUsersState {
 }
 
 class OrganizationUsers extends React.Component<OrganizationUsersProps, OrganizationUsersState> {
-
   constructor(props: OrganizationUsersProps) {
     super(props);
+    this.staffPanelPageChange = this.staffPanelPageChange.bind(this);
+    this.studentPanelPageChange = this.studentPanelPageChange.bind(this);
+  }
+
+  staffPanelPageChange(q: string, first: number, last: number) {
+    this.props.loadStaff(q, first, last);
+  }
+
+  studentPanelPageChange(q: string, first: number, last: number) {
+    this.props.loadStudents(q, first, last);
   }
 
   render() {
     return (<div>
-      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.staff.empty" title="plugin.organization.users.staff.title" users={this.props.users.staff.list} />
-      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.students.empty" title="plugin.organization.users.students.title" users={this.props.users.students.list} />
+      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.staff.empty" searchString={this.props.users.staff.searchString} title="plugin.organization.users.staff.title" users={this.props.users.staff.list} pageChange={this.staffPanelPageChange} />
+      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.students.empty" searchString={this.props.users.students.searchString} title="plugin.organization.users.students.title" users={this.props.users.students.list} pageChange={this.studentPanelPageChange} />
     </div>)
   }
 }
@@ -36,7 +47,7 @@ function mapStateToProps(state: StateType) {
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+  return bindActionCreators({ loadStudents, loadStaff }, dispatch);
 };
 
 export default connect(
