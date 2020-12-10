@@ -58,5 +58,4 @@ jobs:
         with:
           workflow: Course materials sauce tests Firefox
           inputs: '{ "commit": "${{ github.event.inputs.commit }}" }'
-          ref: ${{ github.sha }}
           token: ${{ secrets.REPO_GHA_PAT }}
