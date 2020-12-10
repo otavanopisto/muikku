@@ -1,7 +1,7 @@
 name: REST tests
 on: 
   pull_request:
-    branches: [devel]
+    branches: [devel, 5204-github-actions-testing]
 jobs:
   testing:
     runs-on: ubuntu-latest
