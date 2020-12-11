@@ -16,8 +16,6 @@
     right: 15px;
     z-index: 9999;
   }
-
-
 }
 
 // Chat bubble
@@ -675,12 +673,25 @@
   background: $color-chat-user-status-offline;
 }
 
+// Chat Message
 .chat__message {
   margin: 0 0 20px;
 
   &:last-child {
     margin: 0 0 10px;
   }
+}
+
+.chat__message--deleted {
+  font-style: italic;
+  opacity: 0.35;
+}
+
+.chat__message-edited-info {
+  font-size: 0.6875rem;
+  font-style: italic;
+  font-weight: 600;
+  padding: 5px 0 0;
 }
 
 .chat__messages-last-message {
@@ -691,15 +702,11 @@
 .chat__message--sender-me {
 
   .chat__message-meta {
-    text-align: right;
+    justify-content: flex-end;
   }
 
   .chat__message-content-container {
     text-align: right;
-  }
-
-  .chat__message-action-container {
-    justify-content: flex-end;
   }
 }
 
@@ -707,19 +714,17 @@
 .chat__message--sender-them {
 
   .chat__message-meta {
-    text-align: left;
+    justify-content: flex-start;
   }
 
   .chat__message-content-container {
     text-align: left;
   }
-
-  .chat__message-action-container {
-    justify-content: flex-start;
-  }
 }
 
 .chat__message-meta {
+  align-items: center;
+  display: flex;
   margin: 0 0 4px;
 }
 
@@ -749,6 +754,21 @@
   padding: 0 0 0 4px;
 }
 
+.chat__message-actions {
+  line-height: 1;
+  padding: 1px 0 0;
+}
+
+.chat__message-action {
+  cursor: pointer;
+  font-size: 0.8125rem;
+  padding: 2px;
+}
+
+.chat__message-content-container {
+  position: relative;
+}
+
 // Default style for 'sender-them' messages
 .chat__message-content {
   background: $color-chat-message-default-background;
@@ -757,6 +777,19 @@
   display: inline-block;
   padding: 5px 8px;
   text-align: left;
+  transition: background-color 0.3s ease-in-out;
+  white-space: break-spaces;
+}
+
+.chat__message-footer {
+  font-size: 0.75rem;
+  padding: 2px 0;
+}
+
+.chat__message-footer-action {
+  color: $color-link-default-text;
+  cursor: pointer;
+  padding: 0 4px;
 }
 
 // Workspace Room's specific 'sender-me' messages
@@ -771,6 +804,10 @@
     .chat__message-content {
       background: $color-chat-workspace-room-main-color;
       color: $color-default;
+    }
+
+    .chat__message-content--edit-mode {
+      background-color: $color-default-contrast;
     }
   }
 }
@@ -787,6 +824,10 @@
     .chat__message-content {
       background: $color-chat-other-room-main-color;
       color: $color-default;
+    }
+
+    .chat__message-content--edit-mode {
+      background-color: $color-default-contrast;
     }
   }
 }
