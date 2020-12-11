@@ -443,9 +443,9 @@ public class CommunicatorController {
           } else {
             return -1;
           }
+        } else {
+          return o2 != null ? o1.getId().compareTo(o2.getId()) : 1;
         }
-        
-        return o1.getId().compareTo(o2.getId());
       }
     });
     
@@ -465,9 +465,9 @@ public class CommunicatorController {
           } else {
             return -1;
           }
+        } else {
+          return o2 != null ? o1.getId().compareTo(o2.getId()) : 1;
         }
-        
-        return o1.getId().compareTo(o2.getId());
       }
     });
     

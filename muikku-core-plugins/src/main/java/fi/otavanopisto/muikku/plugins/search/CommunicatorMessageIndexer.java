@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.search;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -46,14 +47,14 @@ public class CommunicatorMessageIndexer {
 
       //set message
       indexedCommunicatorMessage.setMessage(message.getContent());
-    	  
+        
       //set communicatorMessageId
       CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
       indexedCommunicatorMessage.setCommunicatorMessageThreadId(communicatorMessageId.getId());
-      	
+        
       //set caption
       indexedCommunicatorMessage.setCaption(message.getCaption());
-    	  
+        
       //set sender
       Long senderId = message.getSender();
       UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
@@ -104,31 +105,31 @@ public class CommunicatorMessageIndexer {
           recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
             
           // set labels
-            List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
-            List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
-            for (CommunicatorMessageIdLabel label : labels) {
-              IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
-              CommunicatorLabel wholeLabel = label.getLabel();
-              
-              labelData.setLabel(wholeLabel.getName());
-              labelData.setId(wholeLabel.getId());
-              labelsList.add(labelData);
-            } 
-              
-            recipientData.setLabels(labelsList);
-            recipientsEntityList.add(recipientData);
-          }
+          List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
+          List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
+          for (CommunicatorMessageIdLabel label : labels) {
+            IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+            CommunicatorLabel wholeLabel = label.getLabel();
+            
+            labelData.setLabel(wholeLabel.getName());
+            labelData.setId(wholeLabel.getId());
+            labelsList.add(labelData);
+          } 
+            
+          recipientData.setLabels(labelsList);
+          recipientsEntityList.add(recipientData);
         }
-	    	
-        indexedCommunicatorMessage.setRecipients(recipientsEntityList);
-	    	
-        // set created
-        Date created = message.getCreated();
-        indexedCommunicatorMessage.setCreated(created);
-	    	
-        indexedCommunicatorMessage.setSearchId(message.getId());
-	        
-        //call method indexCommunicatorMessage
+      }
+        
+      indexedCommunicatorMessage.setRecipients(recipientsEntityList);
+      
+      // set created
+      Date created = message.getCreated();
+      indexedCommunicatorMessage.setCreated(created);
+      
+      indexedCommunicatorMessage.setSearchId(message.getId());
+        
+      //call method indexCommunicatorMessage
       indexCommunicatorMessage(indexedCommunicatorMessage);
     } else {
       logger.warning(String.format("could not index communicator message because message entity #%s/ %s could not be found", message));
@@ -141,7 +142,8 @@ public class CommunicatorMessageIndexer {
         indexer.index(indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage);
       }
     } catch (Exception e) {
-      logger.warning(String.format("could not index message #%s/%s//%s", indexedCommunicatorMessage.getClass().getSimpleName(), indexedCommunicatorMessage.getId(), e));
+      Long communicatorMessageId = indexedCommunicatorMessage != null ? indexedCommunicatorMessage.getId() : null;
+      logger.log(Level.WARNING, String.format("Could not index communicator message %d", communicatorMessageId), e);
     }
   }
 }
