@@ -16,7 +16,7 @@ interface UserPanelProps {
   i18n: i18nType,
   users: Array<UserType>,
   usersPerPage?: number,
-  searchString?: string,
+  searchString?: string | null,
   pageChange?: (q: string, first: number, last: number) => any,
   title: string,
   onEmpty: string,
@@ -28,12 +28,11 @@ interface UserPanelState {
 
 export default class UserPanel extends React.Component<UserPanelProps, UserPanelState>{
   private usersPerPage: number;
-  private maxUsers: number;
+  private maxUsers: number = 100;
   private pages: number;
 
   constructor(props: UserPanelProps) {
     super(props);
-    this.maxUsers = 100;
     this.usersPerPage = this.props.usersPerPage ? this.props.usersPerPage : 10;
     this.getToPage = this.getToPage.bind(this);
     this.pages = Math.trunc(this.maxUsers / this.usersPerPage);
