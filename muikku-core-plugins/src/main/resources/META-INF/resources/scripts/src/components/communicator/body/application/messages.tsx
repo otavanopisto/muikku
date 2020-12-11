@@ -108,7 +108,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                   {message.recipients.map((recipient) => {
                     return (
                       <span className="application-list__header-recipient" key={recipient.userEntityId}>
-                        {recipient.firstName} {recipient.nickName && '"' + recipient.nickName + '"'} {recipient.lastName}
+                        {getName(recipient as any, !this.props.status.isStudent)}
                       </span>
                     )
                   })}
