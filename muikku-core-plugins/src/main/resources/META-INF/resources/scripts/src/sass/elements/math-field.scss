@@ -167,10 +167,6 @@
   position: relative;
   transition: box-shadow 0.3s ease-in-out, border 0.3s ease-in-out;
   width: calc(100% - 10px);
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row nowrap;
-  }
 }
 
 .material-page__mathfield-editor--formula-container {
@@ -198,7 +194,10 @@
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
+    flex-basis: auto;
+    flex-shrink: 0;
+    max-width: 100%;
+    min-width: 50%;
   }
 }
 
@@ -272,7 +271,10 @@
   // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
+    flex-basis: auto;
+    flex-shrink: 0;
+    max-width: 100%;
+    min-width: 50%;
   }
 }
 

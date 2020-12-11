@@ -277,7 +277,7 @@
 
 // DISABLED & READONLY FORM FIELDS
 .material-page__textfield input[readonly],
-.material-page__mathfield[readonly],
+.material-page__mathfield.material-page__mathfield--readonly,
 .material-page__selectfield[disabled],
 .material-page__memofield[readonly],
 .material-page__ckeditor-replacement.material-page__ckeditor-replacement--readonly {
