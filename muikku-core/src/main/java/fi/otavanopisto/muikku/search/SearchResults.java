@@ -1,8 +1,5 @@
 package fi.otavanopisto.muikku.search;
 
-import java.util.List;
-import java.util.Map;
-
 public class SearchResults<T> {
 
   public SearchResults(int firstResult, int lastResult, T results, long totalHitCount) {
