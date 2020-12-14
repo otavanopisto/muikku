@@ -714,31 +714,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <div className="chat__subpanel-row">
                     <label htmlFor={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
                     <textarea id={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField || ""} onChange={this.updateRoomDescField}></textarea>
-                </div>
-              </div>}
-              <div className="chat__panel-body chat__panel-body--chatroom">
-                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.processedMessages.map((message) => <ChatMessage
-                    chatType="group"
-                    canModerate={!this.state.isStudent}
-                    key={message.stanzaId}
-                    canToggleInfo={!this.state.isStudent}
-                    message={message} i18n={this.props.i18n}
-                    editMessage={this.editMessage}
-                    deleteMessage={this.deleteMessage} />)}
-                  <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
-                </div>
-                {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  <div className="chat__occupants-staff">
-                    {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
-                    {staffOccupants.map((staffOccupant) =>
-                      <div
-                        title={this.props.i18n.text.get("plugin.chat.state." + staffOccupant.occupant.precense)}
-                        className="chat__occupants-item chat__occupants-item--has-access-to-pm"
-                        onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
-                        <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>
-                    )}
                   </div>
+                  {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                    <label className="chat__label">Pysyvä huone: </label>
+                    <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
+                  </div>} */}
                   <div className="chat__subpanel-row chat__subpanel-row--buttonset">
                     <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
                     {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteMUCDialog}>{this.props.i18n.text.get("plugin.chat.button.deleteRoom")}</button>}
@@ -755,7 +735,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
               <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
                 {this.state.messages.map((message) => <ChatMessage
                   chatType="group"
-                  deleted={this.state.messageDeleted}
                   canModerate={!this.state.isStudent}
                   key={message.stanzaId}
                   canToggleInfo={!this.state.isStudent}
@@ -801,7 +780,8 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 ref={ref => ref && ref.focus()}/>
               <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
-          </div>)}
+          </div>)
+        }
 
         <DeleteRoomDialog isOpen={this.state.deleteMUCDialogOpen} onClose={this.toggleDeleteMUCDialog} chat={this.props.chat} onDelete={this.onMUCDeleted} />
       </div>
