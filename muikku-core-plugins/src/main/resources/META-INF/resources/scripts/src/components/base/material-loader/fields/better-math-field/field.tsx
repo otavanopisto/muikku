@@ -168,7 +168,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       return `<span class="${this.props.formulaClassName}">${latex}</span>`
     }
-    let kids = !(node as HTMLImageElement).alt ? Array.from(node.childNodes).map((node) => {
+    const isImg = node.tagName === "IMG";
+    let kids = !isImg ? Array.from(node.childNodes).map((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         return node.textContent;
       } else if (node.nodeType === Node.COMMENT_NODE) {
@@ -176,10 +177,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       return this.convertToText(node as HTMLElement);
     }).join("") : (node as HTMLImageElement).alt;
+
+    if (isImg && !kids) {
+      return "";
+    }
+
     let tag = !(node as HTMLImageElement).alt ? node.tagName.toLowerCase() : "span";
     let extras = "";
     if (node.className) {
       extras += ' class="' + node.className + '"';
+    }
+    if (tag === "br") {
+      return "<br>";
     }
     return "<" + tag + extras + ">" + kids + "</" + tag + ">";
   }
