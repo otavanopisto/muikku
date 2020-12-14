@@ -41,7 +41,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -1598,60 +1597,6 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/users/{ID}/basicinfo")
-  @RESTPermitUnimplemented
-  public Response findUserBasicInfo(@Context Request request, @PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    UserEntity userEntity;
-    
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
-    if (userIdentifier == null) {
-      if (!StringUtils.isNumeric(id)) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid user id %s", id)).build();
-      }
-      
-      userEntity = userEntityController.findUserEntityById(NumberUtils.createLong(id));
-      userIdentifier = userEntity.defaultSchoolDataIdentifier();
-    } else {
-      userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    }
-
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
-
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByIdentifier(userIdentifier);
-      if (user == null) {
-        return Response.status(Response.Status.NOT_FOUND).build();
-      }
-
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
-          .cacheControl(cacheControl)
-          .tag(tag)
-          .build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-
-  @GET
   @Path("/whoami")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findWhoAmI(@Context Request request) {
@@ -1883,20 +1828,20 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   private fi.otavanopisto.muikku.rest.model.TransferCredit createRestModel(TransferCredit transferCredit) {
-	GradingScale gradingScale = null;
-	SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
-	if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-	  gradingScale = gradingController.findGradingScale(identifier); 
-	}
-
-	GradingScaleItem grade = null;
-	if (gradingScale != null) {
-	  identifier = transferCredit.getGradeIdentifier();
-	  if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-	    grade = gradingController.findGradingScaleItem(gradingScale, identifier);
-	  }
-	}
-	  
+    GradingScale gradingScale = null;
+    SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
+    if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+      gradingScale = gradingController.findGradingScale(identifier); 
+    }
+  
+    GradingScaleItem grade = null;
+    if (gradingScale != null) {
+      identifier = transferCredit.getGradeIdentifier();
+      if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+        grade = gradingController.findGradingScaleItem(gradingScale, identifier);
+      }
+    }
+    
     return new fi.otavanopisto.muikku.rest.model.TransferCredit(
         toId(transferCredit.getIdentifier()), 
         toId(transferCredit.getStudentIdentifier()), 
