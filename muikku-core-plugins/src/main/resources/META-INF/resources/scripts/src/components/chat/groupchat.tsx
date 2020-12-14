@@ -5,7 +5,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/chat.scss';
 // import '~/sass/elements/wcag.scss';
 import promisify from '~/util/promisify';
-import { IAvailableChatRoomType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
+import { IAvailableChatRoomType, IBareMessageActionType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
 import { ChatMessage } from './chatMessage';
 import DeleteRoomDialog from "./deleteMUCDialog";
 
@@ -30,6 +30,7 @@ interface IGroupChatOccupant {
 
 interface IGroupChatState {
   messages: IBareMessageType[],
+  processedMessages: IBareMessageType[],
   openChatSettings: boolean,
   isStudent: boolean,
   isOwner: boolean,
@@ -50,8 +51,6 @@ interface IGroupChatState {
   updateFailed: boolean,
 
   deleteMUCDialogOpen: boolean,
-
-  messageDeleted: boolean,
   currentMessageToBeSent: string,
   currentEditedMessageToBeSent: string,
 }
@@ -70,6 +69,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
     this.state = {
       messages: [],
+      processedMessages: [],
       openChatSettings: false,
       isStudent: (window as any).MUIKKU_IS_STUDENT,
       isOwner: false,
@@ -87,8 +87,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       // roomPersistent: this.props.chat.roomPersistent,
 
       updateFailed: false,
-
-      messageDeleted: false,
       currentMessageToBeSent: "",
       currentEditedMessageToBeSent: "",
 
@@ -180,13 +178,11 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       from: this.props.connection.jid,
       to: this.props.chat.roomJID,
       type: "groupchat",
-    }).c("body", { "otavanopisto-delete": stanzaId}));
+    }).c("body", { "otavanopisto-delete": stanzaId }));
   }
   // Custom Message EDIT, we send new stanza with new content and with custom attribute
   // Attribute contains stanzaId that is from original 'to be edited' mmessage
-  editMessage(stanzaId: string, textContent: string, event: React.FormEvent) {
-    event && event.preventDefault();
-
+  editMessage(stanzaId: string, textContent: string) {
     const text = textContent.trim();
 
     if (text) {
@@ -194,7 +190,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         from: this.props.connection.jid,
         to: this.props.chat.roomJID,
         type: "groupchat",
-      }).c("body", { "otavanopisto-edit": stanzaId}, text));
+      }).c("body", { "otavanopisto-edit": stanzaId }, text));
     }
   }
   // Set chat room configurations
@@ -314,6 +310,16 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
     const body = stanza.querySelector("body");
 
     if (body) {
+      const editForId = body.getAttribute("otavanopisto-edit");
+      const deleteForId = body.getAttribute("otavanopisto-delete");
+      let action: IBareMessageActionType = null;
+      if (editForId || deleteForId) {
+        action = {
+          editForId,
+          deleteForId,
+        }
+      }
+
       const content = body.textContent;
       let date: Date = null;
 
@@ -350,11 +356,15 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
         timestamp: date,
         userId,
         isSelf: userId === this.props.connection.jid.split("@")[0],
+        action,
+        deleted: false,
+        edited: null,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
       this.setState({
         messages: newMessagesList,
+        processedMessages: this.processMessages(newMessagesList),
       }, this.scrollToBottom.bind(this, "smooth"));
     }
 
@@ -446,6 +456,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       this.setState({
         occupants: newOccupants,
         messages: newChatMessages,
+        processedMessages: this.processMessages(newChatMessages),
       });
     }
 
@@ -489,6 +500,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
     this.setState({
       messages: [],
+      processedMessages: [],
     });
 
     props.connection.send(presStanza);
@@ -520,7 +532,35 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
 
     return false;
   }
-  loadMessages() {
+  processMessages(messages: IBareMessageType[]): IBareMessageType[] {
+    const actionMessages = messages.filter((m) => m.action);
+    const standardMessages = messages.filter((m) => !m.action);
+    const result: IBareMessageType[] = standardMessages.map((m) => {
+      const shouldDelete = actionMessages.some((a) => a.action.deleteForId === m.stanzaId);
+      if (shouldDelete) {
+        const newMessage: IBareMessageType = {
+          ...m,
+          deleted: true,
+        };
+        return newMessage;
+      }
+      const foundActions = actionMessages.filter((a) => a.action.editForId === m.stanzaId);
+      if (!foundActions.length) {
+        return m;
+      }
+
+      const lastAction = foundActions[foundActions.length - 1];
+      const newMessage: IBareMessageType = {
+        ...m,
+        edited: lastAction,
+      };
+      newMessage.message = lastAction.message;
+
+      return newMessage;
+    });
+    return result;
+  }
+  async loadMessages() {
     if (this.state.loadingMessages || !this.state.canLoadMoreMessages) {
       return;
     }
@@ -529,29 +569,54 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
       loadingMessages: true,
     });
 
-    const stanza = $iq({
-      type: "set",
-    }).c("query", {
-      xmlns: "otavanopisto:chat:history",
-    }).c("type", {}, "groupchat")
-    .c("with", {}, this.props.chat.roomJID)
-    .c("includeStanzaIds")
-    .c("max", {}, "25");
+    let newMessages: IBareMessageType[] = [];
+    let processedNewMessages: IBareMessageType[] = [];
+    let thereIsNoMore = false;
+    let beforeLastMessageStamp: string = null;
 
-    if (this.state.lastMessageStamp) {
-      stanza.c("before", {}, this.state.lastMessageStamp);
-    }
+    while (processedNewMessages.length < 25 && !thereIsNoMore) {
+      const stanza = $iq({
+        type: "set",
+      }).c("query", {
+        xmlns: "otavanopisto:chat:history",
+      }).c("type", {}, "groupchat")
+        .c("with", {}, this.props.chat.roomJID)
+        .c("includeStanzaIds")
+        .c("max", {}, (25 - processedNewMessages.length).toString());
 
-    this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
-      let lastMessageStamp: string = null;
+      if (this.state.lastMessageStamp) {
+        stanza.c("before", {}, beforeLastMessageStamp || this.state.lastMessageStamp);
+      }
+
+      const answerStanza: Element = await new Promise((resolve, reject) => {
+        this.props.connection.sendIQ(stanza, (answerStanza: Element) => {
+          resolve(answerStanza);
+        });
+      });
+
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
+      if (allMessagesLoaded) {
+        thereIsNoMore = true;
+      }
 
-      const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
+      Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
+        const messageElement = historyMessage.querySelector("message");
+
+        const editForId = messageElement.getAttribute("otavanopisto-edit");
+        const deleteForId = messageElement.getAttribute("otavanopisto-delete");
+        let action: IBareMessageActionType = null;
+        if (editForId || deleteForId) {
+          action = {
+            editForId,
+            deleteForId,
+          }
+        }
+
         const stanzaId = historyMessage.querySelector("stanzaId").textContent;
 
         const stamp = historyMessage.querySelector("timestamp").textContent;
         if (index === 0) {
-          lastMessageStamp = stamp;
+          beforeLastMessageStamp = stamp;
         }
 
         const nick = historyMessage.querySelector("toJID").textContent.split("/")[1];
@@ -566,44 +631,50 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
           timestamp: date,
           userId,
           isSelf: userId === this.props.connection.jid.split("@")[0],
+          action,
+          deleted: false,
+          edited: null,
         };
 
-        return messageReceived;
+        newMessages.push(messageReceived);
       });
 
-      if (lastMessageStamp) {
-        this.setState({
-          lastMessageStamp,
-        });
-      }
+      processedNewMessages = this.processMessages(newMessages);
+    }
 
-      if (newMessages.length) {
-        const oldScrollHeight = this.chatRef.current && this.chatRef.current.scrollHeight;
-        // most likely 0, but who knows, fast fingers
-        const oldScrollTop = this.chatRef.current && this.chatRef.current.scrollTop;
+    if (beforeLastMessageStamp) {
+      this.setState({
+        lastMessageStamp: beforeLastMessageStamp,
+      });
+    }
 
-        this.setState({
-          messages: [...newMessages, ...this.state.messages],
-        }, () => {
-          if (!this.isScrollDetached) {
-            this.scrollToBottom("auto");
-          } else if (this.chatRef.current) {
-            const currentScrollHeight = this.chatRef.current.scrollHeight;
-            const diff = currentScrollHeight - oldScrollHeight;
-            this.chatRef.current.scrollTop = diff + oldScrollTop;
-          }
-          this.setState({
-            loadingMessages: false,
-            canLoadMoreMessages: !allMessagesLoaded,
-          });
-        });
-      } else {
+    if (newMessages.length) {
+      const oldScrollHeight = this.chatRef.current && this.chatRef.current.scrollHeight;
+      // most likely 0, but who knows, fast fingers
+      const oldScrollTop = this.chatRef.current && this.chatRef.current.scrollTop;
+
+      this.setState({
+        messages: newMessages,
+        processedMessages: processedNewMessages,
+      }, () => {
+        if (!this.isScrollDetached) {
+          this.scrollToBottom("auto");
+        } else if (this.chatRef.current) {
+          const currentScrollHeight = this.chatRef.current.scrollHeight;
+          const diff = currentScrollHeight - oldScrollHeight;
+          this.chatRef.current.scrollTop = diff + oldScrollTop;
+        }
         this.setState({
           loadingMessages: false,
-          canLoadMoreMessages: false,
+          canLoadMoreMessages: !thereIsNoMore,
         });
-      }
-    });
+      });
+    } else {
+      this.setState({
+        loadingMessages: false,
+        canLoadMoreMessages: false,
+      });
+    }
   }
   render() {
     let chatRoomTypeClassName = this.props.chat.roomJID.startsWith("workspace-") ? "workspace" : "other";
@@ -643,11 +714,31 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                   <div className="chat__subpanel-row">
                     <label htmlFor={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
                     <textarea id={`chatRoomDesc-${this.props.chat.roomJID.split("@")[0]}`} className={`chat__memofield chat__memofield--${chatRoomTypeClassName}`} name="newroomDescription" value={this.state.roomDescField || ""} onChange={this.updateRoomDescField}></textarea>
+                </div>
+              </div>}
+              <div className="chat__panel-body chat__panel-body--chatroom">
+                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} onScroll={this.checkScrollDetachment} ref={this.chatRef}>
+                  {this.state.processedMessages.map((message) => <ChatMessage
+                    chatType="group"
+                    canModerate={!this.state.isStudent}
+                    key={message.stanzaId}
+                    canToggleInfo={!this.state.isStudent}
+                    message={message} i18n={this.props.i18n}
+                    editMessage={this.editMessage}
+                    deleteMessage={this.deleteMessage} />)}
+                  <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
+                </div>
+                {this.state.showOccupantsList && <div className="chat__occupants-container">
+                  <div className="chat__occupants-staff">
+                    {staffOccupants.length > 0 ? <div className="chat__occupants-title">{this.props.i18n.text.get("plugin.chat.occupants.staff")}</div> : ""}
+                    {staffOccupants.map((staffOccupant) =>
+                      <div
+                        title={this.props.i18n.text.get("plugin.chat.state." + staffOccupant.occupant.precense)}
+                        className="chat__occupants-item chat__occupants-item--has-access-to-pm"
+                        onClick={this.props.joinPrivateChat.bind(null, staffOccupant.occupant.jid, null)} key={staffOccupant.occupant.userId}>
+                        <span className={"chat__online-indicator chat__online-indicator--" + staffOccupant.occupant.precense}></span>{staffOccupant.occupant.nick}</div>
+                    )}
                   </div>
-                  {/* {(!this.state.isStudent) && <div className="chat__subpanel-row">
-                    <label className="chat__label">Pysyvä huone: </label>
-                    <input className={`chat__checkbox chat__checkbox--room-settings-${chatRoomTypeClassName}`} type="checkbox" name="persistent"></input>
-                  </div>} */}
                   <div className="chat__subpanel-row chat__subpanel-row--buttonset">
                     <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value={this.props.i18n.text.get("plugin.chat.button.save")}></input>
                     {!this.props.chat.roomJID.startsWith("workspace-") && <button className="chat__submit chat__submit--room-settings-delete" onClick={this.toggleDeleteMUCDialog}>{this.props.i18n.text.get("plugin.chat.button.deleteRoom")}</button>}
@@ -710,10 +801,9 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
                 ref={ref => ref && ref.focus()}/>
               <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
-          </div>)
-        }
+          </div>)}
 
-        <DeleteRoomDialog isOpen={this.state.deleteMUCDialogOpen} onClose={this.toggleDeleteMUCDialog} chat={this.props.chat} onDelete={this.onMUCDeleted}/>
+        <DeleteRoomDialog isOpen={this.state.deleteMUCDialogOpen} onClose={this.toggleDeleteMUCDialog} chat={this.props.chat} onDelete={this.onMUCDeleted} />
       </div>
     );
   }

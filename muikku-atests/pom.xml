@@ -635,7 +635,7 @@
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
         <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
-        <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
+        <it.sauce.tunnelId>${env.GITHUB_ACTION}</it.sauce.tunnelId>
         <it.browser />
         <it.browser.version />
         <it.browser.resolution />

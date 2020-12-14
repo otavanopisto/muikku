@@ -136,13 +136,16 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         type: "chat",
       }).c("body", text).up().c('active', { xmlns: 'http://jabber.org/protocol/chatstates' }));
 
-      const newMessage = {
-        nick: null as string,
+      const newMessage: IBareMessageType = {
+        nick: null,
         message: text,
-        stanzaId: null as string,
+        stanzaId: null,
         timestamp: new Date(),
         userId: this.props.connection.jid.split("@")[0],
         isSelf: true,
+        action: null,
+        deleted: false,
+        edited: null,
       }
 
       this.setState({
@@ -176,6 +179,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         timestamp: date,
         userId,
         isSelf: userId === this.props.connection.jid.split("@")[0],
+        action: null,
+        deleted: false,
+        edited: null,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
@@ -287,6 +293,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           timestamp: date,
           userId,
           isSelf: userId === this.props.connection.jid.split("@")[0],
+          action: null,
+          deleted: false,
+          edited: null,
         };
 
         return messageReceived;

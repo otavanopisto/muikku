@@ -30,7 +30,6 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
   /**
    * /user/users
    * /user/users/{ID}
-   * /user/users/{ID}/basicinfo
    */
   
   @Test
@@ -45,19 +44,6 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
   }
 
-  @Test
-  public void testFindUserBasicInfo() throws NoSuchFieldException {
-    Long userId = 1l;
-    
-    Response response = asAdmin()
-        .get("/user/users/{ID}/basicinfo", userId);
-
-    response.then().statusCode(200);
-
-    String expected = "{'id':1,'firstName':'Test','lastName':'User','hasImage':false}";
-    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
-  }
-  
   @Test
   public void testSearchUsers() throws NoSuchFieldException {
     Response response = asAdmin()

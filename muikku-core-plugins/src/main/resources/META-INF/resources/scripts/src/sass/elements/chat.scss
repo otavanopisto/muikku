@@ -701,6 +701,18 @@
   }
 }
 
+.chat__message--deleted {
+  font-style: italic;
+  opacity: 0.35;
+}
+
+.chat__message-edited-info {
+  font-size: 0.6875rem;
+  font-style: italic;
+  font-weight: 600;
+  padding: 5px 0 0;
+}
+
 .chat__messages-last-message {
   height: 0;
 }
@@ -709,7 +721,7 @@
 .chat__message--sender-me {
 
   .chat__message-meta {
-      justify-content: flex-end;
+    justify-content: flex-end;
   }
 
   .chat__message-content-container {
@@ -795,6 +807,7 @@
   padding: 5px 8px;
   text-align: left;
   transition: background-color 0.3s ease-in-out;
+  white-space: break-spaces;
 }
 
 .chat__message-footer {
@@ -863,6 +876,19 @@
   justify-content: flex-end;
   margin: 0 0 5px;
   padding: 5px;
+}
+
+.chat__message-delete {
+  align-items: center;
+  border-radius: 5px;
+  color: $color-fatal;
+  cursor: pointer;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 // Chat subpanel notifications

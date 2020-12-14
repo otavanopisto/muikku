@@ -64,6 +64,14 @@ export interface IBareMessageType {
   timestamp: Date;
   stanzaId: string;
   isSelf: boolean;
+  action: IBareMessageActionType;
+  deleted: boolean;
+  edited: IBareMessageType;
+}
+
+export interface IBareMessageActionType {
+  deleteForId: string;
+  editForId: string;
 }
 
 interface IOpenChatJID {
