@@ -275,6 +275,28 @@
   }
 }
 
+.link--chat-dropdown {
+  color: $color-default-contrast;
+  font-size: 0.825rem;
+  justify-content: flex-start;
+  padding: 0 5px;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-environment-dropdown-link-hover-background;
+    color: $color-default-contrast;
+  }
+
+  .link__icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 16px;
+  }
+}
+
 .link--material-management-dropdown {
   color: $color-default;
   justify-content: flex-start;
