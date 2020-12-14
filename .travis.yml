@@ -26,8 +26,12 @@ before_install:
 - tar xvf travis-encrypted.tar  
 - unset GEM_PATH
 - . travis-setenv.sh
+install:
+- . travis-install.sh
 before_script:
 - export _JAVA_OPTIONS="-Xmx2048m -Xms512m -Djava.net.preferIPv4Addresses=true -Djava.net.preferIPv4Stack=true"
+script:
+- . travis-script.sh
 after_script:
 env:
   global:
