@@ -4,6 +4,7 @@ language: java
 branches:
   only:
     - master
+    - devel
 jdk:
 - openjdk8
 cache:
