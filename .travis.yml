@@ -4,8 +4,6 @@ language: java
 branches:
   only:
     - master
-    - devel
-    - 5222-sauce-tests-to-github
 jdk:
 - openjdk8
 cache:
