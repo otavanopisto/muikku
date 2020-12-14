@@ -269,49 +269,51 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let details:WorkspaceDetailsType;
       let chatStatus: WorkspaceChatStatusType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details, chatStatus] = await Promise.all([
-                                                reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details, chatStatus] =
+        await Promise.all([
+          reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
 
-                                                reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-                                                  workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
-                                                    .students.assessments.cacheClear().read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
+          reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+            workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
+              .students.assessments.cacheClear().read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
 
-                                                reuseExistantValue(status.loggedIn,
-                                                  workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.cacheClear().read(data.workspaceId), 'callback')()),
+          reuseExistantValue(status.loggedIn,
+            workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.cacheClear().read(data.workspaceId), 'callback')()),
 
-                                                reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-                                                  workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.cacheClear().read(data.workspaceId, {
-                                                    studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
+          reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+            workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.cacheClear().read(data.workspaceId, {
+              studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
 
-                                                getState().status.loggedIn ? reuseExistantValue(true,
-                                                  //The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
-                                                  //And rerequest
-                                                  typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
-                                                    ()=>promisify(mApi().guider.workspaces.activity.cacheClear().read(data.workspaceId), 'callback')()) : null,
+          getState().status.loggedIn ?
+            // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
+            // And rerequest
+            reuseExistantValue(true, typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
+              () => promisify(mApi().guider.workspaces.activity.cacheClear().read(data.workspaceId), 'callback')()) : null,
 
-                                                reuseExistantValue(true, workspace && workspace.additionalInfo,
-                                                  ()=>promisify(mApi().workspace.workspaces.additionalInfo.cacheClear().read(data.workspaceId), 'callback')()),
+          reuseExistantValue(true, workspace && workspace.additionalInfo,
+            ()=>promisify(mApi().workspace.workspaces.additionalInfo.cacheClear().read(data.workspaceId), 'callback')()),
 
-                                                reuseExistantValue(true, workspace && workspace.contentDescription,
-                                                  ()=>promisify(mApi().workspace.workspaces.description.cacheClear().read(data.workspaceId), 'callback')()),
+          reuseExistantValue(true, workspace && workspace.contentDescription,
+            ()=>promisify(mApi().workspace.workspaces.description.cacheClear().read(data.workspaceId), 'callback')()),
 
-                                                reuseExistantValue(true, workspace && workspace.producers,
-                                                  ()=>promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
+          reuseExistantValue(true, workspace && workspace.producers,
+            ()=>promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
 
-                                                getState().status.loggedIn ?
-                                                  reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
-                                                    ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()) : false,
+          getState().status.loggedIn ?
+            reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
+              ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()) : false,
 
-                                                reuseExistantValue(true, workspace && workspace.journals, ()=>null),
+          reuseExistantValue(true, workspace && workspace.journals, ()=>null),
 
-                                                (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
-                                                  ()=>promisify(mApi().workspace.workspaces
-                                                    .details.read(data.workspaceId), 'callback')()) : null,
+          (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
+            ()=>promisify(mApi().workspace.workspaces
+              .details.read(data.workspaceId), 'callback')()) : null,
 
-                                                reuseExistantValue(true, workspace && workspace.chatStatus,
-                                                  () => promisify(mApi().chat.workspaceChatSettings.read(data.workspaceId), 'callback')()),
+          getState().status.loggedIn ?
+            reuseExistantValue(true, workspace && workspace.chatStatus,
+              () => promisify(mApi().chat.workspaceChatSettings.read(data.workspaceId), 'callback')()) : null,
 
-                                                   ]) as any
+        ]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
@@ -765,7 +767,7 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateWorkspace'), 'error'));
 
       data.fail && data.fail();
     }
@@ -793,7 +795,7 @@ let loadStaffMembersOfWorkspace:LoadStaffMembersOfWorkspaceTriggerType = functio
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadTeachers'), 'error'));
     }
   }
 }
@@ -818,7 +820,7 @@ let loadStudentsOfWorkspace:LoadStudentsOfWorkspaceTriggerType = function loadSt
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load students'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadStudents'), 'error'));
     }
   }
 }
@@ -869,7 +871,7 @@ let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceT
         });
       }
       data.fail && data.fail();
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to toggle student state'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateStudents'), 'error'));
     }
   }
 }
@@ -888,7 +890,7 @@ let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = functio
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load materials'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadWorkspaceMaterials'), 'error'));
     }
   }
 }
@@ -907,7 +909,7 @@ let loadWholeWorkspaceHelp:LoadWholeWorkspaceHelpTriggerType = function loadWhol
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load help'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadWorkspaceHelp'), 'error'));
     }
   }
 }
@@ -958,7 +960,7 @@ let loadWorkspaceCompositeMaterialReplies:LoadWorkspaceCompositeMaterialReplies 
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load material composite replies'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadMaterialAnswers'), 'error'));
     }
   }
 }
@@ -1000,7 +1002,7 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to deliver to the server'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateMaterialAnswersState'), 'error'));
     }
   }
 }
@@ -1117,7 +1119,7 @@ let createWorkspaceJournalForCurrentWorkspace:CreateWorkspaceJournalForCurrentWo
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToCreateJournal'), 'error'));
       data.fail && data.fail();
     }
   }
@@ -1157,7 +1159,7 @@ let updateWorkspaceJournalInCurrentWorkspace:UpdateWorkspaceJournalInCurrentWork
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateJournal'), 'error'));
       data.fail && data.fail();
     }
   }
@@ -1193,7 +1195,7 @@ let deleteWorkspaceJournalInCurrentWorkspace:DeleteWorkspaceJournalInCurrentWork
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToDeleteJournal'), 'error'));
       data.fail && data.fail();
     }
   }
@@ -1220,7 +1222,7 @@ let loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType = function loadW
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load chat settings'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadChatSettigns'), 'error'));
     }
   }
 }
@@ -1247,7 +1249,7 @@ let loadWorkspaceDetailsInCurrentWorkspace:LoadWorkspaceDetailsInCurrentWorkspac
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to fetch workspace details'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadDetails'), 'error'));
     }
   }
 }
@@ -1278,7 +1280,7 @@ let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWo
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateDetails'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1332,7 +1334,7 @@ let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurre
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateProducers'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1355,7 +1357,7 @@ let loadWorkspaceTypes:LoadWorkspaceTypesTriggerType = function loadWorkspaceTyp
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to fetch workspace types'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadWorkspaceTypes '), 'error'));
     }
   }
 }
@@ -1386,7 +1388,7 @@ let deleteCurrentWorkspaceImage:DeleteCurrentWorkspaceImageTriggerType = functio
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete workspace image'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToDeleteImage'), 'error'));
     }
   }
 }
@@ -1450,7 +1452,7 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to clone workspace'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToCloneWorkspace'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1496,7 +1498,7 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace images'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateImage'), 'error'));
 
       data.fail && data.fail();
     }
@@ -1526,7 +1528,7 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load current workspace user group permissions'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadWorkspacePermissions'), 'error'));
     }
   }
 }
@@ -1576,7 +1578,7 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
           }
         }
       });
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update permission value'), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateWorkspacePermissions'), 'error'));
     }
   }
 }
@@ -1848,7 +1850,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       data.fail && data.fail();
 
       if (!showRemoveAnswersDialogForPublish){
-        dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
+        dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateMaterialPage'), 'error'));
       }
     }
   }
