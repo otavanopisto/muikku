@@ -3,7 +3,7 @@ on:
   push:
     branches: [5229-snapshots-on-github-actions]
 jobs:
-  deploy snapshot:
+  deploy-snapshot:
     env:
       OOM2_USER: ${{secrets.TEST_USER}}
       OOM2_PASS: ${{secrets.TEST_PASS}}
