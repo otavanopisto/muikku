@@ -185,7 +185,7 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
           {this.props.message.nick}
           {this.state.showInfo && <span className="chat__message-meta-sender-real-name">
             ({this.state.realName}
-            {this.state.showInfo && (this.state.studyProgramme && this.state.studyProgramme !== "null") && <span className="chat__message-meta-sender-study-programme"> - {this.state.studyProgramme}</span>})
+            {this.state.showInfo && (this.state.studyProgramme && this.state.studyProgramme !== "null") && <span> - {this.state.studyProgramme}</span>})
           </span>}
 
         </span>
