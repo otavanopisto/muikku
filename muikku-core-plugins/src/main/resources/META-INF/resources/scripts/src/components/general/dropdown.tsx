@@ -2,7 +2,6 @@ import Portal from './portal';
 import * as React from 'react';
 import {findDOMNode} from 'react-dom';
 import $ from "~/lib/jquery";
-
 import '~/sass/elements/dropdown.scss';
 
 type itemType2 = (closeDropdown: ()=>any)=>any
@@ -82,7 +81,6 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         left = position.left;
       }
     }
-
 
     let top = null;
     if (notEnoughSpaceInBottom) {
