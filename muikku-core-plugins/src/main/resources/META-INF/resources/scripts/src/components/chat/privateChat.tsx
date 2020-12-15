@@ -1,8 +1,7 @@
-/*global converse */
 import * as React from 'react'
 import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
-// import '~/sass/elements/wcag.scss';
+import '~/sass/elements/wcag.scss';
 import { IBareMessageType } from './chat';
 import { ChatMessage } from './chatMessage';
 import promisify from '~/util/promisify';
@@ -352,9 +351,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">
-                  {/* ToDo: Add this back when we can show users presence to each other
                   <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
-                  */}
                   <span className="chat__target-nickname">{this.state.nick}</span>
                 </div>
                 <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>

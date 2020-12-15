@@ -1,4 +1,3 @@
-/*global converse */
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
 import mApi from '~/lib/mApi';
@@ -184,8 +183,11 @@ export class ChatMessage extends React.Component<IChatMessageProps, IChatMessage
       <div className="chat__message-meta">
         <span className={`chat__message-meta-sender ${this.props.canToggleInfo && "chat__message-meta-sender--access-to-realname"}`} onClick={this.toggleInfo}>
           {this.props.message.nick}
-          {this.state.showInfo && <span className="chat__message-meta-sender-real-name">({this.state.realName})</span>}
-          {this.state.showInfo && (this.state.studyProgramme && this.state.studyProgramme !== "null") && <span className="chat__message-meta-sender-study-programme">({this.state.studyProgramme})</span>}
+          {this.state.showInfo && <span className="chat__message-meta-sender-real-name">
+            ({this.state.realName}
+            {this.state.showInfo && (this.state.studyProgramme && this.state.studyProgramme !== "null") && <span className="chat__message-meta-sender-study-programme"> - {this.state.studyProgramme}</span>})
+          </span>}
+
         </span>
         <span className="chat__message-meta-timestamp">
           {this.props.i18n.time.formatDaily(this.props.message.timestamp)}

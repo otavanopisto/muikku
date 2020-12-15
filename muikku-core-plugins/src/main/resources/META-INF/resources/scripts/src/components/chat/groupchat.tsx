@@ -1,9 +1,8 @@
-/*global converse */
 import * as React from 'react'
 import mApi from '~/lib/mApi';
 import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/chat.scss';
-// import '~/sass/elements/wcag.scss';
+import '~/sass/elements/wcag.scss';
 import promisify from '~/util/promisify';
 import { IAvailableChatRoomType, IBareMessageActionType, IBareMessageType, IChatOccupant, IChatRoomType } from './chat';
 import { ChatMessage } from './chatMessage';
@@ -768,8 +767,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
             </div>
             <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
               <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
-              {/* Need wcag.scss from another WIP branch
-              <label htmlFor={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label> */}
+              <label htmlFor={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label>
               <textarea
                 id={`sendGroupChatMessage-${this.props.chat.roomJID.split("@")[0]}`}
                 className="chat__memofield chat__memofield--muc-message"
