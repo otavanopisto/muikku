@@ -57,7 +57,6 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     // NOTE you cannot change the formula class name unless you want to break backwards compatibility
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
     // this means old formulas will 100% fail to parse
-    console.log("render with", this.state.value);
     return <div>
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <MathField ref="base" className="material-page__mathfield"

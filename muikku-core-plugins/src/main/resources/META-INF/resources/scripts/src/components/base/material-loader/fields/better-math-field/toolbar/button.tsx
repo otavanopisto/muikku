@@ -39,7 +39,6 @@ export default class ToolbarButton extends React.Component<ToolbarButtonProps, T
     //AVOID browser bug where they both trigger no matter what you do
     if (this.avoidDuplicate && this.avoidDuplicateCaller === "mousedown"){
       this.avoidDuplicate = false;
-      //console.log("avoiding duplicate touch start");
       return;
     }
     this.avoidDuplicate = true;
@@ -47,14 +46,12 @@ export default class ToolbarButton extends React.Component<ToolbarButtonProps, T
     setTimeout(()=>{
       this.avoidDuplicate = false;
     }, 300);
-    //console.log("touch called");
     this.toggleTooltip(true);
     this.props.onTrigger(e);
   }
   onMouseDown(e: React.MouseEvent<any>){
     //AVOID browser bug where they both trigger no matter what you do
     if (this.avoidDuplicate && this.avoidDuplicateCaller === "touchstart"){
-      //console.log("avoiding duplicate mousedown");
       this.avoidDuplicate = false;
       return;
     }
@@ -64,7 +61,6 @@ export default class ToolbarButton extends React.Component<ToolbarButtonProps, T
       this.avoidDuplicate = false;
     }, 300);
 
-    //console.log("mousedown called");
     this.props.onTrigger(e)
   }
   disableMenu(e: React.ChangeEvent<any>){
