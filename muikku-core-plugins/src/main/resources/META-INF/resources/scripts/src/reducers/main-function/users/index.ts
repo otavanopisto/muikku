@@ -17,8 +17,8 @@ export interface StudyprogrammeType {
 }
 
 export interface UserPanelUsersType {
-  list: UsersListType,
-  totalUserCount?: number,
+  results: UsersListType,
+  totalHitCount: number,
   searchString?: string
 }
 
@@ -37,10 +37,12 @@ export interface UsersSelectType {
 
 export default function users(state: UsersType = {
   students: {
-    list: []
+    results: [],
+    totalHitCount: null
   },
   staff: {
-    list: []
+    results: [],
+    totalHitCount: null
   },
 }, action: ActionType): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {

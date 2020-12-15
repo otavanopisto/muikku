@@ -33,8 +33,8 @@ class OrganizationUsers extends React.Component<OrganizationUsersProps, Organiza
 
   render() {
     return (<div>
-      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.staff.empty" searchString={this.props.users.staff.searchString} title="plugin.organization.users.staff.title" users={this.props.users.staff.list} pageChange={this.staffPanelPageChange} />
-      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.students.empty" searchString={this.props.users.students.searchString} title="plugin.organization.users.students.title" users={this.props.users.students.list} pageChange={this.studentPanelPageChange} />
+      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.staff.empty" searchString={this.props.users.staff.searchString} title="plugin.organization.users.staff.title" users={this.props.users.staff} pageChange={this.staffPanelPageChange} />
+      <UserPanel i18n={this.props.i18n} onEmpty="plugin.organization.users.students.empty" searchString={this.props.users.students.searchString} title="plugin.organization.users.students.title" users={this.props.users.students} pageChange={this.studentPanelPageChange} />
     </div>)
   }
 }

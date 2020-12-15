@@ -61,7 +61,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
   constructor(props: MainFunctionProps) {
     super(props);
-
     this.renderIndexBody = this.renderIndexBody.bind(this);
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
     this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
@@ -348,7 +347,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers(null) as Action);
+      this.props.store.dispatch(loadUsers(null, 0, 10) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }

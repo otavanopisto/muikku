@@ -251,8 +251,9 @@ public class OrganizationUserManagementRESTService {
             organizationRESTModel));
       }
     }
-
-    return Response.ok(students).build();
+    
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), result.getLastResult(), students, result.getTotalHitCount());
+    return Response.ok(responseStudents).build();
   }
 
   private Date getDateResult(Object value) {

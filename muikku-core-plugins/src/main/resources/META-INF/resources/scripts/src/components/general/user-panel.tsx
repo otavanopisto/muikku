@@ -9,12 +9,12 @@ import { getName } from "~/util/modifiers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemContentData } from "~/components/general/application-list";
 import '~/sass/elements/application-list.scss';
-import { UsersType } from '~/reducers/main-function/users';
+import { UserPanelUsersType } from '~/reducers/main-function/users';
 import Pager from '~/components/general/pager';
 
 interface UserPanelProps {
   i18n: i18nType,
-  users: Array<UserType>,
+  users: UserPanelUsersType,
   usersPerPage?: number,
   searchString?: string | null,
   pageChange?: (q: string, first: number, last: number) => any,
@@ -28,21 +28,20 @@ interface UserPanelState {
 
 export default class UserPanel extends React.Component<UserPanelProps, UserPanelState>{
   private usersPerPage: number;
-  private maxUsers: number = 100;
   private pages: number;
 
   constructor(props: UserPanelProps) {
     super(props);
     this.usersPerPage = this.props.usersPerPage ? this.props.usersPerPage : 10;
     this.getToPage = this.getToPage.bind(this);
-    this.pages = Math.trunc(this.maxUsers / this.usersPerPage);
+    this.pages = Math.ceil(this.props.users.totalHitCount / this.usersPerPage);
     this.state = {
       currentPage: 1
     }
   }
 
   getToPage(n: number) {
-    let pageStart: number = (n - 1) * this.usersPerPage + 1;
+    let pageStart: number = (n - 1) * this.usersPerPage;
     let pageEnd: number = n * this.usersPerPage;
     let query: string = this.props.searchString ? this.props.searchString : null;
     this.setState({ currentPage: n });
@@ -50,8 +49,12 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   }
 
   componentDidUpdate(prevProps: UserPanelProps) {
-    if (this.state.currentPage !== 1 && prevProps.searchString !== this.props.searchString) {
-      this.setState({ currentPage: 1 });
+    if (prevProps.searchString !== this.props.searchString) {
+      if (this.state.currentPage !== 1) {
+        this.setState({ currentPage: 1 });
+      }
+      this.pages = Math.ceil(this.props.users.totalHitCount / this.usersPerPage);
+      console.log(this.pages);
     }
   }
 
@@ -59,9 +62,9 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
 
     return (
       <ApplicationSubPanel i18n={this.props.i18n} modifier="organization-users" bodyModifier="organization-users" title={this.props.i18n.text.get(this.props.title)}>
-        {this.props.users.length > 0 ?
+        {this.props.users.results.length > 0 ?
           <ApplicationList >
-            {this.props.users && this.props.users.map((user) => {
+            {this.props.users && this.props.users.results.map((user) => {
               let aside = <Avatar id={user.userEntityId} hasImage={user.hasImage} firstName={user.firstName} />;
               let data = {
                 firstName: user.firstName,

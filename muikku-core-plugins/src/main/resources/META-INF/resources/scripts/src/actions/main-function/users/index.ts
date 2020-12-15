@@ -63,12 +63,9 @@ let createStudent: CreateStudentTriggerType = function createStudent(data) {
         mApi().organizationUserManagement.students.cacheClear();
 
         setTimeout(async () => {
-          let payload: UserPanelUsersType = {
-            list: await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UsersListType
-          }
           dispatch({
             type: "UPDATE_STUDENT_USERS",
-            payload: payload
+            payload: await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UserPanelUsersType
           });
         }, 2000);
       });
@@ -93,13 +90,9 @@ let updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
         mApi().organizationUserManagement.students.cacheClear();
 
         setTimeout(async () => {
-
-          let payload: UserPanelUsersType = {
-            list: await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UsersListType,
-          }
           dispatch({
             type: "UPDATE_STUDENT_USERS",
-            payload: payload
+            payload: await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UserPanelUsersType
           });
         }, 2000);
       });
@@ -123,12 +116,9 @@ let createStaffmember: CreateStaffmemberTriggerType = function createStaffmember
         mApi().organizationUserManagement.staffMembers.cacheClear();
 
         setTimeout(async () => {
-          let payload: UserPanelUsersType = {
-            list: await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UsersListType,
-          }
           dispatch({
             type: "UPDATE_STAFF_USERS",
-            payload: payload
+            payload: await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UserPanelUsersType,
           });
         }, 2000);
 
@@ -153,12 +143,9 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
         mApi().organizationUserManagement.staffMembers.cacheClear();
 
         setTimeout(async () => {
-          let payload: UserPanelUsersType = {
-            list: await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UsersListType,
-          }
           dispatch({
             type: "UPDATE_STAFF_USERS",
-            payload: payload
+            payload: await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UserPanelUsersType
           });
         }, 2000);
 
@@ -202,7 +189,7 @@ let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprog
 let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null, first: number | null, last: number | null) {
 
   let data = {
-    q: q ? q : null,
+    q: q == null ? null : q,
     firstResult: first ? first : null,
     lastResult: last ? last : null
   };
@@ -214,11 +201,8 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null,
         payload: null
       });
 
-      await promisify(mApi().organizationUserManagement.students.read(data), 'callback')().then((users: UsersListType) => {
-        let payload: UserPanelUsersType = {
-          list: users,
-          searchString: data.q
-        }
+      await promisify(mApi().organizationUserManagement.students.read(data), 'callback')().then((users: UserPanelUsersType) => {
+        let payload = { ...users, searchString: data.q };
         dispatch({
           type: "UPDATE_STUDENT_USERS",
           payload: payload
@@ -251,7 +235,7 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null,
 let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first: number | null, last: number | null) {
 
   let data = {
-    q: q ? q : null,
+    q: q == null ? null : q,
     firstResult: first ? first : null,
     lastResult: last ? last : null
   };
@@ -263,11 +247,9 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first
         payload: null
       });
 
-      await promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')().then((users: UsersListType) => {
-        let payload: UserPanelUsersType = {
-          list: users,
-          searchString: data.q
-        }
+      await promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')().then((users: UserPanelUsersType) => {
+        let payload = { ...users, searchString: data.q };
+
         dispatch({
           type: "UPDATE_STAFF_USERS",
           payload: payload
@@ -297,12 +279,16 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first
   }
 }
 
-let loadUsers: LoadUsersTriggerType = function loadUsers(q?: string) {
+let loadUsers: LoadUsersTriggerType = function loadUsers(q: string | null, first: number | null, last: number | null) {
 
-  let query = { q: q };
+  let data = {
+    q: q == null ? null : q,
+    firstResult: first ? first : 0,
+    lastResult: last ? last : 10,
+  };
 
-  let getStudents = q ? promisify(mApi().organizationUserManagement.students.read(query), 'callback')() : promisify(mApi().organizationUserManagement.students.read(), 'callback')();
-  let getStaffmembers = q ? promisify(mApi().organizationUserManagement.staffMembers.read(query), 'callback')() : promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')();
+  let getStudents = promisify(mApi().organizationUserManagement.students.read(data), 'callback')();
+  let getStaffmembers = promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')();
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -312,21 +298,17 @@ let loadUsers: LoadUsersTriggerType = function loadUsers(q?: string) {
       });
 
       await Promise.all([
-        getStudents.then((users: UsersListType) => {
-          let payload: UserPanelUsersType = {
-            list: users,
-            searchString: q ? q : null
-          }
+        getStudents.then((users: UserPanelUsersType) => {
+          let payload = { ...users, searchString: data.q };
+
           dispatch({
             type: "UPDATE_STUDENT_USERS",
             payload: payload
           });
         }),
-        getStaffmembers.then((users: UsersListType) => {
-          let payload: UserPanelUsersType = {
-            list: users,
-            searchString: q ? q : null
-          }
+        getStaffmembers.then((users: UserPanelUsersType) => {
+          let payload = { ...users, searchString: data.q };
+
           dispatch({
             type: "UPDATE_STAFF_USERS",
             payload: payload
