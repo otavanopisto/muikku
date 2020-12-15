@@ -18,13 +18,13 @@ if (("OOM2_USER" in os.environ) and ("OOM2_PASS" in os.environ)):
 
   oo_snapshots = ET.SubElement(servers, 'server')
   ET.SubElement(oo_snapshots, 'id').text = 'otavanopisto-snapshots'
-  ET.SubElement(oo_snapshots, 'username').text = os.environ['USER']
-  ET.SubElement(oo_snapshots, 'password').text = os.environ['LOGNAME']
+  ET.SubElement(oo_snapshots, 'username').text = os.environ['OOM2_USER']
+  ET.SubElement(oo_snapshots, 'password').text = os.environ['OOM2_PASS']
 
   oo_releases = ET.SubElement(servers, 'server')
   ET.SubElement(oo_releases, 'id').text = 'otavanopisto-releases'
-  ET.SubElement(oo_releases, 'username').text = os.environ['USER']
-  ET.SubElement(oo_releases, 'password').text = os.environ['LOGNAME']
+  ET.SubElement(oo_releases, 'username').text = os.environ['OOM2_USER']
+  ET.SubElement(oo_releases, 'password').text = os.environ['OOM2_PASS']
 
   m2.write(homedir + '/.m2/mySettings.xml',
           xml_declaration = True,
