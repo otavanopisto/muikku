@@ -74,6 +74,7 @@ import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -112,6 +113,9 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
 
   @Inject
   private TagController tagController;
@@ -762,18 +766,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
       fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
       
       fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),
-          user.getStudyProgrammeName(),
-          hasPicture,
-          user.hasEvaluationFees(),
-          user.getCurriculumIdentifier(),
-          user.getOrganizationIdentifier().toId());
+          hasPicture
+      );
       
       return Response.ok(
         result

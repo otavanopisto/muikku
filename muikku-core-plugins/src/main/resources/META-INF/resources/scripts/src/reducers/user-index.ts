@@ -20,6 +20,13 @@ export interface ManipulateStaffmemberType {
   role: string
  }
 
+export interface SimpleUserType {
+  id: number,
+  firstName: string,
+  lastName?: string,
+  nickName?: string,
+  hasImage?: boolean
+}
 
 export interface UserType {
   id: number,
