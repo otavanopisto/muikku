@@ -466,6 +466,7 @@ public class UserRESTService extends AbstractRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
+            userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
@@ -490,7 +491,7 @@ public class UserRESTService extends AbstractRESTService {
     }
     return date;
   }
-
+  
   @GET
   @Path("/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
@@ -568,6 +569,7 @@ public class UserRESTService extends AbstractRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
+        userEntity == null ? null : userEntity.getLastLogin(),
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),

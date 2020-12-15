@@ -1080,22 +1080,6 @@
       }, this);
     },
     
-    _createStudentLoginsLoad: function () {
-      return $.proxy(function (callback) {
-        mApi().user.students.logins
-          .read(this.options.userIdentifier, { maxResults: 1 })
-          .callback($.proxy(function(err, loginDetails) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              callback(null, {
-                lastLogin: loginDetails && loginDetails.length ? loginDetails[0].time : null
-              });
-            }
-          }, this));
-      }, this);
-    },
-    
     _createStudentWorkspaceForumStatisticsLoad: function (workspaceEntityId) {
       return $.proxy(function (callback) {
         mApi().workspace.workspaces.forumStatistics
@@ -1156,7 +1140,6 @@
             } else {
               var studentFlags = loads[0];
               var studentLogins = loads[1];
-              user.lastLogin = studentLogins.lastLogin;
               user.studentFlags = $.map(studentFlags, function (studentFlag) {
                 return $.extend(studentFlag, {
                   flag: flagMap[studentFlag.flagId]
