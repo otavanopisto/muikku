@@ -20,5 +20,7 @@ jobs:
     #      path: ~/.m2
     #      key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
      - name: Deploy snapshot
-       run: python prepare-maven.py
+       run: |
+            python prepare-maven.py
+            cat ~/.m2/mySettings.xml
       #  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
