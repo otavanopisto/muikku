@@ -189,10 +189,16 @@ let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprog
 let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null, first: number | null, last: number | null) {
 
   let data = {
-    q: q == null ? null : q,
-    firstResult: first ? first : null,
-    lastResult: last ? last : null
+    q: !q ? null : q,
   };
+
+  if (first) {
+    Object.assign(data, { firstResult: first });
+  }
+
+  if (last) {
+    Object.assign(data, { lastResult: last });
+  }
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -235,10 +241,16 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null,
 let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first: number | null, last: number | null) {
 
   let data = {
-    q: q == null ? null : q,
-    firstResult: first ? first : null,
-    lastResult: last ? last : null
-  };
+    q: !q ? null : q,
+  }
+
+  if (first) {
+    Object.assign(data, { firstResult: first });
+  }
+
+  if (last) {
+    Object.assign(data, { lastResult: last });
+  }
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -282,10 +294,16 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first
 let loadUsers: LoadUsersTriggerType = function loadUsers(q: string | null, first: number | null, last: number | null) {
 
   let data = {
-    q: q == null ? null : q,
-    firstResult: first ? first : 0,
-    lastResult: last ? last : 10,
+    q: !q ? null : q,
   };
+
+  if (first) {
+    Object.assign(data, { firstResult: first });
+  }
+
+  if (last) {
+    Object.assign(data, { lastResult: last });
+  }
 
   let getStudents = promisify(mApi().organizationUserManagement.students.read(data), 'callback')();
   let getStaffmembers = promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')();
