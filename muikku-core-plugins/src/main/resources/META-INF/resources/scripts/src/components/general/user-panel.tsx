@@ -18,12 +18,14 @@ interface UserPanelProps {
   usersPerPage?: number,
   searchString?: string | null,
   pageChange?: (q: string, first: number, last: number) => any,
+  identifier?: string,
   title: string,
   onEmpty: string,
 }
 
 interface UserPanelState {
-  currentPage: number
+  currentPage: number,
+  pages: number
 }
 
 export default class UserPanel extends React.Component<UserPanelProps, UserPanelState>{
@@ -34,9 +36,9 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
     super(props);
     this.usersPerPage = this.props.usersPerPage ? this.props.usersPerPage : 10;
     this.getToPage = this.getToPage.bind(this);
-    this.pages = Math.ceil(this.props.users.totalHitCount / this.usersPerPage);
     this.state = {
-      currentPage: 1
+      currentPage: 1,
+      pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage)
     }
   }
 
@@ -53,8 +55,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
       if (this.state.currentPage !== 1) {
         this.setState({ currentPage: 1 });
       }
-      this.pages = Math.ceil(this.props.users.totalHitCount / this.usersPerPage);
-      console.log(this.pages);
+      this.setState({ pages: Math.ceil(this.props.users.totalHitCount / this.usersPerPage) });
     }
   }
 
@@ -85,7 +86,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
           </ApplicationList>
           : <div className="empty"><span>{this.props.i18n.text.get(this.props.onEmpty)}</span></div>
         }
-        <Pager current={this.state.currentPage} onClick={this.getToPage} pages={this.pages}></Pager>
+        <Pager identifier={this.props.identifier.toLowerCase()} current={this.state.currentPage} onClick={this.getToPage} pages={this.state.pages}></Pager>
       </ApplicationSubPanel>
     )
   }
