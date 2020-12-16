@@ -39,7 +39,8 @@ export interface UserType {
   nationality?: string,
   school?: string,
   studyStartDate?: string,
-  studyTimeEnd?: string
+  studyTimeEnd?: string,
+  lastLogin?: string
 }
 
 
@@ -59,6 +60,7 @@ export interface UserWithSchoolDataType {
   studyProgrammeName?: string,
   studyStartDate?: string,
   studyTimeEnd?: string,
+  lastLogin?: string,
   updatedByStudent: boolean,
   userEntityId: number
 }
@@ -171,13 +173,6 @@ export interface StudentUserAddressType {
   country: string,
   type: string,
   defaultAddress: boolean
-}
-
-export interface LastLoginStudentDataType {
-  userIdentifier: string,
-  authenticationProvder: string,
-  address: string,
-  time: string
 }
 
 export default function userIndex(state:UserIndexType={

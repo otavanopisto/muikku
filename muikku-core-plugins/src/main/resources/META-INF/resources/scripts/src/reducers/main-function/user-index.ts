@@ -151,13 +151,6 @@ export interface StudentUserProfileChatType {
   visibility: any
 }
 
-export interface LastLoginStudentDataType {
-  userIdentifier: string,
-  authenticationProvder: string,
-  address: string,
-  time: string
-}
-
 export default function userIndex(state:UserIndexType={
   users: {},
   groups: {},
