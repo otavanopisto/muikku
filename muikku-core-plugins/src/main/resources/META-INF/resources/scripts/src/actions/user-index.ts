@@ -37,7 +37,8 @@ export interface SET_USER_BY_SCHOOL_DATA_INDEX extends SpecificActionType<"SET_U
 
 let fetchingStateUser: { [index: number]: boolean } = {};
 let fetchingStateUserBySchoolData: { [index: string]: boolean } = {};
-let fetchingStateUserGroup: { [index: number]: boolean } = {};
+
+
 let loadUserIndex: LoadUserIndexTriggerType = function loadUserIndex(userId, callback) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let state = getState();
@@ -155,5 +156,5 @@ let loadUserGroupIndex: LoadUserGroupIndexTriggerType = function loadUserGroupIn
   }
 }
 
-export default { loadUserIndexBySchoolData, loadUserIndex, loadUserGroupIndex, loadLoggedUser }
-export { loadUserIndexBySchoolData, loadUserIndex, loadUserGroupIndex, loadLoggedUser }
+export default { loadUserGroupIndex, loadLoggedUser }
+export { loadUserGroupIndex, loadLoggedUser }
