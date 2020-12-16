@@ -27,5 +27,9 @@ jobs:
             commitmessage="${{ github.event.head_commit.message }}"
             echo "This is the commit message: ${{ github.event.head_commit.message }}"
             if [[ ($commitmessage == *"Start"*) && ($commitmessage == *"on github action"*) ]]; then 
-              echo "In we are";
-            fi; 
+              echo "In we are"
+            fi;
+            echo "Our git ref is: "
+            echo ${{ github.head_ref }}
+            echo "or, same here: "
+            echo ${GITHUB_REF#refs/heads/}
