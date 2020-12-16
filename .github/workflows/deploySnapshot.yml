@@ -1,26 +1,29 @@
 name: Snapshot deploy
 on: 
   push:
-    branches: [5229-snapshots-on-github-actions]
+    branches: [devel]
 jobs:
   deploy-snapshot:
     env:
-      OOM2_USER: ${{secrets.TEST_USER}}
-      OOM2_PASS: ${{secrets.TEST_PASS}}
+      OOM2_USER: ${{secrets.OOM2_USER}}
+      OOM2_PASSWORD: ${{secrets.OOM2_PASSWORD}}
     runs-on: ubuntu-latest
     steps:
-     - uses: actions/checkout@v2
-     - name: Set up JDK 1.8
-       uses: actions/setup-java@v1
-       with:
-         java-version: 1.8
-    #  - name: Cache Maven packages
-    #    uses: actions/cache@v2
-    #    with:
-    #      path: ~/.m2
-    #      key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-     - name: Deploy snapshot
-       run: |
-            python prepare-maven.py
-            cat ~/.m2/mySettings.xml
-      #  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      - name: Prepare maven settings
+        run: python prepare-maven.py
+      - name: Deploy snapshot
+        run: |
+            pushd .
+            cd muikku
+            mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
+            popd
