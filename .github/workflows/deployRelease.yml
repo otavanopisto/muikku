@@ -30,6 +30,6 @@ jobs:
               echo "In we are"
             fi;
             echo "Our git ref is: "
-            echo ${{ github.head_ref }}
+            echo ${{ github.ref }}
             echo "or, same here: "
             echo ${GITHUB_REF#refs/heads/}
