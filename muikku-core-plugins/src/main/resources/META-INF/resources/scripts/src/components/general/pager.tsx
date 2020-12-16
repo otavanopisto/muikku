@@ -28,7 +28,6 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
       leftPage = 1;
     }
 
-    let rightPageExtra = 0;
     if (rightPage > this.props.pages) {
       leftPage += this.props.pages - rightPage;
       rightPage = this.props.pages;
@@ -56,7 +55,7 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
         {isPagerLessVisible ? [<div className="pager__item pager__item--less icon-arrow-left" onClick={this.props.onClick.bind(null, pagerLessNumber)} />,
         <div className="pager__item pager__item--first" onClick={this.props.onClick.bind(null, 1)}>1</div>,
         <div className="pager__item pager__item--gap">...</div>] : null}
-        {Array.from(new Array(rightPage - leftPage + 1), (x, i) => leftPage + i).map((page) => {
+        {Array.from(new Array(rightPage - leftPage + 1), (i) => leftPage + i).map((page) => {
           return <div key={this.props.identifier ? this.props.identifier + page : page} className={`pager__item ${page === this.props.current ? "pager__item--current" : ""}`}
             onClick={this.props.onClick.bind(null, page)}>{page}</div>
         })}

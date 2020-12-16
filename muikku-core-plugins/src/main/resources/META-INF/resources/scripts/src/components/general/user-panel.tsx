@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
-import { UserType } from "~/reducers/user-index";
 import Avatar from "~/components/general/avatar";
 import StudentDialog from '~/components/organization/dialogs/edit-student';
 import StaffDialog from '~/components/organization/dialogs/edit-staff';
@@ -30,7 +28,6 @@ interface UserPanelState {
 
 export default class UserPanel extends React.Component<UserPanelProps, UserPanelState>{
   private usersPerPage: number;
-  private pages: number;
 
   constructor(props: UserPanelProps) {
     super(props);
