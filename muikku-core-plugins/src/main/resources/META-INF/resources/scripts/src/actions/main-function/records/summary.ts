@@ -38,6 +38,21 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
 
       /* Students study time */
       let studentsDetails: any = await promisify(mApi().user.students.read(pyramusId), 'callback')();
+      
+      /** Students' user groups **/
+      let studentsUserGroups: any = await promisify(mApi().usergroup.groups.read({ userIdentifier: pyramusId }), 'callback')();
+      
+      studentsUserGroups.forEach(function (studentsUserGroup: any) {
+        if (studentsUserGroup.guidanceGroup) {
+          console.log("GUIDANCE GROUP:");
+          console.log(studentsUserGroup);
+          
+          mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id).callback(function (err:any, results:any) {
+            console.log("GUIDANCE GROUP STAFF MEMBERS:");
+            console.log(results);
+          });
+        }
+      });
 
       /* Getting past the object with keys */
       let activityArrays: any = Object.keys(activityLogs).map(key => activityLogs[key]);
