@@ -50,6 +50,8 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Stateful
 @RequestScoped
@@ -228,9 +230,21 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @GET
   @Path("/groups/{ID}/staffMembers")
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listGroupStaffMembersByGroup(@PathParam("ID") Long groupId, @QueryParam("properties") String properties) {
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(groupId);
+    
+    if (userGroupEntity == null || Boolean.TRUE.equals(userGroupEntity.getArchived())) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USERGROUP_STAFFMEMBERS)) {
+      if (!userGroupEntityController.isMember(loggedUser, userGroupEntity)) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+    }
+    
     List<UserGroupUserEntity> userGroupUserEntities = userGroupEntityController.listUserGroupStaffMembers(userGroupEntity);
     
     String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");

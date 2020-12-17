@@ -182,5 +182,9 @@ public class UserGroupEntityController {
   public boolean haveSharedUserGroups(UserEntity user1, UserEntity user2) {
     return userGroupUserEntityDAO.haveSharedUserGroups(user1, user2);
   }
+
+  public boolean isMember(SchoolDataIdentifier userIdentifier, UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.findByGroupAndUser(userGroupEntity, userIdentifier, Archived.UNARCHIVED) != null;
+  }
   
 }
