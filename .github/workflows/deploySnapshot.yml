@@ -22,8 +22,4 @@ jobs:
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Deploy snapshot
-        run: |
-            pushd .
-            cd muikku
-            mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
-            popd
+        run: mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
