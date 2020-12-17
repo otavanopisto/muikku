@@ -26,7 +26,7 @@ jobs:
         run: |
             commitmessage="${{ github.event.head_commit.message }}"
             echo "This is the commit message: ${{ github.event.head_commit.message }}"
-            if [[ ($commitmessage == *"Start"*) && ($commitmessage == *"on github action"*) ]]; then 
+            if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from otavanopisto/devel"*) ]]; then 
               echo "In we are"
             fi;
             echo "Our git ref is: "
