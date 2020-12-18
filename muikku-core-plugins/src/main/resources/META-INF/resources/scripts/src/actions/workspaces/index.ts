@@ -576,7 +576,8 @@ export interface UpdateWorkspaceTriggerType {
     addTeachers?: SelectItem[],
     removeStudents?: SelectItem[],
     removeTeachers?: SelectItem[],
-    success?: (state?: UpdateWorkspaceStateType) => any,
+    success?: () => any,
+    progress?: (state?: UpdateWorkspaceStateType) => any,
     executeOnSuccess?: () => any;
     fail?: () => any
   }): AnyActionType
@@ -887,7 +888,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         await promisify(mApi().workspace.workspaces.update(data.workspace.id,
           Object.assign(data.workspace, data.update)
         ), 'callback')().then(
-          data.success && data.success("WORKSPACE-UPDATE")
+          data.progress && data.progress("workspace-update")
         );
       }
 
@@ -910,7 +911,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
             studentGroupIds: groupIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-STUDENTS")
+            data.progress && data.progress("add-students")
           );
       }
 
@@ -922,7 +923,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
             staffMemberIdentifiers: staffMemberIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-TEACHERS")
+            data.progress && data.progress("add-teachers")
           );
       }
 
@@ -934,7 +935,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         //     studentIdentifiers: studentIdentifiers
         //   }
         //   ), 'callback')().then(
-        //     data.success && data.success("REMOVE-STUDENTS")
+        //     data.progress && data.progress("remove-students")
         //   );
       }
 
@@ -946,13 +947,14 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         //     staffMemberIdentifiers: staffMemberIdentifiers
         //   }
         //   ), 'callback')().then(
-        //     data.success && data.success("REMOVE-TEACHERS")
+        //     data.progress && data.progress("remove-teachers")
         //   );
       }
 
       //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 
-      data.success && data.success("DONE");
+      data.progress && data.progress("done");
+      data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -1369,8 +1371,8 @@ export interface CopyCurrentWorkspaceTriggerType {
   }): AnyActionType
 }
 
-export type CreateWorkspaceStateType = "WORKSPACE-CREATE" | "ADD-STUDENTS" | "ADD-TEACHERS" | "DONE";
-export type UpdateWorkspaceStateType = "WORKSPACE-UPDATE" | "ADD-STUDENTS" | "REMOVE-STUDENTS" | "ADD-TEACHERS" | "REMOVE-TEACHERS" | "DONE";
+export type CreateWorkspaceStateType = "workspace-create" | "add-students" | "add-teachers" | "done";
+export type UpdateWorkspaceStateType = "workspace-update" | "add-students" | "remove-students" | "add-teachers" | "remove-teachers" | "done";
 
 
 export interface CreateWorkspaceTriggerType {
@@ -1379,8 +1381,9 @@ export interface CreateWorkspaceTriggerType {
     name?: string,
     nameExtension?: string,
     students: SelectItem[],
-    staff?: SelectItem[],
-    success: (state: CreateWorkspaceStateType) => any,
+    staff: SelectItem[],
+    progress?: (state?: CreateWorkspaceStateType) => any,
+    success: () => any,
     fail: () => any,
   }): AnyActionType
 }
@@ -1701,10 +1704,8 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           {
             sourceWorkspaceEntityId: data.id
           }), 'callback')().then(
-            data.success && data.success("WORKSPACE-CREATE")
+            data.progress && data.progress("workspace-create")
           ));
-
-      data.success && data.success("WORKSPACE-CREATE")
 
       if (data.students.length > 0) {
         let groupIdentifiers: number[] = [];
@@ -1726,10 +1727,8 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
             studentGroupIds: groupIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-STUDENTS")
+            data.progress && data.progress("add-students")
           );
-        data.success && data.success("ADD-STUDENTS");
-
       }
 
       if (data.staff.length > 0) {
@@ -1740,13 +1739,12 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
             staffMemberIdentifiers: staffMemberIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-TEACHERS")
+            data.progress && data.progress("add-teachers")
           );
-
-        data.success && data.success("ADD-TEACHERS")
       }
 
-      data.success && data.success("DONE");
+      data.progress && data.progress("done");
+      data.success && data.success();
 
     } catch (err) {
       if (!(err instanceof MApiError)) {

@@ -187,23 +187,25 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       name: this.state.workspaceName,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,
-      success: (state: CreateWorkspaceStateType) => {
-        if (state === "WORKSPACE-CREATE") {
+      progress: (state: CreateWorkspaceStateType) => {
+        if (state === "workspace-create") {
           this.setState({
             workspaceCreated: true
           });
-        } else if (state === "ADD-STUDENTS") {
+        } else if (state === "add-students") {
           this.setState({
             studentsAdded: true
           });
-        } else if (state === "ADD-TEACHERS") {
+        } else if (state === "add-teachers") {
           this.setState({
             staffAdded: true
           })
-        } else if (state === "DONE") {
+        } else if (state === "done") {
           setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
-          closeDialog();
         }
+      },
+      success: () => {
+        closeDialog();
       },
       fail: () => {
         closeDialog();
