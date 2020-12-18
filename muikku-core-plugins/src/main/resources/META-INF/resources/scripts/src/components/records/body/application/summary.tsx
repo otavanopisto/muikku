@@ -3,12 +3,18 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
+import '~/sass/elements/glyph.scss';
+import '~/sass/elements/item-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import { RecordsType } from '~/reducers/main-function/records';
-import { SummaryType } from '~/reducers/main-function/records/summary';
+import { SummaryType, SummaryStudentCouncelorsType } from '~/reducers/main-function/records/summary';
 import { HOPSType } from '~/reducers/main-function/hops';
 import {StateType} from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
+import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
+import Button from "~/components/general/button";
+import { getUserImageUrl } from "~/util/modifiers";
+import moment from '~/lib/moment';
 import '~/sass/elements/application-sub-panel.scss';
 
 interface SummaryProps {
@@ -33,7 +39,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       let studentBasicInfo = <div className="application-sub-panel">
         <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.studyInfo")}</div>
-        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-dates">
+        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
             <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
@@ -46,6 +52,53 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             "plugin.records.studyTimeEndLabel")}</div>
             <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
               this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
+          </div>
+
+          <div className="application-sub-panel__item">
+            <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStudentCouncelorsLabel")}</div>
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
+              <div className="item-list item-list--student-councelors">
+                {this.props.summary.data.studentsStudentCouncelors.map((councelor: SummaryStudentCouncelorsType, index: number) => {
+
+                  let displayVacationPeroid = !!councelor.properties['profile-vacation-start'];
+                  if (councelor.properties['profile-vacation-end']) {
+                    // we must check for the ending
+                    const vacationEndsAt = moment(councelor.properties['profile-vacation-end']);
+                    const today = moment();
+                    // if it's before or it's today then we display, otherwise nope
+                    displayVacationPeroid = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
+                  }
+                  return <div className="item-list__item item-list__item--student-councelor" key={councelor.userEntityId}>
+                    <div className="item-list__profile-picture">
+                      <object data={getUserImageUrl(councelor.userEntityId)} type="image/jpeg" className="avatar-container">
+                        <div className="avatar avatar--category-3">{councelor.firstName[0]}</div>
+                      </object>
+                    </div>
+                    <div className="item-list__text-body item-list__text-body--multiline">
+                      <div className="item-list__user-name">{councelor.firstName} {councelor.lastName}</div>
+                      <div className="item-list__user-contact-info">
+                        <div className="item-list__user-email"><div className="glyph icon-envelope"></div>{councelor.email}</div>
+                        {councelor.properties['profile-phone'] ?
+                          <div className="item-list__user-phone"><div className="glyph icon-phone"></div>{councelor.properties['profile-phone']}
+                          </div> : null}
+                      </div>
+                      {displayVacationPeroid ?
+                        <div className="item-list__user-vacation-period">
+                          {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
+                        {this.props.i18n.time.format(councelor.properties['profile-vacation-start'])}
+                          {councelor.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(councelor.properties['profile-vacation-end']) : null}
+                        </div> : null}
+                      <CommunicatorNewMessage extraNamespace="guidance-councelor" initialSelectedItems={[{
+                        type: "staff",
+                        value: councelor,
+                      }]}><Button buttonModifiers={["info", "contact-student-councelor"]}>
+                          {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
+                        </Button></CommunicatorNewMessage>
+                    </div>
+                  </div>
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
