@@ -39,7 +39,7 @@ if [[ $deploy_snapshot == "true" ]]; then
   echo Deploying snapshot
   pushd .
   cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
   popd
 fi;
 
@@ -47,7 +47,7 @@ if [[ $deploy_release == "true" ]]; then
   echo Deploying
   pushd .
   cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin -Dclassifier=otavanopisto
+  mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin -Dclassifier=otavanopisto
   popd
 fi;
 
