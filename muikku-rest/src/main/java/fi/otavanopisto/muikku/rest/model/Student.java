@@ -12,8 +12,8 @@ public class Student {
 
   public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName,
       String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
-      String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier,
-      boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
+      String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
+      String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
       OrganizationRESTModel organization) {
     super();
     this.id = id;
@@ -31,6 +31,7 @@ public class Student {
     this.studyStartDate = studyStartDate;
     this.studyEndDate = studyEndDate;
     this.studyTimeEnd = studyTimeEnd;
+    this.lastLogin = lastLogin;
     this.curriculumIdentifier = curriculumIdentifier;
     this.updatedByStudent = updatedByStudent;
     this.userEntityId = userEntityId;
@@ -198,6 +199,14 @@ public class Student {
     this.studyProgrammeIdentifier = studyProgrammeIdentifier;
   }
 
+  public Date getLastLogin() {
+    return lastLogin;
+  }
+
+  public void setLastLogin(Date lastLogin) {
+    this.lastLogin = lastLogin;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
@@ -213,6 +222,7 @@ public class Student {
   private Date studyStartDate;
   private Date studyEndDate;
   private Date studyTimeEnd;
+  private Date lastLogin;
   private String curriculumIdentifier;
   private boolean updatedByStudent;
   private Long userEntityId;
