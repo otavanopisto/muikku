@@ -37,62 +37,7 @@ export interface SET_USER_BY_SCHOOL_DATA_INDEX extends SpecificActionType<"SET_U
 
 let fetchingStateUser: { [index: number]: boolean } = {};
 let fetchingStateUserBySchoolData: { [index: string]: boolean } = {};
-let fetchingStateUserGroup: { [index: number]: boolean } = {};
-let loadUserIndex: LoadUserIndexTriggerType = function loadUserIndex(userId, callback) {
-  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
-    let state = getState();
-    let currentUserInfo = state.userIndex.users[userId];
-    if (currentUserInfo || fetchingStateUser[userId]) {
-      return;
-    }
 
-    fetchingStateUser[userId] = true;
-
-    try {
-      let user: UserType = <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0);
-      dispatch({
-        type: "SET_USER_INDEX",
-        payload: {
-          index: userId,
-          value: user
-        }
-      });
-      callback && callback(user);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-    }
-  }
-}
-
-let loadUserIndexBySchoolData: LoadUserIndexBySchoolDataTriggerType = function loadUserIndexBySchoolData(userId, callback) {
-  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
-    let state = getState();
-    let currentUserInfo = state.userIndex.usersBySchoolData[userId];
-    if (currentUserInfo || fetchingStateUserBySchoolData[userId]) {
-      return;
-    }
-
-    fetchingStateUserBySchoolData[userId] = true;
-
-    try {
-      let user: UserType = <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0);
-      dispatch({
-        type: "SET_USER_BY_SCHOOL_DATA_INDEX",
-        payload: {
-          index: userId,
-          value: user
-        }
-      });
-      callback(user);
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-    }
-  }
-}
 
 let loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(callback) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -155,5 +100,5 @@ let loadUserGroupIndex: LoadUserGroupIndexTriggerType = function loadUserGroupIn
   }
 }
 
-export default { loadUserIndexBySchoolData, loadUserIndex, loadUserGroupIndex, loadLoggedUser }
-export { loadUserIndexBySchoolData, loadUserIndex, loadUserGroupIndex, loadLoggedUser }
+export default { loadUserGroupIndex, loadLoggedUser }
+export { loadUserGroupIndex, loadLoggedUser, }

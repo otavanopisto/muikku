@@ -6,7 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import { Strophe } from "strophe.js";
 import { Room } from './room';
 import { Groupchat } from './groupchat';
-import { UserChatSettingsType } from '~/reducers/main-function/user-index';
+import { UserChatSettingsType } from '~/reducers/user-index';
 import promisify from "~/util/promisify";
 import { PrivateChat } from './privateChat';
 import { i18nType } from '~/reducers/base/i18n';
@@ -60,8 +60,16 @@ export interface IBareMessageType {
   // for a given message and might be null, until the occupants list is ready
   userId: string;
   timestamp: Date;
-  id: string;
+  stanzaId: string;
   isSelf: boolean;
+  action: IBareMessageActionType;
+  deleted: boolean;
+  edited: IBareMessageType;
+}
+
+export interface IBareMessageActionType {
+  deleteForId: string;
+  editForId: string;
 }
 
 interface IOpenChatJID {
@@ -73,7 +81,6 @@ interface IOpenChatJID {
 interface IChatState {
   connection: Strophe.Connection;
   connectionHostname: string;
-
   isInitialized: boolean,
   availableMucRooms: IAvailableChatRoomType[],
   showControlBox: boolean,
@@ -199,7 +206,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
         ]),
       }, this.joinChatRoom.bind(this, roomJID));
     } catch (err) {
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.createFail"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.roomCreateFail"), "error");
     }
 
     this.toggleCreateChatRoomForm();

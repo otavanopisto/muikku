@@ -250,23 +250,25 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       removeTeachers: this.state.removeStaff,
       addStudents: this.state.addStudents,
       addTeachers: this.state.addStaff,
-      success: (state: UpdateWorkspaceStateType) => {
-        if (state === "WORKSPACE-UPDATE") {
+      progress: (state: UpdateWorkspaceStateType) => {
+        if (state === "workspace-update") {
           this.setState({
             workspaceUpdated: true
           });
-        } else if (state === "ADD-STUDENTS") {
+        } else if (state === "add-students") {
           this.setState({
             studentsAdded: true
           });
-        } else if (state === "ADD-TEACHERS") {
+        } else if (state === "add-teachers") {
           this.setState({
             staffAdded: true
           });
-        } else if (state === "DONE") {
+        } else if (state === "done") {
           setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
-          closeDialog();
         }
+      },
+      success: () => {
+        closeDialog();
       },
       fail: () => {
         closeDialog();
