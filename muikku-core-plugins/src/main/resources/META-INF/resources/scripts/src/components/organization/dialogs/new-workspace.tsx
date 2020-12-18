@@ -8,10 +8,12 @@ import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
+import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
+import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import '~/sass/elements/course.scss';
+import userCredentials from '~/reducers/user-credentials';
 
 interface ValidationType {
   templateSelected: boolean,
@@ -41,8 +43,8 @@ interface OrganizationNewWorkspaceState {
   workspaceNameExtension: string,
   locked: boolean,
   currentStep: number,
-  selectedStaff: SelectItem[],
-  selectedStudents: SelectItem[],
+  selectedStaff: UiSelectItem[],
+  selectedStudents: UiSelectItem[],
   executing: boolean,
   validation: ValidationType,
   workspaceCreated: boolean,
@@ -288,11 +290,11 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           </DialogRow>
         </form >;
       case 2:
-        let students = this.props.users.students.map(student => {
+        let students: UiSelectItem[] = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
 
-        let groups = this.props.users.userGroups.map(group => {
+        let groups: UiSelectItem[] = this.props.users.userGroups.map(group => {
           return { id: group.id, label: group.name, icon: "users", type: "student-group" }
         });
 
@@ -306,8 +308,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         </DialogRow>;
       case 3:
 
-        let staffSearchItems = this.props.users.staff.map(staff => {
-          return { id: staff.id, label: staff.firstName + " " + staff.lastName }
+        let staffSearchItems: UiSelectItem[] = this.props.users.staff.map(staff => {
+          return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user", type: "staff" }
         });
 
         return <DialogRow modifiers="new-workspace">

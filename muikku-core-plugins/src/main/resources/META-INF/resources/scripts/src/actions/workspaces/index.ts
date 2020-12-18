@@ -14,7 +14,9 @@ import {
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
-import { SelectItem } from '~/components/base/input-select-autofill';
+
+
+
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
@@ -90,6 +92,13 @@ export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<"UPDATE
   material: MaterialContentNodeType,
   newPath: string;
 }>;
+
+export interface SelectItem {
+  id: string | number,
+  label: string,
+  type?: string,
+  disabled?: boolean
+}
 
 export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType
@@ -985,7 +994,7 @@ let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTrig
         return {
           id: staffMember.id,
           label: staffMember.firstName + " " + staffMember.lastName,
-          icon: "user",
+          type: "user",
           disabled: true
         }
       });
@@ -1056,7 +1065,7 @@ let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTrigg
         return {
           id: student.userIdentifier,
           label: student.firstName + " " + student.lastName,
-          icon: "user",
+          type: "user",
           disabled: true
         }
       });
