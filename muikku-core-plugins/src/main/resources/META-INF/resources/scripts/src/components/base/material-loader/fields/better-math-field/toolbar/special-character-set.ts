@@ -6,7 +6,7 @@ export interface SpecialCharacterType {
 
 export default [
     {
-        label: 'basicsAndSymbols',
+        label: 'symbols',
         characters: [
             { character: '°', popular: true },
             { character: '·', latexCommand: '\\cdot', popular: true },
@@ -55,7 +55,7 @@ export default [
         ]
     },
     {
-        label: 'algebra',
+        label: 'relations',
         characters: [
             { character: '≠', latexCommand: '\\neq', popular: true },
             { character: '≈', latexCommand: '\\approx', popular: true },
@@ -89,7 +89,7 @@ export default [
         ]
     },
     {
-        label: 'logic',
+        label: 'setTheoryNotation',
         characters: [
             { character: '→', latexCommand: '\\rightarrow', popular: true },
             { character: '⇒', latexCommand: '\\Rightarrow', popular: true },

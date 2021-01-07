@@ -502,8 +502,19 @@ $color-math-editor-focus-shadow: rgba(81, 203, 238, 1);
 $color-math-editor-forus-border: rgba(81, 203, 238, 1);
 
 $color-math-exercise-toolbar-default-background: #fff;
-$color-math-exercise-toolbar-default-shadow: rgba(0, 0, 0, 0.25);
+$color-math-exercise-toolbar-default-shadow: rgba(0, 0, 0, 0.4);
 $color-math-exercise-toolbar-default-border: #ccc;
+
+$color-math-button-background-hover: #eee;
+$color-math-button-tooltip-background: #29b0c4;
+$color-math-editor-border-selected: #29b0c4;
+$color-math-editor-active-line-background: rgba(0, 0, 0, 0.04);
+$color-math-editor-boxshadow: rgba(0, 0, 0, 0.2);
+
+$color-math-editor-line-variable-color: #29b0c4;
+$color-math-editor-line-storage-color: #0083db;
+$color-math-editor-line-constant-color: #ff9900;
+$color-math-editor-line-keyword-color: #0083db;
 
 // Task fields
 $taskfield-border-color: #5ed2ff;
