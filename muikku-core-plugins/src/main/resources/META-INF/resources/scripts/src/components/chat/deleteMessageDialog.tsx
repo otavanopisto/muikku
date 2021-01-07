@@ -33,10 +33,10 @@ class DeleteMessageDialog extends React.Component<DeleteMessageDialogProps, Dele
       if (!this.unmounted) {
         closeDialog();
       }
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.messageDeleteSuccess"), "success");
+      this.props.displayNotification(this.props.i18n.text.get("plugin.chat.notification.messageDeleteSuccess"), "success");
       this.props.onDelete();
     } catch {
-      this.props.displayNotification(this.props.i18n.text.get("plugins.chat.notification.messageDeleteFail"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugin.chat.notification.messageDeleteFail"), "error");
     }
   }
   componentWillUnmount() {
