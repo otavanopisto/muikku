@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialMeta;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 
 public class HtmlMaterialCloneOperation implements MaterialCloneOperation<HtmlMaterial> {
@@ -21,10 +20,6 @@ public class HtmlMaterialCloneOperation implements MaterialCloneOperation<HtmlMa
   @Override
   public HtmlMaterial clone(HtmlMaterial material) {
     HtmlMaterial clonedMaterial = htmlMaterialController.createHtmlMaterial(material.getTitle(), material.getHtml(), material.getContentType(), new Long(0), material, material.getLicense(), material.getViewRestrict());
-    List<MaterialMeta> materialMetas = materialController.listMaterialMetas(material);
-    for (MaterialMeta materialMeta : materialMetas) {
-      materialController.createMaterialMeta(clonedMaterial, materialMeta.getKey(), materialMeta.getValue());
-    }
     List<MaterialProducer> materialProducers = materialController.listMaterialProducers(material);
     for (MaterialProducer materialProducer : materialProducers) {
       materialController.createMaterialProducer(clonedMaterial, materialProducer.getName());
