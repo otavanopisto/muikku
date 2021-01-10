@@ -173,7 +173,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
       this.setState({
         time: nTime
       })
-    }, 1000);
+    }, 1000) as any;
   }
   //stop the recording
   stop(){

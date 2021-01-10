@@ -2,82 +2,75 @@ let fs = require('fs');
 let webpack = require("webpack");
 let path = require("path");
 
-let ExtractTextPlugin = require('extract-text-webpack-plugin');
+const isDevelopment = process.env.NODE_ENV !== "production";
+const mode = isDevelopment ? "development" : "production";
 
-let plugins = [
-	new webpack.optimize.CommonsChunkPlugin({
-		name: 'vendor',
-		minChunks: ({ context }) => context && context.includes("node_modules"),
+let MiniCSSExtractPlguin = require('mini-css-extract-plugin');
+
+const plugins = [
+	new MiniCSSExtractPlguin({
+		filename: "[name].css",
+		chunkFilename: "[name].css",
 	}),
-	new webpack.EnvironmentPlugin({
-		'NODE_ENV': "development"
-	})
 ];
+const rules = [];
 
-if (process.env.NODE_ENV === "production"){
-	plugins.push(new webpack.optimize.DedupePlugin())
-	plugins.push(new webpack.optimize.UglifyJsPlugin({
-        	output: {
-        		comments: false,
-        	},
-        	compress: {
-            warnings: true,
-            screw_ie8: true
-          }
-	}));
+if (mode === "production") {
+	rules.push({ test: path.resolve(__dirname, "node_modules/redux-logger"), loader: "null-loader" });
+	rules.push({ test: path.resolve(__dirname, "node_modules/redux-devtools-extension"), loader: "null-loader" });
 }
 
-let rules = [];
-
-if (process.env.NODE_ENV === "production"){
-	rules.push({test: path.resolve(__dirname, "node_modules/redux-logger"), loader: "null-loader"});
-	rules.push({test: path.resolve(__dirname, "node_modules/redux-devtools-extension"), loader: "null-loader"});
-}
-
-rules.push({test: /\.tsx?$/, loader: "awesome-typescript-loader" });
 rules.push({
-  test: /\.css$/,
-  loader: ExtractTextPlugin.extract({
-    use: ['css-loader?importLoaders=1'],
-  }),
+	test: /\.tsx?$/,
+	loader: "awesome-typescript-loader",
 });
 rules.push({
-  test: /\.(sass|scss)$/,
-  loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
+	test: /\.s?css$/,
+	use: [
+		{
+			loader: MiniCSSExtractPlguin.loader,
+		},
+		{
+			loader: "css-loader",
+		},
+		{
+			loader: "sass-loader",
+		},
+	]
 });
-plugins.push(new ExtractTextPlugin({
-  filename: '[name].css',
-  allChunks: true,
-}))
-
-if (process.env.NODE_ENV !== "production") {
-	rules.push({ enforce: "pre", test: /\.ts|\.tsx$/, loader: "source-map-loader" });
-}
-
-if (process.env.NODE_ENV !== "production") {
-	plugins.push(new webpack.EvalSourceMapDevToolPlugin({
-		exclude: [
-			'node_modules/*.js'
-		]
-  }));
-}
 
 let entries = {};
 let filenames = fs.readdirSync('./entries');
 for (let file of filenames) {
-  let actualFileName = file.split(".");
-  actualFileName.pop();
-  if (process.env.TARGET && process.env.TARGET !== actualFileName.join(".")){
-    continue;
-  }
-  entries[actualFileName.join(".")] = './entries/' + file;
+	let actualFileName = file.split(".");
+	actualFileName.pop();
+	if (process.env.TARGET && process.env.TARGET !== actualFileName.join(".")) {
+		continue;
+	}
+	entries[actualFileName.join(".")] = './entries/' + file;
 }
 
 module.exports = {
+	mode,
 	entry: entries,
+	devtool: isDevelopment ? "inline-source-map" : false,
 	output: {
 		filename: "[name].js",
 		path: __dirname + "/../dist"
+	},
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				vendors: {
+					test: /[\/]node_modules[\/]/,
+					priority: -10,
+				},
+				commons: {
+					name: "commons",
+					minChunks: 2,
+				},
+			},
+		}
 	},
 	resolve: {
 		alias: {

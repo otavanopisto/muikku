@@ -34,7 +34,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
   setHopsToWithDelay(hops: HOPSDataType) {
     clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.props.setHopsTo.bind(null, hops), 1000);
+    this.timeout = setTimeout(this.props.setHopsTo.bind(null, hops), 1000) as any;
   }
   render() {
     if (this.props.records.location !== "hops" || (this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum == false)) {
