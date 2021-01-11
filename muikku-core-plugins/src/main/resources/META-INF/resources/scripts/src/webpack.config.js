@@ -11,6 +11,7 @@ const plugins = [
 	new MiniCSSExtractPlguin({
 		filename: "[name].css",
 		chunkFilename: "[name].css",
+		ignoreOrder: true,
 	}),
 ];
 const rules = [];
@@ -32,9 +33,11 @@ rules.push({
 		},
 		{
 			loader: "css-loader",
+			options: { sourceMap: true, importLoaders: 1 },
 		},
 		{
 			loader: "sass-loader",
+			options: { sourceMap: true },
 		},
 	]
 });
@@ -60,14 +63,11 @@ module.exports = {
 	},
 	optimization: {
 		splitChunks: {
+			chunks: "all",
+			name: "vendors",
 			cacheGroups: {
 				vendors: {
 					test: /[\/]node_modules[\/]/,
-					priority: -10,
-				},
-				commons: {
-					name: "commons",
-					minChunks: 2,
 				},
 			},
 		}
