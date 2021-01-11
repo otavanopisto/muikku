@@ -38,7 +38,6 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
     }
   }
   reloadStylesheets(){
-    console.log("reloading stylesheets");
     let links = document.getElementsByTagName("link");
     for (let i = 0; i < links.length;i++) {
       let link = links[i];
@@ -63,7 +62,6 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
   componentDidMount(){
     document.addEventListener("keyup", (e)=>{
       if (e.keyCode == 27 && !e.ctrlKey) {
-        console.log("toggling console");
         this.setState({codeDisplayed: !this.state.codeDisplayed})
       } else if (e.keyCode == 27 && e.ctrlKey){
         this.reloadStylesheets();

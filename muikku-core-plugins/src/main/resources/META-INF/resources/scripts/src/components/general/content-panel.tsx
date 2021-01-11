@@ -69,10 +69,8 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     if (diffX <= 3){
       if (diffY >= 5 || diffY <= -5){
         diffX = 0;
-        console.log("prevent x movement");
         this.preventXMovement = true;
       } else {
-        console.log("unprevent x movement");
         this.preventXMovement = false;
       }
     }

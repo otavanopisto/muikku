@@ -28,7 +28,6 @@
 //    if ("matriculation" in mApi()) {
 //      mApi().matriculation.currentExam.read({}).callback((err: any, data: CurrentExam) => {
 //        if (err) {
-//          console.log(err);
 //          return;
 //        }
 //        const now : Number = new Date().getTime();
@@ -88,7 +87,6 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
     if ("matriculation" in mApi()) {
       mApi().matriculation.exams.read({}).callback((err: any, data: CurrentExam[]) => {
         if (err) {
-          console.log(err);
           return;
         }
 

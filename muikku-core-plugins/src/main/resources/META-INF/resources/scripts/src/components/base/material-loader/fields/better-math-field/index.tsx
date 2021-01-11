@@ -10,12 +10,12 @@ interface MathFieldProps {
   value: string,
   onChange: (value: string)=>any,
   i18n: {
-    basicsAndSymbols: string,
-    algebra: string,
+    symbols: string,
+    relations: string,
     geometryAndVectors: string,
-    logic: string,
-    moreMath: string,
-    mathOperations: string
+    setTheoryNotation: string,
+    mathFormulas: string,
+    operators: string
   },
   toolbarAlwaysVisible?: boolean,
   dontLoadACE?: boolean,
@@ -107,7 +107,6 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     //When the field blurs happens it can be real or fake
     //the unselect function allows me to unselect the selection of an equation in the field
     //I should trigger it if I am going to really remove the focus
-    //console.log("triggered blur here");
     this.setState({
       isFocused: false
     });
@@ -115,7 +114,6 @@ export default class MathField extends React.Component<MathFieldProps, MathField
   cancelBlur(){
     //this gets triggered once we have a mousedown event (before the blur)
     //on the toolbar, so we want to cancel it
-    //console.log("cancelling the blur from the mousedown event");
     (this.refs.input as Field).focus();
   }
   openMathExpanded(){
