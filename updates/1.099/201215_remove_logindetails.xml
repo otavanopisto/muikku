@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>delete from rolepermission where permission_id=(select id from permission where name='LIST_USER_LOGIN_DETAILS');</sql>
+  <sql>delete from permission where name='LIST_USER_LOGIN_DETAILS';</sql>
+
+  <sql>delete from pluginsetting where key_id in (select id from pluginsettingkey where plugin='mongo');</sql>
+  <sql>delete from pluginsettingkey where plugin='mongo';</sql>
+
+</update>

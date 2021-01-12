@@ -13,10 +13,6 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profi
   fi;
 fi;
 
-if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "devel" && $it_profile == "rest-it" ]]; then
-  export deploy_snapshot="true"
-fi;
-
 if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profile == "rest-it" ]]; then
   commitmessage=`git log --pretty=format:"%s" -1`;
   if [[ ($commitmessage == *"[maven-release-plugin] prepare release"*) ]]; then 

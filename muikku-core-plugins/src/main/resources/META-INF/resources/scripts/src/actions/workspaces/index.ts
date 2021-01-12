@@ -15,9 +15,6 @@ import {
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 
-
-
-
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
 export type SET_CURRENT_WORKSPACE = SpecificActionType<"SET_CURRENT_WORKSPACE", WorkspaceType>;
@@ -570,8 +567,6 @@ export interface setFiltersTriggerType {
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (loadOrganizationWorkspaceFilters: boolean, callback?: (curriculums: WorkspaceCurriculumFilterListType) => any): AnyActionType
 }
-
-
 
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
   (callback?: (organizations: WorkspaceOrganizationFilterListType) => any): AnyActionType;

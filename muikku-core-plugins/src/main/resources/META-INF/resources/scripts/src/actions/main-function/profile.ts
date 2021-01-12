@@ -377,7 +377,6 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
       if (!(err instanceof MApiError)){
         throw err;
       }
-      console.log(err);
       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.profileImage.remove"), 'error'));
     }
   }

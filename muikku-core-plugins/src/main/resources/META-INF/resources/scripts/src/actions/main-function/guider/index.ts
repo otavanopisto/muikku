@@ -3,7 +3,7 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType} from '~/reducers/main-function/guider';
 import {loadStudentsHelper} from './helpers';
 import promisify from '~/util/promisify';
-import {UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType} from 'reducers/user-index';
+import {UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType} from '~/reducers/main-function/guider';
 import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/workspaces';
@@ -235,10 +235,6 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         promisify(mApi().records.hops.read(id), 'callback')()
           .then((hops:HOPSDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})
-          }),
-        promisify(mApi().user.students.logins.read(id, {maxResults:1}), 'callback')()
-          .then((lastLoginData:Array<LastLoginStudentDataType>)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "lastLogin", value: lastLoginData[0]}})
           }),
         promisify(mApi().guider.users.latestNotifications.read(id), 'callback')()
           .then((notifications:GuiderNotificationStudentsDataType)=>{
