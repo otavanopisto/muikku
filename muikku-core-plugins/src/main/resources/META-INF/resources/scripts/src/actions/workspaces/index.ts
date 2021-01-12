@@ -932,29 +932,29 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
           );
       }
 
-      if (data.removeStudents.length > 0) {
-        let studentIdentifiers = data.removeStudents.map(student => student.id);
+      // if (data.removeStudents.length > 0) {
+      //   let studentIdentifiers = data.removeStudents.map(student => student.id);
 
-        // await promisify(mApi().organizationmanagement.workspaces.students
-        //   .del(data.workspace.id, {
-        //     studentIdentifiers: studentIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.progress && data.progress("remove-students")
-        //   );
-      }
+      // await promisify(mApi().organizationmanagement.workspaces.students
+      //   .del(data.workspace.id, {
+      //     studentIdentifiers: studentIdentifiers
+      //   }
+      //   ), 'callback')().then(
+      //     data.progress && data.progress("remove-students")
+      //   );
+      // }
 
-      if (data.removeTeachers.length > 0) {
-        let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
+      // if (data.removeTeachers.length > 0) {
+      //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
 
-        // await promisify(mApi().organizationmanagement.workspaces.staff
-        //   .del(data.workspace.id, {
-        //     staffMemberIdentifiers: staffMemberIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.progress && data.progress("remove-teachers")
-        //   );
-      }
+      // await promisify(mApi().organizationmanagement.workspaces.staff
+      //   .del(data.workspace.id, {
+      //     staffMemberIdentifiers: staffMemberIdentifiers
+      //   }
+      //   ), 'callback')().then(
+      //     data.progress && data.progress("remove-teachers")
+      //   );
+      // }
 
       //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 

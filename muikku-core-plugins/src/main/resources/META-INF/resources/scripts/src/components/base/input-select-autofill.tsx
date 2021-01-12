@@ -6,7 +6,6 @@ import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 import { SelectItem } from '~/actions/workspaces/index';
 
-
 export interface UiSelectItem extends SelectItem {
   icon?: string,
 }
