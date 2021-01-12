@@ -55,7 +55,6 @@ export interface LoadUsersTriggerType {
   (q?: string): AnyActionType
 }
 
-
 function delay(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -68,8 +67,6 @@ let createStudent: CreateStudentTriggerType = function createStudent(data) {
       await promisify(mApi().user.students.create(data.student), 'callback')().then(() => {
         mApi().organizationUserManagement.students.cacheClear();
       });
-
-
 
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));
       data.success && data.success();
