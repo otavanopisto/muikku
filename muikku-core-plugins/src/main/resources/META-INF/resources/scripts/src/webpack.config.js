@@ -1,14 +1,14 @@
-let fs = require('fs');
-let webpack = require("webpack");
-let path = require("path");
+const fs = require('fs');
+const webpack = require("webpack");
+const path = require("path");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 const mode = isDevelopment ? "development" : "production";
 
-let MiniCSSExtractPlguin = require('mini-css-extract-plugin');
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const plugins = [
-	new MiniCSSExtractPlguin({
+	new MiniCSSExtractPlugin({
 		filename: "[name].css",
 		chunkFilename: "[name].css",
 		ignoreOrder: true,
@@ -29,7 +29,7 @@ rules.push({
 	test: /\.s?css$/,
 	use: [
 		{
-			loader: MiniCSSExtractPlguin.loader,
+			loader: MiniCSSExtractPlugin.loader,
 		},
 		{
 			loader: "css-loader",
@@ -42,10 +42,10 @@ rules.push({
 	]
 });
 
-let entries = {};
-let filenames = fs.readdirSync('./entries');
+const entries = {};
+const filenames = fs.readdirSync('./entries');
 for (let file of filenames) {
-	let actualFileName = file.split(".");
+	const actualFileName = file.split(".");
 	actualFileName.pop();
 	if (process.env.TARGET && process.env.TARGET !== actualFileName.join(".")) {
 		continue;
