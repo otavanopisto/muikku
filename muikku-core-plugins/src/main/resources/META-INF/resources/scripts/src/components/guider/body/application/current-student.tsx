@@ -133,11 +133,11 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           }) : <span>{this.props.i18n.text.get("plugin.guider.user.details.label.nostudentgroups")}</span>}
         </div>
       </div>}
-      {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.basic && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.lastLogin.time ?
-            this.props.i18n.time.format(this.props.guider.currentStudent.lastLogin.time, "LLL") : "-"}</span>
+          <span>{this.props.guider.currentStudent.basic.lastLogin ?
+            this.props.i18n.time.format(this.props.guider.currentStudent.basic.lastLogin, "LLL") : "-"}</span>
         </div>
       </div>}
       {this.props.guider.currentStudent.notifications && Object.keys(this.props.guider.currentStudent.notifications).map((notification) => {

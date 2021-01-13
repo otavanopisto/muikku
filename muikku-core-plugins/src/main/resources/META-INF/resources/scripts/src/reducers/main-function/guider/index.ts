@@ -1,5 +1,5 @@
 import { ActionType } from '~/actions';
-import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/user-index';
+import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType } from '~/reducers/user-index';
 import { WorkspaceType, WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
@@ -55,7 +55,6 @@ export interface GuiderStudentUserProfileType {
   // Disabled until it really works
   //  vops: VOPSDataType,
   hops: HOPSDataType,
-  lastLogin: LastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
   workspaces: WorkspaceListType,
   activityLogs: ActivityLogType[]

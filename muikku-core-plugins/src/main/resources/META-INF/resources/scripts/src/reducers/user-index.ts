@@ -46,6 +46,7 @@ export interface UserType {
   studyStartDate?: string,
   studyTimeEnd?: string,
   userEntityId?: number
+  lastLogin?: string
 }
 
 export interface UserWithSchoolDataType {
@@ -64,6 +65,7 @@ export interface UserWithSchoolDataType {
   studyProgrammeName?: string,
   studyStartDate?: string,
   studyTimeEnd?: string,
+  lastLogin?: string,
   updatedByStudent: boolean,
   userEntityId: number
 }
@@ -179,6 +181,7 @@ export interface StudentUserAddressType {
   type: string,
   defaultAddress: boolean
 }
+
 
 export interface LastLoginStudentDataType {
   userIdentifier: string,

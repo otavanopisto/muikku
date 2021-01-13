@@ -23,7 +23,7 @@ jobs:
             cd sc-*
             bin/sc -u ${{secrets.SAUCE_USERNAME}} -k ${{secrets.SAUCE_KEY}} -i ${{github.run_id}} -f /tmp/sc_ready --no-ssl-bump-domains=127.0.0.1,localhost,dev.muikku.fi --pidfile=/tmp/sc_client.pid &
       - name: Build with Maven
-        run: mvn install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
+        run: mvn install -Pdummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin,matriculation-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
       - name: Set Muikku host
         run: echo "127.0.0.1 dev.muikku.fi" | sudo tee -a /etc/hosts
       - name: Check sauce connect

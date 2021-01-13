@@ -346,7 +346,6 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     //now we check the contestants
     if (contestants.length){
 
-      // console.log(contestants);
 
       //the basic winner is the only contestant
       let winner = contestants[0];
