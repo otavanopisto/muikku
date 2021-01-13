@@ -219,7 +219,6 @@ public class OrganizationUserManagementRESTService {
         Date studyStartDate = getDateResult(o.get("studyStartDate"));
         Date studyEndDate = getDateResult(o.get("studyEndDate"));
         Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
-        Date lastLogin = loggedUser.getLastLogin();
         
         boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
 
@@ -245,7 +244,7 @@ public class OrganizationUserManagementRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd, 
-            lastLogin, 
+            userEntity.getLastLogin(), 
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
