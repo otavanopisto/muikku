@@ -28,7 +28,6 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
       leftPage = 1;
     }
 
-    let rightPageExtra = 0;
     if (rightPage > this.props.pages) {
       leftPage += this.props.pages - rightPage;
       rightPage = this.props.pages;
