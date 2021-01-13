@@ -28,7 +28,6 @@
     "@types/strophe.js": "^1.2.2",
     "@types/uuid": "^3.4.4",
     "audio-recorder-polyfill": "^0.1.2",
-    "awesome-typescript-loader": "^5.2.1",
     "babel-polyfill": "^6.26.0",
     "brace": "^0.10.0",
     "css-loader": "^0.28.7",
@@ -61,6 +60,7 @@
     "webpack": "^5.12.2"
   },
   "devDependencies": {
+    "ts-loader": "^8.0.14",
     "webpack-cli": "^4.3.1"
   }
 }

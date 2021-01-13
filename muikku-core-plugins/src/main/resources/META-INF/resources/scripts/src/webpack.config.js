@@ -23,7 +23,7 @@ if (mode === "production") {
 
 rules.push({
 	test: /\.tsx?$/,
-	loader: "awesome-typescript-loader",
+	loader: "ts-loader",
 });
 rules.push({
 	test: /\.s?css$/,
