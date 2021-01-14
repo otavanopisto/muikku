@@ -33,7 +33,11 @@ rules.push({
 		},
 		{
 			loader: "css-loader",
-			options: { sourceMap: true, importLoaders: 1 },
+			options: {
+				sourceMap: true,
+				importLoaders: 1,
+				url: false
+			},
 		},
 		{
 			loader: "sass-loader",
