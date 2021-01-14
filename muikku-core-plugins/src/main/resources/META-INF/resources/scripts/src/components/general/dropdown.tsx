@@ -27,6 +27,7 @@ interface DropdownState {
   arrowRight: number | null,
   arrowTop: number | null,
   reverseArrow: boolean,
+  forcedWidth: number,
   visible: boolean
 }
 
@@ -44,7 +45,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       arrowRight: null,
       arrowTop: null,
       reverseArrow: false,
-      visible: false
+      forcedWidth: null,
+      visible: false,
     }
   }
   onOpen(DOMNode: HTMLElement){
@@ -116,13 +118,26 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       reverseArrow = true;
     }
 
-    this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, visible: true}, this.props.onOpen);
+    let forcedWidth: number = null;
+    if (typeof left === "number" && left < 0) {
+      forcedWidth = $dropdown.outerWidth() + left;
+      left = 0;
+    }
+
+    this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, forcedWidth, visible: true}, this.props.onOpen);
   }
   beforeClose(DOMNode : HTMLElement, removeFromDOM: Function){
     this.setState({
       visible: false
     });
-    setTimeout(removeFromDOM, 300);
+    setTimeout(() => {
+      removeFromDOM();
+      setTimeout(() => {
+        this.setState({
+          forcedWidth: null,
+        });
+      }, 10);
+    }, 300);
   }
   close(){
     (this.refs["portal"] as Portal).closePortal();
@@ -151,6 +166,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
           position: "fixed",
           top: this.state.top,
           left: this.state.left,
+          width: this.state.forcedWidth,
         }}
         className={`dropdown ${this.props.modifier ? 'dropdown--' + this.props.modifier : ''} ${this.state.visible ? "visible" : ""}`}>
         <span className="dropdown__arrow" ref="arrow"
