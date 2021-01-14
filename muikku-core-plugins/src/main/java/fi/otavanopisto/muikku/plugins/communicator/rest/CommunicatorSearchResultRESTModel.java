@@ -13,12 +13,13 @@ import fi.otavanopisto.muikku.rest.model.UserGroup;
 public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorSearchResultRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorSearchSenderRESTModel sender, 
-      String categoryName, String caption, String content, Date created, Set<String> tags, 
+      String categoryName, CommunicatorMessageFolder folder, String caption, String content, Date created, Set<String> tags, 
       List<CommunicatorMessageRecipientRESTModel> recipients, 
       List<UserGroup> userGroupRecipients, 
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients, 
       Boolean readByReceiver, List<CommunicatorMessageIdLabelRESTModel> labels) {
     super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
+    this.folder = folder;
     this.recipients = recipients;
     this.userGroupRecipients = userGroupRecipients;
     this.workspaceRecipients = workspaceRecipients;
@@ -75,6 +76,15 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
     this.workspaceRecipients = workspaceRecipients;
   }
 
+  public CommunicatorMessageFolder getFolder() {
+    return folder;
+  }
+
+  public void setFolder(CommunicatorMessageFolder folder) {
+    this.folder = folder;
+  }
+
+  private CommunicatorMessageFolder folder;
   private CommunicatorSearchSenderRESTModel sender;
   private Boolean readByReceiver;
   private List<CommunicatorMessageIdLabelRESTModel> labels;

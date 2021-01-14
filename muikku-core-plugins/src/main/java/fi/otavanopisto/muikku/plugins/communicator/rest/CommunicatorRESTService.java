@@ -321,23 +321,6 @@ public class CommunicatorRESTService extends PluginRESTService {
       for (IndexedCommunicatorMessage result : results) {
         IndexedCommunicatorMessageSender sender = result.getSender();
 
-        boolean communicatorMessageRead;
-        if (loggedUser.getId().equals(sender.getUserEntityId())) {
-          communicatorMessageRead = true;
-        } else {
-          IndexedCommunicatorMessageRecipient recipient = result.getRecipients().stream()
-            .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
-            .findFirst()
-            .orElse(null);
-          
-          if (recipient != null) {
-            communicatorMessageRead = recipient.getReadByReceiver();
-          } else {
-            logger.log(Level.SEVERE, String.format("User %d is not a recipient of message %d.", loggedUser.getId(), result.getId()));
-            continue;
-          }
-        }
-        
         CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
         senderData.setUserEntityId(sender.getUserEntityId());
         senderData.setFirstName(sender.getFirstName());
@@ -359,6 +342,29 @@ public class CommunicatorRESTService extends PluginRESTService {
 
         List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessage.getCommunicatorMessageId());
         List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+
+        CommunicatorMessageFolder folder = CommunicatorMessageFolder.INBOX;
+        boolean communicatorMessageRead;
+        
+        if (loggedUser.getId().equals(sender.getUserEntityId())) {
+          communicatorMessageRead = true;
+          folder = Boolean.TRUE.equals(communicatorMessage.getTrashedBySender()) ? CommunicatorMessageFolder.TRASH : CommunicatorMessageFolder.SENT;
+        } else {
+          IndexedCommunicatorMessageRecipient recipient = result.getRecipients().stream()
+            .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
+            .findFirst()
+            .orElse(null);
+          
+          if (recipient != null) {
+            communicatorMessageRead = recipient.getReadByReceiver();
+            if (recipient.getArchivedByReceiver()) {
+              folder = CommunicatorMessageFolder.TRASH;
+            }
+          } else {
+            logger.log(Level.SEVERE, String.format("User %d is not a recipient of message %d.", loggedUser.getId(), result.getId()));
+            continue;
+          }
+        }
         
         communicatorMessages.add(new CommunicatorSearchResultRESTModel(
             communicatorMessage.getId(), 
@@ -366,6 +372,7 @@ public class CommunicatorRESTService extends PluginRESTService {
             sender.getUserEntityId(), 
             senderData, 
             category.getName(), 
+            folder,
             result.getCaption(), 
             null, // Content is not relevant for search results
             result.getCreated(), 
