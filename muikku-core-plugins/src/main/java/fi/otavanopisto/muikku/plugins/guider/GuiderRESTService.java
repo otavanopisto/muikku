@@ -309,7 +309,6 @@ public class GuiderRESTService extends PluginRESTService {
       
       userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
     }
-    
     if (Boolean.TRUE.equals(includeInactiveStudents)) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
         if (userEntityId == null) {
@@ -321,7 +320,9 @@ public class GuiderRESTService extends PluginRESTService {
         }
       }
     } 
-    
+    if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+      includeHidden = true;
+    }
     if (Boolean.TRUE.equals(includeHidden)) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
         if (userEntityId == null) {
@@ -331,7 +332,7 @@ public class GuiderRESTService extends PluginRESTService {
             return Response.status(Status.FORBIDDEN).build();
           }
         }
-      }
+      } 
     }
     
     if (userEntityId != null) {
@@ -359,6 +360,7 @@ public class GuiderRESTService extends PluginRESTService {
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
         myWorkspaces = true;
+        includeHidden = true;
       }
     }
     
@@ -419,8 +421,11 @@ public class GuiderRESTService extends PluginRESTService {
             logger.severe(String.format("Student %s in search index not found in Muikku", studentIdentifier));
             continue;
           }
-          String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
-
+          String emailAddress = "";
+          User student = userController.findUserByUserEntityDefaults(userEntity);
+          if (!Boolean.TRUE.equals(student.getHidden()) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+            emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
+          }
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
           Date studyEndDate = getDateResult(o.get("studyEndDate"));
           Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
@@ -510,7 +515,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
     
-    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
+    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
     Date studyStartDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
     Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;

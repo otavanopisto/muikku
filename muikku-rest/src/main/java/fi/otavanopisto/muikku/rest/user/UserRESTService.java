@@ -731,10 +731,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByUserEntityDefaults(studentEntity);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_PHONE_NUMBERS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden()) && !sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -774,10 +777,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByUserEntityDefaults(studentEntity);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_EMAILS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden()) && !sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
