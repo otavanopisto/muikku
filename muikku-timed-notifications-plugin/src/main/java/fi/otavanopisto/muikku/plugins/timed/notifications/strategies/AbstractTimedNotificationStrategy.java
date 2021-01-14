@@ -22,6 +22,7 @@ import de.neuland.jade4j.exceptions.JadeException;
 import fi.otavanopisto.muikku.jade.JadeController;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.TimedNotificationsJadeTemplateLoader;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 
@@ -44,6 +45,9 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
   @Inject
   private OrganizationEntityController organizationEntityController;
   
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
   @PostConstruct
   public void init(){
     startTimer(getDuration());
@@ -51,8 +55,13 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
   
   @Timeout
   public void handleTimeout(){
-    if(isActive()){
-      sendNotifications();
+    if (isActive()) {
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        sendNotifications();
+      } finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
     }
     startTimer(getDuration());
   }
