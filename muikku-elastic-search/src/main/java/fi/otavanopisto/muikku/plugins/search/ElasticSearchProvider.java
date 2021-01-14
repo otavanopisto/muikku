@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -127,9 +128,11 @@ public class ElasticSearchProvider implements SearchProvider {
     // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
     String ret = query.toLowerCase();
 
-    // Replace characters we don't support at the moment
-    ret = ret.replace('-', ' ');
+    // Escape special characters including elastic's control characters and some other additions
+    String escapedCharacters = Pattern.quote("\\/+-&|!(){}[]^~*?:" + ".,");
     
+    ret = ret.replaceAll(String.format("([%s])", escapedCharacters), " ");
+
     ret = ret.trim();
     return ret;
   }
