@@ -87,8 +87,9 @@ public class DiscussionTestsBase extends AbstractUITest {
       waitAndSendKeys("input.env-dialog__input--new-discussion-area-name", "Test area");
       waitAndClick(".env-dialog__textarea");
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");
-      waitAndClick(".env-dialog__actions .button--dialog-execute");
-      waitForPresent(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)");
+      waitForClickable(".env-dialog__actions .button--dialog-execute");
+      click(".env-dialog__actions .button--dialog-execute");
+      waitForPresent(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", 30);
       assertTextIgnoreCase(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", "Test area");
     } finally {
       cleanUpDiscussions();

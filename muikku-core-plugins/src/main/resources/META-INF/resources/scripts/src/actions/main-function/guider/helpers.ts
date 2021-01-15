@@ -55,7 +55,6 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
   let params = {
     firstResult,
     maxResults,
-    includeHidden: false,
     flags: actualFilters.labelFilters,
     workspaceIds: actualFilters.workspaceFilters,
     flagOwnerIdentifier

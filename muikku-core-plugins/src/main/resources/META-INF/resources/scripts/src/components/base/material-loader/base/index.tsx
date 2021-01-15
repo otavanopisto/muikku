@@ -403,8 +403,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         // Takes too long so we queue the message again
         this.props.websocketState.websocket.queueMessage("workspace:field-answer-save", messageData, null, stackId);
         context.setState({syncError: "server does not reply"});
-      }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
-    }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE)
+      }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
+    }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE) as any;
   }
   render(){
     const processingFunction = (dontProcessTag: string, reprocessFunction: any, Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{

@@ -99,7 +99,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     }
   }
   onInputBlur(e: React.FocusEvent<any>) {
-    this.blurTimeout = setTimeout(() => this.setState({ isFocused: false }), 100);
+    this.blurTimeout = setTimeout(() => this.setState({ isFocused: false }), 100) as any;
   }
   onInputFocus(e: React.FocusEvent<any>) {
     clearTimeout(this.blurTimeout);
@@ -110,7 +110,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     this.setState({ textInput, autocompleteOpened: true });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
-      this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100);
+      this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100) as any;
     } else {
       this.setState({
         autocompleteSearchItems: []
