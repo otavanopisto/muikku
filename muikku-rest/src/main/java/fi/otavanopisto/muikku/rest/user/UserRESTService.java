@@ -344,13 +344,11 @@ public class UserRESTService extends AbstractRESTService {
     } 
     
     if (Boolean.TRUE.equals(includeHidden)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-        if (userEntityId == null) {
+      if (userEntityId == null) {
+        return Response.status(Status.FORBIDDEN).build();
+      } else {
+        if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
           return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
         }
       }
     }
@@ -736,7 +734,7 @@ public class UserRESTService extends AbstractRESTService {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_PHONE_NUMBERS)) {
         return Response.status(Status.FORBIDDEN).build();
       }
-      if (Boolean.TRUE.equals(student.getHidden()) && !sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+      if (Boolean.TRUE.equals(student.getHidden())) {
         return Response.status(Status.NO_CONTENT).build();
       }
     }
@@ -777,12 +775,12 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    User student = userController.findUserByUserEntityDefaults(studentEntity);
+    User student = userController.findUserByIdentifier(studentIdentifier);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_EMAILS)) {
         return Response.status(Status.FORBIDDEN).build();
       }
-      if (Boolean.TRUE.equals(student.getHidden()) && !sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+      if (Boolean.TRUE.equals(student.getHidden())) {
         return Response.status(Status.NO_CONTENT).build();
       }
     }

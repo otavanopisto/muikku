@@ -222,7 +222,6 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
@@ -320,20 +319,6 @@ public class GuiderRESTService extends PluginRESTService {
         }
       }
     } 
-    if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-      includeHidden = true;
-    }
-    if (Boolean.TRUE.equals(includeHidden)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-        if (userEntityId == null) {
-          return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      } 
-    }
     
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
@@ -360,7 +345,6 @@ public class GuiderRESTService extends PluginRESTService {
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
         myWorkspaces = true;
-        includeHidden = true;
       }
     }
     
@@ -385,7 +369,7 @@ public class GuiderRESTService extends PluginRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -422,8 +406,8 @@ public class GuiderRESTService extends PluginRESTService {
             continue;
           }
           String emailAddress = "";
-          User student = userController.findUserByUserEntityDefaults(userEntity);
-          if (!Boolean.TRUE.equals(student.getHidden()) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
+          User student = userController.findUserByIdentifier(studentIdentifier);
+          if (!Boolean.TRUE.equals(student.getHidden())) {
             emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
           }
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
