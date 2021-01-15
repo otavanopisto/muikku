@@ -247,7 +247,6 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
@@ -343,16 +342,6 @@ public class UserRESTService extends AbstractRESTService {
       }
     } 
     
-    if (Boolean.TRUE.equals(includeHidden)) {
-      if (userEntityId == null) {
-        return Response.status(Status.FORBIDDEN).build();
-      } else {
-        if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-          return Response.status(Status.FORBIDDEN).build();
-        }
-      }
-    }
-    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -394,7 +383,7 @@ public class UserRESTService extends AbstractRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
