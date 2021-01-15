@@ -1,7 +1,7 @@
-/*global converse */
 import * as React from 'react'
 import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
+import '~/sass/elements/wcag.scss';
 import { IBareMessageType } from './chat';
 import { ChatMessage } from './chatMessage';
 import promisify from '~/util/promisify';
@@ -351,9 +351,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">
-                  {/* ToDo: Add this back when we can show users presence to each other
                   <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
-                  */}
                   <span className="chat__target-nickname">{this.state.nick}</span>
                 </div>
                 <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
@@ -363,15 +361,18 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
                   {this.state.messages.map((message, index) => <ChatMessage
-                    chatType="private"
                     key={index}
+                    chatType="private"
                     canToggleInfo={!this.state.isStudent}
                     message={message} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>
-              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
+            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
+              {/* Need wcag.scss from another WIP branch
+               <label htmlFor={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label> */}
               <textarea
+                id={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`}
                 className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
                 placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
