@@ -53,7 +53,7 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
       searchquery: e.target.value
     });
 
-    this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
+    this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400) as any;
   }
 
   componentWillReceiveProps(nextProps: CoursepickerToolbarProps){
