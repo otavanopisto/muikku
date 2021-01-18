@@ -97,7 +97,6 @@ export interface SelectItem {
   disabled?: boolean
 }
 
-
 export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType
 }
