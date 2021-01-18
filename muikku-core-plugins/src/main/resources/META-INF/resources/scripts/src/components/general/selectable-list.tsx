@@ -83,7 +83,7 @@ export default class SelectableList extends React.Component<SelectableListProps,
         this.setState({
           touchMode: true
         });
-      }, 600);
+      }, 600) as any;
     }
     this.cancelSelection = item.notSelectable;
     this.initialXPos = e.touches[0].pageX;

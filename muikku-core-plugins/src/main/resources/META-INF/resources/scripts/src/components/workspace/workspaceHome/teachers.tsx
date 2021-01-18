@@ -62,14 +62,14 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
           <div className="item-list item-list--panel-teachers">
             {this.props.workspace.staffMembers.map((teacher) => {
               // by default wether we display the vacation period depends on whether the vacation starts at all
-              let displayVacationPeroid = !!teacher.properties['profile-vacation-start'];
+              let displayVacationPeriod = !!teacher.properties['profile-vacation-start'];
               // however if we have a range
               if (teacher.properties['profile-vacation-end']) {
                 // we must check for the ending
                 const vacationEndsAt = moment(teacher.properties['profile-vacation-end']);
                 const today = moment();
                 // if it's before or it's today then we display, otherwise nope
-                displayVacationPeroid = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
+                displayVacationPeriod = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
               }
 
               return <div className="item-list__item item-list__item--teacher" key={teacher.userEntityId}>
@@ -84,7 +84,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                       <div className="item-list__user-phone"><span className="glyph icon-phone"></span>{teacher.properties['profile-phone']}
                       </div> : null}
                   </div>
-                  {displayVacationPeroid ?
+                  {displayVacationPeriod ?
                     <div className="item-list__user-vacation-period">
                       {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
                       {this.props.i18n.time.format(teacher.properties['profile-vacation-start'])}
