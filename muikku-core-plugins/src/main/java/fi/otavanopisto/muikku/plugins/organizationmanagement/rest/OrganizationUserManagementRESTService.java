@@ -242,6 +242,7 @@ public class OrganizationUserManagementRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
+            userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
