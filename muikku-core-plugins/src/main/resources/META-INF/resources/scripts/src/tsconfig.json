@@ -1,11 +1,4 @@
 {
-	"awesomeTypescriptLoaderOptions": {
-		"useWebpackText": true,
-		"useTranspileModule": true,
-		"doTypeCheck": true,
-		"forkChecker": true,
-		"ignoreDiagnostics": []
-	},
 	"compilerOptions": {
 		"outDir": "../dist/",
 		"allowJs": true,
