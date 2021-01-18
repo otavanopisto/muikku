@@ -203,7 +203,7 @@ public class CommunicatorRESTModels {
               organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
             }
           }
-          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization);
+          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization, group.isGuidanceGroup());
         }
       }
       return null;
