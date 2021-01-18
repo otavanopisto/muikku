@@ -60,13 +60,13 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="item-list item-list--student-councelors">
                 {this.props.summary.data.studentsStudentCouncelors.map((councelor: SummaryStudentCouncelorsType, index: number) => {
 
-                  let displayVacationPeroid = !!councelor.properties['profile-vacation-start'];
+                  let displayVacationPeriod = !!councelor.properties['profile-vacation-start'];
                   if (councelor.properties['profile-vacation-end']) {
                     // we must check for the ending
                     const vacationEndsAt = moment(councelor.properties['profile-vacation-end']);
                     const today = moment();
                     // if it's before or it's today then we display, otherwise nope
-                    displayVacationPeroid = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
+                    displayVacationPeriod = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
                   }
                   return <div className="item-list__item item-list__item--student-councelor" key={councelor.userEntityId}>
                     <div className="item-list__profile-picture">
@@ -82,7 +82,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                           <div className="item-list__user-phone"><div className="glyph icon-phone"></div>{councelor.properties['profile-phone']}
                           </div> : null}
                       </div>
-                      {displayVacationPeroid ?
+                      {displayVacationPeriod ?
                         <div className="item-list__user-vacation-period">
                           {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
                         {this.props.i18n.time.format(councelor.properties['profile-vacation-start'])}

@@ -54,6 +54,11 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             result.forEach(function (studentsStudentCouncelor: any) {
               if (!studentsStudentCouncelors.some((existingStudentCouncelor: any) => existingStudentCouncelor.userEntityId == studentsStudentCouncelor.userEntityId)) {
                 studentsStudentCouncelors.push(studentsStudentCouncelor);
+                studentsStudentCouncelors.sort(function (x: any, y: any) {
+                  let a = x.lastName.toUpperCase(),
+                    b = y.lastName.toUpperCase();
+                  return a == b ? 0 : a > b ? 1 : -1;
+                });
               }
             });
           });
