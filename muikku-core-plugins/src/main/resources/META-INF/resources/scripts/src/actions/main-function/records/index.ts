@@ -81,7 +81,6 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
       let users: Array<UserWithSchoolDataType> = await promisify(mApi().user.students.read({
         userEntityId: userId,
         includeInactiveStudents: true,
-        includeHidden: true,
         maxResults: 20
       }), 'callback')() as Array<UserWithSchoolDataType>;
 
