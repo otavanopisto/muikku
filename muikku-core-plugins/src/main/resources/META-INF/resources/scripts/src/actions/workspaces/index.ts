@@ -342,8 +342,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
       let details: WorkspaceDetailsType;
       let chatStatus: WorkspaceChatStatusType;
       let status = getState().status;
-
-
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details, chatStatus] =
         await Promise.all([
           reuseExistantValue(true, workspace, () => promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
@@ -372,26 +370,24 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
           reuseExistantValue(true, workspace && workspace.contentDescription,
             () => promisify(mApi().workspace.workspaces.description.cacheClear().read(data.workspaceId), 'callback')()),
 
-
           reuseExistantValue(true, workspace && workspace.producers,
             () => promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
-          reuseExistantValue(true, workspace && workspace.journals, () => null),
+
           getState().status.loggedIn ?
             reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
               () => promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()) : false,
-
 
           reuseExistantValue(true, workspace && workspace.journals, () => null),
 
           (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
             () => promisify(mApi().workspace.workspaces
               .details.read(data.workspaceId), 'callback')()) : null,
+
           getState().status.loggedIn ?
             reuseExistantValue(true, workspace && workspace.chatStatus,
               () => promisify(mApi().chat.workspaceChatSettings.read(data.workspaceId), 'callback')()) : null,
 
         ]) as any
-
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
@@ -419,6 +415,7 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
     }
   }
 }
+
 
 export interface RequestAssessmentAtWorkspaceTriggerType {
   (data: { workspace: WorkspaceType, text: string, success?: () => any, fail?: () => any }): AnyActionType
@@ -593,7 +590,7 @@ export interface LoadStaffMembersOfWorkspaceTriggerType {
 }
 
 export interface LoadStudentsOfWorkspaceTriggerType {
-  (workspace: WorkspaceType, loadOrganizationStudents?: boolean): AnyActionType
+  (workspace: WorkspaceType): AnyActionType
 }
 
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
