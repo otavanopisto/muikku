@@ -934,9 +934,7 @@ public class WorkspaceMaterialController {
     case MATERIAL:
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
       Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
-      Long currentRevision = material instanceof HtmlMaterial
-          ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material)
-          : 0l;
+      Long currentRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
       Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
       String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType()
           : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;

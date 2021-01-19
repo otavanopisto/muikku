@@ -24,13 +24,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.foyt.coops.CoOpsApi;
-import fi.foyt.coops.CoOpsForbiddenException;
-import fi.foyt.coops.CoOpsInternalErrorException;
-import fi.foyt.coops.CoOpsNotFoundException;
-import fi.foyt.coops.CoOpsNotImplementedException;
-import fi.foyt.coops.CoOpsUsageException;
-import fi.foyt.coops.model.File;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -63,9 +56,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @Inject
   private LocaleController localeController;
 
-  @Inject
-  private CoOpsApi coOpsApi;
-  
   @Inject
   private SessionController sessionController;
   
@@ -107,22 +97,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       CacheControl cacheControl = new CacheControl();
       cacheControl.setMustRevalidate(true);
       
-      if (revision == null) {
-        return Response.ok(createRestModel(htmlMaterial)).build();
-      } else {
-        File fileRevision;
-        try {
-          fileRevision = coOpsApi.fileGet(id.toString(), revision);
-        } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
-          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-
-        if (fileRevision == null) {
-          return Response.status(Status.NOT_FOUND).build();
-        }
-        
-        return Response.ok(createRestModel(htmlMaterial, fileRevision)).build();
-      }
+      return Response.ok(createRestModel(htmlMaterial)).build();
     }
   }
 
@@ -158,122 +133,12 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     return Response.ok(createRestModel(htmlMaterial)).build();
   }
 
-  @POST
-  @Path("/{id}/publish/")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  @Deprecated
-  public Response publishMaterial(@PathParam("id") Long id, HtmlRestMaterialPublish entity) {
-    
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
-      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
-    }
-
-    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
-    if (htmlMaterial == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-
-    if (!htmlMaterial.getRevisionNumber().equals(entity.getFromRevision())) {
-      return Response.status(Status.CONFLICT)
-          .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONCURRENT_MODIFICATIONS)).build();
-    }
-
-    try {
-      File fileRevision = coOpsApi.fileGet(id.toString(), entity.getToRevision());
-      if (fileRevision == null) {
-        return Response.status(Status.NOT_FOUND).build();
-      }
-      
-      if (Boolean.TRUE.equals(entity.getRemoveAnswers())) {
-        logger.log(Level.WARNING, String.format("Publish material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
-      }
-      
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
-    }
-    catch (WorkspaceMaterialContainsAnswersExeption e) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
-        logger.log(Level.WARNING, String.format("Publish material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
-        return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
-      }
-      else {
-        return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
-      }
-    }
-    catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
-    
-    return Response.noContent().build();
-  }
-  
-  @PUT
-  @Path("/{id}/revert/")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  @Deprecated
-  public Response revertMaterial(@PathParam("id") Long id, HtmlRestMaterialRevert entity) {
-    
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
-      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
-    }
-
-    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
-    if (htmlMaterial == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
-    if (!currentRevision.equals(entity.getFromRevision())) {
-      return Response.status(Status.CONFLICT)
-          .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONCURRENT_MODIFICATIONS)).build();
-    }
-
-    try {
-      File fileRevision = coOpsApi.fileGet(id.toString(), entity.getToRevision());
-      if (fileRevision == null) {
-        return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
-      }
-
-      if (Boolean.TRUE.equals(entity.getRemoveAnswers())) {
-        logger.log(Level.WARNING, String.format("Revert material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
-      }
-      
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
-    }
-    catch (WorkspaceMaterialContainsAnswersExeption e) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
-        logger.log(Level.WARNING, String.format("Revert material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
-        return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
-      }
-      else {
-        return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
-      }
-    }
-    catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
-    
-    return Response.noContent().build();
-  }
-
-  private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial, File fileRevision) {
-    return new HtmlRestMaterial(htmlMaterial.getId(), 
-      htmlMaterial.getTitle(), 
-      htmlMaterial.getContentType(), 
-      fileRevision.getContent(), 
-      fileRevision.getRevisionNumber(), 
-      htmlMaterial.getRevisionNumber(), 
-      htmlMaterial.getLicense(),
-      htmlMaterial.getViewRestrict());
-  }
-  
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
-    Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
-    
     return new HtmlRestMaterial(htmlMaterial.getId(),
       htmlMaterial.getTitle(),
       htmlMaterial.getContentType(),
       htmlMaterial.getHtml(),
-      currentRevision,
+      htmlMaterial.getRevisionNumber(),
       htmlMaterial.getRevisionNumber(),
       htmlMaterial.getLicense(),
       htmlMaterial.getViewRestrict());
