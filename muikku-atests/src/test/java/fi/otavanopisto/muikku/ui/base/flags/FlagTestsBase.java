@@ -256,10 +256,12 @@ public class FlagTestsBase extends AbstractUITest {
       sleep(1000);
       waitForVisible(".button--guider-share-label");
       waitAndClick(".button--guider-share-label");
+
       waitForVisible(".autocomplete--guider .env-dialog__input");
       waitAndClick(".autocomplete--guider .env-dialog__input");
       sendKeys(".autocomplete--guider .env-dialog__input", "test");
       waitForVisible(".glyph--autocomplete-recipient");
+
       waitAndClick(".glyph--autocomplete-recipient");
 
       waitAndClick(".dialog--guider-share-label .button--standard-ok");
