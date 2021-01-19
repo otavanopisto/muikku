@@ -315,6 +315,111 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
   }
 }
 
+// let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(data) {
+//   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+//     let current: WorkspaceType = getState().workspaces.currentWorkspace;
+//     if (current && current.id === data.workspaceId && !data.refreshActivity && !data.loadDetails) {
+//       data.success && data.success(current);
+//       return;
+//     }
+
+//     try {
+//       let workspace: WorkspaceType = getState().workspaces.userWorkspaces.find(w => w.id === data.workspaceId) ||
+//         getState().workspaces.availableWorkspaces.find(w => w.id === data.workspaceId);
+//       if (current && current.id === data.workspaceId) {
+//         //if I just make it be current it will be buggy
+//         workspace = { ...current };
+//       }
+//       let assesments: WorkspaceStudentAssessmentsType;
+//       let feeInfo: WorkspaceFeeInfoType;
+//       let assessmentRequests: Array<WorkspaceAssessmentRequestType>;
+//       let activity: WorkspaceStudentActivityType;
+//       let additionalInfo: WorkspaceAdditionalInfoType;
+//       let contentDescription: MaterialContentNodeType;
+//       let producers: Array<WorkspaceProducerType>;
+//       let isCourseMember: boolean;
+//       let journals: WorkspaceJournalsType;
+//       let details: WorkspaceDetailsType;
+//       let chatStatus: WorkspaceChatStatusType;
+//       let status = getState().status;
+
+
+//       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details, chatStatus] =
+//         await Promise.all([
+//           reuseExistantValue(true, workspace, () => promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
+
+//           reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+//             workspace && workspace.studentAssessments, () => promisify(mApi().workspace.workspaces
+//               .students.assessments.cacheClear().read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
+
+//           reuseExistantValue(status.loggedIn,
+//             workspace && workspace.feeInfo, () => promisify(mApi().workspace.workspaces.feeInfo.cacheClear().read(data.workspaceId), 'callback')()),
+
+//           reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+//             workspace && workspace.assessmentRequests, () => promisify(mApi().assessmentrequest.workspace.assessmentRequests.cacheClear().read(data.workspaceId, {
+//               studentIdentifier: getState().status.userSchoolDataIdentifier
+//             }), 'callback')()),
+
+//           getState().status.loggedIn ?
+//             // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
+//             // And rerequest
+//             reuseExistantValue(true, typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
+//               () => promisify(mApi().guider.workspaces.activity.cacheClear().read(data.workspaceId), 'callback')()) : null,
+
+//           reuseExistantValue(true, workspace && workspace.additionalInfo,
+//             () => promisify(mApi().workspace.workspaces.additionalInfo.cacheClear().read(data.workspaceId), 'callback')()),
+
+//           reuseExistantValue(true, workspace && workspace.contentDescription,
+//             () => promisify(mApi().workspace.workspaces.description.cacheClear().read(data.workspaceId), 'callback')()),
+
+
+//           reuseExistantValue(true, workspace && workspace.producers,
+//             () => promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
+//           reuseExistantValue(true, workspace && workspace.journals, () => null),
+//           getState().status.loggedIn ?
+//             reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
+//               () => promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()) : false,
+
+
+//           reuseExistantValue(true, workspace && workspace.journals, () => null),
+
+//           (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
+//             () => promisify(mApi().workspace.workspaces
+//               .details.read(data.workspaceId), 'callback')()) : null,
+//           getState().status.loggedIn ?
+//             reuseExistantValue(true, workspace && workspace.chatStatus,
+//               () => promisify(mApi().chat.workspaceChatSettings.read(data.workspaceId), 'callback')()) : null,
+
+//         ]) as any
+
+//       workspace.studentAssessments = assesments;
+//       workspace.feeInfo = feeInfo;
+//       workspace.assessmentRequests = assessmentRequests;
+//       workspace.studentActivity = activity;
+//       workspace.additionalInfo = additionalInfo;
+//       workspace.contentDescription = contentDescription;
+//       workspace.producers = producers;
+//       workspace.isCourseMember = isCourseMember;
+//       workspace.journals = journals;
+//       workspace.details = details;
+//       workspace.chatStatus = chatStatus;
+
+//       dispatch({
+//         type: 'SET_CURRENT_WORKSPACE',
+//         payload: workspace
+//       });
+
+//       data.success && data.success(workspace);
+//     } catch (err) {
+//       if (!(err instanceof MApiError)) {
+//         throw err;
+//       }
+//       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.errormessage.workspaceLoadFailed"), 'error'));
+//       data.fail && data.fail();
+//     }
+//   }
+// }
+
 let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let current: WorkspaceType = getState().workspaces.currentWorkspace;
@@ -342,8 +447,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
       let details: WorkspaceDetailsType;
       let chatStatus: WorkspaceChatStatusType;
       let status = getState().status;
-
-
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details, chatStatus] =
         await Promise.all([
           reuseExistantValue(true, workspace, () => promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
@@ -372,26 +475,24 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
           reuseExistantValue(true, workspace && workspace.contentDescription,
             () => promisify(mApi().workspace.workspaces.description.cacheClear().read(data.workspaceId), 'callback')()),
 
-
           reuseExistantValue(true, workspace && workspace.producers,
             () => promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
-          reuseExistantValue(true, workspace && workspace.journals, () => null),
+
           getState().status.loggedIn ?
             reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
               () => promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()) : false,
-
 
           reuseExistantValue(true, workspace && workspace.journals, () => null),
 
           (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
             () => promisify(mApi().workspace.workspaces
               .details.read(data.workspaceId), 'callback')()) : null,
+
           getState().status.loggedIn ?
             reuseExistantValue(true, workspace && workspace.chatStatus,
               () => promisify(mApi().chat.workspaceChatSettings.read(data.workspaceId), 'callback')()) : null,
 
         ]) as any
-
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
@@ -419,6 +520,7 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
     }
   }
 }
+
 
 export interface RequestAssessmentAtWorkspaceTriggerType {
   (data: { workspace: WorkspaceType, text: string, success?: () => any, fail?: () => any }): AnyActionType
@@ -593,7 +695,7 @@ export interface LoadStaffMembersOfWorkspaceTriggerType {
 }
 
 export interface LoadStudentsOfWorkspaceTriggerType {
-  (workspace: WorkspaceType, loadOrganizationStudents?: boolean): AnyActionType
+  (workspace: WorkspaceType): AnyActionType
 }
 
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
