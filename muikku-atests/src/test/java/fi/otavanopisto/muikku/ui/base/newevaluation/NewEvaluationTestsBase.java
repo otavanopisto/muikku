@@ -73,11 +73,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
       selectFinnishLocale();
-      waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+      waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
       assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
       waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
       waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-      waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+      waitForVisible(".material-page__field-answer-synchronizer--saved");
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -181,7 +181,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
@@ -204,7 +204,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
-        waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
+        waitForVisible(".assignment-wrapper .muikku-text-field");
         waitUntilContentChanged(".assignment-wrapper .muikku-text-field", "");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
@@ -219,8 +219,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
+        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
+        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -363,11 +363,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
@@ -386,7 +386,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
-        waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
+        waitForVisible(".assignment-wrapper .muikku-text-field");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
@@ -400,8 +400,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
+        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
+        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         
         logout();
@@ -410,7 +410,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__assignment-assessment");
         assertText(".material-page__assignment-assessment .material-page__assignment-assessment-literal-data>p", "Test evaluation.");
-        waitForPresentAndVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
+        waitForVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
         assertText(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data", "Excellent");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -557,7 +557,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
@@ -598,7 +598,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         // TODO Never goes invisible, waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer"); does not work either
         //waitForNotVisible("#workspaceSupplementationEditorContainer");
         
-        waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
+        waitForVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
         assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Admin User pyysi täydennystä");
         
         // TODO Click goes to supplementation request CKEditor which should be hidden at this point

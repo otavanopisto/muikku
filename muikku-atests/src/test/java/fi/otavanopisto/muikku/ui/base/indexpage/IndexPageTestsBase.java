@@ -85,9 +85,9 @@ public class IndexPageTestsBase extends AbstractUITest {
         .build();
       login();
       try{
-        waitForPresentAndVisible(".navbar .button-pill--profile");
+        waitForVisible(".navbar .button-pill--profile");
         assertVisible(".navbar .button-pill--profile");
-        waitForPresentAndVisible(".item-list--panel-workspaces .item-list__text-body");
+        waitForVisible(".item-list--panel-workspaces .item-list__text-body");
         assertVisible(".item-list--panel-workspaces .item-list__text-body");
         assertTextIgnoreCase(".item-list--panel-workspaces .item-list__text-body", "testcourse (test extension)");
       } finally {
