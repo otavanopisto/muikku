@@ -297,15 +297,15 @@ public class ToRTestsBase extends AbstractUITest {
         selectFinnishLocale();        
         navigate("/records", false);
 
-        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");        
-        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date span", "01.01.2012");
+        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");        
+        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-start-date");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-start-date span", "01.01.2012");
 //  TODO: This.
-//        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
-//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
-//        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date");
-//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date span", "10.11.2021");
+//        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
+//        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-end-date");
+//        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--summary-end-date span", "10.11.2021");
         
         waitForPresent(".application-sub-panel__card-header--summary-evaluated");
         assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");

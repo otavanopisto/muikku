@@ -55,23 +55,31 @@ export interface LoadUsersTriggerType {
   (q: string | null, first?: number, last?: number): AnyActionType
 }
 
+function delay(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  })
+}
+
 let createStudent: CreateStudentTriggerType = function createStudent(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.students.create(data.student), 'callback')().then(() => {
-
         mApi().organizationUserManagement.students.cacheClear();
-
-        setTimeout(async () => {
-          dispatch({
-            type: "UPDATE_STUDENT_USERS",
-            payload: await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UserPanelUsersType
-          });
-        }, 2000);
       });
 
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));
       data.success && data.success();
+
+      await delay(2000);
+
+      let users: UserPanelUsersType = await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UserPanelUsersType;
+
+      dispatch({
+        type: "UPDATE_STUDENT_USERS",
+        payload: users
+      });
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -86,18 +94,20 @@ let updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.students.basicInfo.update(data.student.identifier, data.student), 'callback')().then(() => {
-
         mApi().organizationUserManagement.students.cacheClear();
-
-        setTimeout(async () => {
-          dispatch({
-            type: "UPDATE_STUDENT_USERS",
-            payload: await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UserPanelUsersType
-          });
-        }, 2000);
       });
+
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.update.student.success"), 'success'));
       data.success && data.success();
+      await delay(2000);
+
+      let users: UserPanelUsersType = await promisify(mApi().organizationUserManagement.students.read(), 'callback')() as UserPanelUsersType;
+
+      dispatch({
+        type: "UPDATE_STUDENT_USERS",
+        payload: users
+      });
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -112,19 +122,19 @@ let createStaffmember: CreateStaffmemberTriggerType = function createStaffmember
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.staffMembers.create(data.staffmember), 'callback')().then(() => {
-
         mApi().organizationUserManagement.staffMembers.cacheClear();
-
-        setTimeout(async () => {
-          dispatch({
-            type: "UPDATE_STAFF_USERS",
-            payload: await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UserPanelUsersType,
-          });
-        }, 2000);
-
       });
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.staff.success"), 'success'));
       data.success && data.success();
+
+      await delay(2000);
+
+      let users: UserPanelUsersType = await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UserPanelUsersType;
+      dispatch({
+        type: "UPDATE_STAFF_USERS",
+        payload: users
+      });
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -139,19 +149,19 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.staffMembers.update(data.staffmember.identifier, data.staffmember), 'callback')().then(() => {
-
         mApi().organizationUserManagement.staffMembers.cacheClear();
-
-        setTimeout(async () => {
-          dispatch({
-            type: "UPDATE_STAFF_USERS",
-            payload: await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UserPanelUsersType
-          });
-        }, 2000);
-
       });
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.update.staff.success"), 'success'));
       data.success && data.success();
+
+      await delay(2000);
+
+      let users: UserPanelUsersType = await promisify(mApi().organizationUserManagement.staffMembers.read(), 'callback')() as UserPanelUsersType;
+      dispatch({
+        type: "UPDATE_STAFF_USERS",
+        payload: users
+      });
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;

@@ -14,7 +14,6 @@ import {
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
-import { SelectItem } from '~/components/base/input-select-autofill';
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
@@ -90,6 +89,13 @@ export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<"UPDATE
   material: MaterialContentNodeType,
   newPath: string;
 }>;
+
+export interface SelectItem {
+  id: string | number,
+  label: string,
+  type?: string,
+  disabled?: boolean
+}
 
 export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType
@@ -562,8 +568,6 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (loadOrganizationWorkspaceFilters: boolean, callback?: (curriculums: WorkspaceCurriculumFilterListType) => any): AnyActionType
 }
 
-
-
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
   (callback?: (organizations: WorkspaceOrganizationFilterListType) => any): AnyActionType;
 }
@@ -577,7 +581,8 @@ export interface UpdateWorkspaceTriggerType {
     addTeachers?: SelectItem[],
     removeStudents?: SelectItem[],
     removeTeachers?: SelectItem[],
-    success?: (state?: UpdateWorkspaceStateType) => any,
+    success?: () => any,
+    progress?: (state?: UpdateWorkspaceStateType) => any,
     executeOnSuccess?: () => any;
     fail?: () => any
   }): AnyActionType
@@ -888,7 +893,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         await promisify(mApi().workspace.workspaces.update(data.workspace.id,
           Object.assign(data.workspace, data.update)
         ), 'callback')().then(
-          data.success && data.success("WORKSPACE-UPDATE")
+          data.progress && data.progress("workspace-update")
         );
       }
 
@@ -911,7 +916,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
             studentGroupIds: groupIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-STUDENTS")
+            data.progress && data.progress("add-students")
           );
       }
 
@@ -923,37 +928,38 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
             staffMemberIdentifiers: staffMemberIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-TEACHERS")
+            data.progress && data.progress("add-teachers")
           );
       }
 
-      if (data.removeStudents.length > 0) {
-        let studentIdentifiers = data.removeStudents.map(student => student.id);
+      // if (data.removeStudents.length > 0) {
+      //   let studentIdentifiers = data.removeStudents.map(student => student.id);
 
-        // await promisify(mApi().organizationmanagement.workspaces.students
-        //   .del(data.workspace.id, {
-        //     studentIdentifiers: studentIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.success && data.success("REMOVE-STUDENTS")
-        //   );
-      }
+      // await promisify(mApi().organizationmanagement.workspaces.students
+      //   .del(data.workspace.id, {
+      //     studentIdentifiers: studentIdentifiers
+      //   }
+      //   ), 'callback')().then(
+      //     data.progress && data.progress("remove-students")
+      //   );
+      // }
 
-      if (data.removeTeachers.length > 0) {
-        let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
+      // if (data.removeTeachers.length > 0) {
+      //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
 
-        // await promisify(mApi().organizationmanagement.workspaces.staff
-        //   .del(data.workspace.id, {
-        //     staffMemberIdentifiers: staffMemberIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.success && data.success("REMOVE-TEACHERS")
-        //   );
-      }
+      // await promisify(mApi().organizationmanagement.workspaces.staff
+      //   .del(data.workspace.id, {
+      //     staffMemberIdentifiers: staffMemberIdentifiers
+      //   }
+      //   ), 'callback')().then(
+      //     data.progress && data.progress("remove-teachers")
+      //   );
+      // }
 
       //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 
-      data.success && data.success("DONE");
+      data.progress && data.progress("done");
+      data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -983,7 +989,7 @@ let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTrig
         return {
           id: staffMember.id,
           label: staffMember.firstName + " " + staffMember.lastName,
-          icon: "user",
+          type: "user",
           disabled: true
         }
       });
@@ -1054,7 +1060,7 @@ let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTrigg
         return {
           id: student.userIdentifier,
           label: student.firstName + " " + student.lastName,
-          icon: "user",
+          type: "user",
           disabled: true
         }
       });
@@ -1370,8 +1376,8 @@ export interface CopyCurrentWorkspaceTriggerType {
   }): AnyActionType
 }
 
-export type CreateWorkspaceStateType = "WORKSPACE-CREATE" | "ADD-STUDENTS" | "ADD-TEACHERS" | "DONE";
-export type UpdateWorkspaceStateType = "WORKSPACE-UPDATE" | "ADD-STUDENTS" | "REMOVE-STUDENTS" | "ADD-TEACHERS" | "REMOVE-TEACHERS" | "DONE";
+export type CreateWorkspaceStateType = "workspace-create" | "add-students" | "add-teachers" | "done";
+export type UpdateWorkspaceStateType = "workspace-update" | "add-students" | "remove-students" | "add-teachers" | "remove-teachers" | "done";
 
 
 export interface CreateWorkspaceTriggerType {
@@ -1381,8 +1387,9 @@ export interface CreateWorkspaceTriggerType {
     access?: string,
     nameExtension?: string,
     students: SelectItem[],
-    staff?: SelectItem[],
-    success: (state: CreateWorkspaceStateType) => any,
+    staff: SelectItem[],
+    progress?: (state?: CreateWorkspaceStateType) => any,
+    success: () => any,
     fail: () => any,
   }): AnyActionType
 }
@@ -1704,10 +1711,8 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           {
             sourceWorkspaceEntityId: data.id
           }), 'callback')().then(
-            data.success && data.success("WORKSPACE-CREATE")
+            data.progress && data.progress("workspace-create")
           ));
-
-      data.success && data.success("WORKSPACE-CREATE")
 
       if (data.students.length > 0) {
         let groupIdentifiers: number[] = [];
@@ -1729,10 +1734,8 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
             studentGroupIds: groupIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-STUDENTS")
+            data.progress && data.progress("add-students")
           );
-        data.success && data.success("ADD-STUDENTS");
-
       }
 
       if (data.staff.length > 0) {
@@ -1743,13 +1746,12 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
             staffMemberIdentifiers: staffMemberIdentifiers
           }
           ), 'callback')().then(
-            data.success && data.success("ADD-TEACHERS")
+            data.progress && data.progress("add-teachers")
           );
-
-        data.success && data.success("ADD-TEACHERS")
       }
 
-      data.success && data.success("DONE");
+      data.progress && data.progress("done");
+      data.success && data.success();
 
     } catch (err) {
       if (!(err instanceof MApiError)) {

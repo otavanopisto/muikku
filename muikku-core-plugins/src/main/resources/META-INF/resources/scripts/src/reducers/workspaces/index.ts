@@ -1,5 +1,5 @@
 import { ActionType } from '~/actions';
-import { SelectItem } from '~/components/base/input-select-autofill';
+import { SelectItem } from '~/actions/workspaces/index';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { repairContentNodes } from '~/util/modifiers';
 

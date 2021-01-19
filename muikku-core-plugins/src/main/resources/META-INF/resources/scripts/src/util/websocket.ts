@@ -381,7 +381,7 @@ export default class MuikkuWebsocket {
           // Reconnect retry failed, retry after reconnectInterval
           this.reconnectHandler = setTimeout(()=>{
             this.reconnect();
-          }, this.options.reconnectInterval);
+          }, this.options.reconnectInterval) as any;
         }
       }
     });
