@@ -1,7 +1,7 @@
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
-import { UsersListType, UserPanelUsersType, UsersSelectType, UserStatusType, StudyprogrammeListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
+import { UsersListType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType, StudyprogrammeListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
 import { UserGroupType, UpdateUserType, CreateUserType, UserGroupListType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
@@ -382,7 +382,7 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(q
         payload: null
       });
       if (getStudents !== null) {
-        await promisify(getStudents, 'callback')().then((users: UserPanelUsersType) => {
+        await promisify(getStudents, 'callback')().then((users: OrganizationUsersListType) => {
           dispatch({
             type: "UPDATE_STUDENT_SELECTOR",
             payload: users.results
@@ -430,7 +430,7 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: str
         payload: null
       });
       if (getStaff !== null) {
-        await promisify(getStaff, 'callback')().then((users: UserPanelUsersType) => {
+        await promisify(getStaff, 'callback')().then((users: OrganizationUsersListType) => {
           dispatch({
             type: "UPDATE_STAFF_SELECTOR",
             payload: users.results
