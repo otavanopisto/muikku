@@ -382,10 +382,10 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(q
         payload: null
       });
       if (getStudents !== null) {
-        await promisify(getStudents, 'callback')().then((users: UsersListType) => {
+        await promisify(getStudents, 'callback')().then((users: UserPanelUsersType) => {
           dispatch({
             type: "UPDATE_STUDENT_SELECTOR",
-            payload: users
+            payload: users.results
           });
         });
       } else {
@@ -430,10 +430,10 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: str
         payload: null
       });
       if (getStaff !== null) {
-        await promisify(getStaff, 'callback')().then((users: UsersListType) => {
+        await promisify(getStaff, 'callback')().then((users: UserPanelUsersType) => {
           dispatch({
             type: "UPDATE_STAFF_SELECTOR",
-            payload: users
+            payload: users.results
           });
         });
       } else {
