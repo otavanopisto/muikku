@@ -176,8 +176,8 @@ public class CourseUsersTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/users", workspace1.getUrlName()), false);
         waitAndClick(".application-list--workspace-users .application-list__item-content-actions .icon-envelope");
-        waitForPresentAndVisible(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item");
-        assertText(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item", "Student Tester");
+        waitForPresentAndVisible(".env-dialog--new-message.visible .autocomplete__input .tag-input__selected-item");
+        assertText(".env-dialog--new-message.visible .autocomplete__input .tag-input__selected-item", "Student Tester");
         
         waitForPresentAndVisible(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
         scrollIntoView(".env-dialog__footer .env-dialog__actions .button--dialog-execute");

@@ -6,6 +6,14 @@ export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR
 export type UsersListType = Array<UserType>;
 export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
+
+export interface OrganizationUsersListType {
+  firstResult: number,
+  lastResult: number,
+  results: UsersListType,
+  totalHitCount: number
+}
+
 export interface StudyprogrammeTypes {
   list: StudyprogrammeListType,
   status: StudyprogrammeTypeStatusType

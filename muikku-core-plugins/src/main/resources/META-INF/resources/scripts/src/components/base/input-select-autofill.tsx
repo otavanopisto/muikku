@@ -4,21 +4,18 @@ import TagInput from '~/components/general/tag-input';
 import { filterHighlight, getName } from '~/util/modifiers';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
+import { SelectItem } from '~/actions/workspaces/index';
 
-export interface SelectItem {
-  id: string | number,
-  label: string,
+export interface UiSelectItem extends SelectItem {
   icon?: string,
-  type?: string,
-  disabled?: boolean
 }
 
 export interface AutofillSelectorProps {
   placeholder?: string,
   label?: string,
   modifier: string,
-  searchItems: SelectItem[],
-  selectedItems: SelectItem[],
+  searchItems: UiSelectItem[],
+  selectedItems: UiSelectItem[],
   autofocus?: boolean,
   onDelete: (select: SelectItem) => any,
   onSelect: (select: SelectItem) => any,
@@ -26,8 +23,8 @@ export interface AutofillSelectorProps {
 }
 
 export interface AutofillSelectorState {
-  searchItems: SelectItem[],
-  selectedItems: SelectItem[],
+  searchItems: UiSelectItem[],
+  selectedItems: UiSelectItem[],
   textInput: string,
   autocompleteOpened: boolean,
   isFocused: boolean
@@ -87,7 +84,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     }
   }
 
-  onAutocompleteItemClick(item: SelectItem, selected: boolean) {
+  onAutocompleteItemClick(item: UiSelectItem, selected: boolean) {
     if (!selected) {
       this.props.onSelect(item);
       this.setState({ isFocused: true, autocompleteOpened: false, textInput: "" });

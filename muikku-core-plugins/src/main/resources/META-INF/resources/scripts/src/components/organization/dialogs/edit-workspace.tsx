@@ -10,7 +10,8 @@ import {
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
-import AutofillSelector, { SelectItem } from '~/components/base/input-select-autofill';
+import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
+import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { isThisTypeNode } from 'typescript';
@@ -43,10 +44,10 @@ interface OrganizationEditWorkspaceState {
   workspaceAccess: WorkspaceAccessType,
   locked: boolean,
   currentStep: number,
-  addStaff: SelectItem[],
-  addStudents: SelectItem[],
-  removeStaff: SelectItem[],
-  removeStudents: SelectItem[],
+  addStaff: UiSelectItem[],
+  addStudents: UiSelectItem[],
+  removeStaff: UiSelectItem[],
+  removeStudents: UiSelectItem[],
   selectedStaff: SelectItem[],
   selectedStudents: SelectItem[],
   staffLoaded: boolean,
@@ -250,23 +251,25 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       removeTeachers: this.state.removeStaff,
       addStudents: this.state.addStudents,
       addTeachers: this.state.addStaff,
-      success: (state: UpdateWorkspaceStateType) => {
-        if (state === "WORKSPACE-UPDATE") {
+      progress: (state: UpdateWorkspaceStateType) => {
+        if (state === "workspace-update") {
           this.setState({
             workspaceUpdated: true
           });
-        } else if (state === "ADD-STUDENTS") {
+        } else if (state === "add-students") {
           this.setState({
             studentsAdded: true
           });
-        } else if (state === "ADD-TEACHERS") {
+        } else if (state === "add-teachers") {
           this.setState({
             staffAdded: true
           });
-        } else if (state === "DONE") {
+        } else if (state === "done") {
           setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
-          closeDialog();
         }
+      },
+      success: () => {
+        closeDialog();
       },
       fail: () => {
         closeDialog();

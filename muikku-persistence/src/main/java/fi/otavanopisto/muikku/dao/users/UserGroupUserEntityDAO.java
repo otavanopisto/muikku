@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.dao.users;
 
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,7 +11,13 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import fi.otavanopisto.muikku.dao.CoreDAO;
+import fi.otavanopisto.muikku.dao.Predicates;
+import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.base.SchoolDataSource_;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity_;
@@ -18,6 +25,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity_;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
 
@@ -77,6 +85,31 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public UserGroupUserEntity findByGroupAndUser(UserGroupEntity userGroupEntity, SchoolDataIdentifier userIdentifier, Archived archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupUserEntity> criteria = criteriaBuilder.createQuery(UserGroupUserEntity.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserSchoolDataIdentifier> userSchoolDataIdentifier = root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
+    Join<UserSchoolDataIdentifier, SchoolDataSource> schoolDataSource = userSchoolDataIdentifier.join(UserSchoolDataIdentifier_.dataSource);
+    
+    Predicates predicates = Predicates.newInstance()
+        .add(criteriaBuilder.equal(root.get(UserGroupUserEntity_.userGroupEntity), userGroupEntity))
+        .add(criteriaBuilder.equal(schoolDataSource.get(SchoolDataSource_.identifier), userIdentifier.getDataSource()))
+        .add(criteriaBuilder.equal(userSchoolDataIdentifier.get(UserSchoolDataIdentifier_.identifier), userIdentifier.getIdentifier()));
+    
+    if (archived.isBoolean()) {
+      predicates.add(criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), archived.booleanValue()));
+    }
+    
+    criteria
+      .select(root)
+      .where(criteriaBuilder.and(predicates.array()));
+   
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
   public List<UserGroupUserEntity> listByUserGroupEntityAndArchived(UserGroupEntity userGroupEntity, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     
@@ -90,6 +123,38 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
         criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), archived)
       )
     );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<UserGroupUserEntity> listUserGroupStaffMembers(UserGroupEntity userGroupEntity, Archived archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupUserEntity> criteria = criteriaBuilder.createQuery(UserGroupUserEntity.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserSchoolDataIdentifier> userSchoolDataIdentifier = root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
+    Join<UserSchoolDataIdentifier, EnvironmentRoleEntity> environmentRole = userSchoolDataIdentifier.join(UserSchoolDataIdentifier_.role);
+
+    EnumSet<EnvironmentRoleArchetype> staffMemberRoles = EnumSet.of(
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER
+    ); 
+    
+    Predicates predicates = Predicates.newInstance()
+        .add(criteriaBuilder.equal(root.get(UserGroupUserEntity_.userGroupEntity), userGroupEntity))
+        .add(environmentRole.get(EnvironmentRoleEntity_.archetype).in(staffMemberRoles));
+    
+    if (archived.isBoolean()) {
+      predicates.add(criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), archived.booleanValue()));
+    }
+    
+    criteria
+      .select(root)
+      .where(criteriaBuilder.and(predicates.array()));
    
     return entityManager.createQuery(criteria).getResultList();
   }

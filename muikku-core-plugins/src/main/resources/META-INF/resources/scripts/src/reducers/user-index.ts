@@ -70,6 +70,11 @@ export interface UserWithSchoolDataType {
   userEntityId: number
 }
 
+export interface UserChatSettingsType {
+  visibility: "DISABLED" | "VISIBLE_TO_ALL",
+  nick?: string
+}
+
 export interface OrganizationType {
   id: number,
   name: string
@@ -182,6 +187,10 @@ export interface StudentUserAddressType {
   defaultAddress: boolean
 }
 
+export interface StudentUserProfileChatType {
+  userIdentifier: string,
+  visibility: any
+}
 
 export interface LastLoginStudentDataType {
   userIdentifier: string,
