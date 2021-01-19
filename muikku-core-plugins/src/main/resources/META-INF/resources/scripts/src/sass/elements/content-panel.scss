@@ -176,18 +176,18 @@
   top: 0;
   width: 90%;
   scrollbar-width: thin;
-  scrollbar-color: #555 #f4f4f4;
+  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
 
   &::-webkit-scrollbar {
     width: 7.5px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f4f4f4; 
+    background: $color-scrollbar-background; 
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #555;
+    background: $color-scrollbar-handle;
   }
 
   @include breakpoint($breakpoint-pad) {
