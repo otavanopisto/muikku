@@ -164,7 +164,6 @@
 }
 
 .content-panel__navigation-content {
-  @include no-scrollbars;
   @include prefix(transition, webkit moz o ms, right 0.3s);
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
@@ -176,6 +175,20 @@
   right: 0;
   top: 0;
   width: 90%;
+  scrollbar-width: thin;
+  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
+
+  &::-webkit-scrollbar {
+    width: 7.5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-scrollbar-background; 
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-scrollbar-handle;
+  }
 
   @include breakpoint($breakpoint-pad) {
     width: 70%;
