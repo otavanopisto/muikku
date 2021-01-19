@@ -257,9 +257,9 @@ public class FlagTestsBase extends AbstractUITest {
       waitForVisible(".button--guider-share-label");
       waitAndClick(".button--guider-share-label");
 
-      waitForVisible(".autocomplete--guider .env-dialog__input");
-      waitAndClick(".autocomplete--guider .env-dialog__input");
-      sendKeys(".autocomplete--guider .env-dialog__input", "test");
+      waitForVisible(".autocomplete--guider .tag-input__input--guider");
+      waitAndClick(".autocomplete--guider .tag-input__input--guider");
+      sendKeys(".autocomplete--guider .tag-input__input--guider", "test");
       waitForVisible(".glyph--autocomplete-recipient");
 
       waitAndClick(".glyph--autocomplete-recipient");
