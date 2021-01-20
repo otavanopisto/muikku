@@ -16,30 +16,30 @@ import fi.otavanopisto.muikku.session.SessionController;
 @RequestScoped
 public class WidgetsBackingBean {
 
-	@Inject
-	private SessionController sessionController;
+  @Inject
+  private SessionController sessionController;
 
-	@Inject
-	private WidgetController widgetController;
-	
-	public List<LocatedWidget> getWidgets(String location) {
-		List<LocatedWidget> result = new ArrayList<>();
-		boolean loggedIn = sessionController.isLoggedIn();
-		
-		if (loggedIn) {
+  @Inject
+  private WidgetController widgetController;
+  
+  public List<LocatedWidget> getWidgets(String location) {
+    List<LocatedWidget> result = new ArrayList<>();
+    boolean loggedIn = sessionController.isLoggedIn();
+    
+    if (loggedIn) {
       result.addAll(widgetController.listWidgetSpaceUserWidgets(location, sessionController.getLoggedUserEntity()));
     }
-		
+    
     if (result.isEmpty()) {
-    	if (loggedIn) {
+      if (loggedIn) {
         result.addAll(widgetController.listWidgetSpaceDefaultWidgetsByVisibilities(location, Arrays.asList(WidgetVisibility.EVERYONE, WidgetVisibility.AUTHENTICATED)));
-    	} else {
+      } else {
         result.addAll(widgetController.listWidgetSpaceDefaultWidgetsByVisibilities(location, Arrays.asList(WidgetVisibility.EVERYONE, WidgetVisibility.UNAUTHENTICATED)));
-    	}
+      }
     }
     
-		// TODO PK: widget order?
-		return result;
-	}
-	
+    // TODO PK: widget order?
+    return result;
+  }
+  
 }

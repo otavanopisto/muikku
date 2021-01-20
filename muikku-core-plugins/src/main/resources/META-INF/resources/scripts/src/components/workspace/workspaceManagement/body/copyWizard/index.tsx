@@ -15,14 +15,14 @@ interface CopyWizardProps {
   workspace: WorkspaceType,
   i18n: i18nType,
   copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType,
-  onDone: ()=>any
+  onDone: () => any
 }
 
 interface CopyWizardState {
   store: CopyWizardStoreType,
   locked: boolean,
   resultingWorkspace?: WorkspaceType,
-  step?: CopyCurrentWorkspaceStepType
+  step?: CopyCurrentWorkspaceStepType,
 }
 
 export interface CopyWizardStoreType {
@@ -40,7 +40,7 @@ export type CopyWizardStoreUpdateType = Partial<CopyWizardStoreType>;
 
 class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
   private store: CopyWizardStoreType;
-  constructor(props: CopyWizardProps){
+  constructor(props: CopyWizardProps) {
     super(props);
 
     this.state = {
@@ -48,7 +48,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
         description: props.workspace.description,
         name: props.workspace.name,
         nameExtension: props.workspace.nameExtension,
-        beginDate:  props.workspace.additionalInfo.beginDate != null ? moment(props.workspace.additionalInfo.beginDate) : null,
+        beginDate: props.workspace.additionalInfo.beginDate != null ? moment(props.workspace.additionalInfo.beginDate) : null,
         endDate: props.workspace.additionalInfo.beginDate != null ? moment(props.workspace.additionalInfo.endDate) : null,
         copyDiscussionAreas: false,
         copyMaterials: "CLONE",
@@ -69,7 +69,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
 
   updateStore(update: CopyWizardStoreUpdateType) {
     this.setState({
-      store:{
+      store: {
         ...this.state.store,
         ...update,
       }
@@ -85,22 +85,22 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       description: this.state.store.description,
       name: this.state.store.name,
       nameExtension: this.state.store.nameExtension,
-      beginDate: this.state.store.beginDate != null ? this.state.store.beginDate.toISOString() : null ,
-      endDate:  this.state.store.endDate != null ? this.state.store.endDate.toISOString() : null,
+      beginDate: this.state.store.beginDate != null ? this.state.store.beginDate.toISOString() : null,
+      endDate: this.state.store.endDate != null ? this.state.store.endDate.toISOString() : null,
       copyDiscussionAreas: this.state.store.copyDiscussionAreas,
       copyMaterials: this.state.store.copyMaterials,
       copyBackgroundPicture: this.state.store.copyBackgroundPicture,
-      success: (step, workspace)=>{
+      success: (step, workspace) => {
         this.setState({
           step
         });
-        if (step === "done") {
+        if (step === "done") {
           this.setState({
             resultingWorkspace: workspace
           });
         }
       },
-      fail: ()=>{
+      fail: () => {
         this.setState({
           locked: false
         });
@@ -108,7 +108,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     });
   }
 
-  checkLastStep(steps: Array<any>, step: number){
+  checkLastStep(steps: Array<any>, step: number) {
     if (step === steps.length - 1) {
       this.copyWorkspace();
     }
@@ -125,22 +125,22 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       step: this.state.step
     }
     const steps =
-    [
-     {
-       name: this.props.i18n.text.get("plugin.workspace.management.wizard.step1"),
-       component: <Step1 {...props}/>
-     }
-    ]
+      [
+        {
+          name: this.props.i18n.text.get("plugin.workspace.management.wizard.step1"),
+          component: <Step1 {...props} />
+        }
+      ]
 
     //The reason step 6 is twice is so that the user can review before
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
       name: this.props.i18n.text.get("plugin.workspace.management.wizard.step6"),
-      component: <Step2 {...props}/>
+      component: <Step2 {...props} />
     });
     steps.push({
       name: this.props.i18n.text.get("plugin.workspace.management.wizard.finalStep"),
-      component: <Step2 {...props}/>
+      component: <Step2 {...props} />
     });
 
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
@@ -160,22 +160,22 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             nextButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.next")}
             backButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.last")}
             onStepChange={this.checkLastStep.bind(this, steps)}
-           />
+          />
         </div>
       </div>
     )
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces && state.workspaces.currentWorkspace
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({copyCurrentWorkspace}, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators({ copyCurrentWorkspace }, dispatch);
 };
 
 export default connect(

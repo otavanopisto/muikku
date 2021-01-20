@@ -137,3 +137,16 @@
 .dropdown--material-management-tooltip .dropdown__container {
   padding: 5px 10px;
 }
+
+.dropdown--chat {
+
+  .dropdown__container-item {
+    display: block;
+    height: 2rem;
+    margin: 0 0 1px;
+    min-width: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+
+}

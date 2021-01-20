@@ -26,7 +26,8 @@ import {
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType,
   updateWorkspaceDetailsForCurrentWorkspace, UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
-  UpdateCurrentWorkspaceUserGroupPermissionTriggerType, updateCurrentWorkspaceUserGroupPermission} from "~/actions/workspaces";
+  UpdateCurrentWorkspaceUserGroupPermissionTriggerType, updateCurrentWorkspaceUserGroupPermission
+} from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { filterMatch, filterHighlight } from "~/util/modifiers";
@@ -76,7 +77,7 @@ interface ManagementPanelState {
 }
 
 class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPanelState> {
-  constructor(props: ManagementPanelProps){
+  constructor(props: ManagementPanelProps) {
     super(props);
     this.state = {
       workspaceName: props.workspace ? props.workspace.name : null,
@@ -122,7 +123,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.updateWorkspaceUsergroupNameFilter = this.updateWorkspaceUsergroupNameFilter.bind(this);
     this.save = this.save.bind(this);
   }
-  componentWillReceiveProps(nextProps: ManagementPanelProps){
+  componentWillReceiveProps(nextProps: ManagementPanelProps) {
     this.setState({
       workspaceName: nextProps.workspace ? nextProps.workspace.name : null,
       workspacePublished: nextProps.workspace ? nextProps.workspace.published : null,
@@ -135,17 +136,17 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
       workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
-      workspaceChatStatus: nextProps.workspace ? nextProps.workspace.chatStatus  : null,
+      workspaceChatStatus: nextProps.workspace ? nextProps.workspace.chatStatus : null,
       workspacePermissions: nextProps.workspace && nextProps.workspace.permissions ? nextProps.workspace.permissions : [],
     });
 
   }
-  updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>){
+  updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       workspaceName: e.target.value
     });
   }
-  setWorkspacePublishedTo(value: boolean){
+  setWorkspacePublishedTo(value: boolean) {
     this.setState({
       workspacePublished: value
     });
@@ -155,32 +156,32 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceChatStatus: value
     });
   }
-  setWorkspaceAccessTo(value: WorkspaceAccessType){
+  setWorkspaceAccessTo(value: WorkspaceAccessType) {
     this.setState({
       workspaceAccess: value
     });
   }
-  updateWorkspaceExtension(e: React.ChangeEvent<HTMLInputElement>){
+  updateWorkspaceExtension(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       workspaceExtension: e.target.value
     });
   }
-  updateWorkspaceType(e: React.ChangeEvent<HTMLSelectElement>){
+  updateWorkspaceType(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
       workspaceType: e.target.value
     });
   }
-  updateStartDate(newDate: any){
+  updateStartDate(newDate: any) {
     this.setState({
       workspaceStartDate: newDate
     });
   }
-  updateEndDate(newDate: any){
+  updateEndDate(newDate: any) {
     this.setState({
       workspaceEndDate: newDate
     });
   }
-  updateCurrentWorkspaceProducerInputValue(e: React.ChangeEvent<HTMLInputElement>){
+  updateCurrentWorkspaceProducerInputValue(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       currentWorkspaceProducerInputValue: e.target.value
     });
@@ -190,12 +191,14 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceUsergroupNameFilter: e.target.value
     });
   }
-  checkIfEnterKeyIsPressedAndAddProducer(e: React.KeyboardEvent<HTMLInputElement>){
+
+  checkIfEnterKeyIsPressedAndAddProducer(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.keyCode == 13) {
       this.addProducer(this.state.currentWorkspaceProducerInputValue);
     }
   }
-  addProducer(name: string){
+
+  addProducer(name: string) {
     this.setState({
       currentWorkspaceProducerInputValue: "",
       workspaceProducers: [...this.state.workspaceProducers, {
@@ -203,33 +206,35 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       }]
     });
   }
-  removeProducer(index: number){
+  removeProducer(index: number) {
     this.setState({
-      workspaceProducers: this.state.workspaceProducers.filter((p, i)=>i !== index)
+      workspaceProducers: this.state.workspaceProducers.filter((p, i) => i !== index)
     });
   }
-  onDescriptionChange(text: string){
+  onDescriptionChange(text: string) {
     this.setState({
       workspaceDescription: text
     });
   }
-  updateLicense(newLicense: string){
+  updateLicense(newLicense: string) {
     this.setState({
       workspaceLicense: newLicense
     });
   }
-  removeCustomImage(){
+
+  removeCustomImage() {
     this.setState({
       isDeleteImageDialogOpen: true,
     });
   }
-  readNewImage(e: React.ChangeEvent<HTMLInputElement>){
+
+  readNewImage(e: React.ChangeEvent<HTMLInputElement>) {
     let file = e.target.files[0];
     let reader = new FileReader();
 
     e.target.value = "";
 
-    reader.addEventListener("load", ()=>{
+    reader.addEventListener("load", () => {
       this.setState({
         newWorkspaceImageB64: String(reader.result),
         newWorkspaceImageFile: file,
@@ -242,18 +247,17 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       reader.readAsDataURL(file);
     }
   }
-  editCurrentImage(){
-
+  editCurrentImage() {
     // let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
 
-    if (this.state.newWorkspaceImageCombo){
+    if (this.state.newWorkspaceImageCombo) {
       this.setState({
         newWorkspaceImageSrc: this.state.newWorkspaceImageCombo.originalB64,
         isImageDialogOpen: true,
         newWorkspaceImageB64: this.state.newWorkspaceImageCombo.originalB64,
         newWorkspaceImageFile: this.state.newWorkspaceImageCombo.file
       });
-    } else if (this.props.workspace.hasCustomImage){
+    } else if (this.props.workspace.hasCustomImage) {
       this.setState({
         newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
         isImageDialogOpen: true,
@@ -268,7 +272,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceHasCustomImage: false
     });
   }
-  acceptNewImage(croppedB64: string, originalB64?: string, file?: File){
+
+  acceptNewImage(croppedB64: string, originalB64?: string, file?: File) {
     this.setState({
       workspaceHasCustomImage: true,
       newWorkspaceImageCombo: {
@@ -282,10 +287,10 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.setState({
       workspacePermissions: this.state.workspacePermissions.map((pte) => {
         if (pte.userGroupEntityId === permission.userGroupEntityId) {
-          const newPermission = {...permission};
+          const newPermission = { ...permission };
           newPermission.permissions = newPermission.permissions.includes(valueToToggle) ?
-              newPermission.permissions.filter(v => v !== valueToToggle) :
-              [valueToToggle].concat(newPermission.permissions);
+            newPermission.permissions.filter(v => v !== valueToToggle) :
+            [valueToToggle].concat(newPermission.permissions);
           return newPermission;
         }
         return pte;
@@ -293,10 +298,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     });
   }
   saveImage(croppedB64: string, originalB64?: string, file?: File) {
-   this.props.updateCurrentWorkspaceImagesB64({
+
+    this.props.updateCurrentWorkspaceImagesB64({
       originalB64: originalB64,
       croppedB64: croppedB64,
-      success: ()=>{
+      success: () => {
         this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage.saved"), "success");
       },
     });
@@ -310,24 +316,24 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       }
     });
   }
-  save(){
+  save() {
     this.setState({
       locked: true
     });
 
     let totals = 0;
     let done = 0;
-    let onDone = ()=>{
+    let onDone = () => {
       done++;
 
-      if (done === totals){
+      if (done === totals) {
         this.setState({
           locked: false
         });
       }
     }
     let payload: WorkspaceUpdateType = {};
-    let workspaceUpdate:WorkspaceUpdateType = {
+    let workspaceUpdate: WorkspaceUpdateType = {
       name: this.state.workspaceName,
       published: this.state.workspacePublished,
       access: this.state.workspaceAccess,
@@ -336,7 +342,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       description: this.state.workspaceDescription,
       hasCustomImage: this.state.workspaceHasCustomImage,
     }
-    let currentWorkspaceAsUpdate:WorkspaceUpdateType = {
+    let currentWorkspaceAsUpdate: WorkspaceUpdateType = {
       name: this.props.workspace.name,
       published: this.props.workspace.published,
       access: this.props.workspace.access,
@@ -346,17 +352,16 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       hasCustomImage: this.props.workspace.hasCustomImage,
     }
 
-    if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)){
+    if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)) {
       totals++;
-
-      payload = Object.assign(workspaceUpdate, payload) ;
+      payload = Object.assign(workspaceUpdate, payload);
     }
 
     let workspaceMaterialProducers = this.state.workspaceProducers;
 
-    if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
+    if (!equals(workspaceMaterialProducers, this.props.workspace.producers)) {
       totals++;
-      payload = Object.assign({producers: workspaceMaterialProducers}, payload);
+      payload = Object.assign({ producers: workspaceMaterialProducers }, payload);
     }
 
     // Chat
@@ -366,10 +371,10 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
       totals++;
-      payload = Object.assign({chatStatus: workspaceChatStatus}, payload);
+      payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
     }
 
-    let workspaceDetails:WorkspaceDetailsType = {
+    let workspaceDetails: WorkspaceDetailsType = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.state.workspaceType,
       beginDate: this.state.workspaceStartDate ? this.state.workspaceStartDate.toISOString() : null,
@@ -389,13 +394,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       indexFolderId: this.props.workspace.details.indexFolderId,
     }
 
-    if (!equals(workspaceDetails, currentWorkspaceAsDetails)){
+    if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
       totals++;
-      payload = Object.assign({details: workspaceDetails}, payload);
+      payload = Object.assign({ details: workspaceDetails }, payload);
     }
 
     if (!equals(this.props.workspace.permissions, this.state.workspacePermissions)) {
-      let permissionsArray:WorkspacePermissionsType[]=[];
+      let permissionsArray: WorkspacePermissionsType[] = [];
 
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
@@ -404,13 +409,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           permissionsArray.push(permission);
         }
       });
-      payload = Object.assign({permissions: permissionsArray}, payload);
+      payload = Object.assign({ permissions: permissionsArray }, payload);
     }
 
     this.props.updateWorkspace({
       workspace: this.props.workspace,
       update: payload,
-      success: ()=>{
+      success: () => {
         this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.save.successful"), "success");
         onDone();
       },
@@ -419,11 +424,12 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     onDone();
   }
-  render(){
+
+  render() {
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ?
       `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped` :
       "/gfx/workspace-default-header.jpg";
-    if (this.state.newWorkspaceImageCombo){
+    if (this.state.newWorkspaceImageCombo) {
       actualBackgroundSRC = this.state.newWorkspaceImageCombo.croppedB64;
     }
 
@@ -648,7 +654,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
@@ -657,14 +663,15 @@ function mapStateToProps(state: StateType){
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({
     updateWorkspace, updateWorkspaceProducersForCurrentWorkspace,
     updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification,
-    updateCurrentWorkspaceUserGroupPermission}, dispatch);
+    updateCurrentWorkspaceUserGroupPermission
+  }, dispatch);
 };
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(ManagementPanel);

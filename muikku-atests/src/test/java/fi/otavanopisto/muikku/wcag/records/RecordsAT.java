@@ -122,7 +122,7 @@ public class RecordsAT extends AbstractWCAGTest{
         waitForPresentXPath("//a[@href='#yo']");
         testAccessibility("Records view HOPS");
         navigate("/records", false);
-        waitForPresentAndVisible(".filter--graph-filter");
+        waitForVisible(".filter--graph-filter");
         testAccessibility("Records view summary");
       }finally {
         deleteWorkspace(workspace.getId());

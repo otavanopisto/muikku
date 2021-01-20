@@ -467,16 +467,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     path = StringUtils.substring(path, StringUtils.lastIndexOf(path, "/"));
     return path;
   }
-
-  protected void waitForPresentAndVisible(String selector) {
-    waitForPresent(selector);
-    waitForVisible(selector);
-  }
-  
-  protected void waitForPresentAndVisibleXPath(String XPath) {
-    waitForPresentXPath(XPath);
-    waitForVisibleXPath(XPath);
-  }
   
   protected void refresh() {
     getWebDriver().navigate().refresh();
@@ -953,7 +943,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void hoverOverElement(String selector) {
     Actions action = new Actions(getWebDriver());
-    waitForPresentAndVisible(selector);
+    waitForVisible(selector);
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
   
@@ -1014,7 +1004,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", false);
-    waitForPresentAndVisible(".navbar .button-pill--profile");
+    waitForVisible(".navbar .button-pill--profile");
   }
   
   protected void login() {
@@ -1604,9 +1594,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void addToEndCKEditor(String text) {
-      waitForPresentAndVisible(".cke_contents");
+      waitForVisible(".cke_contents");
       String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForPresentAndVisible(".cke_contents");
+      waitForVisible(".cke_contents");
       waitAndClick(".cke_contents");
       getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")).sendKeys(gotoEnd);
       sendKeys(".cke_wysiwyg_div", text);

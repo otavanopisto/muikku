@@ -105,18 +105,21 @@ public class PyramusWebhookServlet extends HttpServlet {
             pyramusUpdater.createOrganization(organizationData.getId(), organizationData.getName());
           }
         break;
+        
         case ORGANIZATION_UPDATE:
           organizationData = unmarshalData(resp, payload, WebhookOrganizationData.class);
           if (organizationData != null) {
             pyramusUpdater.updateOrganization(organizationData.getId(), organizationData.getName());
           }
         break;
+        
         case ORGANIZATION_ARCHIVE:
           organizationData = unmarshalData(resp, payload, WebhookOrganizationData.class);
           if (organizationData != null) {
             pyramusUpdater.archiveOrganization(organizationData.getId());
           }
         break;
+        
         case COURSE_CREATE:
         case COURSE_UPDATE:
         case COURSE_ARCHIVE:
@@ -127,6 +130,7 @@ public class PyramusWebhookServlet extends HttpServlet {
 
           pyramusUpdater.updateCourse(courseData.getCourseId());
         break;
+        
         case COURSE_STAFF_MEMBER_CREATE:
         case COURSE_STAFF_MEMBER_UPDATE:
         case COURSE_STAFF_MEMBER_DELETE:
@@ -136,6 +140,8 @@ public class PyramusWebhookServlet extends HttpServlet {
           }
           
           pyramusUpdater.updateCourseStaffMember(courseStaffMemberData.getCourseStaffMemberId(), courseStaffMemberData.getCourseId(), courseStaffMemberData.getStaffMemberId());
+        break;
+        
         case STAFF_MEMBER_CREATE:
         case STAFF_MEMBER_UPDATE:
         case STAFF_MEMBER_DELETE:
@@ -146,6 +152,7 @@ public class PyramusWebhookServlet extends HttpServlet {
           
           pyramusUpdater.updateStaffMember(staffMemberData.getStaffMemberId());
         break;
+        
         case STUDENT_CREATE:
         case STUDENT_UPDATE:
         case STUDENT_ARCHIVE:
@@ -155,7 +162,8 @@ public class PyramusWebhookServlet extends HttpServlet {
           }
           
           pyramusUpdater.updateStudent(studentData.getStudentId());
-        break;      
+        break;
+        
         case COURSE_STUDENT_CREATE:
         case COURSE_STUDENT_UPDATE:
         case COURSE_STUDENT_ARCHIVE:
@@ -166,6 +174,7 @@ public class PyramusWebhookServlet extends HttpServlet {
           
           pyramusUpdater.updateCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
         break;
+        
         case PERSON_ARCHIVE:
         case PERSON_CREATE:
         case PERSON_UPDATE:

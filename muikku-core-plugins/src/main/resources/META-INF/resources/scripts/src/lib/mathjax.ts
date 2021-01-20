@@ -45,7 +45,6 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
   let formula = element.textContent || (element as HTMLImageElement).alt;
   let container = document.createElement('div');
   container.textContent = "\\(" + formula.replace(/\\sum/g, "\\displaystyle\\sum") + "\\)";
-  //console.log(container.textContent);
   container.style.visibility = "hidden";
   document.body.appendChild(container);
 

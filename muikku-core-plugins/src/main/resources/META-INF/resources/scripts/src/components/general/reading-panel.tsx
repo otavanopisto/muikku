@@ -64,7 +64,6 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
 //      //navbar height 70
 //      //other tooblar thingy height 54
 //      let nRemainingHeight = height - 55 - 70 - 54 + top;
-//      console.log(nRemainingHeight);
 //      this.setState({remainingHeight: nRemainingHeight});
 //    } else {
 //      this.setState({remainingHeight: null});

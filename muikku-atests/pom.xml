@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.145-SNAPSHOT</version>
+    <version>1.1.146-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -96,14 +96,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.143-SNAPSHOT</version>
+      <version>0.7.145-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.143-SNAPSHOT</version>
+      <version>0.7.145-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -635,7 +635,7 @@
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
         <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
-        <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
+        <it.sauce.tunnelId>${env.GITHUB_ACTION}</it.sauce.tunnelId>
         <it.browser />
         <it.browser.version />
         <it.browser.resolution />

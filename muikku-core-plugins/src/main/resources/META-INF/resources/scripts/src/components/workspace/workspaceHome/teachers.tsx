@@ -6,12 +6,12 @@ import { i18nType } from "~/reducers/base/i18n";
 import { getUserImageUrl } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
+import Avatar from '~/components/general/avatar';
 import { StatusType } from "~/reducers/base/status";
 import moment from '~/lib/moment';
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
-import '~/sass/elements/avatar.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/glyph.scss';
 
@@ -24,15 +24,15 @@ interface WorkspaceTeachersProps {
 interface WorkspaceTeachersState {
 }
 
-export function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: WorkspaceType, html?: boolean){
-  if (!workspace){
+export function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: WorkspaceType, html?: boolean) {
+  if (!workspace) {
     return ""
   }
 
   let pretext = "";
   let text = workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "");
 
-  if (html){
+  if (html) {
     let url = window.location.href;
     let arr = url.split("/");
     let server = arr[0] + "//" + arr[2];
@@ -45,11 +45,11 @@ export function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspac
 }
 
 class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, WorkspaceTeachersState> {
-  constructor(props: WorkspaceTeachersProps){
+  constructor(props: WorkspaceTeachersProps) {
     super(props);
   }
-  render(){
-    if (!this.props.status.loggedIn){
+  render() {
+    if (!this.props.status.loggedIn) {
       return null;
     }
     return <div className="panel panel--workspace-teachers">
@@ -60,23 +60,21 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
       {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? (
         <div className="panel__body">
           <div className="item-list item-list--panel-teachers">
-            {this.props.workspace.staffMembers.map((teacher)=> {
+            {this.props.workspace.staffMembers.map((teacher) => {
               // by default wether we display the vacation period depends on whether the vacation starts at all
-              let displayVacationPeroid = !!teacher.properties['profile-vacation-start'];
+              let displayVacationPeriod = !!teacher.properties['profile-vacation-start'];
               // however if we have a range
               if (teacher.properties['profile-vacation-end']) {
                 // we must check for the ending
                 const vacationEndsAt = moment(teacher.properties['profile-vacation-end']);
                 const today = moment();
                 // if it's before or it's today then we display, otherwise nope
-                displayVacationPeroid = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
+                displayVacationPeriod = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
               }
 
               return <div className="item-list__item item-list__item--teacher" key={teacher.userEntityId}>
                 <div className="item-list__profile-picture">
-                  <object data={getUserImageUrl(teacher.userEntityId)} type="image/jpeg" className="avatar-container">
-                    <div className="avatar avatar--category-3">{teacher.firstName[0]}</div>
-                  </object>
+                  <Avatar id={teacher.userEntityId} firstName={teacher.firstName} hasImage={teacher.hasImage}></Avatar>
                 </div>
                 <div className="item-list__text-body item-list__text-body--multiline">
                   <div className="item-list__user-name">{teacher.firstName} {teacher.lastName}</div>
@@ -84,36 +82,37 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                     <div className="item-list__user-email"><span className="glyph icon-envelope"></span>{teacher.email}</div>
                     {teacher.properties['profile-phone'] ?
                       <div className="item-list__user-phone"><span className="glyph icon-phone"></span>{teacher.properties['profile-phone']}
-                    </div> : null}
+                      </div> : null}
                   </div>
-                  {displayVacationPeroid ?
+                  {displayVacationPeriod ?
                     <div className="item-list__user-vacation-period">
                       {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
                       {this.props.i18n.time.format(teacher.properties['profile-vacation-start'])}
                       {teacher.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(teacher.properties['profile-vacation-end']) : null}
                     </div> : null}
                   <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
-                      type: "staff",
-                      value: teacher
-                    }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
-                      initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                      <Button buttonModifiers={["info", "contact-teacher"]}>
-                        {this.props.i18n.text.get("plugin.workspace.index.message.label")}
-                      </Button></CommunicatorNewMessage>
+                    type: "staff",
+                    value: teacher
+                  }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
+                    initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
+                    <Button buttonModifiers={["info", "contact-teacher"]}>
+                      {this.props.i18n.text.get("plugin.workspace.index.message.label")}
+                    </Button></CommunicatorNewMessage>
                 </div>
-              </div>})}
-            </div>
+              </div>
+            })}
           </div>
-          ) : (
+        </div>
+      ) : (
           <div className="panel__body panel__body--empty">
             {this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}
           </div>
-          )}
-        </div>
+        )}
+    </div>
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
@@ -121,7 +120,7 @@ function mapStateToProps(state: StateType){
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
 

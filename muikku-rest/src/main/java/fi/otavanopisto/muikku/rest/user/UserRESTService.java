@@ -41,7 +41,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -248,7 +247,6 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
@@ -344,18 +342,6 @@ public class UserRESTService extends AbstractRESTService {
       }
     } 
     
-    if (Boolean.TRUE.equals(includeHidden)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-        if (userEntityId == null) {
-          return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      }
-    }
-    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -397,7 +383,7 @@ public class UserRESTService extends AbstractRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -467,6 +453,7 @@ public class UserRESTService extends AbstractRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
+            userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
@@ -491,7 +478,7 @@ public class UserRESTService extends AbstractRESTService {
     }
     return date;
   }
-
+  
   @GET
   @Path("/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
@@ -569,6 +556,7 @@ public class UserRESTService extends AbstractRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
+        userEntity == null ? null : userEntity.getLastLogin(),
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
@@ -732,10 +720,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByUserEntityDefaults(studentEntity);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_PHONE_NUMBERS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden())) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -775,10 +766,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByIdentifier(studentIdentifier);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_EMAILS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden())) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -1598,60 +1592,6 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/users/{ID}/basicinfo")
-  @RESTPermitUnimplemented
-  public Response findUserBasicInfo(@Context Request request, @PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    UserEntity userEntity;
-    
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
-    if (userIdentifier == null) {
-      if (!StringUtils.isNumeric(id)) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid user id %s", id)).build();
-      }
-      
-      userEntity = userEntityController.findUserEntityById(NumberUtils.createLong(id));
-      userIdentifier = userEntity.defaultSchoolDataIdentifier();
-    } else {
-      userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    }
-
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
-
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByIdentifier(userIdentifier);
-      if (user == null) {
-        return Response.status(Response.Status.NOT_FOUND).build();
-      }
-
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
-          .cacheControl(cacheControl)
-          .tag(tag)
-          .build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-
-  @GET
   @Path("/whoami")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findWhoAmI(@Context Request request) {
@@ -1799,7 +1739,7 @@ public class UserRESTService extends AbstractRESTService {
           if (organizationEntity != null) {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
-          
+          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             new Long((Integer) o.get("userEntityId")),
@@ -1808,7 +1748,8 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype")));
+            (String) o.get("archetype"),
+            hasImage));
         }
       }
     }
@@ -1883,20 +1824,20 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   private fi.otavanopisto.muikku.rest.model.TransferCredit createRestModel(TransferCredit transferCredit) {
-	GradingScale gradingScale = null;
-	SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
-	if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-	  gradingScale = gradingController.findGradingScale(identifier); 
-	}
-
-	GradingScaleItem grade = null;
-	if (gradingScale != null) {
-	  identifier = transferCredit.getGradeIdentifier();
-	  if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-	    grade = gradingController.findGradingScaleItem(gradingScale, identifier);
-	  }
-	}
-	  
+    GradingScale gradingScale = null;
+    SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
+    if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+      gradingScale = gradingController.findGradingScale(identifier); 
+    }
+  
+    GradingScaleItem grade = null;
+    if (gradingScale != null) {
+      identifier = transferCredit.getGradeIdentifier();
+      if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+        grade = gradingController.findGradingScaleItem(gradingScale, identifier);
+      }
+    }
+    
     return new fi.otavanopisto.muikku.rest.model.TransferCredit(
         toId(transferCredit.getIdentifier()), 
         toId(transferCredit.getStudentIdentifier()), 

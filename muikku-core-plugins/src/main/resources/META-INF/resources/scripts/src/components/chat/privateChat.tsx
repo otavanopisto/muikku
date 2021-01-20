@@ -1,7 +1,7 @@
-/*global converse */
 import * as React from 'react'
 import mApi from '~/lib/mApi';
 import '~/sass/elements/chat.scss';
+import '~/sass/elements/wcag.scss';
 import { IBareMessageType } from './chat';
 import { ChatMessage } from './chatMessage';
 import promisify from '~/util/promisify';
@@ -36,7 +36,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
   private messagesEnd: React.RefObject<HTMLDivElement>;
   private isScrollDetached: boolean = false;
   private chatRef: React.RefObject<HTMLDivElement>;
-  private messageField: any = null;
 
   constructor(props: IPrivateChatProps) {
     super(props);
@@ -68,13 +67,8 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
     this.onTextFieldBlur = this.onTextFieldBlur.bind(this);
     this.checkScrollDetachment = this.checkScrollDetachment.bind(this);
     this.requestPrescense = this.requestPrescense.bind(this);
-    this.setFocusToMessageField = this.setFocusToMessageField.bind(this);
     this.isScrolledToTop = this.isScrolledToTop.bind(this);
     this.loadMessages = this.loadMessages.bind(this);
-  }
-
-  setFocusToMessageField() {
-    this.messageField.focus();
   }
 
   componentDidMount() {
@@ -87,7 +81,6 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
     this.requestPrescense();
     this.obtainNick();
-    this.setFocusToMessageField();
     this.loadMessages();
   }
 
@@ -142,13 +135,16 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         type: "chat",
       }).c("body", text).up().c('active', { xmlns: 'http://jabber.org/protocol/chatstates' }));
 
-      const newMessage = {
-        nick: null as string,
+      const newMessage: IBareMessageType = {
+        nick: null,
         message: text,
-        id: null as string,
+        stanzaId: null,
         timestamp: new Date(),
         userId: this.props.connection.jid.split("@")[0],
         isSelf: true,
+        action: null,
+        deleted: false,
+        edited: null,
       }
 
       this.setState({
@@ -173,15 +169,18 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       const content = body.textContent;
       const date = new Date();
       const userId = from.split("@")[0];
-      const id: string = null;
+      const stanzaId: string = null;
 
       const messageReceived: IBareMessageType = {
         nick: fromNick,
         message: content,
-        id,
+        stanzaId,
         timestamp: date,
         userId,
         isSelf: userId === this.props.connection.jid.split("@")[0],
+        action: null,
+        deleted: false,
+        edited: null,
       };
 
       const newMessagesList = [...this.state.messages, messageReceived];
@@ -274,8 +273,9 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       let lastMessageStamp: string = null;
       const allMessagesLoaded: boolean = answerStanza.querySelector("query").getAttribute("complete") === "true";
       const newMessages = Array.from(answerStanza.querySelectorAll("historyMessage")).map((historyMessage: Element, index: number) => {
-        const id = historyMessage.querySelector("id").textContent;
+        const stanzaId: string = null;
         const stamp = historyMessage.querySelector("timestamp").textContent;
+
         if (index === 0) {
           lastMessageStamp = stamp;
         }
@@ -288,10 +288,13 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
         const messageReceived: IBareMessageType = {
           nick,
           message,
-          id,
+          stanzaId,
           timestamp: date,
           userId,
           isSelf: userId === this.props.connection.jid.split("@")[0],
+          action: null,
+          deleted: false,
+          edited: null,
         };
 
         return messageReceived;
@@ -348,9 +351,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">
-                  {/* ToDo: Add this back when we can show users presence to each other
                   <span className={"chat__online-indicator chat__online-indicator--" + this.state.targetPrescense}></span>
-                  */}
                   <span className="chat__target-nickname">{this.state.nick}</span>
                 </div>
                 <div onClick={this.toggleMinimizeChats} className="chat__button chat__button--minimize icon-minus"></div>
@@ -359,14 +360,19 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
 
             <div className="chat__panel-body chat__panel-body--chatroom">
               <div className="chat__messages-container chat__messages-container--private" onScroll={this.checkScrollDetachment} ref={this.chatRef}>
-                  {this.state.messages.map((message, index) => <ChatMessage key={index}
+                  {this.state.messages.map((message, index) => <ChatMessage
+                    key={index}
+                    chatType="private"
                     canToggleInfo={!this.state.isStudent}
-                    messsage={message} i18n={this.props.i18n} />)}
+                    message={message} i18n={this.props.i18n} />)}
                 <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
               </div>
             </div>
-              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
+            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessage}>
+              {/* Need wcag.scss from another WIP branch
+               <label htmlFor={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.sendMessage.label")}</label> */}
               <textarea
+                id={`sendPrivateChatMessage-${this.props.jid.split("@")[0]}`}
                 className="chat__memofield chat__memofield--muc-message"
                 onKeyDown={this.onEnterPress}
                 placeholder={this.props.i18n.text.get("plugin.chat.writemsg")}
@@ -374,7 +380,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
                 onChange={this.setCurrentMessageToBeSent}
                 onFocus={this.onTextFieldFocus}
                 onBlur={this.onTextFieldBlur}
-                ref={(input) => { this.messageField = input; }}/>
+                  ref={ref => ref && ref.focus()}/>
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
           </div>

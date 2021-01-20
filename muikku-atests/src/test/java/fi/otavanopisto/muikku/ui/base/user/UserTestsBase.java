@@ -82,7 +82,7 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       waitAndClick(".button-pill--profile");
-      waitForPresentAndVisible(".dropdown__container .icon-user + span");
+      waitForVisible(".dropdown__container .icon-user + span");
       assertVisible(".dropdown__container .icon-user + span");
       assertVisible(".dropdown__container .icon-question + span");
       assertVisible(".dropdown__container .icon-support+ span");
@@ -105,9 +105,9 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/profile", false);
-      waitForPresentAndVisible(".profile-element__title");
+      waitForVisible(".profile-element__title");
       assertTextIgnoreCase(".profile-element__title", "admin user");
-      waitForPresentAndVisible(".profile-element__item .profile-element__data");
+      waitForVisible(".profile-element__item .profile-element__data");
       assertTextIgnoreCase(".profile-element__item .profile-element__data", "admin@example.com");
       
       assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(2) > label", "Puhelinnumero");

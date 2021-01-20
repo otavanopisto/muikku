@@ -1,19 +1,19 @@
 import * as React from 'react';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
-import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import InputContactsAutofillLoaders from '~/components/base/input-contacts-autofill';
 import EnvironmentDialog from '~/components/general/environment-dialog';
-import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
-import {AnyActionType} from '~/actions';
-import {i18nType} from '~/reducers/base/i18n';
-import {MessageSignatureType} from '~/reducers/main-function/messages';
+import { sendMessage, SendMessageTriggerType } from '~/actions/main-function/messages';
+import { AnyActionType } from '~/actions';
+import { i18nType } from '~/reducers/base/i18n';
+import { MessageSignatureType } from '~/reducers/main-function/messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, ContactRecepientType } from '~/reducers/user-index';
-import {StateType} from '~/reducers';
+import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
 import { StatusType } from '~/reducers/base/status';
@@ -34,8 +34,8 @@ interface CommunicatorNewMessageProps {
   initialSubject?: string,
   initialMessage?: string,
   status: StatusType,
-  onOpen?: ()=>any,
-  onClose?: ()=>any,
+  onOpen?: () => any,
+  onClose?: () => any,
   isOpen?: boolean
 }
 
@@ -44,11 +44,11 @@ interface CommunicatorNewMessageState {
   selectedItems: Array<ContactRecepientType>,
   subject: string,
   locked: boolean,
-  includesSignature: boolean,
+  includesSignature: boolean
 }
 
-function getStateIdentifier(props: CommunicatorNewMessageProps){
-  if (!props.replyThreadId){
+function getStateIdentifier(props: CommunicatorNewMessageProps) {
+  if (!props.replyThreadId) {
     return;
   }
 
@@ -57,7 +57,7 @@ function getStateIdentifier(props: CommunicatorNewMessageProps){
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
-  constructor(props: CommunicatorNewMessageProps){
+  constructor(props: CommunicatorNewMessageProps) {
     super(props, "communicator-new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -76,7 +76,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       includesSignature: true
     }, getStateIdentifier(props));
   }
-  checkAgainstStoredState(){
+  checkAgainstStoredState() {
     this.checkStoredAgainstThisState({
       text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
@@ -87,20 +87,20 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
     this.props.onOpen && this.props.onOpen();
   }
-  onCKEditorChange(text: string){
-    if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll){
+  onCKEditorChange(text: string) {
+    if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
       return;
     }
-    this.setStateAndStore({text}, getStateIdentifier(this.props));
+    this.setStateAndStore({ text }, getStateIdentifier(this.props));
   }
-  setSelectedItems(selectedItems: Array<ContactRecepientType>){
-    this.setStateAndStore({selectedItems}, getStateIdentifier(this.props));
+  setSelectedItems(selectedItems: Array<ContactRecepientType>) {
+    this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
   }
-  onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setStateAndStore({subject: e.target.value}, getStateIdentifier(this.props));
+  onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setStateAndStore({ subject: e.target.value }, getStateIdentifier(this.props));
   }
-  sendMessage(closeDialog: ()=>any){
+  sendMessage(closeDialog: () => any) {
     this.setState({
       locked: true
     });
@@ -110,10 +110,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       text: ((this.props.signature && this.state.includesSignature) ?
         (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>'):
         this.state.text),
-      success: ()=>{
+      success: () => {
         closeDialog();
         this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
-        setTimeout(()=>{
+        setTimeout(() => {
           this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
         }, 100);
         this.setStateAndClear({
@@ -123,7 +123,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           locked: false
         }, getStateIdentifier(this.props));
       },
-      fail: ()=>{
+      fail: () => {
         this.setState({
           locked: false
         });
@@ -131,12 +131,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       replyThreadId: this.props.replyThreadId
     });
   }
-  onSignatureToggleClick(){
-    this.setState({includesSignature: !this.state.includesSignature});
+  onSignatureToggleClick() {
+    this.setState({ includesSignature: !this.state.includesSignature });
   }
-  clearUp(){
+  clearUp() {
     this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
-    setTimeout(()=>{
+    setTimeout(() => {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
     }, 100);
     this.setStateAndClear({
@@ -174,8 +174,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div>
-        </div>
-        ),
+      </div>
+      ),
       (
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
@@ -185,19 +185,21 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       </div>
       ),
       (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
-        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
-        <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
-        <span className="env-dialog__input-description">
-          <i className="mf-signature" dangerouslySetInnerHTML={{__html: this.props.signature.signature}}/>
-        </span>
+        <div className="env-dialog__form-element-container">
+          <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+          <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
+          <span className="env-dialog__input-description">
+            <i className="mf-signature" dangerouslySetInnerHTML={{ __html: this.props.signature.signature }} />
+          </span>
+        </div>
       </div> : null)
     ]
-    let footer = (closeDialog: ()=>any)=>{
+    let footer = (closeDialog: () => any) => {
       return (
-         <div className="env-dialog__actions">
+        <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
-         </Button>
+          </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
@@ -217,7 +219,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     signature: state.messages && state.messages.signature,
@@ -225,8 +227,8 @@ function mapStateToProps(state: StateType){
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({sendMessage}, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ sendMessage }, dispatch);
 };
 
 export default connect(
