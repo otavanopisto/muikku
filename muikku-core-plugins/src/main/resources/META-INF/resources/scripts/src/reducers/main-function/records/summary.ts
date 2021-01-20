@@ -17,6 +17,7 @@ export interface SummaryStudentCouncelorsType {
   userEntityId: number,
   id: string,
   properties: any,
+  hasImage: boolean,
 }
 
 export interface SummaryDataType {

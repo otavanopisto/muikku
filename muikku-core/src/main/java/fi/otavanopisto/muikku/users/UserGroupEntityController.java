@@ -54,6 +54,10 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.create(userGroupEntity, schoolDataSource, identifier, userSchoolDataIdentifier, false);
   }
   
+  public UserGroupEntity findUserGroupEntityByIdentifier(SchoolDataIdentifier identifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+  }
+  
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
     return findUserGroupEntityByDataSourceAndIdentifier(dataSource, identifier, false);
   }
@@ -186,5 +190,5 @@ public class UserGroupEntityController {
   public boolean isMember(SchoolDataIdentifier userIdentifier, UserGroupEntity userGroupEntity) {
     return userGroupUserEntityDAO.findByGroupAndUser(userGroupEntity, userIdentifier, Archived.UNARCHIVED) != null;
   }
-  
+
 }

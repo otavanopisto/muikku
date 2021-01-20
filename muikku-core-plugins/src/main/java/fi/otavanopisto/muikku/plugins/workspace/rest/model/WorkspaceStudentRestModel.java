@@ -1,12 +1,14 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+
 public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
 
   public WorkspaceStudentRestModel() {
   }
 
-  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String nickname, String lastName, String studyProgrammeName, Boolean hasImage, Boolean active) {
-    super(workspaceUserEntityId, userEntityId, firstName, lastName, hasImage);
+  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, SchoolDataIdentifier userIdentifier, String firstName, String nickname, String lastName, String studyProgrammeName, Boolean hasImage, Boolean active) {
+    super(workspaceUserEntityId, userEntityId, userIdentifier, firstName, lastName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
     this.nickname = nickname;
     this.active = active;

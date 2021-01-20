@@ -5,19 +5,19 @@ import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
 import messages from './main-function/messages';
-import workspaces, {organizationWorkspaces} from './workspaces';
+import workspaces, { organizationWorkspaces } from './workspaces';
 import announcements from './announcements';
 import userIndex from './user-index';
-import organizationUsers, {studyprogrammes} from './main-function/users';
+import organizationUsers, { studyprogrammes, userSelect } from './main-function/users';
 import discussion from '~/reducers/discussion';
 import guider from './main-function/guider';
 import profile from './main-function/profile';
 import records from '~/reducers/main-function/records';
 import vops from '~/reducers/main-function/vops';
 import hops from '~/reducers/main-function/hops';
-import yo, {eligibilitySubjects}  from '~/reducers/main-function/records/yo';
+import yo, { eligibilitySubjects } from '~/reducers/main-function/records/yo';
 import summary from '~/reducers/main-function/records/summary';
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
 export default combineReducers({
   notifications,
@@ -37,6 +37,7 @@ export default combineReducers({
   workspaces,
   messages,
   studyprogrammes,
+  userSelect,
   organizationWorkspaces,
   organizationUsers,
   discussion,

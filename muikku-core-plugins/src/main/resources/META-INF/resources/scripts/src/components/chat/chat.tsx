@@ -6,7 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import { Strophe } from "strophe.js";
 import { Room } from './room';
 import { Groupchat } from './groupchat';
-import { UserChatSettingsType } from '~/reducers/main-function/user-index';
+import { UserChatSettingsType } from '~/reducers/user-index';
 import promisify from "~/util/promisify";
 import { PrivateChat } from './privateChat';
 import { i18nType } from '~/reducers/base/i18n';

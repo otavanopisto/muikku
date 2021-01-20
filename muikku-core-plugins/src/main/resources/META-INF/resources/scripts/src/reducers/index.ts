@@ -1,16 +1,16 @@
-import {i18nType} from './base/i18n';
-import {LocaleListType} from './base/locales';
-import {NotificationListType} from './base/notifications';
-import {CredentialsType} from './base/credentials';
-import {StatusType} from './base/status';
-import {WebsocketStateType} from './util/websocket';
+import { i18nType } from './base/i18n';
+import { LocaleListType } from './base/locales';
+import { NotificationListType } from './base/notifications';
+import { CredentialsType } from './base/credentials';
+import { StatusType } from './base/status';
+import { WebsocketStateType } from './util/websocket';
 import { AnnouncementsType } from './announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
-import {MessagesType} from './main-function/messages';
-import {WorkspacesType} from './workspaces';
-import {UsersType, StudyprogrammeTypes} from './main-function/users';
-import {UserIndexType} from './user-index';
+import { MessagesType } from './main-function/messages';
+import { WorkspacesType } from './workspaces';
+import { UsersType, UsersSelectType, StudyprogrammeTypes } from './main-function/users';
+import { UserIndexType } from './user-index';
 import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
 import { SummaryType } from './main-function/records/summary';
@@ -36,6 +36,7 @@ export interface StateType {
   studyprogrammes?: StudyprogrammeTypes,
   messages?: MessagesType,
   userIndex?: UserIndexType,
+  userSelect?: UsersSelectType,
   workspaces?: WorkspacesType,
   organizationWorkspaces?: WorkspacesType,
   organizationUsers?: UsersType,

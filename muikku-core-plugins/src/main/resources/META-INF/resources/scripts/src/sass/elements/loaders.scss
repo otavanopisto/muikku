@@ -3,34 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.loader__executing::after {
+  @include load-animation;
+}
+
+.loader__executing--dialog::after {
+  @include load-animation($dialog-loader-size);
+}
+
+
 .loader-empty:empty {
   min-height: #{$loader-size + $loader-size / 2}px;
   min-width: #{$loader-size + $loader-size / 2}px;
   position: relative;
 
   &::after {
-    animation: spin 2s linear infinite;
-    border: #{$loader-border-width}px solid $color-loader-empty-ring;
-    border-radius: 50%;
-    border-top: #{$loader-border-width}px solid $color-loader-empty-rotating-piece;
-    content: " ";
-    height: #{$loader-size}px;
-    left: 50%;
-    margin-left: -#{$loader-size / 2}px;
-    margin-top: -#{$loader-size / 2}px;
-    position: absolute;
-    top: 50%;
-    width: #{$loader-size}px;
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
+    @include load-animation;
   }
 }
 

@@ -1120,6 +1120,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           workspaceStudents.add(new WorkspaceStudentRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+              workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier(),
               String.valueOf(elasticUser.get("firstName")),
               elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
               String.valueOf(elasticUser.get("lastName")),
@@ -1217,6 +1218,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           workspaceStaffMembers.add(new WorkspaceUserRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+              workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier(),
               elasticUser.get("firstName").toString(),
               elasticUser.get("lastName").toString(),
               hasImage));
@@ -2750,6 +2752,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceStudentRestModel workspaceStudentRestModel = new WorkspaceStudentRestModel(
         workspaceUserEntity.getId(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier(),
         elasticUser.get("firstName").toString(),
         elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
         elasticUser.get("lastName").toString(),

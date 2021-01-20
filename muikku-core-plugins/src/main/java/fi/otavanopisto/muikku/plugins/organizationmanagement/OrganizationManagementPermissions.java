@@ -23,6 +23,14 @@ public class OrganizationManagementPermissions extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
   public static final String ORGANIZATION_MANAGE_WORKSPACES = "ORGANIZATION_MANAGE_WORKSPACES";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  public static final String ORGANIZATION_SEARCH_STAFF_MEMBERS = "ORGANIZATION_SEARCH_STAFF_MEMBERS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  public static final String ORGANIZATION_SEARCH_STUDENTS = "ORGANIZATION_SEARCH_STUDENTS";
+
   @Override
   public List<String> listPermissions() {
     return listPermissions(OrganizationManagementPermissions.class);

@@ -1,9 +1,8 @@
 import notificationActions from '~/actions/base/notifications';
-
-import {hexToColorInt} from '~/util/modifiers';
+import { hexToColorInt } from '~/util/modifiers';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
-import {AnyActionType} from '~/actions';
+import { AnyActionType } from '~/actions';
 import { MessagesNavigationItemType, MessagesNavigationItemListType, MessagesStateType, MessageThreadListType, MessagesPatchType, MessageThreadLabelType, MessageThreadType } from '~/reducers/main-function/messages';
 import { StateType } from '~/reducers';
 
@@ -13,27 +12,27 @@ const MAX_LOADED_AT_ONCE = 30;
 
 //Why in the world do we have a weird second version?
 //This is a server-side issue, just why we have different paths for different things.
-export function getApiId(item:MessagesNavigationItemType, weirdSecondVersion:boolean = false){
-  if (item.type === "folder"){
-    switch(item.id){
-    case "inbox":
-      return !weirdSecondVersion ? "items" : "messages";
-    case "unread":
-      return !weirdSecondVersion ? "items" : "unread";
-    case "sent":
-      return "sentitems";
-    case "trash":
-      return "trash";
+export function getApiId(item: MessagesNavigationItemType, weirdSecondVersion: boolean = false) {
+  if (item.type === "folder") {
+    switch (item.id) {
+      case "inbox":
+        return !weirdSecondVersion ? "items" : "messages";
+      case "unread":
+        return !weirdSecondVersion ? "items" : "unread";
+      case "sent":
+        return "sentitems";
+      case "trash":
+        return "trash";
     }
-    if (console && console.warn){
-      console.warn("Invalid navigation item location",item);
+    if (console && console.warn) {
+      console.warn("Invalid navigation item location", item);
     }
   } else {
     return !weirdSecondVersion ? "items" : "messages";
   }
 }
 
-export async function loadMessagesHelper(location:string | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadMessagesHelper(location: string | null, initial: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   //Remove the current message
   dispatch({
     type: "SET_CURRENT_MESSAGE_THREAD",
@@ -41,15 +40,15 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
   });
 
   let state = getState();
-  let actualLocation:string = location || state.messages.location;
+  let actualLocation: string = location || state.messages.location;
 
   //Avoid loading messages again for the first time if it's the same location
-  if (initial && actualLocation === state.messages.location && state.messages.state === "READY"){
+  if (initial && actualLocation === state.messages.location && state.messages.state === "READY") {
     return;
   }
 
   //If it's for the first time
-  if (initial){
+  if (initial) {
     //We set this state to loading
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
@@ -64,10 +63,10 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
   }
 
   //We get the navigation location item
-  let item = state.messages.navigation.find((item)=>{
+  let item = state.messages.navigation.find((item) => {
     return item.location === actualLocation;
   });
-  if (!item){
+  if (!item) {
     return dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: <MessagesStateType>"ERROR"
@@ -81,26 +80,26 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
 
   let params;
   //If we got a folder
-  if (item.type === 'folder'){
+  if (item.type === 'folder') {
     params = {
-        firstResult,
-        //We load one more to check if they have more
-        maxResults: MAX_LOADED_AT_ONCE + 1
+      firstResult,
+      //We load one more to check if they have more
+      maxResults: MAX_LOADED_AT_ONCE + 1
     }
-    switch(item.id){
-    case "inbox":
-      (<any>params).onlyUnread = false;
-      break;
-    case "unread":
-      (<any>params).onlyUnread = true;
-      break;
+    switch (item.id) {
+      case "inbox":
+        (<any>params).onlyUnread = false;
+        break;
+      case "unread":
+        (<any>params).onlyUnread = true;
+        break;
     }
     //If we got a label
   } else if (item.type === 'label') {
     params = {
-        firstResult,
-        //We load one more to check if they have more
-        maxResults: MAX_LOADED_AT_ONCE + 1
+      firstResult,
+      //We load one more to check if they have more
+      maxResults: MAX_LOADED_AT_ONCE + 1
     }
     //Otherwise if it's some weird thing we don't recognize
   } else {
@@ -110,32 +109,32 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     });
   }
 
-  let threads:MessageThreadListType;
+  let threads: MessageThreadListType;
   try {
-    if (item.type !== "label"){
+    if (item.type !== "label") {
       threads = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
     } else {
-      threads = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
+      threads = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback')();
     }
-    let hasMore:boolean = threads.length === MAX_LOADED_AT_ONCE + 1;
+    let hasMore: boolean = threads.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
     let actualThreads = threads.concat([]);
-    if (hasMore){
+    if (hasMore) {
       //we got to get rid of that extra loaded message
       actualThreads.pop();
     }
 
     //Create the payload for updating all the communicator properties
     let properLocation = location || item.location;
-    let payload:MessagesPatchType = {
+    let payload: MessagesPatchType = {
       state: "READY",
       threads: (concat ? state.messages.threads.concat(actualThreads) : actualThreads),
       hasMore,
       location: properLocation
     }
-    if (!concat){
+    if (!concat) {
       payload.selectedThreads = [];
       payload.selectedThreadsIds = [];
     }
@@ -145,7 +144,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       type: "UPDATE_MESSAGES_ALL_PROPERTIES",
       payload
     });
-  } catch (err){
+  } catch (err) {
     //Error :(
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.msgsLoadFailed"), 'error'));
     dispatch({
@@ -155,14 +154,14 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
   }
 }
 
-export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType, isToAddLabel: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   let state = getState();
-  let messageLabel = state.messages.currentThread.labels.find((mlabel:MessageThreadLabelType)=>mlabel.labelId === label.id);
+  let messageLabel = state.messages.currentThread.labels.find((mlabel: MessageThreadLabelType) => mlabel.labelId === label.id);
   let communicatorMessageId = state.messages.currentThread.messages[0].communicatorMessageId;
 
   try {
-    if (isToAddLabel && !messageLabel){
-      let serverProvidedLabel:MessageThreadLabelType = <MessageThreadLabelType>await promisify(mApi().communicator.messages.labels.create(communicatorMessageId, {
+    if (isToAddLabel && !messageLabel) {
+      let serverProvidedLabel: MessageThreadLabelType = <MessageThreadLabelType>await promisify(mApi().communicator.messages.labels.create(communicatorMessageId, {
         labelId: label.id
       }), 'callback')();
       dispatch({
@@ -172,8 +171,8 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
           label: serverProvidedLabel
         }
       });
-    } else if (!isToAddLabel){
-      if (!messageLabel){
+    } else if (!isToAddLabel) {
+      if (!messageLabel) {
         dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelDoesNotExist"), 'error'));
       } else {
         await promisify(mApi().communicator.messages.labels.del(communicatorMessageId, messageLabel.id), 'callback')();
@@ -186,22 +185,22 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
         });
       }
     }
-  } catch (err){
+  } catch (err) {
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelingFailed"), 'error'));
   }
 }
 
-export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export function setLabelStatusSelectedMessages(label: MessageThreadLabelType, isToAddLabel: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   let state = getState();
 
-  state.messages.selectedThreads.forEach(async (thread:MessageThreadType)=>{
-    let threadLabel = thread.labels.find(mlabel=>mlabel.labelId === label.id);
+  state.messages.selectedThreads.forEach(async (thread: MessageThreadType) => {
+    let threadLabel = thread.labels.find(mlabel => mlabel.labelId === label.id);
 
     try {
-      if (isToAddLabel && !threadLabel){
-        let serverProvidedLabel:MessageThreadLabelType = <MessageThreadLabelType>await promisify(mApi().communicator.messages.labels.create(thread.communicatorMessageId, {
+      if (isToAddLabel && !threadLabel) {
+        let serverProvidedLabel: MessageThreadLabelType = <MessageThreadLabelType>await promisify(mApi().communicator.messages.labels.create(thread.communicatorMessageId, {
           labelId: label.id
-        }),'callback')();
+        }), 'callback')();
         dispatch({
           type: "UPDATE_MESSAGE_THREAD_ADD_LABEL",
           payload: {
@@ -209,8 +208,8 @@ export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isT
             label: serverProvidedLabel
           }
         });
-      } else if (!isToAddLabel){
-        if (!threadLabel){
+      } else if (!isToAddLabel) {
+        if (!threadLabel) {
           //TODO translate this
           dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelDoesNotExist"), 'error'));
         } else {
@@ -224,7 +223,7 @@ export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isT
           });
         }
       }
-    } catch (err){
+    } catch (err) {
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelingFailed"), 'error'));
     }
   });
