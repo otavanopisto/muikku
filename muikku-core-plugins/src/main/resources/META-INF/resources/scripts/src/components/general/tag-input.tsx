@@ -85,7 +85,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   render() {
     return <div className={`container ${this.props.modifier ? "container--" + this.props.modifier : null} ${this.props.isFocused ? "focus" : ""}`}>
       <div className="tag-input" ref="inputbody" onClick={(e) => this.props.onFocus(e as any)}>
-        <label htmlFor={this.props.wcagLabel ? this.props.wcagLabel : ""} className="tag-input__label">{this.props.placeholder}</label>
+        <label htmlFor={this.props.wcagLabel ? this.props.wcagLabel : ""} className="tag-input__label">{this.props.label}</label>
         <input id={this.props.wcagLabel ? this.props.wcagLabel : ""} className={`tag-input__input ${this.props.modifier ? "tag-input__input--" + this.props.modifier : null}`} placeholder={this.props.placeholder} value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
           onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
 

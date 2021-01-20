@@ -165,6 +165,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+          label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
           selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
           showFullNames={!this.props.status.isStudent}/>),
       (
@@ -185,13 +186,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       </div>
       ),
       (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
-        <div className="env-dialog__form-element-container">
-          <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
-          <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
-          <span className="env-dialog__input-description">
-            <i className="mf-signature" dangerouslySetInnerHTML={{ __html: this.props.signature.signature }} />
-          </span>
-        </div>
+        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
+        <span className="env-dialog__input-description">
+          <i className="mf-signature" dangerouslySetInnerHTML={{ __html: this.props.signature.signature }} />
+        </span>
       </div> : null)
     ]
     let footer = (closeDialog: () => any) => {

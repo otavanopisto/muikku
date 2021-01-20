@@ -279,7 +279,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
-        waitForVisible(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
+        waitForVisible(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
         sleep(500);
         clearElement(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
         sendKeys(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name", "Dun dun duun");

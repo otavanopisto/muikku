@@ -87,8 +87,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       waitAndSendKeys("input.env-dialog__input--new-discussion-area-name", "Test area");
       waitAndClick(".env-dialog__textarea");
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");
-      waitForClickable(".env-dialog__actions .button--dialog-execute");
-      click(".env-dialog__actions .button--dialog-execute");
+      waitAndClick(".env-dialog__actions .button--dialog-execute");
       waitForPresent(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", 30);
       assertTextIgnoreCase(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", "Test area");
     } finally {
@@ -299,10 +298,10 @@ public class DiscussionTestsBase extends AbstractUITest {
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForVisible("h3.application-list__title");
+          waitForVisible(".application-list__title");
           reloadCurrentPage();
-          waitForVisible("h3.application-list__title");
-          assertText("h3.application-list__title", "Testinging");
+          waitForVisible(".application-list__title");
+          assertText(".application-list__title", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
           assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body .rich-text>p", "Testing testing daa daaing");
           waitForPresent(".application-list__item-edited");
