@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -76,6 +77,9 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @Inject
   private UserGroupController userGroupController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
 
   @Inject
   @Any
@@ -158,31 +162,31 @@ public class UserGroupRESTService extends AbstractRESTService {
       }
     }
 
-    if (entities.isEmpty()) {
-      return Response.noContent().build();
-    } else {
-      List<fi.otavanopisto.muikku.rest.model.UserGroup> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
+    List<fi.otavanopisto.muikku.rest.model.UserGroup> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
 
-      for (UserGroupEntity entity : entities) {
-        Long userCount = userGroupEntityController.getGroupUserCount(entity);
-        UserGroup group = userGroupController.findUserGroup(entity);
-        if (group != null) {
-          OrganizationRESTModel organization = null;
-          if (group.getOrganizationIdentifier() != null) {
-            OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
-            if (organizationEntity != null) {
-              organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
-            }
+    for (UserGroupEntity entity : entities) {
+      Long userCount = userGroupEntityController.getGroupUserCount(entity);
+      UserGroup group = userGroupController.findUserGroup(entity);
+      if (group != null) {
+        OrganizationRESTModel organization = null;
+        if (group.getOrganizationIdentifier() != null) {
+          OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
+          if (organizationEntity != null) {
+            organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
           ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization, group.isGuidanceGroup()));
         }
         else {
           logger.log(Level.WARNING, "Group not found");
         }
+        ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization, group.isGuidanceGroup()));
       }
-
-      return Response.ok(ret).build();
+      else {
+        logger.log(Level.WARNING, "Group not found");
+      }
     }
+
+    return Response.ok(ret).build();
   }
 
   @GET
@@ -255,7 +259,8 @@ public class UserGroupRESTService extends AbstractRESTService {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
       SchoolDataIdentifier userIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
       Long userEntityId = userSchoolDataIdentifier.getUserEntity().getId();
-      
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+
       UserEntityName userName = userEntityController.getName(userSchoolDataIdentifier.getUserEntity());
       String email = userEmailEntityController.getUserDefaultEmailAddress(userIdentifier, false);
       
@@ -271,7 +276,7 @@ public class UserGroupRESTService extends AbstractRESTService {
         organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
       }
       EnvironmentRoleArchetype role = userSchoolDataIdentifier.getRole().getArchetype();
-      
+      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
       result.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
           userIdentifier.toId(),
           userEntityId,
@@ -280,7 +285,8 @@ public class UserGroupRESTService extends AbstractRESTService {
           email,
           propertyMap,
           organizationRESTModel,
-          role.toString()));
+          role.toString(),
+          hasImage));
     }
     
     return Response.ok(result).build();

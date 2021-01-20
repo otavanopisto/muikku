@@ -111,7 +111,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                     <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-user">
                       <div className="application-list__item-content-aside application-list__item-content-aside--workspace-user">
                         <div className="item-list__profile-picture">
-                          <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
+                          <Avatar id={staff.userEntityId} hasImage={staff.hasImage} firstName={staff.firstName}/>
                         </div>
                       </div>
                       <div className="application-list__item-content-main application-list__item-content-main--workspace-user">
