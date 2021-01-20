@@ -173,17 +173,19 @@
   overscroll-behavior: contain;
   position: absolute;
   right: 0;
+  // scss-lint:disable PropertySpelling
+  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
+  // scss-lint:enable PropertySpelling
+  scrollbar-width: thin;
   top: 0;
   width: 90%;
-  scrollbar-width: thin;
-  scrollbar-color: $color-scrollbar-handle $color-scrollbar-background;
 
   &::-webkit-scrollbar {
     width: 7.5px;
   }
 
   &::-webkit-scrollbar-track {
-    background: $color-scrollbar-background; 
+    background: $color-scrollbar-background;
   }
 
   &::-webkit-scrollbar-thumb {
