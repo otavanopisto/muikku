@@ -190,6 +190,7 @@
 
   &::-webkit-scrollbar-thumb {
     background: $color-scrollbar-handle;
+    border-radius: 3px;
   }
 
   @include breakpoint($breakpoint-pad) {
