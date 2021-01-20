@@ -209,8 +209,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply to reply.");
         click(".button--dialog-execute");
-        waitForVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p");
-        assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p", "Test reply to reply.");
+        waitForVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p");
+        assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p", "Test reply to reply.");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }
