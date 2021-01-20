@@ -6,7 +6,6 @@ export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR
 export type UsersListType = Array<UserType>;
 export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
-
 export interface OrganizationUsersListType {
   firstResult: number,
   lastResult: number,
@@ -111,4 +110,3 @@ export function studyprogrammes(state: StudyprogrammeTypes = {
   }
   return state;
 }
-
