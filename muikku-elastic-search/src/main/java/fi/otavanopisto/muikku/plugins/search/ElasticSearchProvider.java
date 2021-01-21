@@ -691,33 +691,77 @@ public class ElasticSearchProvider implements SearchProvider {
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     Long loggedUserId = loggedUser.getId();
     String loggedUserIdStr = String.valueOf(loggedUserId);
-    
+
     queryString = sanitizeSearchString(queryString);
+    queryString = prepareQueryString(queryString);
+
     query.must(boolQuery()
         .must(
             boolQuery()
-              .should(QueryBuilders.queryStringQuery("*" + queryString + "*")
-                .defaultOperator(Operator.AND)
-                .field("caption")
-                .field("message")
-                .field("sender.firstName")
-                .field("sender.nickName")
-                .field("sender.lastName")
-                .field("recipients.firstName")
-                .field("recipients.nickName")
-                .field("recipients.lastName")
-                .field("groupRecipients.groupName")
+              .should(
+                  QueryBuilders.queryStringQuery(queryString)
+                      .defaultOperator(Operator.AND)
+                      .field("caption")
+                      .field("message")
+                      .field("sender.firstName")
+                      .field("sender.nickName")
+                      .field("sender.lastName")
+                      .field("recipients.firstName")
+                      .field("recipients.nickName")
+                      .field("recipients.lastName")
+                      .field("groupRecipients.groupName")
               )
               .should(
                   boolQuery()
+                    .must(QueryBuilders.queryStringQuery(queryString)
+                        .defaultOperator(Operator.AND)
+                        .field("caption")
+                        .field("message")
+                        .field("sender.firstName")
+                        .field("sender.nickName")
+                        .field("sender.lastName")
+                        .field("recipients.firstName")
+                        .field("recipients.nickName")
+                        .field("recipients.lastName")
+                        .field("groupRecipients.groupName")
+                        .field("sender.labels.label")
+                    )
                     .must(termsQuery("sender.userEntityId", loggedUserIdStr))
-                    .must(QueryBuilders.queryStringQuery("*" + queryString + "*")
-                        .field("sender.labels.label")))
+              )
               .should(
                   boolQuery()
+                    .must(QueryBuilders.queryStringQuery(queryString)
+                        .defaultOperator(Operator.AND)
+                        .field("caption")
+                        .field("message")
+                        .field("sender.firstName")
+                        .field("sender.nickName")
+                        .field("sender.lastName")
+                        .field("recipients.firstName")
+                        .field("recipients.nickName")
+                        .field("recipients.lastName")
+                        .field("groupRecipients.groupName")
+                        .field("recipients.labels.label")
+                    )
                     .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
-                    .must(QueryBuilders.queryStringQuery("*" + queryString + "*")
-                        .field("recipients.labels.label")))
+              )
+              .should(
+                  boolQuery()
+                    .must(QueryBuilders.queryStringQuery(queryString)
+                        .defaultOperator(Operator.AND)
+                        .field("caption")
+                        .field("message")
+                        .field("sender.firstName")
+                        .field("sender.nickName")
+                        .field("sender.lastName")
+                        .field("recipients.firstName")
+                        .field("recipients.nickName")
+                        .field("recipients.lastName")
+                        .field("groupRecipients.groupName")
+                        .field("groupRecipients.recipients.labels.label")
+                    )
+                    .must(termsQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
+              )
               .minimumNumberShouldMatch(1)
         )
         .should(
@@ -778,7 +822,15 @@ public class ElasticSearchProvider implements SearchProvider {
     }
   }
   
-  
+  private String prepareQueryString(String queryString) {
+    String prepared = queryString.trim();
+    while (prepared.contains("  ")) {
+      prepared = prepared.replace("  ", " ");
+    }
+    prepared = prepared.replace(" ", "* ");
+    return prepared + "*";
+  }
+
   @Override
   public SearchResult searchUserGroups(String query, List<OrganizationEntity> organizations, int start, int maxResults) {
     try {
