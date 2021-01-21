@@ -435,6 +435,47 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]){
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
         } else if (window.location.hash.replace("#", "")){
+          // this is executing on first time
+          const scrollToElement = () => {
+            const element = document.querySelector(window.location.hash);
+            if (element) {
+              element.scrollIntoView({
+                behavior: "auto",
+                block: "nearest",
+                inline: "start",
+              });
+              return true;
+            }
+
+            return false;
+          }
+
+          const checkIsScrolledIntoView = () => {
+            const element = document.querySelector(window.location.hash);
+            if (!element) {
+              return false;
+            }
+
+            const rect = element.getBoundingClientRect();
+            const elemTop = rect.top;
+            const elemBottom = rect.bottom;
+
+            const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+
+            return isVisible;
+          }
+
+          const aggressiveSetToScrollPosition = () => {
+            scrollToElement();
+            setTimeout(() => {
+              if (!checkIsScrolledIntoView()) {
+                setTimeout(aggressiveSetToScrollPosition, 10);
+              }
+            }, 10);
+          }
+
+          aggressiveSetToScrollPosition();
+
           this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
         }
       }) as Action);
