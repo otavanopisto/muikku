@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
+import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -51,6 +52,10 @@ public class UserGroupEntityController {
     }
     
     return userGroupUserEntityDAO.create(userGroupEntity, schoolDataSource, identifier, userSchoolDataIdentifier, false);
+  }
+  
+  public UserGroupEntity findUserGroupEntityByIdentifier(SchoolDataIdentifier identifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
   
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
@@ -124,6 +129,10 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
   }
 
+  public List<UserGroupUserEntity> listUserGroupStaffMembers(UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.listUserGroupStaffMembers(userGroupEntity, Archived.UNARCHIVED);
+  }
+
   public List<UserGroupEntity> listUserGroupsByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (userSchoolDataIdentifier == null) {
@@ -177,5 +186,9 @@ public class UserGroupEntityController {
   public boolean haveSharedUserGroups(UserEntity user1, UserEntity user2) {
     return userGroupUserEntityDAO.haveSharedUserGroups(user1, user2);
   }
-  
+
+  public boolean isMember(SchoolDataIdentifier userIdentifier, UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.findByGroupAndUser(userGroupEntity, userIdentifier, Archived.UNARCHIVED) != null;
+  }
+
 }

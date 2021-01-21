@@ -122,7 +122,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       this.timeoutProps = props;
       this.timeout = setTimeout(()=>{
         this.setupCKEditor(this.timeoutProps);
-      }, 10);
+      }, 10) as any;
       return;
     }
 

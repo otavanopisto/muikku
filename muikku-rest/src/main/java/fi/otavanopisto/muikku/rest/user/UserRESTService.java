@@ -247,7 +247,6 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
@@ -343,18 +342,6 @@ public class UserRESTService extends AbstractRESTService {
       }
     } 
     
-    if (Boolean.TRUE.equals(includeHidden)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-        if (userEntityId == null) {
-          return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      }
-    }
-    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -396,7 +383,7 @@ public class UserRESTService extends AbstractRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -733,10 +720,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByUserEntityDefaults(studentEntity);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_PHONE_NUMBERS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden())) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -776,10 +766,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByIdentifier(studentIdentifier);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_EMAILS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden())) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -1746,7 +1739,7 @@ public class UserRESTService extends AbstractRESTService {
           if (organizationEntity != null) {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
-          
+          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             new Long((Integer) o.get("userEntityId")),
@@ -1755,7 +1748,8 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype")));
+            (String) o.get("archetype"),
+            hasImage));
         }
       }
     }

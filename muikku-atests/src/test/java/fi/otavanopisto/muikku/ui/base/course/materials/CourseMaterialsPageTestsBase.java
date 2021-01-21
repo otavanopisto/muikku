@@ -978,7 +978,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForPresentAndVisible(".notification-queue__item--success");
+          waitForVisible(".notification-queue__item--success");
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -986,11 +986,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
           waitForPresent(".file-uploader__item-delete-icon");
           waitAndClick(".file-uploader__item-delete-icon");
-          waitForPresentAndVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
+          waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
           waitAndClick(".button--standard-ok");
 //        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
           sleep(1500);
-          waitForPresentAndVisible(".file-uploader__hint");
+          waitForVisible(".file-uploader__hint");
           assertNotPresent(".file-uploader__item-title");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -1053,7 +1053,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresentAndVisible(".material-page__sorterfield-wrapper");
+          waitForVisible(".material-page__sorterfield-wrapper");
           assertVisible(".material-page__sorterfield-wrapper");
           waitForPresent(".material-page__sorterfield-item .MathJax_SVG");
           waitForAttributeToHaveValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
@@ -1065,7 +1065,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           sleep(1000);
           waitAndClick(".button--muikku-check-exercises");
-          waitForPresentAndVisible(".material-page__field-answer-examples--sorterfield");
+          waitForVisible(".material-page__field-answer-examples--sorterfield");
           mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           dragAndDropWithOffSetAndTimeout(".material-page__sorterfield-item:first-child", ".material-page__sorterfield-item:nth-child(2)", 20, 0);
@@ -1126,12 +1126,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__organizerfield-terms");
           waitForPresent(".material-page__organizerfield-categories");
-          waitForPresentAndVisible(".material-page__organizerfield-terms .MathJax_SVG");
+          waitForVisible(".material-page__organizerfield-terms .MathJax_SVG");
           
           waitForAttributeToHaveValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
           String mathml = getAttributeValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-          waitForPresentAndVisible("div .material-page__organizerfield-term:nth-child(1)");
+          waitForVisible("div .material-page__organizerfield-term:nth-child(1)");
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(1)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(2)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(3)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
@@ -1211,7 +1211,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //  //      TODO: Remove sleep when concurrent save and submit issue fixed
 //          sleep(350);
 //          waitAndClick("button.muikku-check-exercises");
-//          waitForPresentAndVisible(".correct-answers-count-data");
+//          waitForVisible(".correct-answers-count-data");
 //          assertEquals("1 / 1", getWebDriver().findElement(By.cssSelector(".correct-answers-count-data")).getText());
 //        } finally {
 //          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -1455,7 +1455,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
-          waitForPresentAndVisible(".license-selector .form-element__input--material-editor");
+          waitForVisible(".license-selector .form-element__input--material-editor");
           sendKeys(".license-selector .form-element__input--material-editor", "www.test.com");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");

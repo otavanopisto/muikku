@@ -15,7 +15,8 @@ export class MathJaxCollector {
     this.execute = this.execute.bind(this);
     this.resetTimer = this.resetTimer.bind(this);
 
-    this.executionTimer = setTimeout(this.execute, 100);
+    // typescript being buggy again
+    this.executionTimer = setTimeout(this.execute, 100) as any;
   }
 
   private execute() {
@@ -33,6 +34,6 @@ export class MathJaxCollector {
 
   resetTimer() {
     clearTimeout(this.executionTimer);
-    this.executionTimer = setTimeout(this.execute, 100);
+    this.executionTimer = setTimeout(this.execute, 100) as any;
   }
 }

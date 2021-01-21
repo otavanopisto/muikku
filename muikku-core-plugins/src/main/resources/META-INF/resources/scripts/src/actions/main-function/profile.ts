@@ -2,7 +2,7 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 import actions from '../base/notifications';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
-import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} from '~/reducers/main-function/user-index';
+import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
@@ -377,7 +377,6 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
       if (!(err instanceof MApiError)){
         throw err;
       }
-      console.log(err);
       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.profileImage.remove"), 'error'));
     }
   }
