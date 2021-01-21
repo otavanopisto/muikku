@@ -31,9 +31,9 @@ interface ApplicationListItemState {
 
 export class ApplicationListItem extends React.Component<ApplicationListItemProps, ApplicationListItemState> {
   render() {
-    let newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
+    let newProps: ApplicationListItemProps = Object.assign({}, this.props);
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    delete newProps["modifiers"];
+
     return <div {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""}`}>
       {this.props.children}
     </div>
@@ -53,6 +53,24 @@ export class ApplicationListItemHeader extends React.Component<ApplicationListIt
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     delete newProps["modifiers"];
     return <div {...newProps} className={`application-list__item-header ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item-header--${m}`).join(" ") : ""}`}>
+      {this.props.children}
+    </div>
+  }
+}
+
+interface ApplicationListItemMetaProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  modifiers?: string | Array<string>
+}
+
+interface ApplicationListItemMetaState {
+}
+
+export class ApplicationListItemMeta extends React.Component<ApplicationListItemMetaProps, ApplicationListItemMetaState> {
+  render() {
+    let newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    delete newProps["modifiers"];
+    return <div {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""}`}>
       {this.props.children}
     </div>
   }
