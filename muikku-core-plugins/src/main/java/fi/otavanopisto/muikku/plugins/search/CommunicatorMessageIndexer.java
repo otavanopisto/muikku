@@ -9,20 +9,28 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdLabelDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipientGroup;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageLabels;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 public class CommunicatorMessageIndexer {
   
@@ -39,24 +47,42 @@ public class CommunicatorMessageIndexer {
   private CommunicatorMessageRecipientDAO communicatorMessageRecipientDAO;
   
   @Inject
+  private CommunicatorMessageRecipientUserGroupDAO communicatorMessageRecipientUserGroupDAO;
+  
+  @Inject
   private CommunicatorMessageIdLabelDAO communicatorMessageIdLabelDAO;
+  
+  @Inject
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
-  public void indexMessage(CommunicatorMessage message) {
-    if (message != null) {
+  public void indexMessage(CommunicatorMessage communicatorMessage) {
+    if (communicatorMessage == null) {
+      logger.warning("NULL communicatorMessage given");
+      return;
+    }
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
       IndexedCommunicatorMessage indexedCommunicatorMessage = new IndexedCommunicatorMessage();
 
       //set message
-      indexedCommunicatorMessage.setMessage(message.getContent());
+      indexedCommunicatorMessage.setMessage(communicatorMessage.getContent());
         
       //set communicatorMessageId
-      CommunicatorMessageId communicatorMessageId = message.getCommunicatorMessageId();
+      CommunicatorMessageId communicatorMessageId = communicatorMessage.getCommunicatorMessageId();
       indexedCommunicatorMessage.setCommunicatorMessageThreadId(communicatorMessageId.getId());
         
       //set caption
-      indexedCommunicatorMessage.setCaption(message.getCaption());
+      indexedCommunicatorMessage.setCaption(communicatorMessage.getCaption());
         
       //set sender
-      Long senderId = message.getSender();
+      Long senderId = communicatorMessage.getSender();
       UserEntity senderEntity = userEntityController.findUserEntityById(senderId);
       UserEntityName senderName = userEntityController.getName(senderEntity);
       
@@ -66,7 +92,7 @@ public class CommunicatorMessageIndexer {
         senderData.setLastName(senderName.getLastName());
         senderData.setNickName(senderName.getNickName());
         senderData.setUserEntityId(senderId);
-        senderData.setArchivedBySender(message.getArchivedBySender());
+        senderData.setArchivedBySender(communicatorMessage.getArchivedBySender());
         
         List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
         List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(senderEntity, communicatorMessageId);
@@ -83,59 +109,104 @@ public class CommunicatorMessageIndexer {
         
         indexedCommunicatorMessage.setSender(senderData);
       }
+
+      // Group Recipients
       
-      //set recipients
-      List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(message);
+      List<IndexedCommunicatorMessageRecipientGroup> indexedRecipientGroups = new ArrayList<>();
+      List<CommunicatorMessageRecipientUserGroup> recipientGroups = communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
+      for (CommunicatorMessageRecipientUserGroup recipientGroup : recipientGroups) {
+        List<CommunicatorMessageRecipient> recipientGroupRecipients = communicatorMessageRecipientDAO.listByMessageAndGroup(communicatorMessage, recipientGroup);
+        List<IndexedCommunicatorMessageRecipient> indexedRecipientGroupRecipients = new ArrayList<>();
+
+        for (CommunicatorMessageRecipient recipientGroupRecipient : recipientGroupRecipients) {
+          IndexedCommunicatorMessageRecipient indexedMessageRecipientModel = indexedMessageRecipientModel(recipientGroupRecipient, communicatorMessageId);
+          if (indexedMessageRecipientModel != null) {
+            indexedRecipientGroupRecipients.add(indexedMessageRecipientModel);
+          } else {
+            logger.log(Level.WARNING, String.format("Couldn't index message %d recipient %d", communicatorMessage.getId(), recipientGroupRecipient.getId()));
+          }
+        }
+
+        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(recipientGroup.getUserGroupEntityId());
+        UserGroup group = userGroupEntity != null ? userGroupController.findUserGroup(userGroupEntity) : null;
+
+        if (group != null) {
+          IndexedCommunicatorMessageRecipientGroup groupData = new IndexedCommunicatorMessageRecipientGroup();
+          
+          groupData.setUserGroupEntityId(recipientGroup.getUserGroupEntityId());
+          groupData.setGroupName(group.getName());
+          groupData.setRecipients(indexedRecipientGroupRecipients);
+          
+          indexedRecipientGroups.add(groupData);
+        }
+      }
+      
+      // Individual recipients
+      
+      List<CommunicatorMessageRecipient> recipientsList = communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
       List<IndexedCommunicatorMessageRecipient> recipientsEntityList = new ArrayList<IndexedCommunicatorMessageRecipient>();
       for (CommunicatorMessageRecipient recipient : recipientsList) {
-        Long recipientId = recipient.getRecipient();
-        UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
-        UserEntityName recipientName = userEntityController.getName(recipientEntity);
-
-        if (recipientName != null) {
-          IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
-          
-          recipientData.setUserEntityId(recipientId);
-          recipientData.setFirstName(recipientName.getFirstName());
-          recipientData.setLastName(recipientName.getLastName());
-          recipientData.setNickName(recipientName.getNickName());
-          recipientData.setStudyProgrammeName(recipientName.getStudyProgrammeName());
-          // set is message read/unread by receiver
-          recipientData.setReadByReceiver(recipient.getReadByReceiver());
-          recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
-            
-          // set labels
-          List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
-          List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
-          for (CommunicatorMessageIdLabel label : labels) {
-            IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
-            CommunicatorLabel wholeLabel = label.getLabel();
-            
-            labelData.setLabel(wholeLabel.getName());
-            labelData.setId(wholeLabel.getId());
-            labelsList.add(labelData);
-          } 
-            
-          recipientData.setLabels(labelsList);
-          recipientsEntityList.add(recipientData);
+        IndexedCommunicatorMessageRecipient indexedMessageRecipientModel = indexedMessageRecipientModel(recipient, communicatorMessageId);
+        if (indexedMessageRecipientModel != null) {
+          recipientsEntityList.add(indexedMessageRecipientModel);
+        } else {
+          logger.log(Level.WARNING, String.format("Couldn't index message %d recipient %d", communicatorMessage.getId(), recipient.getId()));
         }
       }
         
+      indexedCommunicatorMessage.setGroupRecipients(indexedRecipientGroups);
       indexedCommunicatorMessage.setRecipients(recipientsEntityList);
       
       // set created
-      Date created = message.getCreated();
+      Date created = communicatorMessage.getCreated();
       indexedCommunicatorMessage.setCreated(created);
       
-      indexedCommunicatorMessage.setSearchId(message.getId());
+      indexedCommunicatorMessage.setSearchId(communicatorMessage.getId());
         
       //call method indexCommunicatorMessage
       indexCommunicatorMessage(indexedCommunicatorMessage);
-    } else {
-      logger.warning(String.format("could not index communicator message because message entity #%s/ %s could not be found", message));
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
+  private IndexedCommunicatorMessageRecipient indexedMessageRecipientModel(CommunicatorMessageRecipient recipient, CommunicatorMessageId communicatorMessageId) {
+    Long recipientId = recipient.getRecipient();
+    UserEntity recipientEntity = userEntityController.findUserEntityById(recipientId);
+    UserEntityName recipientName = userEntityController.getName(recipientEntity);
+
+    if (recipientName != null) {
+      IndexedCommunicatorMessageRecipient recipientData = new IndexedCommunicatorMessageRecipient();
+      
+      recipientData.setUserEntityId(recipientId);
+      recipientData.setFirstName(recipientName.getFirstName());
+      recipientData.setLastName(recipientName.getLastName());
+      recipientData.setNickName(recipientName.getNickName());
+      recipientData.setStudyProgrammeName(recipientName.getStudyProgrammeName());
+      // set is message read/unread by receiver
+      recipientData.setReadByReceiver(recipient.getReadByReceiver());
+      recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
+        
+      // set labels
+      List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
+      List<CommunicatorMessageIdLabel> labels = communicatorMessageIdLabelDAO.listByUserAndMessageId(recipientEntity, communicatorMessageId);
+      for (CommunicatorMessageIdLabel label : labels) {
+        IndexedCommunicatorMessageLabels labelData = new IndexedCommunicatorMessageLabels();
+        CommunicatorLabel wholeLabel = label.getLabel();
+        
+        labelData.setLabel(wholeLabel.getName());
+        labelData.setId(wholeLabel.getId());
+        labelsList.add(labelData);
+      } 
+        
+      recipientData.setLabels(labelsList);
+      
+      return recipientData;
+    }
+    
+    return null;
+  }
+
   private void indexCommunicatorMessage(IndexedCommunicatorMessage indexedCommunicatorMessage) {
     try {
       if (indexedCommunicatorMessage != null) {

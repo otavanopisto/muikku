@@ -34,6 +34,11 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
         index = "not_analyzed"
       ),
       @IndexableFieldOption (
+          name = "groupRecipients",
+          type = "List<IndexedCommunicatorMessageGroupRecipient>",
+          index = "not_analyzed"
+        ),
+      @IndexableFieldOption (
         name = "searchId",
         type = "Long",
         index = "not_analyzed"
@@ -105,6 +110,14 @@ public class IndexedCommunicatorMessage {
     this.created = created;
   }
   
+  public List<IndexedCommunicatorMessageRecipientGroup> getGroupRecipients() {
+    return groupRecipients;
+  }
+
+  public void setGroupRecipients(List<IndexedCommunicatorMessageRecipientGroup> groupRecipients) {
+    this.groupRecipients = groupRecipients;
+  }
+
   private Long id;
   private Long communicatorMessageThreadId;
   private Date created;
@@ -112,4 +125,5 @@ public class IndexedCommunicatorMessage {
   private String message;
   private IndexedCommunicatorMessageSender sender;
   private List<IndexedCommunicatorMessageRecipient> recipients = new ArrayList<>();
+  private List<IndexedCommunicatorMessageRecipientGroup> groupRecipients = new ArrayList<>();
 }

@@ -44,6 +44,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
@@ -696,11 +697,17 @@ public class ElasticSearchProvider implements SearchProvider {
         .must(
             boolQuery()
               .should(QueryBuilders.queryStringQuery("*" + queryString + "*")
+                .defaultOperator(Operator.AND)
                 .field("caption")
                 .field("message")
                 .field("sender.firstName")
                 .field("sender.nickName")
-                .field("sender.lastName"))
+                .field("sender.lastName")
+                .field("recipients.firstName")
+                .field("recipients.nickName")
+                .field("recipients.lastName")
+                .field("groupRecipients.groupName")
+              )
               .should(
                   boolQuery()
                     .must(termsQuery("sender.userEntityId", loggedUserIdStr))
@@ -715,12 +722,16 @@ public class ElasticSearchProvider implements SearchProvider {
         )
         .should(
             boolQuery()
-              .must(termsQuery("sender.userEntityId", loggedUserIdStr))
-              .must(termsQuery("sender.archivedBySender", Boolean.FALSE)))
+              .must(termQuery("sender.userEntityId", loggedUserIdStr))
+              .must(termQuery("sender.archivedBySender", Boolean.FALSE)))
         .should(
             boolQuery()
-              .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
-              .must(termsQuery("recipients.archivedByReceiver", Boolean.FALSE)))
+              .must(termQuery("recipients.userEntityId", loggedUserIdStr))
+              .must(termQuery("recipients.archivedByReceiver", Boolean.FALSE)))
+        .should(
+            boolQuery()
+              .must(termQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
+              .must(termQuery("groupRecipients.recipients.archivedByReceiver", Boolean.FALSE)))
         .minimumNumberShouldMatch(1));
     
     try {
@@ -745,18 +756,18 @@ public class ElasticSearchProvider implements SearchProvider {
       ObjectMapper objectMapper = new ObjectMapper();
       SearchHit[] results = searchHits.getHits();
       List<IndexedCommunicatorMessage> searchResults = Arrays.stream(results)
-      .map(hit -> {
-        String source = hit.getSourceAsString();
-        try {
-          return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
-        }
-        catch (Exception e) {
-          String documentId = hit != null ? hit.getId() : null;
-          logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
-        }
-        return null;
-      })
-      .collect(Collectors.toList());
+          .map(hit -> {
+            String source = hit.getSourceAsString();
+            try {
+              return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
+            }
+            catch (Exception e) {
+              String documentId = hit != null ? hit.getId() : null;
+              logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
+            }
+            return null;
+          })
+          .collect(Collectors.toList());
       
       SearchResults<List<IndexedCommunicatorMessage>> result = new SearchResults<List<IndexedCommunicatorMessage>>(start, maxResults, searchResults, totalHitCount);
       return result;

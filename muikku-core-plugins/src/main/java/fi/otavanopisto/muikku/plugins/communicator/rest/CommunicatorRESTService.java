@@ -355,6 +355,15 @@ public class CommunicatorRESTService extends PluginRESTService {
             .findFirst()
             .orElse(null);
           
+          
+          if (recipient == null) {
+            recipient = result.getGroupRecipients().stream()
+                .flatMap(receiverGroup -> receiverGroup.getRecipients().stream())
+                .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
+                .findFirst()
+                .orElse(null);
+          }
+          
           if (recipient != null) {
             communicatorMessageRead = recipient.getReadByReceiver();
             if (recipient.getArchivedByReceiver()) {
