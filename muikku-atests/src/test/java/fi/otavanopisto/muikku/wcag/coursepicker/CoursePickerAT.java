@@ -54,7 +54,7 @@ public class CoursePickerAT extends AbstractWCAGTest {
         login();
         
         navigate("/coursepicker", false);
-        waitForPresentAndVisible(".application-list__item.course");
+        waitForVisible(".application-list__item.course");
         testAccessibility("Course Picker:");
       }finally {
         deleteWorkspace(workspace.getId());

@@ -1187,7 +1187,11 @@ public class PyramusMock {
         pmock.studentGroupUsers = new HashMap<>();
         pmock.studentGroups = new ArrayList<>();
         pmock.payloads = new ArrayList<>();
+        pmock.compositeCourseAssessmentRequests = new HashMap<>();
+        pmock.compositeStaffAssessmentRequests = new HashMap<>();
+        pmock.courses = new ArrayList<>();
         pmock.organizations = new ArrayList<>();
+        WireMock.reset();
         return this;
       }
       
