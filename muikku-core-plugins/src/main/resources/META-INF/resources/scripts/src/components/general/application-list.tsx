@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import '~/sass/elements/application-list.scss';
+import primary from "../records/body/application/primary";
 
 interface ApplicationListProps {
   modifiers?: string | Array<string>,
@@ -33,7 +34,7 @@ export class ApplicationListItem extends React.Component<ApplicationListItemProp
   render() {
     let newProps: ApplicationListItemProps = Object.assign({}, this.props);
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-
+    delete newProps["modifiers"];
     return <div {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""}`}>
       {this.props.children}
     </div>
@@ -41,43 +42,51 @@ export class ApplicationListItem extends React.Component<ApplicationListItemProp
 }
 
 interface ApplicationListItemHeaderProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  modifiers?: string | Array<string>
+  modifiers?: string | Array<string>,
+  primary?: React.ReactElement<any>,
+  secondary?: React.ReactElement<any>
 }
 
 interface ApplicationListItemHeaderState {
 }
+
 
 export class ApplicationListItemHeader extends React.Component<ApplicationListItemHeaderProps, ApplicationListItemHeaderState> {
   render() {
     let newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     delete newProps["modifiers"];
+    delete newProps["primary"];
+    delete newProps["secondary"];
+
     return <div {...newProps} className={`application-list__item-header ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item-header--${m}`).join(" ") : ""}`}>
+      {this.props.primary}
+      {this.props.secondary}
       {this.props.children}
     </div>
   }
 }
 
-interface ApplicationListItemMetaProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+interface ApplicationListHeaderPrimaryProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>
 }
 
-interface ApplicationListItemMetaState {
+interface ApplicationListHeaderPrimaryState {
 }
 
-export class ApplicationListItemMeta extends React.Component<ApplicationListItemMetaProps, ApplicationListItemMetaState> {
+export class ApplicationListHeaderPrimary extends React.Component<ApplicationListHeaderPrimaryProps, ApplicationListHeaderPrimaryState> {
   render() {
-    let newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    delete newProps["modifiers"];
-    return <div {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""}`}>
+    return <div className={`application-list__header-primary ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__header-primary--${m}`).join(" ") : ""}`}>
       {this.props.children}
     </div>
   }
 }
 
 interface ApplicationListItemBodyProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  modifiers?: string | Array<string>
+  modifiers?: string | Array<string>,
+  header?: string,
+  content?: string
 }
 
 interface ApplicationListItemBodyState {
@@ -89,6 +98,8 @@ export class ApplicationListItemBody extends React.Component<ApplicationListItem
     let newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
     delete newProps["modifiers"];
     return <div {...newProps} className={`application-list__item-body ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item-body--${m}`).join(" ") : ""}`}>
+      {this.props.header ? <header className="application-list__item-content-header">{this.props.header}</header> : null}
+      {this.props.content ? <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{ __html: this.props.content }}></section> : null}
       {this.props.children}
     </div>
   }

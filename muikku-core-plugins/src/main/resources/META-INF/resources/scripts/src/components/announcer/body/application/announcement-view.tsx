@@ -10,7 +10,7 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
 import '~/sass/elements/glyph.scss';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list'
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemBody } from '~/components/general/application-list'
 import { AnnouncementsType } from '~/reducers/announcements';
 import { UserIndexType } from '~/reducers/user-index';
 
@@ -31,20 +31,17 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
       return null;
     }
 
+    let headerPrimary = <ApplicationListHeaderPrimary modifiers="announcement-meta"><span className="glyph icon-clock"></span>
+      <span className="application-list__header-item-dates">
+        {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
+      </span></ApplicationListHeaderPrimary>
+
+
     return (
+
       <ApplicationList modifiers="open">
         <ApplicationListItem modifiers={this.props.announcements.current.workspaces.length ? "application-list__item--workspace-announcement" : "application-list__item--environment-announcement"}>
-          <ApplicationListItemHeader modifiers="announcer-announcement">
-            <div className="application-list__item-meta">
-              <div className="application-list__item-header-main application-list__item-header-main--announcer-announcement-dates">
-                <div className="application-list__header-primary">
-                  <span className="glyph icon-clock"></span>
-                  <span className="application-list__header-item-dates">
-                    {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
-                  </span>
-                </div>
-              </div>
-            </div>
+          <ApplicationListItemHeader primary={headerPrimary} modifiers="announcer-announcement">
             {this.props.announcements.current.workspaces.length || this.props.announcements.current.userGroupEntityIds.length ? <div className="labels labels--announcer-announcement">
               {this.props.announcements.current.workspaces.map((workspace) =>
                 <span className="label" key={workspace.id}>
@@ -63,10 +60,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
               })}
             </div> : null}
           </ApplicationListItemHeader>
-          <div className="application-list__item-body application-list__item-body--announcer-announcement">
-            <header className="application-list__item-content-header">{this.props.announcements.current.caption}</header>
-            <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{ __html: this.props.announcements.current.content }}></section>
-          </div>
+          <ApplicationListItemBody header={this.props.announcements.current.caption} content={this.props.announcements.current.content} modifiers="announcer-announcement" />
         </ApplicationListItem>
       </ApplicationList>
     )
