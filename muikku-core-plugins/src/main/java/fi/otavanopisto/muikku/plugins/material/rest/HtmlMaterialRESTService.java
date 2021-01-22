@@ -12,16 +12,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -85,20 +80,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @RESTPermitUnimplemented
   public Response findMaterial(@PathParam("id") Long id, @Context Request request) {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
-    if (htmlMaterial == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    } else {
-      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(id)));
-      ResponseBuilder builder = request.evaluatePreconditions(tag);
-      if (builder != null) {
-        return builder.build();
-      }
-      
-      CacheControl cacheControl = new CacheControl();
-      cacheControl.setMustRevalidate(true);
-      
-      return Response.ok(createRestModel(htmlMaterial)).build();
-    }
+    return htmlMaterial == null ? Response.status(Status.NOT_FOUND).build() : Response.ok(createRestModel(htmlMaterial)).build();  
   }
 
   @PUT
