@@ -33,6 +33,7 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -156,7 +157,8 @@ public class OrganizationUserManagementRESTService {
           hasImage));
     }
       
-    return Response.ok(staffMembers).build();
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
+    return Response.ok(responseStaffMembers).build();
   }
   
   @GET
@@ -217,7 +219,7 @@ public class OrganizationUserManagementRESTService {
         Date studyStartDate = getDateResult(o.get("studyStartDate"));
         Date studyEndDate = getDateResult(o.get("studyEndDate"));
         Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
-
+        
         boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
 
         UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
@@ -250,8 +252,9 @@ public class OrganizationUserManagementRESTService {
             organizationRESTModel));
       }
     }
-
-    return Response.ok(students).build();
+    
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), result.getLastResult(), students, result.getTotalHitCount());
+    return Response.ok(responseStudents).build();
   }
 
   private Date getDateResult(Object value) {

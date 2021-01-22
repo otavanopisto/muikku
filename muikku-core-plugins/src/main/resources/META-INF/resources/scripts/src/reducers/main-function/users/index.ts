@@ -6,6 +6,13 @@ export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR
 export type UsersListType = Array<UserType>;
 export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
+export interface OrganizationUsersListType {
+  firstResult: number,
+  lastResult: number,
+  results: UsersListType,
+  totalHitCount: number
+}
+
 export interface StudyprogrammeTypes {
   list: StudyprogrammeListType,
   status: StudyprogrammeTypeStatusType
@@ -16,9 +23,15 @@ export interface StudyprogrammeType {
   name: string
 }
 
+export interface UserPanelUsersType {
+  results: UsersListType,
+  totalHitCount: number,
+  searchString?: string
+}
+
 export interface UsersType {
-  students: UsersListType,
-  staff: UsersListType,
+  students: UserPanelUsersType,
+  staff: UserPanelUsersType,
 }
 
 export interface UsersSelectType {
@@ -30,8 +43,14 @@ export interface UsersSelectType {
 // Do not delete, this is for organization
 
 export default function users(state: UsersType = {
-  students: [],
-  staff: [],
+  students: {
+    results: [],
+    totalHitCount: null
+  },
+  staff: {
+    results: [],
+    totalHitCount: null
+  },
 }, action: ActionType): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
@@ -91,4 +110,3 @@ export function studyprogrammes(state: StudyprogrammeTypes = {
   }
   return state;
 }
-
