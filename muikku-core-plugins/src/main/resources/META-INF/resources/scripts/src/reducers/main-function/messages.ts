@@ -4,6 +4,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import { SimpleUserType, UserGroupListType } from '~/reducers/user-index';
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
 export interface MessageSignatureType {
   id: number,
   name: string,
@@ -15,6 +16,7 @@ export interface MessageSearchResult {
   created: string,
   id: number,
   readByReceiver: boolean,
+  folder: MessagesSearchResultFolderType,
   labels: Array<{
     labelColor: number,
     id: number,

@@ -97,6 +97,17 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     if (this.props.searchMessages) {
       return <BodyScrollKeeper hidden={!!this.props.currentThread}>
         {this.props.searchMessages.map((message) => {
+
+          // Lets set the correct messageFolder string based on which folrder the message belongs to
+          let messageFolder;
+          if (message.folder === "INBOX") {
+            messageFolder = this.props.i18n.text.get("plugin.communicator.category.title.inbox");
+          } else if (message.folder === "SENT") {
+            messageFolder = this.props.i18n.text.get("plugin.communicator.category.title.sent");
+          } else {
+            messageFolder = this.props.i18n.text.get("plugin.communicator.category.title.trash");
+          }
+
           return <ApplicationListItem
             key={message.id}
             className={`message message--search-result ${!message.readByReceiver ? "application-list__item--highlight" : ""}`}
@@ -135,14 +146,25 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             <ApplicationListItemBody modifiers="communicator-message">
               <span className="application-list__header-item-body">{message.caption}</span>
             </ApplicationListItemBody>
-            {message.labels.length ? <ApplicationListItemFooter modifiers="communicator-message-labels">
-              <div className="labels">{message.labels.map((label) => {
-                return <span className="label" key={label.id}>
-                  <span className="label__icon icon-tag" style={{ color: colorIntToHex(label.labelColor) }}></span>
-                  <span className="label__text">{label.labelName}</span>
-                </span>
-              })}</div>
-            </ApplicationListItemFooter> : null}
+            <ApplicationListItemFooter modifiers="communicator-message-labels">
+              <div className="labels">
+                {message.folder && message.folder.length ?
+                  <div className="labels__wrapper">
+                    <span className="label label--folder">
+                      <span className="label__text">{messageFolder}</span>
+                    </span>
+                  </div>
+                : null}
+                {message.labels.length ? <div className="labels__wrapper">
+                  {message.labels.map((label) => {
+                    return <span className="label" key={label.id}>
+                      <span className="label__icon icon-tag" style={{ color: colorIntToHex(label.labelColor) }}></span>
+                      <span className="label__text">{label.labelName}</span>
+                    </span>
+                  })}</div>
+                : null}
+              </div>
+            </ApplicationListItemFooter>
           </ApplicationListItem>
         })}
       </BodyScrollKeeper>
