@@ -57,12 +57,12 @@ public class CourseAT extends AbstractWCAGTest{
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 1l, 
+          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 
           "EXERCISE");
       
       WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "2.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 1l, 
+          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 
           "EVALUATED");
       try{
 //  TODO: Make sure no AC problems introduced in the material
