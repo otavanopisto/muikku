@@ -76,19 +76,19 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("title is missing").build();
     }
     
-    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(entity.getTitle(), entity.getHtml(), entity.getContentType(), 0l, entity.getLicense());
+    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(entity.getTitle(), entity.getHtml(), entity.getContentType(), entity.getLicense());
     return Response.ok(createRestModel(htmlMaterial)).build();
   }
 
   @GET
   @Path("/{id}")
   @RESTPermitUnimplemented
-  public Response findMaterial(@PathParam("id") Long id, @QueryParam ("revision") Long revision, @Context Request request) {
+  public Response findMaterial(@PathParam("id") Long id, @Context Request request) {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(revision == null ? htmlMaterial.getRevisionNumber() : revision)));
+      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(id)));
       ResponseBuilder builder = request.evaluatePreconditions(tag);
       if (builder != null) {
         return builder.build();
@@ -138,8 +138,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       htmlMaterial.getTitle(),
       htmlMaterial.getContentType(),
       htmlMaterial.getHtml(),
-      htmlMaterial.getRevisionNumber(),
-      htmlMaterial.getRevisionNumber(),
       htmlMaterial.getLicense(),
       htmlMaterial.getViewRestrict());
   }

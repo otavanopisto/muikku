@@ -12,7 +12,7 @@ public class ContentNode {
 
   public ContentNode(String title, String type, String contentType, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      Long parentId, Long nextSiblingId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
+      Long parentId, Long nextSiblingId, Boolean hidden, String html,  String path,
       String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict) {
     super();
     this.children = new ArrayList<>();
@@ -28,8 +28,6 @@ public class ContentNode {
     this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.html = html;
-    this.currentRevision = currentRevision;
-    this.publishedRevision = publishedRevision;
     this.path = path;
     this.license = license;
     this.viewRestrict = viewRestrict;
@@ -104,22 +102,6 @@ public class ContentNode {
     this.html = html;
   }
 
-  public Long getCurrentRevision() {
-    return currentRevision;
-  }
-
-  public void setCurrentRevision(Long currentRevision) {
-    this.currentRevision = currentRevision;
-  }
-
-  public Long getPublishedRevision() {
-    return publishedRevision;
-  }
-
-  public void setPublishedRevision(Long publishedRevision) {
-    this.publishedRevision = publishedRevision;
-  }
-
   public WorkspaceMaterialCorrectAnswersDisplay getCorrectAnswers() {
     return correctAnswers;
   }
@@ -177,8 +159,6 @@ public class ContentNode {
   private Long parentId;
   private Long nextSiblingId;
   private String html;
-  private Long currentRevision;
-  private Long publishedRevision;
   private String path;
   private String license;
   private MaterialViewRestrict viewRestrict;
