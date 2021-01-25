@@ -207,27 +207,6 @@
       <artifactId>rest</artifactId>
     </dependency>
 
-    <!-- Coops -->
-
-    <dependency>
-      <groupId>fi.foyt.coops</groupId>
-      <artifactId>coops-spec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.foyt.coops</groupId>
-      <artifactId>coops-ws-spec</artifactId>
-    </dependency>
-
-    <!-- Google Diff Match Patch -->
-
-    <dependency>
-      <groupId>com.sksamuel.diff</groupId>
-      <artifactId>diff</artifactId>
-      <version>${google-diff-match-patch.version}</version>
-    </dependency>
-
-
     <dependency>
       <groupId>org.jboss.ejb3</groupId>
       <artifactId>jboss-ejb3-ext-api</artifactId>
