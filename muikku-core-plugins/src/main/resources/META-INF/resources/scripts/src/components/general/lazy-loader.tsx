@@ -12,7 +12,13 @@ interface LazyLoaderState {
   loaded: boolean
 }
 
+(window as any).TOGGLE_LAZY = () => {
+  window.dispatchEvent(new Event("TOGGLE_LAZY"));
+}
+
 export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoaderState>{
+  private hasBeenForcefullyToggled: boolean = false;
+
   constructor(props: LazyLoaderProps){
     super(props);
 
@@ -21,10 +27,18 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     }
 
     this.onScroll = this.onScroll.bind(this);
+    this.toggleLazy = this.toggleLazy.bind(this);
   }
   componentDidMount(){
     this.checkWhetherInView();
     window.addEventListener('scroll', this.onScroll);
+    window.addEventListener("TOGGLE_LAZY", this.toggleLazy);
+  }
+  toggleLazy() {
+    this.hasBeenForcefullyToggled = true;
+    this.setState({
+      loaded: !this.state.loaded,
+    });
   }
   componentDidUpdate(){
     this.checkWhetherInView();
@@ -52,10 +66,14 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     }
   }
   onScroll(){
+    if (this.hasBeenForcefullyToggled) {
+      return;
+    }
     this.checkWhetherInView();
   }
   componentWillUnmount(){
     window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener("TOGGLE_LAZY", this.toggleLazy);
   }
   render(){
     if (this.state.loaded){
