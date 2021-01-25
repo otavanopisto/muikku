@@ -31,8 +31,6 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
       return null;
     }
 
-
-
     return (
 
       <ApplicationList modifiers="open">

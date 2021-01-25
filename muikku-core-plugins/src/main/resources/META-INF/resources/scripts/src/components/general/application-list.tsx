@@ -41,8 +41,6 @@ export class ApplicationListItem extends React.Component<ApplicationListItemProp
   }
 }
 
-
-
 interface ApplicationListItemDateProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>,
   startDate: string,
