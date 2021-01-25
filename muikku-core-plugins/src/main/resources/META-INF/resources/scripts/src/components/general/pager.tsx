@@ -9,11 +9,12 @@ import '~/sass/elements/wcag.scss';
 const PAGER_MAX_PAGES = 10;
 
 interface PagerProps {
-  onClick:(id:number)=>any,
+  onClick: (id: number) => any,
   current: number,
   pages: number,
-  modifier?: string
+  modifier?: string,
   i18n: i18nType,
+  identifier?: string,
 }
 
 interface PagerState {
@@ -28,18 +29,17 @@ class Pager extends React.Component<PagerProps, PagerState>{
     let leftPage = this.props.current - left;
     let rightPage = this.props.current + right;
 
-    if (leftPage < 1){
+    if (leftPage < 1) {
       rightPage += 1 - leftPage;
       leftPage = 1;
     }
 
-    let rightPageExtra = 0;
-    if (rightPage > this.props.pages){
+    if (rightPage > this.props.pages) {
       leftPage += this.props.pages - rightPage;
       rightPage = this.props.pages;
     }
 
-    if (leftPage < 1){
+    if (leftPage < 1) {
       leftPage = 1;
     }
 
@@ -47,7 +47,7 @@ class Pager extends React.Component<PagerProps, PagerState>{
     let isPagerMoreVisible = rightPage !== this.props.pages;
 
     let pagerLessNumber = this.props.current - PAGER_MAX_PAGES;
-    if (pagerLessNumber < 1){
+    if (pagerLessNumber < 1) {
       pagerLessNumber = 1;
     }
 

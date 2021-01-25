@@ -1327,10 +1327,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return result;
   }
   
-  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, Long revisionNumber, String assignmentType) throws IOException {
+  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, String assignmentType) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType, null);
+    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, assignmentType, null);
     Response response = asAdmin()
       .contentType("application/json;charset=UTF-8")
       .body(payload)

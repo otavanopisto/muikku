@@ -37,7 +37,6 @@ export interface SET_USER_BY_SCHOOL_DATA_INDEX extends SpecificActionType<"SET_U
 
 let fetchingStateUser: { [index: number]: boolean } = {};
 let fetchingStateUserBySchoolData: { [index: string]: boolean } = {};
-
 let loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(callback) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let state = getState();
