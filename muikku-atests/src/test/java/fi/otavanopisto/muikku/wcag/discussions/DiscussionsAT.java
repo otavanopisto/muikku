@@ -46,14 +46,14 @@ public class DiscussionsAT extends AbstractWCAGTest{
       mockBuilder.addStudent(student).addCourseStudent(course1.getId(), courseStudent).mockLogin(student).build();
       login();
       navigate("/discussion", false);
-      waitForPresentAndVisible(".application-panel--discussion");
+      waitForVisible(".application-panel--discussion");
       testAccessibility("Discussions view");
       waitAndClick(".application-list .message--discussion");
-      waitForPresentAndVisible(".application-list__item--discussion-message");
+      waitForVisible(".application-list__item--discussion-message");
       testAccessibility("Discussions single message");
       navigate("/discussion", false);
       waitAndClick(".application-panel__helper-container--discussion a.button--primary-function");
-      waitForPresentAndVisible(".env-dialog__header");
+      waitForVisible(".env-dialog__header");
       testAccessibility("Discussions new message");
     }finally {
       deleteDiscussionThread(discussion.getGroupId(), discussion.getId(), thread.getId());

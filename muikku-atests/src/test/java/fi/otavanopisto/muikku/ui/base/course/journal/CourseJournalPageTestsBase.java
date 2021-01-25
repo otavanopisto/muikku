@@ -69,8 +69,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         assertText(".application-list__item-header-main-content--journal-entry-title", "title");
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
-        waitForPresentAndVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
-        waitForPresentAndVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
+        waitForVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
+        waitForVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -108,7 +108,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
         waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
-        waitForPresentAndVisible(".dialog--delete-journal");
+        waitForVisible(".dialog--delete-journal");
         waitAndClick(".dialog--delete-journal .button--standard-ok");
         waitForNotVisible(".dialog--delete-journal");
         assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content-body--journal-entry>p") == false);

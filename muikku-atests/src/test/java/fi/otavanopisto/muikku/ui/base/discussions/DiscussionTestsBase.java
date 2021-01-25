@@ -125,7 +125,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
-        waitForPresentAndVisible(".application-list__item--discussion-reply .application-list__item-body article p");
+        waitForVisible(".application-list__item--discussion-reply .application-list__item-body article p");
         assertText(".application-list__item--discussion-reply .application-list__item-body article p", "Test reply for test.");
       } catch (Exception e) {
         deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
@@ -164,10 +164,10 @@ public class DiscussionTestsBase extends AbstractUITest {
         selectFinnishLocale();
         waitAndClick(".application-list__item-header--discussion span");
         waitAndClick(".link--application-list-item-footer:nth-child(4)");
-        waitForPresentAndVisible(".dialog--delete-area .button--standard-ok");
+        waitForVisible(".dialog--delete-area .button--standard-ok");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--delete-area");
-        waitForPresentAndVisible(".application-panel__content .application-panel__main-container.loader-empty");
+        waitForVisible(".application-panel__content .application-panel__main-container.loader-empty");
         assertTextIgnoreCase(".application-panel__content .application-panel__main-container.loader-empty .empty span", "Ei viestejä");
       } catch (Exception e) {
         deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
@@ -206,11 +206,11 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         click(".button--dialog-execute");
-        waitForPresentAndVisible(".application-list .application-list__item--discussion-reply");
+        waitForVisible(".application-list .application-list__item--discussion-reply");
         waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply to reply.");
         click(".button--dialog-execute");
-        waitForPresentAndVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p");
+        waitForVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p");
         assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p", "Test reply to reply.");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
@@ -299,9 +299,9 @@ public class DiscussionTestsBase extends AbstractUITest {
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForPresentAndVisible("h3.application-list__title");
+          waitForVisible("h3.application-list__title");
           reloadCurrentPage();
-          waitForPresentAndVisible("h3.application-list__title");
+          waitForVisible("h3.application-list__title");
           assertText("h3.application-list__title", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body article>p");
           assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body article>p", "Testing testing daa daaing");

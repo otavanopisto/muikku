@@ -119,6 +119,34 @@
   }
 }
 
+
+@mixin load-animation($size: $loader-size) {
+
+  animation: spin 2s linear infinite;
+  border: #{$loader-border-width}px solid $color-loader-empty-ring;
+  border-radius: 50%;
+  border-top: #{$loader-border-width}px solid $color-loader-empty-rotating-piece;
+  content: " ";
+  height: #{$size}px;
+  left: 50%;
+  margin-left: -#{$size / 2}px;
+  margin-top: -#{$size / 2}px;
+  position: absolute;
+  top: 50%;
+  width: #{$size}px;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+
 @mixin chat-pulse {
   $animation-name: unique-id();
   animation-name: $animation-name;
