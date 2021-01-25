@@ -124,8 +124,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     }, 300);
   }
   render(){
-    return (
-    <div className={`content-panel content-panel--${this.props.modifier}`} ref="panel">
+    return (<main className={`content-panel content-panel--${this.props.modifier}`} ref="panel">
       <div className="content-panel__container">
         <div className="content-panel__header">
           <h1 className="content-panel__header-title">{this.props.title}</h1>
@@ -152,7 +151,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
           </div>
         </div>
       </div>
-    </div>);
+    </main>);
   }
 }
 

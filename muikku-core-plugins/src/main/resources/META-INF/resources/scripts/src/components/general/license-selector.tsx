@@ -2,17 +2,20 @@ import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/license-selector.scss';
+import '~/sass/elements/wcag.scss';
 
 interface LicenseSelectorProps {
   value: string,
   modifier?: string,
   i18n: i18nType,
-  onChange: (newValue: string)=>any
+  onChange: (newValue: string)=>any,
+  wcagLabel?: string,
+  wcagDesc?: string,
 }
 
 interface LicenseSelectorState {
   valid: boolean,
-  text: string
+  text: string,
 }
 
 let CC_URL_PREFIX_SSL = "https://creativecommons.org/licenses/";
@@ -208,7 +211,8 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
     return <div className="license-selector form-element">
-      <select className={`form-element__select ${this.props.modifier ? "form-element__select--" + this.props.modifier : ""}`} value={currentLicense.id} onChange={this.onChangeLicenseType}>
+      <label className="visually-hidden" htmlFor={this.props.wcagLabel && this.props.wcagLabel}>{this.props.wcagDesc && this.props.wcagDesc}</label>
+      <select id={this.props.wcagLabel ? this.props.wcagLabel : ""} className={`form-element__select ${this.props.modifier ? "form-element__select--" + this.props.modifier : ""}`} value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
       {currentLicense.properties ? <div className="license-selector__options-container">

@@ -32,7 +32,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
     return <div className="panel panel--workspace-description">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
+        <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</h2>
       </div>
       <div className="panel__body">
         {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}

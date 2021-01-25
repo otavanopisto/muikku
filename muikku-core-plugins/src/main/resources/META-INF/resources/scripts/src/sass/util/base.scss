@@ -18,6 +18,10 @@ html {
 body {
   background-color: $color-default-body;
   overflow-y: auto;
+
+  &.using-mouse :focus {
+    outline: none;
+  }
 }
 
 ul,

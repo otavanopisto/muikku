@@ -13,6 +13,7 @@ import '~/sass/elements/application-list.scss';
 
 import '~/sass/elements/label.scss';
 import '~/sass/elements/message.scss';
+import '~/sass/elements/wcag.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
@@ -111,27 +112,31 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             onEnter: this.setCurrentThread.bind(this, thread),
             isSelected,
             key: thread.communicatorMessageId,
+            wcagLabel: thread.unreadMessagesInThread ? this.props.i18n.text.get("plugin.wcag.messageUnread.aria.label") : null,
+            checkboxId: `messageSelect-${index}`,
+            checkboxClassName: "message__selector",
             contents: (checkbox: React.ReactElement<any>)=>{
               return <ApplicationListItemContentWrapper aside={<div className="message__select-container">
+                <label htmlFor={`messageSelect-` + index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.messageSelect.label")}</label>
                 {checkbox}
               </div>}>
                 <ApplicationListItemHeader modifiers="communicator-message">
                   <div className={`application-list__header-primary ${thread.unreadMessagesInThread ? "application-list__header-primary--highlight" : ""}`}>
-                    <span>{this.getThreadUserNames(thread, this.props.status.userId)}</span>
+                    <span aria-label={this.props.i18n.text.get("plugin.wcag.messageSender.aria.label")}>{this.getThreadUserNames(thread, this.props.status.userId)}</span>
                   </div>
-                  {thread.messageCountInThread > 1 ? <div className="application-list__item-counter">
+                  {thread.messageCountInThread > 1 ? <div className="application-list__item-counter" aria-label={this.props.i18n.text.get("plugin.wcag.messageCount.aria.label")}>
                     {thread.messageCountInThread}
                   </div> : null}
-                  <div className="application-list__header-item-date">
+                  <div className="application-list__header-item-date" aria-label={this.props.i18n.text.get("plugin.wcag.messageSendDate.aria.label")}>
                     {this.props.i18n.time.format(thread.threadLatestMessageDate)}
                   </div>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
-                  <span className="application-list__header-item-body">{thread.caption}</span>
+                  <span className="application-list__header-item-body" aria-label={this.props.i18n.text.get("plugin.wcag.messageBody.aria.label")}>{thread.caption}</span>
                 </ApplicationListItemBody>
                 {thread.labels.length ? <ApplicationListItemFooter modifiers="communicator-message-labels">
                   <div className="labels">{thread.labels.map((label)=>{
-                    return <span className="label" key={label.id}>
+                    return <span className="label" key={label.id} aria-label={this.props.i18n.text.get("plugin.wcag.messageLabel.aria.label")}>
                       <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                       <span className="label__text">{label.labelName}</span>
                     </span>

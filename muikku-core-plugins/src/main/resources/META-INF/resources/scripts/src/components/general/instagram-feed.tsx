@@ -58,9 +58,9 @@ export default class InstagramFeed extends React.Component<InstagramFeedProps, I
   render() {
     return (
       <div className="instagram-feed">
-        {this.state.photos && this.state.photos.map(({ src, url }) => (
+        {this.state.photos && this.state.photos.map(({ src, url, caption }) => (
           <a href={url} target="_blank" key={src}>
-            <img className="instagram-feed__item" src={src} />
+            <img className="instagram-feed__item" src={src} alt={caption}/>
           </a>
         ))}
       </div>
