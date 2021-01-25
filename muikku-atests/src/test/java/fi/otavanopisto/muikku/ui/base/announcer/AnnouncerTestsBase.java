@@ -99,10 +99,10 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresentAndVisible(".item-list__item--announcements .item-list__announcement-caption");
+        waitForVisible(".item-list__item--announcements .item-list__announcement-caption");
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-caption", "Test title");
         
-        waitForPresentAndVisible(".item-list__item--announcements .item-list__announcement-date");
+        waitForVisible(".item-list__item--announcements .item-list__announcement-date");
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
@@ -126,7 +126,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
 
-        waitForPresentAndVisible(".item-list__item--announcements .item-list__announcement-caption");
+        waitForVisible(".item-list__item--announcements .item-list__announcement-caption");
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-caption", "Test title");
         waitAndClick(".item-list__item--announcements .item-list__announcement-caption");
         
@@ -158,10 +158,10 @@ public class AnnouncerTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
 
-        waitForPresentAndVisible(".item-list__item--announcements .item-list__announcement-caption");
+        waitForVisible(".item-list__item--announcements .item-list__announcement-caption");
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-caption", "Test title");
         
-        waitForPresentAndVisible(".item-list__item--announcements .item-list__announcement-date");
+        waitForVisible(".item-list__item--announcements .item-list__announcement-date");
         assertTextIgnoreCase(".item-list__item--announcements .item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
@@ -187,7 +187,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresentAndVisible(".panel--announcements");
+        waitForVisible(".panel--announcements");
         
         assertTrue("Element found even though it shouldn't be there", isElementPresent(".item-list__item--announcements .item-list__announcement-caption") == false);
       }finally{
@@ -216,7 +216,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-list-document-short-header", "Test title");
       navigate("/", false);
       
-      waitForPresentAndVisible(".panel--announcements");
+      waitForVisible(".panel--announcements");
       
       assertTrue("Element found even though it shouldn't be there", isElementPresent(".item-list__item--announcements .item-list__announcement-caption") == false);
     }finally{

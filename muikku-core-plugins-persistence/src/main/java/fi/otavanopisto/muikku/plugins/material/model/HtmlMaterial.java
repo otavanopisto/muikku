@@ -39,14 +39,6 @@ public class HtmlMaterial extends Material {
     this.contentType = contentType;
   }
 
-  public Long getRevisionNumber() {
-    return revisionNumber;
-  }
-
-  public void setRevisionNumber(Long revisionNumber) {
-    this.revisionNumber = revisionNumber;
-  }
-
   @Lob
   private String html;
   
@@ -54,6 +46,4 @@ public class HtmlMaterial extends Material {
   @NotEmpty
   private String contentType;
 
-  @Column (nullable = false)
-  private Long revisionNumber;
 }

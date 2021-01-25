@@ -82,7 +82,7 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
       this.setState({
         drag: sign*newValue
       });
-    }, 10);
+    }, 10) as any;
   }
   componentWillReceiveProps(){
     this.setState({drag: 0});

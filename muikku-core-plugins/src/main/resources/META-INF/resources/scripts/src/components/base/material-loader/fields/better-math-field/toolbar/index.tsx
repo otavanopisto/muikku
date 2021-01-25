@@ -14,12 +14,12 @@ interface MathFieldToolbarProps {
   className?: string,
   isOpen: boolean,
   i18n: {
-    basicsAndSymbols: string,
-    algebra: string,
+    symbols: string,
+    relations: string,
     geometryAndVectors: string,
-    logic: string,
-    moreMath: string,
-    mathOperations: string
+    setTheoryNotation: string,
+    mathFormulas: string,
+    operators: string
   },
   onCommand: (command: MathFieldCommandType)=>any,
   onToolbarAction: ()=>any,
@@ -73,34 +73,35 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
     //Please do not change the type of the --symbol unless you ensure that if you change (say to a div) the css expresses that the text cannot be selected
     //so far buttons work well
     return <div className={`${this.props.className} ${this.state.isExpanded ? this.props.className + "--expanded" : ""}`} onMouseDown={this.props.onToolbarAction}>
-      <div className={this.props.className + "--symbols"}>
-        {specialCharacters.map(c=><div className={this.props.className + "--symbol-group"} key={c.label}>
-          <div className={this.props.className + "--symbol-group-label"}>
+      <div className={this.props.className + "-symbols"}>
+        {specialCharacters.map(c=><div className={this.props.className + "-symbol-group"} key={c.label}>
+          <div className={this.props.className + "-symbol-group-label"}>
             {(this.props.i18n as any)[c.label]}
           </div>
-          <div className={this.props.className + "--symbol-group-content"}>
+          <div className={this.props.className + "-symbol-group-content"}>
             {(c.characters as any).filter((s:SpecialCharacterType)=>!this.state.isExpanded ? s.popular: true)
               .map((s: SpecialCharacterType)=>
-              <ToolbarButton key={s.character} className={this.props.className + "--symbol"} html={s.character}
-               onTrigger={this.triggerCommandOn.bind(this, s)} tooltipClassName={this.props.className + "--symbol-latex-tooltip"}
+              <ToolbarButton key={s.character} className={this.props.className + "-symbol"} html={s.character}
+               onTrigger={this.triggerCommandOn.bind(this, s)} tooltipClassName={this.props.className + "-symbol-latex-tooltip"}
                tooltip={s.latexCommand || s.character}/>)}
           </div>
         </div>)}
-        <button className={this.props.className + "--symbols-expand " + (this.state.isExpanded ? this.props.className + "--symbols-expanded" : "")}
+        <button className={this.props.className + "-more-symbols-button " + (this.state.isExpanded ? this.props.className + "-more-symbols-button--expanded icon-arrow-up" : "icon-arrow-down")}
           onClick={this.toggleIsExpanded}/>
       </div>
-      <div className={this.props.className + "--math " +  (this.props.isMathExpanded ? this.props.className + "--math-expanded" : "")}>
-        {!this.props.isMathExpanded ?
-          <button className={this.props.className + "--more-math-expand"} onClick={this.props.onRequestToOpenMathMode}>{this.props.i18n.moreMath}</button> :
-          null}
-        {this.props.isMathExpanded ? <div className={this.props.className + "--math-label"}>
-          {this.props.i18n.mathOperations}
-        </div> : null}
-        {this.props.isMathExpanded ?
-            latexCommands.map((c:LatexCommandType)=>
-              <ToolbarButton key={c.action} className={this.props.className + "--math-operation"} image={c.svg}
-               onTrigger={this.triggerCommandOn.bind(this, c)} tooltipClassName={this.props.className + "--math-operation-tooltip"}
-               tooltip={c.action}/>) : null}
+      <div className={this.props.className + "-math " +  (this.props.isMathExpanded ? this.props.className + "-math--expanded" : "")}>
+        {!this.props.isMathExpanded &&
+          <button className={this.props.className + "-more-math-button"} onClick={this.props.onRequestToOpenMathMode}>Σ {this.props.i18n.mathFormulas}</button>}
+        {this.props.isMathExpanded && <div className={this.props.className + "-math-formula-group"}>
+          <div className={this.props.className + "-math-label"}>
+            {this.props.i18n.operators}
+          </div>
+          {this.props.isMathExpanded &&
+            latexCommands.map((c: LatexCommandType) =>
+              <ToolbarButton key={c.action} className={this.props.className + "-math-operation"} image={c.svg}
+                onTrigger={this.triggerCommandOn.bind(this, c)} tooltipClassName={this.props.className + "-math-operation-tooltip"}
+                tooltip={c.action} />)}
+        </div>}
       </div>
     </div>
   }

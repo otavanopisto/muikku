@@ -11,12 +11,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
-import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaDAO;
-import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaKeyDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialProducerDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialMeta;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialMetaKey;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.operations.MaterialCloneOperation;
@@ -34,12 +30,6 @@ public class MaterialController {
 	@Inject
   private MaterialProducerDAO materialProducerDAO;
   
-  @Inject
-	private MaterialMetaDAO materialMetaDAO;
-  
-  @Inject
-  private MaterialMetaKeyDAO materialMetaKeyDAO;
-	
 	public Material findMaterialById(Long id) {
 		return materialDAO.findById(id);
 	}
@@ -76,30 +66,6 @@ public class MaterialController {
 
   public Material updateMaterialViewRestrict(Material material, MaterialViewRestrict viewRestrict) {
     return materialDAO.updateViewRestrict(material, viewRestrict);
-  }
-  
-  public List<MaterialMetaKey> listMaterialMetaKeys() {
-    return materialMetaKeyDAO.listAll();
-  }
-  
-  public MaterialMeta createMaterialMeta(Material material, MaterialMetaKey key, String value) {
-    return materialMetaDAO.create(material, key, value);
-  }
-  
-  public MaterialMeta findMaterialMeta(Material material, MaterialMetaKey key) {
-    return materialMetaDAO.findByMaterialAndKey(material, key);
-  }
-
-  public List<MaterialMeta> listMaterialMetas(Material material) {
-    return materialMetaDAO.listByMaterial(material);
-  }
-
-  public MaterialMeta updateMaterialMeta(MaterialMeta materialMeta, String value) {
-    return materialMetaDAO.updateValue(materialMeta, value);
-  }
-  
-  public MaterialMetaKey findMaterialMetaKey(String name) {
-    return materialMetaKeyDAO.findByName(name);
   }
   
   /* Producers */

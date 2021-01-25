@@ -7,6 +7,30 @@
   @include text;
 }
 
+.item-list--student-councelors {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column wrap;
+
+  .item-list__item {
+    align-items: flex-start;
+    cursor: inherit;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 0;
+    margin: 5px 20px 5px 0;
+    padding: 5px 5px 5px 0;
+
+    &:first-child {
+      border: 0;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
 .item-list--aside-navigation {
   padding: 0 0 10px;
   width: 100%;
