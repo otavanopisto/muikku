@@ -6,14 +6,13 @@ public class WorkspaceHtmlMaterial {
   }
 
   public WorkspaceHtmlMaterial(Long id, Long parentId, String title, String contentType, String html,
-      Long revisionNumber, String assignmentType, String license) {
+      String assignmentType, String license) {
     super();
     this.id = id;
     this.parentId = parentId;
     this.title = title;
     this.contentType = contentType;
     this.html = html;
-    this.revisionNumber = revisionNumber;
     this.assignmentType = assignmentType;
     this.license = license;
   }
@@ -58,14 +57,6 @@ public class WorkspaceHtmlMaterial {
     this.html = html;
   }
 
-  public Long getRevisionNumber() {
-    return revisionNumber;
-  }
-
-  public void setRevisionNumber(Long revisionNumber) {
-    this.revisionNumber = revisionNumber;
-  }
-
   public String getAssignmentType() {
     return assignmentType;
   }
@@ -87,7 +78,6 @@ public class WorkspaceHtmlMaterial {
   private String title;
   private String contentType;
   private String html;
-  private Long revisionNumber;
-  private String assignmentType;
+   private String assignmentType;
   private String license;
 }

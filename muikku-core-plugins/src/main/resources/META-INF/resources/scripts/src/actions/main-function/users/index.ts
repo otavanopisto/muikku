@@ -5,6 +5,7 @@ import { UsersListType, UserPanelUsersType, OrganizationUsersListType, UsersSele
 import { UserGroupType, UpdateUserType, CreateUserType, UserGroupListType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
+import { type } from 'os';
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserPanelUsersType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserPanelUsersType>
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<"UPDATE_STUDENT_SELECTOR", UsersListType>
@@ -196,18 +197,24 @@ let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprog
   }
 }
 
+type UserDataType = {
+  q: string,
+  firstResult?: number,
+  lastResult?: number
+}
+
 let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null, first: number | null, last: number | null) {
 
-  let data = {
+  let data: UserDataType = {
     q: !q ? null : q,
   };
 
   if (first) {
-    Object.assign(data, { firstResult: first });
+    data.firstResult = first;
   }
 
   if (last) {
-    Object.assign(data, { lastResult: last });
+    data.lastResult = last;
   }
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -250,16 +257,16 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(q: string | null,
 
 let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first: number | null, last: number | null) {
 
-  let data = {
+  let data: UserDataType = {
     q: !q ? null : q,
-  }
+  };
 
   if (first) {
-    Object.assign(data, { firstResult: first });
+    data.firstResult = first;
   }
 
   if (last) {
-    Object.assign(data, { lastResult: last });
+    data.lastResult = last;
   }
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -303,16 +310,16 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first
 
 let loadUsers: LoadUsersTriggerType = function loadUsers(q: string | null, first: number | null, last: number | null) {
 
-  let data = {
+  let data: UserDataType = {
     q: !q ? null : q,
   };
 
   if (first) {
-    Object.assign(data, { firstResult: first });
+    data.firstResult = first;
   }
 
   if (last) {
-    Object.assign(data, { lastResult: last });
+    data.lastResult = last;
   }
 
   let getStudents = promisify(mApi().organizationUserManagement.students.read(data), 'callback')();

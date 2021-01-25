@@ -721,7 +721,7 @@ public class WorkspaceMaterialController {
     if (frontPageMaterials.isEmpty()) {
       String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.frontPage.title");
       String license = null;
-      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l, license);
+      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", license);
       frontPageMaterial = createWorkspaceMaterial(frontPageFolder, htmlMaterial);
     }
     else {
@@ -900,7 +900,7 @@ public class WorkspaceMaterialController {
       WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
       ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", null,
           rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(),
-          nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null, 0l, 0l,
+          nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
           workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict());
       List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
           : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
@@ -921,7 +921,7 @@ public class WorkspaceMaterialController {
         if (child.isEmptyFolder) {
           contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null,
               child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(),
-              child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(),
+              child.hidden, null, child.node.getPath(), null, Collections.emptyList(),
               MaterialViewRestrict.NONE);
         }
         else {
@@ -934,8 +934,6 @@ public class WorkspaceMaterialController {
     case MATERIAL:
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
       Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
-      Long currentRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
-      Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
       String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType()
           : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
 
@@ -954,7 +952,7 @@ public class WorkspaceMaterialController {
       return new ContentNode(workspaceMaterial.getTitle(), material.getType(), contentType, rootMaterialNode.getId(),
           material.getId(), level, workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(),
           workspaceMaterial.getParent().getId(), nextSibling == null ? null : nextSibling.getId(),
-          workspaceMaterial.getHidden(), html, currentRevision, publishedRevision, workspaceMaterial.getPath(),
+          workspaceMaterial.getHidden(), html, workspaceMaterial.getPath(),
           material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), material.getViewRestrict());
     default:
       return null;

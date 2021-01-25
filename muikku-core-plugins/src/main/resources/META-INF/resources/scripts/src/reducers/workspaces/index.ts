@@ -415,8 +415,6 @@ export interface MaterialContentNodeType {
   license: string,
   viewRestrict: string,
   html: string,
-  currentRevision: number,
-  publishedRevision: number,
   contentType: string,
 
   //Standard Fields (only available when loaded through materials rest endpoint)
