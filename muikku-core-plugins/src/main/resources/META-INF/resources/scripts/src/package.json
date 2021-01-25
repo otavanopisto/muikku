@@ -47,7 +47,6 @@
     "react-rangeslider": "^2.2.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.3.1",
-    "react-scrollbars-custom": "^4.0.25",
     "react-stepzilla": "^6.0.0",
     "react-textarea-autosize": "^7.1.2",
     "redux": "^3.7.2",
