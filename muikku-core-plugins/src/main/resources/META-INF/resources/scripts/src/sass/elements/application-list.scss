@@ -391,6 +391,14 @@
   }
 }
 
+.application-list__item-dates {
+  display: flex;
+}
+
+.application-list__item-date-container {
+  margin-left: 5px;
+}
+
 .application-list__item-body {
   padding: 0;
 }
@@ -571,11 +579,15 @@
 .application-list__item-content-header {
   font-size: 1rem;
   padding: 10px;
+}
 
+.application-list__item-content-header--announcer-announcement {
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
   }
 }
+
+
 
 .application-list__item-content-body {
   padding: 0 10px;

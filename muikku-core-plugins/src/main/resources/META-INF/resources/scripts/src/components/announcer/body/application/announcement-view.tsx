@@ -10,7 +10,7 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
 import '~/sass/elements/glyph.scss';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemBody } from '~/components/general/application-list'
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemBody, ApplicationListItemDate } from '~/components/general/application-list'
 import { AnnouncementsType } from '~/reducers/announcements';
 import { UserIndexType } from '~/reducers/user-index';
 
@@ -31,17 +31,16 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
       return null;
     }
 
-    let headerPrimary = <ApplicationListHeaderPrimary modifiers="announcement-meta"><span className="glyph icon-clock"></span>
-      <span className="application-list__header-item-dates">
-        {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
-      </span></ApplicationListHeaderPrimary>
 
 
     return (
 
       <ApplicationList modifiers="open">
         <ApplicationListItem modifiers={this.props.announcements.current.workspaces.length ? "application-list__item--workspace-announcement" : "application-list__item--environment-announcement"}>
-          <ApplicationListItemHeader primary={headerPrimary} modifiers="announcer-announcement">
+          <ApplicationListItemHeader modifiers="announcer-announcement">
+            <ApplicationListHeaderPrimary modifiers="announcement-meta">
+              <ApplicationListItemDate startDate={this.props.i18n.time.format(this.props.announcements.current.startDate)} endDate={this.props.i18n.time.format(this.props.announcements.current.endDate)} />
+            </ApplicationListHeaderPrimary>
             {this.props.announcements.current.workspaces.length || this.props.announcements.current.userGroupEntityIds.length ? <div className="labels labels--announcer-announcement">
               {this.props.announcements.current.workspaces.map((workspace) =>
                 <span className="label" key={workspace.id}>
