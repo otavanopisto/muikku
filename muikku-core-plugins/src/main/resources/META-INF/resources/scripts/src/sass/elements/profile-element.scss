@@ -78,6 +78,21 @@
   padding-bottom: 12px;
 }
 
+.profile-element__item-additional-description {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.profile-element__check-option-container {
+  align-items: center;
+  display: flex;
+  margin-right: 10px;
+
+  input {
+    margin-right: 5px;
+  }
+}
+
 .profile-element__title {
   font-size: 1.25rem;
   font-weight: 300;

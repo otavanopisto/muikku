@@ -290,7 +290,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
             </div>
 
             <div className="profile-element__item">
-              <div className={`form-element form-element__check-option-container ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""}`}>
+              <div className={`form-element profile-element__check-option-container ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""}`}>
                 <input
                   checked={this.state.vacationAutoReply === "ENABLED" ? true : null}
                   value={this.state.vacationAutoReply}
@@ -298,6 +298,9 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
                   onChange={this.onVacationAutoReplyChange} />
                 <label htmlFor="profileVacationAutoReply" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReply.label')}</label>
               </div>
+            </div>
+            <div className="profile-element__item">
+              <span className="profile-element__item-additional-description">{this.props.i18n.text.get('plugin.profile.vacationAutoReply.description')}</span>
             </div>
 
             {this.state.vacationAutoReply === "ENABLED" &&
