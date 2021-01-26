@@ -29,10 +29,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitAndClick("a.button.button--primary-function");
-        waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
-        sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
+        waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
+        sendKeys(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input", "Test");
         waitAndClick(".autocomplete__recipient");
-        waitForPresentAndVisible(".env-dialog__input--new-message-title");
+        waitForVisible(".env-dialog__input--new-message-title");
 //      TODO: Recipient input hijacks input after first letter. What do?
         sendKeys(".env-dialog__input--new-message-title", "T");
         waitAndClick("#cke_1_contents");
@@ -76,7 +76,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();        
         navigate("/communicator", false);
-        waitForPresentAndVisible("div.message");
+        waitForVisible("div.message");
         scrollToEnd();
         waitForMoreThanSize("div.message", 30);
         assertCount("div.message", 40);
@@ -214,7 +214,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".dropdown--communicator-labels input");
+        waitForVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
         waitAndClick(".dropdown--communicator-labels span.link--full");
         waitForPresent(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body");
@@ -243,11 +243,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
 
-        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label-dropdown");
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
+        waitForVisible(".application-list__item-footer--communicator-message-labels .label__text");
         assertTextIgnoreCase(".application-list__item-footer--communicator-message-labels .label__text", "test");
         
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
@@ -279,14 +279,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
-
-        waitForPresentAndVisible(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
+        waitForVisible(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
         sleep(500);
-        clearElement(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
-        sendKeys(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name", "Dun dun duun");
-        waitAndClick(".dialog--visible .dialog__window--communicator .button--standard-ok");
+        clearElement(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
+        sendKeys(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name", "Dun dun duun");
+        waitAndClick(".dialog--visible .dialog__window--communicator-edit-label .button--standard-ok");
         sleep(500);
-        waitForNotVisible(".dialog--visible .dialog__window--communicator .dialog--communicator");
+        waitForNotVisible(".dialog--visible .dialog__window--communicator-edit-label");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
       }finally{
@@ -314,7 +313,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         selectFinnishLocale();
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
-        waitForPresentAndVisible("div>.dialog>.dialog__window");
+        waitForVisible("div>.dialog>.dialog__window");
         sleep(500);
         waitForClickable("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--communicator-remove-label");
         sleep(500);
@@ -350,18 +349,18 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         navigate("/communicator", false);
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".dropdown--communicator-labels input");
+        waitForVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
         waitAndClick(".dropdown--communicator-labels span.link--full");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
     
-        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
         sleep(500);
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label-dropdown");
         sleep(500);
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
+        waitForVisible(".application-list__item-footer--communicator-message-labels .label__text");
         sleep(500);
         waitAndClick(".button-pill--label");
         waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label-dropdown.selected");
@@ -388,10 +387,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
         
         waitAndClick(".button-pill__icon.icon-trash");
-        assertGoesAway(".application-list__item-content-aside .message__select-container input:first-child", 5);
+        assertGoesAway(".application-list__item-content-aside .message__select-container .message__selector", 5);
         navigate("/communicator#trash", false);
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test caption");

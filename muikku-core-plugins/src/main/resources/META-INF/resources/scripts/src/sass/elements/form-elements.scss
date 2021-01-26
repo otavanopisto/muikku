@@ -187,7 +187,6 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   height: 2.25rem;
-  outline: none;
   padding: 0 10px;
   resize: none;
 
@@ -274,7 +273,6 @@
   }
 }
 
-
 .form-element__select {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -286,7 +284,6 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   height: 2.25rem;
-  outline: none;
   padding: 0 25px 0 10px;
 
   @include breakpoint($breakpoint-pad) {
@@ -418,4 +415,30 @@
 
 .form-element--button-container {
   padding: 10px 0;
+}
+
+// This is exactly the same as env-dialog__actions
+
+.form-element__actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+
+  .button {
+    margin: 0 0 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+
+    .button {
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+.form-element__actions--wizard {
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: center;
+  }
 }

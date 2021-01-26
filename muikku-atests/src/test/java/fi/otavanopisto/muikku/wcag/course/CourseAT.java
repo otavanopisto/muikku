@@ -57,12 +57,12 @@ public class CourseAT extends AbstractWCAGTest{
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 1l, 
+          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 
           "EXERCISE");
       
       WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "2.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 1l, 
+          "<html><body><h1>Heading</h1><p>Material text.</p></body></html>", 
           "EVALUATED");
       try{
 //  TODO: Make sure no AC problems introduced in the material
@@ -70,10 +70,10 @@ public class CourseAT extends AbstractWCAGTest{
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".hero__workspace-title");
+        waitForVisible(".hero__workspace-title");
         testAccessibility("Workspace frontpage.");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".material-page");
+        waitForVisible(".material-page");
         testAccessibility("Workspace materials view");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -105,15 +105,15 @@ public class CourseAT extends AbstractWCAGTest{
       mockBuilder.addStudent(student).addCourseStudent(course1.getId(), courseStudent).mockLogin(student).build();
       login();
       navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), false);
-      waitForPresentAndVisible(".application-panel--discussion");
+      waitForVisible(".application-panel--discussion");
       testAccessibility("Workspace discussions view");
       waitAndClick(".application-list .message--discussion");
-      waitForPresentAndVisible(".application-list__item--discussion-message");
+      waitForVisible(".application-list__item--discussion-message");
       testAccessibility("Workspace discussions single message");
       navigate(String.format("/workspace/%s/discussions", workspace.getUrlName()), false);
-      waitForPresentAndVisible(".application-panel--discussion");
+      waitForVisible(".application-panel--discussion");
       waitAndClick(".application-panel__helper-container--discussion a.button--primary-function");
-      waitForPresentAndVisible(".env-dialog__header");
+      waitForVisible(".env-dialog__header");
       testAccessibility("Workspace discussions new message");
     }finally {
       deleteWorkspaceDiscussionThread(workspace.getId(), discussion.getGroupId(), discussion.getId(), thread.getId());
@@ -154,17 +154,17 @@ public class CourseAT extends AbstractWCAGTest{
         login();
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         
-        waitForPresentAndVisible(".application-list__item-header-main--journal-entry");
+        waitForVisible(".application-list__item-header-main--journal-entry");
         testAccessibility("Workspace journal view:");
         
         waitAndClick(".application-list__item-footer--journal-entry span:nth-child(2)");
-        waitForPresentAndVisible(".dialog__window--delete-journal");
+        waitForVisible(".dialog__window--delete-journal");
         testAccessibility("Workspace journal delete view:");
         
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        waitForPresentAndVisible(".application-list__item-header-main--journal-entry");
+        waitForVisible(".application-list__item-header-main--journal-entry");
         waitAndClick(".application-panel--workspace-journal .button--primary-function");
-        waitForPresentAndVisible(".env-dialog--new-edit-journal");
+        waitForVisible(".env-dialog--new-edit-journal");
         testAccessibility("Worspace journal create view:");
       } finally {
         deleteJournalEntry(journalEntry);

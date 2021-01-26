@@ -68,12 +68,12 @@
   padding: 0;
 }
 
-
 .application-list__title {
   @include mainfunction-subpanel-title;
 }
 
 .application-list__header-icon {
+
   color: $color-course-icon;
   display: inline-flex;
   flex-basis: auto;
@@ -81,6 +81,12 @@
   flex-shrink: 0;
   font-size: 1.25rem;
   margin-right: 10px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-UNPUBLISHED {
+    color: $color-disabled;
+  }
+  // scss-lint:enable SelectorFormat
 }
 
 .application-list__header-icon--notification-1 {
@@ -210,6 +216,24 @@
   display: inline-block;
 }
 
+.application-list__item-content > span:not(:first-child) {
+  margin-left: 5px;
+}
+
+.application-list__item-content-actions {
+  span {
+    cursor: pointer;
+  }
+
+  // scss-lint:disable SelectorFormat
+  .state-DISABLED {
+    color: $color-disabled;
+    cursor: default;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
@@ -270,12 +294,9 @@
     .application-list__header-secondary,
     .application-list__header-helper,
     .application-list__header-item-date,
-    .application-list__header-item-body {
+    .application-list__header-item-body,
+    .application-list-document-short-header {
       color: $color-default;
-    }
-
-    .label__text {
-      color: $color-default-contrast;
     }
 
     .text--item-counter {
@@ -285,10 +306,15 @@
     @include breakpoint($breakpoint-pad) {
       background-color: $color-default;
 
-      .label__text,
+      .application-list__header-helper {
+        color: $color-default-helper;
+      }
+
       .application-list__header-primary,
+      .application-list__header-secondary,
       .application-list__header-item-date,
-      .application-list__header-item-body {
+      .application-list__header-item-body,
+      .application-list-document-short-header {
         color: $color-default-contrast;
       }
 
@@ -336,7 +362,6 @@
 
 .application-list__item--user {
   border-top: 1px solid $color-default-item-separator-border;
-  cursor: pointer;
   padding: 10px;
 
   &:first-child {
@@ -436,12 +461,26 @@
     font-size: 0.875rem;
   }
 
+  input[type=radio] {
+    border-radius: 50%;
+    // this could be for any input inside the aside, but in communicator it is in the container
+    margin-right: 5px;
+  }
+
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 0;
+  }
+}
+
+.application-list__item-content-aside--course {
+  padding: 15px 0;
+
+  input[type=radio] {
+    padding: 8px;
   }
 }
 

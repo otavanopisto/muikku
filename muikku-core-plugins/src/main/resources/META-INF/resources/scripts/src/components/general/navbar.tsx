@@ -50,34 +50,34 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   render(){
     return (
       <div>
-        <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick">
+        <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick" aria-label={this.props.i18n.text.get("plugin.wcag.mainNavigation.aria.label")}>
           <div className="navbar__wrapper">
             <div className="navbar__logo">
               <Dropdown openByHover key="frontpage" content={this.props.i18n.text.get("plugin.home.home")}>
                 <a href="/" className="navbar__logo-link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="175" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
               </Dropdown>
             </div>
-            <ul className="navbar__items">
-              <li className={`navbar__item navbar__item--menu-button`}>
-                <a className={`link link--icon link--full ${this.props.modifier ? 'link--' + this.props.modifier : ''}`} onClick={this.openMenu}>
+            <ul className="navbar__items" role="menubar" aria-label={this.props.i18n.text.get("plugin.wcag.mainNavigation.aria.label")}>
+              <li className={`navbar__item navbar__item--menu-button`} role="none">
+                <span className={`link link--icon link--full ${this.props.modifier ? 'link--' + this.props.modifier : ''}`} onClick={this.openMenu} role="menuitem" aria-hidden="true">
                   <span className="link__icon icon-navicon"></span>
-                </a>
+                </span>
               </li>
               {this.props.navbarItems.map((item, index)=>{
                 if (!item){
                   return null;
                 }
-                return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`}>
+                return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`} role="none">
                   {item.item}
                 </li>);
               }).filter(item=>!!item)}
             </ul>
-            {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
-            <div className="navbar__default-options">
+            {this.props.mobileTitle ? <div className="navbar__mobile-title" aria-hidden="true">{this.props.mobileTitle}</div> : null}
+            <ul className="navbar__default-options" role="menubar" aria-label={this.props.i18n.text.get("plugin.wcag.alternateNavigation.aria.label")}>
               {this.props.defaultOptions}
-              <ProfileItem modifier={this.props.modifier} isProfileContainedInThisApp={this.props.isProfileContainedInThisApp}/>
-              <LanguagePicker />
-            </div>
+              <li role="none"><ProfileItem modifier={this.props.modifier} isProfileContainedInThisApp={this.props.isProfileContainedInThisApp} /></li>
+              <li role="none"><LanguagePicker /></li>
+            </ul>
           </div>
         </nav>
         <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}

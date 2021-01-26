@@ -140,7 +140,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
   }
   render(){
     return (<div className={`menu menu--${this.props.modifier} ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
-      onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu">
+      onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu" aria-hidden="true">
       <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="menu__header">
           <div className="menu__logo">
@@ -162,11 +162,10 @@ class Menu extends React.Component<MenuProps, MenuState> {
             {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
               <Link className="link link--full link--menu link--menu-profile" href="/profile">
-                <object className="button-image"
-                  data={getUserImageUrl(this.props.status.userId)}
-                  type="image/jpeg">
+                {this.props.status.hasImage ?
+                  <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image" /> :
                   <span className="link__icon icon-user"></span>
-                </object>
+                }
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
               </Link>
             </li> : null}

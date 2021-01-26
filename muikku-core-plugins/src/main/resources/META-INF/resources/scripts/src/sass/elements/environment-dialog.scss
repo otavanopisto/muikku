@@ -16,10 +16,6 @@
   top: 0;
   z-index: 9999;
 
-  * {
-    outline: none;
-  }
-
   &.visible {
     opacity: 1;
 
@@ -33,7 +29,6 @@
     font-family: $text-font-family;
     font-weight: 600;
     overflow: hidden;
-    padding: 0 0 5px;
     text-overflow: ellipsis;
   }
 }
@@ -290,13 +285,14 @@
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
+  height: $input-height;
   padding: 4px 8px;
   width: 100%;
 }
 
 .env-dialog__input-label {
   flex-basis: auto;
-  flex-grow: 1;
+  flex-grow: 0;
   flex-shrink: 0;
   margin: 0 0 0 5px;
 }
@@ -307,7 +303,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   margin: 0 0 0 15px;
-  padding: 0 0 0 10px;
+  padding: 0 0 0 15px;
 }
 
 .env-dialog__input[type="checkbox"] {

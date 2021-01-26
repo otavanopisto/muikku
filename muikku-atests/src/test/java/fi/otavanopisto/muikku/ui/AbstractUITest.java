@@ -467,16 +467,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     path = StringUtils.substring(path, StringUtils.lastIndexOf(path, "/"));
     return path;
   }
-
-  protected void waitForPresentAndVisible(String selector) {
-    waitForPresent(selector);
-    waitForVisible(selector);
-  }
-  
-  protected void waitForPresentAndVisibleXPath(String XPath) {
-    waitForPresentXPath(XPath);
-    waitForVisibleXPath(XPath);
-  }
   
   protected void refresh() {
     getWebDriver().navigate().refresh();
@@ -953,7 +943,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void hoverOverElement(String selector) {
     Actions action = new Actions(getWebDriver());
-    waitForPresentAndVisible(selector);
+    waitForVisible(selector);
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
   
@@ -1014,7 +1004,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", false);
-    waitForPresentAndVisible(".navbar .button-pill--profile");
+    waitForVisible(".navbar .button-pill--profile");
   }
   
   protected void login() {
@@ -1337,10 +1327,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return result;
   }
   
-  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, Long revisionNumber, String assignmentType) throws IOException {
+  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, String assignmentType) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType, null);
+    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, assignmentType, null);
     Response response = asAdmin()
       .contentType("application/json;charset=UTF-8")
       .body(payload)
@@ -1604,9 +1594,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void addToEndCKEditor(String text) {
-      waitForPresentAndVisible(".cke_contents");
+      waitForVisible(".cke_contents");
       String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForPresentAndVisible(".cke_contents");
+      waitForVisible(".cke_contents");
       waitAndClick(".cke_contents");
       getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")).sendKeys(gotoEnd);
       sendKeys(".cke_wysiwyg_div", text);
@@ -1681,9 +1671,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-    scrollIntoView("input#access-" + workspaceAccess);
+    scrollIntoView("input#" + workspaceAccess);
     sleep(500);
-    waitAndClick("input#access-" + workspaceAccess);
+    waitAndClick("input#" + workspaceAccess);
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
@@ -1694,7 +1684,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void reportWCAG() {
     if (this.violationList != null) {
       if (!this.violationList.isEmpty()) {
-        String violationsString = "";          
+        String violationsString = "";
         for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
           violationsString += System.getProperty("line.separator");
           violationsString += violation.getKey();

@@ -7,12 +7,10 @@ public class HtmlRestMaterial extends RestMaterial {
   public HtmlRestMaterial() {
   }
   
-  public HtmlRestMaterial(Long id, String title, String contentType, String html, Long currentRevision, Long publishedRevision, String license, MaterialViewRestrict visibility) {
+  public HtmlRestMaterial(Long id, String title, String contentType, String html, String license, MaterialViewRestrict visibility) {
     super(id, title, license, visibility);
     this.contentType = contentType;
     this.html = html;
-    this.currentRevision = currentRevision;
-    this.publishedRevision = publishedRevision;
   }
   
   public String getContentType() {
@@ -31,25 +29,7 @@ public class HtmlRestMaterial extends RestMaterial {
     this.html = html;
   }
   
-  public Long getCurrentRevision() {
-    return currentRevision;
-  }
-  
-  public void setCurrentRevision(Long currentRevision) {
-    this.currentRevision = currentRevision;
-  }
-  
-  public Long getPublishedRevision() {
-    return publishedRevision;
-  }
-  
-  public void setPublishedRevision(Long publishedRevision) {
-    this.publishedRevision = publishedRevision;
-  }
-  
-  
   private String html;
   private String contentType;
-  private Long currentRevision;
-  private Long publishedRevision;
+
 }

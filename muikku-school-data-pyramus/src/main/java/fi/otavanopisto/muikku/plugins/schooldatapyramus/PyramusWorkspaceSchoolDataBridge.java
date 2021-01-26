@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
@@ -276,11 +277,24 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   @Override
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
-    Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-    
-    CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, OffsetDateTime.now(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
-    
-    return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
+    String roleId = identifierMapper.getPyramusCourseRoleId(roleIdentifier);
+
+    if (StringUtils.equals(roleId, "STUDENT")) {
+      Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+      CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, OffsetDateTime.now(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
+      
+      return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
+    } else {
+      Long staffMemberId = identifierMapper.getPyramusStaffId(user.getIdentifier());
+      
+      if (NumberUtils.isNumber(roleId) && (staffMemberId != null)) {
+        CourseStaffMember courseStaffMember = new CourseStaffMember(null, courseId, staffMemberId, NumberUtils.createLong(roleId));
+        return entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/staffMembers", courseStaffMember));
+      } else {
+        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", roleIdentifier, user.getIdentifier()));
+        throw new RuntimeException("Could not parse workspace staff member role");
+      }
+    }
   }
   
   @Override

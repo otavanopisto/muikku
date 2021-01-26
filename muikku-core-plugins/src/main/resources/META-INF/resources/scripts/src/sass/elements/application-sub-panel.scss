@@ -110,6 +110,7 @@
 .application-sub-panel__header-main--guider-profile-student-name {
   flex-shrink: 0;
   font-size: 1.125rem;
+  font-weight: 400;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 0;
@@ -155,7 +156,7 @@
   border-left: 4px solid $color-sub-panel-status-complete-border;
 }
 
-.application-sub-panel__body--studies-summary-dates {
+.application-sub-panel__body--studies-summary-info {
   display: flex;
   flex-flow: column nowrap;
 }

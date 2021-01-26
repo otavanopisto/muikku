@@ -78,7 +78,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         
         Course course = new Course(course1.getId(), "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
@@ -148,7 +148,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         sleep(500);
         navigate("/coursepicker", false);
         waitForPresent(".application-panel__content .application-panel__main-container");
@@ -190,14 +190,14 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        scrollIntoView("input[name=\"name-extension\"]");
-        waitAndClick("input[name=\"name-extension\"]");
-        clearElement("input[name=\"name-extension\"]");
-        sendKeys("input[name=\"name-extension\"]", "For Test");
+        scrollIntoView("input[name=\"workspace-name-extension\"]");
+        waitAndClick("input[name=\"workspace-name-extension\"]");
+        clearElement("input[name=\"workspace-name-extension\"]");
+        sendKeys("input[name=\"workspace-name-extension\"]", "For Test");
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
@@ -272,7 +272,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
@@ -348,7 +348,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -400,7 +400,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -451,16 +451,16 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForClickable(".application-sub-pane__button-container .button");
         scrollIntoView(".application-sub-pane__button-container .button");
         waitAndClick(".application-sub-pane__button-container .button");
-        waitForPresentAndVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate("/coursepicker", false);
-        waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+        waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
 //        refresh();
-        waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         waitAndClick("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
         assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
