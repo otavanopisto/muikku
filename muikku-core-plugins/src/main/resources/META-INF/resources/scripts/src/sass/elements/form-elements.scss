@@ -6,6 +6,12 @@
 .form-element {
   width: auto;
 
+  // scss-lint:disable SelectorFormat
+  &.NON-ACTIVE {
+    opacity: 0.5;
+  }
+  // scss-lint:enable SelectorFormat
+
   label {
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;

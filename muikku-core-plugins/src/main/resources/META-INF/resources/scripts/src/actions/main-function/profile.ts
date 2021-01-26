@@ -78,7 +78,7 @@ let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loa
 
     try {
       let properties:any = (await promisify(mApi().user.properties.read(state.status.userId, {
-        properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
+        properties: 'profile-phone,profile-vacation-start,profile-vacation-end,communicator-auto-reply,communicator-auto-reply-msg'
       }), 'callback')());
 
       properties.forEach((property:any)=>{
