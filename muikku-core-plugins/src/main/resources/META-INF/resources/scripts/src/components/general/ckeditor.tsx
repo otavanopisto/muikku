@@ -64,7 +64,6 @@ const extraConfig = (props: CKEditorProps) => ({
   entities_latin: false,
   entities_greek: false,
   entities: false,
-  basicEntities: false,
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'links', items: [ 'Link' ] },
