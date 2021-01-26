@@ -15,6 +15,8 @@
   }
 }
 
+
+
 .application-list__header-container {
   align-items: flex-start;
   display: flex;
@@ -66,6 +68,10 @@
   flex-direction: column;
   flex-wrap: wrap;
   padding: 0;
+}
+
+.application-list--workspace-templates {
+  overflow: hidden;
 }
 
 .application-list__title {
