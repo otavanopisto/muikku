@@ -58,9 +58,8 @@ public class CommunicatorAutoReply {
       if (!Objects.equals(sender.getId(), recipient.getId())) {
 
         if (autoReply != null) {
-          Boolean isAutoReplyOn = Boolean.parseBoolean(autoReply.getValue());
           
-          if (Boolean.TRUE.equals(isAutoReplyOn)) {
+          if (autoReply.getValue().equals("ENABLED")) {
             String startProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-start").getValue();
             String endProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-end").getValue();
   
@@ -90,7 +89,7 @@ public class CommunicatorAutoReply {
         }
       }
     } else {
-      logger.log(Level.SEVERE, String.format("Communicator couldn't send notifications as some entity was not found"));
+      logger.log(Level.SEVERE, String.format("Communicator couldn't send automatic reply as some entity was not found"));
     }
   }
   
