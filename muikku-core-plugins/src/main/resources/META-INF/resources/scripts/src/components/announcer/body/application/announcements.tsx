@@ -60,8 +60,11 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
             onEnter: this.setCurrentAnnouncement.bind(this, announcement),
             isSelected: this.props.announcements.selectedIds.includes(announcement.id),
             key: announcement.id,
+            checkboxId: `announcementSelect-${announcement.id}`,
+            checkboxClassName: "announcement__selector",
             contents: (checkbox: React.ReactElement<any>) => {
               return <ApplicationListItemContentWrapper className="announcement__content" aside={<div className="announcement__select-container">
+                <label htmlFor={`announcementSelect-` + announcement.id} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.announcementSelect.label")}</label>
                 {checkbox}
               </div>}>
                 <ApplicationListItemHeader>
@@ -90,10 +93,10 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                 </div> : null}
                 <ApplicationListItemFooter modifiers="announcement-actions">
                   <NewEditAnnouncement announcement={announcement}>
-                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
+                    <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
                   </NewEditAnnouncement>
                   {this.props.announcements.location !== "archived" ? <DeleteAnnouncementDialog announcement={announcement}>
-                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
+                    <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
                   </DeleteAnnouncementDialog> : null}
                 </ApplicationListItemFooter>
               </ApplicationListItemContentWrapper>

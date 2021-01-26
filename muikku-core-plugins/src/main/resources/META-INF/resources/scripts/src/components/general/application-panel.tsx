@@ -171,19 +171,17 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     this.setRemainingHeight(isSticky);
   }
   render(){
-
-
     return (
-      <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
+      <main className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
         <div className="application-panel__container">
-          <div className="application-panel__header">
+          <h1 className="application-panel__header">
           {this.props.title ?
-            <div className="application-panel__header-title">{this.props.title}</div>
+            <span className="application-panel__header-title">{this.props.title}</span>
           : null}
           {this.props.icon ?
-            <div className="application-panel__header-actions">{this.props.icon}</div>
+            <span className="application-panel__header-actions">{this.props.icon}</span>
           : null}
-          </div>
+          </h1>
           {this.props.panelTabs ? <Tabs tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> :
             <div className="application-panel__body" ref="body">
               <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
@@ -211,7 +209,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
             </div>
           }
         </div>
-      </div>
+      </main>
     );
   }
 }

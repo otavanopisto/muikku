@@ -1,7 +1,7 @@
 #!/bin/bash
 commitmessage=`git log --pretty=format:"%s" -1`;
 if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from otavanopisto/devel"*) ]]; then 
-  git config user.name "Github Actions Bot"
+  git config user.name "Github Actions"
   git config user.email "github-actions[bot]@users.noreply.github.com"
   # Use default merge strategy
   git config pull.rebase false

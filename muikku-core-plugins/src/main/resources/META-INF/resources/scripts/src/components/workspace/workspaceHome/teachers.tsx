@@ -55,7 +55,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     return <div className="panel panel--workspace-teachers">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</div>
+        <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</h2>
       </div>
       {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? (
         <div className="panel__body">

@@ -298,12 +298,9 @@
     .application-list__header-secondary,
     .application-list__header-helper,
     .application-list__header-item-date,
-    .application-list__header-item-body {
+    .application-list__header-item-body,
+    .application-list-document-short-header {
       color: $color-default;
-    }
-
-    .label__text {
-      color: $color-default-contrast;
     }
 
     .text--item-counter {
@@ -313,10 +310,15 @@
     @include breakpoint($breakpoint-pad) {
       background-color: $color-default;
 
-      .label__text,
+      .application-list__header-helper {
+        color: $color-default-helper;
+      }
+
       .application-list__header-primary,
+      .application-list__header-secondary,
       .application-list__header-item-date,
-      .application-list__header-item-body {
+      .application-list__header-item-body,
+      .application-list-document-short-header {
         color: $color-default-contrast;
       }
 

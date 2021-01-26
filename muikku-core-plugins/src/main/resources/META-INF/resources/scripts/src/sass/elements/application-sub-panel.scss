@@ -110,6 +110,7 @@
 .application-sub-panel__header-main--guider-profile-student-name {
   flex-shrink: 0;
   font-size: 1.125rem;
+  font-weight: 400;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 0;

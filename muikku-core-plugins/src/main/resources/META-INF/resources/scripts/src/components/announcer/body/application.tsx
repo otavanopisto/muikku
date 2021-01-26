@@ -4,8 +4,7 @@ import ApplicationPanel from '~/components/general/application-panel/application
 import Announcements from './application/announcements';
 import AnnouncementView from './application/announcement-view';
 import HoverButton from '~/components/general/hover-button';
-import Dropdown from '~/components/general/dropdown';
-import Link from '~/components/general/link';
+import Button from '~/components/general/button';
 import Toolbar from './application/toolbar';
 import NewEditAnnouncement from '../dialogs/new-edit-announcement';
 import {StateType} from '~/reducers';
@@ -28,17 +27,9 @@ interface AnnouncerApplicationState {
 class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
   render(){
         let title = this.props.i18n.text.get('plugin.announcer.pageTitle')
-//        let icon = <Dropdown modifier="main-functions-settings" items={[
-//          closeDropdown=><Link className="link link--full link--main-functions-settings-dropdown" >
-//          </Link>
-//        ]}>
-//          <Link className="button-pill button-pill--settings">
-//            <span className="button-pill__icon icon-cog"></span>
-//          </Link>
-//        </Dropdown>
-        let primaryOption = <NewEditAnnouncement><Link className="button button--primary-function">
+        let primaryOption = <NewEditAnnouncement><Button buttonModifiers="primary-function">
           {this.props.i18n.text.get('plugin.announcer.button.create')}
-        </Link></NewEditAnnouncement>
+        </Button></NewEditAnnouncement>
         let toolbar = <Toolbar />
 
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server

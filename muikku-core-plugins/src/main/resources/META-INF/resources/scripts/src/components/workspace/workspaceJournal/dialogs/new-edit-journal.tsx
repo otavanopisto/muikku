@@ -13,7 +13,7 @@ import { StatusType } from '~/reducers/base/status';
 import equals = require("deep-equal");
 import { WorkspaceJournalType } from '~/reducers/workspaces';
 import { createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
-  CreateWorkspaceJournalForCurrentWorkspaceTriggerType, 
+  CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
   UpdateWorkspaceJournalInCurrentWorkspaceTriggerType} from '~/actions/workspaces';
 
 interface NewEditJournalProps {
@@ -33,13 +33,13 @@ interface NewEditJournalState {
 class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJournalState> {
   constructor(props: NewEditJournalProps){
     super(props, "new-edit-journal");
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.createOrModifyJournal = this.createOrModifyJournal.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-    
+
     this.state = this.getRecoverStoredState({
       text: props.journal ? props.journal.content : "",
       title: props.journal ? props.journal.title : "",
@@ -122,22 +122,26 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
     }
   }
   render(){
+    let editorTitle = this.props.journal ?
+      this.props.i18n.text.get('plugin.workspace.journal.editEntry.title') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content') :
+      this.props.i18n.text.get('plugin.workspace.journal.newEntry.title') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content');
+
     let content = (closeDialog: ()=>any) => [
       (
         <div className="env-dialog__row" key="2">
-          <div className="env-dialog__form-element-container">  
-            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.title.label')}</div>
-            <input type="text" className="env-dialog__input env-dialog__input--new-edit-journal-title"
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="journalTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.title.label')}</label>
+            <input id="journalTitle" type="text" className="env-dialog__input env-dialog__input--new-edit-journal-title"
              value={this.state.title} onChange={this.onTitleChange} autoFocus={!this.props.journal}/>
-          </div> 
+          </div>
         </div>
       ),
       (
         <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
           <div className="env-dialog__form-element-container">
-            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.content.label')}</div>
-            <CKEditor onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
-          </div> 
+            <label className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.content.label')}</label>
+            <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          </div>
         </div>
       )
     ]
