@@ -53,6 +53,7 @@ interface ProfileInfoAndSettingsState {
   chatVisibility: string,
   chatNickname: string,
   vacationAutoReply: string,
+  vacationAutoReplySubject: string,
   vacationAutoReplyMsg: string,
 }
 
@@ -65,6 +66,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
     this.onChatNicknameChange = this.onChatNicknameChange.bind(this);
     this.onVacationAutoReplyChange = this.onVacationAutoReplyChange.bind(this);
+    this.onVacationAutoReplySubjectChange = this.onVacationAutoReplySubjectChange.bind(this);
     this.onVacationAutoReplyMsgChange = this.onVacationAutoReplyMsgChange.bind(this);
     this.save = this.save.bind(this);
 
@@ -75,6 +77,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       chatVisibility: (props.profile.chatSettings && props.profile.chatSettings.visibility) || null,
       chatNickname: (props.profile.chatSettings && props.profile.chatSettings.nick) || "",
       vacationAutoReply: props.profile.properties['communicator-auto-reply'] || "",
+      vacationAutoReplySubject: props.profile.properties['communicator-auto-reply-subject'] || "",
       vacationAutoReplyMsg: props.profile.properties['communicator-auto-reply-msg'] || "",
     }
   }
@@ -104,6 +107,13 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       this.props.profile.properties['communicator-auto-reply'] !== nextProps.profile.properties['communicator-auto-reply']) {
       this.setState({
         vacationAutoReply: nextProps.profile.properties['communicator-auto-reply']
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply-subject'] &&
+      this.props.profile.properties['communicator-auto-reply-subject'] !== nextProps.profile.properties['communicator-auto-reply-subject']) {
+      this.setState({
+        vacationAutoReplySubject: nextProps.profile.properties['communicator-auto-reply-subject']
       });
     }
 
@@ -147,6 +157,11 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
   onVacationAutoReplyChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       vacationAutoReply: e.target.checked ? "ENABLED" : ""
+    });
+  }
+  onVacationAutoReplySubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      vacationAutoReplySubject: e.target.value
     });
   }
   onVacationAutoReplyMsgChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -203,6 +218,12 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       if ((this.props.profile.properties['communicator-auto-reply'] || "") !== this.state.vacationAutoReply) {
         totals++;
         this.props.saveProfileProperty('communicator-auto-reply', this.state.vacationAutoReply, cb);
+      }
+    }
+    if (!this.props.status.isStudent) {
+      if ((this.props.profile.properties['communicator-auto-reply-subject'] || "") !== this.state.vacationAutoReplySubject) {
+        totals++;
+        this.props.saveProfileProperty('communicator-auto-reply-subject', this.state.vacationAutoReplySubject, cb);
       }
     }
     if (!this.props.status.isStudent) {
@@ -303,9 +324,19 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
             {this.state.vacationAutoReply === "ENABLED" &&
               <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
+                <label htmlFor="profileVacationAutoReplySubject" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReplySubject.label')}</label>
+                <input
+                  className="form-element__input form-element__input--profile-auto-reply" id="profileVacationAutoReplySubject"
+                  type="text"
+                  onChange={this.onVacationAutoReplySubjectChange}
+                  value={this.state.vacationAutoReplySubject}></input>
+              </div>}
+
+            {this.state.vacationAutoReply === "ENABLED" &&
+              <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
                 <label htmlFor="profileVacationAutoReplyMsg" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReplyMsg.label')}</label>
                 <textarea
-                  className="form-element__textarea" id="profileVacationAutoReplyMsg"
+                  className="form-element__textarea form-element__textarea--profile-auto-reply" id="profileVacationAutoReplyMsg"
                   onChange={this.onVacationAutoReplyMsgChange}
                   value={this.state.vacationAutoReplyMsg}></textarea>
               </div>}
