@@ -265,7 +265,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
             value={this.props.status.profile.phoneNumbers} />
 
           {!this.props.status.isStudent ?
-            <div className="profile-element__item">
+            <div className="profile-element__item form-element">
               <label htmlFor="profilePhoneNumber" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
               <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
             </div>
@@ -276,21 +276,21 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         {!this.props.status.isStudent ?
           <section>
             <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.vacationSettings')}</h3>
-            <div className="profile-element__item">
+            <div className="profile-element__item form-element">
               <label htmlFor="profileVacationStart" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
                 <DatePicker id="profileVacationStart" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
                 maxDate={this.state.profileVacationEnd || null}
                 locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
             </div>
-            <div className="profile-element__item">
+            <div className="profile-element__item form-element">
               <label htmlFor="profileVacationEnd" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
                 <DatePicker id="profileVacationEnd" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
                 minDate={this.state.profileVacationStart || null}
                 locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
             </div>
 
-            <div className="profile-element__item">
-              <div className={`form-element form-element__check-option-container ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""}`}>
+            <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
+              <div className="profile-element__check-option-container">
                 <input
                   checked={this.state.vacationAutoReply === "ENABLED" ? true : null}
                   value={this.state.vacationAutoReply}
@@ -298,10 +298,11 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
                   onChange={this.onVacationAutoReplyChange} />
                 <label htmlFor="profileVacationAutoReply" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReply.label')}</label>
               </div>
+              <div className="profile-element__description">{this.props.i18n.text.get('plugin.profile.vacationAutoReply.description')}</div>
             </div>
 
             {this.state.vacationAutoReply === "ENABLED" &&
-              <div className={`form-element profile-element__item ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""}`}>
+              <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
                 <label htmlFor="profileVacationAutoReplyMsg" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReplyMsg.label')}</label>
                 <textarea
                   className="form-element__textarea" id="profileVacationAutoReplyMsg"
@@ -314,7 +315,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <section>
           <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.chatSettings')}</h3>
-          <div className="profile-element__item">
+          <div className="profile-element__item form-element">
             <label htmlFor="chatVisibility" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
             <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
               <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
@@ -322,7 +323,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
             </select>
           </div>
 
-          <div className="profile-element__item">
+          <div className="profile-element__item form-element">
             <label htmlFor="chatNickname" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
             <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
             <div className="profile-element__description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
