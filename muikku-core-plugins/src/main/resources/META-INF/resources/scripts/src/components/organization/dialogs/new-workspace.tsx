@@ -68,7 +68,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       },
       selectedStaff: [],
       selectedStudents: [],
-      locked: false,
+      locked: true,
       currentStep: 1,
       executing: false,
       validation: {
@@ -161,7 +161,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         nameValid: 2,
         nameExtensionValid: 2
       },
-      locked: false,
+      locked: true,
       workspaceName: "",
       workspaceNameExtension: "",
       executing: false,
