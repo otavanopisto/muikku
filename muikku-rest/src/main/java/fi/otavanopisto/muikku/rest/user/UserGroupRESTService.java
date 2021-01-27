@@ -175,11 +175,10 @@ public class UserGroupRESTService extends AbstractRESTService {
             organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
           ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization, group.isGuidanceGroup()));
-        }
+        } 
         else {
           logger.log(Level.WARNING, "Group not found");
         }
-        ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization, group.isGuidanceGroup()));
       }
       else {
         logger.log(Level.WARNING, "Group not found");
