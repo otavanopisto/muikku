@@ -32,6 +32,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import rocks.xmpp.extensions.messagecorrect.model.Replace;
 
 @Singleton
 public class CommunicatorAutoReply {
@@ -51,6 +52,7 @@ public class CommunicatorAutoReply {
     UserEntity recipient = userEntityController.findUserEntityById(recipientId);
 
     UserEntityProperty autoReplyMsg = userEntityController.getUserEntityPropertyByKey(recipient, "communicator-auto-reply-msg");
+    UserEntityProperty autoReplySubject = userEntityController.getUserEntityPropertyByKey(recipient, "communicator-auto-reply-subject");
     UserEntityProperty autoReply = userEntityController.getUserEntityPropertyByKey(recipient, "communicator-auto-reply");
 
 
@@ -60,29 +62,43 @@ public class CommunicatorAutoReply {
         if (autoReply != null) {
           
           if (autoReply.getValue().equals("ENABLED")) {
-            String startProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-start").getValue();
-            String endProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-end").getValue();
+            UserEntityProperty startProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-start");
+            UserEntityProperty endProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-end");
   
             LocalDate start = null;
             LocalDate end = null;
             String replyMessage = "";    
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
-            start = LocalDate.parse(startProperty, formatter);
-                
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
-            end = LocalDate.parse(endProperty, formatter);
-              
+            String replySubject = "";
+            
+            if (startProperty != null && endProperty != null) {
+              DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+              start = LocalDate.parse(startProperty.getValue(), formatter);
+                  
+              DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+              end = LocalDate.parse(endProperty.getValue(), formatter);
+            }
             if (start != null && end != null) {  
               LocalDate now = LocalDate.now();    
               if (start.equals(now) || (now.isAfter(start) && now.isBefore(end)) || end.equals(now)) {
+                
+                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyy", Locale.ENGLISH);
+                String startDate = outputFormatter.format(start);
+                String endDate = outputFormatter.format(end);
+                
                 if (autoReplyMsg != null) {
                   replyMessage = autoReplyMsg.getValue();
                 } else {
                   replyMessage = "Automaattinen poissaoloviesti tähän.";
                 }
+                if (autoReplySubject != null) {
+                  replySubject = autoReplySubject.getValue();
+                } else {
+                  replySubject = "Automaattinen vastaus: Poissa " + startDate + " - " + endDate;
+                }
                 List<UserEntity> recipientsList = new ArrayList<UserEntity>();
                 recipientsList.add(sender);
-                communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), "Automaattinen vastaus: En ole paikalla ", replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
+                
+                communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
               }
             }
           }
