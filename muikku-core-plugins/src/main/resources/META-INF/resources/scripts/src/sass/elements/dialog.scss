@@ -56,6 +56,16 @@
   }
 }
 
+.dialog__window--new-workspace {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 505px;
+    }
+  }
+}
+
 .dialog__window--wizard {
   bottom: 0;
   display: flex;

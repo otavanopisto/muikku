@@ -25,7 +25,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
     return (<div className="panel panel--announcements">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--announcements icon-paper-plane"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.announcements.title')}</div>
+        <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.announcements.title')}</h2>
       </div>
       {this.props.announcements.length ? (
         <div className="panel__body">
@@ -33,7 +33,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
             {this.props.announcements.map((announcement: AnnouncementType)=>{
               let extraWorkspaces = announcement.workspaces && announcement.workspaces.length ? announcement.workspaces.length - 1 : 0;
               return <Link key={announcement.id} className={`item-list__item item-list__item--announcements ${announcement.workspaces.length ? "item-list__item--has-workspaces" : ""}`}
-                to={`/announcements#${announcement.id}`}>
+                href={`/announcements#${announcement.id}`} to={`/announcements#${announcement.id}`}>
                 <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                 <span className="item-list__text-body item-list__text-body--multiline">
                   <span className="item-list__announcement-caption">

@@ -83,12 +83,13 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
     });
   }
   render(){
+    let editorTitle = this.props.i18n.text.get('plugin.discussion.reply.edit.topic') + " - " + this.props.i18n.text.get('plugin.discussion.createmessage.content');
+
     let content = (closeDialog: ()=>any) => [
     <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
       <div className="env-dialog__form-element-container">
-        <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
-        <CKEditor autofocus key="1"
-          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        <label className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</label>
+        <CKEditor editorTitle={editorTitle} autofocus key="1" onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
       </div>
     </div>
     ]
@@ -109,7 +110,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
     }
 
     return <EnvironmentDialog modifier="modify-reply-thread"
-      title={this.props.reply ? this.props.i18n.text.get('plugin.discussion.reply.edit.topic') : this.props.i18n.text.get('plugin.discussion.reply.topic')}
+      title={this.props.i18n.text.get('plugin.discussion.reply.edit.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </EnvironmentDialog>

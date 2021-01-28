@@ -1671,9 +1671,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-    scrollIntoView("input#access-" + workspaceAccess);
+    scrollIntoView("input#" + workspaceAccess);
     sleep(500);
-    waitAndClick("input#access-" + workspaceAccess);
+    waitAndClick("input#" + workspaceAccess);
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
@@ -1684,7 +1684,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void reportWCAG() {
     if (this.violationList != null) {
       if (!this.violationList.isEmpty()) {
-        String violationsString = "";          
+        String violationsString = "";
         for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
           violationsString += System.getProperty("line.separator");
           violationsString += violation.getKey();

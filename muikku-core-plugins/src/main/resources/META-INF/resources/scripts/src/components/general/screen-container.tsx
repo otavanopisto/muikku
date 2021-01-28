@@ -8,7 +8,7 @@ interface ScreenContainerProps {
 }
 
 interface ScreenContainerState {
-  
+
 }
 
 export default class ScreenContainer extends React.Component<ScreenContainerProps, ScreenContainerState> {
@@ -17,7 +17,8 @@ export default class ScreenContainer extends React.Component<ScreenContainerProp
   }
   render(){
     let modifiers:Array<string> = typeof this.props.viewModifiers === "string" ? [this.props.viewModifiers] : this.props.viewModifiers;
-    return <div className="screen-container">
-    <div className={`screen-container__wrapper ${(modifiers || []).map(s=>`screen-container__wrapper--${s}`).join(" ")}`}>{this.props.children}</div></div>
+    return <main className="screen-container">
+      <div className={`screen-container__wrapper ${(modifiers || []).map(s=>`screen-container__wrapper--${s}`).join(" ")}`}>{this.props.children}</div>
+    </main>
   }
 }

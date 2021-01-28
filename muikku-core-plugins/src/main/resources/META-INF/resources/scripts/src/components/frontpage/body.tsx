@@ -35,7 +35,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       <FrontpageHero i18n={this.props.i18n}/>
       <ScreenContainer viewModifiers="frontpage">
         <FrontpageStudying i18n={this.props.i18n}/>
-        <FrontpageVideos/>
+        <FrontpageVideos i18n={this.props.i18n}/>
         <FrontpageNews i18n={this.props.i18n}/>
         <FrontpageInstagram i18n={this.props.i18n}/>
         <FrontpageOrganization i18n={this.props.i18n}/>

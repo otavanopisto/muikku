@@ -476,7 +476,7 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(q?: str
 let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGroups(q?: string) {
 
   let data = { q: q };
-  let getStaff = q ? mApi().usergroup.groups.read(data) : null;
+  let getUserGroups = q ? mApi().usergroup.groups.read(data) : null;
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -484,8 +484,8 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      if (getStaff !== null) {
-        await promisify(getStaff, 'callback')().then((usergGroups: UserGroupListType) => {
+      if (getUserGroups !== null) {
+        await promisify(getUserGroups, 'callback')().then((usergGroups: UserGroupListType) => {
           dispatch({
             type: "UPDATE_GROUP_SELECTOR",
             payload: usergGroups

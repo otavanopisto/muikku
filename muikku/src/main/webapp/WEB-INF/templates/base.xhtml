@@ -3,7 +3,9 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  xmlns:ui="http://java.sun.com/jsf/facelets">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+  lang="fi">
 
 <!-- Base takes no parameters -->
 <!-- Base takes four defines, styles, scripts, body and title, where title is not required -->
@@ -133,18 +135,18 @@
   <div id="app"></div>
 
   <!-- TODO: please lets find a way to do this with a rest endpoint -->
-  <h:form id="language-picker" style="display:none">
+  <h:form id="language-picker" style="display:none" pt:aria-hidden="true">
     <ui:repeat value="#{i18n.languages}" var="locale">
       <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" data-locale="#{locale}">
         #{i18n.text['plugin.navigation.language.' .concat(locale)]}
       </a>
     </ui:repeat>
   </h:form>
-  <h:form style="display:none">
+  <h:form style="display:none" pt:aria-hidden="true">
     <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
   </h:form>
-  <a id="locale" style="display:none">#{languageWidgetBackingBean.language}</a>
-  <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"></a>
+  <a id="locale" style="display:none" aria-hidden="true">#{languageWidgetBackingBean.language}</a>
+  <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]" aria-hidden="true"></a>
 
   <!-- Google Analytics -->
   <script>

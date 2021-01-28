@@ -11,6 +11,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
+import '~/sass/elements/wcag.scss';
 
 import {StateType} from '~/reducers';
 
@@ -49,24 +50,23 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
    let toolbar = <Toolbar/>
     let primaryOption;
     if (this.props.workspace){
-      primaryOption = <div className="form-element form-element--main-action">
-        {!this.props.status.isStudent && this.props.workspace.journals ?
-            <select className="form-element__select form-element__select--main-action"
-              value={this.props.workspace.journals.userEntityId || ""} onChange={this.onWorkspaceJournalFilterChange}>
-              <option value="">{this.props.i18n.text.get("plugin.workspace.journal.studentFilter.showAll")}</option>
-              {(this.props.workspace.students || [])
-                .filter((student, index, array)=>
-                  array.findIndex((otherStudent, otherIndex)=>otherStudent.userEntityId === student.userEntityId) === index
-                ).map((student)=>{
-                return <option key={student.userEntityId} value={student.userEntityId}>{getName(student, true)}</option>
-              })}
-            </select>
-        :
-          <NewJournal><Button buttonModifiers="primary-function">
-            {this.props.i18n.text.get('plugin.workspace.journal.newEntryButton.label')}
-          </Button></NewJournal>
-        }
-      </div>
+      primaryOption = !this.props.status.isStudent && this.props.workspace.journals ?
+        <div className="form-element form-element--main-action">
+          <label htmlFor="selectJournal" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.journalSelect.label")}</label>
+          <select id="selectJournal" className="form-element__select form-element__select--main-action"
+            value={this.props.workspace.journals.userEntityId || ""} onChange={this.onWorkspaceJournalFilterChange}>
+            <option value="">{this.props.i18n.text.get("plugin.workspace.journal.studentFilter.showAll")}</option>
+            {(this.props.workspace.students || [])
+              .filter((student, index, array)=>
+                array.findIndex((otherStudent, otherIndex)=>otherStudent.userEntityId === student.userEntityId) === index
+              ).map((student)=>{
+              return <option key={student.userEntityId} value={student.userEntityId}>{getName(student, true)}</option>
+            })}
+          </select>
+        </div>
+        : <NewJournal><Button buttonModifiers="primary-function">
+          {this.props.i18n.text.get('plugin.workspace.journal.newEntryButton.label')}
+        </Button></NewJournal>
     }
 
     return (<div className="application-panel-wrapper">
