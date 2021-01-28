@@ -182,13 +182,13 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       // childNodes[1] is div.cke_inner and next childNodes[0] is span.cke_top and childNodes[2] is span.cke_bottom
       // This should be fairly stable way to get the height of these element as the DOM seems to be steady already
       // We rely on this when we use editor parent container's height as a starting point for cke height calculations
-      const ckeTopHeight = instance.container.$.childNodes[1].childNodes[0].getBoundingClientRect().height;
-      const ckeBottomHeight = instance.container.$.childNodes[1].childNodes[2].getBoundingClientRect().height;
+      const ckeTopHeight = instance.container.$.childNodes[1] ? instance.container.$.childNodes[1].childNodes[0].getBoundingClientRect().height : 0;
+      const ckeBottomHeight = instance.container.$.childNodes[1] ? instance.container.$.childNodes[1].childNodes[2].getBoundingClientRect().height : 0;
 
       // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also
       const ckeBorder = 4;
 
-      // We need to retract the ckeTop na dckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
+      // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
       // cke_contents element and it will cause the editor to overflow the screen in mobile views.
       const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height - ckeTopHeight - ckeBottomHeight - ckeBorder;
 
