@@ -10,21 +10,27 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdLabelDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientUserGroupDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientWorkspaceGroupDAO;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
-import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipientGroup;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageLabels;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipientGroup;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -50,6 +56,9 @@ public class CommunicatorMessageIndexer {
   private CommunicatorMessageRecipientUserGroupDAO communicatorMessageRecipientUserGroupDAO;
   
   @Inject
+  private CommunicatorMessageRecipientWorkspaceGroupDAO communicatorMessageRecipientWorkspaceGroupDAO;
+  
+  @Inject
   private CommunicatorMessageIdLabelDAO communicatorMessageIdLabelDAO;
   
   @Inject
@@ -61,6 +70,12 @@ public class CommunicatorMessageIndexer {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+  
   public void indexMessage(CommunicatorMessage communicatorMessage) {
     if (communicatorMessage == null) {
       logger.warning("NULL communicatorMessage given");
@@ -115,29 +130,60 @@ public class CommunicatorMessageIndexer {
       List<IndexedCommunicatorMessageRecipientGroup> indexedRecipientGroups = new ArrayList<>();
       List<CommunicatorMessageRecipientUserGroup> recipientGroups = communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
       for (CommunicatorMessageRecipientUserGroup recipientGroup : recipientGroups) {
-        List<CommunicatorMessageRecipient> recipientGroupRecipients = communicatorMessageRecipientDAO.listByMessageAndGroup(communicatorMessage, recipientGroup);
-        List<IndexedCommunicatorMessageRecipient> indexedRecipientGroupRecipients = new ArrayList<>();
-
-        for (CommunicatorMessageRecipient recipientGroupRecipient : recipientGroupRecipients) {
-          IndexedCommunicatorMessageRecipient indexedMessageRecipientModel = indexedMessageRecipientModel(recipientGroupRecipient, communicatorMessageId);
-          if (indexedMessageRecipientModel != null) {
-            indexedRecipientGroupRecipients.add(indexedMessageRecipientModel);
-          } else {
-            logger.log(Level.WARNING, String.format("Couldn't index message %d recipient %d", communicatorMessage.getId(), recipientGroupRecipient.getId()));
-          }
-        }
-
         UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(recipientGroup.getUserGroupEntityId());
         UserGroup group = userGroupEntity != null ? userGroupController.findUserGroup(userGroupEntity) : null;
 
         if (group != null) {
           IndexedCommunicatorMessageRecipientGroup groupData = new IndexedCommunicatorMessageRecipientGroup();
           
-          groupData.setUserGroupEntityId(recipientGroup.getUserGroupEntityId());
           groupData.setGroupName(group.getName());
+
+          // Process the group recipients
+          List<CommunicatorMessageRecipient> recipientGroupRecipients = communicatorMessageRecipientDAO.listByMessageAndGroup(communicatorMessage, recipientGroup);
+          List<IndexedCommunicatorMessageRecipient> indexedRecipientGroupRecipients = new ArrayList<>();
+
+          for (CommunicatorMessageRecipient recipientGroupRecipient : recipientGroupRecipients) {
+            IndexedCommunicatorMessageRecipient indexedMessageRecipientModel = indexedMessageRecipientModel(recipientGroupRecipient, communicatorMessageId);
+            if (indexedMessageRecipientModel != null) {
+              indexedRecipientGroupRecipients.add(indexedMessageRecipientModel);
+            } else {
+              logger.log(Level.WARNING, String.format("Couldn't index message %d recipient %d", communicatorMessage.getId(), recipientGroupRecipient.getId()));
+            }
+          }
+
           groupData.setRecipients(indexedRecipientGroupRecipients);
-          
           indexedRecipientGroups.add(groupData);
+        } else {
+          logger.log(Level.WARNING, String.format("Couldn't index message %d recipient UserGroup %d", communicatorMessage.getId(), recipientGroup.getUserGroupEntityId()));
+        }
+      }
+      
+      List<CommunicatorMessageRecipientWorkspaceGroup> workspaceRecipientGroups = communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
+      for (CommunicatorMessageRecipientWorkspaceGroup workspaceRecipientGroup : workspaceRecipientGroups) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRecipientGroup.getWorkspaceEntityId());
+        Workspace workspace = workspaceEntity != null ? workspaceController.findWorkspace(workspaceEntity) : null;
+        
+        if (workspace != null) {
+          IndexedCommunicatorMessageRecipientGroup groupData = new IndexedCommunicatorMessageRecipientGroup();
+          groupData.setGroupName(workspace.getName());
+          
+          // Process the group recipients
+          List<CommunicatorMessageRecipient> recipientGroupRecipients = communicatorMessageRecipientDAO.listByMessageAndGroup(communicatorMessage, workspaceRecipientGroup);
+          List<IndexedCommunicatorMessageRecipient> indexedRecipientGroupRecipients = new ArrayList<>();
+
+          for (CommunicatorMessageRecipient recipientGroupRecipient : recipientGroupRecipients) {
+            IndexedCommunicatorMessageRecipient indexedMessageRecipientModel = indexedMessageRecipientModel(recipientGroupRecipient, communicatorMessageId);
+            if (indexedMessageRecipientModel != null) {
+              indexedRecipientGroupRecipients.add(indexedMessageRecipientModel);
+            } else {
+              logger.log(Level.WARNING, String.format("Couldn't index message %d recipient %d", communicatorMessage.getId(), recipientGroupRecipient.getId()));
+            }
+          }
+          
+          groupData.setRecipients(indexedRecipientGroupRecipients);
+          indexedRecipientGroups.add(groupData);
+        } else {
+          logger.log(Level.WARNING, String.format("Couldn't index message %d recipient Workspace %d", communicatorMessage.getId(), workspaceRecipientGroup.getWorkspaceEntityId()));
         }
       }
       

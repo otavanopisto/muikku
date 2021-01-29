@@ -3,15 +3,12 @@ package fi.otavanopisto.muikku.search;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Common message recipient group descriptor for all recipient groups
+ * * UserGroups
+ * * WorkspaceUserGroups (teachers/students)
+ */
 public class IndexedCommunicatorMessageRecipientGroup {
-
-  public Long getUserGroupEntityId() {
-    return userGroupEntityId;
-  }
-  
-  public void setUserGroupEntityId(Long userGroupEntityId) {
-    this.userGroupEntityId = userGroupEntityId;
-  }
 
   public String getGroupName() {
     return groupName;
@@ -29,7 +26,6 @@ public class IndexedCommunicatorMessageRecipientGroup {
     this.recipients = recipients;
   }
 
-  private Long userGroupEntityId;
   private String groupName;
   private List<IndexedCommunicatorMessageRecipient> recipients = new ArrayList<>();
 }
