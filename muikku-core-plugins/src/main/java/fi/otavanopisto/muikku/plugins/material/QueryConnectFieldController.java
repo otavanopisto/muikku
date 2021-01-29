@@ -1,15 +1,20 @@
 package fi.otavanopisto.muikku.plugins.material;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
+import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
@@ -26,6 +31,9 @@ public class QueryConnectFieldController {
 
   @Inject
   private QueryConnectFieldCounterpartDAO queryConnectFieldCounterpartDAO;
+
+  @Inject
+  private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
   
   @Inject
   private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
@@ -56,6 +64,21 @@ public class QueryConnectFieldController {
     }
     
     queryConnectFieldDAO.delete(queryField);
+  }
+
+  public QueryConnectField updateQueryConnectField(Material material, MaterialField field, boolean removeAnswers) throws MaterialFieldMetaParsingExeption {
+    ObjectMapper objectMapper = new ObjectMapper();
+    ConnectFieldMeta connectFieldMeta;
+    try {
+      connectFieldMeta = objectMapper.readValue(field.getContent(), ConnectFieldMeta.class);
+    }
+    catch (IOException e) {
+      throw new MaterialFieldMetaParsingExeption("Could not parse connect field meta", e);
+    }
+    QueryConnectField queryField = queryConnectFieldDAO.findByMaterialAndName(material, connectFieldMeta.getName());
+    // -> fi.otavanopisto.muikku.plugins.workspace.QueryFieldChangeListener
+    queryFieldUpdateEvent.fire(new QueryFieldUpdateEvent(queryField, field, removeAnswers));
+    return queryField;
   }
 
   /* Connect Field Terms */
