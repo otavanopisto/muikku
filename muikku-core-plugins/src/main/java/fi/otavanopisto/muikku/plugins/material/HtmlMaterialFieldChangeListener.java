@@ -295,6 +295,13 @@ public class HtmlMaterialFieldChangeListener {
   
   // Update
   
+  // Connect field
+  public void onHtmlMaterialConnectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.connect")) {
+      queryConnectFieldController.updateQueryConnectField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
+    }
+  }
+  
   // Organizer field
   public void onHtmlMaterialOrganizerFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.organizer")) {
