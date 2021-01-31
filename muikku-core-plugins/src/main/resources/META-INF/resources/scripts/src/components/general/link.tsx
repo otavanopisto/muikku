@@ -147,7 +147,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["as"];
 
     if (Element !== "a") {
-      elementProps.tabIndex = 1;
+      elementProps.tabIndex = elementProps.tabIndex || 1;
     }
 
     return <Element ref="element" {...elementProps} onKeyDown={this.onKeyDown}
