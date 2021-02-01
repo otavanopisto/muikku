@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -104,6 +105,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorAttachmentController communicatorAttachmentController;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -303,6 +307,10 @@ public class CommunicatorRESTService extends PluginRESTService {
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
       
+      if (!isSearchEnabled()) {
+        return Response.ok(Collections.emptyList()).build(); 
+      }
+      
       if (StringUtils.isEmpty(queryString)) {
         // Empty list if query string is empty
         return Response.ok(Collections.emptyList()).build();
@@ -400,6 +408,14 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
   
+  private boolean isSearchEnabled() {
+    String pluginSetting = pluginSettingsController.getPluginSetting("communicator", "searchEnabled");
+    
+    // Default to true when pluginsetting is not set
+    return StringUtils.isNotBlank(pluginSetting) ?
+        Boolean.TRUE.equals(Boolean.valueOf(pluginSetting)) : true;
+  }
+
   @DELETE
   @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
