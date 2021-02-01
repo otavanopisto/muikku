@@ -30,14 +30,6 @@ public class VacationNotificationsDAO extends CorePluginsDAO<VacationNotificatio
 		
 		return vacationNotification;
 	}
-
-	public VacationNotifications updateLastNotification(VacationNotifications vacationNotification) {
-	  vacationNotification.setNotificationDate(new Date());
-	  
-	  getEntityManager().persist(vacationNotification);
-	  
-	  return vacationNotification; 
-	}
 	
 	public VacationNotifications findNotification(UserEntity sender, UserEntity receiver) {
     EntityManager entityManager = getEntityManager();
