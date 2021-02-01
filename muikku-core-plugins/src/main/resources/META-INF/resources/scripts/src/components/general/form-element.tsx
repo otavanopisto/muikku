@@ -147,7 +147,11 @@ export class FormWizardActions extends React.Component<FormWizardActionsProps, F
 interface SearchFormElementProps {
   updateField: (value: string) => any,
   value?: string,
+
+  id?: string,
   name: string,
+  onFocus?: () => any,
+  onBlur?: () => any,
   placeholder?: string,
   modifiers?: string | Array<string>
 }
@@ -160,9 +164,6 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 
   constructor(props: SearchFormElementProps) {
     super(props);
-    this.state = {
-      value: this.props.value
-    }
     this.updateSearchField = this.updateSearchField.bind(this);
   }
 
@@ -175,7 +176,8 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className="form-element form-element--coursepicker-toolbar">
-        <input name={this.props.name} value={this.state.value} className="form-element__input form-element__input--main-function-search" placeholder={this.props.placeholder} onChange={this.updateSearchField} />
+        <label htmlFor={this.props.name} className="visually-hidden">{this.props.placeholder}</label>
+        <input id={this.props.name} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.props.value} className="form-element__input form-element__input--main-function-search" placeholder={this.props.placeholder} onChange={this.updateSearchField} />
         <div className="form-element__input-decoration--main-function-search icon-search"></div>
       </div>
     )

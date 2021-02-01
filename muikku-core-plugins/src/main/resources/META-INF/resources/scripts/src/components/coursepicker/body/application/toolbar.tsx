@@ -1,17 +1,18 @@
 import * as React from 'react';
-import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Link from '~/components/general/link';
-import {i18nType} from '~/reducers/base/i18n';
+import { i18nType } from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/wcag.scss';
-import {StateType} from '~/reducers';
+import { StateType } from '~/reducers';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel';
 import { WorkspacesType } from '~/reducers/workspaces';
+import { SearchFormElement } from '~/components/general/form-element';
 
 interface CoursepickerToolbarProps {
   i18n: i18nType,
@@ -19,17 +20,20 @@ interface CoursepickerToolbarProps {
 }
 
 interface CoursepickerToolbarState {
-  searchquery: string
+  searchquery: string,
+  focused: boolean
+
 }
 
 class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, CoursepickerToolbarState> {
   private searchTimer: NodeJS.Timer;
-  private focused:boolean;
-  constructor(props: CoursepickerToolbarProps){
+  private focused: boolean;
+  constructor(props: CoursepickerToolbarProps) {
     super(props);
 
     this.state = {
-      searchquery: this.props.workspaces.activeFilters.query || ""
+      searchquery: this.props.workspaces.activeFilters.query || "",
+      focused: false,
     }
 
     this.setSearchQuery = this.setSearchQuery.bind(this);
@@ -41,15 +45,20 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
     this.focused = false;
   }
 
-  updateSearchWithQuery(query: string){
-    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+  updateSearchWithQuery(query: string) {
+    clearTimeout(this.searchTimer);
+    this.setState({
+      searchquery: query
+    });
+    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
     locationData.q = query;
-    window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
+    window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
+
+
   }
 
-  setSearchQuery(e: React.ChangeEvent<HTMLInputElement>){
+  setSearchQuery(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);
-
     this.setState({
       searchquery: e.target.value
     });
@@ -57,45 +66,57 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
     this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400) as any;
   }
 
-  componentWillReceiveProps(nextProps: CoursepickerToolbarProps){
-    if (!this.focused && (nextProps.workspaces.activeFilters.query || "") !== this.state.searchquery){
+  componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {
+    if (!this.focused && (nextProps.workspaces.activeFilters.query || "") !== this.state.searchquery) {
       this.setState({
         searchquery: nextProps.workspaces.activeFilters.query || ""
       });
     }
   }
 
-  onInputFocus(){
-    this.focused = true;
+  onInputFocus() {
+    this.setState({ focused: true });
   }
 
-  onInputBlur(){
-    this.focused = false;
+  onInputBlur() {
+    this.setState({ focused: false });
   }
 
-  render(){
-      return (
-        <ApplicationPanelToolbar>
-          <ApplicationPanelToolbarActionsMain>
-            <div className="form-element form-element--coursepicker-toolbar">
-              <label htmlFor="searchCourses" className="visually-hidden">{this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}</label>
-              <input id="searchCourses" onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
-              <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
-            </div>
-          </ApplicationPanelToolbarActionsMain>
-        </ApplicationPanelToolbar>
-      )
+  //   <div className="form-element form-element--coursepicker-toolbar">
+  //   <label htmlFor="searchCourses" className="visually-hidden">{this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}</label>
+  //   <input id="searchCourses" onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery} onChange={this.setSearchQuery} />
+  //   <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
+  // </div>
+
+  render() {
+    return (
+      <ApplicationPanelToolbar>
+        <ApplicationPanelToolbarActionsMain>
+
+          <SearchFormElement
+            updateField={this.updateSearchWithQuery}
+            name="workspace-search"
+            id="searchCourses"
+            onFocus={this.onInputFocus}
+            onBlur={this.onInputBlur}
+            placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}
+            value={this.state.searchquery}
+          />
+
+        </ApplicationPanelToolbarActionsMain>
+      </ApplicationPanelToolbar>
+    )
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspaces: state.workspaces
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
 
