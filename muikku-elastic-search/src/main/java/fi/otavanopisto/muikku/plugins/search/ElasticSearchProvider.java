@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -41,22 +43,33 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder.Operator;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
+import fi.otavanopisto.muikku.session.SessionController;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -69,6 +82,9 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private SessionController sessionController;
   
   @Override
   public void init() {
@@ -86,7 +102,7 @@ public class ElasticSearchProvider implements SearchProvider {
     } else {
       portNumber = 9300;
     }
-	
+  
     Settings settings = Settings.settingsBuilder()
         .put("cluster.name", clusterName).build();
     try {
@@ -113,9 +129,11 @@ public class ElasticSearchProvider implements SearchProvider {
     // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
     String ret = query.toLowerCase();
 
-    // Replace characters we don't support at the moment
-    ret = ret.replace('-', ' ');
+    // Escape special characters including elastic's control characters and some other additions
+    String escapedCharacters = Pattern.quote("\\/+-&|!(){}[]^~*?:" + ".,");
     
+    ret = ret.replaceAll(String.format("([%s])", escapedCharacters), " ");
+
     ret = ret.trim();
     return ret;
   }
@@ -436,6 +454,7 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("subjectIdentifier", subjectIdentifier));
     query.must(termQuery("courseNumber", courseNumber));
     // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
+    
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")
@@ -648,6 +667,168 @@ public class ElasticSearchProvider implements SearchProvider {
     }
     
     return result;
+  }
+  
+  @Override
+  public CommunicatorMessageSearchBuilder searchCommunicatorMessages() {
+    return new ElasticCommunicatorMessageSearchBuilder(this);
+  }
+  
+  @Override
+  public SearchResults<List<IndexedCommunicatorMessage>> searchCommunicatorMessages(
+      String queryString,
+      long senderId,
+      IndexedCommunicatorMessageSender sender,
+      List<IndexedCommunicatorMessageRecipient> recipients,
+      Long searchId,
+      Date created,
+      Set<Long> tags,
+      int start, 
+      int maxResults, 
+      List<Sort> sorts) {
+    BoolQueryBuilder query = boolQuery();
+    
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    Long loggedUserId = loggedUser.getId();
+    String loggedUserIdStr = String.valueOf(loggedUserId);
+
+    queryString = sanitizeSearchString(queryString);
+    queryString = prepareQueryString(queryString);
+
+    query.must(boolQuery()
+        .must(
+            boolQuery()
+              .should(
+                  QueryBuilders.queryStringQuery(queryString)
+                      .defaultOperator(Operator.AND)
+                      .field("caption")
+                      .field("message")
+                      .field("sender.firstName")
+                      .field("sender.nickName")
+                      .field("sender.lastName")
+                      .field("recipients.firstName")
+                      .field("recipients.nickName")
+                      .field("recipients.lastName")
+                      .field("groupRecipients.groupName")
+              )
+              .should(
+                  boolQuery()
+                    .must(QueryBuilders.queryStringQuery(queryString)
+                        .defaultOperator(Operator.AND)
+                        .field("caption")
+                        .field("message")
+                        .field("sender.firstName")
+                        .field("sender.nickName")
+                        .field("sender.lastName")
+                        .field("recipients.firstName")
+                        .field("recipients.nickName")
+                        .field("recipients.lastName")
+                        .field("groupRecipients.groupName")
+                        .field("sender.labels.label")
+                    )
+                    .must(termsQuery("sender.userEntityId", loggedUserIdStr))
+              )
+              .should(
+                  boolQuery()
+                    .must(QueryBuilders.queryStringQuery(queryString)
+                        .defaultOperator(Operator.AND)
+                        .field("caption")
+                        .field("message")
+                        .field("sender.firstName")
+                        .field("sender.nickName")
+                        .field("sender.lastName")
+                        .field("recipients.firstName")
+                        .field("recipients.nickName")
+                        .field("recipients.lastName")
+                        .field("groupRecipients.groupName")
+                        .field("recipients.labels.label")
+                    )
+                    .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
+              )
+              .should(
+                  boolQuery()
+                    .must(QueryBuilders.queryStringQuery(queryString)
+                        .defaultOperator(Operator.AND)
+                        .field("caption")
+                        .field("message")
+                        .field("sender.firstName")
+                        .field("sender.nickName")
+                        .field("sender.lastName")
+                        .field("recipients.firstName")
+                        .field("recipients.nickName")
+                        .field("recipients.lastName")
+                        .field("groupRecipients.groupName")
+                        .field("groupRecipients.recipients.labels.label")
+                    )
+                    .must(termsQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
+              )
+              .minimumNumberShouldMatch(1)
+        )
+        .should(
+            boolQuery()
+              .must(termQuery("sender.userEntityId", loggedUserIdStr))
+              .must(termQuery("sender.archivedBySender", Boolean.FALSE)))
+        .should(
+            boolQuery()
+              .must(termQuery("recipients.userEntityId", loggedUserIdStr))
+              .must(termQuery("recipients.archivedByReceiver", Boolean.FALSE)))
+        .should(
+            boolQuery()
+              .must(termQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
+              .must(termQuery("groupRecipients.recipients.archivedByReceiver", Boolean.FALSE)))
+        .minimumNumberShouldMatch(1));
+    
+    try {
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("IndexedCommunicatorMessage")
+        .setFrom(start)
+        .setQuery(query)
+        .setSize(maxResults);
+      
+      if (sorts != null && !sorts.isEmpty()) {
+        for (Sort sort : sorts) {
+          requestBuilder.addSort(sort.getField(), SortOrder.valueOf(sort.getOrder().name()));
+        }
+      }
+      
+      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      
+      ObjectMapper objectMapper = new ObjectMapper();
+      SearchHit[] results = searchHits.getHits();
+      List<IndexedCommunicatorMessage> searchResults = Arrays.stream(results)
+          .map(hit -> {
+            String source = hit.getSourceAsString();
+            try {
+              return objectMapper.readValue(source, IndexedCommunicatorMessage.class);
+            }
+            catch (Exception e) {
+              String documentId = hit != null ? hit.getId() : null;
+              logger.log(Level.SEVERE, String.format("Couldn't parse indexed communicator message (id: %s)", documentId), e);
+            }
+            return null;
+          })
+          .collect(Collectors.toList());
+      
+      SearchResults<List<IndexedCommunicatorMessage>> result = new SearchResults<List<IndexedCommunicatorMessage>>(start, maxResults, searchResults, totalHitCount);
+      return result;
+      
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResults<List<IndexedCommunicatorMessage>>(0, 0, new ArrayList<IndexedCommunicatorMessage>(), 0); 
+    }
+  }
+  
+  private String prepareQueryString(String queryString) {
+    String prepared = queryString.trim();
+    while (prepared.contains("  ")) {
+      prepared = prepared.replace("  ", " ");
+    }
+    prepared = prepared.replace(" ", "* ");
+    return prepared + "*";
   }
 
   @Override

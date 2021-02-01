@@ -15,17 +15,12 @@ interface ReadingPanelProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
 }
 
-//{this.props.asideBefore ? <div className="reading-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
-//{this.props.asideAfter ? <div className="reading-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
-
 interface ReadingPanelState {
   sticky: boolean,
   remainingHeight: number
 }
 
 export default class ReadingPanel extends React.Component<ReadingPanelProps, ReadingPanelState> {
-  private maxTop:number;
-  private stickyHeight:number;
 
   constructor(props: ReadingPanelProps){
     super(props);
@@ -34,49 +29,9 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
       sticky: false,
       remainingHeight: null
     }
-
-    this.maxTop = null;
-    this.stickyHeight = null;
-    this.onScroll = this.onScroll.bind(this);
   }
   componentDidMount(){
-    window.addEventListener("scroll", this.onScroll);
-    this.maxTop = (this.refs["top-reference"] as HTMLElement).offsetTop;
-
-//    let computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
-//    this.stickyHeight = (this.refs["sticky"] as HTMLElement).offsetTop +
-//        parseInt(computedStyle.getPropertyValue("border-top")) + parseInt(computedStyle.getPropertyValue("border-top"))
-//    this.setRemainingHeight();
-  }
-  componentWillUnmount(){
-    window.removeEventListener("scroll", this.onScroll);
-  }
-  setRemainingHeight(){
-//    if (!this.props.aside){
-//      return;
-//    }
-//    let top = (document.documentElement.scrollTop || document.body.scrollTop);
-//    let height = (document.documentElement.offsetHeight || document.body.offsetHeight);
-//
-//    if (top > 70){
-//      let height = (document.documentElement.offsetHeight || document.body.offsetHeight);
-//      //sticky thing height 55
-//      //navbar height 70
-//      //other tooblar thingy height 54
-//      let nRemainingHeight = height - 55 - 70 - 54 + top;
-//      this.setState({remainingHeight: nRemainingHeight});
-//    } else {
-//      this.setState({remainingHeight: null});
-//    }
-  }
-  onScroll(e: Event){
-//    let top = (document.documentElement.scrollTop || document.body.scrollTop);
-//    let diff = this.offsetTop - top;
-//    let nDiff = (diff < 70);
-//    if (nDiff !== this.state.sticky){
-//      this.setState({sticky: nDiff});
-//    }
-//    this.setRemainingHeight();
+    window.scrollTo(0, 0);
   }
   render(){
     return (
