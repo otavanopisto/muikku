@@ -470,6 +470,25 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<CommunicatorMessage> listMessagesInThread(UserEntity user, CommunicatorMessageId communicatorMessageId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessageRecipient> recipient = criteria.from(CommunicatorMessageRecipient.class);
+    Join<CommunicatorMessageRecipient, CommunicatorMessage> communicatorMessage = recipient.join(CommunicatorMessageRecipient_.communicatorMessage);
+    
+    criteria.select(communicatorMessage);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(communicatorMessage.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+            criteriaBuilder.equal(recipient.get(CommunicatorMessageRecipient_.recipient), user.getId())
+        )
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   /**
    * Returns the number of messages the user can see in a thread in either inbox/sent or in trash
    * depending on the value of trashed parameter.
@@ -523,6 +542,24 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
             criteriaBuilder.equal(root.get(CommunicatorMessage_.sender), sender.getId()),
             criteriaBuilder.equal(root.get(CommunicatorMessage_.trashedBySender), trashed),
             criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), archived)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<CommunicatorMessage> listMessagesInSentThread(UserEntity sender, CommunicatorMessageId communicatorMessageId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessage> root = criteria.from(CommunicatorMessage.class);
+
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.sender), sender.getId())
         )
     );
     

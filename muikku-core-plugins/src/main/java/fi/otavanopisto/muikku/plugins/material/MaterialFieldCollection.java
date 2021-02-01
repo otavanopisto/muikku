@@ -116,6 +116,10 @@ public class MaterialFieldCollection {
         if (!myField.equals(referenceField)) {
           fields.add(myField);
         }
+        // #5277: Since even unchanged connect fields could already be corrupt in database, always treat them as updated :| 
+        else if ("application/vnd.muikku.field.connect".equals(myField.getType())) {
+          fields.add(myField);
+        }
       }
     }
     
