@@ -1,38 +1,23 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.AccessTimeout;
-import javax.ejb.Asynchronous;
 import javax.ejb.Singleton;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
-import org.jsoup.select.Evaluator.IsEmpty;
-
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
-import fi.otavanopisto.muikku.notifier.NotifierController;
-import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import rocks.xmpp.extensions.messagecorrect.model.Replace;
 
 @Singleton
 public class CommunicatorAutoReply {
@@ -73,12 +58,11 @@ public class CommunicatorAutoReply {
             if (startProperty != null && endProperty != null) {
               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
               start = LocalDate.parse(startProperty.getValue(), formatter);
-                  
-              DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
               end = LocalDate.parse(endProperty.getValue(), formatter);
             }
             if (start != null && end != null) {  
-              LocalDate now = LocalDate.now();    
+              LocalDate now = LocalDate.now();
+              Date notificationDate = new Date();
               if (start.equals(now) || (now.isAfter(start) && now.isBefore(end)) || end.equals(now)) {
                 
                 DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyy", Locale.ENGLISH);
@@ -88,7 +72,7 @@ public class CommunicatorAutoReply {
                 if (autoReplyMsg != null) {
                   replyMessage = autoReplyMsg.getValue();
                 } else {
-                  replyMessage = "Automaattinen poissaoloviesti tähän.";
+                  replyMessage = "Automaattinen vastaus: Poissa " + startDate + " - " + endDate;
                 }
                 if (autoReplySubject != null) {
                   replySubject = autoReplySubject.getValue();
@@ -97,8 +81,24 @@ public class CommunicatorAutoReply {
                 }
                 List<UserEntity> recipientsList = new ArrayList<UserEntity>();
                 recipientsList.add(sender);
+                VacationNotifications vacationNotification = communicatorController.findVacationNotification(sender, recipient);
                 
-                communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
+                if (vacationNotification != null) {
+                  Date lastNotification = vacationNotification.getNotificationDate();
+
+                  LocalDate lastPlusFour = lastNotification.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                  lastPlusFour = lastPlusFour.plusDays(4);
+                  Date fourDays = java.sql.Date.valueOf(lastPlusFour);
+
+                  if (java.sql.Date.valueOf(now).after(fourDays)) {
+                    communicatorController.createVacationNotification(sender, recipient, notificationDate);
+                    communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
+                  }
+                } else {
+                  communicatorController.createVacationNotification(sender, recipient, notificationDate);
+                  communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
+                }
               }
             }
           }
