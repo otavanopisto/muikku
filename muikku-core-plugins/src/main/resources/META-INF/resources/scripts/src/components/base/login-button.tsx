@@ -28,7 +28,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
     window.location.replace($("#login").attr("href"));
   }
   render(){
-    return (<Link className={`button button--login ${this.props.modifier ? "button--" + this.props.modifier : ""}`} onClick={this.login}>
+    return (<Link tabIndex={0} className={`button button--login ${this.props.modifier ? "button--" + this.props.modifier : ""}`} onClick={this.login}>
       <span>{this.props.i18n.text.get('plugin.login.buttonLabel')}</span>
     </Link>);
   }

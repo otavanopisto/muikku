@@ -81,40 +81,28 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       closeOnOverlayClick = !!this.props.closeOnOverlayClick;
     }
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
-      openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-      {(closePortal: () => any) => {
-        let modifiers: Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
-        return <div
-          className={`dialog ${(modifiers || []).map(s => `dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
-          onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null} >
-          <div className={`dialog__window ${(modifiers || []).map(s => `dialog__window--${s}`).join(" ")}`}>
-            {this.props.executing && this.props.executing === true ?
-              <div className="dialog__overlay dialog__overlay--executing">
-                {this.props.executeContent ?
-                  <div className="dialog__overlay-content">
-                    <div className="loader__executing--dialog"></div>
-                    {this.props.executeContent}
-                  </div>
-                  : <div className="loader__executing"></div>}
-              </div> : null}
-            <div className={`dialog__header ${(modifiers || []).map(s => `dialog__header--${s}`).join(" ")}`}>
-              <div className="dialog__title">
+        openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
+        {(closePortal: ()=>any)=>{
+          let modifiers:Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
+        return <div className={`dialog ${(modifiers || []).map(s=>`dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
+            onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null}>
+            <section role="dialog" aria-labelledby={`dialog-title--${modifiers[0]}`} aria-modal="true" className={`dialog__window ${(modifiers || []).map(s=>`dialog__window--${s}`).join(" ")}`}>
+            <header className={`dialog__header ${(modifiers || []).map(s => `dialog__header--${s}`).join(" ")}`}>
+              <div className="dialog__title" id={`dialog-title--${modifiers[0]}`}>
                 {this.props.title}
               </div>
               <div className="dialog__close icon-cross" onClick={closePortal}></div>
-            </div>
-            <div className="dialog__content">
-              {this.props.content(closePortal)}
-            </div>
-            {this.props.footer ?
-              <div className="dialog__footer">
+              </header>
+              <section className="dialog__content">
+                {this.props.content(closePortal)}
+              </section>
+              {this.props.footer?
+              <footer className="dialog__footer">
                 {this.props.footer && this.props.footer(closePortal)}
-              </div>
+              </footer>
               : null}
-          </div>
-        </div>
-
-      }}
+          </section>
+        </div>}}
     </Portal>);
   }
 }

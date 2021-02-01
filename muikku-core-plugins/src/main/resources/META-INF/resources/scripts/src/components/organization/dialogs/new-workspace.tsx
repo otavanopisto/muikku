@@ -13,7 +13,6 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import '~/sass/elements/course.scss';
-import userCredentials from '~/reducers/user-credentials';
 
 interface ValidationType {
   templateSelected: boolean,
@@ -69,7 +68,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       },
       selectedStaff: [],
       selectedStudents: [],
-      locked: false,
+      locked: true,
       currentStep: 1,
       executing: false,
       validation: {
@@ -162,7 +161,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
         nameValid: 2,
         nameExtensionValid: 2
       },
-      locked: false,
+      locked: true,
       workspaceName: "",
       workspaceNameExtension: "",
       executing: false,
@@ -243,7 +242,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
           <DialogRow modifiers="new-workspace">
-            <ApplicationList>
+            <ApplicationList modifiers="workspace-templates">
               {this.props.templates.length > 0 ?
                 this.props.templates.map((template: WorkspaceType) => {
                   let aside = <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />;
@@ -387,7 +386,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       lastClick={this.lastStep.bind(this)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
-    return (<Dialog executing={this.state.executing} executeOnOpen={this.props.loadTemplates} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-user"
+    return (<Dialog executing={this.state.executing} executeOnOpen={this.props.loadTemplates} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-workspace"
       title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
       content={content} >
       {this.props.children}

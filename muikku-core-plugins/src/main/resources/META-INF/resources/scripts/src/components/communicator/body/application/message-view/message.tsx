@@ -83,10 +83,10 @@ class Message extends React.Component<MessageProps, MessageState> {
       <div className="application-list__item-header application-list__item-header--communicator-message-thread">
         <div className="application-list__item-meta">
           <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
-            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender">
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender" aria-label={this.props.i18n.text.get("plugin.wcag.messageSender.aria.label")}>
               {getName(this.props.message.sender, !this.props.status.isStudent)}
             </span>
-            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients">
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients" aria-label={this.props.i18n.text.get("plugin.wcag.messageRecipients.aria.label")}>
               {this.props.message.recipients.map((recipient)=>{
                 return (
                   <span key={recipient.recipientId}>
@@ -111,33 +111,33 @@ class Message extends React.Component<MessageProps, MessageState> {
             </span>
           </div>
           <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
-            <span>{this.props.i18n.time.format(this.props.message.created)}</span>
+            <span aria-label={this.props.i18n.text.get("plugin.wcag.messageSendDate.aria.label")}>{this.props.i18n.time.format(this.props.message.created)}</span>
           </div>
         </div>
         {this.props.labels && this.props.labels.length ? <div className="labels labels--communicator-message">
           {this.props.labels && this.props.labels.map((label)=>{
-            return <span className="label" key={label.id}>
+            return <span className="label" key={label.id} aria-label={this.props.i18n.text.get("plugin.wcag.messageLabel.aria.label")}>
               <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
               <span className="label__text">{label.labelName}</span>
             </span>
           })}
         </div> : null}
       </div>
-      <div className="application-list__item-body application-list__item-body--communicator-message-thread">
+      <div className="application-list__item-body application-list__item-body--communicator-message-thread" aria-label={this.props.i18n.text.get("plugin.wcag.messageContent.aria.label")}>
         <header className="application-list__item-content-header">{this.props.message.caption}</header>
         <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
-      </div>
-      <div className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
-        <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
-          initialSelectedItems={replytarget}
-          initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
-          <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
-        </NewMessage>
-        <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
-          initialSelectedItems={replyalltarget} replyToAll
-          initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
-          <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
-        </NewMessage>
+        <footer className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
+          <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
+            initialSelectedItems={replytarget}
+            initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
+            <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+          </NewMessage>
+          <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
+            initialSelectedItems={replyalltarget} replyToAll
+            initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
+            <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+          </NewMessage>
+        </footer>
       </div>
     </div>
   }

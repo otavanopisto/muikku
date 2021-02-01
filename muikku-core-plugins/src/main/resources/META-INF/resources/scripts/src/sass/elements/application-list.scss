@@ -15,6 +15,8 @@
   }
 }
 
+
+
 .application-list__header-container {
   align-items: flex-start;
   display: flex;
@@ -68,6 +70,10 @@
   padding: 0;
 }
 
+.application-list--workspace-templates {
+  overflow: hidden;
+}
+
 .application-list__title {
   @include mainfunction-subpanel-title;
 }
@@ -109,6 +115,10 @@
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
+}
+
+.application-list__header-primary--announcement-meta {
+  margin: 0 10px 10px;
 }
 
 .application-list__header-primary--highlight {
@@ -314,12 +324,9 @@
     .application-list__header-secondary,
     .application-list__header-helper,
     .application-list__header-item-date,
-    .application-list__header-item-body {
+    .application-list__header-item-body,
+    .application-list-document-short-header {
       color: $color-default;
-    }
-
-    .label__text {
-      color: $color-default-contrast;
     }
 
     .text--item-counter {
@@ -329,10 +336,15 @@
     @include breakpoint($breakpoint-pad) {
       background-color: $color-default;
 
-      .label__text,
+      .application-list__header-helper {
+        color: $color-default-helper;
+      }
+
       .application-list__header-primary,
+      .application-list__header-secondary,
       .application-list__header-item-date,
-      .application-list__header-item-body {
+      .application-list__header-item-body,
+      .application-list-document-short-header {
         color: $color-default-contrast;
       }
 
@@ -405,6 +417,14 @@
       background-color: transparent;
     }
   }
+}
+
+.application-list__item-dates {
+  display: flex;
+}
+
+.application-list__item-date-container {
+  margin-left: 5px;
 }
 
 .application-list__item-body {
@@ -587,11 +607,15 @@
 .application-list__item-content-header {
   font-size: 1rem;
   padding: 10px;
+}
 
+.application-list__item-content-header--announcer-announcement {
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
   }
 }
+
+
 
 .application-list__item-content-body {
   padding: 0 10px;

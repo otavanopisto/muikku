@@ -74,11 +74,11 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
 
     if (this.props.isEditable && this.props.editableWrapper) {
       let EditableWrapper = this.props.editableWrapper;
-      editableComponent = <EditableWrapper {...this.props.editableWrapperArgs}>
-        <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="pencil" />
+       editableComponent = <EditableWrapper {...this.props.editableWrapperArgs}>
+        <ButtonPill tabIndex={0} disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="pencil" />
       </EditableWrapper>
-    } else if (this.props.isEditable) {
-      editableComponent = <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label"
+    } else if ( this.props.isEditable ) {
+      editableComponent = <ButtonPill tabIndex={0} disablePropagation as="span" buttonModifiers="navigation-edit-label"
         icon="pencil" onClick={this.props.editableAction} />
     }
 

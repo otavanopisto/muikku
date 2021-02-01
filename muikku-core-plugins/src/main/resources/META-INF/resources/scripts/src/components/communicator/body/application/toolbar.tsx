@@ -188,14 +188,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                     <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                     type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
                   </div>,
-                  <Link className="link link--full link--new" onClick={this.onCreateNewLabel}>
+                  <Link tabIndex={0} className="link link--full link--new" onClick={this.onCreateNewLabel}>
                     {this.props.i18n.text.get("plugin.communicator.label.create")}
                   </Link>
                 ].concat(this.props.messages.navigation.filter((item)=>{
                   return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
                 }).map((label)=>{
                   let isSelected = this.props.messages.currentThread.labels.find(l=>l.labelId === label.id);
-                  return (<Link className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""}`}
+                  return (<Link tabIndex={0} className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""}`}
                     onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                     <span className="link__icon icon-tag" style={{color: label.color}}></span>
                     <span className="link__text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
@@ -213,9 +213,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               disabled={this.props.messages.currentThread.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
 
-             <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
-               disabled={this.props.messages.currentThread.olderThreadId === null}
-               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
+            <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
+             disabled={this.props.messages.currentThread.olderThreadId === null}
+             onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
           </ApplicationPanelToolbarActionsAside>
         </ApplicationPanelToolbar>
       )
@@ -258,7 +258,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         }).map((label)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
-          return (<Link className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+          return (<Link tabIndex={0} className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessageThreads.bind(null, label) : this.props.removeLabelFromSelectedMessageThreads.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="link__text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>

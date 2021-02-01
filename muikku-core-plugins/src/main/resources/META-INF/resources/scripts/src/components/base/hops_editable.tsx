@@ -8,6 +8,7 @@ import MatriculationSubjectsList from "../records/body/application/matriculation
 import '~/sass/elements/hops.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
+import '~/sass/elements/wcag.scss';
 
 interface HopsProps {
   data?: HOPSDataType,
@@ -113,7 +114,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title form-element">
             {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears1")}
-            <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.vocationalYears || ""} onChange={this.setFromEventValue.bind(this, "vocationalYears")}>
+            <label htmlFor="vocationalYears" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.selectYearCount.label")}</label>
+            <select id="vocationalYears" className="form-element__select form-element__select--hops-selector" value={this.state.hops.vocationalYears || ""} onChange={this.setFromEventValue.bind(this, "vocationalYears")}>
               <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
               {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map((n) => {
                 return <option key={n} value={n}>{n}</option>
@@ -135,7 +137,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title form-element">
             {this.props.i18n.text.get("plugin.records.hops.goals.justTransferCredits1")}
-            <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.transferCreditYears || ""} onChange={this.setFromEventValue.bind(this, "transferCreditYears")}>
+            <label htmlFor="transferCreditYears" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.selectYearCount.label")}</label>
+            <select id="transferCreditYears" className="form-element__select form-element__select--hops-selector" value={this.state.hops.transferCreditYears || ""} onChange={this.setFromEventValue.bind(this, "transferCreditYears")}>
               <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
               {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((n) => {
                 return <option key={n} value={n}>{n}</option>
@@ -157,7 +160,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title form-element">
             {this.props.i18n.text.get("plugin.records.hops.goals.completionYears1")}
-            <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.completionYears || ""} onChange={this.setFromEventValue.bind(this, "completionYears")}>
+            <label htmlFor="completionYears" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.selectYearCount.label")}</label>
+            <select id="completionYears" className="form-element__select form-element__select--hops-selector" value={this.state.hops.completionYears || ""} onChange={this.setFromEventValue.bind(this, "completionYears")}>
               <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
               {["1", "2", "3", "4"].map((n) => {
                 return <option key={n} value={n}>{n}</option>
@@ -257,11 +261,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-          <div className="application-sub-panel__item-title">
+          <label htmlFor="additionalInfo" className="application-sub-panel__item-title">
             {this.props.i18n.text.get("plugin.records.hops.additionalInfo.title")}
-          </div>
+          </label>
           <div className="application-sub-panel__item-data form-element__textarea-container">
-            <textarea className="form-element__textarea" onChange={this.setFromEventValue.bind(this, "additionalInfo")} value={this.state.hops.additionalInfo || ""} />
+            <textarea id="additionalInfo" className="form-element__textarea" onChange={this.setFromEventValue.bind(this, "additionalInfo")} value={this.state.hops.additionalInfo || ""} />
           </div>
         </div>
       </div>

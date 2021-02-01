@@ -8,11 +8,13 @@ import { TranscriptOfRecordLocationType, RecordsType } from '~/reducers/main-fun
 import { StateType } from '~/reducers';
 import NavigationMenu, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 import { HOPSType } from '~/reducers/main-function/hops';
+import { StatusType } from '~/reducers/base/status';
 
 interface NavigationProps {
   i18n: i18nType,
   location: TranscriptOfRecordLocationType,
   hops: HOPSType,
+  status: StatusType,
   records: RecordsType
 }
 
@@ -34,11 +36,12 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   isVisible(hash: string) {
     switch (hash) {
       case "hops":
-        return !this.props.records.studyEndDate && this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum === true;
+        return this.props.status.isActiveUser && !this.props.records.studyEndDate && this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum === true;
       case "vops":
       case "yo":
         const yoVisibleValues = ["yes", "maybe"];
-        return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1 && !this.props.records.studyEndDate;
+        return this.props.status.isActiveUser && this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1 && !this.props.records.studyEndDate;
+
     }
 
     return true;
@@ -80,7 +83,8 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     location: state.records.location,
     hops: state.hops,
-    records: state.records
+    records: state.records,
+    status: state.status
   }
 };
 

@@ -177,15 +177,15 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
           </div>
           <div className="dialog__container dialog__container--label-form">
             <div className="form-element form-element--edit-label">
-              <label htmlFor="guider-label-name">{this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')}</label>
-              <input id="guider-label-name" placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
+              <label htmlFor="guiderLabelName">{this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')}</label>
+              <input id="guiderLabelName" placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
                 className="form-element__input form-element__input--guider-label-name"
                 disabled={this.state.removed}
                 onChange={this.onNameChange}/>
             </div>
             <div className="form-element form-element--edit-label">
-              <label htmlFor="guider-label-description">{this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')}</label>
-              <textarea id="guider-label-description" placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-element__textarea form-element__textarea--edit-label"
+              <label htmlFor="guiderLabelDescription">{this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')}</label>
+              <textarea id="guiderLabelDescription" placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-element__textarea form-element__textarea--edit-label"
               value={this.state.description}
               disabled={this.state.removed}
               onChange={this.onDescriptionChange}/>

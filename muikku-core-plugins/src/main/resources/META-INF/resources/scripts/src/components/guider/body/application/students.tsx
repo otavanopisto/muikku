@@ -84,8 +84,10 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
             onEnter: this.onStudentClick.bind(this, student),
             isSelected,
             key: student.id,
+            checkboxId: `user-select-${index}`,
+            checkboxClassName: "user__selector",
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <Student checkbox={checkbox} student={student}/>
+              return <Student index={index} checkbox={checkbox} student={student}/>
             }
           }
         })
@@ -100,7 +102,7 @@ function mapStateToProps(state: StateType){
     guiderStudentsState: state.guider.state,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
-    guider: state.guider
+    guider: state.guider,
   }
 };
 
