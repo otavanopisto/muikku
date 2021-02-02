@@ -8,10 +8,10 @@ public class CommunicatorMessageRecipientRESTModel {
   public CommunicatorMessageRecipientRESTModel() {
   }
   
-  public CommunicatorMessageRecipientRESTModel(Long recipientId, Long communicatorMessageId, Long userId, String firstName, String lastName, String nickName) {
+  public CommunicatorMessageRecipientRESTModel(Long recipientId, Long communicatorMessageId, Long userEntityId, String firstName, String lastName, String nickName) {
     this.recipientId = recipientId;
     this.communicatorMessageId = communicatorMessageId;
-    this.userId = userId;
+    this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.setNickName(nickName);
@@ -23,14 +23,6 @@ public class CommunicatorMessageRecipientRESTModel {
 
   public void setCommunicatorMessageId(Long communicatorMessageId) {
     this.communicatorMessageId = communicatorMessageId;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Long userId) {
-    this.userId = userId;
   }
 
   public String getFirstName() {
@@ -65,9 +57,17 @@ public class CommunicatorMessageRecipientRESTModel {
     this.nickName = nickName;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   private Long recipientId;
   private Long communicatorMessageId;
-  private Long userId;
+  private Long userEntityId;
   private String firstName;
   private String lastName;
   private String nickName;

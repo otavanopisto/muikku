@@ -90,6 +90,14 @@ export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<"UPDATE
   newPath: string;
 }>;
 
+type WorkspaceQueryDataType = {
+  q?: string,
+  templates?: "LIST_ALL" | "ONLY_TEMPLATES" | "ONLY_WORKSPACES"
+  firstResult?: number,
+  maxResults?: number
+}
+
+
 export interface SelectItem {
   id: string | number,
   label: string,
@@ -101,13 +109,22 @@ export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType
 }
 
-let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadTemplatesFromServer(query: string) {
+let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadTemplatesFromServer(query?: string) {
+
+  let data: WorkspaceQueryDataType = {
+    templates: 'ONLY_TEMPLATES',
+    maxResults: 5
+  }
+
+  if (query) {
+    data.q = query;
+  }
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
         type: "UPDATE_ORGANIZATION_TEMPLATES",
-        payload: <WorkspaceListType>(await (promisify(mApi().organizationmanagement.workspaces.read({ q: query, templates: "ONLY_TEMPLATES" }), 'callback')()) || 0)
+        payload: <WorkspaceListType>(await (promisify(mApi().organizationmanagement.workspaces.read(data), 'callback')()) || 0)
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {

@@ -56,8 +56,10 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSign
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
+import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -66,6 +68,9 @@ public class CommunicatorController {
    
   @Inject
   private Logger logger;
+  
+  @Inject
+  private CommunicatorMessageIndexer communicatorMessageIndexer;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -108,6 +113,9 @@ public class CommunicatorController {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject 
+  private UserEntityController userEntityController;
   
   @Inject
   private VacationNotificationsDAO vacationNotificationsDAO;
@@ -171,10 +179,9 @@ public class CommunicatorController {
       List<WorkspaceEntity> workspaceStudentRecipients, List<WorkspaceEntity> workspaceTeacherRecipients,
       CommunicatorMessageCategory category, String caption, String content, Set<Tag> tags) {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
-
     // Clean duplicates from recipient list
     cleanDuplicateRecipients(userRecipients);
-    
+     
     Set<Long> recipientIds = new HashSet<Long>();
     
     for (UserEntity recipient : userRecipients) {
@@ -208,6 +215,7 @@ public class CommunicatorController {
                 recipientIds.add(recipient.getId());
                 communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
               }
+
             }
           }
         }
@@ -266,6 +274,8 @@ public class CommunicatorController {
     if (CollectionUtils.isEmpty(recipientIds)) {
       logger.log(Level.SEVERE, String.format("Message %d contains no recipients", message.getId()));
     }
+
+    communicatorMessageIndexer.indexMessage(message);
     
     return message;
   }
@@ -329,6 +339,10 @@ public class CommunicatorController {
 
   public Long countMessagesByUserAndMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId, boolean inTrash) {
     return communicatorMessageDAO.countMessagesByUserAndMessageId(user, communicatorMessageId, inTrash);
+  }
+  
+  public Long countTotalMessages() {
+    return communicatorMessageDAO.count();
   }
   
   public List<CommunicatorMessageTemplate> listMessageTemplates(UserEntity user) {
@@ -406,11 +420,14 @@ public class CommunicatorController {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, threadId, true, false);
     for (CommunicatorMessageRecipient recipient : received) {
       communicatorMessageRecipientDAO.updateArchivedByReceiver(recipient, true);
+      CommunicatorMessage message = recipient.getCommunicatorMessage();
+      communicatorMessageIndexer.indexMessage(message);
     }
     
     List<CommunicatorMessage> sent = communicatorMessageDAO.listMessagesInSentThread(user, threadId, true, false);
     for (CommunicatorMessage msg : sent) {
       communicatorMessageDAO.updateArchivedBySender(msg, true);
+      communicatorMessageIndexer.indexMessage(msg);
     }
   }
 
@@ -421,6 +438,28 @@ public class CommunicatorController {
    * @param messageId
    * @return
    */
+  public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+    Set<CommunicatorMessage> result = new TreeSet<>(new Comparator<CommunicatorMessage>() {
+      @Override
+      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
+        if (o1 == null || o1.getId() == null) {
+          if (o2 == null || o2.getId() == null) {
+            return 0;
+          } else {
+            return -1;
+          }
+        } else {
+          return o2 != null ? o1.getId().compareTo(o2.getId()) : 1;
+        }
+      }
+    });
+    
+    result.addAll(communicatorMessageDAO.listMessagesInSentThread(user, messageId));
+    result.addAll(communicatorMessageDAO.listMessagesInThread(user, messageId));
+    
+    return new ArrayList<>(result);
+  }
+
   public List<CommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId, Boolean trashed) {
     Set<CommunicatorMessage> result = new TreeSet<>(new Comparator<CommunicatorMessage>() {
       @Override
@@ -431,9 +470,9 @@ public class CommunicatorController {
           } else {
             return -1;
           }
+        } else {
+          return o2 != null ? o1.getId().compareTo(o2.getId()) : 1;
         }
-        
-        return o1.getId().compareTo(o2.getId());
       }
     });
     
@@ -442,9 +481,11 @@ public class CommunicatorController {
     
     return new ArrayList<>(result);
   }
-
-  public CommunicatorMessageRecipient updateRead(CommunicatorMessageRecipient recipient, boolean value) {
-    return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
+  
+  public CommunicatorMessageRecipient updateReadByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
+    CommunicatorMessageRecipient communicatorMessageRecipient = communicatorMessageRecipientDAO.updateReadByReceiver(recipient, value);
+    communicatorMessageIndexer.indexMessage(communicatorMessageRecipient.getCommunicatorMessage());
+    return communicatorMessageRecipient;
   }
 
   public CommunicatorMessage postMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients) {
@@ -464,6 +505,10 @@ public class CommunicatorController {
 
   public List<CommunicatorMessage> listAllMessages() {
     return communicatorMessageDAO.listAll();
+  }
+  
+  public List<CommunicatorMessage> listAllMessages(int firstResult, int maxResults) {
+    return communicatorMessageDAO.listAll(firstResult, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listAllRecipients() {
@@ -489,13 +534,33 @@ public class CommunicatorController {
   }
   
   public CommunicatorUserLabel updateUserLabel(CommunicatorUserLabel userLabel, String name, Long color) {
-    return communicatorUserLabelDAO.update(userLabel, name, color);
+    try {
+      return communicatorUserLabelDAO.update(userLabel, name, color);
+    } finally {
+      List<CommunicatorMessageIdLabel> messageIdLabels = communicatorMessageIdLabelDAO.listByLabel(userLabel);
+      UserEntity userEntity = userEntityController.findUserEntityById(userLabel.getUserEntity());
+
+      for (CommunicatorMessageIdLabel messageIdLabel : messageIdLabels) {
+        messageIdLabel.getCommunicatorMessageId();
+        List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, messageIdLabel.getCommunicatorMessageId());
+        for(CommunicatorMessage message : communicatorMessages) {
+          communicatorMessageIndexer.indexMessage(message);
+        }
+      }
+    }
   }
 
   /* MessageIdLabel */
   
   public CommunicatorMessageIdLabel createMessageIdLabel(UserEntity userEntity, CommunicatorMessageId messageId, CommunicatorLabel label) {
-    return communicatorMessageIdLabelDAO.create(userEntity, messageId, label);
+    try {
+      return communicatorMessageIdLabelDAO.create(userEntity, messageId, label);
+    } finally {
+      List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(userEntity, messageId);
+      for(CommunicatorMessage message : communicatorMessages) {
+        communicatorMessageIndexer.indexMessage(message);
+      }
+    }
   }
 
   public CommunicatorMessageIdLabel findMessageIdLabelById(Long id) {
@@ -512,6 +577,13 @@ public class CommunicatorController {
   }
   
   public void delete(CommunicatorMessageIdLabel messageIdLabel) {
+    Long userEntityId = messageIdLabel.getUserEntity();
+    UserEntity user = userEntityController.findUserEntityById(userEntityId);
+    CommunicatorMessageId messageId = this.findCommunicatorMessageId(messageIdLabel.getCommunicatorMessageId().getId());
+    List<CommunicatorMessage> communicatorMessages = listMessagesByMessageId(user, messageId);
+    for (CommunicatorMessage message : communicatorMessages) {
+      communicatorMessageIndexer.indexMessage(message);
+    }
     communicatorMessageIdLabelDAO.delete(messageIdLabel);
   }
   

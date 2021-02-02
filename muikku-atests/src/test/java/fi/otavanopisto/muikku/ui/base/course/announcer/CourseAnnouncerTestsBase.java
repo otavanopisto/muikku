@@ -46,8 +46,8 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       addTextToCKEditor("Announcer test announcement");
       waitAndClick(".button--dialog-execute");
       
-      waitForPresent(".application-list-document-short-header");
-      assertTextIgnoreCase(".application-list-document-short-header", "Test title");
+      waitForPresent(".application-list__item-content-header");
+      assertTextIgnoreCase(".application-list__item-content-header", "Test title");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -72,7 +72,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       updateAnnouncementWorkspace(announcementId, workspace.getId());
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
-      waitForPresent(".application-list-document-short-header");
+      waitForPresent(".application-list__item-content-header");
       waitAndClick(".announcement__select-container input");
       waitAndClick(".application-panel__toolbar .button-pill--delete");
       sleep(1500);

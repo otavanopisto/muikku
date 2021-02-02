@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    insert into PluginSettingKey (plugin, name) 
+    select 'communicator', 'searchEnabled'
+    from Dual
+    where not exists(select id from PluginSettingKey where plugin = 'communicator' and name = 'searchEnabled');
+  </sql>
+  
+  <sql>
+    insert into PluginSetting (key_id, value) 
+    select p.id, 'true'
+    from PluginSettingKey p
+    where plugin = 'communicator' and name = 'searchEnabled' 
+      and not exists(select ps.id from PluginSettingKey psk join PluginSetting ps on (ps.key_id=psk.id) where psk.plugin = 'communicator' and psk.name = 'searchEnabled');
+  </sql>
+
+</update>
