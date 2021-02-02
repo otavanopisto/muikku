@@ -53,7 +53,9 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     });
   }
   componentDidUpdate(prevProps: LazyLoaderProps, prevState: LazyLoaderState) {
-    this.checkWhetherInView();
+    if (!this.hasBeenForcefullyToggled) {
+      this.checkWhetherInView();
+    }
 
     if (this.state.loaded !== prevState.loaded && this.hasBeenForcefullyToggled) {
       const lazyComponent = (this.refs["lazycomponent"] as HTMLDivElement);

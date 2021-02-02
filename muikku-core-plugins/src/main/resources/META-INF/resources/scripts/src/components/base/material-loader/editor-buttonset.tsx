@@ -66,11 +66,11 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
     return null;
   }
 
-  if (props.invisible) {
-    return (<div className="material-admin-panel"></div>);
-  }
-
   const viewForAdminPanel = props.isInFrontPage ? "workspace-description" : "workspace-materials";
+
+  if (props.invisible) {
+    return (<div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}></div>);
+  }
 
   return (<div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
     <Dropdown openByHover modifier="material-management-tooltip" content={props.i18n.text.get("plugin.workspace.materialsManagement.editPageTooltip")}>
