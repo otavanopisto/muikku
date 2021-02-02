@@ -33,23 +33,23 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
 
   render(){
     return (
-      <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
+      <main className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
         <div className="application-panel__container">
-          <div className="application-panel__header">
+          <h1 className="application-panel__header">
           {this.props.title ?
-            <div className="application-panel__header-title">{this.props.title}</div>
+            <span className="application-panel__header-title">{this.props.title}</span>
           : null}
           {this.props.icon ?
-            <div className="application-panel__header-actions">{this.props.icon}</div>
+            <span className="application-panel__header-actions">{this.props.icon}</span>
           : null}
-          </div>
+          </h1>
           {this.props.panelTabs ? <Tabs modifier="application-panel" tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> :
             <ApplicationPanelBody modifier={this.props.modifier? this.props.modifier : ""} toolbar={this.props.toolbar} primaryOption={this.props.primaryOption} asideAfter={this.props.asideAfter} asideBefore={this.props.asideBefore} disableStickyScrolling={this.props.disableStickyScrolling}>
               {this.props.children}
             </ApplicationPanelBody>
           }
         </div>
-      </div>
+      </main>
     );
   }
 }

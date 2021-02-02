@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import Link from '~/components/general/link';
 import LabelUpdateDialog from '../dialogs/label-update';
-import { MessagesNavigationItemListType, MessagesNavigationItemType, MessagesType } from '~/reducers/main-function/messages';
+import { MessagesType } from '~/reducers/main-function/messages';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { ButtonPill } from '~/components/general/button';
+
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 
 interface NavigationProps {
@@ -16,7 +15,6 @@ interface NavigationProps {
   messages: MessagesType,
   openSignatureDialog: () => any
 }
-
 
 interface NavigationState {
 }

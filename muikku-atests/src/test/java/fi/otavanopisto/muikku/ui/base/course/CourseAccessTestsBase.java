@@ -41,7 +41,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("anyone", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         logout();
         mockBuilder.clearLoginMock();
@@ -84,7 +84,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("anyone", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -120,7 +120,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccessInUI("anyone", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
@@ -151,7 +151,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("loggedin", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessLoggedin", workspace);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -183,7 +183,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("loggedin", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessLoggedin", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -219,7 +219,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccessInUI("loggedin", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessLoggedin", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -251,10 +251,10 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("members", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessMembers", workspace);
         logout();
         mockBuilder.clearLoginMock();
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         assertNotPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
@@ -283,7 +283,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("members", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessMembers", workspace);
         logout();
         mockBuilder.clearLoginMock();
         mockBuilder.mockLogin(student);
@@ -320,7 +320,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccessInUI("members", workspace);
+        updateWorkspaceAccessInUI("workspaceAccessMembers", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();

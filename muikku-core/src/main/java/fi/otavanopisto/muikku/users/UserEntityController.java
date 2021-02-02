@@ -96,7 +96,7 @@ public class UserEntityController implements Serializable {
               }
             }
           }
-          return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"));
+          return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"), (String) match.get("nickName"), (String) match.get("studyProgrammeName"));
         }
       }
     }

@@ -164,10 +164,10 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-      waitForPresent(".application-sub-panel__item--workspace-publicity #unpublish");
-      scrollIntoView(".application-sub-panel__item--workspace-publicity #unpublish");
+      waitForPresent(".application-sub-panel__item--workspace-publicity input[name=\"unpublish\"]");
+      scrollIntoView(".application-sub-panel__item--workspace-publicity input[name=\"unpublish\"]");
       sleep(300);
-      click(".application-sub-panel__item--workspace-publicity #unpublish");
+      click(".application-sub-panel__item--workspace-publicity input[name=\"unpublish\"]");
       scrollIntoView(".button--primary-function-save");
       sleep(500);
       waitAndClick(".button--primary-function-save");
@@ -178,7 +178,7 @@ public class CourseTestsBase extends AbstractUITest {
       assertNotPresent(".hero--workspace h1.hero__workspace-title");
     }finally{
       WireMock.reset();
-      deleteWorkspace(workspace.getId());  
+      deleteWorkspace(workspace.getId());
     }
   }
 

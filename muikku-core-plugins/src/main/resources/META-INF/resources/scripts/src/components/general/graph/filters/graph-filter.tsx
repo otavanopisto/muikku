@@ -23,8 +23,8 @@ class GraphFilter extends React.Component<GraphFilterProps> {
       return <Dropdown persistent modifier={"graph-filter" + modificator} items={this.props.graphs.map((graph) => {
         let ifChecked = !this.props.filteredGraphs.includes(graph);
         return <div className={"filter-item filter-item--" + graph} key={"w-" + graph}>
-          <input type='checkbox' onClick={() => { this.props.handler(graph) }} defaultChecked={ifChecked} />
-          <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Label")}</span>
+          <input id={`filter-` + graph} type='checkbox' onClick={() => { this.props.handler(graph) }} defaultChecked={ifChecked} />
+          <label htmlFor={`filter-` + graph} className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Label")}</label>
         </div>
       })}>
         <span className={"icon-filter filter__activator filter__activator--graph-filter" + modificator}></span>
@@ -39,8 +39,8 @@ class GraphFilter extends React.Component<GraphFilterProps> {
         {this.props.graphs.map((graph) => {
           let ifChecked = !this.props.filteredGraphs.includes(graph);
           return <div className={"filter-item filter-item--" + graph} key={"l-" + graph}>
-            <input type='checkbox' onClick={() => { this.props.handler(graph) }} defaultChecked={ifChecked} />
-            <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Label")}</span>
+            <input id={`filter-` + graph} type='checkbox' onClick={() => { this.props.handler(graph) }} defaultChecked={ifChecked} />
+            <label htmlFor={`filter-` + graph} className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Label")}</label>
           </div>
         })}
       </div>

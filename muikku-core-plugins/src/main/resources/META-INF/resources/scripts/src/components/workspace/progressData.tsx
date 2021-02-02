@@ -5,6 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 let ProgressBarCircle = require('react-progress-bar.js').Circle;
 
 import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/wcag.scss';
 
 export default class ProgressData extends React.Component<{
   activity: WorkspaceStudentActivityType,
@@ -36,7 +37,7 @@ export default class ProgressData extends React.Component<{
         {this.props.activity.evaluablesIncomplete ?
             <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.incomplete')} <span className="workspace-activity__menu-data">{this.props.activity.evaluablesIncomplete}</span></div> : null}
         </div>}>
-          <div>
+          <div tabIndex={0}>
             <ProgressBarCircle containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace" options={{
               strokeWidth: 10,
               duration: 1000,
@@ -64,7 +65,7 @@ export default class ProgressData extends React.Component<{
           <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.exercise.done')} <span className="workspace-activity__menu-data">{this.props.activity.exercisesAnswered}</span></div>
           <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.exercise.total')} <span className="workspace-activity__menu-data">{this.props.activity.exercisesTotal}</span></div>
         </div>}>
-          <div>
+          <div tabIndex={0}>
             <ProgressBarCircle containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace" options={{
               strokeWidth: 10,
               duration: 1000,

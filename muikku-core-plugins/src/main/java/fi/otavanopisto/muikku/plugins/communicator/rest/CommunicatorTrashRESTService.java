@@ -186,7 +186,9 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
     List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, true);
     
     for (CommunicatorMessageRecipient r : list) {
-      communicatorController.updateRead(r, true);
+      if (!Boolean.TRUE.equals(r.getReadByReceiver())) {
+        communicatorController.updateReadByReceiver(r, true);
+      }
     }
     
     return Response.noContent().build();
@@ -210,7 +212,7 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
           continue;
       }
       
-      communicatorController.updateRead(r, false);
+      communicatorController.updateReadByReceiver(r, false);
     }
     
     return Response.noContent().build();
