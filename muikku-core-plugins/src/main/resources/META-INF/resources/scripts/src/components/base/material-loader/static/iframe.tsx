@@ -20,7 +20,12 @@ export default class Iframe extends React.Component<IframeProps, {}>{
   render (){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
       if (Tag === "iframe" && this.props.invisible) {
-        return <span style={{height: elementProps.height + "px" || "160px"}}/>
+        const isYoutube = elementProps.src.includes("//www.youtube.com");
+        if (isYoutube) {
+          return <div style={{height: elementProps.height + "px" || "160px", width: "100%", paddingTop: "56.25%", position: "relative" }}/>
+        } else {
+          return <div style={{height: elementProps.height + "px" || "160px"}}/>
+        }
       }
 
       if (Tag === "iframe" && (this.props.dataset.url || elementProps.src)) {
@@ -42,7 +47,7 @@ export default class Iframe extends React.Component<IframeProps, {}>{
         if (isYoutube) {
           delete iframeProps.width;
           containerStyle = {
-            width: "100%",
+            ...containerStyle,
             paddingTop: "56.25%",
             position: "relative",
           }
@@ -63,9 +68,9 @@ export default class Iframe extends React.Component<IframeProps, {}>{
             width: !iframeProps.width ? "100%" : null,
           }
         }
-        return <span className="material-page__iframe-wrapper" style={containerStyle}>
+        return <div className="material-page__iframe-wrapper" style={containerStyle}>
           <Tag {...iframeProps}>{children}</Tag>
-        </span>
+        </div>
       }
     });
   }
