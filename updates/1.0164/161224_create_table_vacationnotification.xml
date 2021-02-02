@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
--<update xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<sql>drop table vacationnotifications</sql>
-<sql>CREATE TABLE vacationnotifications (id bigint not null auto_increment,sender bigint(50) not null,receiver bigint(50) not null,notificationDate Date not null, primary key (id));</sql>
-
-</update>

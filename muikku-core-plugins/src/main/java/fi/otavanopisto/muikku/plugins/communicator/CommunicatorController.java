@@ -700,6 +700,10 @@ public class CommunicatorController {
     return vacationNotificationsDAO.create(sender, receiver, notificationDate);
   }
   
+  public VacationNotifications updateVacationNotification(VacationNotifications vacationNotification,Date notificationDate) {
+    return vacationNotificationsDAO.updateNotificationDate(vacationNotification, notificationDate);
+  }
+  
   public VacationNotifications findVacationNotification(UserEntity sender, UserEntity receiver) {
     return vacationNotificationsDAO.findNotification(sender, receiver);
   }
