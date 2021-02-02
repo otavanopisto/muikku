@@ -13,7 +13,6 @@ import moment from '~/lib/moment';
 import UpdateAddressDialog from '../../dialogs/update-address';
 import UpdateUsernamePasswordDialog from '../../dialogs/update-username-password';
 import Button from '~/components/general/button';
-import { runInThisContext } from 'vm';
 
 function ProfileProperty(props: {
   i18n: i18nType,
