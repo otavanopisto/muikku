@@ -147,13 +147,13 @@ export class FormWizardActions extends React.Component<FormWizardActionsProps, F
 interface SearchFormElementProps {
   updateField: (value: string) => any,
   value?: string,
-
-  id?: string,
+  id: string,
   name: string,
   onFocus?: () => any,
   onBlur?: () => any,
-  placeholder?: string,
-  modifiers?: string | Array<string>
+  placeholder: string,
+  modifiers?: string | Array<string>,
+  className?: string,
 }
 
 interface SearchFormElementState {
@@ -165,6 +165,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
   constructor(props: SearchFormElementProps) {
     super(props);
     this.updateSearchField = this.updateSearchField.bind(this);
+    this.clearSearchField = this.clearSearchField.bind(this);
   }
 
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -172,13 +173,19 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     this.props.updateField(value);
   }
 
+  clearSearchField() {
+    this.props.updateField("");
+    document.getElementById(this.props.id).focus();
+  }
+
   render() {
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
-      <div className="form-element form-element--coursepicker-toolbar">
-        <label htmlFor={this.props.name} className="visually-hidden">{this.props.placeholder}</label>
-        <input id={this.props.name} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.props.value} className="form-element__input form-element__input--main-function-search" placeholder={this.props.placeholder} onChange={this.updateSearchField} />
-        <div className="form-element__input-decoration--main-function-search icon-search"></div>
+      <div className={`form-element form-element--search ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""} ${this.props.className ? this.props.className : ""}`}>
+        <label htmlFor={this.props.id} className="visually-hidden">{this.props.placeholder}</label>
+        <input id={this.props.id} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.props.value} className={`form-element__input form-element__input--search ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholder={this.props.placeholder} onChange={this.updateSearchField} />
+        <div className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""}`} onClick={this.clearSearchField}></div>
+        <div className="form-element__input-decoration--search icon-search"></div>
       </div>
     )
   }
@@ -259,7 +266,7 @@ interface SelectFormElementProps {
   modifiers?: string | Array<string>,
   updateField: (value: string, valid: boolean, name: string) => any;
 }
-
+1
 interface SelectFormElementState {
   valid: number,
   value: string

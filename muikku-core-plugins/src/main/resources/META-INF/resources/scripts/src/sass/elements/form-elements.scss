@@ -153,11 +153,17 @@
   padding: 10px 0 0;
 }
 
-.form-element--guider-toolbar,
-.form-element--coursepicker-toolbar,
 .form-element--add-producer,
-.form-element--workspace-toolbar {
+.form-element--search {
   @include form-element-toolbar;
+}
+
+.form-element--search {
+  position: relative;
+}
+
+.form-element--subpanel-search {
+  flex-basis: 100%;
 }
 
 .form-element--profile {
@@ -240,8 +246,7 @@
   display: block;
 }
 
-.form-element__input--main-function-search,
-.form-element__input--subpanel-search,
+.form-element__input--search,
 .form-element__input--add-producer,
 .form-element__input--add-material-producer {
   background-color: $color-default;
@@ -261,15 +266,41 @@
   border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
 }
 
-.form-element__input-decoration--main-function-search,
-.form-element__input-decoration--subpanel-search,
+.form-element__input-decoration--search,
 .form-element__input-decoration--add-producer {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
 
   &::before {
     @include form-element-input-search-decoration;
-    color: $color-main-function-search-icon;
+    color: $color-search-icon;
+  }
+}
+
+.form-element__input-decoration--clear-search {
+  background-color: $color-search-clear-background;
+  border-radius: 2px;
+  cursor: pointer;
+  height: 1.8rem;
+  position: absolute;
+  right: 39px;
+  top: 4px;
+  width: 1.8rem;
+
+  &::before {
+    @include form-element-input-clear-search-decoration;
+  }
+
+  &:active,
+  &.active {
+    &::before {
+      color: $color-search-clear-icon-active;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    right: 44px;
+    top: 6px;
   }
 }
 

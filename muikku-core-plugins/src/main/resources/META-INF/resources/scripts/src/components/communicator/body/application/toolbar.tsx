@@ -18,11 +18,8 @@ import LabelUpdateDialog from '../../dialogs/label-update';
 import { MessagesType } from '~/reducers/main-function/messages';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
-import * as queryString from 'query-string';
-
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
-
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
@@ -215,7 +212,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <ButtonPill buttonModifiers="next-page" icon="arrow-left"
               disabled={this.props.messages.currentThread.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)} />
-
             <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
               disabled={this.props.messages.currentThread.olderThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)} />

@@ -239,7 +239,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       case 1:
         return <form>
           <DialogRow modifiers="new-workspace" >
-            <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
+            <SearchFormElement id="OrganizationTemplateSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="template-search" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
           <DialogRow modifiers="new-workspace">
             <ApplicationList modifiers="workspace-templates">
