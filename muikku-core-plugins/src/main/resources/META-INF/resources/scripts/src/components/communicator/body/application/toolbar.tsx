@@ -61,7 +61,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
-    this.resetSearchQuery = this.resetSearchQuery.bind(this);
     this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
@@ -76,22 +75,13 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
   }
 
-  resetSearchQuery() {
-    this.updateSearchWithQuery("");
-  }
-
-
   updateSearchWithQuery(query: string) {
-
     clearTimeout(this.searchTimer);
-
     this.setState({
       searchquery: query
     });
-
     clearTimeout(this.searchTimer);
     this.searchTimer = setTimeout(this.props.loadMessageThreads(null, query) as any, 400);
-
   }
 
   loadMessage(messageId: number) {
@@ -280,8 +270,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}
         value={this.state.searchquery}
       />
-
-
     </ApplicationPanelToolbar>
   }
 }
