@@ -700,7 +700,7 @@ public class CommunicatorController {
     return vacationNotificationsDAO.create(sender, receiver, notificationDate);
   }
   
-  public VacationNotifications updateVacationNotification(VacationNotifications vacationNotification,Date notificationDate) {
+  public VacationNotifications updateVacationNotificationDate(VacationNotifications vacationNotification,Date notificationDate) {
     return vacationNotificationsDAO.updateNotificationDate(vacationNotification, notificationDate);
   }
   

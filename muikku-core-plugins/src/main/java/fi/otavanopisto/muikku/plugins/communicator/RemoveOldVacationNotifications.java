@@ -31,10 +31,9 @@ public class RemoveOldVacationNotifications {
     nowDate = nowDate.minusDays(7);
     Date thresholdDate = java.sql.Date.valueOf(nowDate);
     
-    long total = vacationNotificationsDAO.count();
     int countExpired = vacationNotificationsDAO.deleteNotificationsOlderThan(thresholdDate);
     
-    logger.info(String.format("Removed %d one week or older vacation notifications.", countExpired, total));
+    logger.info(String.format("Removed %d one week or older vacation notifications.", countExpired));
   }
   
 }

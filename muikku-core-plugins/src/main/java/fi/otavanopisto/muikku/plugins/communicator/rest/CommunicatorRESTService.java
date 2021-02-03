@@ -613,7 +613,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     for (CommunicatorMessageRecipient recipient : recipients) {
       // Don't notify the sender in case he sent message to himself
       
-      if (recipient.getRecipient() != message.getSender()) {
+      if (recipient.getRecipient() != message.getSender() && recipient.getRecipientGroup() == null) {
         communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getRecipient(), baseUrl));
         
         UserEntity recipientEntity = userEntityController.findUserEntityById(recipient.getRecipient());

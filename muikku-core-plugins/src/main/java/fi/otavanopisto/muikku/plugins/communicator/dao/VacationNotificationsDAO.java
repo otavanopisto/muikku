@@ -15,8 +15,8 @@ import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 
 public class VacationNotificationsDAO extends CorePluginsDAO<VacationNotifications> {
 
-  private static final long serialVersionUID = 3790128454976388680L;
-
+  private static final long serialVersionUID = -6105902318888306276L;
+  
   public VacationNotifications create(UserEntity sender, UserEntity receiver, Date notificationDate) {
     VacationNotifications vacationNotification = new VacationNotifications();
     
@@ -31,7 +31,7 @@ public class VacationNotificationsDAO extends CorePluginsDAO<VacationNotificatio
   
   public VacationNotifications findNotification(UserEntity sender, UserEntity receiver) {
     EntityManager entityManager = getEntityManager();
-
+    
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<VacationNotifications> criteria = criteriaBuilder.createQuery(VacationNotifications.class);
     Root<VacationNotifications> root = criteria.from(VacationNotifications.class);
@@ -44,25 +44,25 @@ public class VacationNotificationsDAO extends CorePluginsDAO<VacationNotificatio
     );
     return getSingleResult(entityManager.createQuery(criteria));
   }
-	
-	public VacationNotifications updateNotificationDate(VacationNotifications vacationNotification,Date notificationDate) {
+  
+  public VacationNotifications updateNotificationDate(VacationNotifications vacationNotification,Date notificationDate) {
     vacationNotification.setNotificationDate(notificationDate);
     
     getEntityManager().persist(vacationNotification);
     
     return vacationNotification;
   }
-	
-	public int deleteNotificationsOlderThan(Date thresholdDate) {
+  
+  public int deleteNotificationsOlderThan(Date thresholdDate) {
     
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaDelete<VacationNotifications> criteria = criteriaBuilder.createCriteriaDelete(VacationNotifications.class);
     Root<VacationNotifications> root = criteria.from(VacationNotifications.class);
-
+    
     criteria.where(
-        criteriaBuilder.lessThan(root.get(VacationNotifications_.notificationDate), thresholdDate)
+      criteriaBuilder.lessThan(root.get(VacationNotifications_.notificationDate), thresholdDate)
     );
     
     return entityManager.createQuery(criteria).executeUpdate();

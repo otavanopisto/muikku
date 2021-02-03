@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,7 +11,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -112,7 +110,7 @@ public class CommunicatorAutoReplyController {
             c.setTime(lastNotification);
             c.add(Calendar.DATE, 4);
             if (today.after(c.getTime())) {
-              communicatorController.updateVacationNotification(vacationNotification, notificationDate);
+              communicatorController.updateVacationNotificationDate(vacationNotification, notificationDate);
               communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
             }
           } else {
