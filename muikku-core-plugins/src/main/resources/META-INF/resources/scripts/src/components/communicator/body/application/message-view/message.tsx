@@ -39,7 +39,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     let recipientsObject: Array<UserRecepientType> = this.props.message.recipients.map(( r ): UserRecepientType => ( {
       type: "user",
       value: {
-        id: r.userId,
+        id: r.userEntityId,
         firstName: r.firstName,
         lastName: r.lastName,
         nickName: r.nickName

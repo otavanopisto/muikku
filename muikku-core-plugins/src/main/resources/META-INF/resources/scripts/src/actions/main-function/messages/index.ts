@@ -118,7 +118,7 @@ export interface SendMessageTriggerType {
 }
 
 export interface LoadMessageThreadsTriggerType {
-  ( location: string ): AnyActionType
+  ( location: string, query: string ): AnyActionType
 }
 
 export interface UpdateMessagesSelectedThreads {
@@ -253,7 +253,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         //and only if one of the receivers is us, otherwise it's always active for when a message is sent
         const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
         const weAreOneOfTheRecepients = result.recipients
-          .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
+          .find(( recipient: MessageRecepientType ) => {return recipient.userEntityId === status.userId});
         const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && weAreOneOfTheRecepients;
         const weAreInSentLocation = state.messages.location === "sent";
         const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
@@ -314,8 +314,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
   }
 }
 
-let loadMessageThreads: LoadMessageThreadsTriggerType = function loadMessageThreads( location ) {
-  return loadMessagesHelper.bind( this, location, true );
+let loadMessageThreads: LoadMessageThreadsTriggerType = function loadMessageThreads( location, query ) {
+  return loadMessagesHelper.bind( this, location, query, true );
 }
 
 let updateMessagesSelectedThreads: UpdateMessagesSelectedThreads = function updateMessagesSelectedThreads( threads ) {
@@ -340,7 +340,7 @@ let removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerT
 }
 
 let loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType = function loadMoreMessageThreads() {
-  return loadMessagesHelper.bind( this, null, false );
+  return loadMessagesHelper.bind( this, null, null, false );
 }
 
 let addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType = function addLabelToSelectedMessageThreads( label ) {
