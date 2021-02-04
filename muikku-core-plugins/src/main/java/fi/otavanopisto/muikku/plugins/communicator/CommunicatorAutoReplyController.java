@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -111,11 +112,13 @@ public class CommunicatorAutoReplyController {
             c.add(Calendar.DATE, 4);
             if (today.after(c.getTime())) {
               communicatorController.updateVacationNotificationDate(vacationNotification, notificationDate);
-              communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
+              CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
+              communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, communicatorMessage.getCategory(), replySubject, replyMessage, null);
             }
           } else {
             communicatorController.createVacationNotification(sender, recipient, notificationDate);
-            communicatorController.replyToMessage(recipient, communicatorMessage.getCategory().getName(), replySubject, replyMessage, recipientsList, communicatorMessage.getCommunicatorMessageId());
+            CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
+            communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, communicatorMessage.getCategory(), replySubject, replyMessage, null);
           }
         }
       }
