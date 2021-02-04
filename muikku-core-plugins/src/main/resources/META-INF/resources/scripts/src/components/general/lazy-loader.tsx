@@ -34,12 +34,14 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
       loaded: false
     }
 
+    this.checkWhetherInView = this.checkWhetherInView.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.toggleLazy = this.toggleLazy.bind(this);
   }
   componentDidMount() {
     this.checkWhetherInView();
     window.addEventListener('scroll', this.onScroll);
+    window.addEventListener("CHECK_LAZY", this.checkWhetherInView);
     window.addEventListener("TOGGLE_LAZY", this.toggleLazy);
   }
   toggleLazy() {
@@ -89,6 +91,9 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     }
   }
   onScroll() {
+    if ((window as any).IGNORE_SCROLL_EVENTS) {
+      return;
+    }
     if (this.hasBeenForcefullyToggled) {
       return;
     }
@@ -96,6 +101,7 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
   }
   componentWillUnmount() {
     window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener("CHECK_LAZY", this.checkWhetherInView);
     window.removeEventListener("TOGGLE_LAZY", this.toggleLazy);
   }
   render() {

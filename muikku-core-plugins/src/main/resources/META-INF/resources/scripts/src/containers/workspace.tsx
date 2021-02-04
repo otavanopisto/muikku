@@ -431,14 +431,22 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         (window as any).CKEDITOR.disableAutoInline = true;
       });
 
+      const hasLocationHashAndWillHaveToScrollIntoPosition = window.location.hash.replace("#", "");
+      if (hasLocationHashAndWillHaveToScrollIntoPosition) {
+        // super hack in order to deal with the buggy scrolling
+        // triggering on scroll when scrolling into view
+        // instead of snapping at the anchor
+        (window as any).IGNORE_SCROLL_EVENTS = true;
+      }
+
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.materials.pageTitle')));
       this.props.store.dispatch(setCurrentWorkspace({ workspaceId: state.status.currentWorkspaceId, loadDetails: state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS }) as Action);
       this.props.store.dispatch(loadWorkspaceCompositeMaterialReplies(state.status.currentWorkspaceId) as Action);
       this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, state.status.permissions.WORKSPACE_MANAGE_WORKSPACE, (result) => {
-        if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]) {
+        if (!hasLocationHashAndWillHaveToScrollIntoPosition && result[0] && result[0].children && result[0].children[0]) {
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
-        } else if (window.location.hash.replace("#", "")){
+        } else if (hasLocationHashAndWillHaveToScrollIntoPosition){
           // this is executing on first time
           const scrollToElement = () => {
             const element = document.querySelector(window.location.hash);
@@ -474,6 +482,20 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
             setTimeout(() => {
               if (!checkIsScrolledIntoView()) {
                 setTimeout(aggressiveSetToScrollPosition, 10);
+              } else {
+                setTimeout(() => {
+                  window.dispatchEvent(new Event("CHECK_LAZY"));
+                }, 500);
+                // now we can restablish the scroll events
+                // and check the lazy loaders so they turn back
+                // on
+                // but because browsers try to be incredibly smart
+                // and want to totally refuse giving me control of scroll
+                // we have to wait 1 second
+                setTimeout(() => {
+                  (window as any).IGNORE_SCROLL_EVENTS = false;
+                  window.dispatchEvent(new Event("CHECK_LAZY"));
+                }, 1000);
               }
             }, 10);
           }

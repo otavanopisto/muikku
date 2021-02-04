@@ -127,6 +127,9 @@ class Help extends React.Component<HelpProps, HelpState> {
     this.props.onOpenNavigation();
   }
   onScroll(){
+    if ((window as any).IGNORE_SCROLL_EVENTS) {
+      return;
+    }
     let newActive:number = this.getActive();
     if (newActive !== this.props.activeNodeId){
       this.props.onActiveNodeIdChange(newActive);
