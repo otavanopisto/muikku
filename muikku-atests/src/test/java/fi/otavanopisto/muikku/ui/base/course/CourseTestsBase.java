@@ -155,33 +155,6 @@ public class CourseTestsBase extends AbstractUITest {
     }
   }
   
-  @Test
-  public void courseUnpublishTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-      waitForPresent(".application-sub-panel__item--workspace-publicity input[name=\"unpublish\"]");
-      scrollIntoView(".application-sub-panel__item--workspace-publicity input[name=\"unpublish\"]");
-      sleep(300);
-      click(".application-sub-panel__item--workspace-publicity input[name=\"unpublish\"]");
-      scrollIntoView(".button--primary-function-save");
-      sleep(500);
-      waitAndClick(".button--primary-function-save");
-      waitForPresent(".notification-queue__item--success");
-      logout();
-      mocker().clearLoginMock();
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      assertNotPresent(".hero--workspace h1.hero__workspace-title");
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());
-    }
-  }
-
 //  @Test
 //  public void courseProgressWidgetsExistsTest() throws Exception {
 //    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
