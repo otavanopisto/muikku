@@ -143,11 +143,11 @@ public class CourseManagementTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         
         waitForPresent(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
-        scrollIntoView(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
+        scrollTo(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]", 150);
         waitAndClick(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
-        waitForClickable(".application-sub-pane__button-container .button");
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
+        scrollIntoView(".button--primary-function-save");
+        sleep(500);
+        waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
         sleep(500);
         navigate("/coursepicker", false);
