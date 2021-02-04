@@ -125,6 +125,26 @@
   font-weight: 600;
 }
 
+.application-list__header-primary-sender {
+  font-weight: 600;
+
+  &::after {
+    content: ">";
+    margin: 0 10px;
+  }
+}
+
+.application-list__header-recipients {
+
+  .application-list__header-recipient:not(:last-child) {
+
+    &::after {
+      content: ",";
+      padding: 0 5px 0 0;
+    }
+  }
+}
+
 .application-list__header-helper {
   color: $color-default-helper;
   flex-basis: 100%;
@@ -692,7 +712,6 @@
       content: ",";
       padding: 0 5px 0 0;
     }
-
   }
 }
 

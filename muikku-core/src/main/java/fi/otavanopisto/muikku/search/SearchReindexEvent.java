@@ -27,6 +27,7 @@ public class SearchReindexEvent {
   public enum Task {
     USERS,
     WORKSPACES,
-    USER_GROUPS
+    USER_GROUPS,
+    COMMUNICATORMESSAGES
   }
 }

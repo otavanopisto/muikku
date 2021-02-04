@@ -215,7 +215,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
-      this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
+      this.props.store.dispatch(loadMessageThreads(location[0], null) as Action);
     } else {
       this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
     }
