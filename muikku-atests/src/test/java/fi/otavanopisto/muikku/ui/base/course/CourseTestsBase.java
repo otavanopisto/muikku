@@ -346,11 +346,11 @@ public class CourseTestsBase extends AbstractUITest {
     .build();
     try{
       navigate("/profile", false);
-      waitForPresent("form .profile-element__item:nth-child(3) .react-datepicker-wrapper input");
-      sendKeys("form .profile-element__item:nth-child(3) .react-datepicker-wrapper input", "21.12.2010");
+      waitForPresent(".application-panel__main-container .profile-element__item input#profileVacationStart");
+      sendKeys(".application-panel__main-container .profile-element__item input#profileVacationStart", "21.12.2010");
       waitAndClick(".profile-element__title");
-      waitForPresent("form .profile-element__item:nth-child(4) .react-datepicker-wrapper input");
-      sendKeys("form .profile-element__item:nth-child(4) .react-datepicker-wrapper input", "21.12.2025");
+      waitForPresent(".application-panel__main-container .profile-element__item input#profileVacationEnd");
+      sendKeys(".application-panel__main-container .profile-element__item input#profileVacationEnd", "21.12.2025");
       waitAndClick(".profile-element__title");
       waitAndClick(".button--primary-function-save");
       sleep(500);
