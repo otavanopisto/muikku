@@ -204,7 +204,14 @@
     border-color: $color-success;
   }
   // scss-lint:enable SelectorFormat
+}
 
+.form-element__input--profile-auto-reply {
+  width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }
 }
 
 .form-element__input--workspace-management {
@@ -218,17 +225,12 @@
 .form-element__input--profile,
 .form-element__input--workspace-name,
 .form-element__input--workspace-name-extension,
-.form-element__input--profile,
 .form-element__input--new-user {
   width: 100%;
 }
 
 .form-element__input--forgotpassword {
   font-size: $text-forgotpassword-font-size;
-  width: 100%;
-}
-
-.form-element__input--profile {
   width: 100%;
 }
 
@@ -376,7 +378,8 @@
   }
 }
 
-.form-element__textarea--edit-label {
+.form-element__textarea--edit-label,
+.form-element__textarea--profile-auto-reply {
   margin: 0;
 }
 

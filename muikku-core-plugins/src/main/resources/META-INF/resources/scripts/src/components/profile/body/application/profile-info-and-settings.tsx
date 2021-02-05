@@ -50,7 +50,10 @@ interface ProfileInfoAndSettingsState {
   profileVacationEnd: any,
   phoneNumber: string,
   chatVisibility: string,
-  chatNickname: string
+  chatNickname: string,
+  vacationAutoReply: string,
+  vacationAutoReplySubject: string,
+  vacationAutoReplyMsg: string,
 }
 
 class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps, ProfileInfoAndSettingsState> {
@@ -61,6 +64,9 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     this.onPhoneChange = this.onPhoneChange.bind(this);
     this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
     this.onChatNicknameChange = this.onChatNicknameChange.bind(this);
+    this.onVacationAutoReplyChange = this.onVacationAutoReplyChange.bind(this);
+    this.onVacationAutoReplySubjectChange = this.onVacationAutoReplySubjectChange.bind(this);
+    this.onVacationAutoReplyMsgChange = this.onVacationAutoReplyMsgChange.bind(this);
     this.save = this.save.bind(this);
 
     this.state = {
@@ -68,7 +74,10 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
       phoneNumber: props.profile.properties['profile-phone'] || "",
       chatVisibility: (props.profile.chatSettings && props.profile.chatSettings.visibility) || null,
-      chatNickname: (props.profile.chatSettings && props.profile.chatSettings.nick) || ""
+      chatNickname: (props.profile.chatSettings && props.profile.chatSettings.nick) || "",
+      vacationAutoReply: props.profile.properties['communicator-auto-reply'] || "",
+      vacationAutoReplySubject: props.profile.properties['communicator-auto-reply-subject'] || "",
+      vacationAutoReplyMsg: props.profile.properties['communicator-auto-reply-msg'] || "",
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){
@@ -90,6 +99,27 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         this.props.profile.properties['profile-phone'] !== nextProps.profile.properties['profile-phone']){
       this.setState({
         phoneNumber: nextProps.profile.properties['profile-phone']
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply'] &&
+      this.props.profile.properties['communicator-auto-reply'] !== nextProps.profile.properties['communicator-auto-reply']) {
+      this.setState({
+        vacationAutoReply: nextProps.profile.properties['communicator-auto-reply']
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply-subject'] &&
+      this.props.profile.properties['communicator-auto-reply-subject'] !== nextProps.profile.properties['communicator-auto-reply-subject']) {
+      this.setState({
+        vacationAutoReplySubject: nextProps.profile.properties['communicator-auto-reply-subject']
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply-msg'] &&
+      this.props.profile.properties['communicator-auto-reply-msg'] !== nextProps.profile.properties['communicator-auto-reply-msg']) {
+      this.setState({
+        vacationAutoReplyMsg: nextProps.profile.properties['communicator-auto-reply-msg']
       });
     }
 
@@ -121,6 +151,21 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
   onPhoneChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({
       phoneNumber: e.target.value
+    });
+  }
+  onVacationAutoReplyChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      vacationAutoReply: e.target.checked ? "ENABLED" : ""
+    });
+  }
+  onVacationAutoReplySubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      vacationAutoReplySubject: e.target.value
+    });
+  }
+  onVacationAutoReplyMsgChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({
+      vacationAutoReplyMsg: e.target.value
     });
   }
   onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>){
@@ -168,6 +213,24 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
       }
     }
+    if (!this.props.status.isStudent) {
+      if ((this.props.profile.properties['communicator-auto-reply'] || "") !== this.state.vacationAutoReply) {
+        totals++;
+        this.props.saveProfileProperty('communicator-auto-reply', this.state.vacationAutoReply, cb);
+      }
+    }
+    if (!this.props.status.isStudent) {
+      if ((this.props.profile.properties['communicator-auto-reply-subject'] || "") !== this.state.vacationAutoReplySubject) {
+        totals++;
+        this.props.saveProfileProperty('communicator-auto-reply-subject', this.state.vacationAutoReplySubject, cb);
+      }
+    }
+    if (!this.props.status.isStudent) {
+      if ((this.props.profile.properties['communicator-auto-reply-msg'] || "") !== this.state.vacationAutoReplyMsg) {
+        totals++;
+        this.props.saveProfileProperty('communicator-auto-reply-msg', this.state.vacationAutoReplyMsg, cb);
+      }
+    }
     if (this.props.profile.chatSettings) {
       if (((this.props.profile.chatSettings.visibility || null) !== this.state.chatVisibility) || ((this.props.profile.chatSettings.nick || null) !== this.state.chatNickname)){
         totals++;
@@ -191,64 +254,111 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     }
     return (<div className="profile-element">
       <h2 className="profile-element__title">{this.props.status.profile.displayName}</h2>
-      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
-        value={this.props.status.profile.emails}/>
-      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
-        value={this.props.status.profile.addresses}/>
-      <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
-        value={this.props.status.profile.phoneNumbers}/>
+
+      <div className="profile-element__item">
+        <UpdateUsernamePasswordDialog>
+          <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
+        </UpdateUsernamePasswordDialog>
+      </div>
+
       <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
       value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
       <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
       value={studyTimeEndValues}/>
       <form>
-        <div className="profile-element__item">
-          <UpdateUsernamePasswordDialog>
-            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
-          </UpdateUsernamePasswordDialog>
-        </div>
 
-        {this.props.status.isStudent ? <div className="profile-element__item">
-          <UpdateAddressDialog>
-            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
-          </UpdateAddressDialog>
-        </div> : null}
+        <section>
+          <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.contactInfo')}</h3>
 
-        {!this.props.status.isStudent ?
-        <div className="profile-element__item">
-          <label htmlFor="profilePhoneNumber" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
-          <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
-        </div> : null}
+          <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
+            value={this.props.status.profile.emails} />
+          <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
+            value={this.props.status.profile.addresses} />
 
-        {!this.props.status.isStudent ?
-        <div className="profile-element__item">
-          <label htmlFor="profileVacationStart" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
-            <DatePicker id="profileVacationStart" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
-            maxDate={this.state.profileVacationEnd || null}
-            locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
-        </div> : null}
-
-        {!this.props.status.isStudent ?
-        <div className="profile-element__item">
-          <label htmlFor="profileVacationEnd" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
-            <DatePicker id="profileVacationEnd" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
-            minDate={this.state.profileVacationStart || null}
-            locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
+          {this.props.status.isStudent ? <div className="profile-element__item">
+            <UpdateAddressDialog>
+              <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
+            </UpdateAddressDialog>
           </div> : null}
 
-        <div className="profile-element__item">
-          <label htmlFor="chatVisibility" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
-          <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
-            <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
-            <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
-          </select>
-        </div>
+          <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
+            value={this.props.status.profile.phoneNumbers} />
 
-        <div className="profile-element__item">
-          <label htmlFor="chatNickname" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
-          <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
-          <div className="profile-element__description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
-        </div>
+          {!this.props.status.isStudent ?
+            <div className="profile-element__item form-element">
+              <label htmlFor="profilePhoneNumber" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+              <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
+            </div>
+          : null}
+
+        </section>
+
+        {!this.props.status.isStudent ?
+          <section>
+            <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.vacationSettings')}</h3>
+            <div className="profile-element__item form-element">
+              <label htmlFor="profileVacationStart" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
+                <DatePicker id="profileVacationStart" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
+                maxDate={this.state.profileVacationEnd || null}
+                locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
+            </div>
+            <div className="profile-element__item form-element">
+              <label htmlFor="profileVacationEnd" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
+                <DatePicker id="profileVacationEnd" className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
+                minDate={this.state.profileVacationStart || null}
+                locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
+            </div>
+
+            <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
+              <div className="profile-element__check-option-container">
+                <input
+                  checked={this.state.vacationAutoReply === "ENABLED" ? true : null}
+                  value={this.state.vacationAutoReply}
+                  id="profileVacationAutoReply" type="checkbox"
+                  onChange={this.onVacationAutoReplyChange} />
+                <label htmlFor="profileVacationAutoReply" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReply.label')}</label>
+              </div>
+              <div className="profile-element__description">{this.props.i18n.text.get('plugin.profile.vacationAutoReply.description')}</div>
+            </div>
+
+            {this.state.vacationAutoReply === "ENABLED" &&
+              <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
+                <label htmlFor="profileVacationAutoReplySubject" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReplySubject.label')}</label>
+                <input
+                  className="form-element__input form-element__input--profile-auto-reply" id="profileVacationAutoReplySubject"
+                  type="text"
+                  onChange={this.onVacationAutoReplySubjectChange}
+                  value={this.state.vacationAutoReplySubject}></input>
+              </div>}
+
+            {this.state.vacationAutoReply === "ENABLED" &&
+              <div className={`profile-element__item profile-element__item--additional-info ${!this.state.profileVacationStart || !this.state.profileVacationEnd ? "NON-ACTIVE" : ""} form-element`}>
+                <label htmlFor="profileVacationAutoReplyMsg" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.vacationAutoReplyMsg.label')}</label>
+                <textarea
+                  className="form-element__textarea form-element__textarea--profile-auto-reply" id="profileVacationAutoReplyMsg"
+                  onChange={this.onVacationAutoReplyMsgChange}
+                  value={this.state.vacationAutoReplyMsg}></textarea>
+              </div>}
+
+          </section>
+        : null}
+
+        <section>
+          <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.chatSettings')}</h3>
+          <div className="profile-element__item form-element">
+            <label htmlFor="chatVisibility" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
+            <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
+              <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
+              <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
+            </select>
+          </div>
+
+          <div className="profile-element__item form-element">
+            <label htmlFor="chatNickname" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
+            <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
+            <div className="profile-element__description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
+          </div>
+        </section>
         <div className="profile-element__item">
           <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
         </div>

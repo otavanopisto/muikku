@@ -41,10 +41,12 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAutoReplyController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
@@ -105,6 +107,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorAttachmentController communicatorAttachmentController;
+  
+  @Inject
+  private CommunicatorAutoReplyController communicatorAutoReply;
 
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -607,8 +612,19 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     for (CommunicatorMessageRecipient recipient : recipients) {
       // Don't notify the sender in case he sent message to himself
-      if (recipient.getRecipient() != message.getSender())
+      
+      if (recipient.getRecipient() != message.getSender()) {
         communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getRecipient(), baseUrl));
+        
+        if (recipient.getRecipientGroup() == null) {
+          UserEntity recipientEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+          UserEntityProperty autoReply = userEntityController.getUserEntityPropertyByKey(recipientEntity, "communicator-auto-reply");
+          
+          if (autoReply != null){
+            communicatorAutoReply.createCommunicatorAutoReply(message, recipientEntity);
+          }
+        }
+      }
     }
   }
 
