@@ -223,7 +223,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
     let newActive:number = this.getActive();
     if (newActive !== this.props.activeNodeId){
-      console.log(newActive);
       this.props.onActiveNodeIdChange(newActive);
     }
   }
