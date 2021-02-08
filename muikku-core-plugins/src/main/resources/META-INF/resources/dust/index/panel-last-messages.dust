@@ -1,0 +1,17 @@
+{?messages}
+  <div class="index item-list index-item-list-panel-last-messages">
+    {#messages}
+      <a class="item-list-item {?unreadMessagesInThread}item-list-item-unread{/unreadMessagesInThread}" href="/communicator#inbox/{communicatorMessageId}">
+        <span class="icon icon-envelope{?unreadMessagesInThread}-alt{/unreadMessagesInThread}"></span>
+        <span class="text item-list-text-body item-list-text-body-multiline">
+          {caption}
+          <span class="index text index-text-last-message-date">
+            {@moment type="format" date="{created}" format="L"/}
+          </span>
+        </span>
+      </a>
+    {/messages}
+  </div>
+{:else}
+  <div class="index text index-text-panel-no-last-messages">{#localize key="plugin.frontPage.messages.noMessages"/}</div>
+{/messages}

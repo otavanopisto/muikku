@@ -1,0 +1,63 @@
+<div class="mf-subitem {?isReply}di-reply-reply{/isReply} di-message di-reply open lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top" {?parentReplyId}data-parent-id="{parentReplyId}"{/parentReplyId} data-id="{id}">
+  <div class="di-message-topic mf-item-topic flex-row">
+    <div class="di-message-meta lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      <input type="hidden" name="mf-person-id" value="{sender}"/>
+      <div class="flex-row flex-align-items-center">
+        <div class="di-user-picture-container lg-flex-cell-1 md-flex-cell-1 sm-flex-hide">
+          <object data="/rest/user/files/user/{userEntityId}/identifier/profile-image-96" type="image/jpeg">
+            <div class="di-user-picture default usr-{userRandomNo}">{nameLetter}</div>
+          </object>
+        </div>
+        <div class="di-message-details di-message-details-reply lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-full">
+          <span class="di-reply-title-creator" title='{#localize key="plugin.discussion.titleText.creator"/}'>{creatorFullName}</span>
+          <span class="di-reply-title-date" title='{#localize key="plugin.discussion.titleText.date"/}'>{date|formatDate} {date|formatTime}</span>
+          {?isReply}
+             <span class="di-reply-to-decor icon-arrow-right-thin"></span>
+             <span class="di-reply-to-title">{replyParentCreatorFullName}</span>
+             <span class="di-reply-to-title">{replyParentTime}</span>
+          {/isReply}
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {?deleted}
+    <div class="mf-item-empty-container flex-row flex-align-items-center">
+      <div class="mf-item-empty di-message-removed lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+        <span class="icon-delete"></span>
+        <span>{#localize key="plugin.discussion.infomessage.message.removed"/}</span>
+      </div>
+    </div>
+  {:else}
+    <div class="flex-row">
+      <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title='{#localize key="plugin.discussion.titleText.content"/}'>{message|s}</div>
+      <div class="mf-item-content-info  di-message-content-info lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        {?isEdited}
+          <span>{#localize key="plugin.discussion.content.isEdited" arg0=prettyDateModified/}</span>
+        {/isEdited}
+        {@gt key=childReplyCount value="0"}
+          <span>{#localize key="plugin.discussion.content.replyCount" arg0=childReplyCount/}</span>
+        {/gt}
+      </div>
+    </div>
+
+    <div class="flex-row">
+      <div class="mf-item-content-tools di-message-content-tools lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="di-message-content-tools-container mf-item-tools">
+          {@eq key=locked value="false" type="boolean"}
+            {^isReply}
+              <div class="di-message-tool di-reply-answer-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+            {/isReply}
+            <div class="di-message-tool di-reply-quote-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.quote"/}</span></div>
+          {/eq}
+
+          {#canEdit}
+            <div class="di-message-tool di-reply-edit-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+            <div class="di-message-tool di-reply-delete-link mf-item-tool-link"><span>{#localize key="plugin.discussion.reply.delete"/}</span></div>
+          {/canEdit}
+        </div>
+      </div>
+    </div>
+  {/deleted}
+</div>
+

@@ -1,0 +1,16 @@
+{?files}
+  <div class="mf-item tr-item  lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <div class="topic">
+      <h3>{#localize key="plugin.records.files.topic" /}</h3>
+    </div>          
+    <div class="tr-user-files mf-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+      {#files}
+        <div class="tr-user-file mf-file flex-row">
+          <div class="tr-user-file-name mf-file-name">
+            <a href="/rest/records/files/{id}/content">{title}</a>
+          </div>
+        </div>
+      {/files}
+    </div>
+  </div>
+{/files}

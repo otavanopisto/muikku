@@ -1,0 +1,3 @@
+<div class="workspace-frontpage-image-dialog" title='{#localize key="plugin.workspace.management.changeImage.dialog.title"/}' data-button-ok-text='{#localize key="plugin.workspace.management.changeImage.dialog.saveButton.label"/}' data-button-cancel-text='{#localize key="plugin.workspace.management.changeImage.dialog.cancelButton.label"/}'>
+  <div class="workspace-frontpage-image-container"></div>
+</div>

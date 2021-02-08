@@ -1,0 +1,3 @@
+<li class="{?unreadMessagesInThread}unread{/unreadMessagesInThread}">
+  <a href="/communicator#inbox/{communicatorMessageId}">{caption}</a>
+</li>

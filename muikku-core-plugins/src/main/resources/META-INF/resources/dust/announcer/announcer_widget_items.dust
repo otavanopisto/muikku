@@ -1,0 +1,11 @@
+<h3>{#localize key="plugin.announcements.sectionTitle"/}</h3> 
+
+{?.}
+  <ul>
+    {#.}
+      {>"announcer/announcer_widget_item.dust"/}
+    {/.}
+  </ul>
+  {:else}
+    <div class="empty">{#localize key="plugin.announcer.empty.title"/}</div>
+{/.}

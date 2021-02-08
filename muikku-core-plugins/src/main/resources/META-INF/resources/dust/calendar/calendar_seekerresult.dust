@@ -1,0 +1,5 @@
+<div class="sk-autocomplete-container">
+  <div class="sk-autocomplete-item icon-calendar">
+  <!--    <a class="sk-autocomplete-item-link" href="{@contextPath/}/calendar/index.jsf#new"> --> Lokalisoi kalenteri <!--   {#localize key="plugin.communicator.seekerresultcaption"/}  </a>-->
+  </div>
+</div>

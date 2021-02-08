@@ -1,0 +1,51 @@
+<div class="wallEntry">
+  <div class="wallEntryData">
+    <input type="hidden" name="wallId" value="{wallId}"/>
+    <input type="hidden" name="wallEntryId" value="{entryId}"/>
+    {?creatorHasPicture} 
+      <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creatorId}" width="50" height="50" />
+    {:else}
+      <div class="wallEntryUserPicture wallEntryUserPictureEmpty"/>
+    {/creatorHasPicture}  
+    
+    <div class="wallEntryTitle">
+      <a class="wallEntryCreator" href="{@contextPath/}/user/{creatorId}">{creatorName}</a>
+  
+      {@select key=wallType}
+        {@eq value="ENVIRONMENT"}
+          &gt; <b>{wall.wallName}</b>
+        {/eq}
+  
+        {@eq value="WORKSPACE"}
+          kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{workspaceUrlName}">{workspaceName}</a>
+        {/eq}
+  
+        {@eq value="USER"}
+          &gt; <a class="wallEntryCreator" href="{@contextPath/}/user/{wallUserId}">{wallUserName}</a>
+        {/eq}
+      {/select}
+      
+      <span class="wallEntryDate">{created|formatDate}</span>
+    </div>
+    
+    <div class="wallEntryContent">
+      <div class="wallEntryItem">{text}</div>
+    </div>
+    
+    <div class="wallEntryFooter">
+      {@select key=visibility}
+        {@eq value="PRIVATE"}
+          yksityinen
+        {/eq}
+      {/select}
+  	  <a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
+    </div>
+    
+    <div class="wallEntryComments">
+      {#replies}
+        {>"wall/wallentryreply.dust"/}
+      {/replies}
+    </div>
+  </div>
+  
+</div>

@@ -1,0 +1,21 @@
+<div class="materials-management-page-attachment" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}">
+  <div class="materials-management-page-attachment-image-container"/>
+  <div class="materials-management-page-attachment-title">{title}</div>
+  <div class="materials-management-page-attachment-actions">
+    <a class="materials-management-page-attachment-action materials-management-page-attachment-action-download icon-download" href="javascript:void(null)"/>
+    <a class="materials-management-page-attachment-action materials-management-page-attachment-action-delete icon-delete" href="javascript:void(null)"/>
+  </div>
+  <div class="materials-management-page-attachment-url">{url}</div>
+  {?upload} 
+  <div class="muikku-page-attachments-upload-progress"/>
+  {/upload}
+  
+  <div class="materials-management-page-attachment-meta-container">
+  {#metaKeys}
+    <div class="materials-management-page-attachment-meta">
+      <label for="materials-management-page-attachment-{.}">{.}</label>
+      <input id="materials-management-page-attachment-{.}" name="{.}" type="text"/>
+    </div>
+  {/metaKeys}
+  </div>
+</div>

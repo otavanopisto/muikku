@@ -1,0 +1,25 @@
+{#staffMembers}
+  <div class="workspace-teacher" data-id="{id}">
+    <div class="workspace-teacher-profile-picture">
+      <object data="/rest/user/files/user/{userEntityId}/identifier/profile-image-96" type="image/jpeg">
+        <img src="/gfx/default-user-picture.jpg" />
+      </object>
+    </div>
+    <div class="workspace-teacher-info">
+      <div class="workspace-teacher-name">
+        <span class="workspace-teacher-info firstname">{firstName}</span>
+        <span class="workspace-teacher-info lastname">{lastName}</span>
+      </div>
+      <div class="workspace-teacher-info email">{email}</div>
+      {?properties.profile-phone}
+        <div class="workspace-teacher-info phone">{#localize key="plugin.workspace.index.phone.label"/}: {properties.profile-phone}</div>
+      {/properties.profile-phone}
+      {?properties.profile-vacation-period}
+        <div class="workspace-teacher-info vacation-period">{#localize key="plugin.workspace.index.teachersVacationPeriod.label"/} {properties.profile-vacation-period}</div>
+      {/properties.profile-vacation-period}
+      <div class="workspace-teacher-info message icon-envelope"><span>{#localize key="plugin.workspace.index.message.label"/}</span></div>
+    </div>
+  </div>
+  {:else}
+    <div class="workspace-teachers-empty">{#localize key="plugin.workspace.index.teachersEmpty"/}</div>
+{/staffMembers}

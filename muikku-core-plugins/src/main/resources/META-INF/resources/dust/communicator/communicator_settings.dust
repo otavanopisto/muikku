@@ -1,0 +1,29 @@
+<div class="cm-settings flex-row">
+  <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <div class="flex-row flex-align-items-center  cm-settings-title">{#localize key="plugin.communicator.settings.topic"/}</div>
+    <div class="flex-row">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full cm-settings-item">
+        <div class="flex-row cm-setting-title">
+          <div class="lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14">
+            {#localize key="plugin.communicator.settings.signatures"/}
+          </div>
+  <!--           <div class="lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2 flex-right">+</div> -->
+        </div>
+        <div class="flex-row cm-setting-content">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center cm-setting-signature">
+            {?signatures}
+              {#signatures}
+                <div class="cm-signature" data-id="{id}" data-name="{name}" data-signature="{signature}">
+                  <div>{signature|s}</div>
+                  <div><span class="cm-setting-edit-signature-link">Muokkaa</span><span class="cm-setting-remove-signature-link">Poista</span></div>  
+                </div>
+              {/signatures}
+             {:else}
+               <div class="cm-setting-create-signature-link">{#localize key="plugin.communicator.settings.signatures.create"/}</div>
+             {/signatures}
+           </div>            
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

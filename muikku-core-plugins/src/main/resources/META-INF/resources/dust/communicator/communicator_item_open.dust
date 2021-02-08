@@ -1,0 +1,61 @@
+    
+   <div class="mf-item cm-message open{?isOwner} owner{/isOwner} flex-row" data-folder-id={folderId} data-id="{id}" data-thread-id="{communicatorMessageId}">
+      <div class="mf-item-details cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+        <div class="cm-message-details-container flex-row">       
+          <div class="mf-item-description cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div class="cm-message-details-sender flex-row flex-align-items-center">
+              <div class="mf-item-header-content-primary cm-message-recipients cm-message-header-content-primary">
+                <div class="cm-message-recipients-cell">
+                  <div class="cm-message-recipients-wrapper">              
+                    <span>{senderFullName}</span>
+                    <span class="icon-arrow-right-thin cm-message-recipient-arrow"></span>
+                    {?recipients}
+                      {#recipients}
+                        {?isStudent}
+                          <span class="cm-message-recipient-name">{?nickName}{nickName}{:else}{firstName}{/nickName} {lastName}</span>
+                        {:else}
+                          <span class="cm-message-recipient-name">{?nickName}{firstName} "{nickName}"{:else}{firstName}{/nickName} {lastName}</span>
+                        {/isStudent}
+                      {/recipients}
+                    {/recipients}
+                    
+                    {?userGroupRecipients}
+                      {#userGroupRecipients}
+                        <span class="cm-message-recipient-name">{name}</span>
+                      {/userGroupRecipients}
+                    {/userGroupRecipients}
+                    
+                    {?workspaceRecipients}
+                      {#workspaceRecipients}
+                        <span class="cm-message-recipient-name">{workspaceName}</span>
+                      {/workspaceRecipients}
+                    {/workspaceRecipients}
+                  </div>
+                </div>
+              </div>        
+              <div class="mf-item-header-content-secondary cm-message-header-content-secondary">             
+               {created|formatDate} {created|formatTime}
+              </div>    
+            </div>
+            <div class="cm-message-header">{caption}
+              {#labels}
+                {>"communicator/communicator_item_label.dust"/}
+              {/labels}
+            </div>
+            <div class="mf-item-content cm-message-content">     
+              <div class="mf-item-content-text cm-message-content-text">{content|s}</div>          
+              <div class="cm-message-content-tools">
+                <div class="cm-message-content-tools-container">
+                  <div id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>
+                  <div id="{id}" class="cm-message-tool cm-message-reply-all-link mf-item-tool"><span>{#localize key="plugin.communicator.replyAll"/}</span></div>
+                </div>
+                <div class="cm-message-content-tools-reply-container"></div>
+              </div>
+            </div>
+          </div>       
+        </div>
+      </div>
+    
+      <input type="hidden" name="communicatorMessageId" value="{id}"/>
+      <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>  
+    </div >

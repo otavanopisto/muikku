@@ -1,0 +1,9 @@
+<div class="mf-subitem {?grade}tr-task-evaluated{:else}tr-task-not-evaluated{/grade} lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  <div class="tr-task-title title-container flex-row">
+    <div class="title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom"><span title="{gradingScale}" class="tr-task-evaluated-grade {?grade}grade {?passing}passing{:else}non-passing{/passing}{:else}{/grade}">{?grade}{grade}{:else}N{/grade}</span><span>{material.title}</span></div>
+  </div>
+  <div class="tr-task-content-container content-container flex-row" style="display:none;" >
+    <div class="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><span class="tr-task-evaluated-verbal">{verbalAssessment|s}</span></div>
+    <div class="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" data-workspace-entity-id="{workspaceEntityId}" data-material-id="{material.id}" data-workspace-material-id="{id}" data-material-content="{material.html}" data-path="{path}" data-material-type="html" data-loaded="false"/>
+  </div>
+</div>

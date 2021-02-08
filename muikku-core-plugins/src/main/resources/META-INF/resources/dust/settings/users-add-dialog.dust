@@ -1,0 +1,25 @@
+<div class="settings-users-add-dialog" title="Add New Local User">
+  
+  <h1>Add New Local User</h1>
+  
+  <form>
+    <div>
+      <label for="settings-users-add-dialog-firstname">First Name</label>
+      <input type="text" name="firstName" id="settings-users-add-dialog-firstname" required="required"/>
+    </div>
+    
+    <div>
+      <label for="settings-users-add-dialog-lastname">Last Name</label>
+      <input type="text" name="lastName" id="settings-users-add-dialog-lastname" required="required"/>
+    </div>
+    
+    <!-- TODO: Multiple emails -->
+    
+    <div>
+      <label for="settings-users-add-dialog-email">Email</label>
+      <input type="email" name="email" id="settings-users-add-dialog-email" required="required"/>
+    </div>
+
+  </form>
+  
+</div>

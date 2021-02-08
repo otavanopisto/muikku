@@ -1,0 +1,3 @@
+<div class="workspace-frontpage-image-delete-confirm-dialog" title='{#localize key="plugin.workspace.management.deleteImage.dialog.title"/}' data-button-delete-text='{#localize key="plugin.workspace.management.deleteImage.dialog.deleteButton.label"/}' data-button-cancel-text='{#localize key="plugin.workspace.management.deleteImage.dialog.cancelButton.label"/}'>
+  {#localize key="plugin.workspace.management.deleteImage.dialog.description"/}
+</div>

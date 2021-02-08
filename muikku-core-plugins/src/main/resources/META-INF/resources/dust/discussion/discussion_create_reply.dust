@@ -1,0 +1,26 @@
+<div class="mf-form di-newmessage-form-container flex-row">
+  <div class="di-message-create lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <form>
+      <div class="mf-form-header flex-row"><h3>{#localize key="plugin.discussion.createmessage.topic"/}</h3></div>
+      <div class="mf-content flex-row">
+        <div class="di-message-new-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div class="mf-form-row flex-row flex-align-items-center">
+            <div id="areaSelect" class="mf-select lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+              <h3><span class="mf-category-{forumAreaId}-font">{areaName}</span> - {title}</h3>
+            </div>    
+          </div>
+          <div class="mf-form-row flex-row">
+            <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+               <textarea id="textContent" name="message"></textarea>
+            </div>
+           </div> 
+          </div>
+        </div>
+       <div class="mf-toolbar flex-row">
+        <input type="button" name="send" value='{#localize key="plugin.discussion.reply.send"/}' {?.}{:else}disabled{/.}/>
+        <input type="button" name="cancel" value='{#localize key="plugin.discussion.reply.cancel"/}'/>
+      </div>   
+    </form>
+  </div>
+</div>
+

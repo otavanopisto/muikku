@@ -1,0 +1,6 @@
+
+
+  <div class="mf-content-empty cm-no-messages lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <h3>{#localize key="plugin.records.empty.topic"/}</h3>
+  </div>
+

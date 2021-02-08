@@ -1,0 +1,16 @@
+<div class="application-list-item {?unreadMessagesInThread}communicator-application-list-item-unread{/unreadMessagesInThread}" data-index="{$idx}">
+  <div class="application-list-item-header">
+    <input type="checkbox"/>
+    {#sender}
+      <span class="communicator text communicator-text-username">
+        {?firstName}{firstName}{~s}{/firstName}{?lastName}{lastName}{/lastName}
+      </span>
+    {/sender}
+    <span class="communicator-application-list-item-labels"></span>
+    {?messageCountInthread}
+      <span class="communicator text communicator-text-counter">{messageCountInthread}</span>
+    {/messageCountInthread}
+    <span class="communicator text communicator-text-date">{@moment type="format" date="{threadLatestMessageDate}" format="L"/}</span>
+  </div>
+  <div class="application-list-item-body"><span class="communicator text communicator-text-body">{caption}</span></div>
+</div>

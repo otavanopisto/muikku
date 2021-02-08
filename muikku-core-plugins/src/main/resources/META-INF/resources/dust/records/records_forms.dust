@@ -1,0 +1,10 @@
+{#students}
+  <div class="tr-study-programme-name lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{studyProgrammeName}</h3></div>
+  <div class="tr-study-programme-studies lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <div class="flex-row">
+      {#curriculums}
+        {>"records/records_curriculum.dust"/}
+      {/curriculums}
+    </div>
+  </div>
+{/students}

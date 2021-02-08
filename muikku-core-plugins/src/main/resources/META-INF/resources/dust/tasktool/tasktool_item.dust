@@ -1,0 +1,14 @@
+
+<div class="mf-item tt-task open" id="{id}">
+  <div class="tt-task-topic">
+   <div class="tt-task-meta-topic mf-header-name"><span>{username}</span><span>{workspacename}</span><span class="mf-state tt-task-request-state {state}">{state}</span></div>
+  </div>
+  <div class=tt-task-details">
+    <div class="tt-task-details-content">{message}</div>
+  </div>
+  <div class=""></div>
+
+  <div class="clear"></div>
+  <input type="hidden" name="areaId" value="{id}"/>
+</div>
+
