@@ -39,6 +39,8 @@ interface OrganizationNewWorkspaceState {
   template: SelectItem,
   workspaceName: string,
   workspaceAccess: WorkspaceAccessType,
+  beginDate: any,
+  endDate: any,
   workspaceNameExtension: string,
   locked: boolean,
   currentStep: number,
@@ -62,6 +64,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       workspaceName: "",
       workspaceAccess: "MEMBERS_ONLY",
       workspaceNameExtension: "",
+      beginDate: null,
+      endDate: null,
       template: {
         id: null,
         label: ""
@@ -205,6 +209,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       id: this.state.template.id as number,
       name: this.state.workspaceName,
       nameExtension: this.state.workspaceNameExtension,
+      beginDate: this.state.beginDate,
+      endDate: this.state.endDate,
       access: this.state.workspaceAccess,
       students: this.state.selectedStudents,
       staff: this.state.selectedStaff,

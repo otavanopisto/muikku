@@ -315,10 +315,14 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
 
       workspace = await reuseExistantValue(true, workspace, () => promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')());
 
-      dispatch({
-        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-        payload: workspace
-      });
+      (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
+        () => promisify(mApi().workspace.workspaces
+          .details.read(data.workspaceId), 'callback')()) : null,
+
+        dispatch({
+          type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+          payload: workspace
+        });
 
       data.success && data.success(workspace);
     } catch (err) {
@@ -897,11 +901,12 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
-      let originalWorkspace = data.workspace;
+      let originalWorkspace: WorkspaceType = data.workspace;
 
       // Take off data that'll cramp the update
       delete originalWorkspace["staffMemberSelect"];
       delete originalWorkspace["studentsSelect"];
+      delete originalWorkspace["details"];
 
       if (data.update) {
         await promisify(mApi().workspace.workspaces.update(data.workspace.id,
@@ -1399,6 +1404,8 @@ export interface CreateWorkspaceTriggerType {
     id: number,
     name?: string,
     access?: string,
+    beginDate: string,
+    endDate: string,
     nameExtension?: string,
     students: SelectItem[],
     staff: SelectItem[],

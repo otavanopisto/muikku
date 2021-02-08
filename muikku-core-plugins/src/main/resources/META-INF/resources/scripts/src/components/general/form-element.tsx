@@ -2,7 +2,21 @@ import * as React from 'react';
 import Button from '~/components/general/button';
 import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
-import { isNullOrUndefined } from 'util';
+import DatePicker from 'react-datepicker';
+
+
+// Either label or placeholder is mandatory because of wcag
+
+export type FormElementLabel = {
+  label: string,
+  placeholder?: string
+}
+
+export type FormElementPlaceholder = {
+  label?: string,
+  placeholder: string
+}
+
 
 interface FormElementProps {
   modifiers?: string | Array<string>,
@@ -455,3 +469,55 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
     );
   }
 }
+
+
+interface DateFormElementProps {
+  labels: FormElementLabel | FormElementPlaceholder,
+  id: string,
+  updateField: (value: string) => any,
+  maxDate?: any,
+  minDate?: any,
+  selected: any,
+  value?: string,
+  locale: string,
+  mandatory?: boolean,
+  valid?: number,
+  modifiers?: string | Array<string>,
+
+}
+
+interface DateFormElementState {
+  value: string,
+}
+
+export class DateFormElement extends React.Component<DateFormElementProps, DateFormElementState> {
+
+  constructor(props: DateFormElementProps) {
+    super(props);
+    this.updateInputField = this.updateInputField.bind(this);
+  }
+
+  updateInputField(newDate: any) {
+    this.props.updateField(newDate);
+  }
+
+  render() {
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+
+    return (
+      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
+        {this.props.labels.label ?
+          <label htmlFor={this.props.id} className="form-element__label">{this.props.labels.label}</label> :
+          <label htmlFor={this.props.id} className="visually-hidden">{this.props.labels.placeholder}</label>
+        }
+        <DatePicker id={this.props.id} className="form-element__input" placeholderText={this.props.labels.placeholder} onChange={this.updateInputField}
+          maxDate={this.props.maxDate}
+          minDate={this.props.minDate}
+          locale={this.props.locale} selected={this.props.selected} />
+      </div>
+    );
+  }
+}
+
+
+

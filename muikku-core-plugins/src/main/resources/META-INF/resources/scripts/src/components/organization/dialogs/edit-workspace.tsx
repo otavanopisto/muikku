@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
-import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
+import { FormWizardActions, InputFormElement, DateFormElement } from '~/components/general/form-element';
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import {
   UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, SetCurrentWorkspaceTriggerType, setCurrentOrganizationWorkspace,
@@ -14,8 +14,8 @@ import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-a
 import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-import { isThisTypeNode } from 'typescript';
-import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
+import moment from '~/lib/moment';
+
 
 interface ValidationType {
   nameValid: number
@@ -39,6 +39,8 @@ interface OrganizationEditWorkspaceProps {
 }
 
 interface OrganizationEditWorkspaceState {
+  beginDate: any,
+  endDate: any,
   workspaceName: string,
   workspaceNameExtension: string,
   workspaceAccess: WorkspaceAccessType,
@@ -69,9 +71,11 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     super(props);
     this.totalSteps = 4;
     this.state = {
+      beginDate: this.props.currentWorkspace && moment(this.props.currentWorkspace.details.beginDate) || null,
+      endDate: this.props.currentWorkspace && moment(this.props.currentWorkspace.details.endDate) || null,
       workspaceName: this.props.workspace.name,
       workspaceNameExtension: this.props.workspace.nameExtension,
-      workspaceAccess: this.props.currentWorkspace ? this.props.currentWorkspace.access : null,
+      workspaceAccess: this.props.currentWorkspace && this.props.currentWorkspace.access || null,
       selectedStaff: [],
       selectedStudents: [],
       addStaff: [],
@@ -168,6 +172,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ locked: false, workspaceName: value });
   }
 
+  handleDateChange(dateKey: string, newDate: any) {
+    this.setState({ [dateKey]: newDate } as Pick<OrganizationEditWorkspaceState, keyof OrganizationEditWorkspaceState>)
+  }
+
   setWorkspaceNameExtension(value: string) {
     this.setState({ workspaceNameExtension: value });
   }
@@ -232,16 +240,25 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let payload: WorkspaceUpdateType = {};
 
     if (this.props.currentWorkspace.name !== this.state.workspaceName) {
-      payload = { name: this.state.workspaceName }
+      payload.name = this.state.workspaceName;
     }
 
     if (this.props.currentWorkspace.nameExtension !== this.state.workspaceNameExtension) {
-      Object.assign(payload, { nameExtension: this.state.workspaceNameExtension });
+      payload.nameExtension = this.state.workspaceNameExtension;
     }
 
     if (this.props.currentWorkspace.access !== this.state.workspaceAccess) {
-      Object.assign(payload, { access: this.state.workspaceAccess });
+      payload.access = this.state.workspaceAccess;
     }
+
+    if (this.props.currentWorkspace.details.beginDate !== this.state.beginDate) {
+      payload.details.beginDate = this.state.beginDate;
+    }
+
+    if (this.props.currentWorkspace.details.endDate !== this.state.endDate) {
+      payload.details.endDate = this.state.endDate;
+    }
+
 
     this.props.updateOrganizationWorkspace({
       update: payload,
@@ -285,6 +302,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           <DialogRow modifiers="edit-workspace">
             <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
             <InputFormElement updateField={this.setWorkspaceNameExtension} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
+          </DialogRow>
+          <DialogRow>
+            <DateFormElement id="workspaceBeginDate" maxDate={this.state.endDate || null} updateField={this.handleDateChange.bind(this, "beginDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.beginDate} labels={{ label: this.props.i18n.text.get("plugin.workspace.management.settings.access") }} />
+            <DateFormElement id="workspaceEndDate" minDate={this.state.beginDate || null} updateField={this.handleDateChange.bind(this, "endDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.endDate} labels={{ label: this.props.i18n.text.get("plugin.workspace.management.settings.access") }} />
           </DialogRow>
           <DialogRow>
             <fieldset>
