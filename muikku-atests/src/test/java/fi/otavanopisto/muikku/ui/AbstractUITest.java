@@ -1542,10 +1542,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return getWebDriver().findElement(By.tagName(name));
   }
   
-  protected String getCKEditorContent() {
+  protected String getCKEditorContentIFrame() {
     getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
     String ckeContent = findElementByTag("body").getText();
     getWebDriver().switchTo().defaultContent();
+    return ckeContent;
+  }
+  
+  protected String getCKEditorContentInMaterials() {
+    String ckeContent = getElementText(".cke_wysiwyg_div p");
     return ckeContent;
   }
   

@@ -110,7 +110,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation." ,getCKEditorContent());
+          assertEquals("Test evaluation." ,getCKEditorContentIFrame());
         }finally{
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -210,7 +210,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation.", getCKEditorContent());
+          assertEquals("Test evaluation.", getCKEditorContentIFrame());
           
           addTextToCKEditor("Test evaluation in re-evaluation.");
           selectOption("#grade", "2/PYRAMUS@1/PYRAMUS");
@@ -223,7 +223,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation.Test evaluation in re-evaluation.", getCKEditorContent());
+          assertEquals("Test evaluation.Test evaluation in re-evaluation.", getCKEditorContentIFrame());
         
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -348,7 +348,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation." ,getCKEditorContent());
+          assertEquals("Test evaluation." ,getCKEditorContentIFrame());
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }

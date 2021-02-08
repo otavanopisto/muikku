@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -1466,6 +1465,77 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
         
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.EDGE,
+    }
+  )
+  public void ckeditorTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addStudent(student)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), mockCourseStudent)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+            + "value=\"{&quot;name&quot;:&quot;muikku-field-DZWZRbQoPNOcxXN9BGxY5WGe&quot;,&quot;rows&quot;:&quot;&quot;,&quot;example&quot;:&quot;&quot;,&quot;richedit&quot;:true}\" /></object></p>",
+            "EVALUATED");
+        try {
+          String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
+              + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
+              + "Nulla consectetur quam mi.";
+          logout();
+          mockBuilder.mockLogin(student).build();
+          login();
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".content-panel__chapter-title-text");
+          waitForElementToBeClickable(".cke_wysiwyg_div p");
+          addTextToCKEditor(contentInput);
+          waitForPresent(".material-page__field-answer-synchronizer--saving");
+          waitForPresent(".material-page__field-answer-synchronizer--saved");
+          navigate("/", false);
+          waitForPresent(".panel__header-title");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".content-panel__chapter-title-text");
+          String actualInput = getCKEditorContentInMaterials();
+          assertEquals(contentInput, actualInput);
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
       } finally {
         deleteWorkspace(workspace.getId());
       }
