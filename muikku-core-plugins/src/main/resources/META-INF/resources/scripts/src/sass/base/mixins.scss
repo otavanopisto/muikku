@@ -69,7 +69,6 @@
   }
 }
 
-
 @mixin mainfunction-subpanel-title {
   font-size: 1.1875rem;
   font-weight: 400;
@@ -110,12 +109,6 @@
   height: 1.8rem;
   justify-content: center;
   width: 1.8rem;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 0.6rem;
-    height: 1.8rem;
-    width: 1.8rem;
-  }
 }
 
 @mixin workspace-image-button {

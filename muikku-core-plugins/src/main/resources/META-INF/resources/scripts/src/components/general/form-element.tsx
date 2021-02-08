@@ -2,7 +2,6 @@ import * as React from 'react';
 import Button from '~/components/general/button';
 import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
-import { isNullOrUndefined } from 'util';
 
 interface FormElementProps {
   modifiers?: string | Array<string>,
@@ -157,7 +156,7 @@ interface SearchFormElementProps {
 }
 
 interface SearchFormElementState {
-  value: string
+  clearActive: boolean
 }
 
 export class SearchFormElement extends React.Component<SearchFormElementProps, SearchFormElementState> {
@@ -166,16 +165,28 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     super(props);
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
+
+    this.state = {
+      clearActive: false
+    }
   }
 
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value;
+    if (e.target.value.length > 0) {
+      this.setState({ clearActive: true });
+    } else {
+      this.setState({ clearActive: false });
+    }
     this.props.updateField(value);
   }
 
   clearSearchField() {
+    let searchField = document.getElementById(this.props.id) as HTMLInputElement;
     this.props.updateField("");
-    document.getElementById(this.props.id).focus();
+    searchField.value = "";
+    searchField.focus();
+    this.setState({ clearActive: false });
   }
 
   render() {
@@ -184,7 +195,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
       <div className={`form-element form-element--search ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""} ${this.props.className ? this.props.className : ""}`}>
         <label htmlFor={this.props.id} className="visually-hidden">{this.props.placeholder}</label>
         <input id={this.props.id} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.props.value} className={`form-element__input form-element__input--search ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholder={this.props.placeholder} onChange={this.updateSearchField} />
-        <div className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""}`} onClick={this.clearSearchField}></div>
+        <div className={`form-element__input-decoration--clear-search icon-cross ${this.state.clearActive ? "active" : ""}`} onClick={this.clearSearchField}></div>
         <div className="form-element__input-decoration--search icon-search"></div>
       </div>
     )
