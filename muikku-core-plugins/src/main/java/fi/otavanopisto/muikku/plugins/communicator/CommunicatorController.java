@@ -43,6 +43,7 @@ import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipi
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorUserLabelDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.VacationNotificationsDAO;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -54,6 +55,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -114,6 +116,9 @@ public class CommunicatorController {
   
   @Inject 
   private UserEntityController userEntityController;
+  
+  @Inject
+  private VacationNotificationsDAO vacationNotificationsDAO;
   
   @Inject
   @Any
@@ -688,5 +693,18 @@ public class CommunicatorController {
     }
     return tagsStr;
   }
+  
+  // Vacation notifications for auto reply
 
+  public VacationNotifications createVacationNotification(UserEntity sender, UserEntity receiver, Date notificationDate) {
+    return vacationNotificationsDAO.create(sender, receiver, notificationDate);
+  }
+  
+  public VacationNotifications updateVacationNotificationDate(VacationNotifications vacationNotification,Date notificationDate) {
+    return vacationNotificationsDAO.updateNotificationDate(vacationNotification, notificationDate);
+  }
+  
+  public VacationNotifications findVacationNotification(UserEntity sender, UserEntity receiver) {
+    return vacationNotificationsDAO.findNotification(sender, receiver);
+  }
 }
