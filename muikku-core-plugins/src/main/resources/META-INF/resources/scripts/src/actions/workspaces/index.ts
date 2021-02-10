@@ -315,7 +315,7 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
 
       workspace = await reuseExistantValue(true, workspace, () => promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')());
 
-      (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
+      workspace.details = (data.loadDetails || workspace && workspace.details) ? await reuseExistantValue(true, workspace && workspace.details,
         () => promisify(mApi().workspace.workspaces
           .details.read(data.workspaceId), 'callback')()) : null,
 
@@ -902,18 +902,30 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
     try {
 
       let originalWorkspace: WorkspaceType = data.workspace;
+      let newDetails = data.update.details;
 
       // Take off data that'll cramp the update
       delete originalWorkspace["staffMemberSelect"];
       delete originalWorkspace["studentsSelect"];
       delete originalWorkspace["details"];
 
-      if (data.update) {
+      // Delete details from update so it wont fail
+
+      delete data.update["details"];
+
+      if (data.update && Object.keys(data.update).length !== 0) {
         await promisify(mApi().workspace.workspaces.update(data.workspace.id,
           Object.assign(data.workspace, data.update)
         ), 'callback')().then(
           data.progress && data.progress("workspace-update")
         );
+      }
+
+      if (newDetails) {
+        await promisify(mApi().workspace.workspaces
+          .details.update(data.workspace.id, newDetails), 'callback')().then(
+            data.progress && data.progress("add-details")
+          );
       }
 
       if (data.addStudents.length > 0) {
@@ -1395,8 +1407,8 @@ export interface CopyCurrentWorkspaceTriggerType {
   }): AnyActionType
 }
 
-export type CreateWorkspaceStateType = "workspace-create" | "add-students" | "add-teachers" | "done";
-export type UpdateWorkspaceStateType = "workspace-update" | "add-students" | "remove-students" | "add-teachers" | "remove-teachers" | "done";
+export type CreateWorkspaceStateType = "workspace-create" | "add-details" | "add-students" | "add-teachers" | "done";
+export type UpdateWorkspaceStateType = "workspace-update" | "add-details" | "add-students" | "remove-students" | "add-teachers" | "remove-teachers" | "done";
 
 
 export interface CreateWorkspaceTriggerType {
