@@ -54,6 +54,23 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<CommunicatorMessageRecipient> listByMessageAndGroup(CommunicatorMessage communicatorMessage, CommunicatorMessageRecipientGroup group) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageRecipient> criteria = criteriaBuilder.createQuery(CommunicatorMessageRecipient.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipientGroup), group)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public List<CommunicatorMessageRecipient> listByMessageIncludeGroupRecipients(CommunicatorMessage communicatorMessage) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -130,7 +147,7 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public CommunicatorMessageRecipient updateRecipientRead(CommunicatorMessageRecipient recipient, Boolean value) {
+  public CommunicatorMessageRecipient updateReadByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
     recipient.setReadByReceiver(value);
     
     getEntityManager().persist(recipient);

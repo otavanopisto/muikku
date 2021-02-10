@@ -31,6 +31,8 @@ import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -463,6 +465,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null,
+          null,
           null);
     }
     
@@ -583,6 +586,19 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier,
+      String subjectCode) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public StudentCourseStats getStudentCourseStats(SchoolDataIdentifier studentIdentifier, String educationTypeCode,
+      String educationSubtypeCode) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }

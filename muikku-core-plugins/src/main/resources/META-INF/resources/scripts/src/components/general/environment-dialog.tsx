@@ -4,26 +4,27 @@ import Button from '~/components/general/button';
 import * as React from 'react';
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/environment-dialog.scss';
+import { DiscussionThreadFooter } from '../discussion/body/application/threads/threads';
 export default class EnvironmentDialog extends Dialog {
 
   render(){
     return (
       <Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
         {(closePortal: ()=>any)=>{return <div className={`env-dialog env-dialog--mainfunction env-dialog--${this.props.modifier} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-          <div className="env-dialog__wrapper">
-             <div className="env-dialog__content">
-                <div className="env-dialog__header">
-                  {this.props.title}
-                </div>
-                <div className="env-dialog__body">
-                  {this.props.content(closePortal)}
-                </div>
-                <div className="env-dialog__footer">
-                  {this.props.footer && this.props.footer(closePortal)}
-                </div>
-              </div>
+          <section role="dialog" className="env-dialog__wrapper" aria-labelledby={`dialog-title-${this.props.modifier}`} aria-modal="true">
+            <div role="form" className="env-dialog__content">
+              <header className="env-dialog__header" id={`dialog-title-${this.props.modifier}`}>
+                {this.props.title}
+              </header>
+              <section className="env-dialog__body">
+                {this.props.content(closePortal)}
+              </section>
+              <footer className="env-dialog__footer">
+                {this.props.footer && this.props.footer(closePortal)}
+              </footer>
             </div>
-          </div>}}
+          </section>
+        </div>}}
       </Portal>);
   }
 }
@@ -63,7 +64,7 @@ export class EnvironmentDialogFormElement extends React.Component<EnvironmentDia
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return(
       <div className={`env-dialog__form-element-container ${this.props.modifiers ? modifiers.map( m => `env-dialog__form-element-container--${m}` ).join( " " ) : ""}`}>
-        <div className="env-dialog__label">{this.props.i18n.text.get(this.props.label)}</div>
+        <label className="env-dialog__label">{this.props.i18n.text.get(this.props.label)}</label>
         {this.props.children}
       </div>
     );
@@ -90,9 +91,7 @@ export class EnvironmentDialogActionsElement extends React.Component<Environment
     this.state = {
       locked: false
     }
-
   }
-
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (

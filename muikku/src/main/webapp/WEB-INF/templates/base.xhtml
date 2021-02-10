@@ -3,7 +3,9 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  xmlns:ui="http://java.sun.com/jsf/facelets">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+  lang="fi">
 
 <!-- Base takes no parameters -->
 <!-- Base takes four defines, styles, scripts, body and title, where title is not required -->
@@ -14,7 +16,7 @@
   <title>#{empty title ? i18n.text['plugin.site.title'] : title}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1" name="viewport" />
+  <meta content="width=device-width, initial-scale=1, user-scalable=yes" name="viewport" />
   <script type="text/javascript">
     var CONTEXTPATH = "#{request.contextPath}";
     var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
@@ -116,15 +118,12 @@
   <!-- locales -->
   <script defer="defer" jsf:name="scripts/gui/locales.js" />
 
-  <!-- Converse if required -->
-  <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-<!--     <script defer="defer" jsf:name="scripts/gui/chat.js" /> -->
-<!--     <script defer="defer" src="//cdn.muikkuverkko.fi/libs/converse-muikku/1.1.5/converse-no-jquery.min.js"/> -->
-<!--     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/converse-muikku/1.1.5/converse.min.css" /> -->
-  </ui:fragment>
+
+  <!-- Flex Grid, DEPRECATED -->
+  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css" />
 
   <!-- Muikku icons -->
-  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.7/style.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.8/style.css" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic" rel="stylesheet" />
   <ui:insert name="styles"></ui:insert>
 
@@ -136,18 +135,18 @@
   <div id="app"></div>
 
   <!-- TODO: please lets find a way to do this with a rest endpoint -->
-  <h:form id="language-picker" style="display:none">
+  <h:form id="language-picker" style="display:none" pt:aria-hidden="true">
     <ui:repeat value="#{i18n.languages}" var="locale">
       <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" data-locale="#{locale}">
         #{i18n.text['plugin.navigation.language.' .concat(locale)]}
       </a>
     </ui:repeat>
   </h:form>
-  <h:form style="display:none">
+  <h:form style="display:none" pt:aria-hidden="true">
     <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
   </h:form>
-  <a id="locale" style="display:none">#{languageWidgetBackingBean.language}</a>
-  <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"></a>
+  <a id="locale" style="display:none" aria-hidden="true">#{languageWidgetBackingBean.language}</a>
+  <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]" aria-hidden="true"></a>
 
   <!-- Google Analytics -->
   <script>

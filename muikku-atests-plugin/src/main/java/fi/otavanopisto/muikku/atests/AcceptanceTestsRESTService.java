@@ -74,16 +74,20 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -187,6 +191,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private WorkspaceJournalController workspaceJournalController;
   
   @GET
   @Path("/login")
@@ -498,7 +505,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Mandatory parentId is missing").build(); 
     }
 
-    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(payload.getTitle(), payload.getHtml(), payload.getContentType(), payload.getRevisionNumber(), payload.getLicense());
+    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(payload.getTitle(), payload.getHtml(), payload.getContentType(), payload.getLicense());
     WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(payload.getParentId());
     if (parent == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build();
@@ -1026,6 +1033,48 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
   
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/journal/{AUTHOREMAIL}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("AUTHOREMAIL") String authorEmail, fi.otavanopisto.muikku.atests.WorkspaceJournalEntry payload) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(authorEmail);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.createJournalEntry(
+        workspaceEntity,
+        userEntity,
+        payload.getHtml(),
+        payload.getTitle());
+    return Response.ok(createRestEntity(workspaceJournalEntry)).build();
+
+  }
+  
+  @DELETE
+  @Path("/journal/{ID}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteJournalEntry(@PathParam("ID") Long journalEntryId) {
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (workspaceJournalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    workspaceJournalController.delete(workspaceJournalEntry);
+    return Response.noContent().build();
+  }
+  
+  private fi.otavanopisto.muikku.atests.WorkspaceJournalEntry createRestEntity(WorkspaceJournalEntry workspaceJournalEntry) {
+    fi.otavanopisto.muikku.atests.WorkspaceJournalEntry journalEntry = new fi.otavanopisto.muikku.atests.WorkspaceJournalEntry(workspaceJournalEntry.getWorkspaceEntityId(), workspaceJournalEntry.getUserEntityId(),
+        workspaceJournalEntry.getHtml(), workspaceJournalEntry.getTitle(), workspaceJournalEntry.getCreated(), workspaceJournalEntry.getArchived());
+    journalEntry.setId(workspaceJournalEntry.getId());
+    return journalEntry;
+  }
+
   private fi.otavanopisto.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
     return new fi.otavanopisto.muikku.atests.Workspace(workspaceEntity.getId(), 
         name, 
@@ -1053,7 +1102,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceMaterial.getTitle(), 
         htmlMaterial.getContentType(), 
         htmlMaterial.getHtml(), 
-        htmlMaterial.getRevisionNumber(), 
         workspaceMaterial.getAssignmentType() != null ? workspaceMaterial.getAssignmentType().toString() : null,
         htmlMaterial.getLicense());
   }

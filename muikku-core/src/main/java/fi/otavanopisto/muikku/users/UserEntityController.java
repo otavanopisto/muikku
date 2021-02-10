@@ -22,12 +22,14 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityPropertyDAO;
+import fi.otavanopisto.muikku.dao.users.UserIdentifierPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -46,6 +48,9 @@ public class UserEntityController implements Serializable {
 
   @Inject
   private UserEntityPropertyDAO userEntityPropertyDAO;
+
+  @Inject
+  private UserIdentifierPropertyDAO userIdentifierPropertyDAO;
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -91,7 +96,7 @@ public class UserEntityController implements Serializable {
               }
             }
           }
-          return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"));
+          return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"), (String) match.get("nickName"), (String) match.get("studyProgrammeName"));
         }
       }
     }
@@ -106,14 +111,20 @@ public class UserEntityController implements Serializable {
     return userEntityPropertyDAO.findByUserEntityAndKey(userEntity, key);
   }
 
+  public UserIdentifierProperty getUserIdentifierPropertyByKey(String identifier, String key) {
+    return userIdentifierPropertyDAO.findByIdentifierAndKey(identifier, key);
+  }
+
   public List<UserEntityProperty> listUserEntityProperties(UserEntity userEntity) {
     return userEntityPropertyDAO.listByUserEntity(userEntity);
   }
   
-  public UserEntityProperty setUserEntityProperty(UserEntity userEntity, String key, String value) {
+  public void setUserEntityProperty(UserEntity userEntity, String key, String value) {
     UserEntityProperty userEntityProperty = getUserEntityPropertyByKey(userEntity, key);
     if (userEntityProperty == null) {
-      userEntityProperty = userEntityPropertyDAO.create(userEntity, key, value);
+      if (StringUtils.isNotEmpty(value)) {
+        userEntityPropertyDAO.create(userEntity, key, value);
+      }
     }
     else {
       if (StringUtils.isEmpty(value)) {
@@ -123,7 +134,23 @@ public class UserEntityController implements Serializable {
         userEntityPropertyDAO.updateValue(userEntityProperty, value);
       }
     }
-    return userEntityProperty;
+  }
+
+  public void setUserIdentifierProperty(String identifier, String key, String value) {
+    UserIdentifierProperty userIdentifierProperty = getUserIdentifierPropertyByKey(identifier, key);
+    if (userIdentifierProperty == null) {
+      if (StringUtils.isNotEmpty(value)) {
+        userIdentifierPropertyDAO.create(identifier, key, value);
+      }
+    }
+    else {
+      if (StringUtils.isEmpty(value)) {
+        userIdentifierPropertyDAO.delete(userIdentifierProperty);
+      }
+      else {
+        userIdentifierPropertyDAO.updateValue(userIdentifierProperty, value);
+      }
+    }
   }
 
   public UserEntity findUserEntityByUser(User user) {

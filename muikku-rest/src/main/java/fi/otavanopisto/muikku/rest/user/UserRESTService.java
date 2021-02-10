@@ -41,7 +41,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -72,7 +71,7 @@ import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.rest.model.StudentAddress;
 import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
+import fi.otavanopisto.muikku.rest.model.UserWhoAmIInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -248,7 +247,6 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
@@ -344,18 +342,6 @@ public class UserRESTService extends AbstractRESTService {
       }
     } 
     
-    if (Boolean.TRUE.equals(includeHidden)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-        if (userEntityId == null) {
-          return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      }
-    }
-    
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
        
@@ -397,7 +383,7 @@ public class UserRESTService extends AbstractRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -457,6 +443,7 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("lastName"),
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"), 
+            (String) o.get("studyProgrammeIdentifier"),
             hasImage,
             (String) o.get("nationality"), 
             (String) o.get("language"), 
@@ -466,6 +453,7 @@ public class UserRESTService extends AbstractRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
+            userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
@@ -490,7 +478,7 @@ public class UserRESTService extends AbstractRESTService {
     }
     return date;
   }
-
+  
   @GET
   @Path("/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
@@ -558,6 +546,7 @@ public class UserRESTService extends AbstractRESTService {
         user.getLastName(),
         user.getNickName(),
         user.getStudyProgrammeName(),
+        user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
         false, 
         user.getNationality(), 
         user.getLanguage(), 
@@ -567,6 +556,7 @@ public class UserRESTService extends AbstractRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
+        userEntity == null ? null : userEntity.getLastLogin(),
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
@@ -730,10 +720,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByUserEntityDefaults(studentEntity);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_PHONE_NUMBERS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden())) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -773,10 +766,13 @@ public class UserRESTService extends AbstractRESTService {
     if (studentEntity == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
     }
-    
+    User student = userController.findUserByIdentifier(studentIdentifier);
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_EMAILS)) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      if (Boolean.TRUE.equals(student.getHidden())) {
+        return Response.status(Status.NO_CONTENT).build();
       }
     }
     
@@ -1341,7 +1337,8 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
         
     if (response.ok()) {
-      UserEntity userEntity = findCreatedUserEntity(response.getEntity().getIdentifier());
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(response.getEntity().getIdentifier());
+      UserEntity userEntity = findCreatedUserEntity(identifier);
       if (userEntity != null) {
 
         // Mail about credential creation
@@ -1413,14 +1410,15 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (!StringUtils.equals(id, payload.getIdentifier()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
-    // User creation
+    // User update
     
-    String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(dataSource, payload);
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(id);
+    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(identifier.getDataSource(), payload);
         
     return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
@@ -1434,12 +1432,12 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the student
    *  lastName: required; the last name of the student
    *  email: required; the email address of the student
-   *  studyProgrammeIdentifier: required; student's study programme (e.g. STUDYPROGRAMME-42)
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. PYRAMUS-STUDYPROGRAMME-42)
    *  gender: optional; student gender (MALE|FEMALE|OTHER)
    *  ssn: optional; student social security number
    * 
    * Output:
-   * {identifier: identifier of the created student (e.g. STUDENT-123)
+   * {identifier: identifier of the created student (e.g. PYRAMUS-STUDENT-123)
    *  firstName: the first name of the student
    *  lastName: the last name of the student
    *  email: the email address of the student
@@ -1467,7 +1465,8 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StudentPayload> response = userController.createStudent(dataSource, payload);
         
     if (response.ok()) {
-      UserEntity userEntity = findCreatedUserEntity(response.getEntity().getIdentifier());
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(response.getEntity().getIdentifier());
+      UserEntity userEntity = findCreatedUserEntity(identifier);
       if (userEntity != null) {
 
         // Mail about credential creation
@@ -1519,12 +1518,12 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the student
    *  lastName: required; the last name of the student
    *  email: required; the email address of the student
-   *  studyProgrammeIdentifier: required; student's study programme (e.g. STUDYPROGRAMME-42)
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. PYRAMUS-STUDYPROGRAMME-42)
    *  gender: optional; student gender (MALE|FEMALE|OTHER)
    *  ssn: optional; student social security number
    * 
    * Output:
-   * {identifier: identifier of the created student (e.g. STUDENT-123)
+   * {identifier: identifier of the created student (e.g. PYRAMUS-STUDENT-123)
    *  firstName: the first name of the student
    *  lastName: the last name of the student
    *  email: the email address of the student
@@ -1536,20 +1535,21 @@ public class UserRESTService extends AbstractRESTService {
    * 409 if the email address or (optional) SSN is already in use; response contains a localized error message 
    */
   @PUT
-  @Path("/students/basicInfo/{ID}")
-  @RESTPermit(MuikkuPermissions.UPDATE_STAFF_MEMBER)
+  @Path("/students/{ID}/basicInfo")
+  @RESTPermit(MuikkuPermissions.UPDATE_STUDENT)
   public Response updateStudent(@PathParam("ID") String id, StudentPayload payload) {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getStudyProgrammeIdentifier())) {
+    if (!StringUtils.equals(id,  payload.getIdentifier()) ||
+        StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getStudyProgrammeIdentifier())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
     // Student update
     
-    String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<StudentPayload> response = userController.updateStudent(dataSource, payload);
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(id);
+    BridgeResponse<StudentPayload> response = userController.updateStudent(identifier.getDataSource(), payload);
         
     return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
@@ -1592,60 +1592,6 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/users/{ID}/basicinfo")
-  @RESTPermitUnimplemented
-  public Response findUserBasicInfo(@Context Request request, @PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    UserEntity userEntity;
-    
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
-    if (userIdentifier == null) {
-      if (!StringUtils.isNumeric(id)) {
-        return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid user id %s", id)).build();
-      }
-      
-      userEntity = userEntityController.findUserEntityById(NumberUtils.createLong(id));
-      userIdentifier = userEntity.defaultSchoolDataIdentifier();
-    } else {
-      userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    }
-
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
-
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByIdentifier(userIdentifier);
-      if (user == null) {
-        return Response.status(Response.Status.NOT_FOUND).build();
-      }
-
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
-          .cacheControl(cacheControl)
-          .tag(tag)
-          .build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-
-  @GET
   @Path("/whoami")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findWhoAmI(@Context Request request) {
@@ -1677,7 +1623,7 @@ public class UserRESTService extends AbstractRESTService {
 
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
     return Response
-        .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
+        .ok(new UserWhoAmIInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
@@ -1793,7 +1739,7 @@ public class UserRESTService extends AbstractRESTService {
           if (organizationEntity != null) {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
-          
+          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             new Long((Integer) o.get("userEntityId")),
@@ -1802,7 +1748,8 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype")));
+            (String) o.get("archetype"),
+            hasImage));
         }
       }
     }
@@ -1877,20 +1824,20 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   private fi.otavanopisto.muikku.rest.model.TransferCredit createRestModel(TransferCredit transferCredit) {
-	GradingScale gradingScale = null;
-	SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
-	if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-	  gradingScale = gradingController.findGradingScale(identifier); 
-	}
-
-	GradingScaleItem grade = null;
-	if (gradingScale != null) {
-	  identifier = transferCredit.getGradeIdentifier();
-	  if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
-	    grade = gradingController.findGradingScaleItem(gradingScale, identifier);
-	  }
-	}
-	  
+    GradingScale gradingScale = null;
+    SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
+    if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+      gradingScale = gradingController.findGradingScale(identifier); 
+    }
+  
+    GradingScaleItem grade = null;
+    if (gradingScale != null) {
+      identifier = transferCredit.getGradeIdentifier();
+      if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+        grade = gradingController.findGradingScaleItem(gradingScale, identifier);
+      }
+    }
+    
     return new fi.otavanopisto.muikku.rest.model.TransferCredit(
         toId(transferCredit.getIdentifier()), 
         toId(transferCredit.getStudentIdentifier()), 
@@ -1933,7 +1880,7 @@ public class UserRESTService extends AbstractRESTService {
   private List<fi.otavanopisto.muikku.rest.model.StudyProgramme> createRestModel(StudyProgramme[] entities) {
     List<fi.otavanopisto.muikku.rest.model.StudyProgramme> result = new ArrayList<>();
     for (StudyProgramme entity : entities) {
-      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(entity.getIdentifier(), entity.getName()));
+      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(toId(entity.getIdentifier()), entity.getName()));
     }
     return result;
   }
@@ -2011,11 +1958,11 @@ public class UserRESTService extends AbstractRESTService {
     }
   }
   
-  private UserEntity findCreatedUserEntity(String identifier) {
+  private UserEntity findCreatedUserEntity(SchoolDataIdentifier identifier) {
     UserEntity userEntity = null;
     long timeoutTime = System.currentTimeMillis() + 30000;    
     while (userEntity == null) {
-      userEntity = createdUserEntityFinder.findCreatedUserEntity(sessionController.getLoggedUserSchoolDataSource(), identifier);
+      userEntity = createdUserEntityFinder.findCreatedUserEntity(identifier);
       if (System.currentTimeMillis() > timeoutTime) {
         logger.severe(String.format("Timeout waiting for created UserEntity for identifier %s", identifier));
         return null;

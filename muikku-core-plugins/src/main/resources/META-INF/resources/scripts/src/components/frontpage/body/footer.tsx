@@ -2,6 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
 import '~/sass/elements/footer.scss';
+import '~/sass/elements/wcag.scss';
 
 
 interface FrontpageFooterProps {
@@ -34,7 +35,12 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
             <span>info@otavia.fi</span>
           </p>
           <p className="footer__subitem footer__subitem--privacy-policy">
-            <a href="https://otavia.fi/opiskelija-ja-opintotietorekisterin-tietosuojaseloste/" target="_blank" className="link link--privacy-policy">{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}</a>
+            <a href="https://otavia.fi/opiskelija-ja-opintotietorekisterin-tietosuojaseloste/" target="_blank" className="link link--privacy-policy">
+              <span className="visually-hidden">Otavia </span>{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}
+            </a>
+          </p>
+          <p className="footer__subitem footer__subitem--accessibility-statement">
+            <a href="https://docs.google.com/document/d/1EXS3TroGTNAq9N8bV1pK6W2byKntZpHudBHH3NBGgXY/edit?usp=sharing" target="_blank" className="link link--accessibility-statement">{this.props.i18n.text.get('plugin.footer.accesibilityStatement.text')}</a>
           </p>
         </div>
         <div className="footer__item footer__item--logos">
@@ -44,7 +50,9 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
       </div>
       <div className="footer__container--plagscan">
         <div className="footer__item footer__item--plagscan">
-          <a href="https://www.plagscan.com" className="link link--plagscan-logo" target="_blank"><img src="/gfx/plagscan-logo-white.png" alt="" title=""/></a> <span className="footer__item--plagscan-text">{this.props.i18n.text.get('plugin.footer.plagscan.text')}</span> <a href="https://otavia.fi/plagscan_tietosuojaseloste/" target="_blank" className="link link--plagscan-privacy-policy">({this.props.i18n.text.get('plugin.footer.plagScanPrivacyPolicy.label')}).</a>
+          <a href="https://www.plagscan.com" className="link link--plagscan-logo" target="_blank"><img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo"/></a>
+          <span className="footer__item--plagscan-text">{this.props.i18n.text.get('plugin.footer.plagscan.text')}</span>
+          <a href="https://otavia.fi/plagscan_tietosuojaseloste/" target="_blank" className="link link--plagscan-privacy-policy">(<span className="visually-hidden">Plagscan </span>{this.props.i18n.text.get('plugin.footer.plagScanPrivacyPolicy.label')}).</a>
         </div>
       </div>
     </footer>

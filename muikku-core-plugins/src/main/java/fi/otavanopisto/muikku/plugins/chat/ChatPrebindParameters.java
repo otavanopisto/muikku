@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
 public class ChatPrebindParameters {
-  public ChatPrebindParameters() {
-    super();
-  }
   
   public boolean isBound() {
     return bound;
@@ -45,6 +42,15 @@ public class ChatPrebindParameters {
     this.rid = rid;
   }
 
+  public String getHostname() {
+    return hostname;
+  }
+
+  public void setHostname(String hostname) {
+    this.hostname = hostname;
+  }
+
+  private String hostname;
   private boolean bound;
   private long bindEpochMilli;
   private String jid;

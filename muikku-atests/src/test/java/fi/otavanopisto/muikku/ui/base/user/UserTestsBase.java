@@ -82,7 +82,7 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       waitAndClick(".button-pill--profile");
-      waitForPresentAndVisible(".dropdown__container .icon-user + span");
+      waitForVisible(".dropdown__container .icon-user + span");
       assertVisible(".dropdown__container .icon-user + span");
       assertVisible(".dropdown__container .icon-question + span");
       assertVisible(".dropdown__container .icon-support+ span");
@@ -105,82 +105,31 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/profile", false);
-      waitForPresentAndVisible(".profile-element__title");
+      waitForVisible(".profile-element__title");
       assertTextIgnoreCase(".profile-element__title", "admin user");
-      waitForPresentAndVisible(".application-panel__body .application-panel__content .application-panel__main-container .profile-element .profile-element__item .profile-element__data");
-      assertTextIgnoreCase(".application-panel__body .application-panel__content .application-panel__main-container .profile-element .profile-element__item .profile-element__data", "admin@example.com");
+      waitForVisible(".profile-element__item .profile-element__data");
+      assertTextIgnoreCase(".profile-element__item .profile-element__data", "admin@example.com");
       
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(1) > label", "Puhelinnumero");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(1) > input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profilePhoneNumber']", "Puhelinnumero");
+      assertVisible(".application-panel__main-container .profile-element__item input#profilePhoneNumber");
 
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(2) > label", "Loma alkaa");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(2) .react-datepicker__input-container input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profileVacationStart']", "Loma alkaa");
+      assertVisible(".application-panel__main-container .profile-element__item input#profileVacationStart");
       
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(3) > label", "Loma loppuu");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profileVacationEnd']", "Loma loppuu");
+      assertVisible(".application-panel__main-container .profile-element__item input#profileVacationEnd");
       
-      assertTextIgnoreCase("form .button--primary-function-save", "Tallenna");
-      assertVisible("form .button--primary-function-save");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='chatVisibility']", "Chatin näkyvyys");
+      assertVisible(".application-panel__main-container .profile-element__item select#chatVisibility");
+
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='chatNickname']", "Chatin nimimerkki");
+      assertVisible(".application-panel__main-container .profile-element__item input#chatNickname");
+      
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item .button--primary-function-save", "Tallenna");
+      assertVisible(".application-panel__main-container .profile-element__item .button--primary-function-save");
     }finally {
       mockBuilder.wiremockReset();
     }
   }
-  
-  @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
-  public void teacherInformationSetAndVisibleTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();   
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 6).description("test course for testing").buildCourse();
-    try {
-      mockBuilder
-        .addStaffMember(admin)
-        .mockLogin(admin)
-        .addCourse(course1)
-        .addStudent(student)
-        .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(2l, course1.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      mockBuilder
-      .addCourseStudent(workspace.getId(), mcs)
-      .addCourseStaffMember(course1.getId(), courseStaffMember)
-      .build();
-      navigate("/profile", false);
-      
-      waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(1) > input", "121212");    
-      waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(2) .react-datepicker__input-container input", "19.04.2018");
-      waitAndClick(".profile-element__title");
-      waitAndClick("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
-      waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input", "19.04.2030");
-      waitAndClick(".application-panel__header-title");
-      waitForNotVisible(".react-datepicker-popper");
-      sleep(300);
-      waitAndClick("form a.button--primary-function-save");
-      waitAndClick("form a.button--primary-function-save");
-      waitForPresentAndVisible(".notification-queue__item--success");
-      navigate("/", false);
-      logout();
-      mockBuilder.mockLogin(student);
-      login();
-      selectFinnishLocale();
-      navigate("/workspace/" + workspace.getUrlName(), false);
-      waitForPresentAndVisible(".panel--workspace-teachers .item-list__user-phone");
-      assertTextIgnoreCase(".panel--workspace-teachers .item-list__user-phone", "121212");
-      waitForPresentAndVisible(".panel--workspace-teachers .item-list__user-vacation-period");
-      assertText(".panel--workspace-teachers .item-list__user-vacation-period", "Poissa 19.04.2018–19.04.2030"); 
-    }finally {
-      mockBuilder.wiremockReset();
-    }
-  }
+
 }

@@ -13,6 +13,7 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   disabled?: boolean,
   as?: string,
   href?: string,
+  title? : string,
   to?: string,
   className?: string,
   openInNewTab?: string,
@@ -38,6 +39,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
 
     this.state = {
       active: false,
@@ -123,6 +125,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onTouchEnd(e);
     }
   }
+  onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "enter") {
+      this.onClick(e as any);
+    }
+  }
   render(){
     if (this.state.redirect){
       return <Redirect push to={this.props.to}/>
@@ -137,8 +144,13 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["openInNewTab"];
     delete elementProps["scrollPadding"];
     delete elementProps["disableScroll"];
+    delete elementProps["as"];
 
-    return <Element ref="element" {...elementProps}
+    if (Element !== "a") {
+      elementProps.tabIndex = elementProps.tabIndex || 1;
+    }
+
+    return <Element ref="element" {...elementProps} onKeyDown={this.onKeyDown}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>
   }

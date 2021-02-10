@@ -1,13 +1,16 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+
 public class WorkspaceUserRestModel {
 
   public WorkspaceUserRestModel() {
   }
 
-  public WorkspaceUserRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String lastName, Boolean hasImage) {
+  public WorkspaceUserRestModel(Long workspaceUserEntityId, Long userEntityId, SchoolDataIdentifier userIdentifier, String firstName, String lastName, Boolean hasImage) {
     this.workspaceUserEntityId = workspaceUserEntityId;
     this.userEntityId = userEntityId;
+    this.userIdentifier = userIdentifier.toId();
     this.firstName = firstName;
     this.lastName = lastName;
     this.hasImage = hasImage;
@@ -53,11 +56,18 @@ public class WorkspaceUserRestModel {
     this.hasImage = hasImage;
   }
 
+  public String getUserIdentifier() {
+    return userIdentifier;
+  }
+
+  public void setUserIdentifier(String userIdentifier) {
+    this.userIdentifier = userIdentifier;
+  }
 
   private Long workspaceUserEntityId;
   private Long userEntityId;
+  private String userIdentifier;
   private String firstName;
   private String lastName;
   private Boolean hasImage;
-
 }

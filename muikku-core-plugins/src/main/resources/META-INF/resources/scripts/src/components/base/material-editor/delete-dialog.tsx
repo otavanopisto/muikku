@@ -81,8 +81,6 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
       )
     }
 
-    console.log(this.props.children);
-
     return <Dialog modifier="evaluation-cancel-dialog"
       title={this.props.i18n.text.get(this.props.isSection ?
         "plugin.workspace.materialsManagement.confirmSectionDelete.title" :

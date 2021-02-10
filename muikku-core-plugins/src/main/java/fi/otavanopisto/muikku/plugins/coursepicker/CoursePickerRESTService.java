@@ -41,14 +41,12 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
-import fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -75,6 +73,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -477,9 +476,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
 
-    Long workspaceStudentRoleId = getWorkspaceStudentRoleId();
-    
-    WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityById(workspaceStudentRoleId);
+    WorkspaceRoleEntity workspaceRole = roleController.getWorkspaceStudentRole();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
     
@@ -584,16 +581,6 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private Long getWorkspaceStudentRoleId() {
-    List<WorkspaceRoleEntity> workspaceStudentRoles = roleController.listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype.STUDENT);
-    if (workspaceStudentRoles.size() == 1) {
-      return workspaceStudentRoles.get(0).getId();
-    } else {
-      // TODO: How to choose correct workspace student role?
-      throw new RuntimeException("Multiple workspace student roles found.");
-    }
-  }
-  
   private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, boolean canSignup, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
@@ -635,5 +622,5 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
   }
-  
+
 }

@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.137-SNAPSHOT</version>
+    <version>1.1.148-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -207,27 +207,6 @@
       <artifactId>rest</artifactId>
     </dependency>
 
-    <!-- Coops -->
-
-    <dependency>
-      <groupId>fi.foyt.coops</groupId>
-      <artifactId>coops-spec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.foyt.coops</groupId>
-      <artifactId>coops-ws-spec</artifactId>
-    </dependency>
-
-    <!-- Google Diff Match Patch -->
-
-    <dependency>
-      <groupId>com.sksamuel.diff</groupId>
-      <artifactId>diff</artifactId>
-      <version>${google-diff-match-patch.version}</version>
-    </dependency>
-
-
     <dependency>
       <groupId>org.jboss.ejb3</groupId>
       <artifactId>jboss-ejb3-ext-api</artifactId>
@@ -350,7 +329,7 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.6</version>
+        <version>1.11.0</version>
         <configuration>
           <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
           <environmentVariables>
@@ -366,7 +345,7 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <nodeVersion>v8.4.0</nodeVersion>
+              <nodeVersion>v14.15.4</nodeVersion>
             </configuration>
           </execution>
           <execution>

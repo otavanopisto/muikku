@@ -7,13 +7,15 @@ interface SelectableItem {
   onEnter: ()=>any,
   isSelected: boolean,
   checkboxClassName?: string,
+  checkboxId?: string,
   key: any,
   contents: (checkbox: React.ReactElement<any>)=>any,
   notSelectable?: boolean,
   notSelectableModifier?: string,
   notSelectableClassName?: string,
   as?: any,
-  modifiers?: string | Array<string>
+  modifiers?: string | Array<string>,
+  wcagLabel?: string,
 }
 
 interface SelectableListProps {
@@ -83,7 +85,7 @@ export default class SelectableList extends React.Component<SelectableListProps,
         this.setState({
           touchMode: true
         });
-      }, 600);
+      }, 600) as any;
     }
     this.cancelSelection = item.notSelectable;
     this.initialXPos = e.touches[0].pageX;
@@ -174,13 +176,13 @@ export default class SelectableList extends React.Component<SelectableListProps,
           givenElementProps.modifiers = modifiers;
         }
 
-        return <GivenElement key={child.key}
+        return <GivenElement aria-label={child.wcagLabel} key={child.key}
         className={`${child.className || ""} ${child.isSelected ? "selected" : ""} ${child.notSelectable && child.notSelectableClassName ? child.notSelectableClassName : ""}`}
         {...givenElementProps}
         onTouchStart={this.onTouchStartItem.bind(this, child)} onTouchEnd={this.onTouchEndItem.bind(this, child)}
         onTouchMove={this.onTouchMoveItem.bind(this, child)}
         onClick={this.onItemClick.bind(this, child)} onContextMenu={this.onContextMenu}>
-          {child.contents(child.notSelectable ? null : <input type="checkbox" className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
+          {child.contents(child.notSelectable ? null : <input type="checkbox" id={child.checkboxId} className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
         </GivenElement>
       })}
       {this.props.extra}

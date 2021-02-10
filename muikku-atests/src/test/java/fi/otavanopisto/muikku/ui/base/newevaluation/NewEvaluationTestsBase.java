@@ -63,7 +63,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
         "Test", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
         "EVALUATED");
       
       try {
@@ -73,11 +73,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
       selectFinnishLocale();
-      waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+      waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
       assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
       waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
       waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-      waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+      waitForVisible(".material-page__field-answer-synchronizer--saved");
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -172,7 +172,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
         "Test exercise", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
         "EVALUATED");
       try{        
         logout();
@@ -181,11 +181,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
@@ -204,7 +204,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
-        waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
+        waitForVisible(".assignment-wrapper .muikku-text-field");
         waitUntilContentChanged(".assignment-wrapper .muikku-text-field", "");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
@@ -219,8 +219,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
+        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
+        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -291,19 +291,19 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         
         waitAndClick(".icon-sort-amount-desc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick(".icon-sort-amount-asc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
 
         waitAndClick(".icon-sort-alpha-desc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick(".icon-sort-alpha-asc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         assertTextIgnoreCase(".evaluation-card .evaluation-card-title .evaluation-card-student:nth-child(1)", "master, apprentice");
         } finally {
           deleteWorkspace(workspace.getId());
@@ -354,7 +354,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
         "Test exercise", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
         "EVALUATED");
       try{        
         logout();
@@ -363,11 +363,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
@@ -386,7 +386,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
-        waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
+        waitForVisible(".assignment-wrapper .muikku-text-field");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
@@ -400,8 +400,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForPresentAndVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
+        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
+        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         
         logout();
@@ -410,7 +410,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__assignment-assessment");
         assertText(".material-page__assignment-assessment .material-page__assignment-assessment-literal-data>p", "Test evaluation.");
-        waitForPresentAndVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
+        waitForVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
         assertText(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data", "Excellent");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -488,18 +488,18 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent("div[data-user-entity-id=\"1\"]");
         waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-important-button");
         
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick(".icon-sort-alpha-desc");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        waitUntilTextRemovedFromElement(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "student, anotha");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
         
         waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-unimportant-button");
         waitAndClick(".icon-sort-alpha-asc");
-        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");        
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");        
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
       } finally {
           deleteWorkspace(workspace.getId());
@@ -548,7 +548,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
         "Test exercise", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
         "EVALUATED");
       try{        
         logout();
@@ -557,11 +557,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -598,7 +598,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         // TODO Never goes invisible, waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer"); does not work either
         //waitForNotVisible("#workspaceSupplementationEditorContainer");
         
-        waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
+        waitForVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
         assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Admin User pyysi täydennystä");
         
         // TODO Click goes to supplementation request CKEditor which should be hidden at this point

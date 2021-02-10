@@ -45,11 +45,11 @@ let pluginsLoaded:any = {};
 interface CKEditorProps {
   configuration?: any,
   ancestorHeight? : number;
-  ancestorSpacings?: number;
   onChange(arg: string):any,
   onDrop?():any,
   children?: string,
   autofocus?: boolean,
+  editorTitle?: string,
 }
 
 interface CKEditorState {
@@ -59,11 +59,11 @@ interface CKEditorState {
 const extraConfig = (props: CKEditorProps) => ({
   height: 0,
   startupFocus: props.autofocus,
+  title: props.editorTitle ? props.editorTitle : "",
   allowedContent: true,
   entities_latin: false,
   entities_greek: false,
   entities: false,
-  basicEntities: false,
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'links', items: [ 'Link' ] },
@@ -123,7 +123,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       this.timeoutProps = props;
       this.timeout = setTimeout(()=>{
         this.setupCKEditor(this.timeoutProps);
-      }, 10);
+      }, 10) as any;
       return;
     }
 
@@ -152,7 +152,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         document.head.appendChild(newBase);
       }
     }
-
     getCKEDITOR().replace(this.name, configObj);
     getCKEDITOR().instances[this.name].on('change', () => {
       this.onDataChange();
@@ -160,9 +159,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].on('key', ()=>{
       this.cancelChangeTrigger = false;
     })
-
-
-    const height = (this.refs.ckeditor as HTMLTextAreaElement).getBoundingClientRect().height;
     getCKEDITOR().instances[this.name].on('instanceReady', (ev: any)=>{
       ev.editor.document.on('drop', () => {
         this.props.onDrop && this.props.onDrop();
@@ -182,7 +178,19 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       // Instance container is "unstable" and changes according to the content it seems, so for example
       // material editor is given the ancestorHeight - the dialog height, which is stable.
 
-      const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height;
+      // We need to get .cke_top and .cke_bottom elements height, which are the editor's toolbar and footer, so we can retract those from overall height
+      // childNodes[1] is div.cke_inner and next childNodes[0] is span.cke_top and childNodes[2] is span.cke_bottom
+      // This should be fairly stable way to get the height of these element as the DOM seems to be steady already
+      // We rely on this when we use editor parent container's height as a starting point for cke height calculations
+      const ckeTopHeight = instance.container.$.querySelector(".cke_inner").childNodes[0].getBoundingClientRect().height;
+      const ckeBottomHeight = instance.container.$.querySelector(".cke_inner").childNodes[2].getBoundingClientRect().height;
+
+      // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also
+      const ckeBorder = 4;
+
+      // We need to retract the ckeTop na dckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
+      // cke_contents element and it will cause the editor to overflow the screen in mobile views.
+      const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height - ckeTopHeight - ckeBottomHeight - ckeBorder;
 
       // CKE content-element id
 

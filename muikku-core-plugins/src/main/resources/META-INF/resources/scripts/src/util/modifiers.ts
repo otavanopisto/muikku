@@ -268,6 +268,8 @@ const translations:any = {
   "scrolling": "scrolling",
   "frameborder": "frameBorder",
   "allowfullscreen": "allowFullScreen",
+  "allow": "allow",
+  "loading": "loading",
 
   // Table specefic
   "cellspacing": "cellSpacing", // Deprecated, Table
@@ -375,7 +377,6 @@ export function guidGenerator() {
 }
 
 export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scrollPadding?: number, disableAnimate?: boolean, disableAnchorSet?: boolean) {
-  console.log("CALLED SCROLL TO", anchor);
   let actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
   try {
     if (!$(actualAnchor).size()){
@@ -398,8 +399,6 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
     }
     return;
   }
-
-  console.log("scrolling is being sucessful");
 
   let topOffset = scrollPadding || 90;
   let scrollTop = $(actualAnchor).offset().top - topOffset;

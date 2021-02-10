@@ -10,12 +10,13 @@ import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelF
   ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
   RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
   restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType} from '~/actions/main-function/messages';
+  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType, loadMessageThreads, LoadMessageThreadsTriggerType} from '~/actions/main-function/messages';
 import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '../../dialogs/label-update';
 import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
+import * as queryString from 'query-string';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -28,7 +29,7 @@ import { ButtonPill } from '~/components/general/button';
 
 interface CommunicatorToolbarProps {
   messages: MessagesType,
-  i18n: i18nType,
+  i18n: i18nType
 
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType,
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType,
@@ -40,33 +41,60 @@ interface CommunicatorToolbarProps {
   removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType,
   restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType,
   restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType
+  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType,
+  loadMessageThreads: LoadMessageThreadsTriggerType,
 }
 
 interface CommunicatorToolbarState {
   labelFilter: string,
-  isCurrentRead: boolean
+  isCurrentRead: boolean,
+  searchquery: any
 }
 
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
+  private searchTimer: NodeJS.Timer;
+  private focused: boolean;
   constructor(props: CommunicatorToolbarProps){
     super(props);
 
+    this.setSearchQuery = this.setSearchQuery.bind(this);
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
+    this.resetSearchQuery = this.resetSearchQuery.bind(this);
     this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
+    this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
+    this.onInputFocus = this.onInputFocus.bind(this);
+    this.onInputBlur = this.onInputBlur.bind(this);
+
+    this.focused = false;
 
     this.state = {
       labelFilter: "",
-      isCurrentRead: true
+      isCurrentRead: true,
+      searchquery: this.props.messages.selectedThreads || ""
     }
   }
+
+  setSearchQuery(e: React.ChangeEvent<HTMLInputElement>){
+    clearTimeout(this.searchTimer);
+
+    this.setState({
+      searchquery: e.target.value
+    });
+
+    clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
+  }
+  resetSearchQuery(){
+    this.updateSearchWithQuery("");
+  }
+  updateSearchWithQuery(query: string){
+    this.props.loadMessageThreads(null, query);
+  }
   loadMessage(messageId: number){
-    //TODO this is a retarded way to do things if we ever update to a SPA
-    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
       history.replaceState('', '', location.hash.split("/")[0] + "/" + messageId);
       window.dispatchEvent(new HashChangeEvent("hashchange"));
@@ -84,8 +112,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
   }
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
-    //TODO this is a retarded way to do things if we ever update to a SPA
-    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
       let canGoBack = (!document.referrer || document.referrer.indexOf(window.location.host) !== -1) && (history.length);
       if (canGoBack && location.hash.indexOf("?f") === -1){
@@ -109,6 +135,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         isCurrentRead: true
       });
     }
+    if (!this.focused && (nextProps.messages.query || "")  !== this.state.searchquery) {
+      this.setState({
+        searchquery: nextProps.messages.query || ""
+      });
+    }
   }
   toggleCurrentMessageReadStatus(){
     this.props.toggleMessageThreadReadStatus(this.props.messages.currentThread.messages[0].communicatorMessageId, !this.state.isCurrentRead);
@@ -116,6 +147,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       isCurrentRead: !this.state.isCurrentRead
     });
   }
+  onInputFocus() {
+    this.focused = true;
+  }
+
+  onInputBlur() {
+    this.focused = false;
+  }
+
   render(){
     let currentLocation = this.props.messages.navigation.find((item)=>{
       return (item.location === this.props.messages.location);
@@ -149,14 +188,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                     <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                     type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
                   </div>,
-                  <Link className="link link--full link--new" onClick={this.onCreateNewLabel}>
+                  <Link tabIndex={0} className="link link--full link--new" onClick={this.onCreateNewLabel}>
                     {this.props.i18n.text.get("plugin.communicator.label.create")}
                   </Link>
                 ].concat(this.props.messages.navigation.filter((item)=>{
                   return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
                 }).map((label)=>{
                   let isSelected = this.props.messages.currentThread.labels.find(l=>l.labelId === label.id);
-                  return (<Link className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""}`}
+                  return (<Link tabIndex={0} className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""}`}
                     onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                     <span className="link__icon icon-tag" style={{color: label.color}}></span>
                     <span className="link__text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
@@ -167,15 +206,16 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               </Dropdown>
             {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.state.isCurrentRead ? "envelope-open" : "envelope-alt"}`}
               onClick={this.props.messages.toolbarLock ? null : this.toggleCurrentMessageReadStatus}/> : null}
+
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
             <ButtonPill buttonModifiers="next-page" icon="arrow-left"
               disabled={this.props.messages.currentThread.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
 
-             <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
-               disabled={this.props.messages.currentThread.olderThreadId === null}
-               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
+            <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
+             disabled={this.props.messages.currentThread.olderThreadId === null}
+             onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
           </ApplicationPanelToolbarActionsAside>
         </ApplicationPanelToolbar>
       )
@@ -218,7 +258,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         }).map((label)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
-          return (<Link className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+          return (<Link tabIndex={0} className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessageThreads.bind(null, label) : this.props.removeLabelFromSelectedMessageThreads.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="link__text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
@@ -231,6 +271,12 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "envelope-open" : "envelope-alt"}`}
         disabled={this.props.messages.selectedThreads.length < 1}
         onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
+
+    <div className="form-element form-element--coursepicker-toolbar">
+        <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')} value={this.state.searchquery} onChange={this.setSearchQuery}/>
+      <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
+    </div>
+
     </ApplicationPanelToolbar>
   }
 }
@@ -246,7 +292,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
     removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads, toggleMessageThreadReadStatus,
     toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
-    removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads}, dispatch);
+    removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads,
+    loadMessageThreads}, dispatch);
 };
 
 export default connect(

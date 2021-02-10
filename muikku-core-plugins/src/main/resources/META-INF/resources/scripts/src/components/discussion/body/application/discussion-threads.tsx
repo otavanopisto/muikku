@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { colorIntToHex, getUserImageUrl, getName } from '~/util/modifiers';
 import equals = require( "deep-equal" );
-import { i18nType } from '~/reducers/base/i18n';
+import i18n, { i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
@@ -72,7 +72,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <object className="avatar-container"
+            avatar = <object role="img" aria-label={this.props.i18n.text.get("plugin.wcag.userAvatar.label")} className="avatar-container"
               data={getUserImageUrl( user )}
               type="image/jpeg">
               <div className={`avatar avatar--category-${userCategory}`}>{user.firstName[0]}</div>

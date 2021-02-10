@@ -5,6 +5,9 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 
+$color-yo-sign-up: #75ce41;
+$color-yo-sign-up-contrast: $color-default;
+
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
 
@@ -70,6 +73,12 @@ $color-workspace-hero-shadow: rgba(0, 0, 0, 0.1);
 // Meta
 $color-meta-workspace-background: $color-default;
 
+// Notifications
+
+$color-notification-type-1: #75ce4a;
+$color-notification-type-2: #b1b1b1;
+$color-notification-type-3: #c43c38;
+
 // Signature
 $color-signature-border: #f2f2f2;
 $color-signature-background: #f8f8f8;
@@ -83,8 +92,8 @@ $color-message-from-workspace-background: #f5f5f5;
 $color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
-$color-grade-passed: #2ed31c;
-$color-grade-failed: #4c4c4c;
+$color-grade-passed: #24c118;
+$color-grade-failed: #de3211;
 $color-task-evaluation: #e2ffe2;
 
 // Wizard
@@ -100,7 +109,8 @@ $color-submitted: #009fe3;
 $color-view-restricted: $color-fatal;
 $color-passed: #24c118;
 $color-failed: #de3211;
-$color-incomplete: #ff6600;
+$color-pending: #009fe3;
+$color-incomplete: #ea7503;
 $color-example: #e2ffe2;
 $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;
@@ -134,6 +144,7 @@ $color-assessment-box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 // General
 $color-default-body: #f5f5f5;
 $color-overlay-background: rgba(0, 0, 0, 0.5);
+$color-executing-background: #fff;
 
 // Notification queue
 $color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
@@ -305,7 +316,6 @@ $color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
 $color-footer-default-background: #454545;
 $color-footer-default-text: $color-default;
 $color-footer-plagscan-background: #2c2c2c;
-
 $color-workspace-footer-default-background: $color-default;
 
 // License
@@ -373,7 +383,7 @@ $color-panel-workspace-signup-background: #ff008d;
 $color-panel-border: #e2e2e2;
 $color-panel-shadow: rgba(0, 0, 0, 0.05);
 
-// Item list
+// item list
 $color-item-list-item-font-color-active: #fff;
 $color-item-list-item-background: #fff;
 $color-item-list-item-background-hover: $color-list-hover-background;
@@ -383,7 +393,7 @@ $color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
 $color-item-list-item-aside-background-active: rgb(98, 174, 193);
 $color-item-list-icon-font-color: #4c4c4c;
 
-// Indicator
+// indicator
 $color-indicator-background: $color-fatal;
 $color-indicator-text: $color-fatal-contrast;
 
@@ -400,6 +410,7 @@ $color-toc-box-border: $color-panel-border-color;
 
 // Application list
 $color-application-list-item-background: #fff;
+$color-application-list-sorter-background: #f8f8f8;
 $color-application-list-item-fade-background: rgba(255, 255, 255, 0);
 $color-application-list-item-background-hover: $color-list-hover-background;
 $color-application-list-item-background-active: $color-list-active-background;
@@ -492,8 +503,19 @@ $color-math-editor-focus-shadow: rgba(81, 203, 238, 1);
 $color-math-editor-forus-border: rgba(81, 203, 238, 1);
 
 $color-math-exercise-toolbar-default-background: #fff;
-$color-math-exercise-toolbar-default-shadow: rgba(0, 0, 0, 0.25);
+$color-math-exercise-toolbar-default-shadow: rgba(0, 0, 0, 0.4);
 $color-math-exercise-toolbar-default-border: #ccc;
+
+$color-math-button-background-hover: #eee;
+$color-math-button-tooltip-background: #29b0c4;
+$color-math-editor-border-selected: #29b0c4;
+$color-math-editor-active-line-background: rgba(0, 0, 0, 0.04);
+$color-math-editor-boxshadow: rgba(0, 0, 0, 0.2);
+
+$color-math-editor-line-variable-color: #29b0c4;
+$color-math-editor-line-storage-color: #0083db;
+$color-math-editor-line-constant-color: #ff9900;
+$color-math-editor-line-keyword-color: #0083db;
 
 // Task fields
 $taskfield-border-color: #5ed2ff;
@@ -509,6 +531,11 @@ $color-environment-navbar-title: $color-default;
 $color-environment-navbar-item-menu-button: $color-default;
 $color-workspace-navbar-background: $color-workspace;
 $color-workspace-edit-mode-navbar-background: #000000;
+
+// scollbar
+
+$color-scrollbar-background: #e0e0e0;
+$color-scrollbar-handle: #afafaf;
 
 // ICON LINKS
 $color-environment-link-icon-color: $color-default;
@@ -585,9 +612,27 @@ $color-category-9: #ff0000;
 $color-category-10: #0cff00;
 $color-cagtegory-11: #000;
 
+// CHAT
+$color-chat-bubble-background: #f95ae7;
+$color-chat-bubble-box-shadow: rgba(0, 0, 0, 0.2);
+$color-chat-controlbox-box-shadow: rgba(0, 0, 0, 0.3);
+$color-chat-user-status-online: #6de164;
+$color-chat-user-status-offline: #cecdcd;
+$color-chat-user-status-away: #fbb470;
+$color-chat-user-status-dnd: #de3211;
+$color-chat-room-description-background: #f8f8f8;
+$color-chat-controlbox-main-color: #f95ae7;
+$color-chat-workspace-room-main-color: #0ebd96;
+$color-chat-other-room-main-color: $color-info;
+$color-chat-private-main-color: #be09ff;
+$color-chat-message-default-background: #ebebeb;
+$color-chat-panel-header-shadow: rgba(0, 0, 0, 0.15);
+$color-chat-message-notification: #ffa500;
+
 @import "colors/frontpage";
 @import "colors/main-function";
 @import "colors/index";
+@import "colors/sub-panel";
 @import "colors/application-dialog";
 @import "colors/message";
 @import "colors/course";

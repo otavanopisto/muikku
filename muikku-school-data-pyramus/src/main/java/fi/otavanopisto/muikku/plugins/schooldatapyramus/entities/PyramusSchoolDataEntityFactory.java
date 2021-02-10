@@ -88,12 +88,13 @@ public class PyramusSchoolDataEntityFactory {
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
     SchoolDataIdentifier organizationIdentifier = identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId());
     return new PyramusUser(
-        identifierMapper.getStaffIdentifier(staffMember.getId()),
+        identifierMapper.getStaffIdentifier(staffMember.getId()).getIdentifier(),
         staffMember.getFirstName(),
         staffMember.getLastName(),
         null,
         null,
         StringUtils.join(staffMember.getFirstName(), " ", staffMember.getLastName()),
+        null,
         null,
         null,
         null,
@@ -126,19 +127,23 @@ public class PyramusSchoolDataEntityFactory {
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
 
     String studyProgrammeName = studyProgramme != null ? studyProgramme.getName() : null;
+    SchoolDataIdentifier studyProgrammeIdentifier = studyProgramme != null
+        ? identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId())
+        : null;
 
     if (studyProgrammeName != null) {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
     
     return new PyramusUser(
-        identifierMapper.getStudentIdentifier(student.getId()),
+        identifierMapper.getStudentIdentifier(student.getId()).getIdentifier(),
         student.getFirstName(),
         student.getLastName(),
         ssn,
         student.getNickname(),
         displayName.toString(),
         studyProgrammeName,
+        studyProgrammeIdentifier,
         nationality,
         language,
         municipality,
@@ -210,7 +215,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId()));
-    SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()));
+    SchoolDataIdentifier userIdentifier = identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId());
     SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()));
     SchoolDataIdentifier roleIdentifier = toIdentifier(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId()));
     
@@ -245,7 +250,7 @@ public class PyramusSchoolDataEntityFactory {
     }
 
     SchoolDataIdentifier identifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId()));
-    SchoolDataIdentifier userIdentifier = toIdentifier(identifierMapper.getStudentIdentifier(courseStudent.getStudentId()));
+    SchoolDataIdentifier userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
     SchoolDataIdentifier workspaceIdentifier = toIdentifier(identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId()));
     SchoolDataIdentifier roleIdentifier = toIdentifier(createCourseStudentRoleEntity().getIdentifier());
     
@@ -285,8 +290,9 @@ public class PyramusSchoolDataEntityFactory {
       modified = course.getCreated();
     }
     
+    /* #5124: Courses no longer have logic related to evaluation fees, only line being studied matters 
     boolean courseFeeApplicable = true;
-    
+
     for (Map.Entry<String, List<String>> typeCodeEntry : educationTypeCodeMap.entrySet()) {
       String educationTypeCode = typeCodeEntry.getKey();
       for (String educationSubtypeCode : typeCodeEntry.getValue()) {
@@ -299,6 +305,8 @@ public class PyramusSchoolDataEntityFactory {
         }
       }
     }
+    */
+    boolean courseFeeApplicable = false;
 
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
     
@@ -358,7 +366,7 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
-        identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
+        identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()).getIdentifier(),
         gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),
         gradingScaleIdentifier == null ? null : gradingScaleIdentifier.getIdentifier(),
         courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
@@ -384,7 +392,7 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessment(identifier.getIdentifier(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
-        identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
+        identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()).getIdentifier(),
         gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),
         gradingScaleIdentifier == null ? null : gradingScaleIdentifier.getIdentifier(),
         courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
@@ -421,7 +429,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     return new PyramusCompositeAssessmentRequest(
       identifierMapper.getWorkspaceStudentIdentifier(assessmentRequest.getCourseStudentId()),
-      assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()),
+      assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()).getIdentifier(),
       assessmentRequest.getFirstName(),
       assessmentRequest.getLastName(),
       assessmentRequest.getStudyProgramme(),
@@ -484,12 +492,12 @@ public class PyramusSchoolDataEntityFactory {
 
   public GroupUser createEntity(StudentGroupStudent studentGroupStudent) {
     return new PyramusGroupUser(identifierMapper.getStudentGroupStudentIdentifier(studentGroupStudent.getId()),
-        identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId()));
+        identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId()).getIdentifier());
   }
 
   public GroupUser createEntity(StudentGroupUser studentGroupUser) {
     return new PyramusGroupUser(identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
-        identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()));
+        identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier());
   }
 
   public List<GroupUser> createEntities(StudentGroupStudent... studentGroupStudents) {
@@ -595,10 +603,10 @@ public class PyramusSchoolDataEntityFactory {
 
   public TransferCredit createEntity(fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit) {
     SchoolDataIdentifier identifier = identifierMapper.getTransferCreditIdentifier(transferCredit.getId());
-    SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(transferCredit.getStudentId())) : null;
+    SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? identifierMapper.getStudentIdentifier(transferCredit.getStudentId()) : null;
     SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
     SchoolDataIdentifier gradingScaleIdentifier = transferCredit.getGradingScaleId() != null ? identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId()) : null;
-    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId())) : null;
+    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? identifierMapper.getStaffIdentifier(transferCredit.getAssessorId()) : null;
     SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
     SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
     SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;
@@ -622,12 +630,12 @@ public class PyramusSchoolDataEntityFactory {
 
   public TransferCredit createLinkedTransferCredit(fi.otavanopisto.pyramus.rest.model.CreditLinkTransferCredit linkedTransferCredit) {
     SchoolDataIdentifier identifier = identifierMapper.getCreditLinkIdentifier(linkedTransferCredit.getId());
-    SchoolDataIdentifier studentIdentifier = linkedTransferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(linkedTransferCredit.getStudentId())) : null;
+    SchoolDataIdentifier studentIdentifier = linkedTransferCredit.getStudentId() != null ? identifierMapper.getStudentIdentifier(linkedTransferCredit.getStudentId()) : null;
     
     fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit = linkedTransferCredit.getCredit();
     SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
     SchoolDataIdentifier gradingScaleIdentifier = transferCredit.getGradingScaleId() != null ? identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId()) : null;
-    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId())) : null;
+    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? identifierMapper.getStaffIdentifier(transferCredit.getAssessorId()) : null;
     SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
     SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
     SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;

@@ -8,8 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource_;
@@ -17,6 +15,8 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifier> {
 

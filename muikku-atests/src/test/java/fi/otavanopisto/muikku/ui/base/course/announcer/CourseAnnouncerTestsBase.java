@@ -46,8 +46,8 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       addTextToCKEditor("Announcer test announcement");
       waitAndClick(".button--dialog-execute");
       
-      waitForPresent(".application-list-document-short-header");
-      assertTextIgnoreCase(".application-list-document-short-header", "Test title");
+      waitForPresent(".application-list__item-content-header");
+      assertTextIgnoreCase(".application-list__item-content-header", "Test title");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -68,31 +68,18 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     .addCourseStaffMember(courseId, courseStaffMember)
     .build();
     try{
+      Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+      updateAnnouncementWorkspace(announcementId, workspace.getId());
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
-      waitAndClick(".button--primary-function");
-      waitForPresent(".cke_contents");
-      waitForPresent(".env-dialog__input--date-picker");
-      click(".env-dialog__input--date-picker");
-      waitForPresent(".react-datepicker-popper");
-      click(".env-dialog__header");
-      waitForNotVisible(".react-datepicker-popper");
-      sendKeys(".env-dialog__form-element-container--title>input", "Test title");
-      addTextToCKEditor("Announcer test announcement");
-      waitAndClick(".button--dialog-execute");
-      
-      waitForPresent(".application-list-document-short-header");
+      waitForPresent(".application-list__item-content-header");
       waitAndClick(".announcement__select-container input");
       waitAndClick(".application-panel__toolbar .button-pill--delete");
+      sleep(1500);
       waitAndClick(".button--standard-ok");
-      
+      assertGoesAway(".application-list__item.announcement", 10);
       reloadCurrentPage();
-      reloadCurrentPage();
-      
       waitForPresent(".application-list");
-      scrollToEnd();
-
-      
       assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-footer") == false);
     }finally{
       deleteAnnouncements();

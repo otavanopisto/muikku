@@ -17,7 +17,6 @@
   font-family: $button-font-family;
   font-size: $button-mobile-font-size;
   justify-content: center;
-  outline: none;
   overflow: hidden;
   padding: 5px 10px;
   text-decoration: none;
@@ -28,6 +27,12 @@
 
   @include breakpoint($breakpoint-pad) {
     font-size: $button-desktop-font-size;
+  }
+
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-disabled-background;
+    cursor: default;
   }
 }
 
@@ -293,8 +298,6 @@
   }
 }
 
-
-
 .button--frontpage-upper-secondary-school-readmore {
   background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
   color: $color-frontpage-button-upper-secondary-school-readmore-text;
@@ -398,6 +401,32 @@
   width: 100%;
 }
 
+.button--yo-signup {
+  background-color: $color-yo-sign-up;
+  color: $color-yo-sign-up-contrast;
+  height: $button-primary-height;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+    width: auto;
+
+    &:hover,
+    &.hover {
+      background-color: darken($color-yo-sign-up, 10%);
+    }
+
+    &:active,
+    &.active {
+      background-color: darken($color-yo-sign-up, 20%);
+    }
+  }
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
 .button--primary-function {
   display: none;
 
@@ -421,7 +450,6 @@
 }
 
 // Button that appears inside views component
-
 .button--primary-function-content {
   background-color: $color-button-primary-background;
   border: 0;
@@ -440,6 +468,20 @@
   &:active,
   &.active {
     background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
+.button--remove-subject-row {
+  background: $color-fatal;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-fatal, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-fatal, 20%);
   }
 }
 
@@ -1035,17 +1077,38 @@
   }
 }
 
-.button--dialog-execute {
+.button--form-element-next {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  order: 5;
+}
+
+.button--form-element-last {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  order: 4;
+}
+
+
+.button--dialog-execute,
+.button--form-element-execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
-  order: 3;
+  order: 4;
 
   @include breakpoint($breakpoint-desktop) {
-    order: 1;
+    order: 4;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
   }
 }
 
-.button--dialog-clear {
+.button--dialog-clear,
+.button--form-element-clear {
   background-color: $color-button-clear-background;
   color: $color-button-execute-text;
   order: 1;
@@ -1055,10 +1118,17 @@
   }
 }
 
-.button--dialog-cancel {
+.button--dialog-cancel,
+.button--form-element-cancel {
   background-color: $color-button-cancel-background;
   color: $color-button-cancel-text;
-  order: 2;
+  order: 5;
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
 }
 
 .button-social {

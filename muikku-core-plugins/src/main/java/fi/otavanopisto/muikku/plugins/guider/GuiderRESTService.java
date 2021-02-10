@@ -176,7 +176,7 @@ public class GuiderRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
-  @RESTPermit (GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     if (userIdentifier == null) {
@@ -191,6 +191,12 @@ public class GuiderRESTService extends PluginRESTService {
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    
+    if (!sessionController.hasWorkspacePermission(GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY, workspaceEntity)) {
+      if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
@@ -216,7 +222,6 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
@@ -303,7 +308,6 @@ public class GuiderRESTService extends PluginRESTService {
       
       userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
     }
-    
     if (Boolean.TRUE.equals(includeInactiveStudents)) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
         if (userEntityId == null) {
@@ -315,18 +319,6 @@ public class GuiderRESTService extends PluginRESTService {
         }
       }
     } 
-    
-    if (Boolean.TRUE.equals(includeHidden)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_HIDDEN_STUDENTS)) {
-        if (userEntityId == null) {
-          return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      }
-    }
     
     if (userEntityId != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
@@ -377,7 +369,7 @@ public class GuiderRESTService extends PluginRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -413,8 +405,11 @@ public class GuiderRESTService extends PluginRESTService {
             logger.severe(String.format("Student %s in search index not found in Muikku", studentIdentifier));
             continue;
           }
-          String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
-
+          String emailAddress = "";
+          User student = userController.findUserByIdentifier(studentIdentifier);
+          if (!Boolean.TRUE.equals(student.getHidden())) {
+            emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
+          }
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
           Date studyEndDate = getDateResult(o.get("studyEndDate"));
           Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
@@ -437,6 +432,7 @@ public class GuiderRESTService extends PluginRESTService {
             (String) o.get("lastName"),
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"), 
+            (String) o.get("studyProgrammeIdentifier"),
             hasImage,
             (String) o.get("nationality"), 
             (String) o.get("language"), 
@@ -446,6 +442,7 @@ public class GuiderRESTService extends PluginRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
+            userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
@@ -503,7 +500,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
     
-    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
+    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
     Date studyStartDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
     Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
@@ -520,6 +517,7 @@ public class GuiderRESTService extends PluginRESTService {
         user.getLastName(),
         user.getNickName(),
         user.getStudyProgrammeName(),
+        user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(), 
         false, 
         user.getNationality(), 
         user.getLanguage(), 
@@ -529,6 +527,7 @@ public class GuiderRESTService extends PluginRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
+        userEntity == null ? null : userEntity.getLastLogin(),
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),

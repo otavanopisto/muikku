@@ -155,33 +155,6 @@ public class CourseTestsBase extends AbstractUITest {
     }
   }
   
-  @Test
-  public void courseUnpublishTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-      waitForPresent(".application-sub-panel__item--workspace-publicity #unpublish");
-      scrollIntoView(".application-sub-panel__item--workspace-publicity #unpublish");
-      sleep(300);
-      click(".application-sub-panel__item--workspace-publicity #unpublish");
-      scrollIntoView(".button--primary-function-save");
-      sleep(500);
-      waitAndClick(".button--primary-function-save");
-      waitForPresent(".notification-queue__item--success");
-      logout();
-      mocker().clearLoginMock();
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      assertNotPresent(".hero--workspace h1.hero__workspace-title");
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
-
 //  @Test
 //  public void courseProgressWidgetsExistsTest() throws Exception {
 //    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -223,14 +196,14 @@ public class CourseTestsBase extends AbstractUITest {
 //        boolean evaluatedExists = getWebDriver().findElements(By.cssSelector(".materials-progress-evaluated-status")).size() > 0;
 //        assertTrue(evaluatedExists);
 //        waitAndClick(".materials-progress-evaluated-status");
-//        waitForPresentAndVisible(".workspace-progress-element-menu-content.evaluable");
+//        waitForVisible(".workspace-progress-element-menu-content.evaluable");
 //        assertPresent(".workspace-progress-element-menu-content.evaluable");
 //        
 //        waitForPresent(".materials-progress-practice-status");
 //        boolean practiceExists = getWebDriver().findElements(By.cssSelector(".materials-progress-practice-status")).size() > 0;
 //        assertTrue(practiceExists);
 //        waitAndClick(".materials-progress-practice-status");
-//        waitForPresentAndVisible(".workspace-progress-element-menu-content.exercise");
+//        waitForVisible(".workspace-progress-element-menu-content.exercise");
 //        assertPresent(".workspace-progress-element-menu-content.exercise");
 //      } finally {
 //        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
@@ -303,7 +276,7 @@ public class CourseTestsBase extends AbstractUITest {
 //        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
 //        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
 //        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-//        waitForPresentAndVisible(".notification-queue-item-success");
+//        waitForVisible(".notification-queue-item-success");
 //        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
 //
 //        waitForPresent(".materials-progress-evaluated-status");
@@ -322,7 +295,7 @@ public class CourseTestsBase extends AbstractUITest {
 //        assertTextIgnoreCase(".materials-progress-practice-status span", "1/1");
 //        
 //        waitAndClick(".materials-progress-evaluated-status.evaluable span");
-//        waitForPresentAndVisible(".workspace-progress-element-menu-content.evaluable");
+//        waitForVisible(".workspace-progress-element-menu-content.evaluable");
 //        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(2)>span:first-child", "Tehtäviä palautettu");
 //        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(2)>span:last-child", "1");
 //
@@ -333,7 +306,7 @@ public class CourseTestsBase extends AbstractUITest {
 //        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(4)>span:last-child", "1");
 //        
 //        waitAndClick(".materials-progress-practice-status.exercise span");
-//        waitForPresentAndVisible(".workspace-progress-element-menu-content.exercise");
+//        waitForVisible(".workspace-progress-element-menu-content.exercise");
 //        assertTextIgnoreCase("#exerciseMenu>div>div:nth-child(2)>span:first-child", "Tehtäviä tehty");
 //        assertTextIgnoreCase("#exerciseMenu>div>div:nth-child(2)>span:last-child", "1");
 //
@@ -373,12 +346,11 @@ public class CourseTestsBase extends AbstractUITest {
     .build();
     try{
       navigate("/profile", false);
-      waitForPresent(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input");
-      sendKeys(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2010");
+      waitForPresent(".application-panel__main-container .profile-element__item input#profileVacationStart");
+      sendKeys(".application-panel__main-container .profile-element__item input#profileVacationStart", "21.12.2010");
       waitAndClick(".profile-element__title");
-      waitAndClick(".profile-element__title");
-      waitForPresent(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input");
-      sendKeys(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2025");
+      waitForPresent(".application-panel__main-container .profile-element__item input#profileVacationEnd");
+      sendKeys(".application-panel__main-container .profile-element__item input#profileVacationEnd", "21.12.2025");
       waitAndClick(".profile-element__title");
       waitAndClick(".button--primary-function-save");
       sleep(500);

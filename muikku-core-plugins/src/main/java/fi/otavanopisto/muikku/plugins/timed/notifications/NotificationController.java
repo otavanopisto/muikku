@@ -3,14 +3,11 @@ package fi.otavanopisto.muikku.plugins.timed.notifications;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +18,6 @@ import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
@@ -37,13 +33,6 @@ public class NotificationController {
 
   @Inject
   private Logger logger;
-
-  @Any
-  @Inject
-  private Instance<LogProvider> logProviders;
-
-  public static final String COLLECTION_NAME = "studentNotifications";
-  public static final String LOG_PROVIDER = "mongo-provider";
 
   @Inject
   private CommunicatorController communicatorController;
@@ -76,12 +65,6 @@ public class NotificationController {
   }
 
   public void sendNotification(String category, String subject, String content, UserEntity recipient, SchoolDataIdentifier recipientIdentifier, String notificationType) {
-    HashMap<String, Object> map = new HashMap<>();
-    map.put("notificationType", notificationType);
-    map.put("recipient", recipient.getId());
-    map.put("recipientIdentifier", recipientIdentifier.toId());
-    map.put("time", String.valueOf(System.currentTimeMillis()));
-
     UserEntity guidanceCounselor = null;
     SchoolDataIdentifier userIdentifier = recipient.defaultSchoolDataIdentifier();
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
@@ -117,12 +100,6 @@ public class NotificationController {
       }
     }
 
-    LogProvider provider = getProvider(LOG_PROVIDER);
-
-    if (provider != null) {
-      provider.log(COLLECTION_NAME, map);
-    }
-
     if (isDryRun()) {
       String recipientEmail = getRecipientEmail();
       if (recipientEmail == null) {
@@ -150,15 +127,6 @@ public class NotificationController {
       }
       communicatorController.postMessage(recipient, category, subject, content, recipients);
     }
-  }
-
-  private LogProvider getProvider(String name) {
-    for (LogProvider provider : logProviders) {
-      if (provider.getName().equals(name)) {
-        return provider;
-      }
-    }
-    return null;
   }
 
 }

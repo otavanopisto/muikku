@@ -18,19 +18,19 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   buttonAs?: any,
   buttonModifiers?: string | Array<string>,
   className?: string,
+  title? : string,
   disabled?: boolean,
   disablePropagation?: boolean,
   as?: string,
   href?: string,
   to?: string,
   openInNewTab?: string,
-  title?: string
 }
 
 interface ButtonState {
 }
 
-export default class Button  extends React.Component<ButtonProps, ButtonState> {
+export default class Button extends React.Component<ButtonProps, ButtonState> {
   render(){
     let Element:any = this.props.buttonAs || Link;
     let elementProps:any = Object.assign({}, this.props);
@@ -40,7 +40,7 @@ export default class Button  extends React.Component<ButtonProps, ButtonState> {
 
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
 
-    return <Element {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
+    return <Element tabIndex={!this.props.disabled ? 0 : null} {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
     className={`button ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button--${s}`).join(" ")}`}/>
   }
 }
@@ -55,7 +55,7 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
 
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
 
-    return <Element {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
+    return <Element tabIndex={!this.props.disabled ? 0 : null} {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
     className={`button-social ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button-social--${s}`).join(" ")}`}/>
   }
 }
@@ -75,7 +75,7 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
 
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
 
-    return <Element {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
+    return <Element tabIndex={!this.props.disabled ? 0 : null} {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
     className={`button-pill ${(modifiers || []).map(s=>`button-pill--${s}`).join(" ")}`}>
       {this.props.icon && <span className={`button-pill__icon icon-${this.props.icon}`}></span>}
       {this.props.children}
@@ -99,7 +99,7 @@ export class IconButton extends React.Component<IconButtonProps, ButtonState> {
 
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
 
-    return <Element {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
+    return <Element tabIndex={!this.props.disabled ? 0 : null} {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
     className={`button-icon ${(modifiers || []).map(s=>`button-icon--${s}`).join(" ")}`}>
       {this.props.icon && <span className={`icon-${this.props.icon}`}></span>}
       {this.props.children}

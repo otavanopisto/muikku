@@ -67,13 +67,13 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let student = this.props.status.isStudent === true;
 
     return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
-      title={<h3 className="application-list__header-title">{this.props.discussion.current.title}</h3>}>
+      title={<h2 className="application-list__title">{this.props.discussion.current.title}</h2>}>
         <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
           <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
             <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
           </DiscussionThreadHeader>
           <DiscussionThreadBody>
-            <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
+            <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></div>
             {this.props.discussion.current.created !== this.props.discussion.current.lastModified ? <span className="application-list__item-edited">
               {this.props.i18n.text.get("plugin.discussion.content.isEdited", this.props.i18n.time.format(this.props.discussion.current.lastModified))}
             </span> : null}
@@ -81,16 +81,16 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <DiscussionThreadFooter hasActions>
             {!threadLocked || !student ?
               <ReplyThread>
-                <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
+                <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread> : null}
             {!threadLocked || !student ?
               <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}>
-                <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+                <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
               </ReplyThread> : null}
             {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
             {canRemoveThread && !student ?
               <DeleteThreadComponent>
-                <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+                <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
               </DeleteThreadComponent> : null}
           </DiscussionThreadFooter>
         </DiscussionCurrentThreadElement>
@@ -122,8 +122,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               </DiscussionThreadHeader>
               <DiscussionThreadBody>
                 {reply.deleted ?
-                  <article className="rich-text">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
-                  <article className="rich-text" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
+                  <div className="rich-text">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</div> :
+                  <div className="rich-text" dangerouslySetInnerHTML={{__html: reply.message}}></div>}
                 {reply.created !== reply.lastModified ? <span className="application-list__item-edited">
                   {this.props.i18n.text.get("plugin.discussion.content.isEdited", this.props.i18n.time.format(reply.lastModified))}
                 </span> : null}
@@ -131,18 +131,18 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               {!reply.deleted ? <DiscussionThreadFooter>
                   {!threadLocked || !student ?
                   <ReplyThread reply={reply}>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
+                    <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                   </ReplyThread> : null}
               {!threadLocked || !student ?
                   <ReplyThread reply={reply}
                    quote={reply.message} quoteAuthor={getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+                    <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                   </ReplyThread> : null}
                 {canEditMessage ? <ModifyThreadReply reply={reply}>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
+                  <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
                 </ModifyThreadReply> : null}
                 {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
-                  <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+                  <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                 </DeleteThreadComponent> : null}
               </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>

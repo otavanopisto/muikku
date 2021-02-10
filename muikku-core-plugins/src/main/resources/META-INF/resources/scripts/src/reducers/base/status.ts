@@ -51,6 +51,11 @@ export default function status(state: StatusType={
   hopsEnabled: (<any>window).HOPS_ENABLED
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
+    // chat listens to this event to close the connection
+    (window as any).ON_LOGOUT &&(window as any).ON_LOGOUT();
+    // remove the old session on logout
+    window.sessionStorage.removeItem("strophe-bosh-session");
+    // trigger the logout
     $('#logout').click();
     return state;
   } else if (action.type === "UPDATE_STATUS_PROFILE"){

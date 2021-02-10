@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
+import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -57,6 +58,10 @@ public class UserGroupEntityController {
     return findUserGroupEntityByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier(), false);
   }
   
+  public UserGroupEntity findUserGroupEntityByIdentifier(SchoolDataIdentifier identifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+  }
+  
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
     return findUserGroupEntityByDataSourceAndIdentifier(dataSource, identifier, false);
   }
@@ -79,12 +84,12 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.countGroupUsers(userGroupEntity);
   }
   
-  public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
-    return findUserGroupUserEntityByDataSourceAndIdentifier(dataSource, identifier, false);
-  }
-  
   public UserGroupUserEntity findUserGroupUserEntityBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
     return findUserGroupUserEntityByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier(), false);
+  }
+  
+  public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    return findUserGroupUserEntityByDataSourceAndIdentifier(dataSource, identifier, false);
   }
   
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier, Boolean includeArchived) {
@@ -130,6 +135,10 @@ public class UserGroupEntityController {
 
   public List<UserGroupEntity> listUserGroupsByUserIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
+  }
+
+  public List<UserGroupUserEntity> listUserGroupStaffMembers(UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.listUserGroupStaffMembers(userGroupEntity, Archived.UNARCHIVED);
   }
 
   public List<UserGroupEntity> listUserGroupsByUserIdentifier(SchoolDataIdentifier userIdentifier) {
@@ -185,5 +194,9 @@ public class UserGroupEntityController {
   public boolean haveSharedUserGroups(UserEntity user1, UserEntity user2) {
     return userGroupUserEntityDAO.haveSharedUserGroups(user1, user2);
   }
-  
+
+  public boolean isMember(SchoolDataIdentifier userIdentifier, UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.findByGroupAndUser(userGroupEntity, userIdentifier, Archived.UNARCHIVED) != null;
+  }
+
 }

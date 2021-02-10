@@ -1,23 +1,46 @@
 import {ActionType} from "~/actions";
 import {i18nType} from '~/reducers/base/i18n';
 
-import {WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
-import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/user-index';
+import { SimpleUserType, UserGroupListType } from '~/reducers/user-index';
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
 export interface MessageSignatureType {
   id: number,
   name: string,
   signature: string
 }
-
+export interface MessageSearchResult {
+  caption: string,
+  communicatorMessageId: number,
+  created: string,
+  id: number,
+  readByReceiver: boolean,
+  folder: MessagesSearchResultFolderType,
+  labels: Array<{
+    labelColor: number,
+    id: number,
+    labelName: string,
+  }>,
+  sender: {
+    userEntityId: number,
+    firstName: string,
+    lastName: string,
+    nickName: string,
+  },
+  senderId: number,
+  tags: any,
+  recipients?: Array<MessageRecepientType>,
+  userGroupRecipients?: UserGroupListType,
+  workspaceRecipients?: Array<MessageWorkspaceRecipientType>,
+}
 export interface MessageThreadLabelType {
   id: number,
   labelColor: number,
   labelId: number,
   labelName: string,
   messageThreadId: number,
-  userEntityId: number
+  userEntityId: number,
 }
 export interface MessageThreadLabelUpdateType {
   id?: number,
@@ -25,7 +48,7 @@ export interface MessageThreadLabelUpdateType {
   labelId?: number,
   labelName?: string,
   messageThreadId?: number,
-  userEntityId?: number
+  userEntityId?: number,
 }
 export type MessageThreadLabelListType = Array<MessageThreadLabelType>;
 
@@ -39,7 +62,7 @@ export interface MessageThreadType {
   messageCountInThread: number,
   recipientCount?: number,
   recipients?: Array<MessageRecepientType>,
-  sender: UserType,
+  sender: SimpleUserType,
   senderId: number,
   tags: any,
   threadLatestMessageDate: string,
@@ -49,7 +72,7 @@ export interface MessageThreadType {
     archetype: string,
     workspaceEntityId: number,
     workspaceExtension?: string,
-    workspaceName: string
+    workspaceName: string,
   }>
 }
 export interface MessageThreadUpdateType {
@@ -61,7 +84,7 @@ export interface MessageThreadUpdateType {
   tags?: any,
   threadLatestMessageDate?: string,
   unreadMessagesInThread?: boolean,
-  sender?: UserType,
+  sender?: SimpleUserType,
   messageCountInThread?: number,
   labels?: MessageThreadLabelListType
 }
@@ -69,7 +92,7 @@ export interface MessageThreadExpandedType {
   olderThreadId?: number,
   newerThreadId?: number,
   messages: Array<MessageType>,
-  labels: MessageThreadLabelListType
+  labels: MessageThreadLabelListType,
 }
 export interface MessageType {
   caption: string,
@@ -80,24 +103,25 @@ export interface MessageType {
   id: number,
   recipientCount: number,
   recipients: Array<MessageRecepientType>,
-  sender: UserType,
+  sender: SimpleUserType,
   senderId: number,
   tags: any,
   userGroupRecipients: UserGroupListType,
-  workspaceRecipients: Array<{
-    archetype: string,
-    workspaceEntityId: number,
-    workspaceExtension?: string,
-    workspaceName: string
-  }>
+  workspaceRecipients: Array<MessageWorkspaceRecipientType>
 }
 export interface MessageRecepientType {
   communicatorMessageId: number,
-  userId: number,
+  userEntityId: number,
   nickName?: string | null,
   firstName: string,
   lastName?: string | null,
   recipientId: number
+}
+export interface MessageWorkspaceRecipientType {
+  archetype: string,
+  workspaceEntityId: number,
+  workspaceExtension?: string,
+  workspaceName: string,
 }
 export type MessageThreadListType = Array<MessageThreadType>;
 
@@ -162,11 +186,13 @@ const defaultNavigation: MessagesNavigationItemListType = [
 
 export interface MessagesType {
   state: MessagesStateType,
+  searchMessages: MessageSearchResult[],
   threads: MessageThreadListType,
   selectedThreads: MessageThreadListType,
   selectedThreadsIds: Array<number>,
   hasMore: boolean,
   location: string,
+  query: string,
   toolbarLock: boolean,
   currentThread?: MessageThreadExpandedType,
   signature?: MessageSignatureType,
@@ -176,6 +202,7 @@ export interface MessagesType {
 
 export interface MessagesPatchType {
   state?: MessagesStateType,
+  searchMessages?: MessageSearchResult[],
   threads?: MessageThreadListType,
   selectedThreads?: MessageThreadListType,
   selectedThreadsIds?: Array<number>,
@@ -185,7 +212,8 @@ export interface MessagesPatchType {
   currentThread?: MessageThreadExpandedType,
   signature?: MessageSignatureType,
   navigation?: MessagesNavigationItemListType,
-  unreadThreadCount?: number
+  unreadThreadCount?: number,
+  query?: string,
 };
 
 function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesNavigationItemType){
@@ -204,6 +232,7 @@ function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesN
 
 export default function messages(state: MessagesType = {
   state: "LOADING",
+  searchMessages: null,
   threads: [],
   selectedThreads: [],
   selectedThreadsIds: [],
@@ -212,6 +241,7 @@ export default function messages(state: MessagesType = {
   toolbarLock: false,
   currentThread: null,
   signature: null,
+  query: null,
 
   unreadThreadCount: 0,
   navigation: defaultNavigation

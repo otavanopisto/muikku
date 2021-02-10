@@ -6,7 +6,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,8 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,10 +29,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockLoggable;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
@@ -49,13 +52,16 @@ import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Grade;
 import fi.otavanopisto.pyramus.rest.model.GradingScale;
+import fi.otavanopisto.pyramus.rest.model.MatriculationEligibilities;
 import fi.otavanopisto.pyramus.rest.model.Organization;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
 import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
@@ -531,7 +537,10 @@ public class PyramusMock {
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
         }
         
-        stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
+        stubFor(get(urlPathEqualTo("/1/students/students"))
+            .withQueryParam("filterArchived", equalTo("false"))
+            .withQueryParam("firstResult", matching(".*"))
+            .withQueryParam("maxResults", matching(".*"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(studentsList))
@@ -565,7 +574,8 @@ public class PyramusMock {
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));
         }
         
-        stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))
+        stubFor(get(urlPathEqualTo("/1/persons/persons"))
+            .withQueryParam("filterArchived", matching(".*"))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(pmock.persons))
@@ -904,13 +914,27 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(courseArrayJson)
             .withStatus(200)));
-        
+
         stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(courseArrayJson)
-            .withStatus(200)));
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(courseArrayJson)
+              .withStatus(200)));
        
+        return this;
+      }
+
+      public Builder mockStudentCourseStats(Long studentId, int completedCourses) throws JsonProcessingException {
+        StudentCourseStats studentCourseStats = new StudentCourseStats();
+        studentCourseStats.setNumberCompletedCourses(completedCourses);
+        stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courseStats", studentId)))
+            .withQueryParam("educationTypeCode", matching(".*"))
+            .withQueryParam("educationSubtypeCode", matching(".*"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(studentCourseStats))
+              .withStatus(200)));
+        
         return this;
       }
       
@@ -1023,7 +1047,51 @@ public class PyramusMock {
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
         
-        return this;        
+        return this;
+      }
+      
+      public Builder mockMatriculationEligibility(Boolean eligible) throws JsonProcessingException {
+        MatriculationEligibilities eligibles = new MatriculationEligibilities(eligible);
+        String eligibilityJson = pmock.objectMapper.writeValueAsString(eligibles);
+        stubFor(get(urlEqualTo("/1/matriculation/eligibility"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(eligibilityJson)
+            .withStatus(200)));
+        return this;
+      }
+      
+      public Builder mockMatriculationExam(Boolean onlyEligible) throws JsonProcessingException {     
+        Date startDate = new Date();
+        Date endDate = new Date(TestUtilities.toDate(2025, 12, 12).toInstant().toEpochMilli());
+        PyramusMatriculationExam result = new PyramusMatriculationExam();
+        result.setEligible(true);
+        result.setEnds(endDate.getTime());
+        result.setEnrolled(false);
+        result.setId(1l);
+        result.setStarts(startDate.getTime());
+        ArrayList<PyramusMatriculationExam> exams = new ArrayList<>();
+        exams.add(result);
+        String examsJson = pmock.objectMapper.writeValueAsString(exams);
+        
+        stubFor(get(urlEqualTo(String.format("/1/matriculation/exams?onlyEligible=%s", onlyEligible)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(examsJson)
+            .withStatus(200)));
+        return this;
+      }
+      
+      public Builder mockStudentsMatriculationEligibility(StudentMatriculationEligibility studentMatriculationEligibility, String subjectCode) throws JsonProcessingException {
+        String matriculationSubjectJson = pmock.objectMapper.writeValueAsString(studentMatriculationEligibility);
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/students/students/.*/matriculationEligibility"), true);
+        stubFor(get(urlPattern)
+            .withQueryParam("subjectCode", matching(subjectCode))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(matriculationSubjectJson)
+            .withStatus(200)));      
+        return this;
       }
       
       public Builder build() throws Exception {
@@ -1085,6 +1153,24 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockYourself() throws JsonProcessingException {
+        ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
+        List<StubMapping> mappings = listAllStubMappings.getMappings();
+        List<String> mappingStrings = new ArrayList<>();
+        for (StubMapping mapping : mappings) {
+          mappingStrings.add("<div>");
+          mappingStrings.add(mapping.toString());
+          mappingStrings.add("</div>");
+        }
+        
+        stubFor(get(urlEqualTo("/1/me"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "text/html")
+              .withBody(pmock.objectMapper.writeValueAsString(mappingStrings))
+              .withStatus(200)));
+        return this;
+      }
+      
       public Builder resetBuilder() {
         pmock.students = new ArrayList<>();
         pmock.staffMembers = new ArrayList<>();
@@ -1101,7 +1187,11 @@ public class PyramusMock {
         pmock.studentGroupUsers = new HashMap<>();
         pmock.studentGroups = new ArrayList<>();
         pmock.payloads = new ArrayList<>();
+        pmock.compositeCourseAssessmentRequests = new HashMap<>();
+        pmock.compositeStaffAssessmentRequests = new HashMap<>();
+        pmock.courses = new ArrayList<>();
         pmock.organizations = new ArrayList<>();
+        WireMock.reset();
         return this;
       }
       

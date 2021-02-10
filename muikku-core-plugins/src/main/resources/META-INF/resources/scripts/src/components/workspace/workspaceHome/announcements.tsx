@@ -28,7 +28,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
       return <div className="panel panel--workspace-announcements">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
-          <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}</div>
+          <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}</h2>
         </div>
         {this.props.announcements.length && this.props.workspace ? (
           <div className="panel__body">

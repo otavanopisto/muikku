@@ -1,14 +1,21 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -30,13 +37,16 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAutoReplyController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
@@ -56,10 +66,18 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort.Order;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -79,6 +97,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   private String baseUrl;
  
   @Inject
+  private Logger logger;
+  
+  @Inject
   private SessionController sessionController;
   
   @Inject
@@ -86,6 +107,12 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorAttachmentController communicatorAttachmentController;
+  
+  @Inject
+  private CommunicatorAutoReplyController communicatorAutoReply;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -97,7 +124,14 @@ public class CommunicatorRESTService extends PluginRESTService {
   private UserGroupEntityController userGroupEntityController;
 
   @Inject
+  private UserEntityFileController userEntityFileController;
+
+  @Inject
   private TagController tagController;
+  
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -262,6 +296,131 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
   
+  @GET
+  @Path ("/searchItems/")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response messageSearchFromInbox(
+      @QueryParam("q") String queryString,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+  
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    
+    List<CommunicatorSearchResultRESTModel> communicatorMessages = new ArrayList<CommunicatorSearchResultRESTModel>();
+    
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      
+      if (!isSearchEnabled()) {
+        return Response.ok(Collections.emptyList()).build(); 
+      }
+      
+      if (StringUtils.isEmpty(queryString)) {
+        // Empty list if query string is empty
+        return Response.ok(Collections.emptyList()).build();
+      }
+      
+      List<Sort> sorts = Arrays.asList(new Sort("created", Order.DESC));
+      
+      SearchResults<List<IndexedCommunicatorMessage>> searchResult = searchProvider.searchCommunicatorMessages()
+          .setQueryString(queryString)
+          .setSorts(sorts)
+          .setMaxResults(maxResults)
+          .setFirstResult(firstResult)
+          .search();
+      
+      List<IndexedCommunicatorMessage> results = searchResult.getResults();
+      for (IndexedCommunicatorMessage result : results) {
+        IndexedCommunicatorMessageSender sender = result.getSender();
+
+        CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
+        senderData.setUserEntityId(sender.getUserEntityId());
+        senderData.setFirstName(sender.getFirstName());
+        senderData.setLastName(sender.getLastName());
+        senderData.setNickName(sender.getNickName());
+        
+        CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
+        CommunicatorMessageCategory category = communicatorMessage.getCategory();
+        
+        Set<String> tags = communicatorController.tagIdsToStr(communicatorMessage.getTags());
+
+        List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
+        List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(communicatorMessage);
+        List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(communicatorMessage);
+
+        List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
+        List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
+        List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
+
+        List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(loggedUser, communicatorMessage.getCommunicatorMessageId());
+        List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+
+        CommunicatorMessageFolder folder = CommunicatorMessageFolder.INBOX;
+        boolean communicatorMessageRead;
+        
+        if (loggedUser.getId().equals(sender.getUserEntityId())) {
+          communicatorMessageRead = true;
+          folder = Boolean.TRUE.equals(communicatorMessage.getTrashedBySender()) ? CommunicatorMessageFolder.TRASH : CommunicatorMessageFolder.SENT;
+        } else {
+          IndexedCommunicatorMessageRecipient recipient = result.getRecipients().stream()
+            .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
+            .findFirst()
+            .orElse(null);
+          
+          
+          if (recipient == null) {
+            recipient = result.getGroupRecipients().stream()
+                .flatMap(receiverGroup -> receiverGroup.getRecipients().stream())
+                .filter(receiver -> loggedUser.getId().equals(receiver.getUserEntityId()))
+                .findFirst()
+                .orElse(null);
+          }
+          
+          if (recipient != null) {
+            communicatorMessageRead = recipient.getReadByReceiver();
+            if (recipient.getArchivedByReceiver()) {
+              folder = CommunicatorMessageFolder.TRASH;
+            }
+          } else {
+            logger.log(Level.SEVERE, String.format("User %d is not a recipient of message %d.", loggedUser.getId(), result.getId()));
+            continue;
+          }
+        }
+        
+        communicatorMessages.add(new CommunicatorSearchResultRESTModel(
+            communicatorMessage.getId(), 
+            communicatorMessage.getCommunicatorMessageId().getId(), 
+            sender.getUserEntityId(), 
+            senderData, 
+            category.getName(), 
+            folder,
+            result.getCaption(), 
+            null, // Content is not relevant for search results
+            result.getCreated(), 
+            tags, 
+            restRecipients, 
+            restUserGroupRecipients, 
+            restWorkspaceRecipients, 
+            communicatorMessageRead,
+            restLabels
+        ));
+      }
+    }
+    
+    return Response.ok(
+      communicatorMessages
+    ).build();
+  }
+  
+  private boolean isSearchEnabled() {
+    String pluginSetting = pluginSettingsController.getPluginSetting("communicator", "searchEnabled");
+    
+    // Default to true when pluginsetting is not set
+    return StringUtils.isNotBlank(pluginSetting) ?
+        Boolean.TRUE.equals(Boolean.valueOf(pluginSetting)) : true;
+  }
+
   @DELETE
   @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -273,6 +432,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
     communicatorController.trashSentMessages(user, messageId);
+    
     
     return Response.noContent().build();
   }
@@ -452,8 +612,19 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     for (CommunicatorMessageRecipient recipient : recipients) {
       // Don't notify the sender in case he sent message to himself
-      if (recipient.getRecipient() != message.getSender())
+      
+      if (recipient.getRecipient() != message.getSender()) {
         communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getRecipient(), baseUrl));
+        
+        if (recipient.getRecipientGroup() == null) {
+          UserEntity recipientEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+          UserEntityProperty autoReply = userEntityController.getUserEntityPropertyByKey(recipientEntity, "communicator-auto-reply");
+          
+          if (autoReply != null){
+            communicatorAutoReply.createCommunicatorAutoReply(message, recipientEntity);
+          }
+        }
+      }
     }
   }
 
@@ -465,13 +636,13 @@ public class CommunicatorRESTService extends PluginRESTService {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
-
     List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId, false);
     
     for (CommunicatorMessageRecipient r : list) {
-      communicatorController.updateRead(r, true);
+      if (!Boolean.TRUE.equals(r.getReadByReceiver())) {
+        communicatorController.updateReadByReceiver(r, true);
+      }
     }
-    
     return Response.noContent().build();
   }
 
@@ -493,7 +664,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           continue;
       }
       
-      communicatorController.updateRead(r, false);
+      communicatorController.updateReadByReceiver(r, false);
     }
     
     return Response.noContent().build();
@@ -643,18 +814,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
       fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
       
       fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),
-          user.getStudyProgrammeName(),
-          hasPicture,
-          user.hasEvaluationFees(),
-          user.getCurriculumIdentifier(),
-          user.getOrganizationIdentifier().toId());
+          hasPicture
+      );
       
       return Response.ok(
         result
