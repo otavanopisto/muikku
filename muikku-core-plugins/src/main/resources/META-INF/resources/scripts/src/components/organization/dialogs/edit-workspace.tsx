@@ -348,10 +348,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
-            <InputFormElement updateField={this.setWorkspaceNameExtension} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
+            <InputFormElement id="workspaceName" modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspace-name" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement id="workspaceNameExtension" modifiers="workspace-name" updateField={this.setWorkspaceNameExtension} name="workspace-name-extension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
           </DialogRow>
-          <DialogRow modifiers="dates">
+          <DialogRow modifiers="edit-workspace">
             <DateFormElement id="workspaceBeginDate" maxDate={this.state.endDate} updateField={this.handleDateChange.bind(this, "beginDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.beginDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.beginDate.label") }} />
             <DateFormElement id="workspaceEndDate" minDate={this.state.beginDate} updateField={this.handleDateChange.bind(this, "endDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.endDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.endDate.label") }} />
           </DialogRow>
@@ -426,8 +426,8 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.dates')} />
+            <DialogRowContent modifiers="summary-dates">
               <span>{this.state.beginDate ? this.getLocaledDate(this.state.beginDate) : this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.endDate.empty')}</span>
               <span>{this.state.endDate ? this.getLocaledDate(this.state.endDate) : this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.endDate.empty')}</span>
             </DialogRowContent>

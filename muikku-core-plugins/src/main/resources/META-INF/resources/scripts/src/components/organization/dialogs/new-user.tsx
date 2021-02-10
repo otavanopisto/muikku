@@ -178,8 +178,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           </SelectFormElement>
         </DialogRow>
         <DialogRow modifiers="new-user">
-          <InputFormElement value={this.state.user.firstName} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
-          <InputFormElement value={this.state.user.lastName} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <InputFormElement id="userFirstName" value={this.state.user.firstName} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement id="userLastName" value={this.state.user.lastName} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
           <EmailFormElement value={this.state.user.email} modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
         {this.state.user.role == "STUDENT" ?

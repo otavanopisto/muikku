@@ -265,8 +265,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             </ApplicationList>
           </DialogRow>
           <DialogRow modifiers="new-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
-            <InputFormElement updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
+            <InputFormElement id="workspaceName" modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement id="workspaceExtension" updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <fieldset>

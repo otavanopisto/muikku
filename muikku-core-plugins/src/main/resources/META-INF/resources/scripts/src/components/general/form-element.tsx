@@ -199,6 +199,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
+  id: string,
   updateField: (value: string, valid: boolean, Name: string) => any,
   value?: string,
   type?: string,
@@ -254,8 +255,8 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
 
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
+        <input id={this.props.id} value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
       </div>
     );
   }
