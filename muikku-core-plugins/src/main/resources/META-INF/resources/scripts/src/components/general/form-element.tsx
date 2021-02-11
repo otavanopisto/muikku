@@ -386,8 +386,8 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.state.value} name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <label htmlFor="emailField" className="form-element__label">{this.props.label}</label>
+        <input id="emailField" value={this.state.value} name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
       </div>
     );
   }
@@ -465,8 +465,8 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.state.value} name="SSN" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <label htmlFor="SSNField" className="form-element__label">{this.props.label}</label>
+        <input id="SSNField" value={this.state.value} name="SSN" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
       </div>
     );
   }
