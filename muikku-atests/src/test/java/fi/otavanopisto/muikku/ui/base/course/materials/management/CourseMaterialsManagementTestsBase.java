@@ -263,7 +263,6 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       browsers = {
         TestEnvironments.Browser.CHROME,
         TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.SAFARI,
         TestEnvironments.Browser.CHROME_HEADLESS,
       }
@@ -375,6 +374,63 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         waitForPresent(".material-page__content.rich-text p");
         String actualContent = getElementText(".material-page__content.rich-text p");
         assertEquals(contentInput, actualContent);        
+      } finally {
+        deleteWorkspaces();
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS,
+      }
+  )
+  public void courseMaterialProducerTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+  
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
+            "EXERCISE");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          selectFinnishLocale();
+          waitForPresent(".button-pill--editing-master-switch");
+          click(".button-pill--editing-master-switch");
+          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitForClickable(".form-element__input--add-material-producer");
+          sendKeys(".form-element__input--add-material-producer", "Test Producer Testalomente");
+          click(".add-producer--add-material-producer .form-element__input-decoration--add-material-producer.icon-plus");
+          sleep(500);
+          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
+          waitForPresent(".material-page__producers .material-page__producers-item");
+          assertTextIgnoreCase(".material-page__producers .material-page__producers-item", "Test Producer Testalomente");        
       } finally {
         deleteWorkspaces();
       }
