@@ -59,7 +59,7 @@ public class UserGroupDiscoveryWaiter {
     return result;
   }
 
-  public void onWaitingWorkspaceDiscoveredEvent(@Observes(during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupDiscoveredEvent event) {
+  public void onWaitingUserGroupDiscoveredEvent(@Observes(during = TransactionPhase.AFTER_SUCCESS) SchoolDataUserGroupDiscoveredEvent event) {
     SchoolDataIdentifier userGroupIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
     String id = userGroupIdentifier.toId();
 
