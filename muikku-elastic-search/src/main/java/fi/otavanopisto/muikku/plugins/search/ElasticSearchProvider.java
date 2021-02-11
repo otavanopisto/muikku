@@ -832,7 +832,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUserGroups(String query, List<OrganizationEntity> organizations, int start, int maxResults) {
+  public SearchResult searchUserGroups(String query, String archetype, List<OrganizationEntity> organizations, int start, int maxResults) {
     try {
       if (CollectionUtils.isEmpty(organizations)) {
         throw new IllegalArgumentException("Cannot search with no organizations specified.");
@@ -850,6 +850,10 @@ public class ElasticSearchProvider implements SearchProvider {
 
       if (StringUtils.isNotBlank(query)) {
         boolQuery.must(prefixQuery("name", query));
+      }
+
+      if (StringUtils.isNotBlank(archetype)) {
+        boolQuery.must(termQuery("archetype", StringUtils.lowerCase(archetype)));
       }
 
       Set<String> organizationIdentifiers = organizations

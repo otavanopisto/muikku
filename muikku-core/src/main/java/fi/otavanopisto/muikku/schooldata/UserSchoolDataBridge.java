@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 
 public interface UserSchoolDataBridge {
@@ -217,6 +218,10 @@ public interface UserSchoolDataBridge {
   public Role findUserEnvironmentRole(String userIdentifier);
 
   /* UserGroups */
+  
+  public BridgeResponse<StudentGroupPayload> createStudentGroup(StudentGroupPayload studentGroupPayload);
+  public BridgeResponse<StudentGroupPayload> updateStudentGroup(StudentGroupPayload studentGroupPayload);
+  public void archiveStudentGroup(String identifier);
   
   public UserGroup findUserGroup(String identifier);
   

@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 
 @Dependent
@@ -58,6 +59,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return LocalUserSchoolDataController.SCHOOL_DATA_SOURCE;
   }
 
+  @Override
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
@@ -67,10 +69,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
+  @Override
   public BridgeResponse<StudentPayload> createStudent(StudentPayload payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
   
+  @Override
   public BridgeResponse<StudentPayload> updateStudent(StudentPayload payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
@@ -507,6 +511,21 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   private EnvironmentRole toLocalEnvironmentRoleEntity(EnvironmentRoleEntity environmentRoleEntity) {
     EnvironmentRoleArchetype archetype = EnvironmentRoleArchetype.valueOf(environmentRoleEntity.getArchetype().name());
     return new LocalEnvironmentRoleImpl(environmentRoleEntity.getId().toString(), archetype, environmentRoleEntity.getName());
+  }
+
+  @Override
+  public BridgeResponse<StudentGroupPayload> createStudentGroup(StudentGroupPayload payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<StudentGroupPayload> updateStudentGroup(StudentGroupPayload payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public void archiveStudentGroup(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
   }
 
   @Override
