@@ -15,8 +15,6 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType, WorkspaceDetailsType } from '~/reducers/workspaces';
 import moment from '~/lib/moment';
-import { getJSDocThisTag } from 'typescript';
-
 
 interface ValidationType {
   nameValid: number
@@ -68,12 +66,11 @@ interface OrganizationEditWorkspaceState {
 class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspaceProps, OrganizationEditWorkspaceState> {
 
   private totalSteps: number;
-  private aMoment: any;
+
 
   constructor(props: OrganizationEditWorkspaceProps) {
     super(props);
     this.totalSteps = 4;
-    this.aMoment = moment().locale(this.props.i18n.time.getLocale());
     this.state = {
       beginDate: null,
       endDate: null,
@@ -349,7 +346,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         return <div>
           <DialogRow modifiers="edit-workspace">
             <InputFormElement id="workspaceName" modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspace-name" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
-            <InputFormElement id="workspaceNameExtension" modifiers="workspace-name" updateField={this.setWorkspaceNameExtension} name="workspace-name-extension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
+            <InputFormElement id="workspaceNameExtension" modifiers="dialog-workspace-name-extension" updateField={this.setWorkspaceNameExtension} name="workspace-name-extension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
             <DateFormElement id="workspaceBeginDate" maxDate={this.state.endDate} updateField={this.handleDateChange.bind(this, "beginDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.beginDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.beginDate.label") }} />

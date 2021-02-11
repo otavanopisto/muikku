@@ -297,12 +297,16 @@
   }
 }
 
-.dialog__content-row-content--summary-dates span:not(:first-child) {
-  margin-left: 5px;
+.dialog__content-row-content--summary-dates span {
+  margin-left: 0;
 
-  &::before {
-    content: "-";
-    margin-right: 5px;
+  &:not(:first-child) {
+    margin-left: 5px;
+
+    &::before {
+      content: "-";
+      margin-right: 5px;
+    }
   }
 }
 

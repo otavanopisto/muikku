@@ -14,6 +14,7 @@ import {
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
+import { getJSDocDeprecatedTag } from 'typescript';
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
@@ -113,7 +114,7 @@ let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadT
 
   let data: WorkspaceQueryDataType = {
     templates: 'ONLY_TEMPLATES',
-    maxResults: 5
+    maxResults: 4
   }
 
   if (query) {
@@ -1739,13 +1740,28 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           {
             name: data.name,
             nameExtension: data.nameExtension,
-            access: data.access
+            access: data.access,
           },
           {
             sourceWorkspaceEntityId: data.id
           }), 'callback')().then(
             data.progress && data.progress("workspace-create")
           ));
+
+      if(data.beginDate || data.endDate) {
+
+        workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+        .details.read(workspace.id), 'callback')());
+
+          workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.update(workspace.id, {
+            ...workspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate
+          }), 'callback')().then(
+            data.progress && data.progress("add-details")
+          ));
+        }
 
       if (data.students.length > 0) {
         let groupIdentifiers: number[] = [];

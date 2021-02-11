@@ -3,8 +3,6 @@ import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow } from '~/components/general/dialog';
 import { FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement } from '~/components/general/form-element';
 import { updateStaffmember, UpdateStaffmemberTriggerType } from '~/actions/main-function/users';
-import { AnyActionType } from '~/actions';
-import notificationActions from '~/actions/base/notifications';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
@@ -40,7 +38,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         role: this.props.data.role,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
-        email: this.props.data.email
+        email: this.props.data.email,
       },
       locked: false,
       firstNameValid: 2,

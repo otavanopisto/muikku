@@ -511,7 +511,7 @@ export class DateFormElement extends React.Component<DateFormElementProps, DateF
           <label htmlFor={this.props.id} className="form-element__label">{this.props.labels.label}</label> :
           <label htmlFor={this.props.id} className="visually-hidden">{this.props.labels.placeholder}</label>
         }
-        <DatePicker id={this.props.id} className="form-element__input" placeholderText={this.props.labels.placeholder} onChange={this.updateInputField}
+        <DatePicker id={this.props.id} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholderText={this.props.labels.placeholder} onChange={this.updateInputField}
           maxDate={this.props.maxDate}
           minDate={this.props.minDate}
           locale={this.props.locale} selected={this.props.selected} />
