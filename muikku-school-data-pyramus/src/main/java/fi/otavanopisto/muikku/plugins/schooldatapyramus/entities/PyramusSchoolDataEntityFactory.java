@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -477,7 +476,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getOrganizationIdentifier(studentGroup.getOrganizationId()) : null;
     
     return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()),
-        studentGroup.getName(), guidanceGroup, organizationIdentifier);
+        studentGroup.getName(), "USERGROUP", guidanceGroup, organizationIdentifier);
   }
 
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {
