@@ -140,7 +140,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         </DialogRow>
         <DialogRow modifiers="new-user">
           <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
-          <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} value={this.state.user.studyProgrammeIdentifier} >
+          <SelectFormElement id="editStudent" valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} value={this.state.user.studyProgrammeIdentifier} >
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme) => {
               return <option key={studyprogramme.identifier} value={studyprogramme.identifier} >{studyprogramme.name}</option>
             })

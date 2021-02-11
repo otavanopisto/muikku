@@ -266,6 +266,7 @@ interface SelectFormElementProps {
   label: string,
   name: string,
   value?: string,
+  id: string,
   type?: string
   mandatory?: boolean,
   valid?: number,
@@ -319,8 +320,8 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <select value={this.state.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
+        <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
+        <select id={this.props.id} value={this.state.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
           {this.props.children}
         </select>
       </div>

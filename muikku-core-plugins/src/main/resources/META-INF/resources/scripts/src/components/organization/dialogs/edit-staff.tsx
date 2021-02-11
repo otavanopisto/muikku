@@ -118,7 +118,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     let content = (closePortal: () => any) =>
       <div>
         <DialogRow modifiers="new-user">
-          <SelectFormElement name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} value={this.props.data.role}>
+          <SelectFormElement id="staffRole" name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} value={this.props.data.role}>
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.role.MANAGER')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.role.TEACHER')}</option>
             <option value="STUDY_PROGRAMME_LEADER">{this.props.i18n.text.get('plugin.organization.users.role.STUDY_PROGRAMME_LEADER')}</option>
