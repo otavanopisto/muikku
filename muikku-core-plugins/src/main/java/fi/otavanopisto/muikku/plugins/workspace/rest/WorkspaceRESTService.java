@@ -1280,6 +1280,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
+    /* #5124: Workspaces no longer have logic related to evaluation fees, only line being studied matters
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -1296,6 +1297,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean evaluationFees = user.hasEvaluationFees() && (StringUtils.isNotEmpty(user.getSchool()) || workspace.isEvaluationFeeApplicable());
 
     return Response.ok(new WorkspaceFeeInfo(evaluationFees)).build();
+    */
+    
+    return Response.ok(new WorkspaceFeeInfo(user.getHasEvaluationFees())).build();
   }
 
   @GET

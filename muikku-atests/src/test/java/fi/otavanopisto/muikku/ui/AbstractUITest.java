@@ -714,6 +714,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void scrollIntoView(String selector) {
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
+  
+  protected void scrollTo(String selector, int offset) {
+    ((JavascriptExecutor) getWebDriver()).executeScript(String.format(""
+        + "var elPos = document.querySelectorAll('%s').item(0).getBoundingClientRect().top;"
+        + "var offsetPosition = elPos - %d;"
+        + "window.scrollTo({ top: offsetPosition});"
+        , selector, offset));
+  }
 
   protected WebElement findElementByCssSelector(String selector) {
     return getWebDriver().findElement(By.cssSelector(selector));
@@ -1534,10 +1542,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return getWebDriver().findElement(By.tagName(name));
   }
   
-  protected String getCKEditorContent() {
+  protected String getCKEditorContentIFrame() {
     getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
     String ckeContent = findElementByTag("body").getText();
     getWebDriver().switchTo().defaultContent();
+    return ckeContent;
+  }
+  
+  protected String getCKEditorContentInMaterials() {
+    String ckeContent = getElementText(".cke_wysiwyg_div p");
     return ckeContent;
   }
   
@@ -1671,7 +1684,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-    scrollIntoView("input#" + workspaceAccess);
+    scrollTo("input#" + workspaceAccess, 300);
     sleep(500);
     waitAndClick("input#" + workspaceAccess);
     scrollIntoView(".button--primary-function-save");

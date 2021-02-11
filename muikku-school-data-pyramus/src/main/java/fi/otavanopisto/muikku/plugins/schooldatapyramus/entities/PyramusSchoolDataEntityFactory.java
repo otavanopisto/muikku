@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -290,8 +289,9 @@ public class PyramusSchoolDataEntityFactory {
       modified = course.getCreated();
     }
     
+    /* #5124: Courses no longer have logic related to evaluation fees, only line being studied matters 
     boolean courseFeeApplicable = true;
-    
+
     for (Map.Entry<String, List<String>> typeCodeEntry : educationTypeCodeMap.entrySet()) {
       String educationTypeCode = typeCodeEntry.getKey();
       for (String educationSubtypeCode : typeCodeEntry.getValue()) {
@@ -304,6 +304,8 @@ public class PyramusSchoolDataEntityFactory {
         }
       }
     }
+    */
+    boolean courseFeeApplicable = false;
 
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
     
@@ -474,7 +476,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getOrganizationIdentifier(studentGroup.getOrganizationId()) : null;
     
     return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()),
-        studentGroup.getName(), guidanceGroup, organizationIdentifier);
+        studentGroup.getName(), "USERGROUP", guidanceGroup, organizationIdentifier);
   }
 
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {

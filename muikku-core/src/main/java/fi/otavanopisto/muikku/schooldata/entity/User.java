@@ -77,7 +77,7 @@ public interface User extends SchoolDataEntity {
 
   public boolean getHidden();
   
-  public boolean hasEvaluationFees();
+  public boolean getHasEvaluationFees();
   
   public String getCurriculumIdentifier();
   

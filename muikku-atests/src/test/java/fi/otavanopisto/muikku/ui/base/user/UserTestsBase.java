@@ -110,23 +110,23 @@ public class UserTestsBase extends AbstractUITest {
       waitForVisible(".profile-element__item .profile-element__data");
       assertTextIgnoreCase(".profile-element__item .profile-element__data", "admin@example.com");
       
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(2) > label", "Puhelinnumero");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(2) > input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profilePhoneNumber']", "Puhelinnumero");
+      assertVisible(".application-panel__main-container .profile-element__item input#profilePhoneNumber");
 
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(3) > label", "Loma alkaa");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profileVacationStart']", "Loma alkaa");
+      assertVisible(".application-panel__main-container .profile-element__item input#profileVacationStart");
       
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(4) > label", "Loma loppuu");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(4) .react-datepicker__input-container input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profileVacationEnd']", "Loma loppuu");
+      assertVisible(".application-panel__main-container .profile-element__item input#profileVacationEnd");
       
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(5) > label", "Chatin näkyvyys");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(5) select");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='chatVisibility']", "Chatin näkyvyys");
+      assertVisible(".application-panel__main-container .profile-element__item select#chatVisibility");
 
-      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(6) > label", "Chatin nimimerkki");
-      assertVisible("div.application-panel__main-container > div > form > div:nth-child(6) input");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='chatNickname']", "Chatin nimimerkki");
+      assertVisible(".application-panel__main-container .profile-element__item input#chatNickname");
       
-      assertTextIgnoreCase("form .button--primary-function-save", "Tallenna");
-      assertVisible("form .button--primary-function-save");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item .button--primary-function-save", "Tallenna");
+      assertVisible(".application-panel__main-container .profile-element__item .button--primary-function-save");
     }finally {
       mockBuilder.wiremockReset();
     }

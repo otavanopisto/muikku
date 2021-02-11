@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.search;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -42,22 +42,24 @@ public class SystemReindexBackingBean {
 	@RequestAction
 	public String init() {
 	  if (sessionController.hasPermission(MuikkuPermissions.ADMIN, null)) {
-      List<Task> tasks = null;
-      
-	    if (StringUtils.isNotBlank(getTask())) {
-	      Task task = EnumUtils.getEnum(Task.class, getTask());
-        if (task == null) {
-          return NavigationRules.INTERNAL_ERROR;
-        } else {
-          tasks = Arrays.asList(task);
+      List<Task> tasks = new ArrayList<>();
+      if (StringUtils.isNotBlank(getTask())) {
+        String[] tasksArray = getTask().split(",");
+        for (String arrayTask : tasksArray) {
+          Task task = EnumUtils.getEnum(Task.class, arrayTask);
+          if (task == null) {
+            return NavigationRules.INTERNAL_ERROR;
+          }
+          else {
+            tasks.add(task);
+          }
         }
-	    } else {
-	      tasks = Arrays.asList(Task.values());
+        reindexEvent.fire(new SearchReindexEvent(tasks, resume != null ? resume : false));
 	    }
-	    
-	    reindexEvent.fire(new SearchReindexEvent(tasks, resume != null ? resume : false));
+	    else {
+	      return NavigationRules.INTERNAL_ERROR;
+	    }
 	  }
-	  
 	  return "/index.jsf?faces-redirect=true";
 	}
 	

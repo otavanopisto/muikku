@@ -1623,7 +1623,7 @@ public class UserRESTService extends AbstractRESTService {
 
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
     return Response
-        .ok(new UserWhoAmIInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
+        .ok(new UserWhoAmIInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.getHasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
         .cacheControl(cacheControl)
         .tag(tag)
         .build();

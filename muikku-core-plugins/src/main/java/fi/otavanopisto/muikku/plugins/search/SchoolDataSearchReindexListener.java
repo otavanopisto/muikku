@@ -90,19 +90,19 @@ public class SchoolDataSearchReindexListener {
     tasks = event.getTasks();
     
     if (!event.isResume()) {
-      if (tasks.contains(Task.USERS)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.USERS)) {
         setOffset("userIndex", 0);
       }
       
-      if (tasks.contains(Task.WORKSPACES)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.WORKSPACES)) {
         setOffset("workspaceIndex", 0);
       }
       
-      if (tasks.contains(Task.USER_GROUPS)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.USERGROUPS)) {
         setOffset("groupIndex", 0);
       }
       
-      if (tasks.contains(Task.COMMUNICATORMESSAGES)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.COMMUNICATORMESSAGES)) {
         setOffset("communicatorIndex", 0);
       }
     }
@@ -126,7 +126,7 @@ public class SchoolDataSearchReindexListener {
         allDone = allDone && reindexUsers();
       }
       
-      if (allDone && tasks.contains(Task.USER_GROUPS)) {
+      if (allDone && tasks.contains(Task.USERGROUPS)) {
         allDone = allDone && reindexUserGroups();
       }
       
