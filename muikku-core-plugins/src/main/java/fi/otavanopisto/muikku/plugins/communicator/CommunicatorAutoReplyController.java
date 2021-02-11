@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -113,12 +114,14 @@ public class CommunicatorAutoReplyController {
             if (today.after(c.getTime())) {
               communicatorController.updateVacationNotificationDate(vacationNotification, notificationDate);
               CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
-              communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, communicatorMessage.getCategory(), replySubject, replyMessage, null);
+              CommunicatorMessageCategory category = communicatorController.persistCategory("autoVacationReply");
+              communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, category, replySubject, replyMessage, null);
             }
           } else {
             communicatorController.createVacationNotification(sender, recipient, notificationDate);
             CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
-            communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, communicatorMessage.getCategory(), replySubject, replyMessage, null);
+            CommunicatorMessageCategory category = communicatorController.persistCategory("autoVacationReply");
+            communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, category, replySubject, replyMessage, null);
           }
         }
       }

@@ -1,3 +1,0 @@
-{#wallEntry}
-  {>"wall/wallentry.dust"/}
-{/wallEntry}

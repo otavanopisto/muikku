@@ -126,7 +126,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     }
   }
   onKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "enter") {
+    if (e.key === "Enter") {
       this.onClick(e as any);
     }
   }
