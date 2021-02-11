@@ -4,7 +4,7 @@ import org.junit.Before;
 
 import fi.otavanopisto.muikku.ui.base.course.materials.management.CourseMaterialsManagementTestsBase;
 
-public class CourseMaterialsManagementIT extends CourseMaterialsManagementTestsBase {
+public class CourseMaterialsManagementTestsIT extends CourseMaterialsManagementTestsBase {
   
   @Before
   public void setUp() {

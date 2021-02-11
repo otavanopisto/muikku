@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.ui.base.course.materials.management;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -320,5 +321,66 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       mockBuilder.wiremockReset();
     }
   }  
+
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.CHROME_HEADLESS,
+    }
+  )
+  public void courseMaterialCKEditorTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+  
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test folder", "DEFAULT");
+        String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
+            + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
+            + "Nulla consectetur quam mi.";
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".button-pill--editing-master-switch");
+        click(".button-pill--editing-master-switch");
+        waitForPresent(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
+        click(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
+        waitForPresent(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
+        click(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
+        waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
+        click(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
+        waitForClickable(".material-editor--visible .material-editor__title");
+        waitForPresent(".material-editor--visible .material-editor__title");
+        clearElement(".material-editor--visible .material-editor__title");
+        sendKeys(".material-editor--visible .material-editor__title", "Test page title");
+        addTextToCKEditor(contentInput);
+        waitForNotPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
+        click(".button-pill--material-editor-publish-page .icon-leanpub");
+        sleep(500);
+        click(".button-pill--material-page-close-editor");
+        waitForNotVisible(".material-editor--visible");
+        waitForPresent(".material-page__content.rich-text p");
+        String actualContent = getElementText(".material-page__content.rich-text p");
+        assertEquals(contentInput, actualContent);        
+      } finally {
+        deleteWorkspaces();
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }
