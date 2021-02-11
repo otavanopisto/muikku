@@ -61,6 +61,7 @@ export default class SelectableList extends React.Component<SelectableListProps,
     this.onCheckBoxItemChange = this.onCheckBoxItemChange.bind(this);
     this.onCheckBoxItemClick = this.onCheckBoxItemClick.bind(this);
     this.onItemClick = this.onItemClick.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
 
     this.initialXPos = null;
     this.initialYPos = null;
@@ -126,6 +127,11 @@ export default class SelectableList extends React.Component<SelectableListProps,
       this.firstWasJustSelected = false;
     }
   }
+  onKeyDown(item: SelectableItem, e: React.KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      item.onEnter();
+    }
+  }
   onContextMenu(e: React.MouseEvent<any>){
     e.preventDefault();
     e.stopPropagation();
@@ -180,7 +186,7 @@ export default class SelectableList extends React.Component<SelectableListProps,
         className={`${child.className || ""} ${child.isSelected ? "selected" : ""} ${child.notSelectable && child.notSelectableClassName ? child.notSelectableClassName : ""}`}
         {...givenElementProps}
         onTouchStart={this.onTouchStartItem.bind(this, child)} onTouchEnd={this.onTouchEndItem.bind(this, child)}
-        onTouchMove={this.onTouchMoveItem.bind(this, child)}
+        onTouchMove={this.onTouchMoveItem.bind(this, child)} onKeyDown={this.onKeyDown.bind(this, child)}
         onClick={this.onItemClick.bind(this, child)} onContextMenu={this.onContextMenu}>
           {child.contents(child.notSelectable ? null : <input type="checkbox" id={child.checkboxId} className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
         </GivenElement>

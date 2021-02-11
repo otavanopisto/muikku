@@ -1,6 +1,0 @@
-<div class="box box-max-width">
-  <h3>{#localize key="plugin.frontPage.lastWorkspace.title"/}</h3>
-  
-  <div>{#localize key="plugin.frontPage.lastWorkspace.workspace.preText"/} <b><i>{lastWorkspace.workspaceName}</i></b> {#localize key="plugin.frontPage.lastWorkspace.material.preText"/} <b><i>{lastWorkspace.materialName}</i></b> <a href="{lastWorkspace.url}" class="frontpage-continue-studies">{#localize key="plugin.frontPage.lastWorkspace.continueStudiesLink"/}</a>
-
-</div>

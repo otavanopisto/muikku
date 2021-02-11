@@ -1,7 +1,0 @@
-<div class="cm-messages-pages flex-row">
-  {?items}
-    {>"communicator/communicator_page.dust"/}
-  {:else}
-    {>"communicator/communicator_empty.dust"/}    
-  {/items}  
-</div>
