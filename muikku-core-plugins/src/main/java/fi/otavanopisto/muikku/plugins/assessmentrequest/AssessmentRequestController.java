@@ -135,6 +135,10 @@ public class AssessmentRequestController {
     if (latestAssessment != null) {
       gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
       grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier());
+      
+      if (gradingScale == null || grade == null) {
+        latestAssessment = null;
+      }
     }
     if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
 

@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.148-SNAPSHOT</version>
+    <version>1.1.149-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -249,36 +249,6 @@
   </profiles>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-
-                  <pluginExecutionFilter>
-                    <groupId>org.jasig.maven</groupId>
-                    <artifactId>sass-maven-plugin</artifactId>
-                    <versionRange>[1.1.1,)</versionRange>
-                    <goals>
-                      <goal>update-stylesheets</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.bsc.maven</groupId>
@@ -305,25 +275,6 @@
             <version>${hibernate-jpamodelgen.version}</version>
           </dependency>
         </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>org.jasig.maven</groupId>
-        <artifactId>sass-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>sassProcessSource</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>update-stylesheets</goal>
-            </goals>
-            <inherited>false</inherited>
-            <configuration>
-              <sassSourceDirectory>${basedir}/src/main/resources/META-INF/resources/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/classes/META-INF/resources/css</destination>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>

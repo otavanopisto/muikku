@@ -180,8 +180,6 @@ public class OrganizationUserManagementRESTService {
 
     List<fi.otavanopisto.muikku.rest.model.Student> students = new ArrayList<>();
 
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-
     String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController

@@ -45,8 +45,7 @@ public interface SearchProvider {
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers,Boolean includeArchived, int start, int maxResults, 
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
       Date studyTimeEndsBefore);
-  
-  SearchResult searchUserGroups(String searchTerm, List<OrganizationEntity> organizations, int start, int maxResults);
+  public SearchResult searchUserGroups(String searchTerm, String archetype, List<OrganizationEntity> organizations, int start, int maxResults);
   
   public class Sort {
     

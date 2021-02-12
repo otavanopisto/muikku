@@ -89,7 +89,7 @@ public class NotificationController {
     for (UserGroupEntity userGroupEntity : userGroupEntities) {
       UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
 
-      if (userGroup.isGuidanceGroup()) {
+      if (userGroup.getIsGuidanceGroup()) {
         List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
 
         for (GroupUser groupUser : groupUsers) {
