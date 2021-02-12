@@ -156,7 +156,6 @@ interface SearchFormElementProps {
 }
 
 interface SearchFormElementState {
-  clearActive: boolean
 }
 
 export class SearchFormElement extends React.Component<SearchFormElementProps, SearchFormElementState> {
@@ -169,19 +168,10 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
     this.searchInput = React.createRef();
-
-    this.state = {
-      clearActive: false
-    }
   }
 
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value;
-    if (e.target.value.length > 0) {
-      this.setState({ clearActive: true });
-    } else {
-      this.setState({ clearActive: false });
-    }
     this.props.updateField(value);
   }
 
