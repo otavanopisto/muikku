@@ -203,7 +203,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, 
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, Boolean includeArchived, int start, int maxResults, 
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
       Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
@@ -222,6 +222,10 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       if (Boolean.TRUE.equals(onlyDefaultUsers)) {
+        query.must(termQuery("isDefaultIdentifier", true));
+      }
+      
+      if (Boolean.TRUE.equals(includeArchived)) {
         query.must(termQuery("isDefaultIdentifier", true));
       }
       
@@ -380,26 +384,26 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers,Boolean includeArchived, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
+        onlyDefaultUsers, includeArchived, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }
   
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults) {
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, Boolean includeArchived, int start, int maxResults) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, null);
+        onlyDefaultUsers, includeArchived, start, maxResults, null);
   }
   
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields) {
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, Boolean includeArchived,int start, int maxResults, Collection<String> fields) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, fields, null, null);
+        onlyDefaultUsers, includeArchived, start, maxResults, fields, null, null);
   }
   
   private Set<Long> getActiveWorkspaces() {

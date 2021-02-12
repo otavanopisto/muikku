@@ -171,6 +171,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
           false,
           false,
           onlyDefaultUsers,
+          false,
           firstResult, 
           maxResults);
       
