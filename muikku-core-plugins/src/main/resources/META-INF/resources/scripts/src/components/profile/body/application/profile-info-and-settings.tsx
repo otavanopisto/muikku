@@ -263,8 +263,6 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     }
     return (<div className="profile-element">
       <h2 className="profile-element__title">{this.props.status.profile.displayName}</h2>
-
-
       <div className="profile-element__item">
         <UpdateUsernamePasswordDialog>
           <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>

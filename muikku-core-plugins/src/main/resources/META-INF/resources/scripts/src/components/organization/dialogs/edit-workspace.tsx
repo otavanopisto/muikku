@@ -66,8 +66,6 @@ interface OrganizationEditWorkspaceState {
 class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspaceProps, OrganizationEditWorkspaceState> {
 
   private totalSteps: number;
-
-
   constructor(props: OrganizationEditWorkspaceProps) {
     super(props);
     this.totalSteps = 4;
@@ -259,7 +257,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let detailsChanged = false;
     let payload: WorkspaceUpdateType = {};
 
-
     if (this.props.currentWorkspace.name !== this.state.workspaceName) {
       payload.name = this.state.workspaceName;
     }
@@ -283,7 +280,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     }
 
     payload.details = detailsUpdate;
-
 
     if (originalBeginDate !== beginDate) {
       detailsUpdate.beginDate = beginDate;

@@ -4,7 +4,6 @@ import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
 import DatePicker from 'react-datepicker';
 
-
 // Either label or placeholder is mandatory because of wcag
 
 export type FormElementLabel = {
@@ -472,7 +471,6 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
   }
 }
 
-
 interface DateFormElementProps {
   labels: FormElementLabel | FormElementPlaceholder,
   id: string,
@@ -520,6 +518,3 @@ export class DateFormElement extends React.Component<DateFormElementProps, DateF
     );
   }
 }
-
-
-
