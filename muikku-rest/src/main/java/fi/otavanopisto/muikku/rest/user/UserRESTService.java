@@ -383,7 +383,7 @@ public class UserRESTService extends AbstractRESTService {
       OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
       
       SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, true, false, firstResult, maxResults);
+          userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents,true, true, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
 
@@ -1256,6 +1256,7 @@ public class UserRESTService extends AbstractRESTService {
           false,
           false,
           onlyDefaultUsers,
+          true,
           firstResult, 
           maxResults);
       
@@ -1682,6 +1683,7 @@ public class UserRESTService extends AbstractRESTService {
           false, 
           false,
           false,
+          true,
           firstResult, 
           maxResults);
       

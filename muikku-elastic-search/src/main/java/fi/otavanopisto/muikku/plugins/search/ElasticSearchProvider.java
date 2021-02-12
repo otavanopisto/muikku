@@ -225,8 +225,8 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termQuery("isDefaultIdentifier", true));
       }
       
-      if (Boolean.TRUE.equals(includeArchived)) {
-        query.must(termQuery("isDefaultIdentifier", true));
+      if (!Boolean.TRUE.equals(includeArchived)) {
+        query.mustNot(termQuery("archived", true));
       }
       
       if (StringUtils.isNotBlank(text) && !ArrayUtils.isEmpty(textFields)) {
