@@ -1550,6 +1550,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected String getCKEditorContentInMaterials() {
+    waitForPresent(".cke_wysiwyg_div p");
     String ckeContent = getElementText(".cke_wysiwyg_div p");
     return ckeContent;
   }
