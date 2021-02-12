@@ -166,7 +166,6 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
   constructor(props: SearchFormElementProps) {
     super(props);
 
-
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
     this.searchInput = React.createRef();
@@ -279,7 +278,7 @@ interface SelectFormElementProps {
   modifiers?: string | Array<string>,
   updateField: (value: string, valid: boolean, name: string) => any;
 }
-1
+
 interface SelectFormElementState {
   valid: number,
   value: string
