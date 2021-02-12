@@ -75,8 +75,8 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             {this.props.mobileTitle ? <div className="navbar__mobile-title" aria-hidden="true">{this.props.mobileTitle}</div> : null}
             <ul className="navbar__default-options" role="menubar" aria-label={this.props.i18n.text.get("plugin.wcag.alternateNavigation.aria.label")}>
               {this.props.defaultOptions}
-              <li role="none"><ProfileItem modifier={this.props.modifier} isProfileContainedInThisApp={this.props.isProfileContainedInThisApp} /></li>
-              <li role="none"><LanguagePicker /></li>
+              <li role="none" key="profile-item"><ProfileItem modifier={this.props.modifier} isProfileContainedInThisApp={this.props.isProfileContainedInThisApp} /></li>
+              <li role="none" key="language-picker"><LanguagePicker /></li>
             </ul>
           </div>
         </nav>
