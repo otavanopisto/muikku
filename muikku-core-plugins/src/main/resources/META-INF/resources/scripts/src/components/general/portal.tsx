@@ -17,6 +17,7 @@ interface PortalProps {
   onClose?():any,
   beforeClose?(e: HTMLElement, resetPortalState: ()=>any): any,
   onKeyStroke?(keyCode: number, closePortal: ()=>any): any,
+  onWrapperKeyDown?(e: React.KeyboardEvent): any,
   isOpen?: boolean
 }
 
@@ -111,6 +112,14 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
         this.openPortal();
       }
     }
+
+    if (e.key === "Tab" && this.state.active) {
+      this.closePortal();
+    }
+
+    if (this.props.onWrapperKeyDown) {
+      this.props.onWrapperKeyDown(e);
+    }
   }
 
   openPortal(props: PortalProps = this.props) {
@@ -195,7 +204,6 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       return React.cloneElement(this.props.openByClickOn, {
         onClick: this.handleWrapperClick,
         onKeyDown: this.handleWrapperKeyDown,
-        onFocus: () => { console.log(this.props.openByClickOn) }
       });
     } else if (this.props.openByHoverOn && this.props.openByHoverIsClickToo) {
       return React.cloneElement(this.props.openByHoverOn, {
