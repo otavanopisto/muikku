@@ -37,6 +37,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.closePortal = this.closePortal.bind(this);
     this.handleOutsideMouseClick = this.handleOutsideMouseClick.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleWrapperKeyDown = this.handleWrapperKeyDown.bind(this);
     this.portal = null;
     this.node = null;
     this.isUnmounted = false;
@@ -97,6 +98,19 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       return;
     }
     this.openPortal();
+  }
+
+  handleWrapperKeyDown(e: React.KeyboardEvent) {
+    if (e.key === " ") {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (this.state.active) {
+        this.closePortal();
+      } else {
+        this.openPortal();
+      }
+    }
   }
 
   openPortal(props: PortalProps = this.props) {
@@ -179,18 +193,25 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   render() {
     if (this.props.openByClickOn) {
       return React.cloneElement(this.props.openByClickOn, {
-        onClick: this.handleWrapperClick
+        onClick: this.handleWrapperClick,
+        onKeyDown: this.handleWrapperKeyDown,
+        onFocus: () => { console.log(this.props.openByClickOn) }
       });
     } else if (this.props.openByHoverOn && this.props.openByHoverIsClickToo) {
       return React.cloneElement(this.props.openByHoverOn, {
         onMouseEnter: this.handleWrapperClick,
         onMouseLeave: this.handleOutsideMouseClick,
         onClick: this.handleWrapperClick,
+        onFocus: this.handleWrapperClick,
+        onBlur: this.handleOutsideMouseClick,
+        onKeyDown: this.handleWrapperKeyDown,
       });
     } else if (this.props.openByHoverOn) {
       return React.cloneElement(this.props.openByHoverOn, {
         onMouseEnter: this.handleWrapperClick,
         onMouseLeave: this.handleOutsideMouseClick,
+        onFocus: this.handleWrapperClick,
+        onBlur: this.handleOutsideMouseClick,
       });
     }
     return null;
