@@ -74,7 +74,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
           "EVALUATED");
         
         Long assessorId = getUserEntityIdForIdentifier(String.format("STAFF-%s", admin.getId()));
@@ -85,7 +85,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
           assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
           waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
           waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
@@ -102,7 +102,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           waitAndClick(".save-evaluation-button");
-          waitForPresentAndVisible(".evaluation-assignment-wrapper");
+          waitForVisible(".evaluation-assignment-wrapper");
           assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
           waitAndClick(".assignment-submitted");
           waitForPresent("#grade");
@@ -110,7 +110,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation." ,getCKEditorContent());
+          assertEquals("Test evaluation." ,getCKEditorContentIFrame());
         }finally{
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -161,7 +161,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
           "EVALUATED");
         try {
           Long assessorId = getUserEntityIdForIdentifier(String.format("STAFF-%s", admin.getId()));
@@ -183,7 +183,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
           waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-          waitForPresentAndVisible(".notification-queue-item-success");
+          waitForVisible(".notification-queue-item-success");
           waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
           
           logout();
@@ -200,7 +200,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           waitAndClick(".save-evaluation-button");
-          waitForPresentAndVisible(".evaluation-assignment-wrapper");
+          waitForVisible(".evaluation-assignment-wrapper");
           assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
           
 //        Re-evaluation
@@ -210,20 +210,20 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation.", getCKEditorContent());
+          assertEquals("Test evaluation.", getCKEditorContentIFrame());
           
           addTextToCKEditor("Test evaluation in re-evaluation.");
           selectOption("#grade", "2/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           waitAndClick(".save-evaluation-button");
-          waitForPresentAndVisible(".evaluation-assignment-wrapper");
+          waitForVisible(".evaluation-assignment-wrapper");
           waitAndClick(".assignment-submitted");
           waitForPresent("#grade");
           assertValue("#grade", "2/PYRAMUS@1/PYRAMUS");
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation.Test evaluation in re-evaluation.", getCKEditorContent());
+          assertEquals("Test evaluation.Test evaluation in re-evaluation.", getCKEditorContentIFrame());
         
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -275,7 +275,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
           "EVALUATED");
         try {
           Long assessorId = getUserEntityIdForIdentifier(String.format("STAFF-%s", admin.getId()));
@@ -297,7 +297,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
           waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-          waitForPresentAndVisible(".notification-queue-item-success");
+          waitForVisible(".notification-queue-item-success");
           waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
           
           logout();
@@ -339,7 +339,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           
           PyramusMocks.mockAssessedStudent1Workspace1(courseStudent, assessorId);
           
-          waitForPresentAndVisible(".evaluation-assignment-wrapper");
+          waitForVisible(".evaluation-assignment-wrapper");
           assertClassPresent(".evaluation-student-wrapper", "workspace-evaluated");
           
           waitAndClick(".evaluation-student-name");
@@ -348,7 +348,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent("select[name='assessor']");
           assertValue("select[name='assessor']", assessorId.toString());
           waitForPresent(".cke_contents");
-          assertEquals("Test evaluation." ,getCKEditorContent());
+          assertEquals("Test evaluation." ,getCKEditorContentIFrame());
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }

@@ -56,13 +56,6 @@
   overflow: hidden;
   transition: opacity 0.3s ease-in-out;
 
-  &:hover,
-  &:active,
-  &.hover,
-  &.active {
-    opacity: 0.7;
-  }
-
   img {
     border: 0;
   }

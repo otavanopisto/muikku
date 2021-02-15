@@ -14,7 +14,7 @@ import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messag
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/user-index';
 import { UserType } from '~/reducers/user-index';
-import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
+import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, setWorkspaceStateFilters, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
 import { loadUsers, loadStudyprogrammes } from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
@@ -61,7 +61,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
   constructor(props: MainFunctionProps) {
     super(props);
-
     this.renderIndexBody = this.renderIndexBody.bind(this);
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
     this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
@@ -89,7 +88,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   }
   onHashChange() {
     if (window.location.pathname.includes("/coursepicker")) {
-      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), false);
+      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), false, false);
     } else if (window.location.pathname.includes("/communicator")) {
       this.loadCommunicatorData(window.location.hash.replace("#", "").split("/"));
     } else if (window.location.pathname.includes("/discussion")) {
@@ -103,7 +102,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     } else if (window.location.pathname.includes("/records")) {
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     } else if (window.location.pathname.includes("/organization")) {
-      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), true);
+      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), true, false);
     }
   }
 
@@ -201,20 +200,22 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }) as Action);
     }
   }
-  loadCoursePickerData(originalData: any, isOrganization: boolean) {
+  loadCoursePickerData(originalData: any, isOrganization: boolean, refresh: boolean) {
     let filters: WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
       organizationFilters: originalData.o || [],
+      stateFilters: originalData.p || [],
+      templates: originalData.t || [],
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
-    this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization) as Action);
+    this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization, refresh) as Action);
   }
 
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
-      this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
+      this.props.store.dispatch(loadMessageThreads(location[0], null) as Action);
     } else {
       this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
     }
@@ -226,41 +227,50 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
-
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-      let currentLocationHasData = Object.keys(currentLocationData).length;
+      let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
       if (currentLocationHasData) {
-        this.loadCoursePickerData(currentLocationData, false);
+        this.loadCoursePickerData(currentLocationData, false, false);
       }
 
       let state: StateType = this.props.store.getState();
 
-      if (state.status.loggedIn) {
-        this.props.store.dispatch(loadLoggedUser((user: UserType) => {
-          if (!currentLocationHasData) {
-            let defaultSelections: any = {};
-            if (user.curriculumIdentifier) {
-              defaultSelections["c"] = [user.curriculumIdentifier];
-            }
-            if (user.organizationIdentifier) {
-              defaultSelections["o"] = [user.organizationIdentifier];
-            }
-            if (defaultSelections.c || defaultSelections.o) {
-              location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
-            } else {
-              this.loadCoursePickerData(currentLocationData, false);
-            }
-          } else {
-            this.loadCoursePickerData(currentLocationData, false);
+      let loadCoursepickerDataByUser = (user: UserType) => {
+        if (!currentLocationHasData) {
+          let defaultSelections: any = {};
+          if (user.curriculumIdentifier) {
+            defaultSelections["c"] = [user.curriculumIdentifier];
           }
-        }) as Action);
+          if (user.organizationIdentifier) {
+            defaultSelections["o"] = [user.organizationIdentifier];
+          }
+
+          if (defaultSelections.c || defaultSelections.o) {
+            location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+          } else {
+            this.loadCoursePickerData(currentLocationData, false, false);
+          }
+        } else {
+          this.loadCoursePickerData(currentLocationData, false, false);
+        }
+      }
+
+      if (state.status.loggedIn) {
+        if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
+          this.props.store.dispatch(loadLoggedUser((user: UserType) => {
+            loadCoursepickerDataByUser(user);
+          }) as Action);
+        } else {
+          let user = state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier];
+          loadCoursepickerDataByUser(user);
+        }
       } else if (!currentLocationHasData) {
-        this.loadCoursePickerData(currentLocationData, false);
+        this.loadCoursePickerData(currentLocationData, false, false);
       }
 
       this.props.store.dispatch(loadProfileChatSettings() as Action);
@@ -288,38 +298,57 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderOrganizationAdministrationBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      let stateFilters = [
+        {
+          identifier: "unpublished",
+          name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.unpublished.label')
+        }
+      ];
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(setWorkspaceStateFilters(true, stateFilters) as Action);
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
-
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-      let currentLocationHasData = Object.keys(currentLocationData).length;
+      let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
       if (currentLocationHasData) {
-
-        // Todo: this is not for coursepicker anymore
-
-        this.loadCoursePickerData(currentLocationData, true);
+        this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers() as Action);
-      this.props.store.dispatch(loadStudyprogrammes() as Action);
+      let state: StateType = this.props.store.getState();
 
-      this.props.store.dispatch(loadLoggedUser((user: UserType) => {
+      let loadWorkspacesByUser = (user: UserType) => {
         if (!currentLocationHasData) {
           let defaultSelections: any = {};
-          if (user.curriculumIdentifier) {
-            defaultSelections["c"] = [user.curriculumIdentifier];
+          if (user.organizationIdentifier) {
+            defaultSelections["o"] = [user.organizationIdentifier];
           }
           if (defaultSelections.c || defaultSelections.o) {
             location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
           } else {
-            this.loadCoursePickerData(currentLocationData, true);
+            this.loadCoursePickerData(currentLocationData, true, false);
           }
+        } else {
+          this.loadCoursePickerData(currentLocationData, true, false);
         }
-      }) as Action);
+      }
 
+      if (state.status.loggedIn) {
+        if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
+          this.props.store.dispatch(loadLoggedUser((user: UserType) => {
+            loadWorkspacesByUser(user);
+          }) as Action);
+        } else {
+          let user = state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier];
+          loadWorkspacesByUser(user);
+        }
+      } else if (!currentLocationHasData) {
+        this.loadCoursePickerData(currentLocationData, true, false);
+      }
+
+      this.props.store.dispatch(loadUsers(null, 0, 10) as Action);
+      this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
     return <OrganizationAdministrationBody />
@@ -386,8 +415,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcements.pageTitle')));
       this.props.store.dispatch(loadAnnouncementsAsAClient({ hideWorkspaceAnnouncements: "false" }, (announcements: AnnouncementListType) => { announcements }) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
@@ -460,6 +487,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderRecordsBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+
       this.props.websocket && this.props.websocket.restoreEventListeners(); this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
@@ -473,17 +504,17 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   render() {
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
-      <Route exact path="/" render={this.renderIndexBody}/>
-      <Route path="/organization" render={this.renderOrganizationAdministrationBody}/>
-      <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
-      <Route path="/communicator" render={this.renderCommunicatorBody}/>
-      <Route path="/discussion" render={this.renderDiscussionBody}/>
-      <Route path="/announcements" render={this.renderAnnouncementsBody}/>
-      <Route path="/announcer" render={this.renderAnnouncerBody}/>
-      <Route path="/guider" render={this.renderGuiderBody}/>
-      <Route path="/profile" render={this.renderProfileBody}/>
+      <Route exact path="/" render={this.renderIndexBody} />
+      <Route path="/organization" render={this.renderOrganizationAdministrationBody} />
+      <Route path="/coursepicker" render={this.renderCoursePickerBody} />
+      <Route path="/communicator" render={this.renderCommunicatorBody} />
+      <Route path="/discussion" render={this.renderDiscussionBody} />
+      <Route path="/announcements" render={this.renderAnnouncementsBody} />
+      <Route path="/announcer" render={this.renderAnnouncerBody} />
+      <Route path="/guider" render={this.renderGuiderBody} />
+      <Route path="/profile" render={this.renderProfileBody} />
       <Route path="/records" render={this.renderRecordsBody} />
-      <Chat/>
+      <Chat />
     </div></BrowserRouter>);
   }
 }

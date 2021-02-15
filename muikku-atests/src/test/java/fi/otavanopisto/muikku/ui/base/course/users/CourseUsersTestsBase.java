@@ -93,12 +93,12 @@ public class CourseUsersTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/users", workspace1.getUrlName()), false);
         waitAndClick(".application-list--workspace-users .application-list__item-content-actions .icon-trash");
-        waitForPresentAndVisible(".button--standard-ok");
+        waitForVisible(".button--standard-ok");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
         sleep(1000);
         waitAndClick(".button--standard-ok");
         
-        waitForPresentAndVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span");
+        waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span");
         assertText(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span", "Student Tester");
       } finally {
         deleteWorkspace(workspace1.getId());
@@ -132,11 +132,11 @@ public class CourseUsersTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/users", workspace1.getUrlName()), false);
         waitAndClick(".application-list--workspace-users .application-list__item-content-actions .icon-trash");
-        waitForPresentAndVisible(".button--standard-ok");
+        waitForVisible(".button--standard-ok");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
         sleep(1000);
         waitAndClick(".button--standard-ok");
-        waitForPresentAndVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
+        waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
 
         waitAndClick(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
@@ -176,14 +176,14 @@ public class CourseUsersTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/users", workspace1.getUrlName()), false);
         waitAndClick(".application-list--workspace-users .application-list__item-content-actions .icon-envelope");
-        waitForPresentAndVisible(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item");
-        assertText(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item", "Student Tester");
+        waitForVisible(".env-dialog--new-message.visible .autocomplete__input .tag-input__selected-item");
+        assertText(".env-dialog--new-message.visible .autocomplete__input .tag-input__selected-item", "Student Tester");
         
-        waitForPresentAndVisible(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
+        waitForVisible(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
         scrollIntoView(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
         sleep(500);
         waitAndClick(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
-        waitForPresentAndVisible(".notification-queue__item--success");
+        waitForVisible(".notification-queue__item--success");
         
         logout();
         mockBuilder.mockLogin(student);

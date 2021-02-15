@@ -5,6 +5,8 @@ import { Dispatch } from "redux";
 import { StateType } from '~/reducers';
 import mApi from '~/lib/mApi';
 import MatriculationSubjectType from "./matriculation-subject-type";
+import Link from '~/components/general/link';
+import '~/sass/elements/wcag.scss';
 import Button from '~/components/general/button';
 
 /**
@@ -147,7 +149,8 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
     const matriculationSubjectInputs = this.state.selectedMatriculationSubjects.map((subject: string, index: number) => {
       return (
         <div className="form-element__dropdown-selection-container"  key={index}>
-          <select className="form-element__select form-element__select--matriculation-exam" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
+          <label htmlFor={`matriculationSubject` + index} className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.matriculationSubjectSelect.label")}</label>
+          <select id={`matriculationSubject` + index} className="form-element__select form-element__select--matriculation-exam" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
             <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectChoose")}</option>
             {this.state.matriculationSubjects.map(( subject: MatriculationSubjectType, index: number ) => {
               return <option key={index} value={subject.code}>{this.getMatriculationSubjectNameByCode(subject.code)}</option>

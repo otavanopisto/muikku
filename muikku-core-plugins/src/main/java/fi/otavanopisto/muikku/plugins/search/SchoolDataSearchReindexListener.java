@@ -21,6 +21,8 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchIndexer;
@@ -52,6 +54,9 @@ public class SchoolDataSearchReindexListener {
   @Inject
   private PluginSettingsController pluginSettingsController;
   
+  @Inject 
+  private CommunicatorController communicatorController;
+  
   @Inject
   private SearchIndexer indexer;
   
@@ -60,6 +65,9 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
+  
+  @Inject
+  private CommunicatorMessageIndexer communicatorMessageIndexer;
   
   @Resource
   private TimerService timerService;
@@ -82,16 +90,20 @@ public class SchoolDataSearchReindexListener {
     tasks = event.getTasks();
     
     if (!event.isResume()) {
-      if (tasks.contains(Task.USERS)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.USERS)) {
         setOffset("userIndex", 0);
       }
       
-      if (tasks.contains(Task.WORKSPACES)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.WORKSPACES)) {
         setOffset("workspaceIndex", 0);
       }
       
-      if (tasks.contains(Task.USER_GROUPS)) {
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.USERGROUPS)) {
         setOffset("groupIndex", 0);
+      }
+      
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.COMMUNICATORMESSAGES)) {
+        setOffset("communicatorIndex", 0);
       }
     }
     
@@ -114,10 +126,14 @@ public class SchoolDataSearchReindexListener {
         allDone = allDone && reindexUsers();
       }
       
-      if (allDone && tasks.contains(Task.USER_GROUPS)) {
+      if (allDone && tasks.contains(Task.USERGROUPS)) {
         allDone = allDone && reindexUserGroups();
       }
-  
+      
+      if (allDone && tasks.contains(Task.COMMUNICATORMESSAGES)) {
+        allDone = allDone && reindexCommunicatorMessages();
+      }
+      
       if (!allDone) {
         startTimer(getTimeout());
       } else {
@@ -212,6 +228,39 @@ public class SchoolDataSearchReindexListener {
         return true;
     } catch (Exception ex) {
       logger.log(Level.SEVERE, "Could not finish indexing usergroup entities.", ex);
+      return true;
+    }
+  }
+  
+  private boolean reindexCommunicatorMessages() {
+    try {
+      Long totalMessagesCount = communicatorController.countTotalMessages();
+        
+      int communicatorIndex = getOffset("communicatorIndex");
+      
+      if (communicatorIndex < totalMessagesCount) {
+        List<CommunicatorMessage> batch = communicatorController.listAllMessages(communicatorIndex, getBatchSize());
+
+        for (CommunicatorMessage message : batch) {
+          try {
+            communicatorMessageIndexer.indexMessage(message);
+            communicatorIndex++;
+          } catch (Exception e) {
+            logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
+          }
+        }
+
+        if (communicatorIndex < (totalMessagesCount + 1)) {
+          logger.log(Level.INFO, "Reindexed batch of communicator messages (" + getOffset("communicatorIndex") + "-" + communicatorIndex + ")");
+        }
+        
+        setOffset("communicatorIndex", communicatorIndex);
+        return false;
+      } else {
+        return true;
+      }
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "Could not finish indexing communicator messages.", ex);
       return true;
     }
   }

@@ -1,7 +1,0 @@
-<div class="mf-item-user cm-message-recipient">
-  <input type="hidden" data-array="true" name="recipientIds" value="{id}" />
-  <div class="cm-message-recipient-name icon-user user" id="{id}"><span>{name}</span></div>
-  <div class="clear"></div>
-</div>
-
-

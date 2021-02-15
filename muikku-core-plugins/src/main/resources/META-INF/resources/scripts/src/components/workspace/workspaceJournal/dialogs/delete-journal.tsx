@@ -51,9 +51,7 @@ class DeleteJournal extends React.Component<DeleteJournalProps, DeleteJournalSta
   }
   render(){
     let content = (closeDialog: ()=>any) => <div>
-      {
-        this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.description')
-      }
+      {this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.description')}
     </div>
 
     let footer = (closeDialog: ()=>any)=>{
@@ -71,9 +69,7 @@ class DeleteJournal extends React.Component<DeleteJournalProps, DeleteJournalSta
     }
 
     return <Dialog modifier="delete-journal"
-      title={
-        this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.description')
-      }
+      title={this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.title')}
       content={content} footer={footer}>
       {this.props.children}
     </Dialog>

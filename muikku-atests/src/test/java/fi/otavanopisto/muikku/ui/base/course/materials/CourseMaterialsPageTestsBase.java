@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -65,7 +64,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
+            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 
             "EXERCISE");
         try {
           logout();
@@ -124,7 +123,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
           "EXERCISE");
       
       try {
@@ -147,58 +146,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     browsers = {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.CHROME_HEADLESS
-    }
-  )
-  public void materialManagementAddChapterTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    try {
-      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-      mockBuilder
-      .addStaffMember(admin)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      mockBuilder
-        .addCourseStaffMember(course1.getId(), courseStaffMember)
-        .build();
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".button-pill--editing-master-switch");
-        click(".button-pill--editing-master-switch");
-        waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
-        click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
-        waitForPresent(".material-admin-panel--chapter-functions .icon-pencil");
-        click(".material-admin-panel--chapter-functions .icon-pencil");
-        waitForVisible(".material-editor--visible .material-editor__title");
-        clearElement(".material-editor--visible .material-editor__title");
-        sendKeys(".material-editor--visible .material-editor__title", "Test title");
-        waitAndClick(".button-pill__icon.icon-leanpub");
-        waitClassPresent(".material-editor__buttonset-secondary .button-pill--material-editor-publish-page", "button-pill--disabled");
-        sleep(500);
-        waitAndClick(".button-pill--material-page-close-editor");
-        waitForNotVisible(".tabs--material-editor");
-        assertText(".content-panel__chapter-title ", "Test title");
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.SAFARI,
     }
@@ -224,14 +171,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
           "EXERCISE");
       try {
         WorkspaceFolder workspaceFolder2 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 2, "Test material 2.0", "DEFAULT");
   
         WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder2.getId(), 
             "2.0 Testmaterial", "text/html;editor=CKEditor", 
-            "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+            "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
             "EXERCISE");
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -273,7 +220,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
           "EVALUATED");
       try {
         selectFinnishLocale();
@@ -311,7 +258,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
+          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
           "EXERCISE");
       try {
         selectFinnishLocale();
@@ -333,7 +280,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
@@ -359,7 +305,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
           "EXERCISE");
       
       try {
@@ -393,7 +339,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
     }
@@ -424,7 +369,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+            "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
             "EXERCISE");
         logout();
         try {
@@ -461,7 +406,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -486,7 +430,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 
           "EXERCISE");
       
       try {
@@ -515,7 +459,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -546,7 +489,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 1l, 
+            "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 
             "EXERCISE");
         logout();        
         try {
@@ -581,7 +524,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -606,7 +548,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 
           "EXERCISE");
       
       try {
@@ -634,7 +576,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -664,7 +605,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
+            "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 
             "EXERCISE");
         logout();        
         try {
@@ -695,7 +636,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -721,7 +661,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 
           "EXERCISE");
       
       try {
@@ -747,7 +687,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -771,7 +710,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.multiselect\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nKTdumfsakZc5wFgru1LJoPs&quot;,&quot;listType&quot;:&quot;checkbox-horizontal&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;test1&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;test2&quot;,&quot;correct&quot;:false}]}\" /><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"1\" /><label>test1</label><input name=\"muikku-field-nKTdumfsakZc5wFgru1LJoPs\" type=\"checkbox\" value=\"2\" /><label>test2</label></object></p>", 
           "EXERCISE");
         
         try {
@@ -804,7 +743,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.SAFARI,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
     }
   )
@@ -832,7 +770,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 
           "EXERCISE");
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
@@ -906,7 +844,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 
           "EXERCISE");
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
@@ -966,7 +904,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
+            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 
             "EXERCISE");
         logout();
         MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
@@ -978,7 +916,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForPresentAndVisible(".notification-queue__item--success");
+          waitForVisible(".notification-queue__item--success");
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -986,11 +924,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
           waitForPresent(".file-uploader__item-delete-icon");
           waitAndClick(".file-uploader__item-delete-icon");
-          waitForPresentAndVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
+          waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
           waitAndClick(".button--standard-ok");
 //        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
           sleep(1500);
-          waitForPresentAndVisible(".file-uploader__hint");
+          waitForVisible(".file-uploader__hint");
           assertNotPresent(".file-uploader__item-title");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -1044,7 +982,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             + "{&quot;id&quot;:&quot;tfqd8&quot;,&quot;name&quot;:&quot;dsaf&quot;},{&quot;id&quot;:&quot;y3l26&quot;,&quot;name&quot;:&quot;54et&quot;}]}\" /></object></p>"
             + "<p>Mea facete feugiat scriptorem ei, ex vidit everti laoreet mea. Ius soleat consectetuer eu, docendi mandamus iudicabit vis ne. Aliquam detracto per te, "
             + "ne fabulas consulatu nec, modo ocurreret assentior quo an. Ius invenire similique ei, et aeque consequat per. Has in facete delicata praesent, mei no lorem ignota. "
-            + "Eu eam dictas ceteros petentium.<br />&nbsp;</p>", 1l, 
+            + "Eu eam dictas ceteros petentium.<br />&nbsp;</p>",
             "EXERCISE");
         logout();
         MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
@@ -1053,7 +991,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresentAndVisible(".material-page__sorterfield-wrapper");
+          waitForVisible(".material-page__sorterfield-wrapper");
           assertVisible(".material-page__sorterfield-wrapper");
           waitForPresent(".material-page__sorterfield-item .MathJax_SVG");
           waitForAttributeToHaveValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
@@ -1065,11 +1003,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           sleep(1000);
           waitAndClick(".button--muikku-check-exercises");
-          waitForPresentAndVisible(".material-page__field-answer-examples--sorterfield");
+          waitForVisible(".material-page__field-answer-examples--sorterfield");
           mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-          dragAndDropWithOffSetAndTimeout(".material-page__sorterfield-item:first-child", ".material-page__sorterfield-item:nth-child(2)", 20, 0);
-          sleep(1000);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -1120,18 +1056,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             + ",{&quot;id&quot;:&quot;t4&quot;,&quot;name&quot;:&quot;`5x(a/(a + c)) = d`&quot;},{&quot;id&quot;:&quot;t5&quot;,&quot;name&quot;:&quot;dswe&quot;}],"
             + "&quot;categories&quot;:[{&quot;id&quot;:&quot;c1&quot;,&quot;name&quot;:&quot;Test1&quot;},{&quot;id&quot;:&quot;c2&quot;,&quot;name&quot;:&quot;test2&quot;}],"
             + "&quot;categoryTerms&quot;:[{&quot;category&quot;:&quot;c1&quot;,&quot;terms&quot;:[&quot;t2&quot;,&quot;t3&quot;,&quot;t4&quot;]},{&quot;category&quot;:&quot;c2&quot;"
-            + ",&quot;terms&quot;:[&quot;t4&quot;,&quot;t5&quot;]}]}\" /></object></p>", 1l, 
+            + ",&quot;terms&quot;:[&quot;t4&quot;,&quot;t5&quot;]}]}\" /></object></p>", 
             "EXERCISE");
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__organizerfield-terms");
           waitForPresent(".material-page__organizerfield-categories");
-          waitForPresentAndVisible(".material-page__organizerfield-terms .MathJax_SVG");
+          waitForVisible(".material-page__organizerfield-terms .MathJax_SVG");
           
           waitForAttributeToHaveValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
           String mathml = getAttributeValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-          waitForPresentAndVisible("div .material-page__organizerfield-term:nth-child(1)");
+          waitForVisible("div .material-page__organizerfield-term:nth-child(1)");
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(1)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(2)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(3)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
@@ -1211,7 +1147,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //  //      TODO: Remove sleep when concurrent save and submit issue fixed
 //          sleep(350);
 //          waitAndClick("button.muikku-check-exercises");
-//          waitForPresentAndVisible(".correct-answers-count-data");
+//          waitForVisible(".correct-answers-count-data");
 //          assertEquals("1 / 1", getWebDriver().findElement(By.cssSelector(".correct-answers-count-data")).getText());
 //        } finally {
 //          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -1228,244 +1164,65 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.SAFARI,
       TestEnvironments.Browser.CHROME_HEADLESS,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.EDGE,
     }
   )
-  public void courseMaterialLicenseOverrideCC010Test() throws Exception {
+  public void ckeditorTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
+
     try {
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
+      .addStudent(student)
       .mockLogin(admin)
       .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-  
+
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), mockCourseStudent)
         .build();
       try {
-        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-            "EXERCISE");
-        
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+            + "value=\"{&quot;name&quot;:&quot;muikku-field-DZWZRbQoPNOcxXN9BGxY5WGe&quot;,&quot;rows&quot;:&quot;&quot;,&quot;example&quot;:&quot;&quot;,&quot;richedit&quot;:true}\" /></object></p>",
+            "EVALUATED");
         try {
+          String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
+              + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
+              + "Nulla consectetur quam mi.";
+          logout();
+          mockBuilder.mockLogin(student).build();
+          login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page__metadata-container .material-page__license-item");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/publicdomain/zero/1.0/");
-        } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
-        }
-        
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.SAFARI,
-        TestEnvironments.Browser.CHROME_HEADLESS,
-      }
-    )
-  public void courseMaterialLicenseOverrideCC4Test() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    try {
-        Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-        mockBuilder
-        .addStaffMember(admin)
-        .mockLogin(admin)
-        .addCourse(course1)
-        .build();
-        login();
-        Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-    
-        CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-        mockBuilder
-          .addCourseStaffMember(course1.getId(), courseStaffMember)
-          .build();
-      try {
-        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-            "EXERCISE");
-        
-        try {
+          waitForPresent(".content-panel__chapter-title-text");
+          waitForElementToBeClickable(".cke_wysiwyg_div p");
+          addTextToCKEditor(contentInput);
+          waitForPresent(".material-page__field-answer-synchronizer--saving");
+          waitForPresent(".material-page__field-answer-synchronizer--saved");
+          navigate("/", false);
+          waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page__metadata-container .material-page__license-item");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by-nc-sa/4.0");
+          waitForPresent(".content-panel__chapter-title-text");
+          String actualInput = getCKEditorContentInMaterials();
+          assertEquals(contentInput, actualInput);
         } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
-        
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    }finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.SAFARI,
-        TestEnvironments.Browser.CHROME_HEADLESS,
-      }
-    )
-  public void courseMaterialLicenseOverrideCC3Test() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    try {
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-      mockBuilder
-      .addStaffMember(admin)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-  
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      mockBuilder
-        .addCourseStaffMember(course1.getId(), courseStaffMember)
-        .build();
-      try {
-        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-            "EXERCISE");
-        
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page__metadata-container .material-page__license-item");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by-nc-sa/3.0");
-        } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
-        }
-        
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    }finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.SAFARI,
-        TestEnvironments.Browser.CHROME_HEADLESS,
-      }
-    )
-  public void courseMaterialLicenseOverrideLinkTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    try {
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-      mockBuilder
-      .addStaffMember(admin)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-  
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      mockBuilder
-        .addCourseStaffMember(course1.getId(), courseStaffMember)
-        .build();
-      try {
-        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-            "EXERCISE");
-        
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
-          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
-          waitForPresentAndVisible(".license-selector .form-element__input--material-editor");
-          sendKeys(".license-selector .form-element__input--material-editor", "www.test.com");
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page__metadata-container .material-page__license span");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license span", "www.test.com");
-        } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
-        }
-        
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -1474,4 +1231,75 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.EDGE,
+    }
+  )
+  public void memofieldTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addStudent(student)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), mockCourseStudent)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+            + "value=\"{&quot;name&quot;:&quot;muikku-field-DZWZRbQoPNOcxXN9BGxY5WGe&quot;,&quot;rows&quot;:&quot;&quot;,&quot;example&quot;:&quot;&quot;,&quot;richedit&quot;:false}\" /></object></p>",
+            "EVALUATED");
+        try {
+          String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
+              + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
+              + "Nulla consectetur quam mi.";
+          logout();
+          mockBuilder.mockLogin(student).build();
+          login();
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".content-panel__chapter-title-text");
+          waitForElementToBeClickable(".material-page__memofield");
+          sendKeys(".material-page__memofield", contentInput);
+          waitForPresent(".material-page__field-answer-synchronizer--saving");
+          waitForPresent(".material-page__field-answer-synchronizer--saved");
+          navigate("/", false);
+          waitForPresent(".panel__header-title");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".content-panel__chapter-title-text");
+          String actualInput = getElementText(".material-page__memofield");
+          assertEquals(contentInput, actualInput);
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }

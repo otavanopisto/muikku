@@ -85,10 +85,6 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String LIST_INACTIVE_STUDENTS = "LIST_INACTIVE_STUDENTS";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
-  public static final String LIST_HIDDEN_STUDENTS = "LIST_HIDDEN_STUDENTS";
-
-  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
   public static final String ACCESS_MEMBERS_ONLY_WORKSPACE = "ACCESS_MEMBERS_ONLY_WORKSPACE";
   
@@ -313,10 +309,26 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String LIST_USER_WORKSPACE_ACTIVITY = "LIST_USER_WORKSPACE_ACTIVITY";
   
   /* USERGROUPS */
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER})
+  public static final String CREATE_STUDENT_GROUP = "CREATE_STUDENT_GROUP";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER})
+  public static final String UPDATE_STUDENT_GROUP = "UPDATE_STUDENT_GROUP";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER})
+  public static final String ARCHIVE_STUDENT_GROUP = "ARCHIVE_STUDENT_GROUP";
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
   public static final String LIST_USER_USERGROUPS = "LIST_USER_USERGROUPS";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
+  public static final String LIST_USERGROUP_STAFFMEMBERS = "LIST_USERGROUP_STAFFMEMBERS";
   
   // Assessment requests
   

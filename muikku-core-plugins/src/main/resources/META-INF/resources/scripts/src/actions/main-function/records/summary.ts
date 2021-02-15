@@ -2,8 +2,8 @@ import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
-import { SummaryDataType, SummaryStatusType, SummaryWorkspaceListType } from '~/reducers/main-function/records/summary';
-import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType } from '~/reducers/workspaces';
+import { SummaryDataType, SummaryStatusType } from '~/reducers/main-function/records/summary';
+import { WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType } from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 
 export interface UPDATE_STUDIES_SUMMARY extends SpecificActionType<"UPDATE_STUDIES_SUMMARY", SummaryDataType> { }
@@ -36,8 +36,34 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       let assignmentsDone: any = [];
       let coursesDone: any = [];
 
-      /* Students study time */
+      /* Student's study time */
       let studentsDetails: any = await promisify(mApi().user.students.read(pyramusId), 'callback')();
+
+      /* Student's user groups */
+      let studentsUserGroups: any = await promisify(mApi().usergroup.groups.read({ userIdentifier: pyramusId }), 'callback')();
+
+      let studentsStudentCouncelors: any = [];
+
+      /*
+        We need to filter student's usergroups that are guidance groups, then we fetch guidance councelors
+        of those usergroups and push the result to studentsGuidanceCouncelors array
+      */
+      if (studentsUserGroups && studentsUserGroups.length) {
+        studentsUserGroups.filter((studentsUserGroup: any) => studentsUserGroup.guidanceGroup == true).forEach(function (studentsUserGroup: any) {
+          mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {properties: 'profile-phone,profile-vacation-start,profile-vacation-end'}).callback(function (err: any, result: any) {
+            result.forEach(function (studentsStudentCouncelor: any) {
+              if (!studentsStudentCouncelors.some((existingStudentCouncelor: any) => existingStudentCouncelor.userEntityId == studentsStudentCouncelor.userEntityId)) {
+                studentsStudentCouncelors.push(studentsStudentCouncelor);
+                studentsStudentCouncelors.sort(function (x: any, y: any) {
+                  let a = x.lastName.toUpperCase(),
+                    b = y.lastName.toUpperCase();
+                  return a == b ? 0 : a > b ? 1 : -1;
+                });
+              }
+            });
+          });
+        });
+      }
 
       /* Getting past the object with keys */
       let activityArrays: any = Object.keys(activityLogs).map(key => activityLogs[key]);
@@ -89,6 +115,7 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         coursesDone: coursesDone.length,
         graphData: graphData,
         studentsDetails: studentsDetails,
+        studentsStudentCouncelors: studentsStudentCouncelors,
       }
 
       dispatch({

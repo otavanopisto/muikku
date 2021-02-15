@@ -232,10 +232,9 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
   let assessmentRequestItem = this.props.currentWorkspace &&
     this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? {
     modifier: "assessment-request",
-
     item: (<Dropdown openByHover key="assessment-request" modifier="assessment"
         content={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}>
-      <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} aria-label={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
+      <Link tabIndex={0} as="span" onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} aria-label={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
         className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)} link--workspace-navbar icon-assessment-${getIconForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)}`}></Link>
     </Dropdown>)
   } : null;
@@ -253,10 +252,10 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
 
   let editModeSwitch = null;
   if (this.props.workspaceEditMode.available){
-     editModeSwitch = (<input key="3" type="checkbox"
+    editModeSwitch = (<span key="edit-mode-switch"><label htmlFor="editingMasterSwitch" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.mainNavigation.editingMasterSwitch")}</label><input id="editingMasterSwitch" key="3" type="checkbox"
          className={`button-pill button-pill--editing-master-switch ${this.props.workspaceEditMode.active ? "button-pill--editing-master-switch-active" : ""}`}
          onChange={this.toggleEditModeActive}
-         checked={this.props.workspaceEditMode.active}/>)
+       checked={this.props.workspaceEditMode.active} /></span>)
   }
 
   let navbarModifiers = this.props.workspaceEditMode.active ? "workspace-edit-mode" : "workspace";
@@ -264,7 +263,6 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
   return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={false}
     modifier={navbarModifiers} navigation={trueNavigation} navbarItems={[
       assessmentRequestItem,
-      //managementItem
     ].concat(itemData.map((item)=>{
     if (!item.condition){
       return null;
@@ -272,15 +270,15 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     return {
       modifier: item.modifier,
       item: (<Dropdown openByHover key={item.text} content={this.props.i18n.text.get(item.text)}>
-        <Link openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
-        aria-label={this.props.i18n.text.get(item.text)}>
+        <Link tabIndex={this.props.activeTrail == item.trail ? 0 : null} as={this.props.activeTrail == item.trail ? "span" : null} openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+          aria-label={this.props.activeTrail == item.trail ? this.props.i18n.text.get("plugin.wcag.mainNavigation.currentPage.aria.label") + " " + this.props.i18n.text.get(item.text) : this.props.i18n.text.get(item.text)} role="menuitem">
         <span className={`link__icon icon-${item.icon}`}/>
         {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
       </Link></Dropdown>)
     }
     }))} defaultOptions={this.props.status.loggedIn ? [editModeSwitch] : [
-      (<LoginButton modifier="login-main-function" key="0"/>),
-      (<ForgotPasswordDialog key="1"><Link className="link link--forgot-password link--forgot-password-main-function">
+      (<LoginButton modifier="login-main-function" key="login-button"/>),
+      (<ForgotPasswordDialog key="forgot-password-dialog"><Link className="link link--forgot-password link--forgot-password-main-function">
         <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
       </Link></ForgotPasswordDialog>)
     ]} menuItems={[assessmentRequestMenuItem].concat(itemData.map((item: ItemDataElement)=>{

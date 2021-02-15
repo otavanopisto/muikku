@@ -15,6 +15,8 @@
   }
 }
 
+
+
 .application-list__header-container {
   align-items: flex-start;
   display: flex;
@@ -68,12 +70,16 @@
   padding: 0;
 }
 
+.application-list--workspace-templates {
+  overflow: hidden;
+}
 
 .application-list__title {
   @include mainfunction-subpanel-title;
 }
 
 .application-list__header-icon {
+
   color: $color-course-icon;
   display: inline-flex;
   flex-basis: auto;
@@ -81,6 +87,12 @@
   flex-shrink: 0;
   font-size: 1.25rem;
   margin-right: 10px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-UNPUBLISHED {
+    color: $color-disabled;
+  }
+  // scss-lint:enable SelectorFormat
 }
 
 .application-list__header-icon--notification-1 {
@@ -105,8 +117,32 @@
   word-wrap: break-word;
 }
 
+.application-list__header-primary--announcement-meta {
+  margin: 0 10px 10px;
+}
+
 .application-list__header-primary--highlight {
   font-weight: 600;
+}
+
+.application-list__header-primary-sender {
+  font-weight: 600;
+
+  &::after {
+    content: ">";
+    margin: 0 10px;
+  }
+}
+
+.application-list__header-recipients {
+
+  .application-list__header-recipient:not(:last-child) {
+
+    &::after {
+      content: ",";
+      padding: 0 5px 0 0;
+    }
+  }
 }
 
 .application-list__header-helper {
@@ -210,6 +246,24 @@
   display: inline-block;
 }
 
+.application-list__item-content > span:not(:first-child) {
+  margin-left: 5px;
+}
+
+.application-list__item-content-actions {
+  span {
+    cursor: pointer;
+  }
+
+  // scss-lint:disable SelectorFormat
+  .state-DISABLED {
+    color: $color-disabled;
+    cursor: default;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
@@ -270,12 +324,9 @@
     .application-list__header-secondary,
     .application-list__header-helper,
     .application-list__header-item-date,
-    .application-list__header-item-body {
+    .application-list__header-item-body,
+    .application-list-document-short-header {
       color: $color-default;
-    }
-
-    .label__text {
-      color: $color-default-contrast;
     }
 
     .text--item-counter {
@@ -285,10 +336,15 @@
     @include breakpoint($breakpoint-pad) {
       background-color: $color-default;
 
-      .label__text,
+      .application-list__header-helper {
+        color: $color-default-helper;
+      }
+
       .application-list__header-primary,
+      .application-list__header-secondary,
       .application-list__header-item-date,
-      .application-list__header-item-body {
+      .application-list__header-item-body,
+      .application-list-document-short-header {
         color: $color-default-contrast;
       }
 
@@ -336,7 +392,6 @@
 
 .application-list__item--user {
   border-top: 1px solid $color-default-item-separator-border;
-  cursor: pointer;
   padding: 10px;
 
   &:first-child {
@@ -362,6 +417,14 @@
       background-color: transparent;
     }
   }
+}
+
+.application-list__item-dates {
+  display: flex;
+}
+
+.application-list__item-date-container {
+  margin-left: 5px;
 }
 
 .application-list__item-body {
@@ -436,12 +499,26 @@
     font-size: 0.875rem;
   }
 
+  input[type=radio] {
+    border-radius: 50%;
+    // this could be for any input inside the aside, but in communicator it is in the container
+    margin-right: 5px;
+  }
+
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 0;
+  }
+}
+
+.application-list__item-content-aside--course {
+  padding: 15px 0;
+
+  input[type=radio] {
+    padding: 8px;
   }
 }
 
@@ -530,11 +607,15 @@
 .application-list__item-content-header {
   font-size: 1rem;
   padding: 10px;
+}
 
+.application-list__item-content-header--announcer-announcement {
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
   }
 }
+
+
 
 .application-list__item-content-body {
   padding: 0 10px;
@@ -631,7 +712,6 @@
       content: ",";
       padding: 0 5px 0 0;
     }
-
   }
 }
 

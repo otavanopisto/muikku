@@ -32,6 +32,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
@@ -59,6 +60,9 @@ public class CommunicatorRESTModels {
   private UserGroupController userGroupController;
   
   @Inject
+  private UserEntityFileController userEntityFileController;
+
+  @Inject
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
@@ -78,7 +82,7 @@ public class CommunicatorRESTModels {
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
       User user = userController.findUserByUserEntityDefaults(userEntity);
-      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
       
       if (user == null)
         return null;
@@ -88,11 +92,8 @@ public class CommunicatorRESTModels {
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),
-          user.getStudyProgrammeName(),
-          hasPicture,
-          user.hasEvaluationFees(),
-          user.getCurriculumIdentifier(),
-          user.getOrganizationIdentifier().toId());
+          hasPicture
+      );
 
       return result;
     } finally {
@@ -203,7 +204,12 @@ public class CommunicatorRESTModels {
               organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
             }
           }
-          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization);
+          return new fi.otavanopisto.muikku.rest.model.UserGroup(
+              entity.getId(),
+              group.getName(),
+              userCount,
+              organization,
+              group.getIsGuidanceGroup());
         }
       }
       return null;

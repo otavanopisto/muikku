@@ -1120,6 +1120,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           workspaceStudents.add(new WorkspaceStudentRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+              workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier(),
               String.valueOf(elasticUser.get("firstName")),
               elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
               String.valueOf(elasticUser.get("lastName")),
@@ -1217,6 +1218,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           workspaceStaffMembers.add(new WorkspaceUserRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+              workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier(),
               elasticUser.get("firstName").toString(),
               elasticUser.get("lastName").toString(),
               hasImage));
@@ -1278,6 +1280,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
+    /* #5124: Workspaces no longer have logic related to evaluation fees, only line being studied matters
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -1294,6 +1297,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean evaluationFees = user.hasEvaluationFees() && (StringUtils.isNotEmpty(user.getSchool()) || workspace.isEvaluationFeeApplicable());
 
     return Response.ok(new WorkspaceFeeInfo(evaluationFees)).build();
+    */
+    
+    return Response.ok(new WorkspaceFeeInfo(user.getHasEvaluationFees())).build();
   }
 
   @GET
@@ -2750,6 +2756,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceStudentRestModel workspaceStudentRestModel = new WorkspaceStudentRestModel(
         workspaceUserEntity.getId(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier(),
         elasticUser.get("firstName").toString(),
         elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
         elasticUser.get("lastName").toString(),

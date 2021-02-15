@@ -17,6 +17,13 @@
   margin: 0 10px 10px;
 }
 
+.labels__wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
 .label {
   align-items: center;
   background: $color-label-background;
@@ -25,6 +32,11 @@
   font-weight: 300;
   margin: 2px 5px 2px 0;
   padding: 2px 4px;
+}
+
+.label--folder {
+  background-color: $color-label-background;
+  color: $color-default-contrast;
 }
 
 .label__icon {

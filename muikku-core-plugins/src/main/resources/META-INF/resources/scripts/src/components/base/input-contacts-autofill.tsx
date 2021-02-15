@@ -2,9 +2,9 @@ import * as React from 'react';
 import Autocomplete from '~/components/general/autocomplete';
 import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
-import {filterHighlight, getName} from '~/util/modifiers';
+import { filterHighlight, getName } from '~/util/modifiers';
 import mApi from '~/lib/mApi';
-import {WorkspaceType} from '~/reducers/workspaces';
+import { WorkspaceType } from '~/reducers/workspaces';
 import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
@@ -18,7 +18,8 @@ export interface InputContactsAutofillLoaders {
 
 export interface InputContactsAutofillProps {
   placeholder?: string,
-  onChange: (newValue: ContactRecepientType[])=>any,
+  label?: string,
+  onChange: (newValue: ContactRecepientType[]) => any,
   modifier: string,
   selectedItems: ContactRecepientType[],
   hasGroupPermission?: boolean,
@@ -30,7 +31,8 @@ export interface InputContactsAutofillProps {
   showFullNames: boolean,
   showEmails?: boolean,
   autofocus?: boolean,
-  loaders?: InputContactsAutofillLoaders
+  loaders?: InputContactsAutofillLoaders,
+  wcagLabel?: string,
 }
 
 export interface InputContactsAutofillState {
@@ -38,24 +40,23 @@ export interface InputContactsAutofillState {
   selectedItems: ContactRecepientType[],
   textInput: string,
   autocompleteOpened: boolean,
-
   isFocused: boolean
 }
 
-function checkHasPermission(which: boolean, defaultValue?: boolean){
-  if (typeof which === "undefined"){
+function checkHasPermission(which: boolean, defaultValue?: boolean) {
+  if (typeof which === "undefined") {
     return typeof defaultValue === "undefined" ? true : defaultValue;
   }
   return which;
 }
 
 export default class c extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
-  private blurTimeout:NodeJS.Timer;
-  private selectedHeight:number;
-  private activeSearchId:number;
-  private activeSearchTimeout:NodeJS.Timer;
+  private blurTimeout: NodeJS.Timer;
+  private selectedHeight: number;
+  private activeSearchId: number;
+  private activeSearchTimeout: NodeJS.Timer;
 
-  constructor(props: InputContactsAutofillProps){
+  constructor(props: InputContactsAutofillProps) {
     super(props);
 
     this.state = {
@@ -68,7 +69,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     }
 
     this.blurTimeout = null;
-    this.selectedHeight= null;
+    this.selectedHeight = null;
     this.onInputChange = this.onInputChange.bind(this);
     this.autocompleteDataFromServer = this.autocompleteDataFromServer.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
@@ -80,49 +81,49 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
-  componentWillReceiveProps(nextProps: InputContactsAutofillProps){
-    if (nextProps.selectedItems !== this.props.selectedItems){
-      this.setState({selectedItems: nextProps.selectedItems})
+  componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
+    if (nextProps.selectedItems !== this.props.selectedItems) {
+      this.setState({ selectedItems: nextProps.selectedItems })
     }
   }
 
   setBodyMargin() {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
-    let prevSelectedHeight= this.selectedHeight;
+    let prevSelectedHeight = this.selectedHeight;
     let currentBodyMargin = parseFloat(document.body.style.marginBottom);
     let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
 
-    if (selectedHeight !== this.selectedHeight){
+    if (selectedHeight !== this.selectedHeight) {
       let bodyMargin = defaultBodyMargin + selectedHeight + "px";
-        document.body.style.marginBottom = bodyMargin;
-        this.selectedHeight = selectedHeight;
-      }
+      document.body.style.marginBottom = bodyMargin;
+      this.selectedHeight = selectedHeight;
+    }
   }
   onInputBlur(e: React.FocusEvent<any>){
-    this.blurTimeout = setTimeout(()=>this.setState({isFocused: false}), 100);
+    this.blurTimeout = setTimeout(()=>this.setState({isFocused: false}), 100) as any;
   }
-  onInputFocus(e: React.FocusEvent<any>){
+  onInputFocus(e: React.FocusEvent<any>) {
     clearTimeout(this.blurTimeout);
-    this.setState({isFocused: true});
+    this.setState({ isFocused: true });
   }
-  onInputChange(e: React.ChangeEvent<HTMLInputElement>){
+  onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     let textInput = e.target.value;
-    this.setState({textInput, autocompleteOpened: true});
+    this.setState({ textInput, autocompleteOpened: true });
     clearTimeout(this.activeSearchTimeout);
     if (textInput){
-      this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100);
+      this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100) as any;
     } else {
       this.setState({
         autocompleteSearchItems: []
       });
     }
   }
-  async autocompleteDataFromServer(textInput: string){
+  async autocompleteDataFromServer(textInput: string) {
     let searchId = (new Date()).getTime();
     this.activeSearchId = searchId;
     let loaders = this.props.loaders || {};
 
-    let getStudentsLoader = () =>  {
+    let getStudentsLoader = () => {
       return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
         q: textInput,
         onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
@@ -141,35 +142,35 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     }
     let getStaffLoader = () => {
       return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
-         q: textInput
+        q: textInput
       }), 'callback');
     }
 
     let searchResults = await Promise.all(
       [
-        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
-        checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-        checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]): any[] => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
       ]
     );
 
-    let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
-    let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
-    let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
-    let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
-    let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
+    let userItems: ContactRecepientType[] = searchResults[0].map((item: UserType) => ({ type: "user", value: item } as any as UserRecepientType));
+    let userGroupItems: ContactRecepientType[] = searchResults[1].map((item: UserGroupType) => ({ type: "usergroup", value: item } as any as UserGroupRecepientType));
+    let workspaceItems: ContactRecepientType[] = searchResults[2].map((item: WorkspaceType) => ({ type: "workspace", value: item } as any as WorkspaceRecepientType))
+    let staffItems: ContactRecepientType[] = searchResults[3].map((item: UserStaffType) => ({ type: "staff", value: item } as any as StaffRecepientType))
+    let allItems: ContactRecepientType[] = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
 
     //ensuring that the current search is the last search
-    if (this.activeSearchId === searchId){
+    if (this.activeSearchId === searchId) {
       this.setState({
         autocompleteSearchItems: allItems
       });
     }
   }
-  onDelete(item: ContactRecepientType){
+  onDelete(item: ContactRecepientType) {
     clearTimeout(this.blurTimeout);
-    let nfilteredValue = this.state.selectedItems.filter(selectedItem=>selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
+    let nfilteredValue = this.state.selectedItems.filter(selectedItem => selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
     this.setState({
       selectedItems: nfilteredValue,
       isFocused: true
@@ -178,10 +179,10 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     this.props.onChange(nfilteredValue);
   }
-  onAutocompleteItemClick(item: ContactRecepientType, selected: boolean){
+  onAutocompleteItemClick(item: ContactRecepientType, selected: boolean) {
     clearTimeout(this.blurTimeout);
     this.setBodyMargin;
-    if (!selected){
+    if (!selected) {
       let nvalue = this.state.selectedItems.concat([item]);
       this.setState({
         selectedItems: nvalue,
@@ -192,62 +193,61 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       );
       this.props.onChange(nvalue);
     } else {
-      this.setState({isFocused: true});
+      this.setState({ isFocused: true });
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
     this.selectedHeight = selectedHeight;
   }
 
-  render(){
-    let selectedItems = this.state.selectedItems.map((item)=>{
-      if (item.type === "user" || item.type === "staff"){
+  render() {
+    let selectedItems = this.state.selectedItems.map((item) => {
+      if (item.type === "user" || item.type === "staff") {
         return {
           node: <span className="autocomplete__selected-item">
-            <span className="glyph glyph--selected-recipient icon-user"/>
+            <span className="glyph glyph--selected-recipient icon-user" />
             {
               getName(item.value, this.props.showFullNames)
             } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
           </span>,
           value: item
         };
-      } else if (item.type === "usergroup"){
+      } else if (item.type === "usergroup") {
         return {
           node: <span className="autocomplete__selected-item">
-            <span className="glyph glyph--selected-recipient icon-users"/>{item.value.name}
-                 {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
+            <span className="glyph glyph--selected-recipient icon-users" />{item.value.name}
+            {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
           </span>,
           value: item
         };
-      } else if (item.type === "workspace"){
+      } else if (item.type === "workspace") {
         return {
           node: <span className="autocomplete__selected-item">
-            <span className="glyph glyph--selected-recipient icon-books"/>{item.value.name}
+            <span className="glyph glyph--selected-recipient icon-books" />{item.value.name}
           </span>,
           value: item
         };
       }
-
     });
 
-    let autocompleteItems = this.state.autocompleteSearchItems.map((item)=>{
+    let autocompleteItems = this.state.autocompleteSearchItems.map((item) => {
       let node;
-      if (item.type === "user" || item.type === "staff"){
+      if (item.type === "user" || item.type === "staff") {
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-user"></span>
           {
             filterHighlight(getName(item.value as UserType, this.props.showFullNames), this.state.textInput)
           } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
         </div>;
-      } else if (item.type === "usergroup"){
+      } else if (item.type === "usergroup") {
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-users"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
           {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
         </div>;
-      } else if (item.type === "workspace"){
+      } else if (item.type === "workspace") {
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-books"></span>
           {filterHighlight(item.value.name + (item.value.nameExtension ? (" (" + item.value.nameExtension + ")") : ""), this.state.textInput)}
@@ -255,17 +255,17 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       }
       return {
         value: item,
-        selected: !!this.state.selectedItems.find(selectedItem=>selectedItem.type === item.type && selectedItem.value.id === item.value.id),
+        selected: !!this.state.selectedItems.find(selectedItem => selectedItem.type === item.type && selectedItem.value.id === item.value.id),
         node
       }
     });
 
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
-      <TagInput ref="taginput" modifier={this.props.modifier}
+      <TagInput wcagLabel={this.props.wcagLabel ? this.props.wcagLabel :""} ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
-        placeholder={this.props.placeholder}
-        tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete}/>
+        label={this.props.label}
+        tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete} />
     </Autocomplete>
   }
 }

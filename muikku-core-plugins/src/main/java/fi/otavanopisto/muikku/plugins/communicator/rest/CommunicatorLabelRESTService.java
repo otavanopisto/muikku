@@ -90,7 +90,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       
       if (userLabel == null) {
         userLabel = communicatorController.createMessageIdLabel(userEntity, messageId, label);
-    
+     
         return Response.ok(
           restModels.restLabel(userLabel)
         ).build();
@@ -133,7 +133,6 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     if (!canAccessLabel(userEntity, label.getLabel())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
     communicatorController.delete(label);
     
     return Response.noContent().build();

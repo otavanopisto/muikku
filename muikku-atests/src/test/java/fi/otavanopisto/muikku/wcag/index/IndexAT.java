@@ -46,7 +46,7 @@ public class IndexAT extends AbstractWCAGTest {
         login();
         testAccessibility("Logged in");
         navigate("/profile", false);
-        waitForPresentAndVisible(".profile-element__title");
+        waitForVisible(".profile-element__title");
         testAccessibility("Profile view");
       }finally{
         deleteWorkspace(workspace.getId()); 

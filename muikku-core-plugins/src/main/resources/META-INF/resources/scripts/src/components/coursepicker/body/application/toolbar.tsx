@@ -8,6 +8,7 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/wcag.scss';
 import {StateType} from '~/reducers';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel';
 import { WorkspacesType } from '~/reducers/workspaces';
@@ -53,7 +54,7 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
       searchquery: e.target.value
     });
 
-    this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
+    this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400) as any;
   }
 
   componentWillReceiveProps(nextProps: CoursepickerToolbarProps){
@@ -77,7 +78,8 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
-              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
+              <label htmlFor="searchCourses" className="visually-hidden">{this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}</label>
+              <input id="searchCourses" onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
               <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
             </div>
           </ApplicationPanelToolbarActionsMain>

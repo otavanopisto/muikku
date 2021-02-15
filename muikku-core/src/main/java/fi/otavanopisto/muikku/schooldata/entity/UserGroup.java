@@ -25,8 +25,10 @@ public interface UserGroup extends SchoolDataEntity {
   public String getIdentifier();
 
   public String getName();
+  
+  public String getArchetype();
 
-  public boolean isGuidanceGroup();
+  public boolean getIsGuidanceGroup();
   
   @IndexField (toId = true)
   public SchoolDataIdentifier getOrganizationIdentifier();

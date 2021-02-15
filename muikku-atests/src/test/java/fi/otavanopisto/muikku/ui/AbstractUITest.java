@@ -467,16 +467,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     path = StringUtils.substring(path, StringUtils.lastIndexOf(path, "/"));
     return path;
   }
-
-  protected void waitForPresentAndVisible(String selector) {
-    waitForPresent(selector);
-    waitForVisible(selector);
-  }
-  
-  protected void waitForPresentAndVisibleXPath(String XPath) {
-    waitForPresentXPath(XPath);
-    waitForVisibleXPath(XPath);
-  }
   
   protected void refresh() {
     getWebDriver().navigate().refresh();
@@ -637,6 +627,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
+  protected void waitForNotPresent(final String selector) {
+    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          return elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void waitForNotVisible(String selector) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
   }
@@ -723,6 +727,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void scrollIntoView(String selector) {
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
+  }
+  
+  protected void scrollTo(String selector, int offset) {
+    ((JavascriptExecutor) getWebDriver()).executeScript(String.format(""
+        + "var elPos = document.querySelectorAll('%s').item(0).getBoundingClientRect().top;"
+        + "var offsetPosition = elPos - %d;"
+        + "window.scrollTo({ top: offsetPosition});"
+        , selector, offset));
   }
 
   protected WebElement findElementByCssSelector(String selector) {
@@ -953,7 +965,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void hoverOverElement(String selector) {
     Actions action = new Actions(getWebDriver());
-    waitForPresentAndVisible(selector);
+    waitForVisible(selector);
     action.moveToElement(findElementByCssSelector(selector)).perform();
   }
   
@@ -1014,7 +1026,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", false);
-    waitForPresentAndVisible(".navbar .button-pill--profile");
+    waitForVisible(".navbar .button-pill--profile");
   }
   
   protected void login() {
@@ -1337,10 +1349,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return result;
   }
   
-  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, Long revisionNumber, String assignmentType) throws IOException {
+  protected WorkspaceHtmlMaterial createWorkspaceHtmlMaterial(Long workspaceEntityId, Long parentId, String title, String contentType, String html, String assignmentType) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, revisionNumber, assignmentType, null);
+    WorkspaceHtmlMaterial payload = new WorkspaceHtmlMaterial(null, parentId, title, contentType, html, assignmentType, null);
     Response response = asAdmin()
       .contentType("application/json;charset=UTF-8")
       .body(payload)
@@ -1544,10 +1556,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return getWebDriver().findElement(By.tagName(name));
   }
   
-  protected String getCKEditorContent() {
+  protected String getCKEditorContentIFrame() {
     getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
     String ckeContent = findElementByTag("body").getText();
     getWebDriver().switchTo().defaultContent();
+    return ckeContent;
+  }
+  
+  protected String getCKEditorContentInMaterials() {
+    waitForPresent(".cke_wysiwyg_div p");
+    String ckeContent = getElementText(".cke_wysiwyg_div p");
     return ckeContent;
   }
   
@@ -1604,9 +1622,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void addToEndCKEditor(String text) {
-      waitForPresentAndVisible(".cke_contents");
+      waitForVisible(".cke_contents");
       String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForPresentAndVisible(".cke_contents");
+      waitForVisible(".cke_contents");
       waitAndClick(".cke_contents");
       getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")).sendKeys(gotoEnd);
       sendKeys(".cke_wysiwyg_div", text);
@@ -1681,9 +1699,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-    scrollIntoView("input#access-" + workspaceAccess);
+    scrollTo("input#" + workspaceAccess, 300);
     sleep(500);
-    waitAndClick("input#access-" + workspaceAccess);
+    waitAndClick("input#" + workspaceAccess);
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
@@ -1694,7 +1712,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void reportWCAG() {
     if (this.violationList != null) {
       if (!this.violationList.isEmpty()) {
-        String violationsString = "";          
+        String violationsString = "";
         for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
           violationsString += System.getProperty("line.separator");
           violationsString += violation.getKey();
