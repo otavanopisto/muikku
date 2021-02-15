@@ -102,7 +102,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   }
 
   handleWrapperKeyDown(e: React.KeyboardEvent) {
-    if (e.key === " ") {
+    if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
 
