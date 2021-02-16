@@ -5,12 +5,12 @@ public class UserGroup {
   public UserGroup() {
   }
 
-  public UserGroup(Long id, String name, Long userCount, OrganizationRESTModel organization, boolean guidanceGroup) {
+  public UserGroup(Long id, String name, Long userCount, OrganizationRESTModel organization, boolean isGuidanceGroup) {
     this.id = id;
     this.name = name;
     this.userCount = userCount;
     this.organization = organization;
-    this.guidanceGroup = guidanceGroup;
+    this.isGuidanceGroup = isGuidanceGroup;
   }
 
   public Long getId() {
@@ -45,17 +45,17 @@ public class UserGroup {
     this.organization = organization;
   }
 
-  public boolean isGuidanceGroup() {
-    return guidanceGroup;
+  public boolean getIsGuidanceGroup() {
+    return isGuidanceGroup;
   }
 
-  public void setGuidanceGroup(boolean guidanceGroup) {
-    this.guidanceGroup = guidanceGroup;
+  public void setIsGuidanceGroup(boolean isGuidanceGroup) {
+    this.isGuidanceGroup = isGuidanceGroup;
   }
 
   private Long id;
   private String name;
   private Long userCount;
   private OrganizationRESTModel organization;
-  private boolean guidanceGroup;
+  private boolean isGuidanceGroup;
 }

@@ -309,6 +309,18 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String LIST_USER_WORKSPACE_ACTIVITY = "LIST_USER_WORKSPACE_ACTIVITY";
   
   /* USERGROUPS */
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER})
+  public static final String CREATE_STUDENT_GROUP = "CREATE_STUDENT_GROUP";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER})
+  public static final String UPDATE_STUDENT_GROUP = "UPDATE_STUDENT_GROUP";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER})
+  public static final String ARCHIVE_STUDENT_GROUP = "ARCHIVE_STUDENT_GROUP";
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })

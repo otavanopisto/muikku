@@ -252,7 +252,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
 
   let editModeSwitch = null;
   if (this.props.workspaceEditMode.available){
-    editModeSwitch = (<span><label htmlFor="editingMasterSwitch" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.mainNavigation.editingMasterSwitch")}</label><input id="editingMasterSwitch" key="3" type="checkbox"
+    editModeSwitch = (<span key="edit-mode-switch"><label htmlFor="editingMasterSwitch" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.mainNavigation.editingMasterSwitch")}</label><input id="editingMasterSwitch" key="3" type="checkbox"
          className={`button-pill button-pill--editing-master-switch ${this.props.workspaceEditMode.active ? "button-pill--editing-master-switch-active" : ""}`}
          onChange={this.toggleEditModeActive}
        checked={this.props.workspaceEditMode.active} /></span>)
@@ -277,8 +277,8 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       </Link></Dropdown>)
     }
     }))} defaultOptions={this.props.status.loggedIn ? [editModeSwitch] : [
-      (<LoginButton modifier="login-main-function" key="0"/>),
-      (<ForgotPasswordDialog key="1"><Link className="link link--forgot-password link--forgot-password-main-function">
+      (<LoginButton modifier="login-main-function" key="login-button"/>),
+      (<ForgotPasswordDialog key="forgot-password-dialog"><Link className="link link--forgot-password link--forgot-password-main-function">
         <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
       </Link></ForgotPasswordDialog>)
     ]} menuItems={[assessmentRequestMenuItem].concat(itemData.map((item: ItemDataElement)=>{

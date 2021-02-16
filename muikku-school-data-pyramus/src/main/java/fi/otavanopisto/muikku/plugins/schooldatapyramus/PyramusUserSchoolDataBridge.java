@@ -21,6 +21,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
@@ -47,7 +48,10 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.pyramus.rest.model.Address;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
@@ -87,6 +91,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+
+  @Inject
+  private UserGroupDiscoveryWaiter userGroupDiscoveryWaiter;
+  
+  @Inject 
+  private UserGroupEntityController userGroupEntityController;
  
   @Override
   public String getSchoolDataSource() {
@@ -650,6 +660,102 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
+  public BridgeResponse<StudentGroupPayload> createStudentGroup(StudentGroupPayload payload) {
+    BridgeResponse<StudentGroupPayload> response = pyramusClient.responsePost("/muikku/studentgroups", Entity.entity(payload, MediaType.APPLICATION_JSON), StudentGroupPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+      
+      // Convert Pyramus student group id to Muikku userGroupEntityId
+      
+      SchoolDataIdentifier userGroupIdentifier = new SchoolDataIdentifier(
+          identifierMapper.getStudentGroupIdentifier(new Long(response.getEntity().getIdentifier())),
+          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+      Long userGroupEntityId = userGroupDiscoveryWaiter.waitDiscovered(userGroupIdentifier);
+      response.getEntity().setIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+
+  @Override
+  public BridgeResponse<StudentGroupPayload> updateStudentGroup(StudentGroupPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setIdentifier(pyramusStudentGroupId.toString());
+    
+    BridgeResponse<StudentGroupPayload> response = pyramusClient.responsePut("/muikku/studentgroups", Entity.entity(payload, MediaType.APPLICATION_JSON), StudentGroupPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+
+  @Override
+  public void archiveStudentGroup(String identifier) {
+    Long userGroupId = identifierMapper.getPyramusStudentGroupId(identifier);
+    if (userGroupId != null) {
+      pyramusClient.delete(String.format("/muikku/studentgroups/%d", userGroupId));
+      return;
+    }
+    throw new SchoolDataBridgeInternalException(String.format("Malformed student group identifier %s", identifier));
+  }
+
+  @Override
+  public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(StudentGroupMembersPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setGroupIdentifier(pyramusStudentGroupId.toString());
+    
+    // Add student group members
+    
+    BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
+        "/muikku/addstudentgroupmembers",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        StudentGroupMembersPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(StudentGroupMembersPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setGroupIdentifier(pyramusStudentGroupId.toString());
+    
+    // Remove student group members
+    
+    BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
+        "/muikku/removestudentgroupmembers",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        StudentGroupMembersPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+
+  @Override
   public UserGroup findUserGroup(String identifier) {
     switch (identifierMapper.getStudentGroupType(identifier)) {
       case STUDENTGROUP:
@@ -667,7 +773,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           if (studyProgramme != null) {
             SchoolDataIdentifier organizationIdentifier = studyProgramme.getOrganizationId() != null ? 
                 identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
-            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()).getIdentifier(), studyProgramme.getName(), false, organizationIdentifier);
+            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(
+                studyProgramme.getId()).getIdentifier(),
+                studyProgramme.getName(),
+                "STUDYPROGRAMME",
+                false,
+                organizationIdentifier);
           }
         }
       break;

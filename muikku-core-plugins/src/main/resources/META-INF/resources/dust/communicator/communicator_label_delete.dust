@@ -1,3 +1,0 @@
-<div class="mf-label-delete-dialog">
-  <div data-id="{id}">{#localize key="plugin.communicator.label.remove.question" arg0=name /}</div>
-</div>

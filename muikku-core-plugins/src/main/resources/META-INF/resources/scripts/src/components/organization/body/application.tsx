@@ -33,6 +33,8 @@ interface OrganizationManagementApplicationProps {
 
 interface OrganizationManagementApplicationState {
   activeTab: "SUMMARY" | "USERS" | "COURSES" | "REPORTS",
+  workspaceSearchFieldValue: string,
+  userSearchFieldValue: string,
 }
 
 class OrganizationManagementApplication extends React.Component<OrganizationManagementApplicationProps, OrganizationManagementApplicationState>{
@@ -40,6 +42,8 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     super(props);
     this.state = {
       activeTab: "SUMMARY",
+      workspaceSearchFieldValue: "",
+      userSearchFieldValue: "",
     }
     this.onTabChange = this.onTabChange.bind(this);
     this.doUserSearch = this.doUserSearch.bind(this);
@@ -54,6 +58,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
   doUserSearch(value: string) {
     this.props.loadUsers(value);
+    this.setState({userSearchFieldValue: value});
   }
 
   doWorkspaceSearch(value: string) {
@@ -69,6 +74,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     }
 
     this.props.loadWorkspaces(filters, true, false);
+    this.setState({workspaceSearchFieldValue: value});
   }
 
   render() {
@@ -77,13 +83,13 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
-        <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="OrganizationWorkspaceSearch" updateField={this.doWorkspaceSearch} ></SearchFormElement>
+        <SearchFormElement value={this.state.workspaceSearchFieldValue} id="OrganizationWorkpaceSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="organization-workspace-search" updateField={this.doWorkspaceSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
     let usersToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
-        <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doUserSearch} ></SearchFormElement>
+        <SearchFormElement value={this.state.userSearchFieldValue} id="OrganizationUserSearch" placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="organization-user-search" updateField={this.doUserSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
@@ -93,19 +99,16 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           id: "SUMMARY",
           name: this.props.i18n.text.get('plugin.organization.tab.title.summary'),
           component: () => { return <ApplicationPanelBody modifier="tabs" children={<Summary />} /> }
-
         },
         {
           id: "USERS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
           component: () => { return <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />} /> }
-
         },
         {
           id: "COURSES",
           name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
           component: () => { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />} /> }
-
         },
         {
           id: "REPORTS",
