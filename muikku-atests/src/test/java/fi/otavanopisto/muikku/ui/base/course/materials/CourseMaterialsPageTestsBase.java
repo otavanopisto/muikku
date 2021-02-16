@@ -1289,6 +1289,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
+          waitForPresent(".material-page__memofield");
           String actualInput = getElementText(".material-page__memofield");
           assertEquals(contentInput, actualInput);
         } finally {
