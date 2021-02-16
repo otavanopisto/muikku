@@ -4,10 +4,6 @@ import { Redirect } from "react-router-dom";
 import '~/sass/elements/link.scss';
 import { scrollToSection } from '~/util/modifiers';
 
-
-// TODO remove the className, make it a modifier and add link class automatically to all the links
-
-
 interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
   disablePropagation?: boolean,
   disabled?: boolean,
@@ -148,8 +144,8 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disableScroll"];
     delete elementProps["as"];
 
-    if (Element !== "a") {
-      elementProps.tabIndex = elementProps.tabIndex || 1;
+    if (elementProps.href == null && Element === 'a') {
+       elementProps.tabIndex = 0;
     }
 
     return <Element ref="element" {...elementProps} onKeyDown={this.onKeyDown}
