@@ -26,7 +26,8 @@ export interface SimpleUserType {
   firstName: string,
   lastName?: string,
   nickName?: string,
-  hasImage?: boolean
+  hasImage?: boolean,
+  archived?: boolean
 }
 
 export interface UserType {

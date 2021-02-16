@@ -8,12 +8,13 @@ public class CommunicatorMessageRecipientRESTModel {
   public CommunicatorMessageRecipientRESTModel() {
   }
   
-  public CommunicatorMessageRecipientRESTModel(Long recipientId, Long communicatorMessageId, Long userEntityId, String firstName, String lastName, String nickName) {
+  public CommunicatorMessageRecipientRESTModel(Long recipientId, Long communicatorMessageId, Long userEntityId, String firstName, String lastName, String nickName, boolean archived) {
     this.recipientId = recipientId;
     this.communicatorMessageId = communicatorMessageId;
     this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.archived = archived;
     this.setNickName(nickName);
   }
 
@@ -64,11 +65,20 @@ public class CommunicatorMessageRecipientRESTModel {
   public void setUserEntityId(Long userEntityId) {
     this.userEntityId = userEntityId;
   }
+  
+  public boolean isArchived() {
+    return archived;
+  }
 
+  public void setArchived(boolean archived) {
+    this.archived = archived;
+  }
+  
   private Long recipientId;
   private Long communicatorMessageId;
   private Long userEntityId;
   private String firstName;
   private String lastName;
   private String nickName;
+  private boolean archived;
 }

@@ -62,7 +62,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -186,7 +185,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
       
-      UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(receivedItem);
+      CommunicatorUserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(receivedItem);
       Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, receivedItem.getCommunicatorMessageId(), false);
 
       List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, receivedItem.getCommunicatorMessageId());
@@ -245,7 +244,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
       
-      UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(sentItem);
+      CommunicatorUserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(sentItem);
       Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, sentItem.getCommunicatorMessageId(), false);
 
       List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, sentItem.getCommunicatorMessageId());
@@ -262,11 +261,12 @@ public class CommunicatorRESTService extends PluginRESTService {
       Long recipientCount = (long) messageRecipients.size() + userGroupRecipients.size() + workspaceGroupRecipients.size();
       
       Set<String> tags = communicatorController.tagIdsToStr(sentItem.getTags());
-
-      result.add(new CommunicatorSentThreadRESTModel(
-          sentItem.getId(), sentItem.getCommunicatorMessageId().getId(), sentItem.getSender(), senderBasicInfo, categoryName, 
-          sentItem.getCaption(), sentItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
-          messageCountInThread, restLabels, restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount));
+      
+        result.add(new CommunicatorSentThreadRESTModel(
+            sentItem.getId(), sentItem.getCommunicatorMessageId().getId(), sentItem.getSender(), senderBasicInfo, categoryName, 
+            sentItem.getCaption(), sentItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
+            messageCountInThread, restLabels, restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount));
+      
     }
     
     return Response.ok(
@@ -842,7 +842,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(communicatorMessage);
+    CommunicatorUserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(communicatorMessage);
     
     if (senderBasicInfo != null)
       return Response.ok(senderBasicInfo).build();

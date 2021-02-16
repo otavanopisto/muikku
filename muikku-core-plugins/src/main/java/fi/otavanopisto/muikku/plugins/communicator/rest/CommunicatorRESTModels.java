@@ -77,21 +77,30 @@ public class CommunicatorRESTModels {
    * @param communicatorMessage
    * @return
    */
-  public UserBasicInfo getSenderBasicInfo(CommunicatorMessage communicatorMessage) {
+  public CommunicatorUserBasicInfo getSenderBasicInfo(CommunicatorMessage communicatorMessage) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
       User user = userController.findUserByUserEntityDefaults(userEntity);
       Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
+      Boolean archived = userEntity.getArchived();
       
       if (user == null)
-        return null;
+        return new CommunicatorUserBasicInfo(
+            userEntity.getId(), 
+            null, 
+            null, 
+            null,
+            archived,
+            hasPicture
+        );
       
-      UserBasicInfo result = new UserBasicInfo(
+      CommunicatorUserBasicInfo result = new CommunicatorUserBasicInfo(
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),
+          archived,
           hasPicture
       );
 
@@ -150,9 +159,16 @@ public class CommunicatorRESTModels {
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
       User user = userController.findUserByUserEntityDefaults(userEntity);
-
+      boolean archived = userEntity.getArchived();
       if (user == null)
-        return null;
+        return new CommunicatorMessageRecipientRESTModel(
+        recipient.getId(),
+        recipient.getCommunicatorMessage().getId(), 
+        recipient.getRecipient(),
+        null,
+        null,
+        null,
+        archived);
       
       return new CommunicatorMessageRecipientRESTModel(
           recipient.getId(),
@@ -160,7 +176,8 @@ public class CommunicatorRESTModels {
           recipient.getRecipient(),
           user.getFirstName(),
           user.getLastName(),
-          user.getNickName());
+          user.getNickName(),
+          archived);
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -262,7 +279,7 @@ public class CommunicatorRESTModels {
   public CommunicatorMessageRESTModel restFullMessage(CommunicatorMessage message) {
     String categoryName = message.getCategory() != null ? message.getCategory().getName() : null;
     
-    UserBasicInfo senderBasicInfo = getSenderBasicInfo(message);
+    CommunicatorUserBasicInfo senderBasicInfo = getSenderBasicInfo(message);
     
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(message);
     List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(message);

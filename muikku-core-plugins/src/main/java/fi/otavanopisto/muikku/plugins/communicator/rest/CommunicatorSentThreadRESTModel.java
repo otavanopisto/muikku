@@ -13,12 +13,12 @@ import fi.otavanopisto.muikku.rest.model.UserGroup;
  */
 public class CommunicatorSentThreadRESTModel extends CommunicatorThreadRESTModel {
 
-  public CommunicatorSentThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
+  public CommunicatorSentThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo senderBasicInfo, 
       String categoryName, String caption, Date created, Set<String> tags, boolean unreadMessagesInThread, 
       Date threadLatestMessageDate, Long messageCountInThread, List<CommunicatorMessageIdLabelRESTModel> labels,
       List<CommunicatorMessageRecipientRESTModel> recipients, List<UserGroup> userGroupRecipients, 
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients, Long recipientCount) {
-    super(id, communicatorMessageId, senderId, sender, categoryName, caption, created, tags, unreadMessagesInThread, 
+    super(id, communicatorMessageId, senderId, senderBasicInfo, categoryName, caption, created, tags, unreadMessagesInThread, 
         threadLatestMessageDate, messageCountInThread, labels);
     this.recipients = recipients;
     this.recipientCount = recipientCount;
