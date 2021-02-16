@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import ApplicationPanel, { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel/application-panel';
 import { SearchFormElement } from '~/components/general/form-element';
 import ApplicationPanelBody from '~/components/general/application-panel/components/application-panel-body';
-import Tabs from '~/components/general/tabs';
 import Summary from './application/summary';
 import Users from './application/users';
+import Usergroups from './application/usergroups';
 import OrganizationWorkspaces from './application/workspaces';
 import WorkspacesAside from './application/workspaces/aside';
 import Reports from './application/reports';
@@ -32,7 +31,7 @@ interface OrganizationManagementApplicationProps {
 }
 
 interface OrganizationManagementApplicationState {
-  activeTab: "SUMMARY" | "USERS" | "COURSES" | "REPORTS",
+  activeTab: "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES" | "REPORTS",
 }
 
 class OrganizationManagementApplication extends React.Component<OrganizationManagementApplicationProps, OrganizationManagementApplicationState>{
@@ -46,7 +45,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.doWorkspaceSearch = this.doWorkspaceSearch.bind(this);
   }
 
-  onTabChange(id: "SUMMARY" | "USERS" | "COURSES" | "REPORTS") {
+  onTabChange(id: "SUMMARY" | "USERS" |"USERGROUPS" | "COURSES" | "REPORTS") {
     this.setState({
       activeTab: id
     });
@@ -74,6 +73,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   render() {
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
     let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
+    let userGroupsPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
     let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
@@ -85,6 +85,12 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
       <ApplicationPanelToolbarActionsMain>
         <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doUserSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
+    </ApplicationPanelToolbar>;
+
+    let userGroupsToolbar = <ApplicationPanelToolbar>
+    <ApplicationPanelToolbarActionsMain>
+      <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doUserSearch} ></SearchFormElement>
+    </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
     return (
@@ -99,6 +105,12 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           id: "USERS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
           component: () => { return <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />} /> }
+
+        },
+        {
+          id: "USERSGROUPS",
+          name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
+          component: () => { return <ApplicationPanelBody primaryOption={userGroupsPrimaryAction} toolbar={userGroupsToolbar} modifier="tabs" children={<Usergroups />} /> }
 
         },
         {

@@ -24,15 +24,17 @@ export interface StudyprogrammeType {
 }
 
 export interface UserPanelUsersType {
-  results: UsersListType,
+  results: UsersListType | Array<UserGroupType>,
   totalHitCount: number,
   searchString?: string
 }
 
 export interface UsersType {
-  students: UserPanelUsersType,
-  staff: UserPanelUsersType,
+  students?: UserPanelUsersType,
+  staff?: UserPanelUsersType,
+  userGroups?: UserPanelUsersType
 }
+
 
 export interface UsersSelectType {
   students: UsersListType,
@@ -51,6 +53,10 @@ export default function users(state: UsersType = {
     results: [],
     totalHitCount: null
   },
+  userGroups: {
+    results: [],
+    totalHitCount: null
+  },
 }, action: ActionType): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
@@ -63,6 +69,8 @@ export default function users(state: UsersType = {
   }
   return state;
 }
+
+
 
 export function userSelect(state: UsersSelectType = {
   students: [],

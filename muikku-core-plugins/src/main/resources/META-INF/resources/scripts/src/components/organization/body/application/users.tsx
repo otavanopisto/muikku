@@ -4,7 +4,7 @@ import { connect, Dispatch } from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import UserPanel from '~/components/general/user-panel';
 import { bindActionCreators } from 'redux';
-import users, { UsersType } from '~/reducers/main-function/users';
+import { UsersType } from '~/reducers/main-function/users';
 import { LoadUsersTriggerType, loadStudents, loadStaff } from '~/actions/main-function/users';
 interface OrganizationUsersProps {
   i18n: i18nType,

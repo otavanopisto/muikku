@@ -308,6 +308,61 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(q: string | null, first
   }
 }
 
+let loadUsergroups: LoadUsersTriggerType = function loadStudents(q: string | null, first: number | null, last: number | null) {
+
+  let data: UserDataType = {
+    q: !q ? null : q,
+  };
+
+  if (first) {
+    data.firstResult = first;
+  }
+
+  if (last) {
+    data.lastResult = last;
+  }
+
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null
+      });
+
+      await promisify(mApi().organizationUserManagement.students.read(data), 'callback')().then((users: UserPanelUsersType) => {
+        let payload = { ...users, searchString: data.q };
+        dispatch({
+          type: "UPDATE_STUDENT_USERS",
+          payload: payload
+        });
+      });
+
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+
+      dispatch({
+        type: "UPDATE_USERS_STATE",
+        payload: <UserStatusType>"ERROR"
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+    }
+  }
+}
+
+
+
+
 let loadUsers: LoadUsersTriggerType = function loadUsers(q: string | null, first: number | null, last: number | null) {
 
   let data: UserDataType = {
@@ -521,4 +576,4 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
   }
 }
 
-export { loadUsers, loadStaff, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
+export { loadUsers, loadStaff, loadUsergroups, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
