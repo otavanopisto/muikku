@@ -58,8 +58,8 @@ public class GuiderTestsBase extends AbstractUITest {
 
     try {
       navigate("/guider", false);
-      waitAndClick(".application-panel__toolbar .form-element--guider-toolbar input.form-element__input--main-function-search");
-      sendKeys(".application-panel__toolbar .form-element--guider-toolbar input.form-element__input--main-function-search", "Second User");
+      waitAndClick(".application-panel__toolbar .form-element--search input.form-element__input--search");
+      sendKeys(".application-panel__toolbar .form-element--search input.form-element__input--search", "Second User");
       waitUntilElementCount(".application-list .user--guider", 1);
       waitForPresent(".application-list__item-header .application-list__header-primary span");
       assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Second User");
