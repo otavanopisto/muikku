@@ -37,6 +37,7 @@ interface OrganizationNewWorkspaceProps {
 
 interface OrganizationNewWorkspaceState {
   template: SelectItem,
+  templateSearch: string,
   workspaceName: string,
   workspaceAccess: WorkspaceAccessType,
   workspaceNameExtension: string,
@@ -60,6 +61,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.totalSteps = 4;
     this.state = {
       workspaceName: "",
+      templateSearch: "",
       workspaceAccess: "MEMBERS_ONLY",
       workspaceNameExtension: "",
       template: {
@@ -101,6 +103,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
   doTemplateSearch(value: string) {
     this.props.loadTemplates(value);
+    this.setState({templateSearch: value});
   }
 
   selectTemplate(e: React.ChangeEvent<HTMLInputElement>) {
@@ -239,7 +242,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
       case 1:
         return <form>
           <DialogRow modifiers="new-workspace" >
-            <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="templateSearch" updateField={this.doTemplateSearch}></SearchFormElement>
+            <SearchFormElement value={this.state.templateSearch} id="OrganizationTemplateSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.templates.placeholder')} name="template-search" updateField={this.doTemplateSearch}></SearchFormElement>
           </DialogRow >
           <DialogRow modifiers="new-workspace">
             <ApplicationList modifiers="workspace-templates">

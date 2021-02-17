@@ -69,7 +69,6 @@
   }
 }
 
-
 @mixin mainfunction-subpanel-title {
   font-size: 1.1875rem;
   font-weight: 400;
@@ -102,6 +101,16 @@
   }
 }
 
+@mixin form-element-input-clear-search-decoration {
+  align-items: center;
+  color: $color-search-clear-icon;
+  display: flex;
+  font-size: 0.6rem;
+  height: 1.8rem;
+  justify-content: center;
+  width: 1.8rem;
+}
+
 @mixin workspace-image-button {
   background-color: $color-button-profile-image-edit-delete-background;
   color: $color-default;
@@ -118,7 +127,6 @@
     box-shadow: none;
   }
 }
-
 
 @mixin load-animation($size: $loader-size) {
 
