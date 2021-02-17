@@ -36,8 +36,8 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
     let test = this.props.usergroups;
     return (<div>
       <ApplicationList>
-        {this.props.usergroups && this.props.usergroups.map((workspace: UserGroupType) => {
-          return <Usergroup key={workspace.id} usergroup={workspace} />
+        {this.props.usergroups && this.props.usergroups.map((userGroup: UserGroupType) => {
+          return <Usergroup key={userGroup.id} usergroup={userGroup} />
         })}
         {this.props.usergroupsState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty" /> : null}
       </ApplicationList>
