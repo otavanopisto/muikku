@@ -267,7 +267,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         id="searchMessages"
         onFocus={this.onInputFocus}
         onBlur={this.onInputBlur}
-        placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}
+        placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')}
         value={this.state.searchquery}
       />
     </ApplicationPanelToolbar>
