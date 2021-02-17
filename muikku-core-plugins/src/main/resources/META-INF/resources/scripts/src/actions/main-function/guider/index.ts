@@ -200,8 +200,8 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "basic", value: basic}})
           }),
         promisify(mApi().usergroup.groups.read({userIdentifier: id}), 'callback')()
-          .then((userGroups:UserGroupListType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "userGroups", value: userGroups}})
+          .then((usergroups:UserGroupListType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "usergroups", value: usergroups}})
           }),
         promisify(mApi().user.students.flags.read(id, {
             ownerIdentifier: currentUserSchoolDataIdentifier

@@ -123,10 +123,10 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <span>{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
         </div>
       </div>
-      {this.props.guider.currentStudent.userGroups && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.usergroups && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studentgroups")}</div>
         <div className="application-sub-panel__item-data">
-          {this.props.guider.currentStudent.userGroups.length ? this.props.guider.currentStudent.userGroups.map((usergroup) => {
+          {this.props.guider.currentStudent.usergroups.length ? this.props.guider.currentStudent.usergroups.map((usergroup) => {
             return <span key={usergroup.id} >
               {usergroup.name}
             </span>

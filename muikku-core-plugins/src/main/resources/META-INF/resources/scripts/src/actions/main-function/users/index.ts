@@ -548,7 +548,7 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
           });
         });
       } else {
-        let payload: Partial<UsersSelectType> = { userGroups: [] };
+        let payload: Partial<UsersSelectType> = { usergroups: [] };
         dispatch({
           type: "CLEAR_USER_SELECTOR",
           payload

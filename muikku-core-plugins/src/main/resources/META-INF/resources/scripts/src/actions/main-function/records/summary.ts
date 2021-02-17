@@ -45,8 +45,8 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       let studentsStudentCouncelors: any = [];
 
       /*
-        We need to filter student's userGroups that are guidance groups, then we fetch guidance councelors
-        of those userGroups and push the result to studentsGuidanceCouncelors array
+        We need to filter student's usergroups that are guidance groups, then we fetch guidance councelors
+        of those usergroups and push the result to studentsGuidanceCouncelors array
       */
       if (studentsUserGroups && studentsUserGroups.length) {
         studentsUserGroups.filter((studentsUserGroup: any) => studentsUserGroup.guidanceGroup == true).forEach(function (studentsUserGroup: any) {
