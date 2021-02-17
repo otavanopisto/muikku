@@ -5,15 +5,15 @@ import { i18nType } from "~/reducers/base/i18n";
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 import { bindActionCreators } from 'redux';
 import { UserPanelUsersType } from '~/reducers/main-function/users';
-import Usergroup from './usergroups/usergroup';
+import Usergroup from './userGroups/usergroup';
 import { WorkspacesStateType } from '~/reducers/workspaces';
 import { LoadUsersTriggerType, loadUsergroups, loadStaff } from '~/actions/main-function/users';
 import { UserGroupType } from '~/reducers/user-index';
 interface OrganizationUserGroupsProps {
   i18n: i18nType,
-  usergroups: Array<UserGroupType>,
-  usergroupsState: WorkspacesStateType,
-  usergroupsHasMore: boolean,
+  userGroups: Array<UserGroupType>,
+  userGroupsState: WorkspacesStateType,
+  userGroupsHasMore: boolean,
   loadUsergroups: LoadUsersTriggerType
 }
 
@@ -33,13 +33,13 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
 
 
   render() {
-    let test = this.props.usergroups;
+    let test = this.props.userGroups;
     return (<div>
       <ApplicationList>
-        {this.props.usergroups && this.props.usergroups.map((userGroup: UserGroupType) => {
+        {this.props.userGroups && this.props.userGroups.map((userGroup: UserGroupType) => {
           return <Usergroup key={userGroup.id} usergroup={userGroup} />
         })}
-        {this.props.usergroupsState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty" /> : null}
+        {this.props.userGroupsState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty" /> : null}
       </ApplicationList>
     </div>)
   }
@@ -48,9 +48,9 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    usergroups: state.organizationUsers.usergroups,
-    usergroupsState: state.organizationWorkspaces.state,
-    usergroupsHasMore: state.organizationWorkspaces.hasMore,
+    userGroups: state.organizationUsers.userGroups,
+    userGroupsState: state.organizationWorkspaces.state,
+    userGroupsHasMore: state.organizationWorkspaces.hasMore,
   }
 };
 

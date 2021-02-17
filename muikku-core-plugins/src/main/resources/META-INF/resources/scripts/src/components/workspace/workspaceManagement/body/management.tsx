@@ -615,7 +615,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
             <div className="application-sub-panel__item application-sub-panel__item--workspace-management">
               <fieldset>
-                <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</legend>
+                <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.permissions.userGroupsColumn.label")}</legend>
 
                 {/*
                 If we ever have multiple permissions to set then we need to use the following code.

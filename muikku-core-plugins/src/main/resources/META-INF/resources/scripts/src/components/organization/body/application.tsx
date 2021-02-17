@@ -7,7 +7,7 @@ import { SearchFormElement } from '~/components/general/form-element';
 import ApplicationPanelBody from '~/components/general/application-panel/components/application-panel-body';
 import Summary from './application/summary';
 import Users from './application/users';
-import Usergroups from './application/usergroups';
+import Usergroups from './application/userGroups';
 import OrganizationWorkspaces from './application/workspaces';
 import WorkspacesAside from './application/workspaces/aside';
 import Reports from './application/reports';

@@ -51,7 +51,7 @@ export interface GuiderStudentUserProfileType {
   phoneNumbers: Array<StudentUserProfilePhoneType>,
   addresses: Array<StudentUserAddressType>,
   files: Array<UserFileType>,
-  usergroups: UserGroupListType,
+  userGroups: UserGroupListType,
   // Disabled until it really works
   //  vops: VOPSDataType,
   hops: HOPSDataType,

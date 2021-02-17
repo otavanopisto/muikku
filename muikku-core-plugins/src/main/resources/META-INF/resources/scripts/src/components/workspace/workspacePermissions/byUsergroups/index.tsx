@@ -34,7 +34,7 @@ class PermissionsByUsergroups extends React.Component<PermissionsByUsergroupsPro
       title={this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")} ref="content-panel">
         <div className="">
           <div>
-            <div>{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</div>
+            <div>{this.props.i18n.text.get("plugin.workspace.permissions.userGroupsColumn.label")}</div>
             {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
               <div key={pte}>{this.props.i18n.text.get("plugin.workspace.permissions.label." + pte)}</div>
             )}
