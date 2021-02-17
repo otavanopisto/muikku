@@ -8,6 +8,7 @@ import { StateType } from '~/reducers';
 import { type } from 'os';
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserPanelUsersType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserPanelUsersType>
+export type UPDATE_USER_GROUPS = SpecificActionType<"UPDATE_USER_GROUPS", Array<UserGroupType>>
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<"UPDATE_STUDENT_SELECTOR", UsersListType>
 export type UPDATE_STAFF_SELECTOR = SpecificActionType<"UPDATE_STAFF_SELECTOR", UsersListType>
 export type UPDATE_GROUP_SELECTOR = SpecificActionType<"UPDATE_GROUP_SELECTOR", Array<UserGroupType>>
@@ -329,11 +330,11 @@ let loadUsergroups: LoadUsersTriggerType = function loadStudents(q: string | nul
         payload: null
       });
 
-      await promisify(mApi().organizationUserManagement.students.read(data), 'callback')().then((users: UserPanelUsersType) => {
-        let payload = { ...users, searchString: data.q };
+      await promisify(mApi().usergroup.groups.read(data), 'callback')().then((groups: Array<UserGroupType>) => {
+
         dispatch({
-          type: "UPDATE_STUDENT_USERS",
-          payload: payload
+          type: "UPDATE_USER_GROUPS",
+          payload: groups
         });
       });
 
@@ -547,7 +548,7 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
           });
         });
       } else {
-        let payload: Partial<UsersSelectType> = { userGroups: [] };
+        let payload: Partial<UsersSelectType> = { usergroups: [] };
         dispatch({
           type: "CLEAR_USER_SELECTOR",
           payload

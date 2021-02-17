@@ -11,7 +11,7 @@ import { LoadUsersTriggerType, loadUsergroups, loadStaff } from '~/actions/main-
 import { UserGroupType } from '~/reducers/user-index';
 interface OrganizationUserGroupsProps {
   i18n: i18nType,
-  usergroups: UserPanelUsersType,
+  usergroups: Array<UserGroupType>,
   usergroupsState: WorkspacesStateType,
   usergroupsHasMore: boolean,
   loadUsergroups: LoadUsersTriggerType
@@ -23,19 +23,20 @@ interface OrganizationUserGroupsState {
 class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps, OrganizationUserGroupsState> {
   constructor(props: OrganizationUserGroupsProps) {
     super(props);
-    this.userGroupPanelPageChange = this.userGroupPanelPageChange.bind(this);
+    this.userGroupSearch = this.userGroupSearch.bind(this);
   }
 
-  userGroupPanelPageChange(q: string, first: number, last: number) {
-    // this.props.loadStaff(q, first, last);
+  userGroupSearch(query: string) {
+    this.props.loadUsergroups(query);
   }
+
 
 
   render() {
-    let results = this.props.usergroups.results as Array<UserGroupType>;
+    let test = this.props.usergroups;
     return (<div>
       <ApplicationList>
-        {results.map((workspace: UserGroupType) => {
+        {this.props.usergroups && this.props.usergroups.map((workspace: UserGroupType) => {
           return <Usergroup key={workspace.id} usergroup={workspace} />
         })}
         {this.props.usergroupsState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty" /> : null}
@@ -47,7 +48,7 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    usergroups: state.organizationUsers.userGroups,
+    usergroups: state.organizationUsers.usergroups,
     usergroupsState: state.organizationWorkspaces.state,
     usergroupsHasMore: state.organizationWorkspaces.hasMore,
   }

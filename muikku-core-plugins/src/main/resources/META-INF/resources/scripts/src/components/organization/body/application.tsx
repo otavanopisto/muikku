@@ -18,13 +18,14 @@ import UserDialog from '../dialogs/new-user';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
-import { LoadUsersTriggerType, loadUsers } from '~/actions/main-function/users';
+import { LoadUsersTriggerType, loadUsers, loadUsergroups } from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>,
   loadUsers: LoadUsersTriggerType,
+  loadUsergroups: LoadUsersTriggerType,
   loadWorkspaces: LoadWorkspacesFromServerTriggerType,
   activeFilters: WorkspacesActiveFiltersType
   i18n: i18nType
@@ -43,6 +44,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.onTabChange = this.onTabChange.bind(this);
     this.doUserSearch = this.doUserSearch.bind(this);
     this.doWorkspaceSearch = this.doWorkspaceSearch.bind(this);
+    this.doUserGroupSearch = this.doUserGroupSearch.bind(this);
   }
 
   onTabChange(id: "SUMMARY" | "USERS" |"USERGROUPS" | "COURSES" | "REPORTS") {
@@ -54,6 +56,11 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   doUserSearch(value: string) {
     this.props.loadUsers(value);
   }
+
+  doUserGroupSearch(query: string) {
+    this.props.loadUsergroups(query);
+  }
+
 
   doWorkspaceSearch(value: string) {
 
@@ -89,7 +96,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
     let userGroupsToolbar = <ApplicationPanelToolbar>
     <ApplicationPanelToolbarActionsMain>
-      <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doUserSearch} ></SearchFormElement>
+      <SearchFormElement placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="OrganizationUserSearch" updateField={this.doUserGroupSearch} ></SearchFormElement>
     </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
@@ -137,7 +144,7 @@ function mapStateToProps(state: StateType) {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators({ loadUsers, loadWorkspaces: loadWorkspacesFromServer }, dispatch);
+  return bindActionCreators({ loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUsergroups }, dispatch);
 };
 
 export default connect(

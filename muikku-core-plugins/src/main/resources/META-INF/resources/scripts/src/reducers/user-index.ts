@@ -92,7 +92,8 @@ export interface UserGroupType {
   id: number,
   name: string,
   userCount: number,
-  organization?: OrganizationType
+  organization?: OrganizationType,
+  isGuidanceGroup?: boolean,
 }
 
 export interface UserStaffType {
