@@ -627,6 +627,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
+  protected void waitForNotPresent(final String selector) {
+    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          return elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void waitForNotVisible(String selector) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
   }
@@ -1550,6 +1564,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected String getCKEditorContentInMaterials() {
+    waitForPresent(".cke_wysiwyg_div p");
     String ckeContent = getElementText(".cke_wysiwyg_div p");
     return ckeContent;
   }

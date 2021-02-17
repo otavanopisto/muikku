@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -702,6 +703,56 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return;
     }
     throw new SchoolDataBridgeInternalException(String.format("Malformed student group identifier %s", identifier));
+  }
+
+  @Override
+  public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(StudentGroupMembersPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setGroupIdentifier(pyramusStudentGroupId.toString());
+    
+    // Add student group members
+    
+    BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
+        "/muikku/addstudentgroupmembers",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        StudentGroupMembersPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(StudentGroupMembersPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setGroupIdentifier(pyramusStudentGroupId.toString());
+    
+    // Remove student group members
+    
+    BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
+        "/muikku/removestudentgroupmembers",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        StudentGroupMembersPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+    }
+    return response;
   }
 
   @Override
