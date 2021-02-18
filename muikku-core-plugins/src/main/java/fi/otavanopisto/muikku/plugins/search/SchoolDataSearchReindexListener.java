@@ -119,19 +119,19 @@ public class SchoolDataSearchReindexListener {
       boolean allDone = true;
 
       if (tasks.contains(Task.ALL) || tasks.contains(Task.USERS)) {
-        allDone = allDone && reindexUsers();
+        allDone = reindexUsers();
       }
 
       if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.WORKSPACES))) {
-        allDone = allDone && reindexWorkspaceEntities();
+        allDone = reindexWorkspaceEntities();
       }
 
       if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.USERGROUPS))) {
-        allDone = allDone && reindexUserGroups();
+        allDone = reindexUserGroups();
       }
 
       if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.COMMUNICATORMESSAGES))) {
-        allDone = allDone && reindexCommunicatorMessages();
+        allDone = reindexCommunicatorMessages();
       }
 
       if (!allDone) {
@@ -165,8 +165,9 @@ public class SchoolDataSearchReindexListener {
         setOffset("workspaceIndex", workspaceIndex + getBatchSize());
         return false;
       }
-      else
+      else {
         return true;
+      }
     }
     catch (Exception ex) {
       logger.log(Level.SEVERE, "Could not finish indexing workspace entities.", ex);
@@ -198,8 +199,9 @@ public class SchoolDataSearchReindexListener {
         setOffset("userIndex", userIndex + getBatchSize());
         return false;
       }
-      else
+      else {
         return true;
+      }
     }
     catch (Exception ex) {
       logger.log(Level.SEVERE, "Could not finish indexing user entities.", ex);
@@ -233,8 +235,9 @@ public class SchoolDataSearchReindexListener {
         setOffset("groupIndex", groupIndex + getBatchSize());
         return false;
       }
-      else
+      else {
         return true;
+      }
     }
     catch (Exception ex) {
       logger.log(Level.SEVERE, "Could not finish indexing usergroup entities.", ex);
