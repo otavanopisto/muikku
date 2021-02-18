@@ -250,9 +250,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
           </div>,
-          <span className="link link--full" onClick={this.onCreateNewLabel}>
+          <Link tabIndex={0} className="link link--full" onClick={this.onCreateNewLabel}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
-          </span>
+          </Link>
         ].concat(this.props.messages.navigation.filter((item)=>{
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
         }).map((label)=>{
