@@ -118,12 +118,12 @@ public class SchoolDataSearchReindexListener {
     try {
       boolean allDone = true;
 
-      if (tasks.contains(Task.ALL) || tasks.contains(Task.USERS)) {
-        allDone = reindexUsers();
+      if (tasks.contains(Task.ALL) || tasks.contains(Task.WORKSPACES)) {
+        allDone = reindexWorkspaceEntities();
       }
 
-      if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.WORKSPACES))) {
-        allDone = reindexWorkspaceEntities();
+      if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.USERS))) {
+        allDone = reindexUsers();
       }
 
       if (allDone && (tasks.contains(Task.ALL) || tasks.contains(Task.USERGROUPS))) {
