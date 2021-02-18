@@ -1,12 +1,12 @@
 import Portal from './portal';
 import * as React from 'react';
-import {findDOMNode} from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import $ from "~/lib/jquery";
 import '~/sass/elements/dropdown.scss';
 import * as uuid from "uuid";
 import Flash from '../base/material-loader/binary/flash';
 
-type itemType2 = (closeDropdown: ()=>any)=>any
+type itemType2 = (closeDropdown: () => any) => any
 
 interface DropdownProps {
   modifier?: string,
@@ -15,10 +15,10 @@ interface DropdownProps {
   content?: any,
   openByHover?: boolean,
   openByHoverIsClickToo?: boolean,
-  persistent?:boolean,
-  onOpen?: ()=>any,
-  onClose?: ()=>any,
-  onClick?: ()=>any,
+  persistent?: boolean,
+  onOpen?: () => any,
+  onClose?: () => any,
+  onClick?: () => any,
   alignSelf?: "left" | "center" | "right",
 }
 
@@ -35,7 +35,7 @@ interface DropdownState {
 
 export default class Dropdown extends React.Component<DropdownProps, DropdownState> {
   private id: string;
-  constructor(props: DropdownProps){
+  constructor(props: DropdownProps) {
     super(props);
     this.onOpen = this.onOpen.bind(this);
     this.onClose = this.onClose.bind(this);
@@ -56,9 +56,9 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       visible: false,
     }
   }
-  onOpen(DOMNode: HTMLElement){
+  onOpen(DOMNode: HTMLElement) {
     let activator: any = this.refs["activator"];
-    if (!(activator instanceof HTMLElement)){
+    if (!(activator instanceof HTMLElement)) {
       activator = findDOMNode(activator);
     }
 
@@ -113,7 +113,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     } else {
       if (targetIsWiderThanDropdown) {
         arrowLeft = ($dropdown.outerWidth() / 2) - ($arrow.outerWidth() / 2);
-      } else if (moreSpaceInTheLeftSide){
+      } else if (moreSpaceInTheLeftSide) {
         arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth() / 2);
       } else {
         arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth() / 2);
@@ -131,14 +131,14 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       left = 0;
     }
 
-    this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, forcedWidth, visible: true}, this.props.onOpen);
+    this.setState({ top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, forcedWidth, visible: true }, this.props.onOpen);
   }
   onClose() {
     if (this.props.onClose) {
       this.props.onClose();
     }
   }
-  beforeClose(DOMNode : HTMLElement, removeFromDOM: Function){
+  beforeClose(DOMNode: HTMLElement, removeFromDOM: Function) {
     this.setState({
       visible: false
     });
@@ -151,7 +151,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       }, 10);
     }, 300);
   }
-  close(){
+  close() {
     (this.refs["portal"] as Portal).closePortal();
   }
   onKeyDown(e: React.KeyboardEvent) {
@@ -167,12 +167,14 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
   }
   onItemKeyDown(e: React.KeyboardEvent) {
-    e.stopPropagation();
-    e.preventDefault();
+    if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Tab") {
+      e.stopPropagation();
+      e.preventDefault();
+    }
 
     if (e.key === "Tab") {
       let element = this.refs["activator"] as any;
-      if (!(element instanceof HTMLElement)){
+      if (!(element instanceof HTMLElement)) {
         element = findDOMNode(element) as any;
       }
 
@@ -197,7 +199,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       return;
     }
 
-    const index = parseInt(e.currentTarget.id.split("-item-")[1], 10) || 0;
+    const index = parseInt(e.currentTarget.id.split("-item-")[1], 10) || 0;
 
     if (e.key === "ArrowUp") {
       this.focusIndex(index - 1);
@@ -210,19 +212,24 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     let element = document.querySelector("#" + id) as HTMLElement;
     if (n === -1 && !element) {
       element = this.refs["activator"] as any;
-      if (!(element instanceof HTMLElement)){
+      if (!(element instanceof HTMLElement)) {
         element = findDOMNode(element) as any;
       }
+    }
+
+    const inputInElement = element && element.querySelector("input");
+    if (inputInElement) {
+      element = inputInElement;
     }
 
     if (element) {
       element.focus();
     }
   }
-  render(){
-    let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children as any, { ref: "activator"});
-    let portalProps:any = {};
-    if (!this.props.openByHover){
+  render() {
+    let elementCloned: React.ReactElement<any> = React.cloneElement(this.props.children as any, { ref: "activator" });
+    let portalProps: any = {};
+    if (!this.props.openByHover) {
       portalProps.openByClickOn = elementCloned;
     } else {
       if (this.props.onClick) {
@@ -260,15 +267,15 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         }}
         className={`dropdown ${this.props.modifier ? 'dropdown--' + this.props.modifier : ''} ${this.state.visible ? "visible" : ""}`}>
         <span className="dropdown__arrow" ref="arrow"
-         style={{
-           left: this.state.arrowLeft,
-           right: this.state.arrowRight,
-           top: this.state.arrowTop,
-           transform: this.state.reverseArrow ? "scaleY(-1)" : null,
-         }}></span>
+          style={{
+            left: this.state.arrowLeft,
+            right: this.state.arrowRight,
+            top: this.state.arrowTop,
+            transform: this.state.reverseArrow ? "scaleY(-1)" : null,
+          }}></span>
         <div className="dropdown__container">
           {this.props.content}
-          {this.props.items && this.props.items.map((item, index)=>{
+          {this.props.items && this.props.items.map((item, index) => {
             const element = React.cloneElement(
               typeof item === "function" ? item(this.close) : item,
               {
