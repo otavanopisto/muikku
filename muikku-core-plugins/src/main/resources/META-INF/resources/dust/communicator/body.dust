@@ -1,5 +1,0 @@
-{?messages}
-  <div class="communicator application-list"></div>
-{:else}
-  <div class="empty"><span>{#localize key="plugin.communicator.empty.topic"/}</span></div>
-{/messages}

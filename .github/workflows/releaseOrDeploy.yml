@@ -29,3 +29,5 @@ jobs:
         run: python prepare-maven.py
       - name: Release or Deploy
         run: ./releaseOrDeploy.sh
+        env:
+          GA_DEPLOY_KEY: ${{ secrets.GA_DEPLOY_KEY }}

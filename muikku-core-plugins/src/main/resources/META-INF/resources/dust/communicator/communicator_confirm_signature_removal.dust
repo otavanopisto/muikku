@@ -1,3 +1,0 @@
-<div class="cm-confirm-dialog" title='{#localize key="plugin.communicator.confirmSignatureRemovalDialog.title"/}' data-button-confirm-text='{#localize key="plugin.communicator.confirmSignatureRemovalDialog.confirmButton"/}' data-button-cancel-text='{#localize key="plugin.communicator.confirmSignatureRemovalDialog.cancelButton"/}'>
-  {#localize key="plugin.communicator.confirmSignatureRemovalDialog.text"/}
-</div>

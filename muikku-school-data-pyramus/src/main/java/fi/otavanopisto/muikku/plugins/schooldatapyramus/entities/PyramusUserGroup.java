@@ -6,10 +6,11 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 
 public class PyramusUserGroup implements UserGroup {
 
-  public PyramusUserGroup(String identifier, String name, boolean guidanceGroup, SchoolDataIdentifier organizationIdentifier) {
+  public PyramusUserGroup(String identifier, String name, String archetype, boolean isGuidanceGroup, SchoolDataIdentifier organizationIdentifier) {
     this.identifier = identifier;
     this.name = name;
-    this.guidanceGroup = guidanceGroup;
+    this.archetype = archetype;
+    this.isGuidanceGroup = isGuidanceGroup;
     this.organizationIdentifier = organizationIdentifier;
   }
   
@@ -32,10 +33,15 @@ public class PyramusUserGroup implements UserGroup {
   public String getSearchId() {
     return getIdentifier() + "/" + getSchoolDataSource();
   }
+
+  @Override
+  public String getArchetype() {
+    return archetype;
+  }
   
   @Override
-  public boolean isGuidanceGroup() {
-    return guidanceGroup;
+  public boolean getIsGuidanceGroup() {
+    return isGuidanceGroup;
   }
   
   @Override
@@ -49,6 +55,7 @@ public class PyramusUserGroup implements UserGroup {
 
   private String identifier;
   private String name;
-  private boolean guidanceGroup;
+  private String archetype;
+  private boolean isGuidanceGroup;
   private SchoolDataIdentifier organizationIdentifier;
 }

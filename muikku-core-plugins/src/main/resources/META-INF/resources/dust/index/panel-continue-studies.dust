@@ -1,9 +1,0 @@
-<h2 class="index text index-text-panel-continue-studies-workspace-name">
-  {lastWorkspace.workspaceName}
-</h2>
-{! PLEASE_TRANSLATE FIXME !}
-<span class="index text index-text-panel-continue-studies">
-  Olit vimeksi sivulla
-  {~s}<b><i>{lastWorkspace.materialName}</i></b>{~s}
-  <a href="{lastWorkspace.url}">Jatka opintoja</a>
-</span>
