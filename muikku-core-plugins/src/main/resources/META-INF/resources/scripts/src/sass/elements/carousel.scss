@@ -10,7 +10,6 @@
 
 .carousel__item {
   display: block;
-  height: auto;
   position: relative;
   width: 100%;
   height: 100%;
@@ -69,6 +68,6 @@
   }
 
   button:focus {
-    background: black;
+    background: #000000;
   }
 }
