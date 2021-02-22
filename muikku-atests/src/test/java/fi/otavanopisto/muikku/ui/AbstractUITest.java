@@ -1717,12 +1717,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if (this.violationList != null) {
       if (!this.violationList.isEmpty()) {
         String violationsString = "";
-        for (Map.Entry<String, String> violation : violationList.entrySet()) {
+        for (String violation : violationList) {
           violationsString += System.getProperty("line.separator");
-          violationsString += violation.getKey();
-          violationsString += System.getProperty("line.separator");
-          violationsString += violation.getValue();
-          violationsString += System.getProperty("line.separator");
+          violationsString += violation;
+          violationsString += System.getProperty("line.separator");          
         }
         assertTrue(violationsString, false);
       }
@@ -1731,7 +1729,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void testAccessibility(String testView) throws FileNotFoundException {
     if (this.violationList == null) {
-      this.violationList = new HashMap<String, String>();
+      this.violationList = new ArrayList<String>();
     }
     List<String> disableRules  = new ArrayList<String>();
     disableRules.add("color-contrast");
@@ -1743,16 +1741,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Results results = axeBuilder.analyze(getWebDriver());
 
     if(AxeReporter.getReadableAxeResults(testView, getWebDriver(), results.getViolations())) {
-      this.violationList.put(testView, AxeReporter.getAxeResultString()); 
+      this.violationList.add(AxeReporter.getAxeResultString()); 
     }
-  }
-
-  protected void testAccessibility() {
-    if (this.violationList == null) {
-      this.violationList = new HashMap<String, String>();
-    }
-
-//    this.violationList.put("default", new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
   }
   
   enum RoleType {
@@ -1761,6 +1751,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   private String sessionId;
   private WebDriver webDriver;
-  protected Map<String, String> violationList;
+  protected List<String> violationList;
   
 }

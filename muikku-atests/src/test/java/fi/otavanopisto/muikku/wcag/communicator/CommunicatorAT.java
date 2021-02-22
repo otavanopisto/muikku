@@ -28,7 +28,7 @@ public class CommunicatorAT extends AbstractWCAGTest{
         login();
         navigate("/communicator", false);
         waitAndClick("a.button.button--primary-function");
-        waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
+        waitForVisible(".env-dialog__input--new-message-title");
         testAccessibility("Communicator create message view");
         waitAndClick(".button--dialog-cancel");
         long sender = getUserIdByEmail("admin@example.com");
