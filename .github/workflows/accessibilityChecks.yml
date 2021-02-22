@@ -6,6 +6,7 @@ jobs:
   WCAG_check:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         testclass: [AnnouncerAT, CommunicatorAT]
     steps:
