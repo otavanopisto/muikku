@@ -715,6 +715,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setGroupIdentifier(pyramusStudentGroupId.toString());
     
+    // Convert user identifiers to Pyramus user ids 
+    
+    String[] originalIdentifiers = payload.getUserIdentifiers();
+    String[] pyramusIdentifiers = originalIdentifiers.clone();
+    for (int i = 0; i < pyramusIdentifiers.length; i++) {
+      // Lazy shortcut since identifier style is either PYRAMUS-STUDENT-123 or PYRAMUS-STAFF-456
+      pyramusIdentifiers[i] = StringUtils.substringAfterLast(pyramusIdentifiers[i], "-");
+    }
+    payload.setUserIdentifiers(pyramusIdentifiers);
+
     // Add student group members
     
     BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
@@ -723,9 +733,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         StudentGroupMembersPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
 
-      // Restore identifier
+      // Restore identifiers
       
       response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+      response.getEntity().setUserIdentifiers(originalIdentifiers);
     }
     return response;
   }
@@ -740,6 +751,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
     payload.setGroupIdentifier(pyramusStudentGroupId.toString());
     
+    // Convert user identifiers to Pyramus user ids 
+    
+    String[] originalIdentifiers = payload.getUserIdentifiers();
+    String[] pyramusIdentifiers = originalIdentifiers.clone();
+    for (int i = 0; i < pyramusIdentifiers.length; i++) {
+      // Lazy shortcut since identifier style is either PYRAMUS-STUDENT-123 or PYRAMUS-STAFF-456
+      pyramusIdentifiers[i] = StringUtils.substringAfterLast(pyramusIdentifiers[i], "-");
+    }
+    payload.setUserIdentifiers(pyramusIdentifiers);
+
     // Remove student group members
     
     BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
@@ -748,9 +769,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         StudentGroupMembersPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
 
-      // Restore identifier
+      // Restore identifiers
       
       response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+      response.getEntity().setUserIdentifiers(originalIdentifiers);
     }
     return response;
   }
