@@ -53,9 +53,3 @@ jobs:
                 echo "Waiting for Sauce Connect to close..."
                 sleep 5;
               done;
-      - name: Dispatch next workflow 
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: Course materials management sauce tests
-          inputs: '{ "commit": "${{ github.event.inputs.commit }}" }'
-          token: ${{ secrets.REPO_GHA_PAT }}
