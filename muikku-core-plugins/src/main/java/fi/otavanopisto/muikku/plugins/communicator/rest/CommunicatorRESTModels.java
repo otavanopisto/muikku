@@ -3,8 +3,11 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.TagController;
@@ -29,6 +32,8 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -71,36 +76,31 @@ public class CommunicatorRESTModels {
   @Inject
   private WorkspaceController workspaceController;
   
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+  
   /**
    * Returns message sender UserBasicInfo
    * 
    * @param communicatorMessage
    * @return
    */
-  public CommunicatorUserBasicInfo getSenderBasicInfo(CommunicatorMessage communicatorMessage) {
+  public UserBasicInfo getSenderBasicInfo(CommunicatorMessage communicatorMessage) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
       User user = userController.findUserByUserEntityDefaults(userEntity);
       Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
-      Boolean archived = userEntity.getArchived();
       
       if (user == null)
-        return new CommunicatorUserBasicInfo(
-            userEntity.getId(), 
-            null, 
-            null, 
-            null,
-            archived,
-            hasPicture
-        );
+        return null;
       
-      CommunicatorUserBasicInfo result = new CommunicatorUserBasicInfo(
+      UserBasicInfo result = new UserBasicInfo(
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),
-          archived,
           hasPicture
       );
 
@@ -109,7 +109,73 @@ public class CommunicatorRESTModels {
       schoolDataBridgeSessionController.endSystemSession();
     }
   }
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
+  }
+  
+  public CommunicatorUserBasicInfo getCommunicatorUserBasicInfo(Long id) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity userEntity = userEntityController.findUserEntityById(id);
+      if (userEntity == null) {
+        return null;
+      }
+      User user = userController.findUserByUserEntityDefaults(userEntity);
+      boolean studiesEnded = false;
+      boolean archived = userEntity.getArchived();
+      
+      if (user == null)
+        return new CommunicatorUserBasicInfo(
+            userEntity.getId(), 
+            null, 
+            null,
+            null,
+            archived,
+            studiesEnded
+        );
+      
+      if (!Boolean.TRUE.equals(archived)) {
+        SearchProvider searchProvider = getProvider("elastic-search");
+        if (searchProvider != null) {
+          SearchResult result = searchProvider.findUser(userEntity.defaultSchoolDataIdentifier(), true);
+          
+          List<Map<String, Object>> results = result.getResults();
+          if (results != null) {
+            for (Map<String, Object> r : results) {
+              Object s = r.get("studyEndDate");
+              Object studyTimeEnd = r.get("studyEndDate");
+              
+              if (studyTimeEnd != null) {
+                studiesEnded = true;
+              }
+            }
+          }
+        }
+      }
+      
+      
+      
+      CommunicatorUserBasicInfo result = new CommunicatorUserBasicInfo(
+          userEntity.getId(), 
+          user.getFirstName(), 
+          user.getLastName(), 
+          user.getNickName(),
+          archived,
+          studiesEnded
+      );
 
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+
+  
   public List<CommunicatorUserLabelRESTModel> restUserLabel(List<CommunicatorUserLabel> userLabels) {
     List<CommunicatorUserLabelRESTModel> result = new ArrayList<CommunicatorUserLabelRESTModel>();
     for (CommunicatorUserLabel userLabel : userLabels)
@@ -137,6 +203,21 @@ public class CommunicatorRESTModels {
         messageIdLabel.getLabel() != null ? messageIdLabel.getLabel().getName() : null,
         messageIdLabel.getLabel() != null ? messageIdLabel.getLabel().getColor() : null
     );    
+  }
+  
+  public List<CommunicatorUserBasicInfo> restRecipient2(List<CommunicatorMessageRecipient> recipients) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<CommunicatorUserBasicInfo> result = new ArrayList<CommunicatorUserBasicInfo>();
+      for (CommunicatorMessageRecipient recipient : recipients) {
+        CommunicatorUserBasicInfo restRecipientModel = getCommunicatorUserBasicInfo(recipient.getRecipient());
+        if (restRecipientModel != null)
+          result.add(restRecipientModel);
+      }
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   public List<CommunicatorMessageRecipientRESTModel> restRecipient(List<CommunicatorMessageRecipient> recipients) {
@@ -279,7 +360,7 @@ public class CommunicatorRESTModels {
   public CommunicatorMessageRESTModel restFullMessage(CommunicatorMessage message) {
     String categoryName = message.getCategory() != null ? message.getCategory().getName() : null;
     
-    CommunicatorUserBasicInfo senderBasicInfo = getSenderBasicInfo(message);
+    CommunicatorUserBasicInfo senderBasicInfo = getCommunicatorUserBasicInfo(message.getSender());
     
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(message);
     List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(message);

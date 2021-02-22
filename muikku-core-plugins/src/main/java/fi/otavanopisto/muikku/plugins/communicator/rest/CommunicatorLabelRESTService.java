@@ -259,8 +259,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
         Date created = recipient.getCommunicatorMessage().getCreated();
         latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
       }
-      
-      CommunicatorUserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(receivedItem);
+      CommunicatorUserBasicInfo senderBasicInfo = restModels.getCommunicatorUserBasicInfo(receivedItem.getSender());
       Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, receivedItem.getCommunicatorMessageId(), false);
 
       List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, receivedItem.getCommunicatorMessageId());

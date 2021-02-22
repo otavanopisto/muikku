@@ -184,13 +184,11 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
         
         if (userEntity != null) {
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-          boolean archived = userEntity.getArchived();
 
           String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
           Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
-
-          if (Boolean.TRUE.equals(archived)) {
+          if (studyTimeEnd != null) {
             continue;
           }
           ret.add(new fi.otavanopisto.muikku.rest.model.User(

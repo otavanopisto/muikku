@@ -5,12 +5,13 @@ public class CommunicatorUserBasicInfo {
   public CommunicatorUserBasicInfo() {
   }
 
-  public CommunicatorUserBasicInfo(Long id,
+  public CommunicatorUserBasicInfo(
+              Long id,
               String firstName,
               String lastName,
               String nickName, 
               boolean archived,
-              boolean hasImage 
+              boolean studiesEnded 
               ) {
     super();
     this.id = id;
@@ -18,7 +19,7 @@ public class CommunicatorUserBasicInfo {
     this.lastName = lastName;
     this.nickName = nickName;
     this.archived = archived;
-    this.hasImage = hasImage;
+    this.studiesEnded = studiesEnded;
   }
 
   public Long getId() {
@@ -28,7 +29,7 @@ public class CommunicatorUserBasicInfo {
   public void setId(Long id) {
     this.id = id;
   }
-
+  
   public String getFirstName() {
     return firstName;
   }
@@ -45,12 +46,20 @@ public class CommunicatorUserBasicInfo {
     this.lastName = lastName;
   }
   
-  public boolean isHasImage() {
-    return hasImage;
+  public String getNickName() {
+    return nickName;
   }
 
-  public void setHasImage(boolean hasImage) {
-    this.hasImage = hasImage;
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+
+  public boolean isStudiesEnded() {
+    return studiesEnded;
+  }
+
+  public void setStudiesEnded(boolean studiesEnded) {
+    this.studiesEnded = studiesEnded;
   }
   
   public boolean isArchived() {
@@ -61,18 +70,10 @@ public class CommunicatorUserBasicInfo {
     this.archived = archived;
   }
 
-  public String getNickName() {
-    return nickName;
-  }
-
-  public void setNickName(String nickName) {
-    this.nickName = nickName;
-  }
-
   private Long id;
   private String firstName;
   private String lastName;
   private String nickName;
   private boolean archived;
-  private boolean hasImage;
+  private boolean studiesEnded;
 }
