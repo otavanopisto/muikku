@@ -3,7 +3,7 @@ on:
   push:
     branches: [5364-continue-accessibility-testing]
 jobs:
-  WCAG check:
+  WCAG_check:
     runs-on: ubuntu-latest
     strategy:
       matrix:
