@@ -61,15 +61,18 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     //abort if this is true (in this case it causes the current element to be invisible)
     this.cancellingLoadingPropertyLocation = "currentThread";
   }
-  getThreadUserNames(thread: MessageThreadType, userId: number): string {
+  getThreadUserNames(thread: MessageThreadType, userId: number): any {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
-        return this.props.i18n.text.get("plugin.communicator.sender.self");
+        return <span>{this.props.i18n.text.get("plugin.communicator.sender.self")}</span>;
       }
       if (thread.sender.archived === true) {
-        return this.props.i18n.text.get("plugin.communicator.sender.archived");
+        return <span className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
       }
-      return getName(thread.sender, !this.props.status.isStudent);
+      if (thread.sender.studiesEnded === true) {
+        return <span className="message__user-studies-ended">{getName(thread.sender, !this.props.status.isStudent)}</span>;
+      }
+      return <span>{getName(thread.sender, !this.props.status.isStudent)}</span>;
     }
 
     return thread.recipients.map((recipient) => {

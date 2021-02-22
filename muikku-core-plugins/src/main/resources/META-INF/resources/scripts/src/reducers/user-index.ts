@@ -27,7 +27,8 @@ export interface SimpleUserType {
   lastName?: string,
   nickName?: string,
   hasImage?: boolean,
-  archived?: boolean
+  archived?: boolean,
+  studiesEnded: boolean
 }
 
 export interface UserType {
