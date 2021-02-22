@@ -2,80 +2,58 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
-import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
-import {
-  UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, SetCurrentWorkspaceTriggerType, setCurrentOrganizationWorkspace,
-  loadCurrentOrganizationWorkspaceSelectStaff, LoadWorkspacesFromServerTriggerType, loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType, loadWorkspacesFromServer
-} from '~/actions/workspaces';
+import { loadSelectorStudents, LoadUsersTriggerType, loadUsergroups, updateUsergroup, UpdateUsergroupTriggerType } from '~/actions/main-function/users';
+import {loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType} from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
 import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
-import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-import { isThisTypeNode } from 'typescript';
-import { UserGroupType } from '~/reducers/user-index';
-
+import { UserGroupType, UpdateUserGroupType, ModifyUserGroupUsersType , UpdateUserGroupStateType} from '~/reducers/user-index';
 
 interface ValidationType {
   nameValid: number
 }
 
-interface OrganizationEditWorkspaceProps {
+interface OrganizationEditUsergroupProps {
   children?: React.ReactElement<any>,
+  usergroup: UserGroupType,
   i18n: i18nType,
   users: UsersSelectType,
-  usergroup: UserGroupType,
-  currentWorkspace: WorkspaceType,
-
-  updateOrganizationWorkspace: UpdateWorkspaceTriggerType,
-  setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType,
-  loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType,
-  loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType,
+  updateOrganizationUsergroup: UpdateUsergroupTriggerType,
+  loadCurrentOrganizationUsergroupSelectStudents: LoadStudentsOfWorkspaceTriggerType,
   loadStudents: LoadUsersTriggerType,
-  loadStaff: LoadUsersTriggerType,
-  loadUserGroups: LoadUsersTriggerType,
-  loadWorkspaces: LoadWorkspacesFromServerTriggerType
+  loadUsergroups: LoadUsersTriggerType
 }
 
-interface OrganizationEditWorkspaceState {
-  workspaceName: string,
+interface OrganizationEditUsergroupState {
+  usergroupName: string,
   locked: boolean,
   currentStep: number,
-  addStaff: UiSelectItem[],
   addStudents: UiSelectItem[],
-  removeStaff: UiSelectItem[],
   removeStudents: UiSelectItem[],
-  selectedStaff: SelectItem[],
   selectedStudents: SelectItem[],
-  staffLoaded: boolean,
   studentsLoaded: boolean,
   executing: boolean,
   validation: ValidationType,
-  workspaceUpdated: boolean,
+  usergroupUpdated: boolean,
   studentsAdded: boolean,
-  staffAdded: boolean,
   studentsRemoved: boolean,
-  staffRemoved: boolean,
 }
 
-class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspaceProps, OrganizationEditWorkspaceState> {
+class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergroupProps, OrganizationEditUsergroupState> {
 
   private totalSteps: number;
 
-  constructor(props: OrganizationEditWorkspaceProps) {
+  constructor(props: OrganizationEditUsergroupProps) {
     super(props);
-    this.totalSteps = 4;
+    this.totalSteps = 3;
     this.state = {
-      workspaceName: this.props.usergroup.name,
-      selectedStaff: [],
+      usergroupName: this.props.usergroup.name,
       selectedStudents: [],
-      addStaff: [],
       addStudents: [],
-      removeStaff: [],
       removeStudents: [],
-      staffLoaded: false,
       studentsLoaded: false,
       locked: false,
       currentStep: 1,
@@ -84,35 +62,22 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         nameValid: 2
       },
 
-      workspaceUpdated: false,
+      usergroupUpdated: false,
       studentsAdded: false,
-      staffAdded: false,
       studentsRemoved: false,
-      staffRemoved: false,
     };
 
-    // TODO: amount of these methods can be halved
-
-    this.doStaffSearch = this.doStaffSearch.bind(this);
-    this.selectStaff = this.selectStaff.bind(this);
-    this.deleteStaff = this.deleteStaff.bind(this);
     this.doStudentSearch = this.doStudentSearch.bind(this);
     this.selectStudent = this.selectStudent.bind(this);
     this.deleteStudent = this.deleteStudent.bind(this);
     this.setSelectedStudents = this.setSelectedStudents.bind(this);
-    this.setWorkspaceName = this.setWorkspaceName.bind(this);
-
-    this.saveWorkspace = this.saveWorkspace.bind(this);
+    this.setUsergroupName = this.setUsergroupName.bind(this);
+    this.saveUsergroup = this.saveUsergroup.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
 
   }
   doStudentSearch(value: string) {
     this.props.loadStudents(value);
-    this.props.loadUserGroups(value);
-  }
-
-  doStaffSearch(value: string) {
-    this.props.loadStaff(value);
   }
 
   selectStudent(student: SelectItem) {
@@ -123,22 +88,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ selectedStudents: newSelectedState, addStudents: newAddState, removeStudents: newRemoveState });
   }
 
-  selectStaff(staff: SelectItem) {
-    let staffIsDeleted = this.state.removeStaff.some(rStaff => rStaff.id === staff.id);
-    let newSelectedState = this.state.selectedStaff.concat(staff);
-    let newAddState = staffIsDeleted ? this.state.addStaff : this.state.addStaff.concat(staff);
-    let newRemoveState = staffIsDeleted ? this.state.removeStaff.filter(rStaff => rStaff.id !== staff.id) : this.state.removeStaff;
-    this.setState({ addStaff: newAddState, selectedStaff: newSelectedState, removeStaff: newRemoveState });
-  }
-
-  deleteStaff(staff: SelectItem) {
-    let staffIsAdded = this.state.addStaff.some(aStaff => aStaff.id === staff.id);
-    let newSelectedState = this.state.selectedStaff.filter(selectedItem => selectedItem.id !== staff.id);
-    let newRemoveState = staffIsAdded ? this.state.removeStudents : this.state.removeStaff.concat(staff);
-    let newAddState = staffIsAdded ? this.state.addStaff.filter(aStaff => aStaff.id !== staff.id) : this.state.addStaff;
-    this.setState({ selectedStaff: newSelectedState, removeStaff: newRemoveState, addStaff: newAddState });
-  }
-
   deleteStudent(student: SelectItem) {
     let studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === student.id);
     let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
@@ -147,32 +96,26 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
   }
 
-
   setSelectedStudents(addStudents: Array<SelectItem>) {
     this.setState({ addStudents });
   }
 
-  setWorkspaceName(value: string) {
-    this.setState({ locked: false, workspaceName: value });
+  setUsergroupName(value: string) {
+    this.setState({ locked: false, usergroupName: value });
   }
-
 
   clearComponentState() {
     this.setState({
       locked: false,
-      staffLoaded: false,
       studentsLoaded: false,
       executing: false,
       currentStep: 1,
-      addStaff: [],
       addStudents: [],
-      selectedStaff: [],
       selectedStudents: [],
-      removeStaff: [],
       removeStudents: [],
-      workspaceUpdated: false,
+      usergroupUpdated: false,
       studentsAdded: false,
-      staffAdded: false,
+      studentsRemoved: false,
     });
   }
 
@@ -186,12 +129,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
      //   this.props.loadCurrentOrganizationWorkspaceSelectStudents(this.props.usergroup);
       }
     }
-    if (this.state.currentStep === 2) {
-      if (this.state.selectedStaff.length === 0) {
-     //   this.props.loadCurrentOrganizationWorkspaceSelectStaff(this.props.usergroup);
-      }
-    }
-    if (this.state.workspaceName === "") {
+    if (this.state.usergroupName === "") {
       let validation: ValidationType = Object.assign(this.state.validation, { nameValid: 0 });
       this.setState({ locked: true, validation });
     } else {
@@ -205,47 +143,69 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ currentStep: lastStep });
   }
 
-  saveWorkspace(closeDialog: () => any) {
+  saveUsergroup(closeDialog: () => any) {
     this.setState({
       locked: true,
       executing: true
     })
-    let payload: WorkspaceUpdateType = {};
 
-    if (this.props.currentWorkspace.name !== this.state.workspaceName) {
-      payload = { name: this.state.workspaceName }
+    let update: UpdateUserGroupType;
+    let addStudents: ModifyUserGroupUsersType;
+    let removeStudents: ModifyUserGroupUsersType;
+
+    if (this.props.usergroup.name !== this.state.usergroupName) {
+      update = {
+         name: this.state.usergroupName,
+         // We get a number, but need it to be a string
+         identifier: this.props.usergroup.id.toString(),
+         isGuidanceGroup: this.props.usergroup.isGuidanceGroup,
+        }
     }
 
+    if(this.state.selectedStudents) {
+      addStudents = {
+        groupIdentifier: this.props.usergroup.id.toString(),
+        userIdentifiers: this.state.addStudents.map(student => student.id as string)
+      };
+    }
 
-    this.props.updateOrganizationWorkspace({
-      update: payload,
-      workspace: this.props.currentWorkspace,
+    if(this.state.removeStudents) {
+      removeStudents = {
+        groupIdentifier: this.props.usergroup.id.toString(),
+        userIdentifiers: this.state.removeStudents.map(student => student.id as string)
+      };
+    }
 
-      removeStudents: this.state.removeStudents,
-      removeTeachers: this.state.removeStaff,
-      addStudents: this.state.addStudents,
-      addTeachers: this.state.addStaff,
-      progress: (state: UpdateWorkspaceStateType) => {
-        if (state === "workspace-update") {
+    this.props.updateOrganizationUsergroup({
+      update: update,
+      addStudents: addStudents,
+      removeStudent: removeStudents,
+      progress: (state: UpdateUserGroupStateType) => {
+        if(state === "update-group") {
           this.setState({
-            workspaceUpdated: true
+            usergroupUpdated: true,
           });
-        } else if (state === "add-students") {
+        }
+        if(state === "add-users") {
           this.setState({
-            studentsAdded: true
+            studentsAdded: true,
           });
-        } else if (state === "add-teachers") {
+        }
+        if(state === "remove-users") {
           this.setState({
-            staffAdded: true
+            studentsRemoved: true,
           });
-        } else if (state === "done") {
-         // setTimeout(() => this.props.loadWorkspaces(this.props.activeFilters, true, true), 2000);
+        }
+        if(state === "done") {
+          setTimeout(() => this.props.loadUsergroups(""), 2000);
         }
       },
-      success: () => {
+
+      success: ()=> {
         closeDialog();
       },
-      fail: () => {
+
+      fail: ()=> {
         closeDialog();
       }
     });
@@ -257,49 +217,31 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setWorkspaceName} valid={this.state.validation.nameValid} name="workspaceName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.workspaceName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.usergroupName}></InputFormElement>
           </DialogRow>
+          <DialogRow modifiers="edit-workspace">
 
+          </DialogRow>
         </div >;
       case 2:
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
 
-        let groups = this.props.users.usergroups.map(group => {
-          return { id: group.id, label: group.name, icon: "users", type: "student-group" }
-        });
-
-        let allItems = students.concat(groups);
-
-        if (this.props.currentWorkspace && this.props.currentWorkspace.studentsSelect && this.props.currentWorkspace.studentsSelect.state === "READY" && this.state.studentsLoaded === false) {
-          this.setState({ selectedStudents: this.props.currentWorkspace.studentsSelect.users, studentsLoaded: true });
-        }
-
         return <DialogRow modifiers="edit-workspace">
           <AutofillSelector modifier="add-students"
             loader={this.doStudentSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+            selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
         </DialogRow>;
       case 3:
-        let staffSearchItems = this.props.users.staff.map(staff => {
-          return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
-        });
-
-        if (this.props.currentWorkspace && this.props.currentWorkspace.staffMemberSelect && this.props.currentWorkspace.staffMemberSelect.state === "READY" && this.state.staffLoaded === false) {
-          this.setState({ selectedStaff: this.props.currentWorkspace.staffMemberSelect.users, staffLoaded: true });
-        }
-
-        return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-teachers"
-            loader={this.doStaffSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
-        </DialogRow>;
-      case 4:
         return <DialogRow modifiers="edit-workspace-summary">
-
+          <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
+            <DialogRowContent modifiers="new-workspace">
+              <div>{this.state.usergroupName}</div>
+            </DialogRowContent>
+          </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addStudents')} />
             <DialogRowContent modifiers="new-workspace">
@@ -312,20 +254,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
                     {student.label}
                   </span>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
-            </DialogRowContent>
-          </DialogRow>
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addTeachers')} />
-            <DialogRowContent modifiers="new-workspace">
-              {this.state.addStaff.length > 0 ?
-                this.state.addStaff.map((staff) => {
-                  return <span key={staff.id} className="tag-input__selected-item">
-                    {staff.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
-                      : null}
-                    {staff.label}
-                  </span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
@@ -342,19 +270,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
-          <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeTeachers')} />
-            <DialogRowContent modifiers="new-workspace">
-              {this.state.removeStaff.length > 0 ?
-                this.state.removeStaff.map((staff) => {
-                  return <span key={staff.id} className="tag-input__selected-item">
-                    {staff.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
-                      : null}
-                    {staff.label}</span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
-            </DialogRowContent>
-          </DialogRow>
         </DialogRow>;
       default: return <div>EMPTY</div>
     }
@@ -362,11 +277,9 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   render() {
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.workspaceUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
+    let executeContent = <div><div className={`dialog__executer ${this.state.usergroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
       <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.addStudents')}</div>
-      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.addTeachers')}</div>
-      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents')}</div>
-      <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeTeachers')}</div></div>;
+      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents')}</div></div>;
 
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.totalSteps}
@@ -374,7 +287,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       nextLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.next.label')}
       lastLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.last.label')}
       cancelLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.cancel.label')}
-      executeClick={this.saveWorkspace.bind(this, closePortal)}
+      executeClick={this.saveUsergroup.bind(this, closePortal)}
       nextClick={this.nextStep.bind(this)}
       lastClick={this.lastStep.bind(this)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
@@ -392,24 +305,21 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     users: state.userSelect,
-    currentWorkspace: state.organizationWorkspaces.currentWorkspace
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({
-    loadStaff: loadSelectorStaff,
     loadStudents: loadSelectorStudents,
-    loadUserGroups: loadSelectorUserGroups,
-    setCurrentOrganizationWorkspace,
-    loadCurrentOrganizationWorkspaceSelectStudents,
-    loadCurrentOrganizationWorkspaceSelectStaff,
-    updateOrganizationWorkspace,
-    loadWorkspaces: loadWorkspacesFromServer
+    loadUsergroups,
+    updateOrganizationUsergroup:updateUsergroup,
+    loadCurrentOrganizationUsergroupSelectStudents: loadCurrentOrganizationWorkspaceSelectStudents,
+
+
   }, dispatch);
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(OrganizationEditWorkspace);
+)(OrganizationEditUsergroup);

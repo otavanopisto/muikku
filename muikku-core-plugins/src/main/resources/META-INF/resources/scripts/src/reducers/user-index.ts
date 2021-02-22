@@ -96,6 +96,19 @@ export interface UserGroupType {
   isGuidanceGroup?: boolean,
 }
 
+export interface UpdateUserGroupType {
+  identifier: string,
+  name: string,
+  isGuidanceGroup: boolean,
+}
+
+export interface ModifyUserGroupUsersType {
+  groupIdentifier: string;
+  userIdentifiers: string[];
+}
+
+export type UpdateUserGroupStateType = "update-group" | "add-users" | "remove-users" | "done";
+
 export interface UserStaffType {
   id: string,
   email: string,

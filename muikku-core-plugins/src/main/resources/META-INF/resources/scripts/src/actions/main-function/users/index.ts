@@ -2,7 +2,8 @@ import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
 import { UsersListType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType, StudyprogrammeListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
-import { UserGroupType, UpdateUserType, CreateUserType, UserGroupListType } from 'reducers/user-index';
+import { UserGroupType, UpdateUserType, UpdateUserGroupStateType, UpdateUserGroupType, ModifyUserGroupUsersType, CreateUserType, UserGroupListType } from 'reducers/user-index';
+import {SelectItem} from '~/actions/workspaces/index'
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
 import { type } from 'os';
@@ -48,6 +49,18 @@ export interface UpdateStaffmemberTriggerType {
     fail?: () => any
   }): AnyActionType
 }
+
+export interface UpdateUsergroupTriggerType {
+  (data: {
+    update: UpdateUserGroupType,
+    addStudents?: ModifyUserGroupUsersType,
+    removeStudent?: ModifyUserGroupUsersType,
+    progress?: (state: UpdateUserGroupStateType) => any,
+    success?: () => any,
+    fail?: () => any
+  }): AnyActionType
+}
+
 
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
@@ -173,6 +186,31 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
     }
   }
 }
+
+let updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(data) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: ()=> StateType) => {
+    try {
+      if(data.update) {
+        await promisify(mApi().usergroup.groups.update(data.update), 'callback')();
+        data.progress && data.progress("update-group");
+      }
+      if(data.addStudents) {
+        await promisify(mApi().usergroup.addusers.update(data.addStudents), 'callback')();
+        data.progress && data.progress("add-users");
+      }
+      if(data.removeStudent) {
+        await promisify(mApi().usergroup.removeusers.update(data.removeStudent), 'callback')();
+        data.progress && data.progress("remove-users");
+      }
+      data.progress && data.progress("done");
+      data.success && data.success();
+    } catch (err) {
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.update.usergroup.error"), 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
 
 let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprogrammes() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -577,4 +615,4 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
   }
 }
 
-export { loadUsers, loadStaff, loadUsergroups, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
+export { loadUsers, updateUsergroup, loadStaff, loadUsergroups, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
