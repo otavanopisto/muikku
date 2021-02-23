@@ -82,12 +82,15 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       if (recipient.archived === true) {
         return this.props.i18n.text.get("plugin.communicator.sender.archived");
       }
+      if (recipient.studiesEnded === true) {
+        return getName(recipient as any, !this.props.status.isStudent);
+      }
       return getName(recipient as any, !this.props.status.isStudent);
     })
-      .concat(thread.userGroupRecipients.map(group => group.name))
+      .concat(thread.userGroupRecipients.map((group) => group.name))
       .concat(thread.workspaceRecipients.filter((w, pos, self) => {
         return self.findIndex((w2) => w2.workspaceEntityId === w.workspaceEntityId) === pos;
-      }).map(workspace => workspace.workspaceName))
+      }).map((workspace) => workspace.workspaceName))
       .join(", ");
   }
   setCurrentThread(threadOrSearchResult: MessageThreadType | MessageSearchResult) {
