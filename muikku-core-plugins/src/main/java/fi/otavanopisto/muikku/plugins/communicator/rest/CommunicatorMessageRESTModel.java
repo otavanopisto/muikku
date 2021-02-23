@@ -19,7 +19,7 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
   
   public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo sender, 
       String categoryName, String caption, String content, Date created, Set<String> tags,
-      List<CommunicatorMessageRecipientRESTModel> recipients, List<UserGroup> userGroupRecipients, 
+      List<CommunicatorUserBasicInfo> recipients, List<UserGroup> userGroupRecipients, 
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients, Long recipientCount) {
     super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
     this.content = content;
@@ -38,11 +38,11 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
     this.content = content;
   }
 
-  public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
+  public List<CommunicatorUserBasicInfo> getRecipients() {
     return recipients;
   }
 
-  public void setRecipients(List<CommunicatorMessageRecipientRESTModel> recipients) {
+  public void setRecipients(List<CommunicatorUserBasicInfo> recipients) {
     this.recipients = recipients;
   }
 
@@ -81,7 +81,7 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
   private String content;
   private CommunicatorUserBasicInfo sender;
   private Long recipientCount;
-  private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
+  private List<CommunicatorUserBasicInfo> recipients = new ArrayList<CommunicatorUserBasicInfo>();
   private List<UserGroup> userGroupRecipients;
   private List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients;
 }

@@ -368,7 +368,7 @@ public class CommunicatorRESTModels {
     
     Long recipientCount = (long) messageRecipients.size();
 
-    List<CommunicatorMessageRecipientRESTModel> restRecipients = restRecipient(messageRecipients);
+    List<CommunicatorUserBasicInfo> restRecipients = restRecipient2(messageRecipients);
     List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restUserGroupRecipients(userGroupRecipients);
     List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restWorkspaceGroupRecipients(workspaceGroupRecipients);
     
