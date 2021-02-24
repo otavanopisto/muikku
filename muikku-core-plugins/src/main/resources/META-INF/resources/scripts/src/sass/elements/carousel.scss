@@ -10,17 +10,12 @@
 
 .carousel__item {
   display: block;
-  height: auto;
   position: relative;
   width: 100%;
+  height: 100%;
 }
 
 .carousel__item-video {
-  height: 0;
-  padding-bottom: 56.25%;
-  padding-top: 25px;
-  width: 100%;
-
   iframe {
     height: 100%;
     left: 0;
@@ -38,7 +33,9 @@
 }
 
 .carousel__dots {
-  display: block;
+  align-items: center;
+  display: flex;
+  justify-content: center;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -66,7 +63,11 @@
     width: 17px;
   }
 
-  .slick-active button {
+  .carousel__dot--selected {
     background: $color-carousel-default-dot-active-background;
+  }
+
+  button:focus {
+    background: $color-carousel-focused-dot-active-background;
   }
 }
