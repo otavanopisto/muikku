@@ -127,16 +127,20 @@ class Message extends React.Component<MessageProps, MessageState> {
         <header className="application-list__item-content-header">{this.props.message.caption}</header>
         <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
         <footer className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
-          <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
-            initialSelectedItems={replytarget}
-            initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
-            <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
-          </NewMessage>
-          <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
-            initialSelectedItems={replyalltarget} replyToAll
-            initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
-            <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
-          </NewMessage>
+          {this.props.message.sender.studiesEnded || this.props.message.sender.archived ? null :
+            <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
+              initialSelectedItems={replytarget}
+              initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
+              <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+            </NewMessage>
+          }
+          {this.props.message.sender.studiesEnded || this.props.message.sender.archived ? null :
+            <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
+              initialSelectedItems={replyalltarget} replyToAll
+              initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
+              <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+            </NewMessage>
+          }
         </footer>
       </div>
     </div>
