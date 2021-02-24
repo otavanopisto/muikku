@@ -9,7 +9,7 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 public class IndexAT extends AbstractWCAGTest {
 
   @Test
-  public void demoFrontpage() throws JsonProcessingException, Exception {
+  public void indexTest() throws JsonProcessingException, Exception {
     navigate("/", true);
     testAccessibility("Not logged in");
     login(getTestStudent(), getTestStudentPassword(), true);
