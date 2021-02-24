@@ -81,7 +81,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       searchquery: query
     });
     clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(this.props.loadMessageThreads(null, query) as any, 400);
+    this.searchTimer = setTimeout(this.props.loadMessageThreads.bind(null, null, query) as any, 600);
   }
 
   loadMessage(messageId: number) {
