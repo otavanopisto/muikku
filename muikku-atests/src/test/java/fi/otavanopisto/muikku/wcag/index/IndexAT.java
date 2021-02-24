@@ -14,6 +14,14 @@ public class IndexAT extends AbstractWCAGTest {
     testAccessibility("Not logged in");
     login(getTestStudent(), getTestStudentPassword(), true);
     testAccessibility("Logged in");
+    waitAndClick(".button-pill--profile");
+    waitForVisible(".dropdown__container .dropdown__container-item");
+    testAccessibility("Profile dropdown");
+    waitAndClick(".button-pill--current-language");
+    waitForVisible(".dropdown--language-picker");
+    testAccessibility("Language picker dropdown");
+    navigate("/profile", true);
+    testAccessibility("Profile view");
   }
  
 }
