@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.wcag;
 
-import java.net.URL;
-
 import org.junit.After;
 import org.junit.Before;
 
@@ -19,4 +17,14 @@ public class AbstractWCAGTest extends AbstractUITest {
     reportWCAG();
   }
 
+  @Override
+  public void setupRestAssured() {
+    
+  }
+  
+  @Override
+  public void flushCaches() {
+
+  }
+  
 }
