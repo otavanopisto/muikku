@@ -24,11 +24,11 @@ class OrganizationUsers extends React.Component<OrganizationUsersProps, Organiza
   }
 
   staffPanelPageChange(q: string, first: number, last: number) {
-    this.props.loadStaff(q, first, last);
+    this.props.loadStaff({q, firstResult: first, lastResult: last});
   }
 
   studentPanelPageChange(q: string, first: number, last: number) {
-    this.props.loadStudents(q, first, last);
+    this.props.loadStudents({q, firstResult: first, lastResult: last});
   }
 
   render() {

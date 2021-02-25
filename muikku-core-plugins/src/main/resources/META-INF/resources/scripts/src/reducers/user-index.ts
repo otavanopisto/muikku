@@ -88,22 +88,38 @@ export interface OrganizationType {
   name: string
 }
 
+export interface SelectedUsersType {
+  students: string[],
+  sfaff: string[],
+}
+
 export interface UserGroupType {
   id: number,
+  identifier?: string,
   name: string,
   userCount: number,
   organization?: OrganizationType,
   isGuidanceGroup?: boolean,
 }
 
-export interface UpdateUserGroupType {
-  identifier: string,
+export interface CurrentUserGroupType {
+  id: number,
+  users: SelectedUsersType,
+}
+
+export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>
+
+export interface CreateUserGroupType {
   name: string,
   isGuidanceGroup: boolean,
 }
 
+export interface UpdateUserGroupType extends CreateUserGroupType {
+  identifier: string,
+}
+
 export interface ModifyUserGroupUsersType {
-  groupIdentifier: string;
+  groupIdentifier?: string;
   userIdentifiers: string[];
 }
 

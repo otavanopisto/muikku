@@ -90,7 +90,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
           onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
 
         <div ref="selected" className="tag-input__selected-items">
-          {this.props.tags.map((tag, index) => {
+          {this.props.tags && this.props.tags.map((tag, index) => {
             return <span key={index} className={`tag-input__selected-item ${tag.disabled ? "state-DISABLED" : ""}`}>
               <span className="tag-input__selected-item-label">{tag.node}</span>
               <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, tag)}></span>

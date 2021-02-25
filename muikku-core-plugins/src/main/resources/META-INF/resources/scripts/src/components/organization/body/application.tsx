@@ -14,6 +14,7 @@ import Reports from './application/reports';
 import { i18nType } from '~/reducers/base/i18n';
 import { ButtonPill } from '~/components/general/button';
 import WorkspaceDialog from '../dialogs/new-workspace';
+import UserGroupDialog from '../dialogs/new-usergroup';
 import UserDialog from '../dialogs/new-user';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -59,14 +60,14 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     });
   }
 
-  doUserSearch(value: string) {
-    this.props.loadUsers(value);
-    this.setState({userSearchFieldValue: value});
+  doUserSearch(q: string) {
+    this.props.loadUsers({q});
+    this.setState({userSearchFieldValue: q});
   }
 
-  doUserGroupSearch(value: string) {
-    this.props.loadUsergroups(value);
-    this.setState({userGroupSearchFieldValue: value});
+  doUserGroupSearch(q: string) {
+    this.props.loadUsergroups({q});
+    this.setState({userGroupSearchFieldValue: q});
   }
 
 
@@ -89,7 +90,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   render() {
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
     let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
-    let userGroupsPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
+    let userGroupsPrimaryAction = <UserGroupDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserGroupDialog>;
     let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>

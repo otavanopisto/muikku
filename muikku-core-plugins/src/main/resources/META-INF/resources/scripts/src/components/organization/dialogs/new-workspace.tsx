@@ -111,9 +111,9 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name }, workspaceName: e.target.name });
   }
 
-  doStudentSearch(value: string) {
-    this.props.loadStudents(value);
-    this.props.loadUserGroups(value);
+  doStudentSearch(q: string) {
+    this.props.loadStudents({q});
+    this.props.loadUserGroups({q});
   }
 
   selectStudent(student: SelectItem) {
@@ -126,8 +126,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ selectedStudents: newState });
   }
 
-  doStaffSearch(value: string) {
-    this.props.loadStaff(value);
+  doStaffSearch(q: string) {
+    this.props.loadStaff({q});
   }
 
   selectStaff(staff: SelectItem) {

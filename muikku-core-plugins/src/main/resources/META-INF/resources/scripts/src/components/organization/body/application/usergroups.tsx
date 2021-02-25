@@ -26,14 +26,13 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
     this.userGroupSearch = this.userGroupSearch.bind(this);
   }
 
-  userGroupSearch(query: string) {
-    this.props.loadUsergroups(query);
+  userGroupSearch(q: string) {
+    this.props.loadUsergroups({q});
   }
 
 
 
   render() {
-    let test = this.props.usergroups;
     return (<div>
       <ApplicationList>
         {this.props.usergroups && this.props.usergroups.map((userGroup: UserGroupType) => {

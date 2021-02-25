@@ -1,34 +1,31 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
-import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
-import { loadSelectorStudents, loadSelectorStaff, LoadUsersTriggerType, loadUserGroupUsers, loadUsergroups, updateUsergroup, UpdateUsergroupTriggerType} from '~/actions/main-function/users';
-import {loadCurrentOrganizationWorkspaceSelectStudents, LoadStudentsOfWorkspaceTriggerType} from '~/actions/workspaces';
+import { FormWizardActions, InputFormElement} from '~/components/general/form-element';
+import { loadSelectorStudents, loadSelectorStaff, LoadUsersTriggerType, loadUsergroups, createUsergroup, CreateUsergroupTriggerType} from '~/actions/main-function/users';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
 import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
-import { UserGroupType, UpdateUserGroupType, ModifyUserGroupUsersType , UpdateUserGroupStateType, UserType} from '~/reducers/user-index';
+import { CreateUserGroupType, UpdateUserGroupStateType} from '~/reducers/user-index';
 
 interface ValidationType {
   nameValid: number
 }
 
-interface OrganizationEditUsergroupProps {
+interface OrganizationNewUserGroupProps {
   children?: React.ReactElement<any>,
-  usergroup: UserGroupType,
   i18n: i18nType,
   users: UsersSelectType,
-  updateOrganizationUsergroup: UpdateUsergroupTriggerType,
-  loadUserGroupUsers: LoadUsersTriggerType,
+  createOrganizationUsergroup: CreateUsergroupTriggerType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
   loadUsergroups: LoadUsersTriggerType
 }
 
-interface OrganizationEditUsergroupState {
+interface OrganizationNewUserGroupState {
   usergroupName: string,
   locked: boolean,
   currentStep: number,
@@ -48,15 +45,15 @@ interface OrganizationEditUsergroupState {
   staffRemoved: boolean,
 }
 
-class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergroupProps, OrganizationEditUsergroupState> {
+class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupProps, OrganizationNewUserGroupState> {
 
   private totalSteps: number;
 
-  constructor(props: OrganizationEditUsergroupProps) {
+  constructor(props: OrganizationNewUserGroupProps) {
     super(props);
     this.totalSteps = 4;
     this.state = {
-      usergroupName: this.props.usergroup.name,
+      usergroupName: null,
       selectedStudents: [],
       selectedStaff: [],
       addStudents: [],
@@ -137,6 +134,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   clearComponentState() {
     this.setState({
       locked: false,
+      usergroupName: null,
       studentsLoaded: false,
       executing: false,
       currentStep: 1,
@@ -159,30 +157,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   }
 
   nextStep() {
-    if (this.state.currentStep === 1) {
-      if (this.state.selectedStudents.length === 0) {
-        this.props.loadUserGroupUsers({
-          q: "",
-          loaderType: "students",
-          userGroupIds: [this.props.usergroup.id],
-          selectItems: (result: Array<SelectItem>) => {
-            this.setState({selectedStudents: result});
-          }
-        });
-      }
-    }
-    if (this.state.currentStep === 2) {
-      if (this.state.selectedStaff.length === 0) {
-        this.props.loadUserGroupUsers({
-          q: "",
-          loaderType: "staff",
-          userGroupIds: [this.props.usergroup.id],
-          selectItems: (result: Array<SelectItem>) => {
-            this.setState({selectedStaff: result});
-          }
-        });
-      }
-    }
     if (this.state.usergroupName === "") {
       let validation: ValidationType = Object.assign(this.state.validation, { nameValid: 0 });
       this.setState({ locked: true, validation });
@@ -203,52 +177,29 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       executing: true
     })
 
-    let update: UpdateUserGroupType;
-    let addUsers: ModifyUserGroupUsersType ;
-    let removeUsers: ModifyUserGroupUsersType;
+    let payload: CreateUserGroupType;
+    let userIdentifiers: string[] ;
 
 
-    if (this.props.usergroup.name !== this.state.usergroupName) {
-      update = {
+      payload = {
          name: this.state.usergroupName,
-         // We get a number, but need it to be a string
-         identifier: this.props.usergroup.id.toString(),
-         isGuidanceGroup: this.props.usergroup.isGuidanceGroup,
+         isGuidanceGroup: false
         }
-    }
 
     if(this.state.addStudents.length !== 0) {
-      addUsers = {
-        groupIdentifier: this.props.usergroup.id.toString(),
-        userIdentifiers: this.state.addStudents.map(student => student.id as string)
-      };
-    }
+      userIdentifiers = this.state.addStudents.map(student => student.id as string)
 
-    if(this.state.removeStudents.length !== 0) {
-      removeUsers = {
-        groupIdentifier: this.props.usergroup.id.toString(),
-        userIdentifiers: this.state.removeStudents.map(student => student.id as string)
-      };
     }
 
     if(this.state.addStaff.length !== 0) {
-      if(!addUsers){
-        addUsers.groupIdentifier = this.props.usergroup.id.toString();
-      }
-       addUsers.userIdentifiers = addUsers.userIdentifiers.concat(this.state.addStaff.map(staff => staff.id as string));
+      userIdentifiers = userIdentifiers.concat(this.state.addStaff.map(staff => staff.id as string));
     }
 
-    if(this.state.removeStaff.length !== 0) {
-      if(!removeUsers){
-        removeUsers.groupIdentifier = this.props.usergroup.id.toString();
-      }
-      removeUsers.userIdentifiers = removeUsers.userIdentifiers.concat(this.state.removeStaff.map(staff => staff.id as string));
-    }
 
-    this.props.updateOrganizationUsergroup({
-      update: update,
-      addUsers: addUsers,
-      removeUsers: removeUsers,
+
+    this.props.createOrganizationUsergroup({
+      payload: payload,
+      addUsers: userIdentifiers,
       progress: (state: UpdateUserGroupStateType) => {
         if(state === "update-group") {
           this.setState({
@@ -399,12 +350,12 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     loadStudents: loadSelectorStudents,
     loadStaff: loadSelectorStaff,
     loadUsergroups,
-    updateOrganizationUsergroup: updateUsergroup,
-    loadUserGroupUsers,
+    createOrganizationUsergroup: createUsergroup,
+
   }, dispatch);
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(OrganizationEditUsergroup);
+)(OrganizationNewUserGroup);

@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import students from "~/components/guider/body/application/students";
-import { UserWithSchoolDataType, UserGroupType, UserType } from '~/reducers/user-index';
+import { UserWithSchoolDataType, CurrentUserGroupType, UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserType>;
@@ -32,7 +32,8 @@ export interface UserPanelUsersType {
 export interface UsersType {
   students?: UserPanelUsersType,
   staff?: UserPanelUsersType,
-  usergroups?: Array<UserGroupType>
+  usergroups?: Array<UserGroupType>,
+  currentUserGroup?: CurrentUserGroupType
 }
 
 
@@ -54,6 +55,7 @@ export default function users(state: UsersType = {
     totalHitCount: null
   },
   usergroups: [],
+  currentUserGroup: null,
 }, action: ActionType): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
@@ -66,6 +68,10 @@ export default function users(state: UsersType = {
   } else if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
       usergroups: action.payload
+    });
+  }else if (action.type === "SET_CURRENT_USER_GROUP") {
+    return Object.assign({}, state, {
+      currentUserGroup: action.payload
     });
   }
   return state;
