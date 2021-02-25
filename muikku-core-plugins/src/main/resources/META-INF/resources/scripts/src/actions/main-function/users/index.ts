@@ -221,18 +221,18 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
 let updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: ()=> StateType) => {
     try {
-      // if(data.update) {
-      //   await promisify(mApi().usergroup.groups.update(data.update), 'callback')();
-      //   data.progress && data.progress("update-group");
-      // }
-      // if(data.addUsers) {
-      //   await promisify(mApi().usergroup.addusers.update(data.addUsers), 'callback')();
-      //   data.progress && data.progress("add-users");
-      // }
-      // if(data.removeUsers) {
-      //   await promisify(mApi().usergroup.removeusers.update(data.removeUsers), 'callback')();
-      //   data.progress && data.progress("remove-users");
-      // }
+      if(data.update) {
+        await promisify(mApi().usergroup.groups.update(data.update), 'callback')();
+        data.progress && data.progress("update-group");
+      }
+      if(data.addUsers) {
+        await promisify(mApi().usergroup.addusers.update(data.addUsers), 'callback')();
+        data.progress && data.progress("add-users");
+      }
+      if(data.removeUsers) {
+        await promisify(mApi().usergroup.removeusers.update(data.removeUsers), 'callback')();
+        data.progress && data.progress("remove-users");
+      }
       data.progress && data.progress("done");
       data.success && data.success();
     } catch (err) {
