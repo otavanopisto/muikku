@@ -343,6 +343,20 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addTeachers')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.addStaff.length > 0 ?
+                this.state.addStaff.map((staff) => {
+                  return <span key={staff.id} className="tag-input__selected-item">
+                    {staff.icon ?
+                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
+                      : null}
+                    {staff.label}
+                  </span>
+                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
+            </DialogRowContent>
+          </DialogRow>
+          <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeStudents')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.removeStudents.length > 0 ?
@@ -354,6 +368,19 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
                     {student.label}
                   </span>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
+            </DialogRowContent>
+          </DialogRow>
+          <DialogRow>
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeTeachers')} />
+            <DialogRowContent modifiers="new-workspace">
+              {this.state.removeStaff.length > 0 ?
+                this.state.removeStaff.map((staff) => {
+                  return <span key={staff.id} className="tag-input__selected-item">
+                    {staff.icon ?
+                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
+                      : null}
+                    {staff.label}</span>
+                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>
         </DialogRow>;
