@@ -122,9 +122,9 @@ public class WorkspaceSignupPermissionsSyncronizerListener {
             if (!workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
               workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
             }
-
-            workspaceIndexer.indexWorkspace(workspaceEntity);
           }
+          
+          workspaceIndexer.indexWorkspace(workspaceEntity);
         }
     
         logger.log(Level.INFO, "Reindexed batch of workspace signup groups (" + workspaceIndex + "-" + last + ")");
