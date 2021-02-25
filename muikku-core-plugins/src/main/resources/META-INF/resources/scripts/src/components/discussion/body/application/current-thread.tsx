@@ -81,16 +81,16 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <DiscussionThreadFooter hasActions>
             {!threadLocked || !student ?
               <ReplyThread>
-                <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
+                <Link className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread> : null}
             {!threadLocked || !student ?
               <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}>
-                <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+                <Link className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
               </ReplyThread> : null}
-            {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
+            {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
             {canRemoveThread && !student ?
               <DeleteThreadComponent>
-                <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+                <Link className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
               </DeleteThreadComponent> : null}
           </DiscussionThreadFooter>
         </DiscussionCurrentThreadElement>

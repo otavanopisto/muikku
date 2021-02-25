@@ -1212,7 +1212,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".content-panel__chapter-title-text");
           waitForElementToBeClickable(".cke_wysiwyg_div p");
           addTextToCKEditor(contentInput);
-          waitForPresent(".material-page__field-answer-synchronizer--saving");
           waitForPresent(".material-page__field-answer-synchronizer--saved");
           navigate("/", false);
           waitForPresent(".panel__header-title");
@@ -1283,12 +1282,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".content-panel__chapter-title-text");
           waitForElementToBeClickable(".material-page__memofield");
           sendKeys(".material-page__memofield", contentInput);
-          waitForPresent(".material-page__field-answer-synchronizer--saving");
           waitForPresent(".material-page__field-answer-synchronizer--saved");
           navigate("/", false);
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
+          waitForPresent(".material-page__memofield");
           String actualInput = getElementText(".material-page__memofield");
           assertEquals(contentInput, actualInput);
         } finally {

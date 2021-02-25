@@ -439,4 +439,64 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
     }
   }
   
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.SAFARI,
+      TestEnvironments.Browser.EDGE,
+    }
+  )
+  public void assignmentTypeChangeTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+            + "value=\"{&quot;name&quot;:&quot;muikku-field-DZWZRbQoPNOcxXN9BGxY5WGe&quot;,&quot;rows&quot;:&quot;&quot;,&quot;example&quot;:&quot;&quot;,&quot;richedit&quot;:false}\" /></object></p>",
+            "EXERCISE");
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".button-pill--editing-master-switch");
+          click(".button-pill--editing-master-switch");
+          waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          click(".material-admin-panel--workspace-materials .button-pill--material-management-page");          
+          waitAndClick(".icon-puzzle");
+          sleep(500);
+          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
+          waitForPresent(".material-page--assignment .button--muikku-submit-assignment");
+          assertVisible(".material-page--assignment .button--muikku-submit-assignment");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }

@@ -81,7 +81,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       searchquery: query
     });
     clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(this.props.loadMessageThreads(null, query) as any, 400);
+    this.searchTimer = setTimeout(this.props.loadMessageThreads.bind(null, null, query) as any, 600);
   }
 
   loadMessage(messageId: number) {
@@ -239,10 +239,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
               type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
           </div>,
-          <span className="link link--full" onClick={this.onCreateNewLabel}>
+          <Link tabIndex={0} className="link link--full" onClick={this.onCreateNewLabel}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
-          </span>
-        ].concat(this.props.messages.navigation.filter((item) => {
+          </Link>
+        ].concat(this.props.messages.navigation.filter((item)=>{
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
         }).map((label) => {
           let isSelected = allInCommon.includes(label.id as number);
@@ -267,7 +267,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         id="searchMessages"
         onFocus={this.onInputFocus}
         onBlur={this.onInputBlur}
-        placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}
+        placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')}
         value={this.state.searchquery}
       />
     </ApplicationPanelToolbar>

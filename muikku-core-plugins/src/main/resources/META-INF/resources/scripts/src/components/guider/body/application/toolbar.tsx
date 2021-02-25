@@ -110,7 +110,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
                 id="searchUsers"
                 onFocus={this.onInputFocus}
                 onBlur={this.onInputBlur}
-                placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}
+                placeholder={this.props.i18n.text.get('plugin.guider.search.placeholder')}
                 value={this.state.searchquery}
               />
             </ApplicationPanelToolsContainer>}

@@ -36,6 +36,7 @@
     "node-sass": "^5.0.0",
     "null-loader": "^0.1.1",
     "promise": "^8.1.0",
+    "pure-react-carousel": "^1.27.6",
     "query-string": "^5.0.1",
     "react": "^16.13.1",
     "react-ace": "^5.2.1",
