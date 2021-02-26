@@ -24,4 +24,13 @@ public class IndexAT extends AbstractWCAGTest {
     testAccessibility("Profile view");
   }
  
+  @Test
+  public void loginTest() throws JsonProcessingException, Exception {
+    navigate("/", true);
+    navigate("/login?authSourceId=1", true);
+    waitForPresent("input#username");
+    waitForPresent("input#password");
+    testAccessibility("Login view");
+  }
+  
 }
