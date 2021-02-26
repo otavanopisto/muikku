@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        testclass: [AnnouncerAT, CommunicatorAT, CoursePickerAT, IndexAT]
+        testclass: [AnnouncerAT, CommunicatorAT, CourseAT, CoursePickerAT, DiscussionsAT, IndexAT, RecordsAT]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
