@@ -335,11 +335,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       for (IndexedCommunicatorMessage result : results) {
         IndexedCommunicatorMessageSender sender = result.getSender();
 
-        CommunicatorSearchSenderRESTModel senderData = new CommunicatorSearchSenderRESTModel();
-        senderData.setUserEntityId(sender.getUserEntityId());
-        senderData.setFirstName(sender.getFirstName());
-        senderData.setLastName(sender.getLastName());
-        senderData.setNickName(sender.getNickName());
+        CommunicatorUserBasicInfo senderData = restModels.getCommunicatorUserBasicInfo(sender.getUserEntityId());
         
         CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(result.getId());
         CommunicatorMessageCategory category = communicatorMessage.getCategory();
@@ -350,7 +346,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(communicatorMessage);
         List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(communicatorMessage);
 
-        List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
+        List<CommunicatorUserBasicInfo> restRecipients = restModels.restRecipient2(messageRecipients);
         List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
         List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
 

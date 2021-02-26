@@ -118,10 +118,10 @@ public class CommunicatorRESTModels {
     return null;
   }
   
-  public CommunicatorUserBasicInfo getCommunicatorUserBasicInfo(Long id) {
+  public CommunicatorUserBasicInfo getCommunicatorUserBasicInfo(Long userEntityId) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      UserEntity userEntity = userEntityController.findUserEntityById(id);
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       if (userEntity == null) {
         return null;
       }
@@ -147,10 +147,9 @@ public class CommunicatorRESTModels {
           List<Map<String, Object>> results = result.getResults();
           if (results != null) {
             for (Map<String, Object> r : results) {
-              Object s = r.get("studyEndDate");
-              Object studyTimeEnd = r.get("studyEndDate");
+              Object studyEndDate = r.get("studyEndDate");
               
-              if (studyTimeEnd != null) {
+              if (studyEndDate != null) {
                 studiesEnded = true;
               }
             }

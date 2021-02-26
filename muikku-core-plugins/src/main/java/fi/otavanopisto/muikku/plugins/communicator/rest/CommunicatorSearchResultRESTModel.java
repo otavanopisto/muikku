@@ -12,9 +12,9 @@ import fi.otavanopisto.muikku.rest.model.UserGroup;
  */
 public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessageRESTModel {
 
-  public CommunicatorSearchResultRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorSearchSenderRESTModel sender, 
+  public CommunicatorSearchResultRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo sender, 
       String categoryName, CommunicatorMessageFolder folder, String caption, String content, Date created, Set<String> tags, 
-      List<CommunicatorMessageRecipientRESTModel> recipients, 
+      List<CommunicatorUserBasicInfo> recipients, 
       List<UserGroup> userGroupRecipients, 
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients, 
       Boolean readByReceiver, List<CommunicatorMessageIdLabelRESTModel> labels) {
@@ -28,11 +28,11 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
     this.labels = labels;
   }
 
-  public CommunicatorSearchSenderRESTModel getSender() {
+  public CommunicatorUserBasicInfo getSender() {
     return sender;
   }
 
-  public void setSender(CommunicatorSearchSenderRESTModel sender) {
+  public void setSender(CommunicatorUserBasicInfo sender) {
     this.sender = sender;
   }
   
@@ -52,11 +52,11 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
     this.labels = labels;
   }
 
-  public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
+  public List<CommunicatorUserBasicInfo> getRecipients() {
     return recipients;
   }
 
-  public void setRecipients(List<CommunicatorMessageRecipientRESTModel> recipients) {
+  public void setRecipients(List<CommunicatorUserBasicInfo> recipients) {
     this.recipients = recipients;
   }
 
@@ -85,10 +85,10 @@ public class CommunicatorSearchResultRESTModel extends AbstractCommunicatorMessa
   }
 
   private CommunicatorMessageFolder folder;
-  private CommunicatorSearchSenderRESTModel sender;
+  private CommunicatorUserBasicInfo sender;
   private Boolean readByReceiver;
   private List<CommunicatorMessageIdLabelRESTModel> labels;
-  private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
+  private List<CommunicatorUserBasicInfo> recipients = new ArrayList<CommunicatorUserBasicInfo>();
   private List<UserGroup> userGroupRecipients;
   private List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients;
 }

@@ -15,7 +15,7 @@ public class CommunicatorMessageRecipientRESTModel {
     this.firstName = firstName;
     this.lastName = lastName;
     this.archived = archived;
-    this.setNickName(nickName);
+    this.nickName = nickName;
   }
 
   public Long getCommunicatorMessageId() {
