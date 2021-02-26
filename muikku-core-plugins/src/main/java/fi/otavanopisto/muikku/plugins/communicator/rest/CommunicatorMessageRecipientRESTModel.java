@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 /**
  * REST model for message recipient.
  */
+@Deprecated
 public class CommunicatorMessageRecipientRESTModel {
 
   public CommunicatorMessageRecipientRESTModel() {
@@ -15,7 +16,7 @@ public class CommunicatorMessageRecipientRESTModel {
     this.firstName = firstName;
     this.lastName = lastName;
     this.archived = archived;
-    this.setNickName(nickName);
+    this.nickName = nickName;
   }
 
   public Long getCommunicatorMessageId() {

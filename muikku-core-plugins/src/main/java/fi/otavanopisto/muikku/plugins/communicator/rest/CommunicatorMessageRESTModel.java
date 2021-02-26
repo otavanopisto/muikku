@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.rest.model.UserGroup;
 
 /**
@@ -14,7 +13,7 @@ import fi.otavanopisto.muikku.rest.model.UserGroup;
  */
 public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRESTModel {
 
-  public CommunicatorMessageRESTModel(Long long1, Long long2, Long long3, UserBasicInfo senderBasicInfo, String categoryName, String string, String string2, Date date, Set<String> set, List<CommunicatorMessageRecipientRESTModel> restRecipients, List<UserGroup> restUserGroupRecipients, List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients, Long recipientCount2) {
+  public CommunicatorMessageRESTModel() {
   }
   
   public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo sender, 

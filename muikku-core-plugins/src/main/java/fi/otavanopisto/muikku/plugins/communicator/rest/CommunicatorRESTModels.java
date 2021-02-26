@@ -118,10 +118,10 @@ public class CommunicatorRESTModels {
     return null;
   }
   
-  public CommunicatorUserBasicInfo getCommunicatorUserBasicInfo(Long id) {
+  public CommunicatorUserBasicInfo getCommunicatorUserBasicInfo(Long userEntityId) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      UserEntity userEntity = userEntityController.findUserEntityById(id);
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       if (userEntity == null) {
         return null;
       }
@@ -147,10 +147,9 @@ public class CommunicatorRESTModels {
           List<Map<String, Object>> results = result.getResults();
           if (results != null) {
             for (Map<String, Object> r : results) {
-              Object s = r.get("studyEndDate");
-              Object studyTimeEnd = r.get("studyEndDate");
+              Object studyEndDate = r.get("studyEndDate");
               
-              if (studyTimeEnd != null) {
+              if (studyEndDate != null) {
                 studiesEnded = true;
               }
             }
@@ -220,49 +219,51 @@ public class CommunicatorRESTModels {
     }
   }
 
-  public List<CommunicatorMessageRecipientRESTModel> restRecipient(List<CommunicatorMessageRecipient> recipients) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      List<CommunicatorMessageRecipientRESTModel> result = new ArrayList<CommunicatorMessageRecipientRESTModel>();
-      for (CommunicatorMessageRecipient recipient : recipients) {
-        CommunicatorMessageRecipientRESTModel restRecipientModel = restRecipient(recipient);
-        if (restRecipientModel != null)
-          result.add(restRecipientModel);
-      }
-      return result;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-  
-  public CommunicatorMessageRecipientRESTModel restRecipient(CommunicatorMessageRecipient recipient) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-      User user = userController.findUserByUserEntityDefaults(userEntity);
-      boolean archived = userEntity.getArchived();
-      if (user == null)
-        return new CommunicatorMessageRecipientRESTModel(
-        recipient.getId(),
-        recipient.getCommunicatorMessage().getId(), 
-        recipient.getRecipient(),
-        null,
-        null,
-        null,
-        archived);
-      
-      return new CommunicatorMessageRecipientRESTModel(
-          recipient.getId(),
-          recipient.getCommunicatorMessage().getId(), 
-          recipient.getRecipient(),
-          user.getFirstName(),
-          user.getLastName(),
-          user.getNickName(),
-          archived);
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
+//  @Deprecated
+//  public List<CommunicatorMessageRecipientRESTModel> restRecipient(List<CommunicatorMessageRecipient> recipients) {
+//    schoolDataBridgeSessionController.startSystemSession();
+//    try {
+//      List<CommunicatorMessageRecipientRESTModel> result = new ArrayList<CommunicatorMessageRecipientRESTModel>();
+//      for (CommunicatorMessageRecipient recipient : recipients) {
+//        CommunicatorMessageRecipientRESTModel restRecipientModel = restRecipient(recipient);
+//        if (restRecipientModel != null)
+//          result.add(restRecipientModel);
+//      }
+//      return result;
+//    } finally {
+//      schoolDataBridgeSessionController.endSystemSession();
+//    }
+//  }
+//  
+//  @Deprecated
+//  public CommunicatorMessageRecipientRESTModel restRecipient(CommunicatorMessageRecipient recipient) {
+//    schoolDataBridgeSessionController.startSystemSession();
+//    try {
+//      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+//      User user = userController.findUserByUserEntityDefaults(userEntity);
+//      boolean archived = userEntity.getArchived();
+//      if (user == null)
+//        return new CommunicatorMessageRecipientRESTModel(
+//        recipient.getId(),
+//        recipient.getCommunicatorMessage().getId(), 
+//        recipient.getRecipient(),
+//        null,
+//        null,
+//        null,
+//        archived);
+//      
+//      return new CommunicatorMessageRecipientRESTModel(
+//          recipient.getId(),
+//          recipient.getCommunicatorMessage().getId(), 
+//          recipient.getRecipient(),
+//          user.getFirstName(),
+//          user.getLastName(),
+//          user.getNickName(),
+//          archived);
+//    } finally {
+//      schoolDataBridgeSessionController.endSystemSession();
+//    }
+//  }
 
   public CommunicatorThreadViewRESTModel restThreadViewModel(List<CommunicatorMessage> messages, 
       CommunicatorMessageId olderThread, CommunicatorMessageId newerThread, List<CommunicatorMessageIdLabelRESTModel> labels) {

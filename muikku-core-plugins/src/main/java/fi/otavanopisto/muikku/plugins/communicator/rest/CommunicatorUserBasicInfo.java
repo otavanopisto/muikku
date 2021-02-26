@@ -6,7 +6,7 @@ public class CommunicatorUserBasicInfo {
   }
 
   public CommunicatorUserBasicInfo(
-              Long id,
+              Long userEntityId,
               String firstName,
               String lastName,
               String nickName, 
@@ -14,7 +14,7 @@ public class CommunicatorUserBasicInfo {
               boolean studiesEnded 
               ) {
     super();
-    this.id = id;
+    this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.nickName = nickName;
@@ -22,14 +22,6 @@ public class CommunicatorUserBasicInfo {
     this.studiesEnded = studiesEnded;
   }
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-  
   public String getFirstName() {
     return firstName;
   }
@@ -70,7 +62,15 @@ public class CommunicatorUserBasicInfo {
     this.archived = archived;
   }
 
-  private Long id;
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
+  private Long userEntityId;
   private String firstName;
   private String lastName;
   private String nickName;
