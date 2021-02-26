@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 /**
  * REST model for message recipient in search.
  */
+@Deprecated
 public class CommunicatorSearchSenderRESTModel {
 
   public CommunicatorSearchSenderRESTModel() {

@@ -790,7 +790,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
 
     return Response.ok(
-      restModels.restRecipient(messageRecipients)
+      restModels.restRecipient2(messageRecipients)
     ).build();
   }
 

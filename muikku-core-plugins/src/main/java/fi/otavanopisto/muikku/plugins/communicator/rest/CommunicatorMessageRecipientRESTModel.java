@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 /**
  * REST model for message recipient.
  */
+@Deprecated
 public class CommunicatorMessageRecipientRESTModel {
 
   public CommunicatorMessageRecipientRESTModel() {
