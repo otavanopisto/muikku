@@ -56,7 +56,9 @@ export interface UserType {
   studyStartDate?: string,
   studyTimeEnd?: string,
   userEntityId?: number
-  lastLogin?: string
+  lastLogin?: string,
+  archived?: boolean,
+  studiesEnded?: boolean
 }
 
 export interface UserWithSchoolDataType {
