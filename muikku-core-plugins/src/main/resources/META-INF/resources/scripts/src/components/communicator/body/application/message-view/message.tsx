@@ -5,7 +5,7 @@ import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, SimpleUserType } from '~/reducers/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserType } from '~/reducers/user-index';
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex, getName } from '~/util/modifiers';
 
@@ -35,7 +35,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     this.getMessageSender = this.getMessageSender.bind(this);
 
   }
-  getMessageSender(sender: SimpleUserType): any {
+  getMessageSender(sender: UserType): any {
     if (sender.archived === true) {
       return <span key={sender.id} className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
     }
@@ -85,7 +85,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         studiesEnded: r.studiesEnded,
         archived: r.archived
       }
-    })).filter(user => user.value.id !== this.props.status.userId) // We are filtering the sender from the recepient, just in case
+    })).filter(user => user.value.userEntityId !== this.props.status.userId) // We are filtering the sender from the recepient, just in case
       .filter(user => user.value.studiesEnded !== true) // We are filtering recipient who has ended his studies
       .filter(user => user.value.archived !== true); // We are filtering recipient who has been archived
 
@@ -110,17 +110,17 @@ class Message extends React.Component<MessageProps, MessageState> {
 
     // The basic reply target is the sender
     let replytarget = [senderObject];
-    if (senderObject.value.id === this.props.status.userId) {
+    if (senderObject.value.userEntityId === this.props.status.userId) {
       replytarget = [senderObject].concat(recipientsObject as any)
       .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupObject as any : [])
       .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceObject as any : [])
-      .filter((t)=>t.value.id !== this.props.status.userId);
+        .filter((t) => t.value.userEntityId !== this.props.status.userId);
     }
     let replyalltarget = [senderObject].concat(recipientsObject as any)
     .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupObject as any : [])
     .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceObject as any : [])
-    .filter((t)=>t.value.id !== senderObject.value.id)
-    .concat(senderObject as any).filter((t)=>t.value.id !== this.props.status.userId);
+      .filter((t) => t.value.userEntityId !== senderObject.value.userEntityId)
+      .concat(senderObject as any).filter((t) => t.value.userEntityId !== this.props.status.userId);
 
     return <div className="application-list__item application-list__item--communicator-message">
       <div className="application-list__item-header application-list__item-header--communicator-message-thread">

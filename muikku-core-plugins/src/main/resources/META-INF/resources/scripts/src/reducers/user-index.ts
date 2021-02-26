@@ -22,14 +22,11 @@ export interface UpdateUserType {
 }
 
 export interface SimpleUserType {
-  id: number,
+  userEntityId: number,
   firstName: string,
   lastName?: string,
   nickName?: string,
   hasImage?: boolean,
-  email?: string,
-  archived?: boolean,
-  studiesEnded?: boolean
 }
 
 export interface UserType {
@@ -58,6 +55,8 @@ export interface UserType {
   studyTimeEnd?: string,
   userEntityId?: number
   lastLogin?: string,
+  archived?: boolean,
+  studiesEnded?: boolean,
 }
 
 export interface UserWithSchoolDataType {
@@ -135,7 +134,7 @@ export interface WorkspaceRecepientType {
 
 export interface UserRecepientType {
   type: "user",
-  value: SimpleUserType
+  value: UserType
 }
 
 export interface UserGroupRecepientType {
