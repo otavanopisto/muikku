@@ -40,6 +40,8 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -79,6 +81,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -126,6 +129,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   private UserEntityFileController userEntityFileController;
 
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   private TagController tagController;
   
@@ -532,12 +538,23 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     Set<Tag> tagList = parseTags(newMessage.getTags());
     List<UserEntity> recipients = new ArrayList<UserEntity>();
+    boolean studentMessaging = sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_STUDENT_MESSAGING);
     
     for (Long recipientId : newMessage.getRecipientIds()) {
       UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+      
+      if (recipient != null) {
+        if (!studentMessaging) {
+          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+          if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
+            return Response.status(Status.BAD_REQUEST).build();
+          }
+        }
 
-      if (recipient != null)
         recipients.add(recipient);
+      } else {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
     }
 
     List<UserGroupEntity> userGroupRecipients = null;
@@ -694,12 +711,23 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     Set<Tag> tagList = parseTags(newMessage.getTags());
     List<UserEntity> recipients = new ArrayList<UserEntity>();
+    boolean studentMessaging = sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_STUDENT_MESSAGING);
     
     for (Long recipientId : newMessage.getRecipientIds()) {
       UserEntity recipient = userEntityController.findUserEntityById(recipientId);
 
-      if (recipient != null)
+      if (recipient != null) {
+        if (!studentMessaging) {
+          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+          if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
+            return Response.status(Status.BAD_REQUEST).build();
+          }
+        }
+        
         recipients.add(recipient);
+      } else {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
     }
     
     List<UserGroupEntity> userGroupRecipients = null;
