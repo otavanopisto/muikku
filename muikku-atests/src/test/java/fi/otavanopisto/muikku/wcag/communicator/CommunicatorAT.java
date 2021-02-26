@@ -9,7 +9,7 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 public class CommunicatorAT extends AbstractWCAGTest{
   
   @Test
-  public void communicatorViewsTest() throws FileNotFoundException {
+  public void communicatorTest() throws FileNotFoundException {
     login(getTestStudent(), getTestStudentPassword(), true);
     navigate("/communicator", true);
     waitAndClick("a.button.button--primary-function");
@@ -28,6 +28,10 @@ public class CommunicatorAT extends AbstractWCAGTest{
     navigate("/communicator", true);
     waitAndClick(".application-panel__toolbar .button-pill--label");
     waitForVisible(".dropdown--communicator-labels");        
-    testAccessibility("Communicator inbox view");
+    testAccessibility("Communicator inbox view with label dropdown open");
+    
+    navigate("/communicator#trash", true);
+    waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary");
+    testAccessibility("Communicator trash view");
   }
 }

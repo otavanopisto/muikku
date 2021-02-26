@@ -9,11 +9,11 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 public class DiscussionsAT extends AbstractWCAGTest{
 
   @Test
-  public void discussionsTest() throws FileNotFoundException {
+  public void discussionsTests() throws FileNotFoundException {
     login(getTestStudent(), getTestStudentPassword(), true);
     navigate("/discussion", true);
     waitForVisible(".application-panel--discussion");
-    testAccessibility("Discussions view");
+    testAccessibility("Discussions main view");
     waitAndClick(".application-list__item.message:first-child");
     waitForVisible(".application-list__item--discussion-message");
     testAccessibility("Discussions single thread");
@@ -24,7 +24,7 @@ public class DiscussionsAT extends AbstractWCAGTest{
   }
   
   @Test
-  public void discussionsDeleteMessageDialogTest() throws FileNotFoundException {
+  public void discussionsDialogTests() throws FileNotFoundException {
     login(getTestAdmin(), getTestAdminPassword(), true);
     navigate("/discussion", true);
     waitAndClick(".application-list__item.message:first-child");

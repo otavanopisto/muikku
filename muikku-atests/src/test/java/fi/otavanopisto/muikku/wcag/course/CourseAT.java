@@ -11,13 +11,14 @@ public class CourseAT extends AbstractWCAGTest{
   @Test
   public void courseFrontpageAndMaterialsTests() throws FileNotFoundException {
     login(getTestStudent(), getTestStudentPassword(), true);
-    waitAndClick(".item-list__item--workspaces");
+    waitAndClick(".item-list__item--workspaces:nth-child(2)");
     waitForVisible(".hero__workspace-title");
     testAccessibility("Workspace frontpage.");
     
     waitAndClick(".item-list__item--teacher:first-child .button--contact-teacher");
     waitForVisible(".env-dialog__body .env-dialog__row--ckeditor");
     testAccessibility("Contact course teacher");
+    waitAndClick(".button--dialog-cancel");
     
     waitAndClick(".navbar__item--materials a");
     waitForVisible(".material-page");
@@ -27,7 +28,7 @@ public class CourseAT extends AbstractWCAGTest{
   @Test
   public void journalTests() throws FileNotFoundException {
     login(getTestStudent(), getTestStudentPassword(), true);
-    waitAndClick(".item-list__item--workspaces");
+    waitAndClick(".item-list__item--workspaces:nth-child(2)");
     waitAndClick(".navbar__item--journal a");
     waitForVisible(".application-list__item-header-main--journal-entry");
     testAccessibility("Workspace journal view:");
@@ -45,7 +46,7 @@ public class CourseAT extends AbstractWCAGTest{
   @Test
   public void assesmentRequestDialogTest() throws FileNotFoundException {
     login(getTestStudent(), getTestStudentPassword(), true);
-    waitAndClick(".item-list__item--workspaces");
+    waitAndClick(".item-list__item--workspaces:nth-child(2)");
     waitAndClick(".navbar__item--assessment-request");
     waitForVisible(".dialog--evaluation-request-dialog");
     testAccessibility("Assesment request dialog");
