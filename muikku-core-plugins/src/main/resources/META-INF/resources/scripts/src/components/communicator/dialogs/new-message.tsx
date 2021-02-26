@@ -12,7 +12,7 @@ import { sendMessage, SendMessageTriggerType } from '~/actions/main-function/mes
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
 import { MessageSignatureType } from '~/reducers/main-function/messages';
-import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, ContactRecepientType } from '~/reducers/user-index';
+import { ContactRecepientType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';

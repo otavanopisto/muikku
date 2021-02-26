@@ -5,7 +5,7 @@ import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType, SimpleUserType } from '~/reducers/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, SimpleUserType } from '~/reducers/user-index';
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex, getName } from '~/util/modifiers';
 
@@ -108,7 +108,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       } as WorkspaceType)
     }));
 
-    //The basic reply target is the sender
+    // The basic reply target is the sender
     let replytarget = [senderObject];
     if (senderObject.value.id === this.props.status.userId) {
       replytarget = [senderObject].concat(recipientsObject as any)

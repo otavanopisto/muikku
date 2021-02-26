@@ -117,7 +117,7 @@ export interface MessageRecepientType {
   lastName?: string | null,
   recipientId: number,
   archived?: boolean,
-  studiesEnded: boolean
+  studiesEnded?: boolean
 }
 export interface MessageWorkspaceRecipientType {
   archetype: string,
