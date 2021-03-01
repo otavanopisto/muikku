@@ -21,14 +21,6 @@ export interface UpdateUserType {
   ssn?: string
 }
 
-export interface SimpleUserType {
-  userEntityId: number,
-  firstName: string,
-  lastName?: string,
-  nickName?: string,
-  hasImage?: boolean,
-}
-
 export interface UserType {
 
   // Ok, but coming from backend, "id" is not a number, but a string. This might cause trouble in the future?

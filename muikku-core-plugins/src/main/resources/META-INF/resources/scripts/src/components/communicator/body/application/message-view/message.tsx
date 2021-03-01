@@ -37,12 +37,12 @@ class Message extends React.Component<MessageProps, MessageState> {
   }
   getMessageSender(sender: UserType): any {
     if (sender.archived === true) {
-      return <span key={sender.id} className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
+      return <span key={sender.userEntityId} className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
     }
     if (sender.studiesEnded === true) {
-      return <span key={sender.id} className="message__user-studies-ended">{getName(sender as any, !this.props.status.isStudent)}</span>;
+      return <span key={sender.userEntityId} className="message__user-studies-ended">{getName(sender as any, !this.props.status.isStudent)}</span>;
     }
-    return <span key={sender.id}>{getName(sender as any, !this.props.status.isStudent)}</span>;
+    return <span key={sender.userEntityId}>{getName(sender as any, !this.props.status.isStudent)}</span>;
   }
   getMessageRecipients(message: MessageType): any {
     let messageRecipientsList = message.recipients.map((recipient) => {
@@ -85,7 +85,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         studiesEnded: r.studiesEnded,
         archived: r.archived
       }
-    })).filter(user => user.value.userEntityId !== this.props.status.userId) // We are filtering the sender from the recepient, just in case
+    })).filter(user => user.value.id !== this.props.status.userId) // We are filtering the sender from the recepient, just in case
       .filter(user => user.value.studiesEnded !== true) // We are filtering recipient who has ended his studies
       .filter(user => user.value.archived !== true); // We are filtering recipient who has been archived
 
