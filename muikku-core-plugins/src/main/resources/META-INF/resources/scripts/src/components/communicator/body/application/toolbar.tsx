@@ -265,6 +265,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         updateField={this.updateSearchWithQuery}
         name="message-search"
         id="searchMessages"
+        modifiers="communicator-message-search"
         onFocus={this.onInputFocus}
         onBlur={this.onInputBlur}
         placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')}
