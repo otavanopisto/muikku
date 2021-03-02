@@ -91,20 +91,38 @@ public class CoursePickerTestsBase extends AbstractUITest {
   public void coursePickerLoadMoreTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder = mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin);
+    List<Course> courses = new ArrayList<>();
+    for(Long i = (long) 0; i < 35; i++) {
+      Course course = new CourseBuilder()
+          .name("Test " + i)
+          .id(i)
+          .description("test course for testing #" + i)
+          .buildCourse();
+      mockBuilder = mockBuilder.addCourse(course);
+      courses.add(course);
+    }
+    mockBuilder.build();
     login();
-    List<Workspace> workspaces = new ArrayList<>();
-    for(Long i = (long) 0; i < 35; i++)
-      workspaces.add(createWorkspace("testcourse: " + i.toString(), "test course for testing " + i.toString(), i.toString(), Boolean.TRUE));
+
+    // This is here to mark the mocked courses as published
+    for (Course c : courses) {
+      createWorkspace(c, true);
+    }
+    
     try {
       navigate("/coursepicker", false);
       waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
       scrollToEnd();
       waitForMoreThanSize(".application-list__item.course", 27);
       assertCount(".application-list__item.course", 38);
-    }finally{
+    } finally {
       mockBuilder.wiremockReset();
     }
+    
+    // TODO THE CREATED COURSES/WORKSPACES ARE NOT CLEANED PROPERLY (?) 
   }
   
   @Test
