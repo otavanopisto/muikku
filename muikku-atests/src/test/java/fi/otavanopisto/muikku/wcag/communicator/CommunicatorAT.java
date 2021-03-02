@@ -29,6 +29,10 @@ public class CommunicatorAT extends AbstractWCAGTest{
     waitAndClick(".application-panel__toolbar .button-pill--label");
     waitForVisible(".dropdown--communicator-labels");        
     testAccessibility("Communicator inbox view with label dropdown open");
+    click(".button-pill--settings");
+    waitAndClick(".link--main-functions-settings-dropdown");
+    waitForVisible(".env-dialog__body .cke_wysiwyg_div");
+    testAccessibility("Signature dialog");
     
     navigate("/communicator#trash", true);
     waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary");
