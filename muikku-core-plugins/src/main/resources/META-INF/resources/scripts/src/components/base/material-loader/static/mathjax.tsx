@@ -2,6 +2,8 @@ import * as React from "react";
 import { MATHJAXSRC, MATHJAXCONFIG } from "~/lib/mathjax";
 import MathjaxReactLoader from "./mathjax-react-loader";
 
+const disableMathjax = localStorage.getItem("DISABLE_MATHJAX") === "true";
+
 interface MathJaxProps {
   invisible?: boolean;
   children: React.ReactNode;
@@ -15,6 +17,9 @@ export default class MathJAX extends React.Component<MathJaxProps, {}>{
     return (nextProps.children !== this.props.children);
   }
   render(){
+    if (disableMathjax) {
+      return null;
+    }
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible){
       return <span className="math-tex">{this.props.children}</span>

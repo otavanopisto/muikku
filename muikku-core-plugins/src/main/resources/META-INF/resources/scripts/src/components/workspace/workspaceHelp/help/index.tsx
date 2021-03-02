@@ -33,15 +33,6 @@ interface HelpState {
   defaultOffset: number
 }
 
-function isScrolledIntoView(el: HTMLElement) {
-  let rect = el.getBoundingClientRect();
-  let elemTop = rect.top;
-  let elemBottom = rect.bottom;
-
-  let isVisible = elemTop < window.innerHeight && elemBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight;
-  return isVisible;
-}
-
 const DEFAULT_OFFSET = 67;
 
 class Help extends React.Component<HelpProps, HelpState> {
@@ -136,6 +127,9 @@ class Help extends React.Component<HelpProps, HelpState> {
     this.props.onOpenNavigation();
   }
   onScroll(){
+    if ((window as any).IGNORE_SCROLL_EVENTS) {
+      return;
+    }
     let newActive:number = this.getActive();
     if (newActive !== this.props.activeNodeId){
       this.props.onActiveNodeIdChange(newActive);

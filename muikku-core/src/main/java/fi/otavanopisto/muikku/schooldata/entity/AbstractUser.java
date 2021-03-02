@@ -160,7 +160,7 @@ public abstract class AbstractUser implements User {
   }
   
   @Override
-  public boolean hasEvaluationFees() {
+  public boolean getHasEvaluationFees() {
     return evaluationFees;
   }
 

@@ -1,94 +1,57 @@
 import * as React from "react";
-import $ from '~/lib/jquery';
-
+import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext, DotGroup } from 'pure-react-carousel';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import '~/sass/elements/carousel.scss';
 
 interface CarouselProps {
-
+  totalSlides: number;
+  naturalSlideWidth: number;
+  naturalSlideHeight: number;
 }
 
 interface CarouselState {
 
 }
 
-//HAX
-let forcedQueue:Array<()=>any> = [];
-let scriptReady:boolean = false;
-
-$('<link/>', {
-  rel: 'stylesheet',
-  type: 'text/css',
-  href: '//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.css'
-}).appendTo('head');
-
-$.getScript("//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js", function(data: any, textStatus: string, jqxhr: any) {
-  scriptReady = true;
-  forcedQueue.forEach(f=>f());
-});
-
 export default class Carousel extends React.Component<CarouselProps, CarouselState> {
-  constructor(props: CarouselProps){
+  constructor(props: CarouselProps) {
     super(props);
-
-    this.configure = this.configure.bind(this);
-    this.showCarouselItems = this.showCarouselItems.bind(this);
-  }
-  componentDidMount(){
-    //HAXING
-    if (!scriptReady){
-      forcedQueue.push(this.configure.bind(this));
-    } else {
-      this.configure();
-    }
-  }
-  showCarouselItems(){
-    $(this.refs["carouselBaseRef"]).find(".carousel__item").each((index: number, element: HTMLElement)=>{
-      $(element).show();
-    });
-  }
-  componentDidUpdate(){
-    this.showCarouselItems();
-  }
-  configure(){
-    this.showCarouselItems();
-    $(this.refs["carouselBaseRef"]).find(".carousel").slick({
-      appendDots: $(this.refs["carouselBaseRef"]).find(".carousel__controls"),
-      arrows: false,
-      dots: true,
-      dotsClass: "carousel__dots",
-      fade: true,
-      speed: 750,
-      waitForAnimate: false,
-      responsive: [
-         {
-          breakpoint: 769,
-          settings: {
-            adaptiveHeight: true,
-            fade: false
-          }
-        }
-      ]
-    });
   }
 
-  render(){
+  render() {
     return <div ref="carouselBaseRef">
-      <div className="carousel">
-        {this.props.children}
-      </div>
-      <div className="carousel__controls"></div>
+      <CarouselProvider
+        naturalSlideWidth={this.props.naturalSlideWidth}
+        naturalSlideHeight={this.props.naturalSlideHeight}
+        totalSlides={this.props.totalSlides}
+      >
+        <Slider>
+          {this.props.children}
+        </Slider>
+        <div className="carousel__controls">
+          <DotGroup className="carousel__dots" />
+        </div>
+      </CarouselProvider>
     </div>
   }
 }
 
-export class CarouselItem extends React.Component<{}, {}> {
-  render(){
-    return <div className="carousel__item" style={{display:"none"}}>{this.props.children}</div>
+export class CarouselItem extends React.Component<{ index: number }, {}> {
+  render() {
+    return <Slide index={this.props.index}>
+      <div className="carousel__item">
+        {this.props.children}
+      </div>
+    </Slide>
   }
 }
 
-export class CarouselVideoItem extends React.Component<{}, {}> {
-  render(){
-    return <div className="carousel__item" style={{display:"none"}}><div className="carousel__item-video">{this.props.children}</div></div>
+export class CarouselVideoItem extends React.Component<{ index: number }, {}> {
+  render() {
+    return <Slide index={this.props.index}>
+      <div className="carousel__item carousel__item-video">
+        {this.props.children}
+      </div>
+    </Slide>
   }
 }

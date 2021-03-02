@@ -1299,7 +1299,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(new WorkspaceFeeInfo(evaluationFees)).build();
     */
     
-    return Response.ok(new WorkspaceFeeInfo(user.hasEvaluationFees())).build();
+    return Response.ok(new WorkspaceFeeInfo(user.getHasEvaluationFees())).build();
   }
 
   @GET

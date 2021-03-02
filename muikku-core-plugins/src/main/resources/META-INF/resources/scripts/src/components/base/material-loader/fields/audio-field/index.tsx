@@ -124,7 +124,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
   async start(){
     //we create it
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
+      this.stream = this.stream || await navigator.mediaDevices.getUserMedia({
         audio: true
       });
     } catch (err){
@@ -181,6 +181,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     clearInterval(this.interval);
     //stop the recorder, this should trigger the dataavailable event
     this.recorder.stop();
+    this.stream.getTracks().forEach((t) => t.stop());
 
     //delet stuff
     delete this["recorder"];
