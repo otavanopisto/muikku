@@ -1,5 +1,7 @@
 name: Accessibility checks
-on: workflow_dispatch
+on: 
+  push:
+    branches: [5364-continue-accessibility-testing]
 jobs:
   WCAG_check:
     runs-on: ubuntu-latest
