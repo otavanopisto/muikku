@@ -982,7 +982,7 @@ public class PyramusMock {
               .withStatus(200)));          
         }
         
-        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudyProgrammes", courseId)))
+        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudentGroups", courseId)))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(courseSignupStudentGroups))
