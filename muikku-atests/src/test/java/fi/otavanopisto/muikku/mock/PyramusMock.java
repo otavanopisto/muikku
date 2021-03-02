@@ -12,6 +12,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -70,6 +71,8 @@ import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
+import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
+import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.muikku.CredentialResetPayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
@@ -211,6 +214,30 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder addSignupStudyProgramme(CourseSignupStudyProgramme signupStudyProgramme) {
+        Long courseId = signupStudyProgramme.getCourseId();
+        if (pmock.signupStudyProgrammes.containsKey(courseId)) {
+          pmock.signupStudyProgrammes.get(courseId).add(signupStudyProgramme);
+        } else {
+          List<CourseSignupStudyProgramme> newList = new ArrayList<>();
+          newList.add(signupStudyProgramme);
+          pmock.signupStudyProgrammes.put(courseId, newList);
+        }
+        return this;
+      }
+      
+      public Builder addSignupStudentGroup(CourseSignupStudentGroup signupStudentGroup) {
+        Long courseId = signupStudentGroup.getCourseId();
+        if (pmock.signupStudentGroups.containsKey(courseId)) {
+          pmock.signupStudentGroups.get(courseId).add(signupStudentGroup);
+        } else {
+          List<CourseSignupStudentGroup> newList = new ArrayList<>();
+          newList.add(signupStudentGroup);
+          pmock.signupStudentGroups.put(courseId, newList);
+        }
+        return this;
+      }
+
       public Builder mockStudentGroups() throws JsonProcessingException {
         stubFor(get(urlMatching(String.format("/1/students/studentGroups")))
             .willReturn(aResponse()
@@ -904,6 +931,8 @@ public class PyramusMock {
                 .withBody(courseJson)
                 .withStatus(200)));
           
+          mockCourseSignupGroups(course.getId());
+          
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId())));
         }
 
@@ -924,6 +953,44 @@ public class PyramusMock {
         return this;
       }
 
+      public Builder mockCourseSignupGroups(Long courseId) throws JsonProcessingException {
+        List<CourseSignupStudyProgramme> courseSignupStudyProgrammes = pmock.signupStudyProgrammes.get(courseId) != null ? 
+            pmock.signupStudyProgrammes.get(courseId) : Collections.emptyList();
+        
+        for (CourseSignupStudyProgramme signupStudyProgramme : courseSignupStudyProgrammes) {
+          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudyProgrammes/%d", courseId, signupStudyProgramme.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(signupStudyProgramme))
+              .withStatus(200)));          
+        }
+        
+        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudyProgrammes", courseId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(courseSignupStudyProgrammes))
+            .withStatus(200)));
+
+        List<CourseSignupStudentGroup> courseSignupStudentGroups = pmock.signupStudentGroups.get(courseId) != null ?
+            pmock.signupStudentGroups.get(courseId) : Collections.emptyList();
+        
+        for (CourseSignupStudentGroup signupStudentGroup : courseSignupStudentGroups) {
+          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudentGroups/%d", courseId, signupStudentGroup.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(signupStudentGroup))
+              .withStatus(200)));          
+        }
+        
+        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudyProgrammes", courseId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(courseSignupStudentGroups))
+            .withStatus(200)));
+        
+        return this;
+      }
+      
       public Builder mockStudentCourseStats(Long studentId, int completedCourses) throws JsonProcessingException {
         StudentCourseStats studentCourseStats = new StudentCourseStats();
         studentCourseStats.setNumberCompletedCourses(completedCourses);
@@ -1277,4 +1344,6 @@ public class PyramusMock {
   private HashMap<Long, List<CompositeAssessmentRequest>> compositeStaffAssessmentRequests = new HashMap<>();
   private List<Course> courses = new ArrayList<>();
   private List<Organization> organizations = new ArrayList<>();
+  private HashMap<Long, List<CourseSignupStudyProgramme>> signupStudyProgrammes = new HashMap<>();
+  private HashMap<Long, List<CourseSignupStudentGroup>> signupStudentGroups = new HashMap<>();
 }
