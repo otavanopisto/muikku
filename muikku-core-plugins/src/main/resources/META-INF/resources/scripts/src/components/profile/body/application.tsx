@@ -8,7 +8,8 @@ import { i18nType } from '~/reducers/base/i18n';
 
 
 interface ProfileApplicationProps {
-  i18n: i18nType
+  i18n: i18nType,
+  aside: React.ReactElement,
 }
 
 interface ProfileApplicationState {
@@ -18,7 +19,8 @@ class ProfileApplication extends React.Component<ProfileApplicationProps, Profil
   render(){
     let title = this.props.i18n.text.get('plugin.profile.profile')
     return (<div className="application-panel-wrapper">
-      <ApplicationPanel modifier="profile" title={title} asideBefore={<ProfilePicture/>} disableStickyScrolling>
+      <ApplicationPanel modifier="profile" title={title} asideBefore={this.props.aside} disableStickyScrolling>
+        <ProfilePicture/>
         <ProfileInfoAndSettings/>
       </ApplicationPanel>
     </div>);

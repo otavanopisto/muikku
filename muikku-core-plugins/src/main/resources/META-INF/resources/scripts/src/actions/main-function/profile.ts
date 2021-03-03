@@ -67,7 +67,12 @@ export interface SET_PROFILE_USER_PROPERTY extends SpecificActionType<"SET_PROFI
   value: string
 }>{}
 
+export interface SetProfileLocationTriggerType {
+  (location: string):AnyActionType
+}
+
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
+export interface SET_PROFILE_LOCATION extends SpecificActionType<"SET_PROFILE_LOCATION", string>{}
 export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
 export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
 export interface SET_PROFILE_CHAT_SETTINGS extends SpecificActionType<"SET_PROFILE_CHAT_SETTINGS", UserChatSettingsType>{}
@@ -382,5 +387,13 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage};
+const setProfileLocation: SetProfileLocationTriggerType = function setProfileLocation(location: string) {
+  return {
+    type: "SET_PROFILE_LOCATION",
+    payload: location,
+  }
+}
+
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
+  updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage, setProfileLocation};
 
