@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
+import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -84,6 +85,8 @@ import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.muikku.atests.WorkspaceJournalEntry;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
+import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -1066,11 +1069,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     navigate("/", false);
     waitForPresent(".hero__item--frontpage", 45);
   }
-  @Deprecated
-  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
-    PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
+  protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Builder mockBuilder = mocker();
+    
+    Course course = new CourseBuilder().name(name).id(Long.parseLong(identifier)).description(description).buildCourse();
+    mockBuilder
+      .addCourse(course)
+      .build();
     
     Workspace payload = new Workspace(null, name, null, "PYRAMUS", identifier, published);
     Response response = asAdmin()
