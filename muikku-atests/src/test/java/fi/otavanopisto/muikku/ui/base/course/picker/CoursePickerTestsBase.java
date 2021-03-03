@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
@@ -98,9 +99,10 @@ public class CoursePickerTestsBase extends AbstractUITest {
     mockBuilder.build();
     login();
 
+    List<Workspace> workspaces = new ArrayList<>();
     // This is here to mark the mocked courses as published
     for (Course c : courses) {
-      createWorkspace(c, true);
+      workspaces.add(createWorkspace(c, true));
     }
 
     try {
@@ -114,7 +116,9 @@ public class CoursePickerTestsBase extends AbstractUITest {
         mockBuilder.wiremockReset();
       }
     } finally {
-      deleteWorkspaces();
+      for (Workspace w : workspaces) {
+        deleteWorkspace(w.getId());
+      }
     }
   }
   
