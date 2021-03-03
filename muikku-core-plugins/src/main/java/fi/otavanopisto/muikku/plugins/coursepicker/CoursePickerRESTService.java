@@ -378,7 +378,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
               } else {
-                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
+                logger.severe(String.format("Search index contains workspace %s that does not exists on the school data system", workspaceIdentifier));
               }
             }
           }

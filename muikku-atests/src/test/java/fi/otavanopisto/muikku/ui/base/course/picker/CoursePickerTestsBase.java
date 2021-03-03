@@ -6,16 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-
-import fi.otavanopisto.muikku.TestUtilities;
-import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
@@ -25,8 +18,6 @@ import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-import fi.otavanopisto.pyramus.webhooks.WebhookCourseArchivePayload;
-import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   
@@ -99,7 +90,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       Course course = new CourseBuilder()
           .name("Test " + i)
           .id(i)
-          .description("test course for testing #" + i)
+          .description("Cat herding part #" + i)
           .buildCourse();
       mockBuilder = mockBuilder.addCourse(course);
       courses.add(course);
@@ -111,18 +102,20 @@ public class CoursePickerTestsBase extends AbstractUITest {
     for (Course c : courses) {
       createWorkspace(c, true);
     }
-    
+
     try {
-      navigate("/coursepicker", false);
-      waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-      scrollToEnd();
-      waitForMoreThanSize(".application-list__item.course", 27);
-      assertCount(".application-list__item.course", 38);
+      try {
+        navigate("/coursepicker", false);
+        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        scrollToEnd();
+        waitForMoreThanSize(".application-list__item.course", 27);
+        assertCount(".application-list__item.course", 38);
+      } finally {
+        mockBuilder.wiremockReset();
+      }
     } finally {
-      mockBuilder.wiremockReset();
+      deleteWorkspaces();
     }
-    
-    // TODO THE CREATED COURSES/WORKSPACES ARE NOT CLEANED PROPERLY (?) 
   }
   
   @Test

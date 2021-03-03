@@ -124,5 +124,17 @@ public class WorkspaceIndexer {
     }
   }
   
+  public void removeWorkspace(SchoolDataIdentifier identifier) {
+    removeWorkspace(identifier.getDataSource(), identifier.getIdentifier());
+  }
+
+  public void removeWorkspace(String dataSource, String identifier) {
+    try {
+      indexer.remove(Workspace.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, String.format("Removal of workspace %s/%s from index failed", dataSource, identifier), ex);
+    } 
+  }
+
 }
 
