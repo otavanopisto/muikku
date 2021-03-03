@@ -91,6 +91,7 @@ public class WorklistRESTService {
    *  courseAssessment: {
    *    courseName: "BI1 - Ihmisen biologia"
    *    studentName: "John "Joe" Doe (Nettilukio)"
+   *    grade: 10
    *    raisedGrade: true 
    *  }
    *  editable: false
