@@ -4,6 +4,7 @@ import static com.jayway.restassured.RestAssured.certificate;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -54,7 +55,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.deque.axe.AXE;
+import com.deque.html.axecore.providers.FileAxeScriptProvider;
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.selenium.AxeBuilder;
+import com.deque.html.axecore.selenium.AxeReporter;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -94,7 +98,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   private static final long TEST_START_TIME = System.currentTimeMillis();
   
-  protected static final URL scriptUrl = AbstractWCAGTest.class.getResource("/axe.min.js");
+  protected static final String aXeScript = AbstractWCAGTest.class.getResource("/axe.min.js").getFile();
   
   @Rule
   public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
@@ -1034,6 +1038,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForVisible(".navbar .button-pill--profile");
   }
   
+  protected void login(String username, String password, boolean secure) {
+    navigate("/login?authSourceId=1", secure);
+    waitForPresent("input#username");
+    waitForPresent("input#password");
+    sendKeys("input#username", username);
+    sendKeys("input#password", password);
+    waitAndClick(".login-button");
+    waitForVisible(".navbar .button-pill--profile");
+  }
+  
   protected void loginStudent1() throws JsonProcessingException, Exception {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
@@ -1713,30 +1727,32 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if (this.violationList != null) {
       if (!this.violationList.isEmpty()) {
         String violationsString = "";
-        for (Map.Entry<String, JSONArray> violation : violationList.entrySet()) {
+        for (String violation : violationList) {
           violationsString += System.getProperty("line.separator");
-          violationsString += violation.getKey();
-          violationsString += System.getProperty("line.separator");
-          violationsString += AXE.report(violation.getValue());
-          violationsString += System.getProperty("line.separator");
+          violationsString += violation;
+          violationsString += System.getProperty("line.separator");          
         }
         assertTrue(violationsString, false);
       }
     }
   }
 
-  protected void testAccessibility(String testView) {
+  protected void testAccessibility(String testView) throws FileNotFoundException {
     if (this.violationList == null) {
-      this.violationList = new HashMap<String, JSONArray>();
+      this.violationList = new ArrayList<String>();
     }
-    this.violationList.put(testView, new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
-  }
+    List<String> disableRules  = new ArrayList<String>();
+    disableRules.add("color-contrast");
+    
+    FileAxeScriptProvider axeScriptProvider = new FileAxeScriptProvider(aXeScript);
+    AxeBuilder axeBuilder = new AxeBuilder();
+    axeBuilder.disableRules(disableRules);
+    axeBuilder.setAxeScriptProvider(axeScriptProvider);
+    Results results = axeBuilder.analyze(getWebDriver());
 
-  protected void testAccessibility() {
-    if (this.violationList == null) {
-      this.violationList = new HashMap<String, JSONArray>();
+    if(AxeReporter.getReadableAxeResults(testView, getWebDriver(), results.getViolations())) {
+      this.violationList.add(AxeReporter.getAxeResultString()); 
     }
-    this.violationList.put("default", new AXE.Builder(getWebDriver(), scriptUrl).analyze().getJSONArray("violations"));
   }
   
   enum RoleType {
@@ -1745,6 +1761,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   private String sessionId;
   private WebDriver webDriver;
-  protected Map<String, JSONArray> violationList;
+  protected List<String> violationList;
   
 }

@@ -1,0 +1,24 @@
+name: Accessibility checks
+on: workflow_dispatch
+jobs:
+  WCAG_check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testclass: [AnnouncerAT, CommunicatorAT, CourseAT, CoursePickerAT, DiscussionsAT, IndexAT, RecordsAT]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      - name: Check accessibility
+        run: |
+            cd muikku-atests
+            mvn clean verify -Pwcag -Dit.test=${{ matrix.testclass }} -Dit.test.student=${{ secrets.TEST_STUDENT }} -Dit.test.student.password=${{ secrets.TEST_STUDENT_PASSWORD }} -Dit.test.admin=${{ secrets.TEST_ADMIN }} -Dit.test.admin.password=${{ secrets.TEST_ADMIN_PASSWORD }} -Dit.host=${{ secrets.TEST_HOST }}
