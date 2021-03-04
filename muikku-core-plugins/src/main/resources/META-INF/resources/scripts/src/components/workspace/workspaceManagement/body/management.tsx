@@ -26,7 +26,7 @@ import {
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType,
   updateWorkspaceDetailsForCurrentWorkspace, UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
-  UpdateCurrentWorkspaceUserGroupPermissionTriggerType, updateCurrentWorkspaceUserGroupPermission
+  UpdateCurrentWorkspaceUserGroupPermissionTriggerType
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
@@ -44,7 +44,6 @@ interface ManagementPanelProps {
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType,
   updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
-  updateCurrentWorkspaceUserGroupPermission: UpdateCurrentWorkspaceUserGroupPermissionTriggerType,
   displayNotification: DisplayNotificationTriggerType
 }
 
@@ -289,9 +288,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspacePermissions: this.state.workspacePermissions.map((pte) => {
         if (pte.userGroupEntityId === permission.userGroupEntityId) {
           const newPermission = { ...permission };
-          newPermission.permissions = newPermission.permissions.includes(valueToToggle) ?
-            newPermission.permissions.filter(v => v !== valueToToggle) :
-            [valueToToggle].concat(newPermission.permissions);
+          newPermission.canSignup = !newPermission.canSignup;
           return newPermission;
         }
         return pte;
@@ -630,8 +627,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                   .filter((permission) => filterMatch(permission.userGroupName, this.state.workspaceUsergroupNameFilter)).map((permission) => {
                     return <span className="form-element form-element--checkbox-radiobutton" key={permission.userGroupEntityId}>
                       {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                        <input id={`usergroup${permission.userGroupEntityId}`} key={pte} type="checkbox" checked={permission.permissions.includes(pte)}
-                          onChange={this.togglePermissionIn.bind(this, permission, pte)} />
+                        <input id={`usergroup${permission.userGroupEntityId}`} key={pte} type="checkbox" checked={permission.canSignup}
+                          onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
                       )}
                       <label htmlFor={`usergroup${permission.userGroupEntityId}`}>{filterHighlight(permission.userGroupName, this.state.workspaceUsergroupNameFilter)}</label>
                     </span>
@@ -662,8 +659,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({
     updateWorkspace, updateWorkspaceProducersForCurrentWorkspace,
-    updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification,
-    updateCurrentWorkspaceUserGroupPermission
+    updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification
   }, dispatch);
 };
 
