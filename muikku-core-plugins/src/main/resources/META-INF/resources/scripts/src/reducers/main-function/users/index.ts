@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import students from "~/components/guider/body/application/students";
-import { UserWithSchoolDataType, CurrentUserGroupType, UserGroupType, UserType } from '~/reducers/user-index';
+import { UserWithSchoolDataType, UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserType>;
@@ -10,7 +10,11 @@ export interface OrganizationUsersListType {
   firstResult: number,
   lastResult: number,
   results: UsersListType,
-  totalHitCount: number
+  totalHitCount: number,
+}
+
+export interface UserGroupListType {
+  list: UserGroupType[],
 }
 
 export interface StudyprogrammeTypes {
@@ -32,8 +36,6 @@ export interface UserPanelUsersType {
 export interface UsersType {
   students?: UserPanelUsersType,
   staff?: UserPanelUsersType,
-  usergroups?: Array<UserGroupType>,
-  currentUserGroup?: CurrentUserGroupType
 }
 
 
@@ -42,6 +44,34 @@ export interface UsersSelectType {
   staff: UsersListType,
   usergroups: Array<UserGroupType>,
 }
+
+export interface CurrentUserGroupType {
+  id: number | null,
+  users: OrganizationUsersListType,
+}
+
+export interface UserGroupsType {
+  list: UserGroupType[],
+  currentUserGroup?: CurrentUserGroupType,
+}
+
+export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>
+
+export interface CreateUserGroupType {
+  name: string,
+  isGuidanceGroup: boolean,
+}
+
+export interface UpdateUserGroupType extends CreateUserGroupType {
+  identifier: string,
+}
+
+export interface ModifyUserGroupUsersType {
+  groupIdentifier?: string,
+  userIdentifiers: string[],
+}
+
+export type UpdateUserGroupStateType = "update-group" | "add-users" | "remove-users" | "done";
 
 // Do not delete, this is for organization
 
@@ -54,8 +84,6 @@ export default function users(state: UsersType = {
     results: [],
     totalHitCount: null
   },
-  usergroups: [],
-  currentUserGroup: null,
 }, action: ActionType): UsersType {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
@@ -65,17 +93,26 @@ export default function users(state: UsersType = {
     return Object.assign({}, state, {
       staff: action.payload
     });
-  } else if (action.type === "UPDATE_USER_GROUPS") {
+  }
+  return state;
+}
+
+export function userGroups(state: UserGroupsType = {
+    list: [],
+    currentUserGroup: null,
+  }, action: ActionType): UserGroupsType {
+  if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
-      usergroups: action.payload
+      list: action.payload
     });
-  }else if (action.type === "SET_CURRENT_USER_GROUP") {
+  } else if (action.type === "UPDATE_CURRENT_USER_GROUP") {
     return Object.assign({}, state, {
       currentUserGroup: action.payload
     });
   }
   return state;
 }
+
 
 export function userSelect(state: UsersSelectType = {
   students: [],

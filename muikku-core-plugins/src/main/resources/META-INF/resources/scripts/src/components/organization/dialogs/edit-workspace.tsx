@@ -110,8 +110,8 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   }
   doStudentSearch(q: string) {
-    this.props.loadStudents({q});
-    this.props.loadUserGroups({q});
+    this.props.loadStudents({payload:{q}});
+    this.props.loadUserGroups({payload:{q}});
   }
 
   selectStudent(student: SelectItem) {
@@ -131,7 +131,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   doStaffSearch(q: string) {
-    this.props.loadStaff({q});
+    this.props.loadStaff({payload:{q}});
   }
 
   selectStaff(staff: SelectItem) {

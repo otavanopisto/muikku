@@ -163,7 +163,7 @@ interface ApplicationListItemContentWrapperProps extends React.DetailedHTMLProps
   asideModifiers?: string | Array<string>,
   mainModifiers?: string | Array<string>,
   actions?: React.ReactElement<any>,
-  aside: React.ReactElement<any>
+  aside?: React.ReactElement<any>
 }
 
 interface ApplicationListItemContentWrapperState {

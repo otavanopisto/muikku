@@ -112,8 +112,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   doStudentSearch(q: string) {
-    this.props.loadStudents({q});
-    this.props.loadUserGroups({q});
+    this.props.loadStudents({payload:{q}});
+    this.props.loadUserGroups({payload:{q}});
   }
 
   selectStudent(student: SelectItem) {
@@ -127,7 +127,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
   }
 
   doStaffSearch(q: string) {
-    this.props.loadStaff({q});
+    this.props.loadStaff({payload:{q}});
   }
 
   selectStaff(staff: SelectItem) {

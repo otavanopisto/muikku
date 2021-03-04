@@ -8,8 +8,7 @@ import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
 import { SelectItem } from '~/actions/workspaces/index';
-import { UsersSelectType } from '~/reducers/main-function/users';
-import { CreateUserGroupType, UpdateUserGroupStateType} from '~/reducers/user-index';
+import {  CreateUserGroupType, UpdateUserGroupStateType, UsersSelectType } from '~/reducers/main-function/users';
 
 interface ValidationType {
   nameValid: number
@@ -86,7 +85,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     this.clearComponentState = this.clearComponentState.bind(this);
   }
   doStudentSearch(q: string) {
-    this.props.loadStudents({q});
+    this.props.loadStudents({payload:{q}});
   }
 
   selectStudent(student: SelectItem) {
@@ -107,7 +106,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
 
 
   doStaffSearch(q: string) {
-    this.props.loadStaff({q});
+    this.props.loadStaff({payload:{q}});
   }
 
   selectStaff(staff: SelectItem) {
@@ -217,7 +216,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
           });
         }
         if(state === "done") {
-          setTimeout(() => this.props.loadUsergroups({q:""}), 2000);
+          setTimeout(() => this.props.loadUsergroups({payload:{q:""}}), 2000);
         }
       },
 

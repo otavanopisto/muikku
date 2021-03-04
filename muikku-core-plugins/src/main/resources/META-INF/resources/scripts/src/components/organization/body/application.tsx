@@ -61,12 +61,12 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   }
 
   doUserSearch(q: string) {
-    this.props.loadUsers({q});
+    this.props.loadUsers({payload:{q}});
     this.setState({userSearchFieldValue: q});
   }
 
   doUserGroupSearch(q: string) {
-    this.props.loadUsergroups({q});
+    this.props.loadUsergroups({payload:{q}});
     this.setState({userGroupSearchFieldValue: q});
   }
 

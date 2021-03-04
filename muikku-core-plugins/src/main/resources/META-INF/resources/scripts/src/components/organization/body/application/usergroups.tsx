@@ -4,11 +4,11 @@ import { connect, Dispatch } from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 import { bindActionCreators } from 'redux';
-import { UserPanelUsersType } from '~/reducers/main-function/users';
 import Usergroup from './usergroups/usergroup';
 import { WorkspacesStateType } from '~/reducers/workspaces';
-import { LoadUsersTriggerType, loadUsergroups, loadStaff } from '~/actions/main-function/users';
+import { LoadUsersTriggerType, loadUsergroups} from '~/actions/main-function/users';
 import { UserGroupType } from '~/reducers/user-index';
+
 interface OrganizationUserGroupsProps {
   i18n: i18nType,
   usergroups: Array<UserGroupType>,
@@ -27,7 +27,7 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
   }
 
   userGroupSearch(q: string) {
-    this.props.loadUsergroups({q});
+    this.props.loadUsergroups({payload:{q}});
   }
 
 
@@ -47,7 +47,7 @@ class OrganizationUserGroups extends React.Component<OrganizationUserGroupsProps
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    usergroups: state.organizationUsers.usergroups,
+    usergroups: state.userGroups.list,
     usergroupsState: state.organizationWorkspaces.state,
     usergroupsHasMore: state.organizationWorkspaces.hasMore,
   }

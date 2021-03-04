@@ -1,8 +1,10 @@
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
-import { UsersListType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType, StudyprogrammeListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
-import { UserGroupType, SelectedUsersType, UpdateUserType, UpdateUserGroupStateType, CreateUserGroupType, UpdateUserGroupType, ModifyUserGroupUsersType, CreateUserType, UserGroupListType, UserType, CurrentUserGroupType } from 'reducers/user-index';
+import { UsersListType, UpdateUserGroupStateType, CreateUserGroupType, ModifyUserGroupUsersType,
+  CurrentUserGroupType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType,
+  StudyprogrammeListType, UpdateUserGroupType, UserGroupListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
+import { UserGroupType, UpdateUserType, CreateUserType, UserType} from 'reducers/user-index';
 import {SelectItem} from '~/actions/workspaces/index'
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
@@ -10,7 +12,7 @@ import { type } from 'os';
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserPanelUsersType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserPanelUsersType>
 export type UPDATE_USER_GROUPS = SpecificActionType<"UPDATE_USER_GROUPS", Array<UserGroupType>>
-export type SET_CURRENT_USER_GROUP= SpecificActionType<"SET_CURRENT_USER_GROUP", CurrentUserGroupType>
+export type UPDATE_CURRENT_USER_GROUP= SpecificActionType<"UPDATE_CURRENT_USER_GROUP", CurrentUserGroupType>
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<"UPDATE_STUDENT_SELECTOR", UsersListType>
 export type UPDATE_STAFF_SELECTOR = SpecificActionType<"UPDATE_STAFF_SELECTOR", UsersListType>
 export type UPDATE_GROUP_SELECTOR = SpecificActionType<"UPDATE_GROUP_SELECTOR", Array<UserGroupType>>
@@ -72,32 +74,39 @@ export interface CreateUsergroupTriggerType {
   }): AnyActionType
 }
 
-
-
-
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
 }
 
+// export interface LoadUsersTriggerType {
+//   (data: {
+//     q: string | null,
+//     firstResult?: number | null,
+//     lastResult?: number | null,
+//     maxResults?: number | null,
+//     userGroupIds?: number[],
+//   }): AnyActionType
+// }
+
 export interface LoadUsersTriggerType {
   (data: {
-    q: string | null,
-    loaderType?: "staff" | "students" | "groups",
-    firstResult?: number | null,
-    lastResult?: number | null,
-    maxResults?: number | null,
-    userGroupIds?: number[],
-    selectItems?:(result: SelectItem[]) => any,
-    success?:() => any,
+    payload: {
+      q: string | null,
+      firstResult?: number | null,
+      lastResult?: number | null,
+      maxResults?: number | null,
+      userGroupIds?: number[],
+      }
+    success?: (result: OrganizationUsersListType)=> any,
     fail?: ()=> any,
-  }): AnyActionType
+  }
+
+  ): AnyActionType
 }
 
+
 export interface SetCurrentUserGroupTriggerType {
-  (data: {
-    id: number,
-    users: SelectedUsersType,
-  }):AnyActionType
+  (id: number):AnyActionType
 }
 
 
@@ -305,8 +314,8 @@ let loadStudents: LoadUsersTriggerType = function loadStudents(data) {
         payload: null
       });
 
-      await promisify(mApi().organizationUserManagement.students.read(data), 'callback')().then((users: UserPanelUsersType) => {
-        let payload = { ...users, searchString: data.q };
+      await promisify(mApi().organizationUserManagement.students.read(data.payload), 'callback')().then((users: UserPanelUsersType) => {
+        let payload = { ...users, searchString: data.payload.q };
         dispatch({
           type: "UPDATE_STUDENT_USERS",
           payload: payload
@@ -343,8 +352,8 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(data) {
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      await promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')().then((users: UserPanelUsersType) => {
-        let payload = { ...users, searchString: data.q };
+      await promisify(mApi().organizationUserManagement.staffMembers.read(data.payload), 'callback')().then((users: UserPanelUsersType) => {
+        let payload = { ...users, searchString: data.payload.q };
 
         dispatch({
           type: "UPDATE_STAFF_USERS",
@@ -372,17 +381,17 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(data) {
   }
 }
 
-let loadUsergroups: LoadUsersTriggerType = function loadStudents(data) {
+let loadUsergroups: LoadUsersTriggerType = function loadUserGroups(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      await promisify(mApi().usergroup.groups.read(data), 'callback')().then((groups: Array<UserGroupType>) => {
+      await promisify(mApi().usergroup.groups.read(data.payload), 'callback')().then((result: UserGroupType[]) => {
         dispatch({
           type: "UPDATE_USER_GROUPS",
-          payload: groups
+          payload: result
         });
       });
       dispatch({
@@ -406,13 +415,16 @@ let loadUsergroups: LoadUsersTriggerType = function loadStudents(data) {
   }
 }
 
-let setCurrentUserGroup: SetCurrentUserGroupTriggerType = function setCurrentUserGroup(data) {
+let setCurrentUserGroup: SetCurrentUserGroupTriggerType = function loadCurrentUserGroup(id: number) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let payload:CurrentUserGroupType = {
+      id: id,
+      users: null
+    };
     try {
-      let payload:CurrentUserGroupType = data;
       dispatch({
-        type: "SET_CURRENT_USER_GROUP",
-        payload: data
+        type: "UPDATE_CURRENT_USER_GROUP",
+        payload: payload
       });
 
     } catch (err) {
@@ -424,28 +436,52 @@ let setCurrentUserGroup: SetCurrentUserGroupTriggerType = function setCurrentUse
   }
 }
 
-let loadUserGroupUsers: LoadUsersTriggerType = function loadUserGroupStaff(data) {
-  let userEndpoint = mApi().organizationUserManagement.students.read(data);
-
-  if(data.loaderType == "staff") {
-      userEndpoint = mApi().organizationUserManagement.staffMembers.read(data);
-  }
-
+let loadAllCurrentUserGroupStudents: LoadUsersTriggerType = function loadAllCurrentUserGroupUsers(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let payload:CurrentUserGroupType = {
+      id: getState().userGroups.currentUserGroup ? getState().userGroups.currentUserGroup.id : null,
+      users: null
+    };
+
     try {
-      await promisify(userEndpoint, 'callback')().then((result: OrganizationUsersListType) => {
-        let selectedUsers: SelectItem[] = result.results.map(user => {
-           return {
-             id: user.id,
-             label: user.firstName + user.lastName,
-             type: "user",
-           }
-        });
-        data.selectItems && data.selectItems(selectedUsers);
-        data.success && data.success();
+      await promisify(mApi().organizationUserManagement.students.read(data.payload), 'callback')().then((result: OrganizationUsersListType) => {
+        payload.users = result;
+      }),
+
+      dispatch({
+        type: "UPDATE_CURRENT_USER_GROUP",
+        payload: payload
       });
 
-      // TODO dispatch to app state
+      data.success && data.success(payload.users);
+
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+    }
+  }
+}
+
+let loadAllCurrentUserGroupStaff: LoadUsersTriggerType = function loadAllCurrentUserGroupUsers(data) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let payload:CurrentUserGroupType = {
+      id: getState().userGroups.currentUserGroup ? getState().userGroups.currentUserGroup.id : null,
+      users: null
+    };
+
+    try {
+      await promisify(mApi().organizationUserManagement.staff.read(data.payload), 'callback')().then((result: OrganizationUsersListType) => {
+        payload.users = result;
+      }),
+
+      dispatch({
+        type: "UPDATE_CURRENT_USER_GROUP",
+        payload: payload
+      });
+
+      data.success && data.success(payload.users);
 
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -458,8 +494,8 @@ let loadUserGroupUsers: LoadUsersTriggerType = function loadUserGroupStaff(data)
 
 let loadUsers: LoadUsersTriggerType = function loadUsers(data) {
 
-  let getStudents = promisify(mApi().organizationUserManagement.students.read(data), 'callback')();
-  let getStaffmembers = promisify(mApi().organizationUserManagement.staffMembers.read(data), 'callback')();
+  let getStudents = promisify(mApi().organizationUserManagement.students.read(data.payload), 'callback')();
+  let getStaffmembers = promisify(mApi().organizationUserManagement.staffMembers.read(data.payload), 'callback')();
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -470,7 +506,7 @@ let loadUsers: LoadUsersTriggerType = function loadUsers(data) {
 
       await Promise.all([
         getStudents.then((users: UserPanelUsersType) => {
-          let payload = { ...users, searchString: data.q };
+          let payload = { ...users, searchString: data.payload.q };
 
           dispatch({
             type: "UPDATE_STUDENT_USERS",
@@ -478,7 +514,7 @@ let loadUsers: LoadUsersTriggerType = function loadUsers(data) {
           });
         }),
         getStaffmembers.then((users: UserPanelUsersType) => {
-          let payload = { ...users, searchString: data.q };
+          let payload = { ...users, searchString: data.payload.q };
 
           dispatch({
             type: "UPDATE_STAFF_USERS",
@@ -514,7 +550,7 @@ let loadUsers: LoadUsersTriggerType = function loadUsers(data) {
 
 let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(data) {
 
-  let getStudents = data.q? mApi().organizationUserManagement.students.read(data) : null;
+  let getStudents = data.payload.q? mApi().organizationUserManagement.students.read(data.payload) : null;
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -562,7 +598,7 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(d
 
 let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(data) {
 
-  let getStaff = data.q? mApi().organizationUserManagement.staffMembers.read(data) : null;
+  let getStaff = data.payload.q? mApi().organizationUserManagement.staffMembers.read(data.payload) : null;
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -608,7 +644,7 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(data) {
 }
 
 let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGroups(data) {
-  let getUserGroups = data.q ? mApi().usergroup.groups.read(data) : null;
+  let getUserGroups = data.payload.q ? mApi().usergroup.groups.read(data.payload) : null;
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -617,7 +653,7 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
         payload: null
       });
       if (getUserGroups !== null) {
-        await promisify(getUserGroups, 'callback')().then((usergGroups: UserGroupListType) => {
+        await promisify(getUserGroups, 'callback')().then((usergGroups: UserGroupType[]) => {
           dispatch({
             type: "UPDATE_GROUP_SELECTOR",
             payload: usergGroups
@@ -653,4 +689,4 @@ let loadSelectorUserGroups: LoadUsersTriggerType = function loadSelectorUserGrou
   }
 }
 
-export { loadUsers, updateUsergroup, createUsergroup, loadStaff, loadUsergroups, loadUserGroupUsers, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
+export { loadUsers, loadAllCurrentUserGroupUsers, updateUsergroup, setCurrentUserGroup, createUsergroup, loadStaff, loadUsergroups, loadStudents, loadSelectorStaff, loadSelectorStudents, loadSelectorUserGroups, loadStudyprogrammes, updateStaffmember, updateStudent, createStaffmember, createStudent };
