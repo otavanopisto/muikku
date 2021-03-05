@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
@@ -242,10 +244,10 @@ class PyramusRestClient implements Serializable {
     if (responseContent != null && statusCode >= 200 && statusCode < 300) {
       // ok response with entity 
       try {
-        entity = new ObjectMapper().readValue(responseContent, type);
+        entity = new ObjectMapper().registerModule(new JSR310Module()).readValue(responseContent, type);
       }
       catch (Exception e) {
-        logger.severe(String.format("Failed to deserialize path %s entity %s from %s", path, type.getSimpleName(), responseContent));
+        logger.log(Level.SEVERE, String.format("Failed to deserialize path %s entity %s from %s", path, type.getSimpleName(), responseContent), e);
         statusCode = 500;
       }
     }
