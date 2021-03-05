@@ -236,7 +236,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.usergroupName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} value={this.state.usergroupName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
 
@@ -246,9 +246,6 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
-        // if (this.props.currentWorkspace && this.props.currentWorkspace.studentsSelect && this.props.currentWorkspace.studentsSelect.state === "READY" && this.state.studentsLoaded === false) {
-        //   this.setState({ selectedStudents: this.props.currentWorkspace.studentsSelect.users, studentsLoaded: true });
-        // }
         return <DialogRow modifiers="edit-workspace">
           <AutofillSelector modifier="add-students"
             loader={this.doStudentSearch}
@@ -259,27 +256,22 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
-
-        // if (this.props.currentWorkspace && this.props.currentWorkspace.staffMemberSelect && this.props.currentWorkspace.staffMemberSelect.state === "READY" && this.state.staffLoaded === false) {
-        //   this.setState({ selectedStaff: this.props.currentWorkspace.staffMemberSelect.users, staffLoaded: true });
-        // }
-
         return <DialogRow modifiers="edit-workspace">
           <AutofillSelector modifier="add-teachers"
             loader={this.doStaffSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
+            placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
             selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 4:
         return <DialogRow modifiers="edit-workspace-summary">
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} />
             <DialogRowContent modifiers="new-workspace">
               <div>{this.state.usergroupName}</div>
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addStudents')} />
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.addStudents')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.addStudents.length > 0 ?
                 this.state.addStudents.map((student) => {
@@ -289,21 +281,21 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
                       : null}
                     {student.label}
                   </span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
+                }) : <div>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeStudents')} />
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.addStaff')} />
             <DialogRowContent modifiers="new-workspace">
-              {this.state.removeStudents.length > 0 ?
-                this.state.removeStudents.map((student) => {
-                  return <span key={student.id} className="tag-input__selected-item">
-                    {student.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
+              {this.state.addStaff.length > 0 ?
+                this.state.addStaff.map((staff) => {
+                  return <span key={staff.id} className="tag-input__selected-item">
+                    {staff.icon ?
+                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
                       : null}
-                    {student.label}
+                    {staff.label}
                   </span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
+                }) : <div>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.empty.staff')}</div>}
             </DialogRowContent>
           </DialogRow>
         </DialogRow>;
@@ -313,23 +305,24 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
 
   render() {
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.usergroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
-      <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.addStudents')}</div>
-      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents')}</div></div>;
-
+    let executeContent = <div><div className={`dialog__executer ${this.state.usergroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.createUserGroup ')}</div>
+      <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.addStudents')}</div>
+      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStudents')}</div>
+      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.addStaff')}</div>
+      <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStaff')}</div></div>;
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.totalSteps}
-      executeLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.execute.label')}
-      nextLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.next.label')}
-      lastLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.last.label')}
-      cancelLabel={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.cancel.label')}
+      executeLabel={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.execute.label')}
+      nextLabel={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.next.label')}
+      lastLabel={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.last.label')}
+      cancelLabel={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.cancel.label')}
       executeClick={this.saveUsergroup.bind(this, closePortal)}
       nextClick={this.nextStep.bind(this)}
       lastClick={this.lastStep.bind(this)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (<Dialog executing={this.state.executing} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="new-user"
-      title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.title')}
+      title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.title')}
       content={content}>
       {this.props.children}
     </Dialog>

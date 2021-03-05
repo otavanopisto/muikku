@@ -430,7 +430,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
                       : null}
                     {student.label}
                   </span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.empty..students')}</div>}
+                }) : <div>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
@@ -448,7 +448,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeStudents')} />
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.removeStudents')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.removeStudents.length > 0 ?
                 this.state.removeStudents.map((student) => {
@@ -462,7 +462,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeStaff')} />
+            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.removeStaff')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.removeStaff.length > 0 ?
                 this.state.removeStaff.map((staff) => {
@@ -481,9 +481,12 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
 
   render() {
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.userGroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
+    let executeContent = <div><div className={`dialog__executer ${this.state.userGroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.updateUserGroup')}</div>
       <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.addStudents')}</div>
-      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStudents')}</div></div>;
+      <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStudents')}</div>
+      <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.addStaff')}</div>
+      <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStaff')}</div></div>;
+
 
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.totalSteps}
