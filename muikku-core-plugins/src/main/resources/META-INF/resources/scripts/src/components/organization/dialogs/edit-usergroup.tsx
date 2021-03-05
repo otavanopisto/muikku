@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement, SearchFormElement } from '~/components/general/form-element';
 import { loadSelectorStudents, loadSelectorStaff, LoadUsersTriggerType, setCurrentUserGroup, SetCurrentUserGroupTriggerType,
-  loadAllCurrentUserGroupUsers, loadUsergroups, updateUsergroup, UpdateUsergroupTriggerType} from '~/actions/main-function/users';
+  loadAllCurrentUserGroupStudents, loadAllCurrentUserGroupStaff, loadUsergroups, updateUsergroup, UpdateUsergroupTriggerType} from '~/actions/main-function/users';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
@@ -19,23 +19,30 @@ interface ValidationType {
   nameValid: number
 }
 
+type UserCategoriesType = "students" | "staff";
+
 interface OrganizationEditUsergroupProps {
   children?: React.ReactElement<any>,
   usergroup: UserGroupType,
   i18n: i18nType,
   users: UsersSelectType,
   currentUserGroup : CurrentUserGroupType,
-  setCurrentUserGroup: SetCurrentUserGroupTriggerType
+  setCurrentUserGroup: SetCurrentUserGroupTriggerType,
   updateOrganizationUsergroup: UpdateUsergroupTriggerType,
-  loadAllCurrentUserGroupUsers: LoadUsersTriggerType,
+  loadAllCurrentUserGroupStaff: LoadUsersTriggerType,
+  loadAllCurrentUserGroupStudents: LoadUsersTriggerType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
   loadUsergroups: LoadUsersTriggerType
 }
 
 interface OrganizationEditUsergroupState {
-  usergroupName: string,
-  pages: number,
+  pages: {
+    [key:string]:  number,
+  },
+  searchValues: {
+    [key:string]:  string,
+  },
   locked: boolean,
   currentStep: number,
   addStudents: UiSelectItem[],
@@ -44,12 +51,13 @@ interface OrganizationEditUsergroupState {
   removeStaff: UiSelectItem[],
   selectedStudents: UiSelectItem[],
   selectedStaff: UiSelectItem[],
-  userGroupStudentSearchValue: string,
-  userGroupStaffSearchValue: string,
+  userGroupName: string,
+  // userGroupStudentSearchValue: string,
+  // userGroupStaffSearchValue: string,
   studentsLoaded: boolean,
   executing: boolean,
   validation: ValidationType,
-  usergroupUpdated: boolean,
+  userGroupUpdated: boolean,
   studentsAdded: boolean,
   studentsRemoved: boolean,
   staffAdded: boolean,
@@ -68,12 +76,14 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
     this.totalSteps = 6;
     this.state = {
       pages: null,
-      usergroupName: this.props.usergroup.name,
+      searchValues: null,
+      userGroupName: this.props.usergroup.name,
       selectedStudents: [],
       selectedStaff: [],
       addStudents: [],
-      userGroupStudentSearchValue:"",
-      userGroupStaffSearchValue:"",
+
+      // userGroupStudentSearchValue:"",
+      // userGroupStaffSearchValue:"",
       addStaff: [],
       removeStudents: [],
       removeStaff: [],
@@ -85,22 +95,26 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
         nameValid: 2
       },
 
-      usergroupUpdated: false,
+      userGroupUpdated: false,
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
       staffRemoved: false,
     }
 
-    this.getToPage = this.getToPage.bind(this);
+    this.goToPage = this.goToPage.bind(this);
+    this.goToStudentPage = this.goToStudentPage.bind(this);
+    this.goToStaffPage = this.goToStaffPage.bind(this);
     this.doStaffSearch = this.doStaffSearch.bind(this);
     this.selectStaff = this.selectStaff.bind(this);
     this.deleteStaff = this.deleteStaff.bind(this);
     this.doStudentSearch = this.doStudentSearch.bind(this);
     this.selectStudent = this.selectStudent.bind(this);
     this.deleteStudent = this.deleteStudent.bind(this);
-    this.doUserGroupUserSearch = this.doUserGroupUserSearch.bind(this);
-    this.setUsergroupName = this.setUsergroupName.bind(this);
+    this.doUserGroupStudentSearch = this.doUserGroupStudentSearch.bind(this);
+    this.doUserGroupStaffSearch = this.doUserGroupStaffSearch.bind(this);
+    this.doUserGroupUsersSearch = this.doUserGroupUsersSearch.bind(this);
+    this.setUserGroupName = this.setUserGroupName.bind(this);
     this.saveUsergroup = this.saveUsergroup.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
     this.toggleStudentRemove = this.toggleStudentRemove.bind(this);
@@ -108,21 +122,28 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
     // this.setSelectedUserGroup = this.setSelectedUserGroup.bind(this);
   }
 
-
-
-  getToPage(n: number) {
-    let pageStart: number = (n - 1) * this.usersPerPage;
-    let query: string = this.state.userGroupStudentSearchValue ? this.state.userGroupStudentSearchValue : null;
-    this.props.loadAllCurrentUserGroupUsers({payload:{q: query, firstResult: pageStart, maxResults:  this.usersPerPage, userGroupIds: [this.props.currentUserGroup.id] }});
-  }
-
   doStudentSearch(q: string) {
     this.props.loadStudents({payload:{q}});
   }
 
-  doUserGroupUserSearch(q: string) {
+  goToPage(n: number, loader: LoadUsersTriggerType, query:string) {
+    let pageStart: number = (n - 1) * this.usersPerPage;
+    loader({payload:{q: query, firstResult: pageStart, maxResults:  this.usersPerPage, userGroupIds: [this.props.currentUserGroup.id] }});
+  }
+
+  goToStudentPage(n: number) {
+    let query: string = this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : null;
+    this.goToPage(n, this.props.loadAllCurrentUserGroupStudents, query );
+  }
+
+  goToStaffPage(n: number) {
+    let query: string = this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : null;
+    this.goToPage(n, this.props.loadAllCurrentUserGroupStaff, query );
+  }
+
+  doUserGroupUsersSearch(loader: LoadUsersTriggerType, q:string, type:UserCategoriesType) {
     this.props.setCurrentUserGroup(this.props.usergroup.id);
-    this.props.loadAllCurrentUserGroupUsers({
+    loader({
       payload: {
         q,
         userGroupIds: [this.props.usergroup.id],
@@ -131,13 +152,57 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       },
       success: (users: OrganizationUsersListType) => {
         this.setState({
-          userGroupStudentSearchValue: q,
-          pages: Math.ceil(users.totalHitCount / this.usersPerPage)
+          searchValues: {...this.state.searchValues, [type]:q},
+          pages:{...this.state.pages, [type]: Math.ceil(users.totalHitCount / this.usersPerPage)}
         });
       }
     });
+  }
+
+
+
+  doUserGroupStudentSearch(q: string) {
+    this.doUserGroupUsersSearch(this.props.loadAllCurrentUserGroupStudents, q, "students");
+
+    // this.props.setCurrentUserGroup(this.props.usergroup.id);
+    // this.props.loadAllCurrentUserGroupStudents({
+    //   payload: {
+    //     q,
+    //     userGroupIds: [this.props.usergroup.id],
+    //     firstResult: 0,
+    //     maxResults: 5,
+    //   },
+    //   success: (users: OrganizationUsersListType) => {
+    //     this.setState({
+    //       userGroupStudentSearchValue: q,
+    //       pages: Math.ceil(users.totalHitCount / this.usersPerPage)
+    //     });
+    //   }
+    // });
 
   }
+
+  doUserGroupStaffSearch(q: string) {
+    this.doUserGroupUsersSearch(this.props.loadAllCurrentUserGroupStaff, q, "staff");
+
+    // this.props.setCurrentUserGroup(this.props.usergroup.id);
+    // this.props.loadAllCurrentUserGroupStudents({
+    //   payload: {
+    //     q,
+    //     userGroupIds: [this.props.usergroup.id],
+    //     firstResult: 0,
+    //     maxResults: 5,
+    //   },
+    //   success: (users: OrganizationUsersListType) => {
+    //     this.setState({
+    //       userGroupStudentSearchValue: q,
+    //       pages: Math.ceil(users.totalHitCount / this.usersPerPage)
+    //     });
+    //   }
+    // });
+
+  }
+
 
   toggleStudentRemove(usr: UiSelectItem) {
     let newRemoveState = this.state.removeStudents.some(rStudent => rStudent.id === usr.id) ? this.state.removeStudents.filter(rStudent => rStudent.id !== usr.id) : this.state.removeStudents.concat(usr);
@@ -201,8 +266,8 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   }
 
 
-  setUsergroupName(value: string) {
-    this.setState({ locked: false, usergroupName: value });
+  setUserGroupName(value: string) {
+    this.setState({ locked: false, userGroupName: value });
   }
 
   clearComponentState() {
@@ -217,7 +282,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       addStaff: [],
       selectedStaff: [],
       removeStaff: [],
-      usergroupUpdated: false,
+      userGroupUpdated: false,
       studentsAdded: false,
       studentsRemoved: false,
       staffAdded: false,
@@ -232,15 +297,15 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   nextStep() {
     if(this.state.currentStep === 2){
       // if( !this.props.currentUserGroup || this.props.currentUserGroup.id !== this.props.usergroup.id) {
-        this.doUserGroupUserSearch("");
+        this.doUserGroupStudentSearch("");
       // }
     }
     if(this.state.currentStep === 4){
       // if( !this.props.currentUserGroup || this.props.currentUserGroup.id !== this.props.usergroup.id) {
-        this.doUserGroupUserSearch("");
+        this.doUserGroupStaffSearch("");
       // }
     }
-    if (this.state.usergroupName === "") {
+    if (this.state.userGroupName === "") {
       let validation: ValidationType = Object.assign(this.state.validation, { nameValid: 0 });
       this.setState({ locked: true, validation });
     } else {
@@ -265,9 +330,9 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
     let removeUsers: ModifyUserGroupUsersType;
     let groupIdentifier:string = this.props.usergroup.id.toString();
 
-    if (this.props.usergroup.name !== this.state.usergroupName) {
+    if (this.props.usergroup.name !== this.state.userGroupName) {
       update = {
-         name: this.state.usergroupName,
+         name: this.state.userGroupName,
          // We get a number, but need it to be a string
          identifier: groupIdentifier,
          isGuidanceGroup: this.props.usergroup.isGuidanceGroup,
@@ -317,7 +382,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       progress: (state: UpdateUserGroupStateType) => {
         if(state === "update-group") {
           this.setState({
-            usergroupUpdated: true,
+            userGroupUpdated: true,
           });
         }
         if(state === "add-users") {
@@ -351,7 +416,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.usergroupName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUserGroupName} valid={this.state.validation.nameValid} name="userGroupName" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.name.label')} value={this.state.userGroupName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
 
@@ -368,19 +433,19 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
         </DialogRow>;
       case 3:
-        let studentGroupStudents = this.props.currentUserGroup.users ? this.props.currentUserGroup.users.results : [];
+        let studentGroupStudents = this.props.currentUserGroup.students ? this.props.currentUserGroup.students.results : [];
         return <DialogRemoveUsers
         users={studentGroupStudents} 
         placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
         removeUsers={this.state.removeStudents}
-        pages={this.state.pages}
+        pages={this.state.pages && this.state.pages.students ? this.state.pages.students : 0}
         identifier={"userGroup" + this.props.usergroup.id + "Students"}
         allTabTitle={this.props.i18n.text.get('plugin.workspace.users.students.link.active')}
         removeTabTitle={this.props.i18n.text.get('plugin.workspace.users.students.link.active')}
         onEmptyTitle={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}
-        searchValue={this.state.userGroupStudentSearchValue}
-        searchUsers={this.doUserGroupUserSearch}
-        changePage={this.getToPage}
+        searchValue={this.state.searchValues && this.state.searchValues.students? this.state.searchValues.students : ""}
+        searchUsers={this.doUserGroupStudentSearch}
+        changePage={this.goToStudentPage}
         setRemoved={this.toggleStudentRemove} />
 
       case 4:
@@ -394,19 +459,19 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 5:
-          let studentGroupStaff = this.props.currentUserGroup.users ? this.props.currentUserGroup.users.results : [];
+          let studentGroupStaff = this.props.currentUserGroup.staff ? this.props.currentUserGroup.staff.results : [];
           return <DialogRemoveUsers
           users={studentGroupStaff} 
           placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
           removeUsers={this.state.removeStaff}
-          pages={this.state.pages}
+          pages={this.state.pages && this.state.pages.staff ? this.state.pages.staff : 0}
           identifier={"userGroup" + this.props.usergroup.id + "Staff"}
           allTabTitle={this.props.i18n.text.get('plugin.workspace.users.students.link.active')}
           removeTabTitle={this.props.i18n.text.get('plugin.workspace.users.students.link.active')}
           onEmptyTitle={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.templates.empty')}
-          searchValue={this.state.userGroupStaffSearchValue}
-          searchUsers={this.doUserGroupUserSearch}
-          changePage={this.getToPage}
+          searchValue={this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff: ""}
+          searchUsers={this.doUserGroupStaffSearch}
+          changePage={this.goToStaffPage}
           setRemoved={this.toggleStaffRemove}
           />
       case 6:
@@ -414,7 +479,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
             <DialogRowContent modifiers="new-workspace">
-              <div>{this.state.usergroupName}</div>
+              <div>{this.state.userGroupName}</div>
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
@@ -479,7 +544,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
 
   render() {
     let content = (closePortal: () => any) => this.wizardSteps(this.state.currentStep);
-    let executeContent = <div><div className={`dialog__executer ${this.state.usergroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
+    let executeContent = <div><div className={`dialog__executer ${this.state.userGroupUpdated === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace')}</div>
       <div className={`dialog__executer ${this.state.studentsAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.addStudents')}</div>
       <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents')}</div></div>;
 
@@ -517,7 +582,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     loadStaff: loadSelectorStaff,
     loadUsergroups,
     updateOrganizationUsergroup: updateUsergroup,
-    loadAllCurrentUserGroupUsers,
+    loadAllCurrentUserGroupStaff,
+    loadAllCurrentUserGroupStudents,
     setCurrentUserGroup,
   }, dispatch);
 };

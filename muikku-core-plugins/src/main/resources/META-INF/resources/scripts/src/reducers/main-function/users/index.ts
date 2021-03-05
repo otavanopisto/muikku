@@ -47,7 +47,8 @@ export interface UsersSelectType {
 
 export interface CurrentUserGroupType {
   id: number | null,
-  users: OrganizationUsersListType,
+  students: OrganizationUsersListType,
+  staff: OrganizationUsersListType,
 }
 
 export interface UserGroupsType {
