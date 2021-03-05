@@ -4,10 +4,10 @@ import { Dispatch, connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
 import { StatusType } from '~/reducers/base/status';
 import { ProfileType } from '~/reducers/main-function/profile';
-import UploadImageDialog from '../../dialogs/upload-image';
+import UploadImageDialog from '../../../dialogs/upload-image';
 import { getUserImageUrl } from '~/util/modifiers';
 import Button from '~/components/general/button';
-import DeleteImageDialog from '../../dialogs/delete-image';
+import DeleteImageDialog from '../../../dialogs/delete-image';
 import '~/sass/elements/change-image.scss';
 import '~/sass/elements/wcag.scss';
 
