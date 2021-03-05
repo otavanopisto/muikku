@@ -14,7 +14,6 @@ import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 
 public class PermissionController {
 
@@ -68,6 +67,10 @@ public class PermissionController {
     return workspaceGroupPermissionDAO.create(workspaceEntity, userGroupEntity, permission);
   }
   
+  public List<WorkspaceGroupPermission> listByWorkspaceEntityAndPermission(WorkspaceEntity workspaceEntity, Permission permission) {
+    return workspaceGroupPermissionDAO.listByWorkspaceEntityAndPermission(workspaceEntity, permission);
+  }
+
   public List<WorkspaceGroupPermission> listByUserGroupEntityAndPermission(UserGroupEntity userGroupEntity, Permission permission) {
     return workspaceGroupPermissionDAO.listByUserGroupEntityAndPermission(userGroupEntity, permission);
   }

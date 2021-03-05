@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -46,17 +48,17 @@ public class WorkspaceIndexer {
   @Inject
   private SearchIndexer indexer;
 
-  public void indexWorkspace(String dataSource, String indentifier) {
+  public void indexWorkspace(String dataSource, String identifier) {
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, indentifier);
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
       if (workspaceEntity != null) {
         Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
         if (workspace != null) {
           indexWorkspace(workspace, workspaceEntity);
         }
       } else {
-        logger.warning(String.format("could not index workspace because workspace entity #%s/%s could not be found", indentifier, dataSource));
+        logger.warning(String.format("could not index workspace because workspace entity #%s/%s could not be found", identifier, dataSource));
       }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -112,11 +114,27 @@ public class WorkspaceIndexer {
       }
       extra.put("staffMembers", indexedWorkspaceStaffMembers);
       
+      Set<SchoolDataIdentifier> workspaceSignupGroups = workspaceController.listWorkspaceSignupGroups(workspaceEntity);
+      Set<String> workspaceSignupGroupIds = workspaceSignupGroups.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
+      extra.put("signupPermissionGroups", workspaceSignupGroupIds);
+      
       indexer.index(Workspace.class.getSimpleName(), workspace, extra);
     } catch (Exception e) {
-      logger.warning(String.format("could not index workspace #%s/%s", workspace.getIdentifier(), workspace.getSchoolDataSource()));
+      logger.log(Level.WARNING, String.format("could not index workspace #%s/%s", workspace.getIdentifier(), workspace.getSchoolDataSource()), e);
     }
   }
   
+  public void removeWorkspace(SchoolDataIdentifier identifier) {
+    removeWorkspace(identifier.getDataSource(), identifier.getIdentifier());
+  }
+
+  public void removeWorkspace(String dataSource, String identifier) {
+    try {
+      indexer.remove(Workspace.class.getSimpleName(), String.format("%s/%s", identifier, dataSource));
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, String.format("Removal of workspace %s/%s from index failed", dataSource, identifier), ex);
+    } 
+  }
+
 }
 

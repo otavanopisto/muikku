@@ -124,6 +124,12 @@ function preprocessor($html: any): any{
     }
   });
 
+  $html.find("a figure").each(function(){
+    // removing old style images wrapped in a link
+    // they get processed as link and thus don't work
+    $(this).parent("a").replaceWith(this);
+  });
+
   const $newHTML = $html.map(function() {
     if (this.tagName === "TABLE") {
       let elem = document.createElement("div");
