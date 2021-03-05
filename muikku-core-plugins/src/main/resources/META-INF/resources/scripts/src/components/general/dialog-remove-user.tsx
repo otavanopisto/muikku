@@ -103,6 +103,7 @@ export default class DialogRemoveUsers extends React.Component<DialogRemoveUsers
 
   componentDidMount() {
     this.refreshRemoveUserpage(this.state.currentRemovePage, this.props.removeUsers);
+    this.goToAllUsersPage(this.state.currentAllPage);
   }
 
   render(){
