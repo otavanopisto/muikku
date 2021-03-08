@@ -25,9 +25,7 @@ class ProfileApplication extends React.Component<ProfileApplicationProps, Profil
       <ApplicationPanel
         modifier="profile"
         title={title}
-        asideBefore={this.props.aside}
-        disableStickyScrolling
-      >
+        asideBefore={this.props.aside}>
         <ChatSettings />
         <ContactInformation />
         <GeneralInformation />

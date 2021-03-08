@@ -9,6 +9,8 @@ import { displayNotification, DisplayNotificationTriggerType } from '~/actions/b
 import Button from '~/components/general/button';
 import { StatusType } from "~/reducers/base/status";
 
+import '~/sass/elements/application-sub-panel.scss';
+
 interface IChatSettingsProps {
   i18n: i18nType,
   profile: ProfileType;
@@ -103,28 +105,34 @@ class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState
       return null;
     }
 
-    return <div className="profile-element">
-      <section>
-        <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.chatSettings')}</h3>
-        <div className="profile-element__item form-element">
-          <label htmlFor="chatVisibility" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
-          <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
-            <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
-            <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
-          </select>
-        </div>
+    return <section>
+      <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.chatSettings')}</h2>
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__body">
+          <div className="application-sub-panel__item application-sub-panel__item--profile">
+            <label htmlFor="chatVisibility" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
+            <div className="application-sub-panel__item-data form-element">
+              <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
+                <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
+                <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
+              </select>
+            </div>
+          </div>
 
-        <div className="profile-element__item form-element">
-          <label htmlFor="chatNickname" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
-          <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""} />
-          <div className="profile-element__description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
-        </div>
-      </section>
+          <div className="application-sub-panel__item application-sub-panel__item--profile">
+            <label htmlFor="chatNickname" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
+            <div className="application-sub-panel__item-data form-element">
+              <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""} />
+            </div>
+            <div className="application-sub-panel__item-description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
+          </div>
 
-      <div className="profile-element__item">
-        <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+          <div className="application-sub-panel__item-actions">
+            <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+          </div>
+        </div>
       </div>
-    </div>;
+    </section>;
   }
 }
 
