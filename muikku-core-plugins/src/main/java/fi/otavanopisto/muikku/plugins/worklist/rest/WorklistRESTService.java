@@ -159,7 +159,7 @@ public class WorklistRESTService {
   }
 
   /**
-   * GET mApi().worklistItems
+   * GET mApi().worklist.worklistItems
    * 
    * Returns an array of worklist items belonging to a user. Timeframe can also be specified.
    * 
@@ -190,7 +190,7 @@ public class WorklistRESTService {
   }
 
   /**
-   * GET mApi().worklistSummary
+   * GET mApi().worklist.worklistSummary
    * 
    * Returns an array of monthly worklist summary items for the given user; mainly the number
    * of worklist items the user has created that month.
