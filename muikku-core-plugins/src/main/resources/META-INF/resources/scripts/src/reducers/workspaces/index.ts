@@ -192,7 +192,7 @@ export interface WorkspacePermissionsType {
   workspaceEntityId: number,
   userGroupEntityId: number,
   userGroupName: string,
-  permissions: string[],
+  canSignup: boolean,
 }
 
 export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;

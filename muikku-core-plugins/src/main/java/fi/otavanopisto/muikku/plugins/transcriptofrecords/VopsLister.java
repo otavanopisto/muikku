@@ -16,8 +16,6 @@ import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
-import fi.otavanopisto.muikku.controller.PermissionController;
-import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -30,6 +28,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.VopsRESTModel.Vop
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Optionality;
@@ -37,7 +36,6 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -54,7 +52,6 @@ public class VopsLister {
   private SchoolDataIdentifier studentIdentifier;
   private Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments;
   private UserGroupEntityController userGroupEntityController;
-  private PermissionController permissionController;
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
   private String studentIdentifierString;
   private GradingController gradingController;
@@ -65,6 +62,8 @@ public class VopsLister {
   private int numCourses = 0;
   private int numMandatoryCourses = 0;
   private boolean optedIn = true;
+
+  private WorkspaceEntityController workspaceEntityController;
   
   public static class Result {
     private Result(
@@ -109,9 +108,9 @@ public class VopsLister {
       List<TransferCredit> transferCredits, SchoolDataIdentifier curriculumIdentifier,
       WorkspaceController workspaceController, WorkspaceUserEntityController workspaceUserEntityController,
       SchoolDataIdentifier studentIdentifier, Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments,
-      UserGroupEntityController userGroupEntityController, PermissionController permissionController,
+      UserGroupEntityController userGroupEntityController,
       StudiesViewCourseChoiceController studiesViewCourseChoiceController, String studentIdentifierString,
-      GradingController gradingController, EducationTypeMapping educationTypeMapping) {
+      GradingController gradingController, EducationTypeMapping educationTypeMapping, WorkspaceEntityController workspaceEntityController) {
     this.subjects = subjects;
     this.vopsController = vopsController;
     this.student = student;
@@ -122,11 +121,11 @@ public class VopsLister {
     this.studentIdentifier = studentIdentifier;
     this.studentAssessments = studentAssessments;
     this.userGroupEntityController = userGroupEntityController;
-    this.permissionController = permissionController;
     this.studiesViewCourseChoiceController = studiesViewCourseChoiceController;
     this.studentIdentifierString = studentIdentifierString;
     this.gradingController = gradingController;
     this.educationTypeMapping = educationTypeMapping;
+    this.workspaceEntityController = workspaceEntityController;
   }
   
   public void performListing() {
@@ -188,9 +187,8 @@ public class VopsLister {
         
         List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
         
-        Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
         for (UserGroupEntity userGroupEntity : userGroupEntities) {
-          if (permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission)) {
+          if (workspaceEntityController.isSignupAllowed(workspaceEntity, userGroupEntity)) {
             canSignUp = true;
             break;
           }
