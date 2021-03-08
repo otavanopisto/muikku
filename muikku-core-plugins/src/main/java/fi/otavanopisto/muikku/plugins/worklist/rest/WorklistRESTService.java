@@ -84,7 +84,7 @@ public class WorklistRESTService {
    * Output: New worklist item
    * 
    * {id: 123
-   *  entryDate: 2021-03-01T12:43:23
+   *  entryDate: 2021-03-01
    *  description: "Course assessment"
    *  price: 75
    *  factor: 1
@@ -114,7 +114,7 @@ public class WorklistRESTService {
   /**
    * PUT mApi().worklist.worklistItems
    * 
-   * Updates an existing worklist item.
+   * Updates an existing worklist item (entryDate, description, price, factor).
    * 
    * Payload: An existing worklist item
    * 
@@ -159,7 +159,7 @@ public class WorklistRESTService {
   }
 
   /**
-   * GET mApi().worklistItems
+   * GET mApi().worklist.worklistItems
    * 
    * Returns an array of worklist items belonging to a user. Timeframe can also be specified.
    * 
@@ -190,7 +190,7 @@ public class WorklistRESTService {
   }
 
   /**
-   * GET mApi().worklistSummary
+   * GET mApi().worklist.worklistSummary
    * 
    * Returns an array of monthly worklist summary items for the given user; mainly the number
    * of worklist items the user has created that month.
