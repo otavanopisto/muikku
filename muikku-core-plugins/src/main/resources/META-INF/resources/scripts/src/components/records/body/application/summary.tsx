@@ -43,7 +43,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
               <span>{this.props.summary.data.studentsDetails.studyStartDate ?
                 this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyStartDate) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span>
             </div>
@@ -51,7 +51,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.summary.data.studentsDetails.studyEndDate ? "plugin.records.studyEndDateLabel" :
               "plugin.records.studyTimeEndLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date"><span>{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
               this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
           </div>
 

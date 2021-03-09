@@ -77,7 +77,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
     });
   }
   render(){
-    return (<div className="profile-element">
+    return (<div className="application-sub-panel__item">
         {!this.props.status.hasImage ? <div className="change-image">
           <form className="change-image__container change-image__container--empty">
             <input name="file" type="file" accept="image/*" onChange={this.readFile}/>

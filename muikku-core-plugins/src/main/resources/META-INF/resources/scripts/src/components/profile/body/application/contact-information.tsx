@@ -66,38 +66,41 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
       return null;
     }
 
-    return <div className="profile-element">
+    return <section>
       <form>
-        <section>
-          <h3 className="profile-element__sub-title">{this.props.i18n.text.get('plugin.profile.titles.contactInfo')}</h3>
+        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.contactInformation')}</h2>
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__body">
+            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
+              value={this.props.status.profile.emails} />
+            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
+              value={this.props.status.profile.addresses} />
 
-          <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
-            value={this.props.status.profile.emails} />
-          <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
-            value={this.props.status.profile.addresses} />
+            {this.props.status.isStudent ? <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <UpdateAddressDialog>
+                <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
+              </UpdateAddressDialog>
+            </div> : null}
 
-          {this.props.status.isStudent ? <div className="profile-element__item">
-            <UpdateAddressDialog>
-              <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
-            </UpdateAddressDialog>
-          </div> : null}
+            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
+              value={this.props.status.profile.phoneNumbers} />
 
-          <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
-            value={this.props.status.profile.phoneNumbers} />
+            {!this.props.status.isStudent ?
+              <div className="application-sub-panel__item application-sub-panel__item--profile">
+                <label htmlFor="profilePhoneNumber" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+                <div className="application-sub-panel__item-data form-element">
+                  <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber} />
+                </div>
+              </div>
+              : null}
 
-          {!this.props.status.isStudent ?
-            <div className="profile-element__item form-element">
-              <label htmlFor="profilePhoneNumber" className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
-              <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber} />
+            <div className="application-sub-panel__item-actions">
+              <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
             </div>
-            : null}
-        </section>
-
-        <div className="profile-element__item">
-          <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+          </div>
         </div>
       </form>
-    </div>;
+    </section>;
   }
 }
 
