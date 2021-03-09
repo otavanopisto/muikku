@@ -24,15 +24,19 @@ class Security extends React.Component<ISecurityProps> {
     }
 
     return (
-      <div className="profile-element">
-        <h2 className="profile-element__title">{this.props.status.profile.displayName}</h2>
+      <section>
+        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.security')}</h2>
 
-        <div className="profile-element__item">
-          <UpdateUsernamePasswordDialog>
-            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
-          </UpdateUsernamePasswordDialog>
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__body">
+            <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <UpdateUsernamePasswordDialog>
+                <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
+              </UpdateUsernamePasswordDialog>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     );
   }
 }
