@@ -112,38 +112,46 @@ class Security extends React.Component<ISecurityProps, ISecurityState> {
 
     return (
       <section>
-        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.security')}</h2>
+        <form>
+          <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.security')}</h2>
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__body">
 
-        <div className="application-sub-panel">
-          <div className="application-sub-panel__body">
-            <div className="application-sub-panel__item application-sub-panel__item--profile">
-              <p>{this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}</p>
-              <form>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileUsername" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.usernameField.label')}</label>
-                  <input id="profileUsername" type="text" className="form-element__input form-element__input--profile" value={this.state.username} onChange={this.updateField.bind(this, "username")} />
+              <div className="application-sub-panel__item application-sub-panel__item--profile">
+                <label htmlFor="profileUsername" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.usernameField.label')}</label>
+                <div className="application-sub-panel__item-data form-element">
+                  <input id="profileUsername" type="text" className="form-element__input" value={this.state.username} onChange={this.updateField.bind(this, "username")} />
                 </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileOldPassword" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>
-                  <input id="profileOldPassword" type="password" className="form-element__input form-element__input--profile" value={this.state.oldPassword} onChange={this.updateField.bind(this, "oldPassword")} />
+              </div>
+
+              <div className="application-sub-panel__item application-sub-panel__item--profile">
+                <label htmlFor="profileOldPassword" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>
+                <div className="application-sub-panel__item-data form-element">
+                  <input id="profileOldPassword" type="password" className="form-element__input" value={this.state.oldPassword} onChange={this.updateField.bind(this, "oldPassword")} />
                 </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileNewPassword1" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>
-                  <input id="profileNewPassword1" type="password" className="form-element__input form-element__input--profile" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")} />
+              </div>
+
+              <div className="application-sub-panel__item application-sub-panel__item--profile">
+                <label htmlFor="profileNewPassword1" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>
+                <div className="application-sub-panel__item-data form-element">
+                  <input id="profileNewPassword1" type="password" className="form-element__input" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")} />
                 </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileNewPassword2" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>
-                  <input id="profileNewPassword2" type="password" className={`form-element__input form-element__input--profile ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-wrong" : ""}`}
+              </div>
+
+              <div className="application-sub-panel__item application-sub-panel__item--profile">
+                <label htmlFor="profileNewPassword2" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>
+                <div className="application-sub-panel__item-data form-element">
+                  <input id="profileNewPassword2" type="password" className={`form-element__input ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-error" : ""}`}
                     value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")} />
                 </div>
+              </div>
 
-                <Button buttonModifiers={["success", "standard-ok"]} onClick={this.update} disabled={this.state.locked}>
-                  {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.saveLabel')}
-                </Button>
-              </form>
+              <div className="application-sub-panel__item-actions">
+                <Button buttonModifiers="primary-function-save" onClick={this.update}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </section>
     );
   }

@@ -40,6 +40,10 @@
   }
 }
 
+.change-image__container--profile {
+    border: solid 2px $color-form-element-border;
+}
+
 .change-image__container--workspace {
 
   @include breakpoint($breakpoint-pad) {

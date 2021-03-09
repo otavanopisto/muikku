@@ -106,32 +106,34 @@ class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState
     }
 
     return <section>
-      <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.chatSettings')}</h2>
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__body">
-          <div className="application-sub-panel__item application-sub-panel__item--profile">
-            <label htmlFor="chatVisibility" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
-            <div className="application-sub-panel__item-data form-element">
-              <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
-                <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
-                <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
-              </select>
+      <form>
+        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.chatSettings')}</h2>
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__body">
+            <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="chatVisibility" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <select id="chatVisibility" className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
+                  <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
+                  <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="application-sub-panel__item application-sub-panel__item--profile">
-            <label htmlFor="chatNickname" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
-            <div className="application-sub-panel__item-data form-element">
-              <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""} />
+            <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="chatNickname" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <input id="chatNickname" className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""} />
+              </div>
+              <div className="application-sub-panel__item-description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
             </div>
-            <div className="application-sub-panel__item-description">{this.props.i18n.text.get("plugin.profile.chat.setNickDescription")}</div>
-          </div>
 
-          <div className="application-sub-panel__item-actions">
-            <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+            <div className="application-sub-panel__item-actions">
+              <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </section>;
   }
 }

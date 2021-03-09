@@ -55,7 +55,11 @@
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  margin: 0 0 10px;
+  margin: 0 10px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+  }
 }
 
 .application-sub-panel__header--workspace-settings {
@@ -193,7 +197,11 @@
 }
 
 .application-sub-panel__notification-body--studies-yo-subjects {
-  padding: 10px 10px 10px 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
 }
 
 .application-sub-panel__notification-content {
@@ -340,7 +348,7 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px 0;
+  padding: 10px;
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -594,7 +602,12 @@
 
 // Subpanel item actions
 .application-sub-panel__item-actions {
-  padding: 10px 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+
 }
 
 // Subpanel item data
@@ -693,19 +706,12 @@
   flex-flow: row wrap;
 
   .application-sub-panel__item-title {
+    flex-basis: 100%;
     font-weight: 600;
-    padding: 0 0 5px;
-
-    @include breakpoint($breakpoint-desktop) {
-      flex-basis: 100%;
-    }
   }
 
   .application-sub-panel__item-data {
-
-    @include breakpoint($breakpoint-desktop) {
-       flex-basis: 100%;
-    }
+    flex-basis: 100%;
   }
 }
 

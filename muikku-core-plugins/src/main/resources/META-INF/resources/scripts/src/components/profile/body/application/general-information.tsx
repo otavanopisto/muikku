@@ -45,16 +45,18 @@ class GeneralInformation extends React.Component<IGeneralInformationProps, IGene
 
     return (
       <section>
-        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.basicInformation')}</h2>
-        <div className="application-sub-panel">
-          <div className="application-sub-panel__body">
-            <ProfilePicture />
-            <ProfileProperty modifier="study-start-date" i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
-              value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())} />
-            <ProfileProperty modifier="study-end-date"i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
-              value={studyTimeEndValues} />
+        <form>
+          <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.generalInformation')}</h2>
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__body">
+              <ProfilePicture />
+              <ProfileProperty modifier="study-start-date" i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
+                value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())} />
+              <ProfileProperty modifier="study-end-date"i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
+                value={studyTimeEndValues} />
+            </div>
           </div>
-        </div>
+        </form>
       </section>
     );
   }

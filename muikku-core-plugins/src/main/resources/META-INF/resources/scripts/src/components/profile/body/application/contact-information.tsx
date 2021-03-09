@@ -137,38 +137,48 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.contactInformation')}</h2>
         <div className="application-sub-panel">
           <div className="application-sub-panel__body">
-            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
+            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emails.label"
               value={this.props.status.profile.emails} />
-            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
+            {/* Displaying multiple addresses seems moot at this point, not gonna remove this entirely though until we are sure it's truly not needed
+            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addresses.label"
               value={this.props.status.profile.addresses} />
+            */}
+            {this.props.status.isStudent && <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="profileStreetAddress" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <input id="profileStreetAddress" type="text" className="form-element__input" value={this.state.street} onChange={this.updateField.bind(this, "street")} autoComplete="address-line1" />
+              </div>
+            </div>}
 
-            {this.props.status.isStudent ? <div className="application-sub-panel__item application-sub-panel__item--profile">
-              <p>{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.desription')}</p>
-              <form>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileStreetAddress" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>
-                  <input id="profileStreetAddress" type="text" className="form-element__input form-element__input--profile" value={this.state.street} onChange={this.updateField.bind(this, "street")} autoComplete="address-line1" />
-                </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profilePostalCode" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label')}</label>
-                  <input id="profilePostalCode" type="text" className="form-element__input form-element__input--profile" value={this.state.postalCode} onChange={this.updateField.bind(this, "postalCode")} autoComplete="postal-code" />
-                </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileCity" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.cityField.label')}</label>
-                  <input id="profileCity" type="text" className="form-element__input form-element__input--profile" value={this.state.city} onChange={this.updateField.bind(this, "city")} autoComplete="address-level2" />
-                </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileCountry" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.countryField.label')}</label>
-                  <input id="profileCountry" type="text" className="form-element__input form-element__input--profile" value={this.state.country} onChange={this.updateField.bind(this, "country")} autoComplete="country-name" />
-                </div>
-                <div className="form-element form-element--profile">
-                  <label htmlFor="profileMunicipality" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.municipalityField.label')}</label>
-                  <input id="profileMunicipality" type="text" className="form-element__input form-element__input--profile" value={this.state.municipality} onChange={this.updateField.bind(this, "municipality")} autoComplete="address-level3" />
-                </div>
-              </form>
-            </div> : null}
+            {this.props.status.isStudent && <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="profilePostalCode" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <input id="profilePostalCode" type="text" className="form-element__input" value={this.state.postalCode} onChange={this.updateField.bind(this, "postalCode")} autoComplete="postal-code" />
+              </div>
+            </div>}
 
-            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
+            {this.props.status.isStudent && <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="profileCity" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.cityField.label')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <input id="profileCity" type="text" className="form-element__input" value={this.state.city} onChange={this.updateField.bind(this, "city")} autoComplete="address-level2" />
+              </div>
+            </div>}
+
+            {this.props.status.isStudent && <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="profileCountry" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.countryField.label')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <input id="profileCountry" type="text" className="form-element__input" value={this.state.country} onChange={this.updateField.bind(this, "country")} autoComplete="country-name" />
+              </div>
+            </div>}
+
+            {this.props.status.isStudent && <div className="application-sub-panel__item application-sub-panel__item--profile">
+              <label htmlFor="profileMunicipality" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.municipalityField.label')}</label>
+              <div className="application-sub-panel__item-data form-element">
+                <input id="profileMunicipality" type="text" className="form-element__input" value={this.state.municipality} onChange={this.updateField.bind(this, "municipality")} autoComplete="address-level3" />
+              </div>
+            </div>}
+
+            <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers.label"
               value={this.props.status.profile.phoneNumbers} />
 
             {!this.props.status.isStudent ?
