@@ -85,7 +85,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
         </div> : <div className="change-image">
           <form className="change-image__container" style={
             {backgroundImage:this.props.status.hasImage ? `url("${getUserImageUrl(this.props.status.userId, 256, this.props.status.imgVersion)}")` : null}}>
-            <label className="visually-hidden" htmlFor="profilePictureUpload">{this.props.i18n.text.get("plugin.wcag.proflie.uploadPicture.label")}</label>
+            <label className="visually-hidden" htmlFor="profilePictureUpload">{this.props.i18n.text.get("plugin.wcag.profile.uploadPicture.label")}</label>
             <input id="profilePictureUpload" name="file" type="file" accept="image/*" onChange={this.readFile}/>
             <div className="change-image__actions">
             <Button buttonModifiers="change-image-edit" onClick={this.editCurrentImage}>

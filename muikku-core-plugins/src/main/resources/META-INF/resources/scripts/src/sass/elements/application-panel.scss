@@ -191,7 +191,6 @@
   font-weight: 300;
   margin-bottom: 20px;
   margin-left: 10px;
-  text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
@@ -289,13 +288,5 @@
 
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
-  }
-}
-
-// Records
-.application-panel--records {
-
-  .application-panel__content {
-    padding: 10px 0 0;
   }
 }
