@@ -6,8 +6,10 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileType } from "~/reducers/main-function/profile";
 import ProfileProperty from "./components/profile-property";
-import UpdateAddressDialog from '../../dialogs/update-address';
-import { saveProfileProperty, SaveProfilePropertyTriggerType, updateProfileChatSettings, UpdateProfileChatSettingsTriggerType } from '~/actions/main-function/profile';
+import {
+  saveProfileProperty, SaveProfilePropertyTriggerType, updateProfileAddress,
+  UpdateProfileAddressTriggerType, updateProfileChatSettings, UpdateProfileChatSettingsTriggerType
+} from '~/actions/main-function/profile';
 import { bindActionCreators, Dispatch } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 
@@ -18,10 +20,17 @@ interface IContactInformationProps {
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
   updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
+  updateProfileAddress: UpdateProfileAddressTriggerType;
 }
 
 interface IContactInformationState {
   phoneNumber: string;
+  street: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  municipality: string;
+  locked: boolean;
 }
 
 class ContactInformation extends React.Component<IContactInformationProps, IContactInformationState> {
@@ -29,10 +38,16 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
     super(props);
 
     this.save = this.save.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
+    this.updateField = this.updateField.bind(this);
 
     this.state = {
       phoneNumber: props.profile.properties['profile-phone'] || "",
+      street: "",
+      postalCode: "",
+      city: "",
+      country: "",
+      municipality: "",
+      locked: false,
     }
   }
 
@@ -43,22 +58,73 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
         phoneNumber: nextProps.profile.properties['profile-phone']
       });
     }
+
+    if (nextProps.profile.addresses && JSON.stringify(nextProps.profile.addresses) !== JSON.stringify(this.props.profile.addresses)) {
+      let address = nextProps.profile.addresses.find(a => a.defaultAddress);
+      if (!address) {
+        address = nextProps.profile.addresses[0];
+      }
+      if (address) {
+        this.setState({
+          street: address.street || "",
+          postalCode: address.postalCode || "",
+          city: address.city || "",
+          country: address.country || ""
+        });
+      }
+    }
+
+    if (nextProps.profile.student && JSON.stringify(nextProps.profile.student) !== JSON.stringify(this.props.profile.student)) {
+      this.setState({
+        municipality: nextProps.profile.student.municipality || ""
+      });
+    }
   }
 
   save() {
+    let totals = 0;
+    let done = 0;
+    let succeed = 0;
     const cb = () => {
-      this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
+      done++;
+      if (totals === done) {
+        if (succeed === totals) {
+          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success');
+        } else {
+          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.failed"), 'error');
+        }
+      }
     }
 
     if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber) {
-      this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
+      totals++;
+      this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), () => {
+        succeed++;
+        cb();
+      });
+    }
+
+    if (this.props.status.isStudent) {
+      totals++;
+      this.props.updateProfileAddress({
+        street: this.state.street,
+        postalCode: this.state.postalCode,
+        city: this.state.city,
+        country: this.state.country,
+        municipality: this.state.municipality,
+        success: () => {
+          succeed++;
+          cb();
+        },
+        fail: cb,
+      });
     }
   }
 
-  onPhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      phoneNumber: e.target.value
-    });
+  updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    let nField: any = {};
+    nField[field] = e.target.value;
+    this.setState(nField);
   }
 
   public render() {
@@ -77,9 +143,29 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
               value={this.props.status.profile.addresses} />
 
             {this.props.status.isStudent ? <div className="application-sub-panel__item application-sub-panel__item--profile">
-              <UpdateAddressDialog>
-                <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
-              </UpdateAddressDialog>
+              <p>{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.desription')}</p>
+              <form>
+                <div className="form-element form-element--profile">
+                  <label htmlFor="profileStreetAddress" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>
+                  <input id="profileStreetAddress" type="text" className="form-element__input form-element__input--profile" value={this.state.street} onChange={this.updateField.bind(this, "street")} autoComplete="address-line1" />
+                </div>
+                <div className="form-element form-element--profile">
+                  <label htmlFor="profilePostalCode" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label')}</label>
+                  <input id="profilePostalCode" type="text" className="form-element__input form-element__input--profile" value={this.state.postalCode} onChange={this.updateField.bind(this, "postalCode")} autoComplete="postal-code" />
+                </div>
+                <div className="form-element form-element--profile">
+                  <label htmlFor="profileCity" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.cityField.label')}</label>
+                  <input id="profileCity" type="text" className="form-element__input form-element__input--profile" value={this.state.city} onChange={this.updateField.bind(this, "city")} autoComplete="address-level2" />
+                </div>
+                <div className="form-element form-element--profile">
+                  <label htmlFor="profileCountry" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.countryField.label')}</label>
+                  <input id="profileCountry" type="text" className="form-element__input form-element__input--profile" value={this.state.country} onChange={this.updateField.bind(this, "country")} autoComplete="country-name" />
+                </div>
+                <div className="form-element form-element--profile">
+                  <label htmlFor="profileMunicipality" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.municipalityField.label')}</label>
+                  <input id="profileMunicipality" type="text" className="form-element__input form-element__input--profile" value={this.state.municipality} onChange={this.updateField.bind(this, "municipality")} autoComplete="address-level3" />
+                </div>
+              </form>
             </div> : null}
 
             <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
@@ -89,7 +175,7 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
               <div className="application-sub-panel__item application-sub-panel__item--profile">
                 <label htmlFor="profilePhoneNumber" className="application-sub-panel__item-title">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
                 <div className="application-sub-panel__item-data form-element">
-                  <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber} />
+                  <input id="profilePhoneNumber" className="form-element__input" type="text" autoComplete="tel-national" onChange={this.updateField.bind(this, "phoneNumber")} value={this.state.phoneNumber} />
                 </div>
               </div>
               : null}
@@ -113,7 +199,7 @@ function mapStateToProps(state: StateType) {
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ saveProfileProperty, displayNotification, updateProfileChatSettings }, dispatch);
+  return bindActionCreators({ saveProfileProperty, displayNotification, updateProfileChatSettings, updateProfileAddress }, dispatch);
 };
 
 export default connect(
