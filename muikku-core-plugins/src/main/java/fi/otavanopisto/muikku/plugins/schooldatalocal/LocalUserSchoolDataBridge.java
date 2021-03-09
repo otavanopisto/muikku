@@ -642,7 +642,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemTemplateRestModel template) {
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

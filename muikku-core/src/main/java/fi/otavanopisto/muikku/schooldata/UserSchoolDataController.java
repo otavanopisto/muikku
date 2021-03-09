@@ -65,8 +65,8 @@ public class UserSchoolDataController {
     return getUserBridge(dataSource).getWorklistTemplates();
   }
 
-  public BridgeResponse<WorklistItemRestModel> createWorklistItem(String dataSource, WorklistItemTemplateRestModel template) {
-    return getUserBridge(dataSource).createWorklistItem(template);
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(String dataSource, WorklistItemRestModel item) {
+    return getUserBridge(dataSource).createWorklistItem(item);
   }
 
   public BridgeResponse<WorklistItemRestModel> updateWorklistItem(String dataSource, WorklistItemRestModel item) {
