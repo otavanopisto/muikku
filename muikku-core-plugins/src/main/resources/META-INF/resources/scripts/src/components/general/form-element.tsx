@@ -43,9 +43,6 @@ export class formElementRow extends React.Component<FormElementRowProps, FormEle
       </div>
     );
   }
-
-
-
 }
 
 interface FormActionsProps {
@@ -199,8 +196,9 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
-  updateField: (value: string, valid: boolean, Name: string) => any,
+  updateField: (value: string | boolean, valid: boolean, name: string) => any,
   value?: string,
+  checked?: boolean,
   type?: string,
   mandatory?: boolean,
   valid?: number,
@@ -221,7 +219,6 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     // 0 = invalid, 1 = valid, 2 = neutral
 
     this.state = {
-      // value: this.props.value ? this.props.value : "",
       valid: this.props.valid != null ? this.props.valid : 2
     }
   }
@@ -230,7 +227,6 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     let value = e.target.value;
     let name = e.target.name;
     let valid = false;
-    // this.setState({ value: value });
     if (this.props.mandatory != null && this.props.mandatory == true) {
       if (value.trim().length == 0) {
         this.setState({ valid: 0 });
@@ -240,7 +236,13 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
         valid = true;
       }
     }
-    this.props.updateField(value, valid, name);
+    switch(this.props.type) {
+      case "checkbox":
+        this.props.updateField(e.target.checked, valid, name);
+        break;
+      default:
+        this.props.updateField(value, valid, name);
+    }
   }
 
   componentDidUpdate(prevProps: any) {
@@ -255,78 +257,11 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
-        <input value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <input value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} checked={this.props.checked} />
       </div>
     );
   }
 }
-
-interface CheckboxFormElementProps {
-  label: string,
-  name: string,
-  updateField: (value: string, valid: boolean, Name: string) => any,
-  value?: string,
-  type?: string,
-  mandatory?: boolean,
-  valid?: number,
-  modifiers?: string | Array<string>,
-}
-
-interface CheckboxFormElementState {
-  // value: string,
-  valid: number
-}
-
-
-export class CheckboxFormElement extends React.Component<CheckboxFormElementProps, CheckboxFormElementState> {
-
-  constructor(props: InputFormElementProps) {
-    super(props);
-    this.updateInputField = this.updateInputField.bind(this);
-
-    // 0 = invalid, 1 = valid, 2 = neutral
-
-    this.state = {
-      // value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2
-    }
-  }
-
-  updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-    let name = e.target.name;
-    let valid = false;
-    // this.setState({ value: value });
-    if (this.props.mandatory != null && this.props.mandatory == true) {
-      if (value.trim().length == 0) {
-        this.setState({ valid: 0 });
-        valid = false;
-      } else {
-        this.setState({ valid: 1 })
-        valid = true;
-      }
-    }
-    this.props.updateField(value, valid, name);
-  }
-
-  componentDidUpdate(prevProps: any) {
-    if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid })
-    }
-  }
-
-  render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-
-    return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
-      </div>
-    );
-  }
-}
-
 
 interface SelectFormElementProps {
   label: string,

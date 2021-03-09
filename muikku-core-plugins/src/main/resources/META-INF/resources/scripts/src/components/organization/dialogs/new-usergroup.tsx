@@ -26,6 +26,7 @@ interface OrganizationNewUserGroupProps {
 
 interface OrganizationNewUserGroupState {
   usergroupName: string,
+  isGuidanceGroup: boolean;
   locked: boolean,
   currentStep: number,
   addStudents: UiSelectItem[],
@@ -53,6 +54,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     this.totalSteps = 4;
     this.state = {
       usergroupName: null,
+      isGuidanceGroup: false,
       selectedStudents: [],
       selectedStaff: [],
       addStudents: [],
@@ -81,6 +83,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     this.selectStudent = this.selectStudent.bind(this);
     this.deleteStudent = this.deleteStudent.bind(this);
     this.setUsergroupName = this.setUsergroupName.bind(this);
+    this.setGuidanceGroup = this.setGuidanceGroup.bind(this);
     this.saveUsergroup = this.saveUsergroup.bind(this);
     this.clearComponentState = this.clearComponentState.bind(this);
   }
@@ -125,6 +128,9 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     this.setState({ selectedStaff: newSelectedState, removeStaff: newRemoveState, addStaff: newAddState });
   }
 
+  setGuidanceGroup(value: boolean) {
+    this.setState({ isGuidanceGroup: value });
+  }
 
   setUsergroupName(value: string) {
     this.setState({ locked: false, usergroupName: value });
@@ -236,10 +242,10 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} value={this.state.usergroupName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} value={this.state.usergroupName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
-
+            <InputFormElement label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
           </DialogRow>
         </div >;
       case 2:
