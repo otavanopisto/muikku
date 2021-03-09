@@ -6,12 +6,16 @@
 
 .change-image {
   align-items: center;
-  display: block;
+  display: flex;
   justify-content: center;
   margin: 10px 0;
   min-width: 250px;
   position: relative;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    justify-content: left;
+  }
 }
 
 .change-image__container {

@@ -5,8 +5,6 @@ import Application from './body/application';
 
 import * as React from 'react';
 
-import '~/sass/elements/profile-element.scss';
-
 export default class ProfileBody extends React.Component {
   render(){
     const aside = <Aside />

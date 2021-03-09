@@ -350,6 +350,12 @@
   flex-shrink: 1;
   padding: 10px;
 
+  // scss-lint:disable SelectorFormat
+  &.NON-ACTIVE {
+    opacity: 0.5;
+  }
+  // scss-lint:enable SelectorFormat
+
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
   }
@@ -580,7 +586,7 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: 250px;
-    margin: 0 10px 0 0;
+    margin: 0 10px 5px 0;
   }
 }
 

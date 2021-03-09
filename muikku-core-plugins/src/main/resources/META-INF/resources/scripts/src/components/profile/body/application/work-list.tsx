@@ -19,7 +19,16 @@ class WorkList extends React.Component<IWorkListProps> {
       return null;
     }
 
-    return <div />;
+    return <section>
+      <form>
+        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__body">
+
+          </div>
+        </div>
+      </form>
+    </section>;
   }
 }
 
