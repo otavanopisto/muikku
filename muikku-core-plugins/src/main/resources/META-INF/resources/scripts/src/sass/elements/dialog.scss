@@ -66,7 +66,6 @@
   }
 }
 
-
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
@@ -197,7 +196,6 @@
 }
 
 .dialog__header--wizard {
-
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-dialog-wizard-desktop-background;
@@ -262,6 +260,10 @@
   }
 }
 
+.dialog__content-row--user-search {
+  margin: 10px 0;
+}
+
 .dialog__content-row--new-user {
   align-items: flex-start;
   display: flex;
@@ -287,7 +289,6 @@
   justify-content: flex-start;
 }
 
-
 .dialog__content-row-label {
   font-size: $label-large-font-size;
 }
@@ -302,7 +303,6 @@
   span {
     margin-left: 10px;
   }
-
 }
 
 .dialog__footer {

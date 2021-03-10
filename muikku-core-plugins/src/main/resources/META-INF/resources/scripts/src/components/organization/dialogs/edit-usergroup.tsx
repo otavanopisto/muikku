@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
+import Dialog, { DialogRow, DialogRowHeader, DialogRowContent, DialogRemoveUsers } from '~/components/general/dialog';
 import { FormWizardActions, InputFormElement } from '~/components/general/form-element';
 import { loadSelectorStudents, loadSelectorStaff, LoadUsersTriggerType, setCurrentUserGroup, SetCurrentUserGroupTriggerType,
   loadAllCurrentUserGroupStudents, loadAllCurrentUserGroupStaff, loadUsergroups, updateUsergroup, UpdateUsergroupTriggerType} from '~/actions/main-function/users';
@@ -11,7 +11,6 @@ import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-a
 import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType,  UpdateUserGroupType, OrganizationUsersListType, ModifyUserGroupUsersType , UpdateUserGroupStateType, CurrentUserGroupType, } from '~/reducers/main-function/users';
 import { UserGroupType} from '~/reducers/user-index';
-import DialogRemoveUsers from "~/components/general/dialog-remove-user";
 
 interface ValidationType {
   nameValid: number
@@ -273,12 +272,12 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
     let removeUsers: ModifyUserGroupUsersType;
     let groupIdentifier:string = this.props.usergroup.id.toString();
 
-    if (this.props.usergroup.name !== this.state.userGroupName) {
+    if (this.props.usergroup.name !== this.state.userGroupName || this.state.isGuidanceGroup !== this.props.usergroup.isGuidanceGroup) {
       update = {
          name: this.state.userGroupName,
          // We get a number, but need it to be a string
          identifier: groupIdentifier,
-         isGuidanceGroup: this.props.usergroup.isGuidanceGroup,
+         isGuidanceGroup: this.state.isGuidanceGroup,
         }
     }
 

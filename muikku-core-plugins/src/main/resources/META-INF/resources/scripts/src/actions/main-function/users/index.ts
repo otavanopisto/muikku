@@ -78,18 +78,6 @@ export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
 }
 
-// export interface LoadUsersTriggerType {
-//   (data: {
-//     q: string | null,
-//     firstResult?: number | null,
-//     lastResult?: number | null,
-//     maxResults?: number | null,
-//     userGroupIds?: number[],
-//   }): AnyActionType
-// }
-
-
-
 export interface LoadUsersTriggerType {
   (data: {
     payload: {
@@ -459,34 +447,6 @@ let setCurrentUserGroup: SetCurrentUserGroupTriggerType = function loadCurrentUs
   }
 }
 
-// let loadAllCurrentUserGroupStudents: LoadUsersTriggerType = function loadAllCurrentUserGroupUsers(data) {
-//   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
-//     let payload:CurrentUserGroupType = {
-//       id: getState().userGroups.currentUserGroup ? getState().userGroups.currentUserGroup.id : null,
-//       users: null
-//     };
-
-//     try {
-//       await promisify(mApi().organizationUserManagement.students.read(data.payload), 'callback')().then((result: OrganizationUsersListType) => {
-//         payload.users = result;
-//       }),
-
-//       dispatch({
-//         type: "UPDATE_CURRENT_USER_GROUP",
-//         payload: payload
-//       });
-
-//       data.success && data.success(payload.users);
-
-//     } catch (err) {
-//       if (!(err instanceof MApiError)) {
-//         throw err;
-//       }
-//       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
-//     }
-//   }
-// }
-
 let loadAllCurrentUserGroupStaff: LoadUsersTriggerType = function loadAllCurrentUserGroupUsers(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
 
@@ -552,17 +512,6 @@ let loadAllCurrentUserGroupStudents: LoadUsersTriggerType = function loadAllCurr
     }
   }
 }
-
-// let loadAllCurrentUserGroupStaff:LoadUsersTriggerType = function loadAllCurrentUserGroupStaff(data) {
-//    data.endpoint = mApi().organizationUserManagement.staff.read;
-//    return loadAllCurrentUserGroupUsers.bind(this, data);
-// }
-
-// let loadAllCurrentUserGroupStudents: LoadUsersTriggerType = function loadAllCurrentUserGroupStudents(data) {
-//    data.endpoint = mApi().organizationUserManagement.students.read
-//    return loadAllCurrentUserGroupUsers.bind(this, data);
-// }
-
 
 let loadUsers: LoadUsersTriggerType = function loadUsers(data) {
 

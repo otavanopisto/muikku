@@ -188,7 +188,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
 
       payload = {
          name: this.state.usergroupName,
-         isGuidanceGroup: false
+         isGuidanceGroup: this.state.isGuidanceGroup
         }
 
     if(this.state.addStudents.length !== 0) {
@@ -242,7 +242,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} value={this.state.usergroupName}></InputFormElement>
+            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.usergroupName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
             <InputFormElement label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>

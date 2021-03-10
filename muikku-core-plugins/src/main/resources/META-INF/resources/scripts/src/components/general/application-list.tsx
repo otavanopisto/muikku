@@ -5,7 +5,7 @@ import primary from "../records/body/application/primary";
 
 interface ApplicationListProps {
   modifiers?: string | Array<string>,
-  className?: string
+  className?: string,
   sortKey?: string,
   sortData?: any
 }
@@ -25,6 +25,7 @@ export default class ApplicationList extends React.Component<ApplicationListProp
 
 interface ApplicationListItemProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>
+  classState?: string,
 }
 
 interface ApplicationListItemState {
@@ -35,7 +36,8 @@ export class ApplicationListItem extends React.Component<ApplicationListItemProp
     let newProps: ApplicationListItemProps = Object.assign({}, this.props);
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     delete newProps["modifiers"];
-    return <div tabIndex={0} {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""}`}>
+    delete newProps["classState"];
+    return <div tabIndex={0} {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""} ${this.props.classState? "state-" + this.props.classState.toUpperCase() : ""}`}>
       {this.props.children}
     </div>
   }

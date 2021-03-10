@@ -362,9 +362,14 @@
       }
     }
   }
+
+  &.state-DISABLED {
+    color: $color-main-function-application-list-item-disabled-text;
+    background-color: $color-main-function-application-list-item-disabled-background;
+  }
 }
 
-.application-list__item--notification {
+.application-list__item-- .application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 10px 10px 10px 0;
