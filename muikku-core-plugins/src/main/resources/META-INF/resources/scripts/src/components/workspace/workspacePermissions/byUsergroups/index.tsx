@@ -6,13 +6,11 @@ import "~/sass/elements/form-elements.scss";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
 import { WorkspaceType, WorkspacePermissionsType } from "~/reducers/workspaces";
-import { UpdateCurrentWorkspaceUserGroupPermissionTriggerType, updateCurrentWorkspaceUserGroupPermission } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 
 interface PermissionsByUsergroupsProps {
   i18n: i18nType,
-  workspace: WorkspaceType,
-  updateCurrentWorkspaceUserGroupPermission: UpdateCurrentWorkspaceUserGroupPermissionTriggerType
+  workspace: WorkspaceType
 }
 
 interface PermissionsByUsergroupsState {
@@ -44,7 +42,7 @@ class PermissionsByUsergroups extends React.Component<PermissionsByUsergroupsPro
               <div>{permission.userGroupName}</div>
               {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
                 <div key={pte}>
-                  <input className="form-element" type="checkbox" checked={permission.permissions.includes(pte)}
+                  <input className="form-element" type="checkbox" checked={permission.canSignup}
                     onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
                 </div>
               )}
@@ -63,7 +61,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateCurrentWorkspaceUserGroupPermission}, dispatch);
+  return bindActionCreators({}, dispatch);
 };
 
 export default connect(

@@ -36,7 +36,6 @@ import fi.otavanopisto.muikku.dao.users.FlagStudentDAO;
 import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
-import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -82,12 +81,10 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -432,7 +429,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
     }
     
+    SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
     workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);
+    workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     
     return Response.noContent().build();
   }
@@ -461,7 +460,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
       }
       
+      SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
       workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);  
+      workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     }
     return Response.noContent().build();
   }

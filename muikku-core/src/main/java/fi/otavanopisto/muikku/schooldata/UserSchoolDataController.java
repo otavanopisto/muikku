@@ -33,6 +33,9 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
 public class UserSchoolDataController {
 
@@ -55,6 +58,33 @@ public class UserSchoolDataController {
   public boolean isActiveUser(User user) {
     return getUserBridge(user.getSchoolDataSource()).isActiveUser(user);
   }
+  
+  /* Worklist */
+  
+  public BridgeResponse<List<WorklistItemTemplateRestModel>> listWorklistTemplates(String dataSource) {
+    return getUserBridge(dataSource).getWorklistTemplates();
+  }
+
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(String dataSource, WorklistItemRestModel item) {
+    return getUserBridge(dataSource).createWorklistItem(item);
+  }
+
+  public BridgeResponse<WorklistItemRestModel> updateWorklistItem(String dataSource, WorklistItemRestModel item) {
+    return getUserBridge(dataSource).updateWorklistItem(item);
+  }
+
+  public void removeWorklistItem(String dataSource, WorklistItemRestModel item) {
+    getUserBridge(dataSource).removeWorklistItem(item);
+  }
+
+  public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String dataSource, String identifier, String beginDate, String endDate) {
+    return getUserBridge(dataSource).listWorklistItemsByOwnerAndTimeframe(identifier, beginDate, endDate);
+  }
+
+  public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String dataSource, String identifier) {
+    return getUserBridge(dataSource).getWorklistSummary(identifier);
+  }
+  
   
   /* User */
 

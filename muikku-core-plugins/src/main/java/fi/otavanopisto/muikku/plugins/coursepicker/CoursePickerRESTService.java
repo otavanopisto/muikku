@@ -378,7 +378,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
               } else {
-                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
+                logger.severe(String.format("Search index contains workspace %s that does not exists on the school data system", workspaceIdentifier));
               }
             }
           }
@@ -470,7 +470,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity)) {
+    if (!workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
@@ -574,7 +574,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn() && currentUserSession.isActive()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-      return workspaceUserEntity == null && sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+      return workspaceUserEntity == null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity);
     }
     else {
       return false;
