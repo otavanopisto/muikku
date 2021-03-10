@@ -1,10 +1,11 @@
 import { ActionType } from "~/actions";
-import students from "~/components/guider/body/application/students";
-import { UserWithSchoolDataType, UserGroupType, UserType } from '~/reducers/user-index';
+import {UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserType>;
 export type StudyprogrammeListType = Array<StudyprogrammeType>;
+
+export type UserGroupsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
 export interface OrganizationUsersListType {
   firstResult: number,
@@ -54,6 +55,9 @@ export interface CurrentUserGroupType {
 export interface UserGroupsType {
   list: UserGroupType[],
   currentUserGroup?: CurrentUserGroupType,
+  state: UserGroupsStateType,
+  hasMore: boolean,
+
 }
 
 export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>
@@ -101,6 +105,8 @@ export default function users(state: UsersType = {
 export function userGroups(state: UserGroupsType = {
     list: [],
     currentUserGroup: null,
+    state: "LOADING",
+    hasMore: false,
   }, action: ActionType): UserGroupsType {
   if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
@@ -109,6 +115,14 @@ export function userGroups(state: UserGroupsType = {
   } else if (action.type === "UPDATE_CURRENT_USER_GROUP") {
     return Object.assign({}, state, {
       currentUserGroup: action.payload
+    });
+  } else if (action.type === "UPDATE_USER_GROUPS_STATE") {
+    return Object.assign({}, state, {
+      state: action.payload
+    });
+  } else if (action.type === "UPDATE_HAS_MORE_USEGROUPS") {
+    return Object.assign({}, state, {
+      hasMore: action.payload
     });
   }
   return state;

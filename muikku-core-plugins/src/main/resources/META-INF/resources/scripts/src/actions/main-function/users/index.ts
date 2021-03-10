@@ -3,12 +3,15 @@ import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
 import { UsersListType, UpdateUserGroupStateType, CreateUserGroupType, ModifyUserGroupUsersType,
   CurrentUserGroupType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType,
-  StudyprogrammeListType, UpdateUserGroupType, UserGroupListType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
-import { UserGroupType, UpdateUserType, CreateUserType, UserType} from 'reducers/user-index';
-import {SelectItem} from '~/actions/workspaces/index'
+  StudyprogrammeListType, UpdateUserGroupType, UserGroupsStateType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
+import { UserGroupType, UpdateUserType, CreateUserType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
-import { type } from 'os';
+
+
+
+export type UPDATE_USER_GROUPS_STATE = SpecificActionType<"UPDATE_USER_GROUPS_STATE", UserGroupsStateType>
+export type UPDATE_HAS_MORE_USEGROUPS = SpecificActionType<"UPDATE_HAS_MORE_USEGROUPS", boolean>
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserPanelUsersType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserPanelUsersType>
 export type UPDATE_USER_GROUPS = SpecificActionType<"UPDATE_USER_GROUPS", Array<UserGroupType>>
