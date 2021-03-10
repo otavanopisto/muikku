@@ -825,7 +825,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
         });
         await Promise.all(newPermissions.map(permission => {
           let originalPermission = currentWorkspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
-          promisify(mApi().permission.workspaceSettings.userGroups
+          promisify(mApi().workspace.workspaces.signupGroups
             .update(currentWorkspace.id, originalPermission.userGroupEntityId, permission), 'callback')();
         }
         ));
@@ -1929,7 +1929,7 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
-      let permissions: WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().permission.workspaceSettings.userGroups
+      let permissions: WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().workspace.workspaces.signupGroups
         .read(getState().workspaces.currentWorkspace.id), 'callback')());
 
       dispatch({
@@ -1947,56 +1947,6 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadWorkspacePermissions'), 'error'));
-    }
-  }
-}
-
-let updateCurrentWorkspaceUserGroupPermission: UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(data) {
-  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
-    let currentPermissions;
-    try {
-      let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
-      currentPermissions = currentWorkspace.permissions;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            permissions: currentPermissions.map((permissionValue) => {
-              if (permissionValue.userGroupEntityId === data.update.userGroupEntityId) {
-                return data.update;
-              }
-
-              return permissionValue;
-            })
-          }
-        }
-      });
-
-      await promisify(mApi().permission.workspaceSettings.userGroups
-        .update(currentWorkspace.id, data.original.userGroupEntityId, data.update), 'callback')();
-
-      data.success && data.success();
-
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      data.fail && data.fail();
-
-      let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            permissions: currentPermissions
-          }
-        }
-      });
-      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateWorkspacePermissions'), 'error'));
     }
   }
 }
@@ -2506,7 +2456,7 @@ export {
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspace, updateOrganizationWorkspace, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
+  loadCurrentWorkspaceUserGroupPermissions, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, loadMoreOrganizationWorkspacesFromServer,
   loadTemplatesFromServer, updateWorkspaceEditModeState, loadWholeWorkspaceHelp, setWholeWorkspaceHelp

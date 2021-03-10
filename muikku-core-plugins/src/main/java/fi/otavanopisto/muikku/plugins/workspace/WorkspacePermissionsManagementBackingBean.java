@@ -90,9 +90,8 @@ public class WorkspacePermissionsManagementBackingBean extends AbstractWorkspace
     userGroupBeans = new ArrayList<WorkspacePermissionsManagementBackingBean.UserGroupBean>();
 
     permissions = new ArrayList<Permission>();
-    // TODO: atm we only support the sign up permission
-    Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
-    permissions.add(permission);
+    // TODO: no permissions supported at this time
+    //permissions.add(permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP));
     
     List<UserGroupEntity> userGroupEntities;
     String permissionGroupIds = pluginSettingsController.getPluginSetting("workspace", "permission-group-ids");

@@ -16,8 +16,12 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
 public interface UserSchoolDataBridge {
     
@@ -27,6 +31,15 @@ public interface UserSchoolDataBridge {
    * @return school data source identifier
    */
   public String getSchoolDataSource();
+  
+  /* Worklist */
+  
+  public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates();
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item);
+  public BridgeResponse<WorklistItemRestModel> updateWorklistItem(WorklistItemRestModel item);
+  public void removeWorklistItem(WorklistItemRestModel item);
+  public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String identifier, String beginDate, String endDate);
+  public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier);
   
   /* User */
   
@@ -219,13 +232,16 @@ public interface UserSchoolDataBridge {
 
   /* UserGroups */
   
-  public BridgeResponse<StudentGroupPayload> createStudentGroup(StudentGroupPayload studentGroupPayload);
-  public BridgeResponse<StudentGroupPayload> updateStudentGroup(StudentGroupPayload studentGroupPayload);
+  public BridgeResponse<StudentGroupPayload> createStudentGroup(StudentGroupPayload payload);
+  public BridgeResponse<StudentGroupPayload> updateStudentGroup(StudentGroupPayload payload);
   public void archiveStudentGroup(String identifier);
   
   public UserGroup findUserGroup(String identifier);
   
   public List<UserGroup> listUserGroups();
+  
+  public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(StudentGroupMembersPayload payload);
+  public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(StudentGroupMembersPayload payload);
   
   /* GroupUsers */
   

@@ -130,12 +130,12 @@ class Message extends React.Component<MessageProps, MessageState> {
           <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
             initialSelectedItems={replytarget}
             initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
-            <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+            <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
           </NewMessage>
           <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
             initialSelectedItems={replyalltarget} replyToAll
             initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
-            <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+            <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
           </NewMessage>
         </footer>
       </div>

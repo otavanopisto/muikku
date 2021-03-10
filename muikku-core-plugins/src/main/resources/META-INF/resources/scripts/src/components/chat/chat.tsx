@@ -396,7 +396,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
     }
   }
   componentWillUnmount() {
-    this.state.connection.deleteHandler(this.messagesListenerHandler);
+    this.state.connection && this.state.connection.deleteHandler(this.messagesListenerHandler);
   }
   componentDidUpdate(prevProps: IChatProps) {
     if (

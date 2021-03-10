@@ -279,6 +279,22 @@ public abstract class AbstractIntegrationTest {
     return new File(System.getProperty("it.test.file"));
   }
   
+  protected String getTestStudent() {
+    return System.getProperty("it.test.student");
+  }
+  
+  protected String getTestStudentPassword() {
+    return System.getProperty("it.test.student.password");
+  }
+  
+  protected String getTestAdmin() {
+    return System.getProperty("it.test.admin");
+  }
+  
+  protected String getTestAdminPassword() {
+    return System.getProperty("it.test.admin.password");
+  }
+  
   protected OffsetDateTime getDate(int year, int monthOfYear, int dayOfMonth) {
     return OffsetDateTime.of(year, monthOfYear, dayOfMonth, 0, 0, 0, 0, ZoneOffset.UTC);
   }

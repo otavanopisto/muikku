@@ -31,8 +31,8 @@ import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -45,8 +45,12 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
 @Dependent
 public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
@@ -529,6 +533,16 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(StudentGroupMembersPayload studentGroupMembersPayload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(StudentGroupMembersPayload studentGroupMembersPayload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
   public UserGroup findUserGroup(String identifier) {
     // TODO implement
     return null;
@@ -620,6 +634,36 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<WorklistItemRestModel> updateWorklistItem(WorklistItemRestModel item) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public void removeWorklistItem(WorklistItemRestModel item) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String identifier, String beginDate, String endDate) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
   }
 
 }

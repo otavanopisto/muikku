@@ -32,19 +32,24 @@ export function getApiId(item: MessagesNavigationItemType, weirdSecondVersion: b
   }
 }
 
-export async function loadMessagesHelper(location: string | null, query: string | null, initial: boolean, dispatch:(arg:AnyActionType) => any, getState:() => StateType){
+let internalLastLoadId: number = null;
+
+export async function loadMessagesHelper(location: string | null, query: string | null, initial: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   //Remove the current message
   dispatch({
     type: "SET_CURRENT_MESSAGE_THREAD",
     payload: null
   });
 
+  const loadId = (new Date()).getTime();
+  internalLastLoadId = loadId;
+
   let state = getState();
-  let actualLocation:string = location || state.messages.location;
-  let searchQuery: string = (typeof query === "string" ? query : state.messages.query) || null;
+  let actualLocation: string = location || state.messages.location;
+  let searchQuery: string = (typeof query === "string" ? query : state.messages.query) || null;
 
   //Avoid loading messages again for the first time if it's the same location
-  if (initial && actualLocation === state.messages.location && state.messages.query === (query || null) && state.messages.state === "READY"){
+  if (initial && actualLocation === state.messages.location && state.messages.query === (query || null) && state.messages.state === "READY") {
     return;
   }
 
@@ -87,7 +92,7 @@ export async function loadMessagesHelper(location: string | null, query: string 
 
   let params;
   //If we got a folder
-  if (item.type === 'folder' && !searchQuery){
+  if (item.type === 'folder' && !searchQuery) {
     params = {
       firstResult,
       //We load one more to check if they have more
@@ -116,25 +121,25 @@ export async function loadMessagesHelper(location: string | null, query: string 
     });
   }
 
-  let results:MessageThreadListType | MessageSearchResult[];
+  let results: MessageThreadListType | MessageSearchResult[];
   try {
     if (searchQuery) {
       const queryParams = {
         ...params,
         q: searchQuery,
       }
-      results = <MessageSearchResult[]>await promisify(mApi().communicator.searchItems.read(queryParams), 'callback')();
-    } else if (item.type !== "label"){
+      results = <MessageSearchResult[]>await promisify(mApi().communicator.searchItems.cacheClear().read(queryParams), 'callback')();
+    } else if (item.type !== "label") {
       results = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
     } else {
-      results = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
+      results = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback')();
     }
-    let hasMore:boolean = results.length === MAX_LOADED_AT_ONCE + 1;
+    let hasMore: boolean = results.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
     let actualResults = (results as any).concat([]);
-    if (hasMore){
+    if (hasMore) {
       //we got to get rid of that extra loaded message
       actualResults.pop();
     }
@@ -159,17 +164,21 @@ export async function loadMessagesHelper(location: string | null, query: string 
     }
 
     //And there it goes
-    dispatch({
-      type: "UPDATE_MESSAGES_ALL_PROPERTIES",
-      payload
-    });
+    if (internalLastLoadId === loadId) {
+      dispatch({
+        type: "UPDATE_MESSAGES_ALL_PROPERTIES",
+        payload
+      });
+    }
   } catch (err) {
     //Error :(
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.msgsLoadFailed"), 'error'));
-    dispatch({
-      type: "UPDATE_MESSAGES_STATE",
-      payload: <MessagesStateType>"ERROR"
-    });
+    if (internalLastLoadId === loadId) {
+      dispatch({
+        type: "UPDATE_MESSAGES_STATE",
+        payload: <MessagesStateType>"ERROR"
+      });
+    }
   }
 }
 

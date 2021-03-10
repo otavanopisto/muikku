@@ -48,8 +48,12 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.pyramus.rest.model.Address;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
@@ -199,7 +203,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       String school = null;
       String ssn = null;
       boolean hidden = false;
-      
+
       if (student.getStudyProgrammeId() != null) {
         if (!studyProgrammeMap.containsKey(student.getStudyProgrammeId())) {
           StudyProgramme studyProgrammeO = pyramusClient.get(
@@ -705,6 +709,56 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(StudentGroupMembersPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setGroupIdentifier(pyramusStudentGroupId.toString());
+    
+    // Add student group members
+    
+    BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
+        "/muikku/addstudentgroupmembers",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        StudentGroupMembersPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(StudentGroupMembersPayload payload) {
+
+    // Convert Muikku userGroupEntityId to Pyramus student group id
+    
+    Long userGroupEntityId = new Long(payload.getGroupIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
+    Long pyramusStudentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+    payload.setGroupIdentifier(pyramusStudentGroupId.toString());
+    
+    // Remove student group members
+    
+    BridgeResponse<StudentGroupMembersPayload> response = pyramusClient.responsePut(
+        "/muikku/removestudentgroupmembers",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        StudentGroupMembersPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getGroupIdentifier())) {
+
+      // Restore identifier
+      
+      response.getEntity().setGroupIdentifier(userGroupEntityId.toString());
+    }
+    return response;
+  }
+
+  @Override
   public UserGroup findUserGroup(String identifier) {
     switch (identifierMapper.getStudentGroupType(identifier)) {
       case STUDENTGROUP:
@@ -1104,6 +1158,78 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {
     return pyramusClient.get(String.format("/students/students/%d/studyPeriods", pyramusStudentId), StudentStudyPeriod[].class);
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
+    BridgeResponse<WorklistItemTemplateRestModel[]> response = pyramusClient.responseGet("/worklist/templates", WorklistItemTemplateRestModel[].class);
+    List<WorklistItemTemplateRestModel> templates = null;
+    if (response.getEntity() != null) {
+      templates = new ArrayList<>();
+      for (WorklistItemTemplateRestModel template : response.getEntity()) {
+        templates.add(template);
+      }
+    }
+    return new BridgeResponse<List<WorklistItemTemplateRestModel>>(response.getStatusCode(), templates);
+  }
+
+  @Override
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item) {
+    return pyramusClient.responsePost("/worklist/worklistItems", Entity.entity(item, MediaType.APPLICATION_JSON), WorklistItemRestModel.class);
+  }
+
+  @Override
+  public BridgeResponse<WorklistItemRestModel> updateWorklistItem(WorklistItemRestModel item) {
+    return pyramusClient.responsePut("/worklist/worklistItems", Entity.entity(item, MediaType.APPLICATION_JSON), WorklistItemRestModel.class);
+  }
+
+  @Override
+  public void removeWorklistItem(WorklistItemRestModel item) {
+    pyramusClient.delete("/worklist/worklistItems/" + item.getId());
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String identifier, String beginDate, String endDate) {
+    SchoolDataIdentifier sdIdentifier = SchoolDataIdentifier.fromId(identifier);
+    Long staffMemberId = identifierMapper.getPyramusStaffId(sdIdentifier.getIdentifier());
+    if (staffMemberId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus staff member");
+    }
+    String queryString = String.format("?owner=%d", staffMemberId);
+    if (beginDate != null && endDate != null) {
+      queryString += String.format("&beginDate=%s&endDate=%s", beginDate, endDate);
+    }
+    BridgeResponse<WorklistItemRestModel[]> response = pyramusClient.responseGet(
+        String.format("/worklist/worklistItems%s", queryString),
+        WorklistItemRestModel[].class);
+    List<WorklistItemRestModel> items = null;
+    if (response.getEntity() != null) {
+      items = new ArrayList<>();
+      for (WorklistItemRestModel item : response.getEntity()) {
+        items.add(item);
+      }
+    }
+    return new BridgeResponse<List<WorklistItemRestModel>>(response.getStatusCode(), items);
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier) {
+    SchoolDataIdentifier sdIdentifier = SchoolDataIdentifier.fromId(identifier);
+    Long staffMemberId = identifierMapper.getPyramusStaffId(sdIdentifier.getIdentifier());
+    if (staffMemberId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus staff member");
+    }
+    BridgeResponse<WorklistSummaryItemRestModel[]> response = pyramusClient.responseGet(
+        String.format("/worklist/worklistItemsSummary?owner=%d", staffMemberId),
+        WorklistSummaryItemRestModel[].class);
+    List<WorklistSummaryItemRestModel> items = null;
+    if (response.getEntity() != null) {
+      items = new ArrayList<>();
+      for (WorklistSummaryItemRestModel item : response.getEntity()) {
+        items.add(item);
+      }
+    }
+    return new BridgeResponse<List<WorklistSummaryItemRestModel>>(response.getStatusCode(), items); 
   }
 
 }

@@ -43,6 +43,7 @@ import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -360,11 +361,77 @@ public class UserGroupRESTService extends AbstractRESTService {
             organization,
             userGroup.getIsGuidanceGroup())).build();
   }
+  
+  /**
+   * PUT mApi().usergroup.addusers
+   *
+   * Adds users to a student group.
+   *
+   * Payload:
+   * {groupIdentifier: required; group id in Muikku
+   *  userIdentifiers: required; array of user identifiers to add to the group
+   *                   e.g. [PYRAMUS-STUDENT-123,PYRAMUS-STAFF-124]}
+   *
+   * Output:
+   * 204
+   */
+  @PUT
+  @Path("/addusers")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response addUsersToStudentGroup(StudentGroupMembersPayload payload) {
 
-  @GET
-  @Path("/groups/{ID}/users")
-  public Response listGroupUsersByGroup(@PathParam("ID") Long groupId) {
-    return null;
+    // Payload validation
+    
+    if (StringUtils.isBlank(payload.getGroupIdentifier()) || payload.getUserIdentifiers() == null || payload.getUserIdentifiers().length == 0) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // Add student group members
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StudentGroupMembersPayload> response = userGroupController.addStudentGroupMembers(dataSource, payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+
+  /**
+   * PUT mApi().usergroup.removeusers
+   *
+   * Removes users from a student group.
+   *
+   * Payload:
+   * {groupIdentifier: required; group id in Muikku
+   *  userIdentifiers: required; array of user identifiers to remove from the group
+   *                   e.g. [PYRAMUS-STUDENT-123,PYRAMUS-STAFF-124]}
+   *
+   * Output:
+   * 204
+   */
+  @PUT
+  @Path("/removeusers")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response removeUsersFromStudentGroup(StudentGroupMembersPayload payload) {
+
+    // Payload validation
+    
+    if (StringUtils.isBlank(payload.getGroupIdentifier()) || payload.getUserIdentifiers() == null || payload.getUserIdentifiers().length == 0) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // Remove student group members
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StudentGroupMembersPayload> response = userGroupController.removeStudentGroupMembers(dataSource, payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
   }
 
   @GET

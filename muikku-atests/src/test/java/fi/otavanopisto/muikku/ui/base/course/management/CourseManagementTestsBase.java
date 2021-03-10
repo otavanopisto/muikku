@@ -30,6 +30,7 @@ import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseUpdatePayload;
 
@@ -431,11 +432,13 @@ public class CourseManagementTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       Course course1 = new CourseBuilder().name("Test").id((long) 4).description("test course for testing").buildCourse();
+      CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp");
       mockBuilder
-      .addStaffMember(admin)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
+        .addStaffMember(admin)
+        .mockLogin(admin)
+        .addCourse(course1)
+        .addSignupStudyProgramme(signupStudyProgramme)
+        .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);

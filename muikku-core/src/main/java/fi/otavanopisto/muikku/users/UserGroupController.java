@@ -14,7 +14,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 
 public class UserGroupController {
@@ -35,6 +35,14 @@ public class UserGroupController {
   
   public void archiveStudentGroup(String dataSource, String identifier) {
     userSchoolDataController.archiveStudentGroup(dataSource, identifier);
+  }
+  
+  public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(String dataSource, StudentGroupMembersPayload payload) {
+    return userSchoolDataController.addStudentGroupMembers(dataSource, payload);
+  }
+
+  public BridgeResponse<StudentGroupMembersPayload> removeStudentGroupMembers(String dataSource, StudentGroupMembersPayload payload) {
+    return userSchoolDataController.removeStudentGroupMembers(dataSource, payload);
   }
   
   public UserGroup findUserGroup(String dataSource, String identifier) {

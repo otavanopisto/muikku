@@ -6,15 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-
-import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
@@ -25,8 +19,6 @@ import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-import fi.otavanopisto.pyramus.webhooks.WebhookCourseArchivePayload;
-import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   
@@ -91,19 +83,42 @@ public class CoursePickerTestsBase extends AbstractUITest {
   public void coursePickerLoadMoreTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder = mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin);
+    List<Course> courses = new ArrayList<>();
+    for(Long i = (long) 0; i < 35; i++) {
+      Course course = new CourseBuilder()
+          .name("Test " + i)
+          .id(i)
+          .description("Cat herding part #" + i)
+          .buildCourse();
+      mockBuilder = mockBuilder.addCourse(course);
+      courses.add(course);
+    }
+    mockBuilder.build();
     login();
+
     List<Workspace> workspaces = new ArrayList<>();
-    for(Long i = (long) 0; i < 35; i++)
-      workspaces.add(createWorkspace("testcourse: " + i.toString(), "test course for testing " + i.toString(), i.toString(), Boolean.TRUE));
+    // This is here to mark the mocked courses as published
+    for (Course c : courses) {
+      workspaces.add(createWorkspace(c, true));
+    }
+
     try {
-      navigate("/coursepicker", false);
-      waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-      scrollToEnd();
-      waitForMoreThanSize(".application-list__item.course", 27);
-      assertCount(".application-list__item.course", 38);
-    }finally{
-      mockBuilder.wiremockReset();
+      try {
+        navigate("/coursepicker", false);
+        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        scrollToEnd();
+        waitForMoreThanSize(".application-list__item.course", 27);
+        assertCount(".application-list__item.course", 38);
+      } finally {
+        mockBuilder.wiremockReset();
+      }
+    } finally {
+      for (Workspace w : workspaces) {
+        deleteWorkspace(w.getId());
+      }
     }
   }
   
