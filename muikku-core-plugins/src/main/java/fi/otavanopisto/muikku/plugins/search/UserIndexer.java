@@ -69,12 +69,10 @@ public class UserIndexer {
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
               userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 
               userEntity.getDefaultSchoolDataSource().getIdentifier().equals(user.getSchoolDataSource()) : false;
-          boolean isArchived = userEntity.getArchived();
           Map<String, Object> extra = new HashMap<>();
           extra.put("archetype", archetype);
           extra.put("userEntityId", userEntity.getId());
           extra.put("isDefaultIdentifier", isDefaultIdentifier);
-          extra.put("archived", isArchived);
           
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
