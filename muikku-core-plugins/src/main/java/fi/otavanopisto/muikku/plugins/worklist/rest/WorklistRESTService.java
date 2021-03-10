@@ -51,12 +51,18 @@ public class WorklistRESTService {
    * Output: List of templates
    *  
    * [
-   *   {id: 123
-   *    description: "Teachers' meeting"
-   *    price: 25
-   *    factor: 1
-   *    templateType: EDITABLE|UNEDITABLE|COURSE_ASSESSMENT|GRADE_RAISE
-   *    removable: true},
+   *   {id: 123,
+   *    description: "Teachers' meeting",
+   *    price: 25,
+   *    factor: 1,
+   *    editableFields: [
+   *      "ENTRYDATE,"
+   *      "DESCRIPTION",
+   *      "PRICE",
+   *      "FACTOR"
+   *    ]
+   *   },
+   *    
    *    ...
    *  ]
    */
@@ -79,30 +85,40 @@ public class WorklistRESTService {
    * 
    * Creates a new worklist item from the given template.
    * 
-   * Payload: Any one template from the templates endpoint
+   * Payload: Worklist item with templateId and editable fields set
    * 
-   * Output: New worklist item
+   * {templateId: 1
+   *  entryDate: 2021-02-15
+   *  description: "Something something",
+   *  price: 25,
+   *  factor: 2
+   * }
+   *  
+   * NOTE: If trying to pass along a value for a field that is not editable according
+   * to the chosen template, the template value will be used instead.
    * 
-   * {id: 123
-   *  entryDate: 2021-03-01T12:43:23
-   *  description: "Course assessment"
-   *  price: 75
-   *  factor: 1
-   *  courseAssessment: {
-   *    courseName: "BI1 - Ihmisen biologia"
-   *    studentName: "John "Joe" Doe (Nettilukio)"
-   *    grade: 10
-   *    raisedGrade: true 
-   *  }
-   *  editable: false
-   *  removable: false}
+   * Output: Created worklist item 
+   * 
+   * {id: 123,
+   *  templateId: 1,
+   *  entryDate: 2021-02-15,
+   *  description: "Something something",
+   *  price: 25,
+   *  factor: 2,
+   *  editableFields: [
+   *    "ENTRYDATE",
+   *    "DESCRIPTION",
+   *    "PRICE",
+   *    "FACTOR"
+   *  ]
+   * }
    */
   @Path("/worklistItems")
   @POST
   @RESTPermit(MuikkuPermissions.CREATE_WORKLISTITEM)
-  public Response createWorklistItem(WorklistItemTemplateRestModel template) {
+  public Response createWorklistItem(WorklistItemRestModel item) {
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<WorklistItemRestModel> response = userSchoolDataController.createWorklistItem(dataSource, template);
+    BridgeResponse<WorklistItemRestModel> response = userSchoolDataController.createWorklistItem(dataSource, item);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
@@ -114,7 +130,10 @@ public class WorklistRESTService {
   /**
    * PUT mApi().worklist.worklistItems
    * 
-   * Updates an existing worklist item.
+   * Updates an existing worklist item (entryDate, description, price, factor).
+   * 
+   * NOTE: If trying to pass along a value for a field that is not editable according
+   * to the worklist item, the item's original value will be used instead.
    * 
    * Payload: An existing worklist item
    * 
@@ -159,7 +178,7 @@ public class WorklistRESTService {
   }
 
   /**
-   * GET mApi().worklistItems
+   * GET mApi().worklist.worklistItems
    * 
    * Returns an array of worklist items belonging to a user. Timeframe can also be specified.
    * 
@@ -169,6 +188,41 @@ public class WorklistRESTService {
    * endDate: 2021-02-28 
    * 
    * Output: List of worklist items matching the query.
+   * 
+   * [
+   *   {id: 1,
+   *    templateId: 1,
+   *    entryDate: 2021-02-15,
+   *    description: "Something something",
+   *    price: 25,
+   *    factor: 2,
+   *    editableFields: [
+   *      "ENTRYDATE",
+   *      "DESCRIPTION",
+   *      "PRICE",
+   *      "FACTOR"
+   *    ],
+   *    removable: true
+   *   },
+   *   
+   *   {id: 123,
+   *    templateId: 2,
+   *    entryDate: 2021-03-01,
+   *    description: "Course assessment",
+   *    price: 75,
+   *    factor: 1,
+   *    courseAssessment: {
+   *      courseName: "BI1 - Ihmisen biologia",
+   *      studentName: "John "Joe" Doe (Nettilukio)",
+   *      grade: 10,
+   *      raisedGrade: true 
+   *    }
+   *    editableFields: [],
+   *    removable: false
+   *   },
+   *    
+   *   ...
+   * ]
    */
   @Path("/worklistItems")
   @GET
@@ -190,7 +244,7 @@ public class WorklistRESTService {
   }
 
   /**
-   * GET mApi().worklistSummary
+   * GET mApi().worklist.worklistSummary
    * 
    * Returns an array of monthly worklist summary items for the given user; mainly the number
    * of worklist items the user has created that month.
@@ -201,10 +255,12 @@ public class WorklistRESTService {
    * Output: Monnthly summary items of all worklist items of the user.
    * 
    * [
-   *   {displayName: March 2021
-   *    beginDate: 2021-03-01
-   *    endDate: 2021-03-31
-   *    count: 28},
+   *   {displayName: March 2021,
+   *    beginDate: 2021-03-01,
+   *    endDate: 2021-03-31,
+   *    count: 28
+   *   },
+   *    
    *    ...
    * ]
    */
