@@ -14,7 +14,6 @@ import {
 } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
-import { getJSDocDeprecatedTag } from 'typescript';
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
