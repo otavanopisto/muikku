@@ -1196,8 +1196,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemTemplateRestModel template) {
-    return pyramusClient.responsePost("/worklist/worklistItems", Entity.entity(template, MediaType.APPLICATION_JSON), WorklistItemRestModel.class);
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item) {
+    return pyramusClient.responsePost("/worklist/worklistItems", Entity.entity(item, MediaType.APPLICATION_JSON), WorklistItemRestModel.class);
   }
 
   @Override
