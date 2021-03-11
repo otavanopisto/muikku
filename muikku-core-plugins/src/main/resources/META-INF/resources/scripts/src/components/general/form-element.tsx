@@ -2,6 +2,20 @@ import * as React from 'react';
 import Button from '~/components/general/button';
 import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
+import DatePicker from 'react-datepicker';
+
+// Either label or placeholder is mandatory because of wcag
+
+export type FormElementLabel = {
+  label: string,
+  placeholder?: string
+}
+
+export type FormElementPlaceholder = {
+  label?: string,
+  placeholder: string
+}
+
 
 interface FormElementProps {
   modifiers?: string | Array<string>,
@@ -196,6 +210,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
+  id: string,
   updateField: (value: string, valid: boolean, Name: string) => any,
   value?: string,
   type?: string,
@@ -251,8 +266,8 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
 
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
+        <input id={this.props.id} value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
       </div>
     );
   }
@@ -262,6 +277,7 @@ interface SelectFormElementProps {
   label: string,
   name: string,
   value?: string,
+  id: string,
   type?: string
   mandatory?: boolean,
   valid?: number,
@@ -315,8 +331,8 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <select value={this.state.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
+        <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
+        <select id={this.props.id} value={this.state.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
           {this.props.children}
         </select>
       </div>
@@ -381,8 +397,8 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.state.value} name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <label htmlFor="emailField" className="form-element__label">{this.props.label}</label>
+        <input id="emailField" value={this.state.value} name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
       </div>
     );
   }
@@ -460,8 +476,56 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input value={this.state.value} name="SSN" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <label htmlFor="SSNField" className="form-element__label">{this.props.label}</label>
+        <input id="SSNField" value={this.state.value} name="SSN" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+      </div>
+    );
+  }
+}
+
+interface DateFormElementProps {
+  labels: FormElementLabel | FormElementPlaceholder,
+  id: string,
+  updateField: (value: string) => any,
+  maxDate?: any,
+  minDate?: any,
+  selected: any,
+  value?: string,
+  locale: string,
+  mandatory?: boolean,
+  valid?: number,
+  modifiers?: string | Array<string>,
+
+}
+
+interface DateFormElementState {
+  value: string,
+}
+
+export class DateFormElement extends React.Component<DateFormElementProps, DateFormElementState> {
+
+  constructor(props: DateFormElementProps) {
+    super(props);
+    this.updateInputField = this.updateInputField.bind(this);
+  }
+
+  updateInputField(newDate: any) {
+    this.props.updateField(newDate);
+  }
+
+  render() {
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+
+    return (
+      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
+        {this.props.labels.label ?
+          <label htmlFor={this.props.id} className="form-element__label">{this.props.labels.label}</label> :
+          <label htmlFor={this.props.id} className="visually-hidden">{this.props.labels.placeholder}</label>
+        }
+        <DatePicker id={this.props.id} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholderText={this.props.labels.placeholder} onChange={this.updateInputField}
+          maxDate={this.props.maxDate}
+          minDate={this.props.minDate}
+          locale={this.props.locale} selected={this.props.selected} />
       </div>
     );
   }

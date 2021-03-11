@@ -103,7 +103,7 @@ export default class Step extends React.Component<StepProps, StepState> {
             </div>
           </div>
           <div className="form__row form__row--wizard">
-            <div className="form-element form-element--workspace-extension">
+            <div className="form-element form-element--workspace-name-extension">
               <label htmlFor="workspaceExtension">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
               <input id="workspaceExtension" className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
             </div>
