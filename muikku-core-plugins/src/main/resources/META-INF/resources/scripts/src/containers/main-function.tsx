@@ -348,7 +348,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }
 
       this.props.store.dispatch(loadUsers({payload:{q:"", firstResult: 0, lastResult: 10}}) as Action);
-      this.props.store.dispatch(loadUsergroups({payload:{q:"", firstResult:0, lastResult: 10}}) as Action);
+      this.props.store.dispatch(loadUsergroups({payload:{q:"", firstResult:0, maxResults: 10}}) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }

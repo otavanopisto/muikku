@@ -3,15 +3,15 @@ import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
 import { UsersListType, UpdateUserGroupStateType, CreateUserGroupType, ModifyUserGroupUsersType,
   CurrentUserGroupType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType,
-  StudyprogrammeListType, UpdateUserGroupType, UserGroupsStateType, StudyprogrammeTypeStatusType } from 'reducers/main-function/users';
+  StudyprogrammeListType, UpdateUserGroupType, UserGroupsStateType, StudyprogrammeTypeStatusType, UserPayloadType } from 'reducers/main-function/users';
 import { UserGroupType, UpdateUserType, CreateUserType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
 
 
-
+export type SET_CURRENT_PAYLOAD = SpecificActionType<"SET_CURRENT_PAYLOAD", UserPayloadType>
 export type UPDATE_USER_GROUPS_STATE = SpecificActionType<"UPDATE_USER_GROUPS_STATE", UserGroupsStateType>
-export type UPDATE_HAS_MORE_USEGROUPS = SpecificActionType<"UPDATE_HAS_MORE_USEGROUPS", boolean>
+export type UPDATE_HAS_MORE_USERGROUPS = SpecificActionType<"UPDATE_HAS_MORE_USERGROUPS", boolean>
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserPanelUsersType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserPanelUsersType>
 export type UPDATE_USER_GROUPS = SpecificActionType<"UPDATE_USER_GROUPS", Array<UserGroupType>>
@@ -83,36 +83,13 @@ export interface LoadStudyprogrammesTriggerType {
 
 export interface LoadUsersTriggerType {
   (data: {
-    payload: {
-      q: string | null,
-      firstResult?: number | null,
-      lastResult?: number | null,
-      maxResults?: number | null,
-      userGroupIds?: number[],
-      }
+    payload: UserPayloadType,
     success?: (result: OrganizationUsersListType)=> any,
     fail?: ()=> any,
-    endpoint? : any,
   }
 
   ): AnyActionType
 }
-
-export interface LoadUsersWrapperType {
-  data: {
-    payload: {
-      q: string | null,
-      firstResult?: number | null,
-      lastResult?: number | null,
-      maxResults?: number | null,
-      userGroupIds?: number[],
-      }
-    success?: (result: OrganizationUsersListType)=> any,
-    fail?: ()=> any,
-    endpoint? : any,
-  }
-}
-
 
 export interface SetCurrentUserGroupTriggerType {
   (id: number):AnyActionType
@@ -391,22 +368,48 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(data) {
 }
 
 let loadUsergroups: LoadUsersTriggerType = function loadUserGroups(data) {
+  let maxResults = data.payload.maxResults? data.payload.maxResults +1 : 11;
+
+  data.payload.maxResults = maxResults;
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
+
+      let userGroups:UserGroupType[] = await promisify(mApi().usergroup.groups.read(data.payload), 'callback')() as UserGroupType[];
+
       dispatch({
-        type: "LOCK_TOOLBAR",
-        payload: null
+        type: "SET_CURRENT_PAYLOAD",
+        payload: data.payload
       });
-      await promisify(mApi().usergroup.groups.read(data.payload), 'callback')().then((result: UserGroupType[]) => {
+
+      dispatch({
+        type: "UPDATE_USER_GROUPS",
+        payload: userGroups
+      });
+
+      if(userGroups.length > maxResults - 1) {
         dispatch({
-          type: "UPDATE_USER_GROUPS",
-          payload: result
+          type: "UPDATE_HAS_MORE_USERGROUPS",
+          payload: true,
         });
-      });
+        userGroups.pop();
+      } else {
+        dispatch({
+          type: "UPDATE_HAS_MORE_USERGROUPS",
+          payload: false,
+        });
+      }
+
       dispatch({
-        type: "UNLOCK_TOOLBAR",
-        payload: null
+        type: "UPDATE_USER_GROUPS_STATE",
+        payload:"READY"
       });
+
+      dispatch({
+        type: "UPDATE_USER_GROUPS",
+        payload: userGroups
+      });
+
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -423,6 +426,78 @@ let loadUsergroups: LoadUsersTriggerType = function loadUserGroups(data) {
     }
   }
 }
+
+// let loadMoreUsergroups: LoadUsersTriggerType = function loadMoreUserGroups() {
+//   let maxResults = data.payload.maxResults? data.payload.maxResults +1 : 11;
+
+//   data.payload.maxResults = maxResults;
+//   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+//     try {
+
+//       let currentState = getState().userGroups;
+
+//       if(currentState.hasMore){
+//         data.payload = {
+//           q: currentState.searchString,
+//           firstResult: currentState.list.length,
+//           maxResults: maxResults,
+//         }
+//       }
+
+//       let userGroups:UserGroupType[] = await promisify(mApi().usergroup.groups.read(data.payload), 'callback')() as UserGroupType[];
+
+//       dispatch({
+//         type: "SET_SEARCH_STRING",
+//         payload: data.payload.q
+//       });
+
+//       dispatch({
+//         type: "UPDATE_USER_GROUPS",
+//         payload: userGroups
+//       });
+
+//       if(userGroups.length > maxResults - 1) {
+//         dispatch({
+//           type: "UPDATE_HAS_MORE_USERGROUPS",
+//           payload: true,
+//         });
+//         userGroups.pop();
+//       } else {
+//         dispatch({
+//           type: "UPDATE_HAS_MORE_USERGROUPS",
+//           payload: false,
+//         });
+//       }
+
+//       dispatch({
+//         type: "UPDATE_USER_GROUPS_STATE",
+//         payload:"READY"
+//       });
+
+//       dispatch({
+//         type: "UPDATE_USER_GROUPS",
+//         payload: userGroups
+//       });
+
+
+//     } catch (err) {
+//       if (!(err instanceof MApiError)) {
+//         throw err;
+//       }
+//       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+//       dispatch({
+//         type: "UPDATE_USERS_STATE",
+//         payload: <UserStatusType>"ERROR"
+//       });
+//       dispatch({
+//         type: "UNLOCK_TOOLBAR",
+//         payload: null
+//       });
+//     }
+//   }
+// }
+
+
 
 let setCurrentUserGroup: SetCurrentUserGroupTriggerType = function loadCurrentUserGroup(id: number) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {

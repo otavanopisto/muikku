@@ -7,6 +7,14 @@ export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
 export type UserGroupsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
+export interface UserPayloadType  {
+  q: string | null,
+  firstResult?: number | null,
+  lastResult?: number | null,
+  maxResults?: number | null,
+  userGroupIds?: number[],
+}
+
 export interface OrganizationUsersListType {
   firstResult: number,
   lastResult: number,
@@ -57,7 +65,8 @@ export interface UserGroupsType {
   currentUserGroup?: CurrentUserGroupType,
   state: UserGroupsStateType,
   hasMore: boolean,
-
+  searchString: string,
+  currentPayload: UserPayloadType,
 }
 
 export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>
@@ -107,6 +116,8 @@ export function userGroups(state: UserGroupsType = {
     currentUserGroup: null,
     state: "LOADING",
     hasMore: false,
+    searchString: "",
+    currentPayload: null,
   }, action: ActionType): UserGroupsType {
   if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
@@ -120,10 +131,15 @@ export function userGroups(state: UserGroupsType = {
     return Object.assign({}, state, {
       state: action.payload
     });
-  } else if (action.type === "UPDATE_HAS_MORE_USEGROUPS") {
+  } else if (action.type === "UPDATE_HAS_MORE_USERGROUPS") {
     return Object.assign({}, state, {
       hasMore: action.payload
     });
+  } else if (action.type === "SET_CURRENT_PAYLOAD") {
+    return Object.assign({}, state, {
+      currentPayload: action.payload
+    });
+
   }
   return state;
 }

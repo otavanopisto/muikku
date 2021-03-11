@@ -29,7 +29,9 @@ class OrganizationUserGroups extends BodyScrollLoader<OrganizationUserGroupsProp
       //it will only call the function if this is true
       this.hasMorePropertyLocation = "usergroupsHasMore";
       //this is the function that will be called
-      this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationWorkspacesFromServer";
+      this.loadMoreTriggerFunctionLocation = "userGroupSearch";
+
+
     this.userGroupSearch = this.userGroupSearch.bind(this);
   }
 
