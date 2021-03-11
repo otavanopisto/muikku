@@ -257,6 +257,15 @@
   width: 100%;
 }
 
+// Communicator Message Search
+.form-element--communicator-message-search {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
 // Overrides the border color
 .form-element__input--add-producer,
 .form-element__input--add-material-producer {

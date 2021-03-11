@@ -391,7 +391,7 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, null);
+        onlyDefaultUsers, start, maxResults, null, null, null);
   }
   
   @Override
