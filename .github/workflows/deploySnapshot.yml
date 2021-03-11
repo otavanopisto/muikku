@@ -30,8 +30,4 @@ jobs:
       - name: Deploy snapshot
         run: mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
       - name: Webhook to staging
-        uses: distributhor/workflow-webhook@v1
-        env:
-          webhook_url: ${{ secrets.STAGING_WEBHOOK_URL }}
-          webhook_secret: ${{ secrets.STAGING_WEBHOOK_SECRET }}
-          webhook_auth: "${{ secrets.STAGING_WEBHOOK_USER }}:${{ secrets.STAGING_WEBHOOK_USER_PASS }}"
+        run: curl -X POST https://${{ secrets.STAGING_WEBHOOK_USER }}:${{ secrets.STAGING_WEBHOOK_USER_PASS }}@${{ secrets.STAGING_WEBHOOK_URL }}
