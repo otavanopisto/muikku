@@ -293,7 +293,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
               <SearchFormElement name="search-user-group-users" placeholder={this.props.placeholder} value={this.props.searchValue} id="searchUserGroupUsers"  updateField={this.props.searchUsers} />
             </DialogRow>
             <DialogRow>
-              <ApplicationList>
+              <ApplicationList modifiers="dialog-users">
                 {this.props.users.length > 0 ?
                   this.props.users.map((user: UserType) => {
                     return <ApplicationListItem className="course" classState={this.checkUserInRemoveList(user, this.props.removeUsers) ? "disabled" : ""} key={"all-" + user.id}>
@@ -321,7 +321,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
           let removePages = Math.ceil(this.props.removeUsers.length / this.maxUsersPerPage);
           return <DialogRow>
             <DialogRow>
-              <ApplicationList modifiers="workspace-templates">
+              <ApplicationList modifiers="dialog-users">
                 {this.state.removeUsersPage.length > 0 ?
                   this.state.removeUsersPage.map((user: UiSelectItem) => {
                     return <ApplicationListItem className="course" key={"remove-" + user.id}>

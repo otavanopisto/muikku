@@ -1,7 +1,6 @@
 import * as React from "react";
-
 import '~/sass/elements/application-list.scss';
-import primary from "../records/body/application/primary";
+
 
 interface ApplicationListProps {
   modifiers?: string | Array<string>,
@@ -29,6 +28,7 @@ interface ApplicationListItemProps extends React.DetailedHTMLProps<React.HTMLAtt
 }
 
 interface ApplicationListItemState {
+
 }
 
 export class ApplicationListItem extends React.Component<ApplicationListItemProps, ApplicationListItemState> {
