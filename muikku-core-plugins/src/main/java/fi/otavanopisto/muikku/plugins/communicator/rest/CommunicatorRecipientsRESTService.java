@@ -187,7 +187,6 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
           String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
           Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
-
           ret.add(new fi.otavanopisto.muikku.rest.model.User(
             userEntity.getId(), 
             (String) o.get("firstName"),

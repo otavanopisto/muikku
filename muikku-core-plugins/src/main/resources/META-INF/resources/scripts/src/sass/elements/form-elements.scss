@@ -94,6 +94,10 @@
   margin-left: 20px;
 }
 
+.form-element--new-user-email:last-child {
+  margin-left: 0;
+}
+
 .form-element__copy-workspace-start-date {
   flex-basis: 100%;
   flex-grow: 1;
@@ -135,7 +139,6 @@
 
 .form-element__copy-workspace-start-date,
 .form-element__copy-workspace-end-date {
-
   .react-datepicker-wrapper {
     display: block;
   }
@@ -171,8 +174,12 @@
 }
 
 .form-element--workspace-name,
-.form-element--workspace-extension {
+.form-element--workspace-name-extension {
   flex-grow: 1;
+}
+
+.form-element--dialog-workspace-name-extension {
+  flex-basis: 200px;
 }
 
 .form-element--forgot-password {
@@ -186,7 +193,12 @@
 }
 
 .form-element__input {
-  @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
+  @include prefix(
+    transition,
+    webkit ms o moz,
+    box-shadow 0.2s ease-in-out,
+    border 0.2s ease-in-out
+  );
   -webkit-appearance: none;
   border: solid 2px $color-form-element-border;
   border-radius: 2px;
@@ -257,6 +269,15 @@
   width: 100%;
 }
 
+// Communicator Message Search
+.form-element--communicator-message-search {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
 // Overrides the border color
 .form-element__input--add-producer,
 .form-element__input--add-material-producer {
@@ -310,7 +331,8 @@
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+    no-repeat right 5px center;
   background-color: transparent;
   border: 2px solid $color-form-element-border;
   border-radius: 2px;
@@ -335,7 +357,6 @@
   }
 
   // scss-lint:enable SelectorFormat
-
 }
 
 .form-element__select--matriculation-exam {

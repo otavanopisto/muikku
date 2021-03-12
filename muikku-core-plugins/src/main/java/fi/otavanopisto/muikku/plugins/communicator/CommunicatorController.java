@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -26,6 +27,7 @@ import org.jsoup.safety.Whitelist;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -59,6 +61,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -119,6 +122,9 @@ public class CommunicatorController {
   
   @Inject
   private VacationNotificationsDAO vacationNotificationsDAO;
+
+  @Inject
+  private SessionController sessionController;
   
   @Inject
   @Any
@@ -312,7 +318,25 @@ public class CommunicatorController {
    * @return a list of recipients
    */
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
-    return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
+    List<CommunicatorMessageRecipient> recipients = communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
+    
+    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_STUDENT_MESSAGING)) {
+      return recipients;
+    } else {
+      Long loggedUserId = sessionController.getLoggedUserEntity().getId();
+      return recipients
+          .stream()
+          .filter(recipient -> {
+            if (recipient.getRecipient().equals(loggedUserId)) {
+              return true;
+            } else {
+              UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+              EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+              return recipientRole != null && !EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype());
+            }
+          })
+          .collect(Collectors.toList());
+    }
   }
 
   /**

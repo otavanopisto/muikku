@@ -61,25 +61,45 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     //abort if this is true (in this case it causes the current element to be invisible)
     this.cancellingLoadingPropertyLocation = "currentThread";
   }
-  getThreadUserNames(thread: MessageThreadType, userId: number): string {
+  getThreadUserNames(thread: MessageThreadType, userId: number): any {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
-        return this.props.i18n.text.get("plugin.communicator.sender.self");
+        return <span>{this.props.i18n.text.get("plugin.communicator.sender.self")}</span>;
       }
-      return getName(thread.sender, !this.props.status.isStudent);
+      if (thread.sender.archived === true) {
+        return <span className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
+      }
+      if (thread.sender.studiesEnded === true) {
+        return <span className="message__user-studies-ended">{getName(thread.sender, !this.props.status.isStudent)}</span>;
+      }
+      return <span>{getName(thread.sender, !this.props.status.isStudent)}</span>;
     }
 
-    return thread.recipients.map((recipient) => {
+    let messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
-        return this.props.i18n.text.get("plugin.communicator.sender.self");
+        return <span>{this.props.i18n.text.get("plugin.communicator.sender.self")}</span>;
       }
-      return getName(recipient as any, !this.props.status.isStudent);
-    })
-      .concat(thread.userGroupRecipients.map(group => group.name))
-      .concat(thread.workspaceRecipients.filter((w, pos, self) => {
-        return self.findIndex((w2) => w2.workspaceEntityId === w.workspaceEntityId) === pos;
-      }).map(workspace => workspace.workspaceName))
-      .join(", ");
+      if (recipient.archived === true) {
+        return <span className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
+      }
+      if (recipient.studiesEnded === true) {
+        return <span className="message__user-studies-ended">{getName(recipient as any, !this.props.status.isStudent)}</span>;
+      }
+      return <span>{getName(recipient as any, !this.props.status.isStudent)}</span>;
+    });
+
+    let userGroupRecipientsList = thread.userGroupRecipients.map((group) => {
+      return <span>{group.name}</span>;
+    });
+
+    let workspaceRecipientsList = thread.workspaceRecipients.filter((w, pos, self) => {
+      return self.findIndex((w2) => w2.workspaceEntityId === w.workspaceEntityId) === pos;
+    }).map((workspace) => {
+      return <span>{workspace.workspaceName}</span>;
+    });
+
+    return [ messageRecipientsList, userGroupRecipientsList, workspaceRecipientsList ];
+
   }
   setCurrentThread(threadOrSearchResult: MessageThreadType | MessageSearchResult) {
     window.location.hash = window.location.hash.split("/")[0] + "/" + threadOrSearchResult.communicatorMessageId;
@@ -196,7 +216,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
               </div>}>
                 <ApplicationListItemHeader modifiers="communicator-message">
                   <div className={`application-list__header-primary ${thread.unreadMessagesInThread ? "application-list__header-primary--highlight" : ""}`}>
-                    <span aria-label={this.props.i18n.text.get("plugin.wcag.messageSender.aria.label")}>{this.getThreadUserNames(thread, this.props.status.userId)}</span>
+                    <span className="message__recipients" aria-label={this.props.i18n.text.get("plugin.wcag.messageSender.aria.label")}>{this.getThreadUserNames(thread, this.props.status.userId)}</span>
                   </div>
                   {thread.messageCountInThread > 1 ? <div className="application-list__item-counter" aria-label={this.props.i18n.text.get("plugin.wcag.messageCount.aria.label")}>
                     {thread.messageCountInThread}
