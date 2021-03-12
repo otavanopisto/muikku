@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import {UserGroupType, UserType } from '~/reducers/user-index';
+import { UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserType>;
@@ -7,7 +7,7 @@ export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
 export type UserGroupsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
-export interface UserPayloadType  {
+export interface UserPayloadType {
   q: string | null,
   firstResult?: number | null,
   lastResult?: number | null,
@@ -80,7 +80,7 @@ export interface UpdateUserGroupType extends CreateUserGroupType {
   identifier: string,
 }
 
-export interface ModifyUserGroupUsersType {
+export interface ModifyUserGroupUsersType {
   groupIdentifier?: string,
   userIdentifiers: string[],
 }
@@ -112,22 +112,27 @@ export default function users(state: UsersType = {
 }
 
 export function userGroups(state: UserGroupsType = {
-    list: [],
-    currentUserGroup: null,
-    state: "LOADING",
-    hasMore: false,
-    searchString: "",
-    currentPayload: null,
-  }, action: ActionType): UserGroupsType {
+  list: [],
+  currentUserGroup: null,
+  state: "LOADING",
+  hasMore: false,
+  searchString: "",
+  currentPayload: null,
+}, action: ActionType): UserGroupsType {
   if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
       list: action.payload
+    });
+  } else if (action.type === "LOAD_MORE_USER_GROUPS") {
+    return Object.assign({}, state, {
+      list: state.list.concat(action.payload)
     });
   } else if (action.type === "UPDATE_CURRENT_USER_GROUP") {
     return Object.assign({}, state, {
       currentUserGroup: action.payload
     });
-  } else if (action.type === "UPDATE_USER_GROUPS_STATE") {
+  }
+  else if (action.type === "UPDATE_USER_GROUPS_STATE") {
     return Object.assign({}, state, {
       state: action.payload
     });

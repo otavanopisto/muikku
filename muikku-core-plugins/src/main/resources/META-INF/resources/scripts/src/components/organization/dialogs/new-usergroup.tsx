@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow, DialogRowHeader, DialogRowContent } from '~/components/general/dialog';
-import { FormWizardActions, InputFormElement} from '~/components/general/form-element';
-import { loadSelectorStudents, loadSelectorStaff, LoadUsersTriggerType, loadUsergroups, createUsergroup, CreateUsergroupTriggerType} from '~/actions/main-function/users';
+import { FormWizardActions, InputFormElement } from '~/components/general/form-element';
+import { loadSelectorStudents, loadSelectorStaff, LoadUsersTriggerType, loadUserGroups, createUsergroup, CreateUsergroupTriggerType } from '~/actions/main-function/users';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
 import { SelectItem } from '~/actions/workspaces/index';
-import {  CreateUserGroupType, UpdateUserGroupStateType, UsersSelectType } from '~/reducers/main-function/users';
+import { CreateUserGroupType, UpdateUserGroupStateType, UsersSelectType } from '~/reducers/main-function/users';
 
 interface ValidationType {
   nameValid: number
@@ -21,7 +21,7 @@ interface OrganizationNewUserGroupProps {
   createOrganizationUsergroup: CreateUsergroupTriggerType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
-  loadUsergroups: LoadUsersTriggerType
+  loadUserGroups: LoadUsersTriggerType
 }
 
 interface OrganizationNewUserGroupState {
@@ -62,7 +62,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
       removeStudents: [],
       removeStaff: [],
       studentsLoaded: false,
-      locked: false,
+      locked: true,
       currentStep: 1,
       executing: false,
       validation: {
@@ -88,7 +88,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     this.clearComponentState = this.clearComponentState.bind(this);
   }
   doStudentSearch(q: string) {
-    this.props.loadStudents({payload:{q}});
+    this.props.loadStudents({ payload: { q } });
   }
 
   selectStudent(student: SelectItem) {
@@ -109,7 +109,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
 
 
   doStaffSearch(q: string) {
-    this.props.loadStaff({payload:{q}});
+    this.props.loadStaff({ payload: { q } });
   }
 
   selectStaff(staff: SelectItem) {
@@ -183,21 +183,24 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     })
 
     let payload: CreateUserGroupType;
-    let userIdentifiers: string[] ;
+    let userIdentifiers: string[];
 
 
-      payload = {
-         name: this.state.usergroupName,
-         isGuidanceGroup: this.state.isGuidanceGroup
-        }
-
-    if(this.state.addStudents.length !== 0) {
-      userIdentifiers = this.state.addStudents.map(student => student.id as string)
-
+    payload = {
+      name: this.state.usergroupName,
+      isGuidanceGroup: this.state.isGuidanceGroup
     }
 
-    if(this.state.addStaff.length !== 0) {
-      userIdentifiers = userIdentifiers.concat(this.state.addStaff.map(staff => staff.id as string));
+    if (this.state.addStudents.length !== 0) {
+      userIdentifiers = this.state.addStudents.map(student => student.id as string)
+    }
+
+    if (this.state.addStaff.length !== 0) {
+      if (!userIdentifiers) {
+        userIdentifiers = this.state.addStaff.map(staff => staff.id as string)
+      } else {
+        userIdentifiers = userIdentifiers.concat(this.state.addStaff.map(staff => staff.id as string));
+      }
     }
 
 
@@ -206,31 +209,31 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
       payload: payload,
       addUsers: userIdentifiers,
       progress: (state: UpdateUserGroupStateType) => {
-        if(state === "update-group") {
+        if (state === "update-group") {
           this.setState({
             usergroupUpdated: true,
           });
         }
-        if(state === "add-users") {
+        if (state === "add-users") {
           this.setState({
             studentsAdded: true,
           });
         }
-        if(state === "remove-users") {
+        if (state === "remove-users") {
           this.setState({
             studentsRemoved: true,
           });
         }
-        if(state === "done") {
-          setTimeout(() => this.props.loadUsergroups({payload:{q:""}}), 2000);
+        if (state === "done") {
+          setTimeout(() => this.props.loadUserGroups({ payload: { q: "" } }), 2000);
         }
       },
 
-      success: ()=> {
+      success: () => {
         closeDialog();
       },
 
-      fail: ()=> {
+      fail: () => {
         closeDialog();
       }
     });
@@ -273,7 +276,8 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} />
             <DialogRowContent modifiers="new-workspace">
-              <div>{this.state.usergroupName}</div>
+              <span>{this.state.usergroupName}</span>
+              <span>{this.state.isGuidanceGroup ? " (" + this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.isGuidanceGroup') + ")" : ""}</span>
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
@@ -347,7 +351,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({
     loadStudents: loadSelectorStudents,
     loadStaff: loadSelectorStaff,
-    loadUsergroups,
+    loadUserGroups,
     createOrganizationUsergroup: createUsergroup,
 
   }, dispatch);

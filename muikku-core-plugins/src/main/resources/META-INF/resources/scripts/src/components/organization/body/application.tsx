@@ -19,14 +19,14 @@ import UserDialog from '../dialogs/new-user';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
-import { LoadUsersTriggerType, loadUsers, loadUsergroups } from '~/actions/main-function/users';
+import { LoadUsersTriggerType, loadUsers, loadUserGroups } from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { loadWorkspacesFromServer, LoadWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>,
   loadUsers: LoadUsersTriggerType,
-  loadUsergroups: LoadUsersTriggerType,
+  loadUserGroups: LoadUsersTriggerType,
   loadWorkspaces: LoadWorkspacesFromServerTriggerType,
   activeFilters: WorkspacesActiveFiltersType
   i18n: i18nType
@@ -54,20 +54,20 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.doUserGroupSearch = this.doUserGroupSearch.bind(this);
   }
 
-  onTabChange(id: "SUMMARY" | "USERS" |"USERGROUPS" | "COURSES" | "REPORTS") {
+  onTabChange(id: "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES" | "REPORTS") {
     this.setState({
       activeTab: id
     });
   }
 
   doUserSearch(q: string) {
-    this.props.loadUsers({payload:{q}});
-    this.setState({userSearchFieldValue: q});
+    this.props.loadUsers({ payload: { q } });
+    this.setState({ userSearchFieldValue: q });
   }
 
   doUserGroupSearch(q: string) {
-    this.props.loadUsergroups({payload:{q}});
-    this.setState({userGroupSearchFieldValue: q});
+    this.props.loadUserGroups({ payload: { q } });
+    this.setState({ userGroupSearchFieldValue: q });
   }
 
 
@@ -84,7 +84,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     }
 
     this.props.loadWorkspaces(filters, true, false);
-    this.setState({workspaceSearchFieldValue: value});
+    this.setState({ workspaceSearchFieldValue: value });
   }
 
   render() {
@@ -105,9 +105,9 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     </ApplicationPanelToolbar>;
 
     let userGroupsToolbar = <ApplicationPanelToolbar>
-    <ApplicationPanelToolbarActionsMain>
-      <SearchFormElement value={this.state.userGroupSearchFieldValue} id="oganizationUserGroupSearch" placeholder={this.props.i18n.text.get('plugin.organization.userGroups.search.placeholder')} name="organization-user-group-search" updateField={this.doUserGroupSearch} ></SearchFormElement>
-    </ApplicationPanelToolbarActionsMain>
+      <ApplicationPanelToolbarActionsMain>
+        <SearchFormElement value={this.state.userGroupSearchFieldValue} id="oganizationUserGroupSearch" placeholder={this.props.i18n.text.get('plugin.organization.userGroups.search.placeholder')} name="organization-user-group-search" updateField={this.doUserGroupSearch} ></SearchFormElement>
+      </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
     return (
@@ -151,7 +151,7 @@ function mapStateToProps(state: StateType) {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return bindActionCreators({ loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUsergroups }, dispatch);
+  return bindActionCreators({ loadUsers, loadWorkspaces: loadWorkspacesFromServer, loadUserGroups }, dispatch);
 };
 
 export default connect(
