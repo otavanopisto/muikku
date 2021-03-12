@@ -196,10 +196,12 @@ interface DialogRemoveUsersState {
 
 export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, DialogRemoveUsersState> {
   private maxUsersPerPage: number;
+  private maxRemoveUsersPerPage: number;
 
   constructor(props: DialogRemoveUsersProps) {
     super(props);
     this.maxUsersPerPage = this.props.maxUsersPerPage ? this.props.maxUsersPerPage : 5;
+    this.maxRemoveUsersPerPage = 6;
     this.state = {
       removeUsersPage: [],
       activeTab: this.props.identifier + "-ALL",
@@ -241,8 +243,8 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
   }
 
   refreshRemoveUserpage(page: number, removeUsers: UiSelectItem[]) {
-    let pageStart: number = (page - 1) * this.maxUsersPerPage;
-    let pageEnd: number = pageStart + this.maxUsersPerPage;
+    let pageStart: number = (page - 1) * this.maxRemoveUsersPerPage;
+    let pageEnd: number = pageStart + this.maxRemoveUsersPerPage;
     let newRemoveUsers: UiSelectItem[] = [];
 
     for(let i = pageStart; i < pageEnd; i ++ ) {
@@ -318,10 +320,10 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
         id: this.props.identifier + "-REMOVE",
         name: this.props.removeTabTitle,
         component: ()=>{
-          let removePages = Math.ceil(this.props.removeUsers.length / this.maxUsersPerPage);
+          let removePages = Math.ceil(this.props.removeUsers.length / this.maxRemoveUsersPerPage);
           return <DialogRow>
             <DialogRow>
-              <ApplicationList modifiers="dialog-users">
+              <ApplicationList modifiers="dialog-remove-users">
                 {this.state.removeUsersPage.length > 0 ?
                   this.state.removeUsersPage.map((user: UiSelectItem) => {
                     return <ApplicationListItem className="course" key={"remove-" + user.id}>
