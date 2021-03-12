@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.rest.model.UserGroup;
 
 /**
@@ -17,9 +16,9 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
   public CommunicatorMessageRESTModel() {
   }
   
-  public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
+  public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo sender, 
       String categoryName, String caption, String content, Date created, Set<String> tags,
-      List<CommunicatorMessageRecipientRESTModel> recipients, List<UserGroup> userGroupRecipients, 
+      List<CommunicatorUserBasicInfo> recipients, List<UserGroup> userGroupRecipients, 
       List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients, Long recipientCount) {
     super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
     this.content = content;
@@ -38,11 +37,11 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
     this.content = content;
   }
 
-  public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
+  public List<CommunicatorUserBasicInfo> getRecipients() {
     return recipients;
   }
 
-  public void setRecipients(List<CommunicatorMessageRecipientRESTModel> recipients) {
+  public void setRecipients(List<CommunicatorUserBasicInfo> recipients) {
     this.recipients = recipients;
   }
 
@@ -54,11 +53,11 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
     this.recipientCount = recipientCount;
   }
 
-  public UserBasicInfo getSender() {
+  public CommunicatorUserBasicInfo getSender() {
     return sender;
   }
 
-  public void setSender(UserBasicInfo sender) {
+  public void setSender(CommunicatorUserBasicInfo sender) {
     this.sender = sender;
   }
 
@@ -79,9 +78,9 @@ public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRES
   }
 
   private String content;
-  private UserBasicInfo sender;
+  private CommunicatorUserBasicInfo sender;
   private Long recipientCount;
-  private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
+  private List<CommunicatorUserBasicInfo> recipients = new ArrayList<CommunicatorUserBasicInfo>();
   private List<UserGroup> userGroupRecipients;
   private List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> workspaceRecipients;
 }

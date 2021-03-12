@@ -1,7 +1,8 @@
 import {ActionType} from "~/actions";
 import {i18nType} from '~/reducers/base/i18n';
 
-import { SimpleUserType, UserGroupType } from '~/reducers/user-index';
+import { UserGroupType, UserType } from '~/reducers/user-index';
+
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
@@ -62,7 +63,7 @@ export interface MessageThreadType {
   messageCountInThread: number,
   recipientCount?: number,
   recipients?: Array<MessageRecepientType>,
-  sender: SimpleUserType,
+  sender: UserType,
   senderId: number,
   tags: any,
   threadLatestMessageDate: string,
@@ -84,7 +85,7 @@ export interface MessageThreadUpdateType {
   tags?: any,
   threadLatestMessageDate?: string,
   unreadMessagesInThread?: boolean,
-  sender?: SimpleUserType,
+  sender?: UserType,
   messageCountInThread?: number,
   labels?: MessageThreadLabelListType
 }
@@ -103,7 +104,7 @@ export interface MessageType {
   id: number,
   recipientCount: number,
   recipients: Array<MessageRecepientType>,
-  sender: SimpleUserType,
+  sender: UserType,
   senderId: number,
   tags: any,
   userGroupRecipients: Array<UserGroupType>,
@@ -115,7 +116,9 @@ export interface MessageRecepientType {
   nickName?: string | null,
   firstName: string,
   lastName?: string | null,
-  recipientId: number
+  recipientId: number,
+  archived?: boolean,
+  studiesEnded?: boolean
 }
 export interface MessageWorkspaceRecipientType {
   archetype: string,

@@ -260,8 +260,13 @@
   }
 }
 
+
 .dialog__content-row--user-search {
   margin: 10px 0;
+}
+
+.dialog__content-row--dates {
+  display: flex;
 }
 
 .dialog__content-row--new-user {
@@ -294,14 +299,29 @@
 }
 
 .dialog__content-row-content {
-  padding: 15px 0 0;
+  padding: 2px 0 0;
 }
 
-.dialog__content-row-content--new-workspace {
+.dialog__content-row-content--new-workspace,
+.dialog__content-row-content--edit-workspace,
+.dialog__content-row-content--summary-dates {
   margin-left: 20px;
 
   span {
     margin-left: 10px;
+  }
+}
+
+.dialog__content-row-content--summary-dates span {
+  margin-left: 0;
+
+  &:not(:first-child) {
+    margin-left: 5px;
+
+    &::before {
+      content: "-";
+      margin-right: 5px;
+    }
   }
 }
 

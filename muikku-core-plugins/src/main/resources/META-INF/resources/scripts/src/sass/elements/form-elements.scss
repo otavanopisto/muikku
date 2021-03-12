@@ -95,6 +95,10 @@
   margin-left: 20px;
 }
 
+.form-element--new-user-email:last-child {
+  margin-left: 0;
+}
+
 .form-element__copy-workspace-start-date {
   flex-basis: 100%;
   flex-grow: 1;
@@ -171,8 +175,12 @@
 }
 
 .form-element--workspace-name,
-.form-element--workspace-extension {
+.form-element--workspace-name-extension {
   flex-grow: 1;
+}
+
+.form-element--dialog-workspace-name-extension {
+  flex-basis: 200px;
 }
 
 .form-element--forgot-password {
@@ -264,6 +272,15 @@
   border: 2px solid $color-main-function-input-field-border;
   margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
   width: 100%;
+}
+
+// Communicator Message Search
+.form-element--communicator-message-search {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
 }
 
 // Overrides the border color
