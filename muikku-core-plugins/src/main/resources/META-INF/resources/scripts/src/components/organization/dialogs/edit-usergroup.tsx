@@ -163,7 +163,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
     this.searchTimer = setTimeout(this.doUserGroupUsersSearch.bind(null, this.props.loadAllCurrentUserGroupStaff, q, "staff") as any, 400);
   }
 
-
   toggleStudentRemove(usr: UiSelectItem) {
     let newRemoveState = this.state.removeStudents.some(rStudent => rStudent.id === usr.id) ? this.state.removeStudents.filter(rStudent => rStudent.id !== usr.id) : this.state.removeStudents.concat(usr);
     this.setState({
@@ -493,7 +492,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       <div className={`dialog__executer ${this.state.studentsRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStudents')}</div>
       <div className={`dialog__executer ${this.state.staffAdded === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.addStaff')}</div>
       <div className={`dialog__executer ${this.state.staffRemoved === true ? "dialog__executer state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.execute.removeStaff')}</div></div>;
-
 
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.totalSteps}

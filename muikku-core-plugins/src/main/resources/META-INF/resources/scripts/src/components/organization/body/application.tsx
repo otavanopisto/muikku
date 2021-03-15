@@ -70,7 +70,6 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.setState({ userGroupSearchFieldValue: q });
   }
 
-
   doWorkspaceSearch(value: string) {
 
     let filters: WorkspacesActiveFiltersType = {
