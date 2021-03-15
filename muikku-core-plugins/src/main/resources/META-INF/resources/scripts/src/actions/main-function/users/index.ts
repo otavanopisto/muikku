@@ -9,8 +9,6 @@ import {
 import { UserGroupType, UpdateUserType, CreateUserType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from '~/reducers';
-
-
 export type SET_CURRENT_PAYLOAD = SpecificActionType<"SET_CURRENT_PAYLOAD", UserPayloadType>
 export type UPDATE_USER_GROUPS_STATE = SpecificActionType<"UPDATE_USER_GROUPS_STATE", UserGroupsStateType>
 export type UPDATE_HAS_MORE_USERGROUPS = SpecificActionType<"UPDATE_HAS_MORE_USERGROUPS", boolean>
@@ -98,11 +96,9 @@ export interface LoadMoreUserTriggerType {
   (): AnyActionType
 }
 
-
 export interface SetCurrentUserGroupTriggerType {
   (id: number): AnyActionType
 }
-
 
 function delay(ms: number) {
   return new Promise((resolve) => {
@@ -273,9 +269,6 @@ let createUsergroup: CreateUsergroupTriggerType = function createUsergroup(data)
     }
   }
 }
-
-
-
 
 let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprogrammes() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {

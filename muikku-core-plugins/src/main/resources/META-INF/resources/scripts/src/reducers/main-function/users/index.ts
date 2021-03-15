@@ -47,7 +47,6 @@ export interface UsersType {
   staff?: UserPanelUsersType,
 }
 
-
 export interface UsersSelectType {
   students: UsersListType,
   staff: UsersListType,
@@ -148,7 +147,6 @@ export function userGroups(state: UserGroupsType = {
   }
   return state;
 }
-
 
 export function userSelect(state: UsersSelectType = {
   students: [],

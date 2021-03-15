@@ -170,7 +170,6 @@ export class DialogRowContent extends React.Component<DialogRowContentProps, Dia
   }
 }
 
-
 interface DialogRemoveUsersProps {
   users: UserType[],
   removeUsers: UiSelectItem[],

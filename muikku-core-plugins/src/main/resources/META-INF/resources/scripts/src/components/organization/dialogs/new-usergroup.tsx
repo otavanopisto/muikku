@@ -107,7 +107,6 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
   }
 
-
   doStaffSearch(q: string) {
     this.props.loadStaff({ payload: { q } });
   }
@@ -185,7 +184,6 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     let payload: CreateUserGroupType;
     let userIdentifiers: string[];
 
-
     payload = {
       name: this.state.usergroupName,
       isGuidanceGroup: this.state.isGuidanceGroup
@@ -202,8 +200,6 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         userIdentifiers = userIdentifiers.concat(this.state.addStaff.map(staff => staff.id as string));
       }
     }
-
-
 
     this.props.createOrganizationUsergroup({
       payload: payload,
