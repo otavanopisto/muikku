@@ -64,10 +64,10 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   doWorkspaceSearch(value: string) {
 
     let filters: WorkspacesActiveFiltersType = {
-      educationFilters: [],
-      curriculumFilters: [],
-      organizationFilters: [],
-      stateFilters: [],
+      educationFilters: this.props.activeFilters.educationFilters? this.props.activeFilters.educationFilters : [],
+      curriculumFilters: this.props.activeFilters.curriculumFilters? this.props.activeFilters.curriculumFilters : [],
+      organizationFilters: this.props.activeFilters.organizationFilters? this.props.activeFilters.organizationFilters : [],
+      stateFilters: this.props.activeFilters.stateFilters? this.props.activeFilters.stateFilters: [],
       templates: "ONLY_WORKSPACES",
       query: value,
       baseFilter: "ALL_COURSES"
