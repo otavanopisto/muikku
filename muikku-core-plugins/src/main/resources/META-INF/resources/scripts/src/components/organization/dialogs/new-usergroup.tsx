@@ -138,7 +138,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
 
   clearComponentState() {
     this.setState({
-      locked: false,
+      locked: true,
       usergroupName: null,
       studentsLoaded: false,
       executing: false,
