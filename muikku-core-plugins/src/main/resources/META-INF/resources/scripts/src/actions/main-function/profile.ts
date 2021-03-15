@@ -12,7 +12,12 @@ export interface LoadProfilePropertiesSetTriggerType {
 }
 
 export interface SaveProfilePropertyTriggerType {
-  (key: string, value: string, callback?: ()=>any):AnyActionType
+  (data: {
+    key: string,
+    value: string,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
 }
 
 export interface LoadProfileUsernameTriggerType {
@@ -104,21 +109,24 @@ let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loa
   }
 }
 
-let saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfileProperty(key, value, callback){
+let saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfileProperty(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().user.property.create({key, value}), 'callback')();
+      const prop = {key: data.key, value: data.value};
+      await promisify(mApi().user.property.create(prop), 'callback')();
 
       dispatch({
         type: "SET_PROFILE_USER_PROPERTY",
-        payload: {key, value}
+        payload: prop,
       });
 
-      callback && callback();
+      data.success && data.success();
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
+
+      data.fail && data.fail();
     }
   }
 }

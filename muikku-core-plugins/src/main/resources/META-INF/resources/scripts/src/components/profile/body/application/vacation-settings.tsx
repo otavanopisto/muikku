@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import Button from '~/components/general/button';
 import moment from "~/lib/moment";
+import { SimpleActionExecutor } from '~/actions/executor';
 
 interface IVacationSettingsProps {
   i18n: i18nType,
@@ -70,47 +71,63 @@ class VacationSettings extends React.Component<IVacationSettingsProps, IVacation
   }
 
   save(){
-    let totals = 0;
-    let done = 0;
-    let fail: boolean = false;
-    const cb = ()=>{
-      done++;
-      if (totals === done && !fail){
+    const executor = new SimpleActionExecutor();
+    executor
+      .addAction(
+        !this.props.status.isStudent && this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart,
+        () => {
+          this.props.saveProfileProperty({
+            key: 'profile-vacation-start',
+            value: this.state.profileVacationStart ? this.state.profileVacationStart.toISOString() : null,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      ).addAction(
+        !this.props.status.isStudent && this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd,
+        () => {
+          this.props.saveProfileProperty({
+            key: 'profile-vacation-end',
+            value: this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      ).addAction(
+        !this.props.status.isStudent && (this.props.profile.properties['communicator-auto-reply'] || "") !== this.state.vacationAutoReply,
+        () => {
+          this.props.saveProfileProperty({
+            key: 'communicator-auto-reply',
+            value: this.state.vacationAutoReply,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      ).addAction(
+        !this.props.status.isStudent && (this.props.profile.properties['communicator-auto-reply-subject'] || "") !== this.state.vacationAutoReplySubject,
+        () => {
+          this.props.saveProfileProperty({
+            key: 'communicator-auto-reply-subject',
+            value: this.state.vacationAutoReplySubject,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      ).addAction(
+        !this.props.status.isStudent && (this.props.profile.properties['communicator-auto-reply-msg'] || "") !== this.state.vacationAutoReplyMsg,
+        () => {
+          this.props.saveProfileProperty({
+            key: 'communicator-auto-reply-msg',
+            value: this.state.vacationAutoReplyMsg,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      ).onAllSucceed(() => {
         this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
-      }
-    }
-
-    if (!this.props.status.isStudent) {
-      if (this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart){
-        totals++;
-        this.props.saveProfileProperty('profile-vacation-start', this.state.profileVacationStart ? this.state.profileVacationStart.toISOString() : null, cb);
-      }
-    }
-
-    if (!this.props.status.isStudent) {
-      if (this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd){
-        totals++;
-        this.props.saveProfileProperty('profile-vacation-end', this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null, cb);
-      }
-    }
-    if (!this.props.status.isStudent) {
-      if ((this.props.profile.properties['communicator-auto-reply'] || "") !== this.state.vacationAutoReply) {
-        totals++;
-        this.props.saveProfileProperty('communicator-auto-reply', this.state.vacationAutoReply, cb);
-      }
-    }
-    if (!this.props.status.isStudent) {
-      if ((this.props.profile.properties['communicator-auto-reply-subject'] || "") !== this.state.vacationAutoReplySubject) {
-        totals++;
-        this.props.saveProfileProperty('communicator-auto-reply-subject', this.state.vacationAutoReplySubject, cb);
-      }
-    }
-    if (!this.props.status.isStudent) {
-      if ((this.props.profile.properties['communicator-auto-reply-msg'] || "") !== this.state.vacationAutoReplyMsg) {
-        totals++;
-        this.props.saveProfileProperty('communicator-auto-reply-msg', this.state.vacationAutoReplyMsg, cb);
-      }
-    }
+      }).onOneFails(() => {
+        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.failed"), 'error');
+      });
   }
 
   public render() {

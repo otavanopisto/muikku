@@ -12,6 +12,7 @@ import {
 } from '~/actions/main-function/profile';
 import { bindActionCreators, Dispatch } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
+import { SimpleActionExecutor } from "~/actions/executor";
 
 interface IContactInformationProps {
   i18n: i18nType,
@@ -82,43 +83,37 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
   }
 
   save() {
-    let totals = 0;
-    let done = 0;
-    let succeed = 0;
-    const cb = () => {
-      done++;
-      if (totals === done) {
-        if (succeed === totals) {
-          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success');
-        } else {
-          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.failed"), 'error');
+    const executor = new SimpleActionExecutor();
+    executor
+      .addAction(
+        (this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber,
+        () => {
+          this.props.saveProfileProperty({
+            key: 'profile-phone',
+            value: this.state.phoneNumber.trim(),
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
         }
-      }
-    }
-
-    if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber) {
-      totals++;
-      this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), () => {
-        succeed++;
-        cb();
+      )
+      .addAction(
+        this.props.status.isStudent,
+        () => {
+          this.props.updateProfileAddress({
+            street: this.state.street,
+            postalCode: this.state.postalCode,
+            city: this.state.city,
+            country: this.state.country,
+            municipality: this.state.municipality,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        }
+      ).onAllSucceed(() => {
+        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success');
+      }).onOneFails(() => {
+        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.failed"), 'error');
       });
-    }
-
-    if (this.props.status.isStudent) {
-      totals++;
-      this.props.updateProfileAddress({
-        street: this.state.street,
-        postalCode: this.state.postalCode,
-        city: this.state.city,
-        country: this.state.country,
-        municipality: this.state.municipality,
-        success: () => {
-          succeed++;
-          cb();
-        },
-        fail: cb,
-      });
-    }
   }
 
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {

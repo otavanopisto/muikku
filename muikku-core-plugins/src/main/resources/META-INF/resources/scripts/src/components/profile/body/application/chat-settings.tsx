@@ -10,6 +10,7 @@ import Button from '~/components/general/button';
 import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/application-sub-panel.scss';
+import { SimpleActionExecutor } from "~/actions/executor";
 
 interface IChatSettingsProps {
   i18n: i18nType,
@@ -62,31 +63,28 @@ class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState
   }
 
   save(){
-    let totals = 0;
-    let done = 0;
-    let fail: boolean = false;
-    const cb = ()=>{
-      done++;
-      if (totals === done && !fail){
-        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
-      }
-    }
-    const failCB = () => {
-      fail = true;
-      done++;
-    }
-
-    if (this.props.profile.chatSettings) {
-      if (((this.props.profile.chatSettings.visibility || null) !== this.state.chatVisibility) || ((this.props.profile.chatSettings.nick || null) !== this.state.chatNickname)){
-        totals++;
-        this.props.updateProfileChatSettings({
-          visibility: this.state.chatVisibility,
-          nick: this.state.chatNickname,
-          success: cb,
-          fail: failCB,
-        });
-      }
-    }
+    const executor = new SimpleActionExecutor();
+    executor
+      .addAction(
+        this.props.profile.chatSettings && (
+          ((this.props.profile.chatSettings.visibility || null) !== this.state.chatVisibility) || ((this.props.profile.chatSettings.nick || null) !== this.state.chatNickname)
+        ), () => {
+          this.props.updateProfileChatSettings({
+            visibility: this.state.chatVisibility,
+            nick: this.state.chatNickname,
+            success: executor.succeeded,
+            fail: executor.failed,
+          });
+        })
+      .onAllSucceed(
+        () => {
+          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
+        }
+      ).onOneFails(
+        () => {
+          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.failed"), 'error');
+        }
+      );
   }
 
   onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>){
