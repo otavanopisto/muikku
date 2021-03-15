@@ -359,10 +359,10 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       case 1:
         return <div>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement modifiers="workspace-name" mandatory={true} updateField={this.setUserGroupName} valid={this.state.validation.nameValid} name="userGroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.userGroupName}></InputFormElement>
+            <InputFormElement id="userGroupName" modifiers="user-group-name" mandatory={true} updateField={this.setUserGroupName} valid={this.state.validation.nameValid} name="userGroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.userGroupName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
-            <InputFormElement label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" value={this.props.usergroup.name} checked={this.state.isGuidanceGroup} type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
+            <InputFormElement id="isGuidanceGroup" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" value={this.props.usergroup.name} checked={this.state.isGuidanceGroup} type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
           </DialogRow>
         </div >;
       case 2:
