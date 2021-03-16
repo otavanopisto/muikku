@@ -70,7 +70,6 @@ interface FormActionsProps {
 }
 
 interface FormActionsState {
-
 }
 
 export class FormActionsElement extends React.Component<FormActionsProps, FormActionsState> {
