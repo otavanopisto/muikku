@@ -49,6 +49,43 @@ class VacationSettings extends React.Component<IVacationSettingsProps, IVacation
     this.save = this.save.bind(this);
   }
 
+  componentWillReceiveProps(nextProps: IVacationSettingsProps) {
+    if (nextProps.profile.properties['profile-vacation-start'] &&
+      this.props.profile.properties['profile-vacation-start'] !== nextProps.profile.properties['profile-vacation-start']) {
+      this.setState({
+        profileVacationStart: moment(nextProps.profile.properties['profile-vacation-start']),
+      });
+    }
+
+    if (nextProps.profile.properties['profile-vacation-end'] &&
+      this.props.profile.properties['profile-vacation-end'] !== nextProps.profile.properties['profile-vacation-end']) {
+      this.setState({
+        profileVacationEnd: moment(nextProps.profile.properties['profile-vacation-end']),
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply'] &&
+      this.props.profile.properties['communicator-auto-reply'] !== nextProps.profile.properties['communicator-auto-reply']) {
+      this.setState({
+        vacationAutoReply: nextProps.profile.properties['communicator-auto-reply'],
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply-subject'] &&
+      this.props.profile.properties['communicator-auto-reply-subject'] !== nextProps.profile.properties['communicator-auto-reply-subject']) {
+      this.setState({
+        vacationAutoReplySubject: nextProps.profile.properties['communicator-auto-reply-subject'],
+      });
+    }
+
+    if (nextProps.profile.properties['communicator-auto-reply-msg'] &&
+      this.props.profile.properties['communicator-auto-reply-msg'] !== nextProps.profile.properties['communicator-auto-reply-msg']) {
+      this.setState({
+        vacationAutoReplyMsg: nextProps.profile.properties['communicator-auto-reply-msg'],
+      });
+    }
+  }
+
   handleDateChange(stateLocation: string, newDate: any){
     let nState:any = {};
     nState[stateLocation] = newDate;
