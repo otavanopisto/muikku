@@ -35,15 +35,8 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
-    this.setSearchHash = this.setSearchHash.bind(this);
     this.searchTimer = null;
     this.focused = false;
-  }
-
-  setSearchHash(query: string) {
-    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-    locationData.q = query;
-    window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
   }
 
   updateSearchWithQuery(query: string) {
