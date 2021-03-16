@@ -47,11 +47,12 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
   }
 
   updateSearchWithQuery(query: string) {
-    clearTimeout(this.searchTimer);
     this.setState({
       searchquery: query
     });
-    this.searchTimer = setTimeout(this.setSearchHash.bind(null, query) as any , 400);
+    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
+    locationData.q = query;
+    window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' })
   }
 
   componentWillReceiveProps(nextProps: CoursepickerToolbarProps) {

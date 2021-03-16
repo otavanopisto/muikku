@@ -136,7 +136,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
                 <div className="form-element form-element--search">
 
-                  <SearchFormElement value={this.state.currentSearch} updateField={this.updateSearch} id="WorkspaceUserFilter" name="workspace-user-filter" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')} />
+                  <SearchFormElement delay={0} value={this.state.currentSearch} updateField={this.updateSearch} id="WorkspaceUserFilter" name="workspace-user-filter" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')} />
                 </div>
                 <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
                   {
