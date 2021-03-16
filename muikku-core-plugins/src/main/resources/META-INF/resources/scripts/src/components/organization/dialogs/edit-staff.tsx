@@ -3,8 +3,6 @@ import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow } from '~/components/general/dialog';
 import { FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement } from '~/components/general/form-element';
 import { updateStaffmember, UpdateStaffmemberTriggerType } from '~/actions/main-function/users';
-import { AnyActionType } from '~/actions';
-import notificationActions from '~/actions/base/notifications';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
@@ -40,7 +38,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         role: this.props.data.role,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
-        email: this.props.data.email
+        email: this.props.data.email,
       },
       locked: false,
       firstNameValid: 2,
@@ -120,7 +118,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     let content = (closePortal: () => any) =>
       <div>
         <DialogRow modifiers="new-user">
-          <SelectFormElement name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} value={this.props.data.role}>
+          <SelectFormElement id="staffRole" name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} value={this.props.data.role}>
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.role.MANAGER')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.role.TEACHER')}</option>
             <option value="STUDY_PROGRAMME_LEADER">{this.props.i18n.text.get('plugin.organization.users.role.STUDY_PROGRAMME_LEADER')}</option>
@@ -128,8 +126,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           </SelectFormElement>
         </DialogRow>
         <DialogRow modifiers="new-user">
-          <InputFormElement value={this.state.user.firstName} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
-          <InputFormElement value={this.state.user.lastName} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <InputFormElement id="firstName" value={this.state.user.firstName} name="first-name" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement id="lastName" value={this.state.user.lastName} name="last-name" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
           <EmailFormElement value={this.state.user.email} modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
       </div>;

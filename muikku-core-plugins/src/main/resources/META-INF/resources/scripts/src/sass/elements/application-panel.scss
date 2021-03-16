@@ -3,12 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-panel-wrapper {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
 .application-panel {
   align-items: center;
   display: flex;
@@ -20,6 +14,15 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
+// This removes the unnecessary top-padding in studies and profile view as there is no toolbar present
+.application-panel--studies,
+.application-panel--profile {
+
+  .application-panel__content {
+    padding: 10px 0 10px;
   }
 }
 
@@ -73,24 +76,31 @@
 }
 
 .application-panel__header-title {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 1.5rem;
-  font-weight: 300;
-  height: $panel-header-title-height-mobile;
-  line-height: 1;
-  text-transform: uppercase;
+  display: none;
 
   @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 1.5rem;
+    font-weight: 300;
     height: $panel-header-title-height-desktop;
+    line-height: 1;
+    text-transform: uppercase;
   }
 }
 
 .application-panel__header-actions {
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: $panel-header-title-height-desktop;
+  }
 }
 
 .application-panel__actions {

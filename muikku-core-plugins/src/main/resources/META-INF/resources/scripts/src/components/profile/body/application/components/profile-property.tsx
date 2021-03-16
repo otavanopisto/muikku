@@ -14,7 +14,7 @@ export default function ProfileProperty(props: {
   if (!props.condition){
     return null;
   }
-  return <div className="application-sub-panel__item">
+  return <div className="application-sub-panel__item  application-sub-panel__item--profile">
     <label className="application-sub-panel__item-title">{props.i18n.text.get(props.label)}</label>
     <div className={`application-sub-panel__item-data ${props.modifier ? "application-sub-panel__item-data--" + props.modifier : ""}`}>
       {typeof props.value === "string" ?

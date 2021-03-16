@@ -35,7 +35,7 @@ public interface UserSchoolDataBridge {
   /* Worklist */
   
   public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates();
-  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemTemplateRestModel template);
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item);
   public BridgeResponse<WorklistItemRestModel> updateWorklistItem(WorklistItemRestModel item);
   public void removeWorklistItem(WorklistItemRestModel item);
   public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String identifier, String beginDate, String endDate);

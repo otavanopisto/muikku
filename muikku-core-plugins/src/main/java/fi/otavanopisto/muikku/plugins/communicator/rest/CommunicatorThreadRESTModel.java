@@ -12,11 +12,11 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
  */
 public class CommunicatorThreadRESTModel extends AbstractCommunicatorMessageRESTModel {
 
-  public CommunicatorThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
+  public CommunicatorThreadRESTModel(Long id, Long communicatorMessageId, Long senderId, CommunicatorUserBasicInfo senderBasicInfo, 
       String categoryName, String caption, Date created, Set<String> tags, boolean unreadMessagesInThread, 
       Date threadLatestMessageDate, Long messageCountInThread, List<CommunicatorMessageIdLabelRESTModel> labels) {
     super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
-    this.sender = sender;
+    this.sender = senderBasicInfo;
     this.unreadMessagesInThread = unreadMessagesInThread;
     this.threadLatestMessageDate = threadLatestMessageDate;
     this.messageCountInThread = messageCountInThread;
@@ -39,11 +39,11 @@ public class CommunicatorThreadRESTModel extends AbstractCommunicatorMessageREST
     this.threadLatestMessageDate = threadLatestMessageDate;
   }
 
-  public UserBasicInfo getSender() {
+  public CommunicatorUserBasicInfo getSender() {
     return sender;
   }
 
-  public void setSender(UserBasicInfo sender) {
+  public void setSender(CommunicatorUserBasicInfo sender) {
     this.sender = sender;
   }
 
@@ -65,7 +65,7 @@ public class CommunicatorThreadRESTModel extends AbstractCommunicatorMessageREST
 
   private Date threadLatestMessageDate;
   private boolean unreadMessagesInThread;
-  private UserBasicInfo sender;
+  private CommunicatorUserBasicInfo sender;
   private Long messageCountInThread;
   private List<CommunicatorMessageIdLabelRESTModel> labels = new ArrayList<CommunicatorMessageIdLabelRESTModel>();
 }
