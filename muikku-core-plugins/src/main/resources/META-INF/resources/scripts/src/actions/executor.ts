@@ -7,7 +7,12 @@ export class SimpleActionExecutor {
   private fails: number = 0;
 
   constructor() {
-
+    this.succeeded = this.succeeded.bind(this);
+    this.done = this.done.bind(this);
+    this.failed = this.failed.bind(this);
+    this.onAllSucceed = this.onAllSucceed.bind(this);
+    this.onOneFails = this.onOneFails.bind(this);
+    this.addAction = this.addAction.bind(this);
   }
 
   private done() {
