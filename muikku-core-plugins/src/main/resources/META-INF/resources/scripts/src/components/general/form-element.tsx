@@ -16,7 +16,6 @@ export type FormElementPlaceholder = {
   placeholder: string
 }
 
-
 interface FormElementProps {
   modifiers?: string | Array<string>,
   label?: string,
