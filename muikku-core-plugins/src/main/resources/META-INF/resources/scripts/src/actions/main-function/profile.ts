@@ -225,16 +225,12 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
         })
       }))
 
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.successful'), 'success'));
-
       data.success && data.success();
 
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
-
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -308,16 +304,10 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
         data.fail && data.fail();
       }
 
-      // dispatch({
-      //   type: "SET_PROFILE_CHAT_SETTINGS",
-      //   payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({visibility: data.visibility, nick: data.nick}), 'callback')())
-      // });
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
-
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange.error'), 'error'));
 
       data.fail && data.fail();
     }
