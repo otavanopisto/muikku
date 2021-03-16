@@ -182,7 +182,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 
   constructor(props: SearchFormElementProps) {
     super(props);
-    this.delay = this.props.delay ? this.props.delay : 400;
+    this.delay = this.props.delay >= 0 ? this.props.delay : 400;
     this.state = {
       value: this.props.value ? this.props.value : ""
     }
