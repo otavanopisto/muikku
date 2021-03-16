@@ -76,12 +76,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   }
 
   updateSearchWithQuery(query: string) {
-    clearTimeout(this.searchTimer);
     this.setState({
       searchquery: query
     });
-    clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(this.props.loadMessageThreads.bind(null, null, query) as any, 600);
+    this.props.loadMessageThreads(null, query);
   }
 
   loadMessage(messageId: number) {
@@ -242,7 +240,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           <Link tabIndex={0} className="link link--full" onClick={this.onCreateNewLabel}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </Link>
-        ].concat(this.props.messages.navigation.filter((item)=>{
+        ].concat(this.props.messages.navigation.filter((item) => {
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
         }).map((label) => {
           let isSelected = allInCommon.includes(label.id as number);
