@@ -16,7 +16,6 @@ export type FormElementPlaceholder = {
   placeholder: string
 }
 
-
 interface FormElementProps {
   modifiers?: string | Array<string>,
   label?: string,
@@ -71,7 +70,6 @@ interface FormActionsProps {
 }
 
 interface FormActionsState {
-
 }
 
 export class FormActionsElement extends React.Component<FormActionsProps, FormActionsState> {
@@ -167,30 +165,45 @@ interface SearchFormElementProps {
   placeholder: string,
   modifiers?: string | Array<string>,
   className?: string,
+  delay?: number;
 }
 
 interface SearchFormElementState {
+  value: string;
 }
 
 export class SearchFormElement extends React.Component<SearchFormElementProps, SearchFormElementState> {
 
   private searchInput: React.RefObject<HTMLInputElement>;
+  private searchTimer: NodeJS.Timer;
+  private delay: number;
 
   constructor(props: SearchFormElementProps) {
     super(props);
-
+    this.delay = this.props.delay >= 0 ? this.props.delay : 400;
+    this.state = {
+      value: this.props.value ? this.props.value : ""
+    }
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
     this.searchInput = React.createRef();
   }
 
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
+    clearTimeout(this.searchTimer);
     let value = e.target.value;
-    this.props.updateField(value);
+    this.setState({ value: value });
+    if (this.delay > 0) {
+      this.searchTimer = setTimeout(this.props.updateField.bind(null, value) as any, this.delay);
+    } else {
+      this.props.updateField(value);
+    }
+
   }
 
   clearSearchField() {
     this.props.updateField("");
+    this.setState({ value: "" });
     this.searchInput.current.focus();
   }
 
@@ -199,8 +212,8 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     return (
       <div className={`form-element form-element--search ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""} ${this.props.className ? this.props.className : ""}`}>
         <label htmlFor={this.props.id} className="visually-hidden">{this.props.placeholder}</label>
-        <input ref={this.searchInput} id={this.props.id} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.props.value} className={`form-element__input form-element__input--search ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholder={this.props.placeholder} onChange={this.updateSearchField} />
-        <div className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0? "active" : ""}`} onClick={this.clearSearchField}></div>
+        <input ref={this.searchInput} id={this.props.id} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.state.value} className={`form-element__input form-element__input--search ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholder={this.props.placeholder} onChange={this.updateSearchField} />
+        <div className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""}`} onClick={this.clearSearchField}></div>
         <div className="form-element__input-decoration--search icon-search"></div>
       </div>
     )

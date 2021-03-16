@@ -68,16 +68,12 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   }
 
   updateSearchWithQuery(query: string) {
-
-    clearTimeout(this.searchTimer);
-
     this.setState({
       searchquery: query
     });
-
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
     locationData.q = query;
-    this.searchTimer = setTimeout(window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' }), 400) as any;
+    window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
   }
 
   componentWillReceiveProps(nextProps: GuiderToolbarProps) {
