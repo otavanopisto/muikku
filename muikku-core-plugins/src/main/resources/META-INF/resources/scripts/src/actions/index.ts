@@ -3,8 +3,6 @@ export interface SpecificActionType<ActionType, PayloadType> {
   payload: PayloadType | null
 }
 
-type dispatch = (action: any) => any;
-type getState = () => any;
 type AsyncDeferredAction = (dispatch: (arg: AnyActionType) => any, getState: () => any) => Promise<void>;
 type DeferredAction = (dispatch: (arg: AnyActionType) => any, getState: () => any) => any;
 
@@ -80,7 +78,7 @@ import { UPDATE_VOPS, UPDATE_VOPS_STATUS } from './main-function/vops';
 import { UPDATE_HOPS, UPDATE_HOPS_STATUS, UPDATE_HOPS_ELIGIBILITY } from './main-function/hops';
 import { LOAD_CREDENTIALS, CREDENTIALS_STATE } from './base/credentials';
 import { UPDATE_ERROR } from './base/error';
-import { SET_PROFILE_USER_PROPERTY, SET_PROFILE_USERNAME, SET_PROFILE_ADDRESSES, SET_PROFILE_STUDENT, SET_PROFILE_CHAT_SETTINGS, SET_PROFILE_LOCATION } from './main-function/profile';
+import { SET_PROFILE_USER_PROPERTY, SET_PROFILE_USERNAME, SET_PROFILE_ADDRESSES, SET_PROFILE_STUDENT, SET_PROFILE_CHAT_SETTINGS, SET_PROFILE_LOCATION, SET_WORKLIST, SET_WORKLIST_TEMPLATES } from './main-function/profile';
 import { WEBSOCKET_EVENT, INITIALIZE_WEBSOCKET } from '~/reducers/util/websocket';
 
 export type ActionType = SET_CURRENT_MESSAGE_THREAD | UPDATE_MESSAGES_STATE |
@@ -116,7 +114,7 @@ export type ActionType = SET_CURRENT_MESSAGE_THREAD | UPDATE_MESSAGES_STATE |
   UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID | UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES |
   UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER | UPDATE_MATERIAL_CONTENT_NODE | DELETE_MATERIAL_CONTENT_NODE |
   INSERT_MATERIAL_CONTENT_NODE | UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES | UPDATE_WORKSPACES_EDIT_MODE_STATE | UPDATE_WORKSPACES_SET_CURRENT_HELP | SET_PROFILE_CHAT_SETTINGS |
-  SET_PROFILE_LOCATION
+  SET_PROFILE_LOCATION | SET_WORKLIST_TEMPLATES | SET_WORKLIST;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction
 

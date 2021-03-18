@@ -6,6 +6,7 @@ import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} f
 import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
+import { StoredWorklistItem, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
 
 export interface LoadProfilePropertiesSetTriggerType {
   ():AnyActionType
@@ -76,11 +77,25 @@ export interface SetProfileLocationTriggerType {
   (location: string):AnyActionType
 }
 
+export interface LoadProfileWorklistTemplatesTriggerType {
+  (): AnyActionType;
+}
+
+export interface LoadProfileWorklistSectionsTriggerType {
+  (cb?: (d: Array<WorklistSection>) => void): AnyActionType;
+}
+
+export interface LoadProfileWorklistSectionTriggerType {
+  (index: number): AnyActionType;
+}
+
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
 export interface SET_PROFILE_LOCATION extends SpecificActionType<"SET_PROFILE_LOCATION", string>{}
 export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
 export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
 export interface SET_PROFILE_CHAT_SETTINGS extends SpecificActionType<"SET_PROFILE_CHAT_SETTINGS", UserChatSettingsType>{}
+export interface SET_WORKLIST_TEMPLATES extends SpecificActionType<"SET_WORKLIST_TEMPLATES", Array<WorklistTemplate>>{}
+export interface SET_WORKLIST extends SpecificActionType<"SET_WORKLIST", Array<WorklistSection>>{}
 
 let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -392,6 +407,95 @@ const setProfileLocation: SetProfileLocationTriggerType = function setProfileLoc
   }
 }
 
+const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType = function loadProfileWorklistTemplates() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (state.profile && state.profile.worklistTemplates) {
+      return;
+    }
+
+    try {
+      const templates = await promisify(mApi().worklist.templates.read(), 'callback')();;
+      dispatch({
+        type: "SET_WORKLIST_TEMPLATES",
+        payload: <Array<WorklistTemplate>>templates,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+    }
+  }
+}
+
+const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType = function loadProfileWorklistSections(cb?: (d: Array<WorklistSection>) => void) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (state.profile && state.profile.worklist) {
+      return;
+    }
+
+    try {
+      const summaries: Array<WorklistItemsSummary> = await promisify(mApi().worklist.worklistSummary.read({
+        owner: state.status.userSchoolDataIdentifier,
+      }), 'callback')() as any;
+      const payload = summaries.map((s) => {
+        return {
+          summary: s,
+          items: null,
+        }
+      });
+      dispatch({
+        type: "SET_WORKLIST",
+        payload,
+      });
+      cb && cb(payload);
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+    }
+  }
+}
+
+const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = function loadProfileWorklistSection(index: number) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if ((!state.profile || !state.profile.worklist || !state.profile.worklist[index]) || state.profile.worklist[index].items) {
+      return;
+    }
+
+    try {
+      const summary = state.profile.worklist[index].summary;
+      const items: Array<StoredWorklistItem> = await promisify(mApi().worklist.worklistItems.read({
+        owner: state.status.userSchoolDataIdentifier,
+        beginDate: summary.beginDate,
+        endDate: summary.endDate,
+      }), 'callback')() as any;
+      const newWorkList = {...getState().profile.worklist};
+      newWorkList[index] = {...newWorkList[index], items};
+
+      dispatch({
+        type: "SET_WORKLIST",
+        payload: newWorkList,
+      });
+  
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+    }
+  }
+}
+
 export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
-  updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage, setProfileLocation};
+  updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
+  deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
+  loadProfileWorklistSection};
 
