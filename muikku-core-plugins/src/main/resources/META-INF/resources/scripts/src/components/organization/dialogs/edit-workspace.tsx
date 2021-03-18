@@ -223,7 +223,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         this.props.loadCurrentOrganizationWorkspaceSelectStudents(this.props.workspace);
       }
     }
-    if (this.state.currentStep === 2) {
+    if (this.state.currentStep === 3) {
       if (this.state.selectedStaff.length === 0) {
         this.props.loadCurrentOrganizationWorkspaceSelectStaff(this.props.workspace);
       }
@@ -378,9 +378,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           </DialogRow>
         </div >;
       case 2:
-        <DialogRow>
-          <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.description')} />
-        </DialogRow>
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
@@ -395,21 +392,23 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           this.setState({ selectedStudents: this.props.currentWorkspace.studentsSelect.users, studentsLoaded: true });
         }
 
-        return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-students"
-            loader={this.doStudentSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.description')} />
+          </DialogRow>
+          <DialogRow>
+            <AutofillSelector modifier="add-students"
+              loader={this.doStudentSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
+              selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+          </DialogRow>
         </DialogRow>;
       case 3:
-        <DialogRow>
+        return <DialogRow>
           <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step3.description')} />
-        </DialogRow>
+        </DialogRow>;
 
       case 4:
-        <DialogRow>
-          <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step5.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step5.description')} />
-        </DialogRow>
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
@@ -418,22 +417,28 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           this.setState({ selectedStaff: this.props.currentWorkspace.staffMemberSelect.users, staffLoaded: true });
         }
 
-        return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-teachers"
-            loader={this.doStaffSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
-        </DialogRow>;
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step4.description')} />
+          </DialogRow>
+          <DialogRow>
+            <AutofillSelector modifier="add-teachers"
+              loader={this.doStaffSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
+              selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+          </DialogRow>
+        </DialogRow>
+
       case 5:
-        <DialogRow>
+        return <DialogRow>
           <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step5.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step5.description')} />
         </DialogRow>
 
       case 6:
-        <DialogRow>
-          <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step6.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step6.description')} />
-        </DialogRow>
         return <DialogRow modifiers="edit-workspace-summary">
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step6.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step6.description')} />
+          </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
             <DialogRowContent modifiers="new-workspace">

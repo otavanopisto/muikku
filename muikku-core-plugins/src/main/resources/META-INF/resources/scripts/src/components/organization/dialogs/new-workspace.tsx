@@ -339,15 +339,16 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
         let allItems = students.concat(groups);
 
-        return <DialogRow modifiers="new-workspace">
+        return <DialogRow>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.description')} />
           </DialogRow>
-
-          <AutofillSelector modifier="add-students"
-            loader={this.doStudentSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+          <DialogRow>
+            <AutofillSelector modifier="add-students"
+              loader={this.doStudentSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
+              selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+          </DialogRow>
         </DialogRow>;
       case 4:
 
@@ -355,15 +356,16 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user", type: "staff" }
         });
 
-        return <DialogRow modifiers="new-workspace">
+        return <DialogRow>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.description')} />
           </DialogRow>
-
-          <AutofillSelector modifier="add-teachers"
-            loader={this.doStaffSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+          <DialogRow>
+            <AutofillSelector modifier="add-teachers"
+              loader={this.doStaffSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
+              selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+          </DialogRow>
         </DialogRow>;
       case 5:
         return <DialogRow modifiers="new-workspace-summary">
