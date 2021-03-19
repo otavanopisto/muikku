@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
-import fi.otavanopisto.muikku.files.TempFileUtils;
 
 @MultipartConfig
 @WebServlet("/tempFileUploadServlet")

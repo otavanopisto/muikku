@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.oauth.scribe;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.scribe.builder.api.DefaultApi20;
 import org.scribe.exceptions.OAuthException;
 import org.scribe.model.OAuthConfig;
@@ -12,6 +11,8 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuth20ServiceImpl;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class GoogleApi20ServiceImpl extends OAuth20ServiceImpl {
 
