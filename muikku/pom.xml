@@ -118,20 +118,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Jackson -->
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Commons -->
 
     <dependency>
@@ -400,7 +386,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.codehaus.jackson.jackson-core-asl,org.codehaus.jackson.jackson-mapper-asl,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
+              <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
             </manifestEntries>
           </archive>
           <classifier>${classifier}</classifier>
