@@ -71,7 +71,7 @@
     max-width: 815px;
 
     .dialog__content {
-      height: 530px;
+      height: 420px;
     }
   }
 }
@@ -294,8 +294,13 @@
   justify-content: flex-start;
 }
 
-.dialog__content-row-label {
+.dialog__content-row-header-title {
   font-size: $label-large-font-size;
+}
+
+.dialog__content-row-header-description {
+  font-weight: 300;
+  padding: 10px;
 }
 
 .dialog__content-row-content {
