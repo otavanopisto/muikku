@@ -5,7 +5,7 @@ import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
 import { SearchFormElement } from '~/components/general/form-element';
 import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-import { UserType } from '../../reducers/user-index';
+import { UserType, ShortWorkspaceUserWithActiveStatusType } from '../../reducers/user-index';
 import Tabs from "~/components/general/tabs";
 import { UiSelectItem } from '../base/input-select-autofill';
 import Pager from '~/components/general/pager';
@@ -189,7 +189,6 @@ interface DialogRemoveUsersProps {
   removeTabTitle: string,
   onEmptyTitle: string,
   searchValue: string,
-  maxUsersPerPage?: number,
   searchUsers: (q: string) => any,
   changePage: (n: number) => any,
   setRemoved: (u: UiSelectItem) => any,
@@ -203,12 +202,10 @@ interface DialogRemoveUsersState {
 }
 
 export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, DialogRemoveUsersState> {
-  private maxUsersPerPage: number;
   private maxRemoveUsersPerPage: number;
 
   constructor(props: DialogRemoveUsersProps) {
     super(props);
-    this.maxUsersPerPage = this.props.maxUsersPerPage ? this.props.maxUsersPerPage : 5;
     this.maxRemoveUsersPerPage = 6;
     this.state = {
       removeUsersPage: [],

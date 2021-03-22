@@ -1076,7 +1076,7 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
   }
 }
 
-let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStudents(workspace) {
+let loadCurrentOrganizationWorkspaceStudents: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStudents(workspace) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
@@ -1087,17 +1087,17 @@ let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTrigg
 
       let students: ShortWorkspaceUserWithActiveStatusType[] = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
 
-      let selectStudents: SelectItem[] = students.map((student) => {
-        return {
-          id: student.userIdentifier,
-          label: student.firstName + " " + student.lastName,
-          type: "user",
-          disabled: true
-        }
-      });
+      // let selectStudents: SelectItem[] = students.map((student) => {
+      //   return {
+      //     id: student.userIdentifier,
+      //     label: student.firstName + " " + student.lastName,
+      //     type: "user",
+      //     disabled: true
+      //   }
+      // });
 
       let update: WorkspaceUpdateType = {
-        studentsSelect: { users: selectStudents, state: "READY" },
+        students: students,
         id: workspace.id
       }
 
@@ -2448,7 +2448,7 @@ let updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType = func
 export {
   loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, setWorkspaceStateFilters,
   loadUserWorkspaceOrganizationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
-  setCurrentOrganizationWorkspace, loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents,
+  setCurrentOrganizationWorkspace, loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceStudents,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWorkspaceChatStatus, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,

@@ -1044,7 +1044,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") Boolean active) {
+  public Response listWorkspaceStudents(
+		  @PathParam("WORKSPACEENTITYID") Long workspaceEntityId, 
+		  @QueryParam("q") String searchString,
+		  @QueryParam("active") Boolean active, 
+		  @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
+		  @QueryParam("maxResults") @DefaultValue("10")  Integer maxResults
+		  ) {
     
     // Workspace, access, and Elastic checks
 
@@ -1081,11 +1087,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Retrieve users via Elastic
-
+    String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
+    
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
-        null,                                                     // search string
-        null,                                                     // fields
+        searchString,                                                     // search string
+        fields,                                                     // fields
         null,                                                     // environment role
         null,                                                     // user groups
         null,                                                     // workspace (not set because of student identifiers)
@@ -1093,8 +1100,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         true,                                                     // include inactive students
         false,                                                    // include hidden
         false,                                                    // only default users 
-        0,                                                        // first result
-        Integer.MAX_VALUE);                                       // max results
+        firstResult,                                                        // first result
+        maxResults);                                       // max results
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
     List<WorkspaceStudentRestModel> workspaceStudents = new ArrayList<WorkspaceStudentRestModel>();
