@@ -81,28 +81,29 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       closeOnOverlayClick = !!this.props.closeOnOverlayClick;
     }
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
-        openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-        {(closePortal: ()=>any)=>{
-          let modifiers:Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
-        return <div className={`dialog ${(modifiers || []).map(s=>`dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
-            onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null}>
-            <section role="dialog" aria-labelledby={`dialog-title--${modifiers[0]}`} aria-modal="true" className={`dialog__window ${(modifiers || []).map(s=>`dialog__window--${s}`).join(" ")}`}>
+      openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
+      {(closePortal: () => any) => {
+        let modifiers: Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
+        return <div className={`dialog ${(modifiers || []).map(s => `dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
+          onClick={closeOnOverlayClick ? this.onOverlayClick.bind(this, closePortal) : null}>
+          <section role="dialog" aria-labelledby={`dialog-title--${modifiers[0]}`} aria-modal="true" className={`dialog__window ${(modifiers || []).map(s => `dialog__window--${s}`).join(" ")}`}>
             <header className={`dialog__header ${(modifiers || []).map(s => `dialog__header--${s}`).join(" ")}`}>
               <div className="dialog__title" id={`dialog-title--${modifiers[0]}`}>
                 {this.props.title}
               </div>
               <div className="dialog__close icon-cross" onClick={closePortal}></div>
-              </header>
-              <section className="dialog__content">
-                {this.props.content(closePortal)}
-              </section>
-              {this.props.footer?
+            </header>
+            <section className="dialog__content">
+              {this.props.content(closePortal)}
+            </section>
+            {this.props.footer ?
               <footer className="dialog__footer">
                 {this.props.footer && this.props.footer(closePortal)}
               </footer>
               : null}
           </section>
-        </div>}}
+        </div>
+      }}
     </Portal>);
   }
 }
@@ -128,7 +129,8 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
 
 interface DialogRowHeaderProps {
   modifiers?: string | Array<string>,
-  label: string,
+  title: string,
+  description?: string,
 }
 
 interface DialogRowHeaderState {
@@ -138,8 +140,15 @@ export class DialogRowHeader extends React.Component<DialogRowHeaderProps, Dialo
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
-      <div className={`dialog__content-row-label ${this.props.modifiers ? modifiers.map(m => `dialog__content-row-label--${m}`).join(" ") : ""}`}>
-        {this.props.label}
+      <div className={`dialog__content-row-header ${this.props.modifiers ? modifiers.map(m => `dialog__content-row-header--${m}`).join(" ") : ""}`}>
+        <div className={`dialog__content-row-header-title ${this.props.modifiers ? modifiers.map(m => `dialog__content-row-title--${m}`).join(" ") : ""}`}>
+          {this.props.title}
+        </div>
+        {this.props.description ?
+          <div className={`dialog__content-row-header-description ${this.props.modifiers ? modifiers.map(m => `dialog__content-row-title-description--${m}`).join(" ") : ""}`}>
+            {this.props.description}
+          </div>
+          : null}
       </div>
     );
 
