@@ -2,16 +2,53 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
+import WorkListEditable from "./components/work-list-editable";
 
 interface IWorkListProps {
   i18n: i18nType,
   profile: ProfileType;
 }
 
-class WorkList extends React.Component<IWorkListProps> {
+interface IWorkListState {
+  currentTemplate: WorklistTemplate;
+}
+
+class WorkList extends React.Component<IWorkListProps, IWorkListState> {
   constructor(props: IWorkListProps) {
     super(props);
+
+    this.state = {
+      currentTemplate: null,
+    }
+
+    this.insertNew = this.insertNew.bind(this);
+    this.onSelect = this.onSelect.bind(this);
+  }
+
+  public componentDidUpdate(prevProps: IWorkListProps) {
+    if (!this.state.currentTemplate && this.props.profile.worklistTemplates !== prevProps.profile.worklistTemplates) {
+      this.setState({
+        currentTemplate: this.props.profile.worklistTemplates[0],
+      });
+    }
+  }
+
+  public async insertNew(data: {
+    description: string;
+    date: string;
+    price: number;
+    factor: number;
+  }) {
+    console.log(data);
+    return true;
+  }
+
+  public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
+    const newTemplate = this.props.profile.worklistTemplates.find((t) => t.id.toString() === e.target.value);
+    this.setState({
+      currentTemplate: newTemplate,
+    });
   }
 
   public render() {
@@ -24,7 +61,22 @@ class WorkList extends React.Component<IWorkListProps> {
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
         <div className="application-sub-panel">
           <div className="application-sub-panel__body">
-
+            <WorkListEditable
+              base={this.state.currentTemplate}
+              onSubmit={this.insertNew}
+              resetOnSubmit={true}
+              submitButtonContent="submit"
+            >
+              <select value={this.state.currentTemplate && this.state.currentTemplate.id} onChange={this.onSelect}>
+                {this.props.profile.worklistTemplates && this.props.profile.worklistTemplates.map((v) => {
+                  return (
+                    <option value={v.id} key={v.id} selected={v.id === (this.state.currentTemplate && this.state.currentTemplate.id)}>
+                      {v.id}
+                    </option>
+                  );
+                })}
+              </select>
+            </WorkListEditable>
           </div>
         </div>
       </form>
