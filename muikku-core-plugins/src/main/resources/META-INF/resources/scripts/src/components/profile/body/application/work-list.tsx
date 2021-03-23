@@ -71,7 +71,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
                 {this.props.profile.worklistTemplates && this.props.profile.worklistTemplates.map((v) => {
                   return (
                     <option value={v.id} key={v.id} selected={v.id === (this.state.currentTemplate && this.state.currentTemplate.id)}>
-                      {v.id}
+                      {v.description}
                     </option>
                   );
                 })}
