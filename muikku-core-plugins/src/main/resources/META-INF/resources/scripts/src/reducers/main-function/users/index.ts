@@ -15,11 +15,14 @@ export interface UserPayloadType {
   userGroupIds?: number[],
 }
 
-export interface OrganizationUsersListType {
+export interface PagingUserListType {
   firstResult: number,
   lastResult: number,
-  results: UsersListType,
   totalHitCount: number,
+}
+
+export interface PagingEnvironmentUserListType extends PagingUserListType {
+  results: UsersListType,
 }
 
 export interface UserGroupListType {
@@ -55,8 +58,8 @@ export interface UsersSelectType {
 
 export interface CurrentUserGroupType {
   id: number | null,
-  students: OrganizationUsersListType,
-  staff: OrganizationUsersListType,
+  students: PagingEnvironmentUserListType,
+  staff: PagingEnvironmentUserListType,
 }
 
 export interface UserGroupsType {

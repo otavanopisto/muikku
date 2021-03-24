@@ -56,6 +56,17 @@
   }
 }
 
+.dialog__window--edit-workspace {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 546px;
+    }
+  }
+}
+
+
 .dialog__window--edit-user-group {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;

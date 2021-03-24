@@ -3,7 +3,7 @@ import { AnyActionType, SpecificActionType } from '~/actions';
 import promisify from '~/util/promisify';
 import {
   UsersListType, UpdateUserGroupStateType, CreateUserGroupType, ModifyUserGroupUsersType,
-  CurrentUserGroupType, UserPanelUsersType, OrganizationUsersListType, UsersSelectType, UserStatusType,
+  CurrentUserGroupType, UserPanelUsersType, PagingEnvironmentUserListType, UsersSelectType, UserStatusType,
   StudyprogrammeListType, UpdateUserGroupType, UserGroupsStateType, StudyprogrammeTypeStatusType, UserPayloadType
 } from 'reducers/main-function/users';
 import { UserGroupType, UpdateUserType, CreateUserType } from 'reducers/user-index';
@@ -85,7 +85,7 @@ export interface LoadStudyprogrammesTriggerType {
 export interface LoadUsersTriggerType {
   (data: {
     payload: UserPayloadType,
-    success?: (result: OrganizationUsersListType) => any,
+    success?: (result: PagingEnvironmentUserListType) => any,
     fail?: () => any,
   }
 
@@ -524,7 +524,7 @@ let loadAllCurrentUserGroupStaff: LoadUsersTriggerType = function loadAllCurrent
     };
 
     try {
-      await promisify(mApi().organizationUserManagement.staffMembers.read(data.payload), 'callback')().then((result: OrganizationUsersListType) => {
+      await promisify(mApi().organizationUserManagement.staffMembers.read(data.payload), 'callback')().then((result: PagingEnvironmentUserListType) => {
         payload.staff = result;
       }),
 
@@ -556,7 +556,7 @@ let loadAllCurrentUserGroupStudents: LoadUsersTriggerType = function loadAllCurr
     };
 
     try {
-      await promisify(mApi().organizationUserManagement.students.read(data.payload), 'callback')().then((result: OrganizationUsersListType) => {
+      await promisify(mApi().organizationUserManagement.students.read(data.payload), 'callback')().then((result: PagingEnvironmentUserListType) => {
         payload.students = result;
       }),
 
@@ -644,7 +644,7 @@ let loadSelectorStudents: LoadUsersTriggerType = function loadSelectorStudents(d
         payload: null
       });
       if (getStudents !== null) {
-        await promisify(getStudents, 'callback')().then((users: OrganizationUsersListType) => {
+        await promisify(getStudents, 'callback')().then((users: PagingEnvironmentUserListType) => {
           dispatch({
             type: "UPDATE_STUDENT_SELECTOR",
             payload: users.results
@@ -691,7 +691,7 @@ let loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(data) {
         payload: null
       });
       if (getStaff !== null) {
-        await promisify(getStaff, 'callback')().then((users: OrganizationUsersListType) => {
+        await promisify(getStaff, 'callback')().then((users: PagingEnvironmentUserListType) => {
           dispatch({
             type: "UPDATE_STAFF_SELECTOR",
             payload: users.results

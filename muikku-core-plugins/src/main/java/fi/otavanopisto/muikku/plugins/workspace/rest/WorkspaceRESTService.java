@@ -141,6 +141,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -1102,6 +1103,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         false,                                                    // only default users 
         firstResult,                                                        // first result
         maxResults);                                       // max results
+    
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
     List<WorkspaceStudentRestModel> workspaceStudents = new ArrayList<WorkspaceStudentRestModel>();
@@ -1141,9 +1143,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       workspaceStudents.sort(Comparator.comparing(WorkspaceStudentRestModel::getLastName).thenComparing(WorkspaceStudentRestModel::getFirstName));
     }
-    
-    return Response.ok(workspaceStudents).build();
+
+    SearchResults<List<WorkspaceStudentRestModel>> responseStudents = new SearchResults<List<WorkspaceStudentRestModel>>(searchResult.getFirstResult(), searchResult.getLastResult(), workspaceStudents, searchResult.getTotalHitCount());
+    return Response.ok(responseStudents).build();
   }
+  
   
   /**
    * Returns staff members of workspace WORKSPACEENTITYID

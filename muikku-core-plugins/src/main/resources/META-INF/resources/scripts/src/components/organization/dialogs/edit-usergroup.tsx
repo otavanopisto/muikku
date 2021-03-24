@@ -11,8 +11,8 @@ import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
 import { SelectItem } from '~/actions/workspaces/index';
-import { UsersSelectType, UpdateUserGroupType, OrganizationUsersListType, ModifyUserGroupUsersType, UpdateUserGroupStateType, CurrentUserGroupType, } from '~/reducers/main-function/users';
-import { UserGroupType } from '~/reducers/user-index';
+import { UsersSelectType, UpdateUserGroupType, PagingEnvironmentUserListType, ModifyUserGroupUsersType, UpdateUserGroupStateType, CurrentUserGroupType, } from '~/reducers/main-function/users';
+import { UserGroupType, UserType } from '~/reducers/user-index';
 
 interface ValidationType {
   nameValid: number
@@ -143,13 +143,28 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
         firstResult: 0,
         maxResults: 5,
       },
-      success: (users: OrganizationUsersListType) => {
+      success: (users: PagingEnvironmentUserListType) => {
         this.setState({
           pages: { ...this.state.pages, [type]: Math.ceil(users.totalHitCount / this.usersPerPage) }
         });
       }
     })
   }
+
+  turnUsersToSelectItems(users: UserType[]) {
+    let selectItems: SelectItem[] = [];
+
+    for (let i = 0; i < users.length; i++) {
+      let item: SelectItem = {
+        id: users[i].id,
+        label: users[i].firstName + " " + users[i].lastName
+      }
+      selectItems.push(item);
+    };
+
+    return selectItems;
+  }
+
 
   doUserGroupStudentSearch(q: string) {
     this.setState({ searchValues: { ...this.state.searchValues, ["students"]: q } })
@@ -375,7 +390,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
         </DialogRow>;
       case 3:
-        let studentGroupStudents = this.props.currentUserGroup && this.props.currentUserGroup.students ? this.props.currentUserGroup.students.results : [];
+        let studentGroupStudents = this.props.currentUserGroup && this.props.currentUserGroup.students ? this.turnUsersToSelectItems(this.props.currentUserGroup.students.results) : [];
         return <DialogRemoveUsers
           users={studentGroupStudents}
           placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStudents.placeholder')}
@@ -401,7 +416,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
         </DialogRow>;
       case 5:
-        let studentGroupStaff = this.props.currentUserGroup && this.props.currentUserGroup.staff ? this.props.currentUserGroup.staff.results : [];
+        let studentGroupStaff = this.props.currentUserGroup && this.props.currentUserGroup.staff ? this.turnUsersToSelectItems(this.props.currentUserGroup.staff.results) : [];
         return <DialogRemoveUsers
           users={studentGroupStaff}
           placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}

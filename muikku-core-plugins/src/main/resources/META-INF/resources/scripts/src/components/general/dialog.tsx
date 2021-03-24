@@ -8,6 +8,7 @@ import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem
 import { UserType, ShortWorkspaceUserWithActiveStatusType } from '../../reducers/user-index';
 import Tabs from "~/components/general/tabs";
 import { UiSelectItem } from '../base/input-select-autofill';
+import { SelectItem, } from '~/actions/workspaces/index';
 import Pager from '~/components/general/pager';
 
 interface DialogProps {
@@ -43,6 +44,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.oldOverflow = null;
     this.state = { visible: false }
   }
+
+
+
 
   onOverlayClick(close: () => any, e: Event) {
     if (e.target === e.currentTarget) {
@@ -180,7 +184,7 @@ export class DialogRowContent extends React.Component<DialogRowContentProps, Dia
 }
 
 interface DialogRemoveUsersProps {
-  users: UserType[],
+  users: SelectItem[],
   removeUsers: UiSelectItem[],
   pages: number,
   placeholder: string,
@@ -214,10 +218,11 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
       currentRemovePage: 1,
     }
 
+
     this.onTabChange = this.onTabChange.bind(this);
     this.goToAllUsersPage = this.goToAllUsersPage.bind(this);
     this.goToRemovePage = this.goToRemovePage.bind(this);
-    this.turnUserToUiSelectItem = this.turnUserToUiSelectItem.bind(this);
+    this.turnSelectToUiSelectItem = this.turnSelectToUiSelectItem.bind(this);
     this.toggleUserRemoved = this.toggleUserRemoved.bind(this);
     this.refreshRemoveUserpage = this.refreshRemoveUserpage.bind(this);
     this.checkUserInRemoveList = this.checkUserInRemoveList.bind(this);
@@ -239,10 +244,9 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
     this.refreshRemoveUserpage(n, this.props.removeUsers);
   }
 
-  turnUserToUiSelectItem(user: UserType) {
+  turnSelectToUiSelectItem(user: SelectItem) {
     return {
-      label: user.firstName + " " + user.lastName,
-      id: user.id,
+      ...user,
       icon: "user",
     } as UiSelectItem;
   }
@@ -264,8 +268,8 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
 
   }
 
-  toggleUserRemoved(user: UserType) {
-    this.props.setRemoved(this.turnUserToUiSelectItem(user));
+  toggleUserRemoved(user: SelectItem) {
+    this.props.setRemoved(this.turnSelectToUiSelectItem(user));
   }
 
   UNSAFE_componentWillReceiveProps(nextProps: DialogRemoveUsersProps, nextState: DialogRemoveUsersState) {
@@ -274,9 +278,9 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
     }
   }
 
-  checkUserInRemoveList(user: UserType, removedListUsers: UiSelectItem[]) {
+  checkUserInRemoveList(user: string, removedListUsers: UiSelectItem[]) {
     for (let i = 0; i < removedListUsers.length; i++) {
-      if (user.id === removedListUsers[i].id) {
+      if (user === removedListUsers[i].id) {
         return true;
       }
     }
@@ -289,6 +293,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
   }
 
   render() {
+
     return (
       <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
         {
@@ -296,17 +301,18 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
           name: this.props.allTabTitle,
           component: () => {
             return <DialogRow modifiers="user-search">
-              <DialogRow>
+              <form>
                 <SearchFormElement name="search-user-group-users" placeholder={this.props.placeholder} value={this.props.searchValue} id="searchUserGroupUsers" updateField={this.props.searchUsers} />
-              </DialogRow>
+              </form>
               <DialogRow>
                 <ApplicationList modifiers="dialog-users">
                   {this.props.users.length > 0 ?
-                    this.props.users.map((user: UserType) => {
-                      return <ApplicationListItem className="course" classState={this.checkUserInRemoveList(user, this.props.removeUsers) ? "disabled" : ""} key={"all-" + user.id}>
+
+                    this.props.users.map((user: SelectItem) => {
+                      return <ApplicationListItem className="course" classState={this.checkUserInRemoveList(user.id as string, this.props.removeUsers) ? "disabled" : ""} key={"all-" + user.id}>
                         <ApplicationListItemContentWrapper>
                           <ApplicationListItemHeader onClick={this.toggleUserRemoved.bind(this, user)} modifiers="course">
-                            <span className="application-list__header-primary">{user.firstName + " " + user.lastName}</span>
+                            <span className="application-list__header-primary">{user.label}</span>
                             <span className="application-list__header-secondary"></span>
                           </ApplicationListItemHeader>
                         </ApplicationListItemContentWrapper>
@@ -325,6 +331,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
           id: this.props.identifier + "-REMOVE",
           name: this.props.removeTabTitle,
           component: () => {
+
             let removePages = Math.ceil(this.props.removeUsers.length / this.maxRemoveUsersPerPage);
             return <DialogRow>
               <DialogRow>

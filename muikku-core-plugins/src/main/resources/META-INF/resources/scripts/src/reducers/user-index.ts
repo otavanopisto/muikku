@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
+import { PagingUserListType } from '~/reducers/main-function/users';
 export type ManipulateType = "UPDATE" | "CREATE";
 
 export interface CreateUserType {
@@ -93,6 +94,14 @@ export interface UserStaffType {
   hasImage: boolean
 }
 
+export interface PagingWorkspaceStudentListType extends PagingUserListType {
+  results: Array<ShortWorkspaceUserWithActiveStatusType>
+}
+
+export interface PagingWorkspaceStaffListType extends PagingUserListType {
+  results: Array<UserStaffType>
+}
+
 export interface ShortWorkspaceUserWithActiveStatusType {
   workspaceUserEntityId: number,
   userIdentifier: string,
@@ -104,6 +113,8 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   active: boolean,
   hasImage: boolean
 }
+
+
 
 export interface UserGroupType {
   id: number,
