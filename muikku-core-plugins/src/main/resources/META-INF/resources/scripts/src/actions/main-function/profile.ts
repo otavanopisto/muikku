@@ -7,6 +7,7 @@ import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
 import { StoredWorklistItem, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
+import moment from '~/lib/moment';
 
 export interface LoadProfilePropertiesSetTriggerType {
   ():AnyActionType
@@ -85,8 +86,20 @@ export interface LoadProfileWorklistSectionsTriggerType {
   (cb?: (d: Array<WorklistSection>) => void): AnyActionType;
 }
 
+export interface InsertProfileWorklistItemTriggerType {
+  (data: {
+    templateId: number,
+    description: string,
+    entryDate: string,
+    price: number,
+    factor: number,
+    success?: () => void,
+    fail?: () => void,
+  }): AnyActionType;
+}
+
 export interface LoadProfileWorklistSectionTriggerType {
-  (index: number): AnyActionType;
+  (index: number, refresh?: boolean): AnyActionType;
 }
 
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
@@ -407,6 +420,74 @@ const setProfileLocation: SetProfileLocationTriggerType = function setProfileLoc
   }
 }
 
+const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function insertProfileWorklistItem(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (!state.profile || !state.profile.worklist) {
+      return;
+    }
+
+    try {
+      const worklistItem: StoredWorklistItem = await promisify(mApi().worklist.worklistItems.create(data), 'callback')() as StoredWorklistItem;
+      const expectedSummary: WorklistItemsSummary = {
+        beginDate: moment(worklistItem.entryDate).startOf("month").format("YYYY-MM-DD"),
+        endDate: moment(worklistItem.entryDate).endOf("month").format("YYYY-MM-DD"),
+        displayName: state.i18n.time.format(worklistItem.entryDate, "MMMM YYYY"),
+        count: 1,
+      }
+
+      const currWorklist = getState().profile.worklist;
+      const matchingSummaryIndex = currWorklist.findIndex((f) => f.summary.beginDate === expectedSummary.beginDate);
+      if (matchingSummaryIndex === -1) {
+        const newWorklist = [...currWorklist];
+        const entryDate = moment(worklistItem.entryDate).startOf("month");
+        const itemWithMoreIndex = newWorklist.findIndex((p) => {
+          return moment(p.summary.beginDate).isAfter(entryDate);
+        });
+
+        if (itemWithMoreIndex === -1) {
+          newWorklist.push({
+            summary: expectedSummary,
+            items: null,
+          });
+        } else {
+          newWorklist.splice(itemWithMoreIndex, 0, {
+            summary: expectedSummary,
+            items: null,
+          });
+        }
+
+        dispatch({
+          type: "SET_WORKLIST",
+          payload: newWorklist,
+        });
+      } else {
+        const newSummary = {...currWorklist[matchingSummaryIndex]};
+        newSummary.summary.count++;
+        if (newSummary.items) {
+          newSummary.items = [...newSummary.items, worklistItem];
+        }
+
+        const newWorklist = [...currWorklist]
+        newWorklist[matchingSummaryIndex] = newSummary;
+
+        dispatch({
+          type: "SET_WORKLIST",
+          payload: newWorklist,
+        });
+      }
+      data.success && data.success();
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      data.fail && data.fail();
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+    }
+  }
+}
+
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType = function loadProfileWorklistTemplates() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
@@ -462,11 +543,11 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType = func
   }
 }
 
-const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = function loadProfileWorklistSection(index: number) {
+const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = function loadProfileWorklistSection(index: number, refresh?: boolean) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
 
-    if ((!state.profile || !state.profile.worklist || !state.profile.worklist[index]) || state.profile.worklist[index].items) {
+    if ((!state.profile || !state.profile.worklist || !state.profile.worklist[index]) || (state.profile.worklist[index].items && !refresh)) {
       return;
     }
 
@@ -497,5 +578,5 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
 export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
   updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
   deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
-  loadProfileWorklistSection};
+  loadProfileWorklistSection, insertProfileWorklistItem};
 
