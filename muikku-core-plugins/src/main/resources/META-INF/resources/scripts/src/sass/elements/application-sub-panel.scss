@@ -340,6 +340,63 @@
   }
 }
 
+// Subpanel Multiple Items - When one row can contain multiple items in the same row
+.application-sub-panel__multiple-items {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }
+}
+
+// Subpanel container for single item inside multiple-items wrapper
+.application-sub-panel__multiple-item-container {
+  display: flex;
+  flex-flow: column wrap;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 10px 0 0;
+
+  .application-sub-panel__item-title {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.application-sub-panel__multiple-item-container--worklist-template {
+  flex-basis: 200px;
+}
+
+.application-sub-panel__multiple-item-container--worklist-description {
+  flex-basis: 100%;
+}
+
+ .application-sub-panel__multiple-item-container--worklist-date {
+  flex-basis: 120px;
+  max-width: 120px;
+}
+
+ .application-sub-panel__multiple-item-container--worklist-price {
+  flex-basis: 60px;
+}
+
+ .application-sub-panel__multiple-item-container--worklist-factor {
+  flex-basis: 40px;
+}
+
+.application-sub-panel__multiple-item-container--worklist-submit {
+  padding: 1.5625rem 0 0;
+}
+
 // Subpanel Item
 .application-sub-panel__item {
   align-items: center;
@@ -613,7 +670,6 @@
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   }
-
 }
 
 // Subpanel item data
@@ -628,14 +684,6 @@
   @include breakpoint($breakpoint-desktop) {
     flex-grow: 1;
     flex-shrink: 1;
-  }
-
-  span {
-    background-color: $color-hops-readable-inline-background;
-    border-radius: 3px;
-    display: inline-block;
-    margin: 2px 5px 2px 0;
-    padding: 4px;
   }
 }
 
@@ -655,6 +703,14 @@
 .application-sub-panel__item-data--study-end-date span {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
+}
+
+.application-sub-panel__item-data-single-entry {
+  background-color: $color-hops-readable-inline-background;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
 }
 
 .application-sub-panel__item-description {

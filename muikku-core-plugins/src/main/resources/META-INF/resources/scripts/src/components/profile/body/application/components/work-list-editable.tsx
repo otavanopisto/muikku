@@ -4,6 +4,7 @@ import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { LocaleListType } from "~/reducers/base/locales";
 import { EditableField, StoredWorklistItem, WorklistTemplate } from "~/reducers/main-function/profile";
+import { ButtonPill } from '~/components/general/button';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
@@ -17,7 +18,6 @@ interface IWorkListEditableProps {
     price: number;
     factor: number;
   }) => Promise<boolean>;
-  submitButtonContent: React.ReactNode;
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
 }
@@ -110,44 +110,73 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     // this represents the row itself when it's in edit mode, the children is basically
     // the picker for the template mode, or whatever wants to be added
     return (
-      <div>
-        {this.props.children}
-        <input
-          type="text"
-          value={this.state.description}
-          onChange={this.updateOne.bind(this, "description")}
-          disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.DESCRIPTION)}
-        />
-        <div className="application-sub-panel__item-data form-element">
-          <DatePicker
-            disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.ENTRYDATE)}
-            id={"date-" + (this.props.base && this.props.base.id)}
-            className="form-element__input"
-            onChange={this.handleDateChange.bind(this, "date")}
-            locale={this.props.i18n.time.getLocale()}
-            selected={this.state.date}
-          />
+      <div className="application-sub-panel__multiple-items">
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
+          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.template.label")}</label>
+          <div className="application-sub-panel__item-data">
+            {this.props.children}
+          </div>
         </div>
-        <input
-          type="text"
-          value={this.state.price}
-          onChange={this.updateOne.bind(this, "price")}
-          disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.PRICE)}
-        />
-        <input
-          type="text"
-          value={this.state.factor}
-          onChange={this.updateOne.bind(this, "factor")}
-          disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.FACTOR)}
-        />
-        <button onClick={this.submit}>
-          {this.props.submitButtonContent}
-        </button>
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description form-element">
+          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
+          <div className="application-sub-panel__item-data">
+          <input
+            className="form-element__input form-element__input--worklist-description"
+            type="text"
+            value={this.state.description}
+            onChange={this.updateOne.bind(this, "description")}
+            disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.DESCRIPTION)}
+          />
+          </div>
+        </div>
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date form-element">
+          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</label>
+          <div className="application-sub-panel__item-data">
+            <DatePicker
+              disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.ENTRYDATE)}
+              id={"date-" + (this.props.base && this.props.base.id)}
+              className="form-element__input form-element__input--worklist-date"
+              onChange={this.handleDateChange.bind(this, "date")}
+              locale={this.props.i18n.time.getLocale()}
+              selected={this.state.date}
+            />
+          </div>
+        </div>
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price form-element">
+          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.price.label")}</label>
+          <div className="application-sub-panel__item-data">
+            <input
+              className="form-element__input form-element__input--worklist-price"
+              type="text"
+              value={this.state.price}
+              onChange={this.updateOne.bind(this, "price")}
+              size={2}
+              disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.PRICE)}
+            />
+          </div>
+        </div>
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor form-element">
+          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.factor.label")}</label>
+          <div className="application-sub-panel__item-data">
+            <input
+              className="form-element__input form-element__input--worklist-factor"
+              type="text"
+              value={this.state.factor}
+              onChange={this.updateOne.bind(this, "factor")}
+              size={2}
+              disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.FACTOR)}
+            />
+          </div>
+        </div>
+        <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-submit form-element">
+          <div className="application-sub-panel__item-data">
+            <ButtonPill buttonModifiers="add-worklist-entry" icon="plus" onClick={this.submit} />
+          </div>
+        </div>
       </div>
     );
   }
 }
-
 
 function mapStateToProps(state: StateType) {
   return {

@@ -79,21 +79,21 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyStartDate ?
+          <span className="application-sub-panel__item-data-single-entry">{this.props.guider.currentStudent.basic.studyStartDate ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyEndDate ?
+          <span className="application-sub-panel__item-data-single-entry">{this.props.guider.currentStudent.basic.studyEndDate ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyTimeEnd ?
+          <span className="application-sub-panel__item-data-single-entry">{this.props.guider.currentStudent.basic.studyTimeEnd ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd) : "-"}</span>
         </div>
       </div>
@@ -101,42 +101,42 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.email")}</div>
         <div className="application-sub-panel__item-data">
           {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email) => {
-            return <span key={email.address} >
+            return <span className="application-sub-panel__item-data-single-entry" key={email.address} >
               {email.defaultAddress ? `*` : null} {email.address} ({email.type})
           </span>
-          }) : <span>{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>}
+          }) : <span className="application-sub-panel__item-data-single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>}
         </div>
       </div>}
       {this.props.guider.currentStudent.phoneNumbers && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.phoneNumber")}</div>
         <div className="application-sub-panel__item-data">
           {this.props.guider.currentStudent.phoneNumbers.length ? this.props.guider.currentStudent.phoneNumbers.map((phone) => {
-            return <span key={phone.number} >
+            return <span className="application-sub-panel__item-data-single-entry" key={phone.number} >
               {phone.defaultNumber ? `*` : null} {phone.number} ({phone.type})
           </span>
-          }) : <span>{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}</span>}
+          }) : <span className="application-sub-panel__item-data-single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}</span>}
         </div>
       </div>}
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
+          <span className="application-sub-panel__item-data-single-entry">{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
         </div>
       </div>
       {this.props.guider.currentStudent.usergroups && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studentgroups")}</div>
         <div className="application-sub-panel__item-data">
           {this.props.guider.currentStudent.usergroups.length ? this.props.guider.currentStudent.usergroups.map((usergroup) => {
-            return <span key={usergroup.id} >
+            return <span className="application-sub-panel__item-data-single-entry" key={usergroup.id} >
               {usergroup.name}
             </span>
-          }) : <span>{this.props.i18n.text.get("plugin.guider.user.details.label.nostudentgroups")}</span>}
+          }) : <span className="application-sub-panel__item-data-single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.nostudentgroups")}</span>}
         </div>
       </div>}
       {this.props.guider.currentStudent.basic && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.lastLogin ?
+          <span className="application-sub-panel__item-data-single-entry">{this.props.guider.currentStudent.basic.lastLogin ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.lastLogin, "LLL") : "-"}</span>
         </div>
       </div>}
@@ -144,7 +144,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__item application-sub-panel__item--notification" key={notification}>
           <div className="application-sub-panel__item-title ">{this.props.i18n.text.get("plugin.guider.user." + notification)}</div>
           <div className="application-sub-panel__item-data">
-            <span>{this.props.i18n.time.format((this.props.guider.currentStudent.notifications as any)[notification])}</span>
+            <span className="application-sub-panel__item-data-single-entry">{this.props.i18n.time.format((this.props.guider.currentStudent.notifications as any)[notification])}</span>
           </div>
         </div>
       })}
