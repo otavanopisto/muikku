@@ -1,5 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { bindActionCreators, Dispatch } from "redux";
+import { InsertProfileWorklistItemTriggerType, insertProfileWorklistItem, loadProfileWorklistSection, LoadProfileWorklistSectionTriggerType } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
@@ -8,10 +10,13 @@ import WorkListEditable from "./components/work-list-editable";
 interface IWorkListProps {
   i18n: i18nType,
   profile: ProfileType;
+  insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
+  loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;
 }
 
 interface IWorkListState {
   currentTemplate: WorklistTemplate;
+  openedSections: string[];
 }
 
 class WorkList extends React.Component<IWorkListProps, IWorkListState> {
@@ -20,9 +25,11 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     this.state = {
       currentTemplate: null,
+      openedSections: [],
     }
 
     this.insertNew = this.insertNew.bind(this);
+    this.toggleSection = this.toggleSection.bind(this);
     this.onSelect = this.onSelect.bind(this);
   }
 
@@ -40,8 +47,32 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     price: number;
     factor: number;
   }) {
-    console.log(data);
-    return true;
+    return new Promise<boolean>((resolve) => {
+      this.props.insertProfileWorklistItem({
+        templateId: this.state.currentTemplate.id,
+        entryDate: data.date,
+        price: data.price,
+        factor: data.factor,
+        description: data.description,
+        success: () => resolve(true),
+        fail: () => resolve(false),
+      });
+    });
+  }
+
+  public toggleSection(index: number) {
+    this.props.loadProfileWorklistSection(index);
+    const sectionToOpen = this.props.profile.worklist[index];
+    const hasItInIt = this.state.openedSections.some((n) => n === sectionToOpen.summary.beginDate);
+    if (!hasItInIt) {
+      this.setState({
+        openedSections: [...this.state.openedSections, sectionToOpen.summary.beginDate],
+      });
+    } else {
+      this.setState({
+        openedSections: this.state.openedSections.filter((s) => s !== sectionToOpen.summary.beginDate),
+      });
+    }
   }
 
   public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -56,6 +87,30 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       return null;
     }
 
+    const sections = (
+      this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
+        const isOpen = this.state.openedSections.includes(section.summary.beginDate);
+        const hasData = !!section.items;
+
+        const entries = isOpen && hasData ? (
+          section.items.map((item, index) => {
+            return (
+              <div key={item.id}>
+                {item.description + " " + item.entryDate + " " + item.factor + " " + item.price}
+              </div>
+            );
+          })
+        ) : null;
+
+        return (
+          <div key={section.summary.beginDate}>
+            <button onClick={this.toggleSection.bind(this, index)}>{section.summary.displayName}</button>
+            {entries && entries.reverse()}
+          </div>
+        );
+      })
+    );
+
     return <section>
       <form>
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
@@ -69,13 +124,15 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
               <select className="form-element__select form-element__select--worklist-template" value={this.state.currentTemplate && this.state.currentTemplate.id} onChange={this.onSelect}>
                 {this.props.profile.worklistTemplates && this.props.profile.worklistTemplates.map((v) => {
                   return (
-                    <option value={v.id} key={v.id} selected={v.id === (this.state.currentTemplate && this.state.currentTemplate.id)}>
+                    <option value={v.id} key={v.id}>
                       {v.description}
                     </option>
                   );
                 })}
               </select>
             </WorkListEditable>
+
+            {sections && sections.reverse()}
           </div>
         </div>
       </form>
@@ -90,8 +147,8 @@ function mapStateToProps(state: StateType) {
   }
 };
 
-function mapDispatchToProps(dispatch: React.Dispatch<any>) {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators({insertProfileWorklistItem, loadProfileWorklistSection}, dispatch);
 };
 
 export default connect(
