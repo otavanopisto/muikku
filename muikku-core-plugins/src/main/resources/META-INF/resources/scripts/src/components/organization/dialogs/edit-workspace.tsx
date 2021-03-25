@@ -502,13 +502,13 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           <DialogRow>
             <DialogRemoveUsers
               users={workspaceStudents}
-              placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStudents.placeholder')}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.workspaceStudents.placeholder')}
               removeUsers={this.state.removeStudents}
               pages={this.state.pages && this.state.pages.students ? this.state.pages.students : 0}
               identifier={"workspace" + this.props.workspace.id + "Students"}
-              allTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.groupStudents.title')}
-              removeTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.removeStudents.title')}
-              onEmptyTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.empty')}
+              allTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title')}
+              removeTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.removeWorkspaceStudents.title')}
+              onEmptyTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.empty')}
               searchValue={this.state.searchValues && this.state.searchValues.students ? this.state.searchValues.students : ""}
               searchUsers={this.doWorkspaceStudentSearch}
               changePage={this.goToStudentPage}
@@ -541,13 +541,13 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           <DialogRow>
             <DialogRemoveUsers
               users={workspaceStaff}
-              placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStudents.placeholder')}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.workspaceTeachers.placeholder')}
               removeUsers={this.state.removeStaff}
               pages={this.state.pages && this.state.pages.staff ? this.state.pages.staff : 0}
               identifier={"workspace" + this.props.workspace.id + "Staff"}
-              allTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.groupStudents.title')}
-              removeTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.removeStudents.title')}
-              onEmptyTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.empty')}
+              allTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.workspaceTeachers.title')}
+              removeTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.removeWorkspaceTeachers.title')}
+              onEmptyTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.empty')}
               searchValue={this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : ""}
               searchUsers={this.doWorkspaceStaffSearch}
               changePage={this.goToStaffPage}
