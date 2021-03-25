@@ -56,7 +56,8 @@
   }
 }
 
-.dialog__window--edit-workspace {
+.dialog__window--edit-workspace,
+.dialog__window--edit-user-group {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
 
@@ -67,15 +68,15 @@
 }
 
 
-.dialog__window--edit-user-group {
-  @include breakpoint($breakpoint-pad) {
-    max-width: 815px;
+// .dialog__window--edit-user-group {
+//   @include breakpoint($breakpoint-pad) {
+//     max-width: 815px;
 
-    .dialog__content {
-      height: 460px;
-    }
-  }
-}
+//     .dialog__content {
+//       height: 546px;
+//     }
+//   }
+// }
 
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {

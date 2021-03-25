@@ -371,68 +371,95 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   wizardSteps(page: number) {
     switch (page) {
       case 1:
-        return <div>
-          <DialogRow modifiers="edit-workspace">
-            <InputFormElement id="userGroupName" modifiers="user-group-name" mandatory={true} updateField={this.setUserGroupName} valid={this.state.validation.nameValid} name="userGroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.userGroupName}></InputFormElement>
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step1.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step1.description')} />
           </DialogRow>
-          <DialogRow modifiers="edit-workspace">
-            <InputFormElement id="isGuidanceGroup" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" value={this.props.usergroup.name} checked={this.state.isGuidanceGroup} type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
-          </DialogRow>
-        </div >;
+          <form>
+            <DialogRow modifiers="edit-workspace">
+              <InputFormElement id="userGroupName" modifiers="user-group-name" mandatory={true} updateField={this.setUserGroupName} valid={this.state.validation.nameValid} name="userGroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.userGroupName}></InputFormElement>
+            </DialogRow>
+            <DialogRow modifiers="edit-workspace">
+              <InputFormElement id="isGuidanceGroup" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" value={this.props.usergroup.name} checked={this.state.isGuidanceGroup} type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
+            </DialogRow>
+          </form>
+        </DialogRow>;
       case 2:
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
-        return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-students"
-            loader={this.doStudentSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step2.description')} />
+          </DialogRow>
+          <DialogRow>
+            <AutofillSelector modifier="add-students"
+              loader={this.doStudentSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.students.placeholder')}
+              selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+          </DialogRow>
         </DialogRow>;
       case 3:
         let studentGroupStudents = this.props.currentUserGroup && this.props.currentUserGroup.students ? this.turnUsersToSelectItems(this.props.currentUserGroup.students.results) : [];
-        return <DialogRemoveUsers
-          users={studentGroupStudents}
-          placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStudents.placeholder')}
-          removeUsers={this.state.removeStudents}
-          pages={this.state.pages && this.state.pages.students ? this.state.pages.students : 0}
-          identifier={"userGroup" + this.props.usergroup.id + "Students"}
-          allTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.groupStudents.title')}
-          removeTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.removeStudents.title')}
-          onEmptyTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.empty')}
-          searchValue={this.state.searchValues && this.state.searchValues.students ? this.state.searchValues.students : ""}
-          searchUsers={this.doUserGroupStudentSearch}
-          changePage={this.goToStudentPage}
-          setRemoved={this.toggleStudentRemove} />
-
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step3.description')} />
+          </DialogRow>
+          <DialogRemoveUsers
+            users={studentGroupStudents}
+            placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStudents.placeholder')}
+            removeUsers={this.state.removeStudents}
+            pages={this.state.pages && this.state.pages.students ? this.state.pages.students : 0}
+            identifier={"userGroup" + this.props.usergroup.id + "Students"}
+            allTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.groupStudents.title')}
+            removeTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.removeStudents.title')}
+            onEmptyTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.empty')}
+            searchValue={this.state.searchValues && this.state.searchValues.students ? this.state.searchValues.students : ""}
+            searchUsers={this.doUserGroupStudentSearch}
+            changePage={this.goToStudentPage}
+            setRemoved={this.toggleStudentRemove} />
+        </DialogRow>
       case 4:
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
-        return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-teachers"
-            loader={this.doStaffSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.staff.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step4.description')} />
+          </DialogRow>
+          <DialogRow>
+            <AutofillSelector modifier="add-teachers"
+              loader={this.doStaffSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.staff.placeholder')}
+              selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+          </DialogRow>
         </DialogRow>;
       case 5:
         let studentGroupStaff = this.props.currentUserGroup && this.props.currentUserGroup.staff ? this.turnUsersToSelectItems(this.props.currentUserGroup.staff.results) : [];
-        return <DialogRemoveUsers
-          users={studentGroupStaff}
-          placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
-          removeUsers={this.state.removeStaff}
-          pages={this.state.pages && this.state.pages.staff ? this.state.pages.staff : 0}
-          identifier={"userGroup" + this.props.usergroup.id + "Staff"}
-          allTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.groupStaff.title')}
-          removeTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.removeStaff.title')}
-          onEmptyTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.empty')}
-          searchValue={this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : ""}
-          searchUsers={this.doUserGroupStaffSearch}
-          changePage={this.goToStaffPage}
-          setRemoved={this.toggleStaffRemove}
-        />
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step5.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step5.description')} />
+          </DialogRow>
+          <DialogRemoveUsers
+            users={studentGroupStaff}
+            placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
+            removeUsers={this.state.removeStaff}
+            pages={this.state.pages && this.state.pages.staff ? this.state.pages.staff : 0}
+            identifier={"userGroup" + this.props.usergroup.id + "Staff"}
+            allTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.groupStaff.title')}
+            removeTabTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.tab.removeStaff.title')}
+            onEmptyTitle={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.users.empty')}
+            searchValue={this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : ""}
+            searchUsers={this.doUserGroupStaffSearch}
+            changePage={this.goToStaffPage}
+            setRemoved={this.toggleStaffRemove}
+          />
+        </DialogRow>
       case 6:
         return <DialogRow modifiers="edit-workspace-summary">
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step6.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step6.description')} />
+          </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} />
             <DialogRowContent modifiers="new-workspace">

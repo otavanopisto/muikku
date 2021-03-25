@@ -240,6 +240,9 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     switch (page) {
       case 1:
         return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step1.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step1.description')} />
+          </DialogRow>
           <DialogRow modifiers="edit-workspace">
             <InputFormElement id="userGroupName" modifiers="user-group-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.usergroupName}></InputFormElement>
           </DialogRow>
@@ -251,7 +254,10 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
-        return <DialogRow modifiers="edit-workspace">
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step2.description')} />
+          </DialogRow>
           <AutofillSelector modifier="add-students"
             loader={this.doStudentSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
@@ -261,7 +267,10 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
-        return <DialogRow modifiers="edit-workspace">
+        return <DialogRow>
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step3.description')} />
+          </DialogRow>
           <AutofillSelector modifier="add-teachers"
             loader={this.doStaffSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
@@ -269,6 +278,9 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         </DialogRow>;
       case 4:
         return <DialogRow modifiers="edit-workspace-summary">
+          <DialogRow>
+            <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step4.description')} />
+          </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} />
             <DialogRowContent modifiers="new-workspace">
