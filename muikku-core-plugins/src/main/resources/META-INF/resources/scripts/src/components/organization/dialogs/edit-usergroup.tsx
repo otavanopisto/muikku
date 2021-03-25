@@ -13,6 +13,7 @@ import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-a
 import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType, UpdateUserGroupType, PagingEnvironmentUserListType, ModifyUserGroupUsersType, UpdateUserGroupStateType, CurrentUserGroupType, } from '~/reducers/main-function/users';
 import { UserGroupType, UserType } from '~/reducers/user-index';
+import { stringify } from 'query-string';
 
 interface ValidationType {
   nameValid: number
@@ -48,7 +49,6 @@ interface OrganizationEditUsergroupState {
   addStaff: UiSelectItem[],
   removeStudents: UiSelectItem[],
   removeStaff: UiSelectItem[],
-  selectedStudents: UiSelectItem[],
   selectedStaff: UiSelectItem[],
   userGroupName: string,
   isGuidanceGroup: boolean,
@@ -75,7 +75,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       searchValues: null,
       userGroupName: this.props.usergroup.name,
       isGuidanceGroup: this.props.usergroup.isGuidanceGroup,
-      selectedStudents: [],
       selectedStaff: [],
       addStudents: [],
       addStaff: [],
@@ -193,17 +192,13 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   }
 
   selectStudent(student: SelectItem) {
-    let studentIsDeleted = this.state.removeStudents.some(rStudent => rStudent.id === student.id);
-    let newSelectedState = this.state.selectedStudents.concat(student);
-    let newAddState = studentIsDeleted ? this.state.addStudents : this.state.addStudents.concat(student);
-    this.setState({ selectedStudents: newSelectedState, addStudents: newAddState });
+    const newAddState = [...this.state.addStudents, student];
+    this.setState({ addStudents: newAddState});
   }
 
   deleteStudent(student: SelectItem) {
-    let studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === student.id);
-    let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
-    let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
-    this.setState({ selectedStudents: newSelectedState, addStudents: newAddState });
+    const newAddState = this.state.addStudents.filter(std => std.id !== student.id);;
+    this.setState({ addStudents: newAddState });
   }
 
   doStaffSearch(q: string) {
@@ -211,18 +206,15 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
   }
 
   selectStaff(staff: SelectItem) {
-    let staffIsDeleted = this.state.removeStaff.some(rStaff => rStaff.id === staff.id);
-    let newSelectedState = this.state.selectedStaff.concat(staff);
-    let newAddState = staffIsDeleted ? this.state.addStaff : this.state.addStaff.concat(staff);
-    this.setState({ addStaff: newAddState, selectedStaff: newSelectedState });
+    const newAddState = [...this.state.addStaff, staff];
+    this.setState({ addStaff: newAddState});
   }
 
   deleteStaff(staff: SelectItem) {
-    let staffIsAdded = this.state.addStaff.some(aStaff => aStaff.id === staff.id);
-    let newSelectedState = this.state.selectedStaff.filter(selectedItem => selectedItem.id !== staff.id);
-    let newAddState = staffIsAdded ? this.state.addStaff.filter(aStaff => aStaff.id !== staff.id) : this.state.addStaff;
-    this.setState({ selectedStaff: newSelectedState, addStaff: newAddState });
+    const newAddState =  this.state.addStaff.filter(stf => stf.id !== staff.id);
+    this.setState({ addStaff: newAddState });
   }
+
 
   setGuidanceGroup(value: boolean) {
     this.setState({ isGuidanceGroup: value });
@@ -239,7 +231,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       executing: false,
       currentStep: 1,
       addStudents: [],
-      selectedStudents: [],
       removeStudents: [],
       addStaff: [],
       selectedStaff: [],
@@ -396,7 +387,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             <AutofillSelector modifier="add-students"
               loader={this.doStudentSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.students.placeholder')}
-              selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+              selectedItems={this.state.addStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
           </DialogRow>
         </DialogRow>;
       case 3:
@@ -431,7 +422,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             <AutofillSelector modifier="add-teachers"
               loader={this.doStaffSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.staff.placeholder')}
-              selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
+              selectedItems={this.state.addStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
           </DialogRow>
         </DialogRow>;
       case 5:

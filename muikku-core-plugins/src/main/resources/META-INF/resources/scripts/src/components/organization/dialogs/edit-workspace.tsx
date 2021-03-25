@@ -147,24 +147,24 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   goToStudentPage(n: number) {
-    let query: string = this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : null;
+    const query: string = this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : null;
     this.goToPage(n, this.props.loadCurrentOrganizationWorkspaceStudents, query);
   }
 
   goToStaffPage(n: number) {
-    let query: string = this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : null;
+    const query: string = this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : null;
     this.goToPage(n, this.props.loadCurrentOrganizationWorkspaceStaff, query);
   }
 
   toggleStudentRemove(usr: UiSelectItem) {
-    let newRemoveState = this.state.removeStudents.some(rStudent => rStudent.id === usr.id) ? this.state.removeStudents.filter(rStudent => rStudent.id !== usr.id) : this.state.removeStudents.concat(usr);
+    const newRemoveState = this.state.removeStudents.some(rStudent => rStudent.id === usr.id) ? this.state.removeStudents.filter(rStudent => rStudent.id !== usr.id) : this.state.removeStudents.concat(usr);
     this.setState({
       removeStudents: newRemoveState
     });
   }
 
   toggleStaffRemove(usr: UiSelectItem) {
-    let newRemoveState = this.state.removeStaff.some(rStaff => rStaff.id === usr.id) ? this.state.removeStaff.filter(rStaff => rStaff.id !== usr.id) : this.state.removeStaff.concat(usr);
+    const newRemoveState = this.state.removeStaff.some(rStaff => rStaff.id === usr.id) ? this.state.removeStaff.filter(rStaff => rStaff.id !== usr.id) : this.state.removeStaff.concat(usr);
     this.setState({
       removeStaff: newRemoveState
     });
@@ -201,17 +201,13 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   selectStudent(student: SelectItem) {
-    let studentIsDeleted = this.state.removeStudents.some(rStudent => rStudent.id === student.id);
-    let newAddState = studentIsDeleted ? this.state.addStudents : this.state.addStudents.concat(student);
-    let newRemoveState = studentIsDeleted ? this.state.removeStudents.filter(rStudent => rStudent.id !== student.id) : this.state.removeStudents;
-    this.setState({ addStudents: newAddState, removeStudents: newRemoveState });
+    const newAddState = [...this.state.addStudents, student];
+    this.setState({ addStudents: newAddState});
   }
 
   deleteStudent(student: SelectItem) {
-    let studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === student.id);
-    let newRemoveState = studentIsAdded ? this.state.removeStudents : this.state.removeStudents.concat(student);
-    let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
-    this.setState({ removeStudents: newRemoveState, addStudents: newAddState });
+    const newAddState = this.state.addStudents.filter(std => std.id !== student.id);;
+    this.setState({ addStudents: newAddState });
   }
 
   doStaffSearch(q: string) {
@@ -219,17 +215,13 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   selectStaff(staff: SelectItem) {
-    let staffIsDeleted = this.state.removeStaff.some(rStaff => rStaff.id === staff.id);
-    let newAddState = staffIsDeleted ? this.state.addStaff : this.state.addStaff.concat(staff);
-    let newRemoveState = staffIsDeleted ? this.state.removeStaff.filter(rStaff => rStaff.id !== staff.id) : this.state.removeStaff;
-    this.setState({ addStaff: newAddState, removeStaff: newRemoveState });
+    const newAddState = [...this.state.addStaff, staff];
+    this.setState({ addStaff: newAddState});
   }
 
   deleteStaff(staff: SelectItem) {
-    let staffIsAdded = this.state.addStaff.some(aStaff => aStaff.id === staff.id);
-    let newRemoveState = staffIsAdded ? this.state.removeStudents : this.state.removeStaff.concat(staff);
-    let newAddState = staffIsAdded ? this.state.addStaff.filter(aStaff => aStaff.id !== staff.id) : this.state.addStaff;
-    this.setState({ removeStaff: newRemoveState, addStaff: newAddState });
+    const newAddState =  this.state.addStaff.filter(stf => stf.id !== staff.id);
+    this.setState({ addStaff: newAddState });
   }
 
   setSelectedWorkspace() {
@@ -304,7 +296,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
   }
 
   lastStep() {
-    let lastStep = this.state.currentStep - 1;
+    const lastStep = this.state.currentStep - 1;
     this.setState({ currentStep: lastStep });
   }
 
