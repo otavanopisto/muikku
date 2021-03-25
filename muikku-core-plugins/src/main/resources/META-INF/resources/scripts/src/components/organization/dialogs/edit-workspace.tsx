@@ -5,15 +5,15 @@ import { FormWizardActions, InputFormElement, DateFormElement } from '~/componen
 import { loadSelectorStaff, loadSelectorStudents, LoadUsersTriggerType, loadSelectorUserGroups } from '~/actions/main-function/users';
 import {
   UpdateWorkspaceTriggerType, updateOrganizationWorkspace, UpdateWorkspaceStateType, SetCurrentWorkspaceTriggerType, setCurrentOrganizationWorkspace,
-  loadCurrentOrganizationWorkspaceStaff, LoadWorkspacesFromServerTriggerType, loadCurrentOrganizationWorkspaceStudents, LoadStudentsOfWorkspaceTriggerType, loadStaffMembersOfWorkspace, LoadStaffMembersOfWorkspaceTriggerType, loadWorkspacesFromServer
+  loadCurrentOrganizationWorkspaceStaff, LoadWorkspacesFromServerTriggerType, loadCurrentOrganizationWorkspaceStudents, LoadUsersOfWorkspaceTriggerType, loadWorkspacesFromServer
 } from '~/actions/workspaces';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { bindActionCreators } from 'redux';
 import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-autofill';
 import { SelectItem, } from '~/actions/workspaces/index';
-import { ShortWorkspaceUserWithActiveStatusType, PagingWorkspaceStudentListType, PagingWorkspaceStaffListType } from '~/reducers/user-index';
-import { UsersSelectType, PagingUserListType } from '~/reducers/main-function/users';
+import { ShortWorkspaceUserWithActiveStatusType, WorkspaceStudentListType, WorkspaceStaffListType } from '~/reducers/user-index';
+import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType, WorkspaceDetailsType, } from '~/reducers/workspaces';
 import moment from '~/lib/moment';
 import { UserStaffType } from '~/reducers/user-index';
@@ -33,8 +33,8 @@ interface OrganizationEditWorkspaceProps {
   activeFilters: WorkspacesActiveFiltersType,
   updateOrganizationWorkspace: UpdateWorkspaceTriggerType,
   setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType,
-  loadCurrentOrganizationWorkspaceStudents: LoadStudentsOfWorkspaceTriggerType,
-  loadCurrentOrganizationWorkspaceStaff: LoadStudentsOfWorkspaceTriggerType,
+  loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType,
+  loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
   loadUserGroups: LoadUsersTriggerType,
@@ -134,7 +134,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
   }
 
-  goToPage(n: number, loader: LoadStudentsOfWorkspaceTriggerType, query: string) {
+  goToPage(n: number, loader: LoadUsersOfWorkspaceTriggerType, query: string) {
     const data = {
       workspace: this.props.workspace,
       payload: {
@@ -170,7 +170,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     });
   }
 
-  doWorkspaceUserSearch(loader: LoadStudentsOfWorkspaceTriggerType, q: string, type: UserCategoryType) {
+  doWorkspaceUserSearch(loader: LoadUsersOfWorkspaceTriggerType, q: string, type: UserCategoryType) {
     const data = {
       workspace: this.props.workspace,
       payload: {
@@ -178,7 +178,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         firstResult: 0,
         maxResults: 5,
       },
-      success: (users: PagingWorkspaceStudentListType | PagingWorkspaceStaffListType) => {
+      success: (users: WorkspaceStudentListType | WorkspaceStaffListType) => {
         this.setState({
           pages: { ...this.state.pages, [type]: Math.ceil(users.totalHitCount / this.usersPerPage) }
         });

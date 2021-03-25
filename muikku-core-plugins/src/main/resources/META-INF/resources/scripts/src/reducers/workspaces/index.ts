@@ -1,6 +1,6 @@
 import { ActionType } from '~/actions';
 import { SelectItem } from '~/actions/workspaces/index';
-import { UserStaffType, PagingWorkspaceStaffListType, PagingWorkspaceStudentListType } from '~/reducers/user-index';
+import { UserStaffType, WorkspaceStaffListType, WorkspaceStudentListType } from '~/reducers/user-index';
 import { repairContentNodes } from '~/util/modifiers';
 
 export interface OrganizationCourseTeacherType {
@@ -238,12 +238,12 @@ export interface WorkspaceType {
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
-  staffMembers?: PagingWorkspaceStaffListType,
+  staffMembers?: WorkspaceStaffListType,
   staffMemberSelect?: UserSelectType,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
-  students?: PagingWorkspaceStudentListType,
+  students?: WorkspaceStudentListType,
   studentsSelect?: UserSelectType,
   details?: WorkspaceDetailsType,
   permissions?: WorkspacePermissionsType[],

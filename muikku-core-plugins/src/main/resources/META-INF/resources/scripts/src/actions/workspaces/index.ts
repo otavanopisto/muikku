@@ -5,9 +5,7 @@ import { WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Works
 import { AnyActionType, SpecificActionType } from '~/actions';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
-import { UserStaffType, ShortWorkspaceUserWithActiveStatusType, PagingWorkspaceStudentListType, PagingWorkspaceStaffListType } from '~/reducers/user-index';
-
-
+import { ShortWorkspaceUserWithActiveStatusType, WorkspaceStudentListType, WorkspaceStaffListType } from '~/reducers/user-index';
 import {
   MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
@@ -608,18 +606,8 @@ export interface UpdateWorkspaceTriggerType {
   }): AnyActionType
 }
 
-export interface LoadStaffMembersOfWorkspaceTriggerType {
-  (
-    workspace: WorkspaceType,
-    data?: {
-      q: string,
-      firstResult: number,
-      maxResults: number,
-    },
-    loadOrganizationStaff?: boolean): AnyActionType
-}
 
-export interface LoadStudentsOfWorkspaceTriggerType {
+export interface LoadUsersOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType,
     payload?: {
@@ -627,7 +615,7 @@ export interface LoadStudentsOfWorkspaceTriggerType {
       firstResult: number,
       maxResults: number,
     },
-    success?: (students: PagingWorkspaceStudentListType | PagingWorkspaceStaffListType) => any,
+    success?: (students: WorkspaceStudentListType | WorkspaceStaffListType) => any,
     fail?: () => any,
   }
   ): AnyActionType
@@ -1023,7 +1011,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
 
 
 
-let loadCurrentOrganizationWorkspaceStaff: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStaff(data) {
+let loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStaff(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
@@ -1031,7 +1019,7 @@ let loadCurrentOrganizationWorkspaceStaff: LoadStudentsOfWorkspaceTriggerType = 
         payload: { id: data.workspace.id, staffMemberSelect: { state: "LOADING", users: [] } }
       });
 
-      let staffMembers: PagingWorkspaceStaffListType = <PagingWorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
+      let staffMembers: WorkspaceStaffListType = <WorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
         ...data.payload,
         workspaceEntityId: data.workspace.id,
       }), 'callback')());
@@ -1062,10 +1050,10 @@ let loadCurrentOrganizationWorkspaceStaff: LoadStudentsOfWorkspaceTriggerType = 
   }
 }
 
-let loadStaffMembersOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(data) {
+let loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let staffMembers = <PagingWorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
+      let staffMembers = <WorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
         workspaceEntityId: data.workspace.id,
         properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
       }), 'callback')());
@@ -1092,7 +1080,7 @@ let loadStaffMembersOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function l
   }
 }
 
-let loadCurrentOrganizationWorkspaceStudents: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStudents(data) {
+let loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStudents(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
@@ -1101,7 +1089,7 @@ let loadCurrentOrganizationWorkspaceStudents: LoadStudentsOfWorkspaceTriggerType
         payload: { id: data.workspace.id, studentsSelect: { state: "LOADING", users: [] } }
       });
 
-      let students: PagingWorkspaceStudentListType = <PagingWorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id, data.payload), 'callback')());
+      let students: WorkspaceStudentListType = <WorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id, data.payload), 'callback')());
 
       let update: WorkspaceUpdateType = {
         students,
@@ -1131,10 +1119,10 @@ let loadCurrentOrganizationWorkspaceStudents: LoadStudentsOfWorkspaceTriggerType
 }
 
 
-let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(data) {
+let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStudentsOfWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let students = <PagingWorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id), 'callback')());
+      let students = <WorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id), 'callback')());
       let update: WorkspaceUpdateType = {
         students
       };
@@ -1168,7 +1156,7 @@ let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspace
         return student;
       });
 
-      let payload: PagingWorkspaceStudentListType = {
+      let payload: WorkspaceStudentListType = {
         ...data.workspace.students,
         results: newStudents
       }

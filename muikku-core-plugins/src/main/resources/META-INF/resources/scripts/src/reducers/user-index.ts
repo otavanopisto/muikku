@@ -94,11 +94,11 @@ export interface UserStaffType {
   hasImage: boolean
 }
 
-export interface PagingWorkspaceStudentListType extends PagingUserListType {
+export interface WorkspaceStudentListType extends PagingUserListType {
   results: Array<ShortWorkspaceUserWithActiveStatusType>
 }
 
-export interface PagingWorkspaceStaffListType extends PagingUserListType {
+export interface WorkspaceStaffListType extends PagingUserListType {
   results: Array<UserStaffType>
 }
 
