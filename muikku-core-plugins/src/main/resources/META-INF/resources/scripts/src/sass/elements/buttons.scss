@@ -1503,6 +1503,13 @@
 .button-pill--add-worklist-entry {
   border-radius: 3px;
   color: $color-default;
+  height: 2.25rem;
+  width: 2.25rem;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
 
   .button-pill__label {
     background: transparent;

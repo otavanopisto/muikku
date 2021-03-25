@@ -345,10 +345,10 @@
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  padding: 0 0 10px;
+  padding: 0 10px 10px;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
+    padding: 0 0 10px 0;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -359,42 +359,84 @@
 // Subpanel container for single item inside multiple-items wrapper
 .application-sub-panel__multiple-item-container {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  margin: 0 10px 0 0;
+  margin: 0 10px 10px 0;
 
   .application-sub-panel__item-title {
-    flex-basis: auto;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-weight: 600;
+  }
+
+  .application-sub-panel__item-data {
+    flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
   }
 }
 
 .application-sub-panel__multiple-item-container--worklist-template {
-  flex-basis: 200px;
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
 }
 
 .application-sub-panel__multiple-item-container--worklist-description {
   flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(100% - 60px);
+
+  }
 }
 
  .application-sub-panel__multiple-item-container--worklist-date {
-  flex-basis: 120px;
-  max-width: 120px;
+  flex-basis: 100px;
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  @include breakpoint($breakpoint-pad) {
+
+  }
 }
 
  .application-sub-panel__multiple-item-container--worklist-price {
   flex-basis: 60px;
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  @include breakpoint($breakpoint-pad) {
+
+  }
 }
 
  .application-sub-panel__multiple-item-container--worklist-factor {
-  flex-basis: 40px;
+  flex-basis: 60px;
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  @include breakpoint($breakpoint-pad) {
+
+  }
 }
 
 .application-sub-panel__multiple-item-container--worklist-submit {
-  padding: 1.5625rem 0 0;
+  margin: 0 0 10px;
+  padding: 1.5rem 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+
+  }
 }
 
 // Subpanel Item
@@ -680,6 +722,7 @@
   flex-flow: row wrap;
   flex-grow: 0;
   flex-shrink: 0;
+  max-width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
     flex-grow: 1;
@@ -696,11 +739,11 @@
   }
 }
 
-.application-sub-panel__item-data--study-start-date span {
+.application-sub-panel__item-data--study-start-date .application-sub-panel__item-data-single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date span {
+.application-sub-panel__item-data--study-end-date .application-sub-panel__item-data-single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }

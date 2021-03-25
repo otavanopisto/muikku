@@ -224,8 +224,14 @@
   // scss-lint:enable SelectorFormat
 }
 
+
+// Teacher's Worklist Specific fields
+.form-element__input--worklist-description,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor,
 .form-element__input--worklist-date {
-  max-width: 120px;
+  max-width: 100%;
+  width: 100%;
 }
 
 .form-element__input--worklist-price,
@@ -238,10 +244,6 @@
 .form-element__input--worklist-factor[disabled] {
   background: $color-disabled-background;
   border-color: $color-disabled-background;
-}
-
-.form-element__input--worklist-description {
-  width: 100%;
 }
 
 .form-element__input--profile-auto-reply {
