@@ -546,7 +546,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               pages={this.state.pages && this.state.pages.staff ? this.state.pages.staff : 0}
               identifier={"workspace" + this.props.workspace.id + "Staff"}
               allTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.workspaceTeachers.title')}
-              removeTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.removeWorkspaceTeachers.title')}
+              removeTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.removeworkspaceTeachers.title')}
               onEmptyTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.empty')}
               searchValue={this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : ""}
               searchUsers={this.doWorkspaceStaffSearch}
