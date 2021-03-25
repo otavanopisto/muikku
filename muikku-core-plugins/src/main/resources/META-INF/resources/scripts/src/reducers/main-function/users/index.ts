@@ -17,7 +17,7 @@ export interface UserPayloadType {
 
 export interface PagingUserListType {
   firstResult: number,
-  lastResult: number,
+  maxResults: number,
   totalHitCount: number,
 }
 

@@ -1160,13 +1160,18 @@ let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspace
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let oldStudents = data.workspace.students;
     try {
-      let newStudent = { ...data.student, active: !data.student.active };
+      let newStudent: ShortWorkspaceUserWithActiveStatusType = { ...data.student, active: !data.student.active };
       let newStudents = data.workspace.students && data.workspace.students.results.map(student => {
         if (student.workspaceUserEntityId === newStudent.workspaceUserEntityId) {
           return newStudent;
         }
         return student;
       });
+
+      let payload: PagingWorkspaceStudentListType = {
+        ...data.workspace.students,
+        results: newStudents
+      }
 
       await promisify(mApi().workspace.workspaces.students.update(data.workspace.id, newStudent.workspaceUserEntityId, {
         workspaceUserEntityId: newStudent.workspaceUserEntityId,
@@ -1179,7 +1184,7 @@ let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspace
           payload: {
             original: data.workspace,
             update: {
-              students: newStudents
+              students: payload
             }
           }
         });
