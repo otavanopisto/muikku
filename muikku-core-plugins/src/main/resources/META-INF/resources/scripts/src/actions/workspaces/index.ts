@@ -97,7 +97,6 @@ type WorkspaceQueryDataType = {
   maxResults?: number
 }
 
-
 export interface SelectItem {
   id: string | number,
   label: string,
@@ -437,7 +436,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
   }
 }
 
-
 export interface RequestAssessmentAtWorkspaceTriggerType {
   (data: { workspace: WorkspaceType, text: string, success?: () => any, fail?: () => any }): AnyActionType
 }
@@ -605,7 +603,6 @@ export interface UpdateWorkspaceTriggerType {
     fail?: () => any
   }): AnyActionType
 }
-
 
 export interface LoadUsersOfWorkspaceTriggerType {
   (data: {
@@ -1009,8 +1006,6 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
   }
 }
 
-
-
 let loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStaff(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
@@ -1117,7 +1112,6 @@ let loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType = 
     }
   }
 }
-
 
 let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStudentsOfWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -1429,7 +1423,6 @@ export interface CreateWorkspaceTriggerType {
     fail: () => any,
   }): AnyActionType
 }
-
 
 let createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {

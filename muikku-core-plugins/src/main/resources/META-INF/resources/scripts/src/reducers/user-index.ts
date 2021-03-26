@@ -114,8 +114,6 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   hasImage: boolean
 }
 
-
-
 export interface UserGroupType {
   id: number,
   identifier?: string,

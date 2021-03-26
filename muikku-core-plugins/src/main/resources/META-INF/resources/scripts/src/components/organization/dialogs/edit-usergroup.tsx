@@ -213,7 +213,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
     this.setState({ addStaff: newAddState });
   }
 
-
   setGuidanceGroup(value: boolean) {
     this.setState({ isGuidanceGroup: value });
   }
