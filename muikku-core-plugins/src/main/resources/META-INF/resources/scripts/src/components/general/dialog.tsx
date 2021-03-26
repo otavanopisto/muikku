@@ -214,7 +214,6 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
       currentRemovePage: 1,
     }
 
-
     this.onTabChange = this.onTabChange.bind(this);
     this.goToAllUsersPage = this.goToAllUsersPage.bind(this);
     this.goToRemovePage = this.goToRemovePage.bind(this);

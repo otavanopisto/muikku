@@ -1065,7 +1065,6 @@ let loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType = function load
         }
       });
 
-
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
