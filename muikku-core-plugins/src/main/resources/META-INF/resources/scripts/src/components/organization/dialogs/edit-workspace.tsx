@@ -509,7 +509,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         </DialogRow>;
 
       case 4:
-        let staffSearchItems = this.props.users.staff.map(staff => {
+        const staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
         return <DialogRow>
@@ -538,7 +538,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               pages={this.state.pages && this.state.pages.staff ? this.state.pages.staff : 0}
               identifier={"workspace" + this.props.workspace.id + "Staff"}
               allTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.workspaceTeachers.title')}
-              removeTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.removeworkspaceTeachers.title')}
+              removeTabTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.tab.removeWorkspaceTeachers.title')}
               onEmptyTitle={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.users.empty')}
               searchValue={this.state.searchValues && this.state.searchValues.staff ? this.state.searchValues.staff : ""}
               searchUsers={this.doWorkspaceStaffSearch}
@@ -647,7 +647,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (<Dialog executing={this.state.executing} executeOnOpen={this.setSelectedWorkspace} onClose={this.clearComponentState} executeContent={executeContent} footer={footer} modifier="edit-workspace"
-      title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.title')}
+      title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.title', this.props.workspace.name)}
       content={content}>
       {this.props.children}
     </Dialog>
