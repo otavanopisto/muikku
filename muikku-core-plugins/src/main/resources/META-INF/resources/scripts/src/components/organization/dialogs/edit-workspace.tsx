@@ -109,7 +109,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
     // TODO: amount of these methods can be halved
 
-
     this.goToPage = this.goToPage.bind(this);
     this.goToStudentPage = this.goToStudentPage.bind(this);
     this.goToStaffPage = this.goToStaffPage.bind(this);
@@ -328,7 +327,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     return selectItems;
   }
 
-
   saveWorkspace(closeDialog: () => any) {
     this.setState({
       locked: true,
@@ -426,7 +424,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
 
     switch (page) {
       case 1:
-        return <div>
+        return <form>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step1.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step1.description')} />
           </DialogRow>
@@ -463,7 +461,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               </div>
             </fieldset>
           </DialogRow>
-        </div >;
+        </form >;
       case 2:
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
@@ -474,7 +472,8 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         });
 
         let allItems = students.concat(groups);
-        return <DialogRow>
+        return <form>
+
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.description')} />
           </DialogRow>
@@ -484,10 +483,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
               selectedItems={this.state.addStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
           </DialogRow>
-        </DialogRow>;
+        </form>;
       case 3:
         const workspaceStudents = this.props.currentWorkspace.students && this.props.currentWorkspace.students.results ? this.turnStudentsToSelectItems(this.props.currentWorkspace.students.results) : [];
-        return <DialogRow>
+        return <form>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step3.description')} />
           </DialogRow>
@@ -506,13 +505,12 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               changePage={this.goToStudentPage}
               setRemoved={this.toggleStudentRemove} />
           </DialogRow>
-        </DialogRow>;
-
+        </form>;
       case 4:
         const staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
-        return <DialogRow>
+        return <form>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step4.description')} />
           </DialogRow>
@@ -522,11 +520,10 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
               selectedItems={this.state.addStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
           </DialogRow>
-        </DialogRow>
-
+        </form>
       case 5:
         const workspaceStaff = this.props.currentWorkspace.staffMembers && this.props.currentWorkspace.staffMembers.results ? this.turnStaffToSelectItems(this.props.currentWorkspace.staffMembers.results) : [];
-        return <DialogRow>
+        return <form>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step5.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step5.description')} />
           </DialogRow>
@@ -545,9 +542,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
               changePage={this.goToStaffPage}
               setRemoved={this.toggleStaffRemove} />
           </DialogRow>
-        </DialogRow>
-
-
+        </form>
       case 6:
         return <DialogRow modifiers="edit-workspace-summary">
           <DialogRow>

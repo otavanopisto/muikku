@@ -13,7 +13,6 @@ import AutofillSelector, { UiSelectItem } from '~/components/base/input-select-a
 import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType, UpdateUserGroupType, PagingEnvironmentUserListType, ModifyUserGroupUsersType, UpdateUserGroupStateType, CurrentUserGroupType, } from '~/reducers/main-function/users';
 import { UserGroupType, UserType } from '~/reducers/user-index';
-import { stringify } from 'query-string';
 
 interface ValidationType {
   nameValid: number
@@ -163,7 +162,6 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
 
     return selectItems;
   }
-
 
   doUserGroupStudentSearch(q: string) {
     this.setState({ searchValues: { ...this.state.searchValues, ["students"]: q } })
