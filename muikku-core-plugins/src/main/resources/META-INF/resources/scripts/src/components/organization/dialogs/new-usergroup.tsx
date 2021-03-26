@@ -21,7 +21,7 @@ interface OrganizationNewUserGroupProps {
   createOrganizationUsergroup: CreateUsergroupTriggerType,
   loadStudents: LoadUsersTriggerType,
   loadStaff: LoadUsersTriggerType,
-  loadUserGroups: LoadUsersTriggerType
+  loadUserGroups: LoadUsersTriggerType,
 }
 
 interface OrganizationNewUserGroupState {
@@ -239,14 +239,14 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
 
     switch (page) {
       case 1:
-        return <DialogRow>
+        return <form>
           <DialogRow modifiers="edit-workspace">
             <InputFormElement id="userGroupName" modifiers="user-group-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.usergroupName}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="edit-workspace">
             <InputFormElement id="isGuidanceGroup" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
           </DialogRow>
-        </DialogRow>;
+        </form>;
       case 2:
         let students = this.props.users.students.map(student => {
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
