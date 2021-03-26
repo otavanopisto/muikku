@@ -5,7 +5,6 @@ import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
 import { SearchFormElement } from '~/components/general/form-element';
 import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-import { UserType, ShortWorkspaceUserWithActiveStatusType } from '../../reducers/user-index';
 import Tabs from "~/components/general/tabs";
 import { UiSelectItem } from '../base/input-select-autofill';
 import { SelectItem, } from '~/actions/workspaces/index';
@@ -44,9 +43,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.oldOverflow = null;
     this.state = { visible: false }
   }
-
-
-
 
   onOverlayClick(close: () => any, e: Event) {
     if (e.target === e.currentTarget) {
