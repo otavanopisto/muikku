@@ -20,6 +20,7 @@ interface IWorkListEditableProps {
   }) => Promise<boolean>;
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
+  submitIcon: string;
 }
 
 interface IWorksListEditableState {
@@ -111,12 +112,12 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     // the picker for the template mode, or whatever wants to be added
     return (
       <div className="application-sub-panel__multiple-items">
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
+        {this.props.children ? <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
           <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.template.label")}</label>
           <div className="application-sub-panel__item-data">
             {this.props.children}
           </div>
-        </div>
+        </div> : null}
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description form-element">
           <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
           <div className="application-sub-panel__item-data">
@@ -170,7 +171,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
         </div>
         <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-submit form-element">
           <div className="application-sub-panel__item-data">
-            <ButtonPill buttonModifiers="add-worklist-entry" icon="plus" onClick={this.submit} />
+            <ButtonPill buttonModifiers="add-worklist-entry" icon={this.props.submitIcon} onClick={this.submit} />
           </div>
         </div>
       </div>

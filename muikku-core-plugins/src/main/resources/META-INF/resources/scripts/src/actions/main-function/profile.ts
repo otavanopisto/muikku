@@ -98,6 +98,26 @@ export interface InsertProfileWorklistItemTriggerType {
   }): AnyActionType;
 }
 
+export interface DeleteProfileWorklistItemTriggerType {
+  (data: {
+    item: StoredWorklistItem,
+    success?: () => void,
+    fail?: () => void,
+  }): AnyActionType;
+}
+
+export interface EditProfileWorklistItemTriggerType {
+  (data: {
+    item: StoredWorklistItem,
+    description: string,
+    entryDate: string,
+    price: number,
+    factor: number,
+    success?: () => void,
+    fail?: () => void,
+  }): AnyActionType;
+}
+
 export interface LoadProfileWorklistSectionTriggerType {
   (index: number, refresh?: boolean): AnyActionType;
 }
@@ -488,6 +508,112 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
   }
 }
 
+const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType = function deleteProfileWorklistItem(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (!state.profile || !state.profile.worklist) {
+      return;
+    }
+
+    try {
+      await promisify(mApi().worklist.worklistItems.del(data.item), 'callback')();
+      const expectedSummaryBeginDate = moment(data.item.entryDate).startOf("month").format("YYYY-MM-DD");
+
+      const currWorklist = getState().profile.worklist;
+      const matchingSummaryIndex = currWorklist.findIndex((f) => f.summary.beginDate === expectedSummaryBeginDate);
+      if (matchingSummaryIndex !== -1) {
+        const newSummary = {...currWorklist[matchingSummaryIndex]};
+        newSummary.summary.count--;
+        if (newSummary.items) {
+          newSummary.items = newSummary.items.filter((i) => i.id !== data.item.id);
+        }
+
+        let newWorklist: WorklistSection[];
+        if (newSummary.summary.count === 0) {
+          newWorklist = currWorklist.filter((i, index) => {
+            return index !== matchingSummaryIndex;
+          });
+        } else {
+          newWorklist = [...currWorklist];
+          newWorklist[matchingSummaryIndex] = newSummary;
+        }
+
+        dispatch({
+          type: "SET_WORKLIST",
+          payload: newWorklist,
+        });
+      }
+      data.success && data.success();
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      data.fail && data.fail();
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+    }
+  }
+}
+
+const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function deleteProfileWorklistItem(data) {
+  if (
+    data.description === data.item.description &&
+    data.entryDate === data.item.entryDate &&
+    data.factor === data.item.factor &&
+    data.price === data.item.price
+  ) {
+    return;
+  }
+
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (!state.profile || !state.profile.worklist) {
+      return;
+    }
+
+    try {
+      const newWorklistItem: StoredWorklistItem = await promisify(mApi().worklist.worklistItems.update({
+        id: data.item.id,
+        entryDate: data.entryDate,
+        description: data.description,
+        price: data.price,
+        factor: data.factor,
+      }), 'callback')() as StoredWorklistItem;
+  
+      const expectedSummaryBeginDate = moment(newWorklistItem.entryDate).startOf("month").format("YYYY-MM-DD");
+
+      const currWorklist = getState().profile.worklist;
+      const matchingSummaryIndex = currWorklist.findIndex((f) => f.summary.beginDate === expectedSummaryBeginDate);
+      if (matchingSummaryIndex !== -1 && currWorklist[matchingSummaryIndex].items) {
+        const newSummary = {...currWorklist[matchingSummaryIndex]};
+        newSummary.items = newSummary.items.map((i) => {
+          if (i.id === data.item.id) {
+            return newWorklistItem;
+          }
+          
+          return i;
+        });
+
+        const newWorklist = [...currWorklist]
+        newWorklist[matchingSummaryIndex] = newSummary;
+
+        dispatch({
+          type: "SET_WORKLIST",
+          payload: newWorklist,
+        });
+      }
+      data.success && data.success();
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      data.fail && data.fail();
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+    }
+  }
+}
+
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType = function loadProfileWorklistTemplates() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
@@ -558,7 +684,7 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
         beginDate: summary.beginDate,
         endDate: summary.endDate,
       }), 'callback')() as any;
-      const newWorkList = {...getState().profile.worklist};
+      const newWorkList = [...getState().profile.worklist];
       newWorkList[index] = {...newWorkList[index], items};
 
       dispatch({
@@ -578,5 +704,5 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
 export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
   updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
   deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
-  loadProfileWorklistSection, insertProfileWorklistItem};
+  loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem};
 

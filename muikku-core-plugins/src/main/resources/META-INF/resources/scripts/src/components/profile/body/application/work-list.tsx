@@ -6,6 +6,7 @@ import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
+import WorkListRow from "./components/work-list-row";
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -93,11 +94,9 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         const hasData = !!section.items;
 
         const entries = isOpen && hasData ? (
-          section.items.map((item, index) => {
+          section.items.map((item) => {
             return (
-              <div key={item.id}>
-                {item.description + " " + item.entryDate + " " + item.factor + " " + item.price}
-              </div>
+              <WorkListRow key={item.id} item={item}/>
             );
           })
         ) : null;
@@ -120,8 +119,14 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             <WorkListEditable
               base={this.state.currentTemplate}
               onSubmit={this.insertNew}
-              resetOnSubmit={true}>
-              <select className="form-element__select form-element__select--worklist-template" value={this.state.currentTemplate && this.state.currentTemplate.id} onChange={this.onSelect}>
+              resetOnSubmit={true}
+              submitIcon="plus"
+            >
+              <select
+                className="form-element__select form-element__select--worklist-template"
+                value={(this.state.currentTemplate && this.state.currentTemplate.id) || ""}
+                onChange={this.onSelect}
+              >
                 {this.props.profile.worklistTemplates && this.props.profile.worklistTemplates.map((v) => {
                   return (
                     <option value={v.id} key={v.id}>
