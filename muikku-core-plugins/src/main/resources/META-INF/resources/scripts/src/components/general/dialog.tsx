@@ -289,8 +289,8 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
         id: this.props.identifier + "-ALL",
         name: this.props.allTabTitle,
         component: ()=>{
-          return <DialogRow modifiers="user-search">
-            <DialogRow>
+          return <form>
+            <DialogRow modifiers="user-search">
               <SearchFormElement name="search-user-group-users" placeholder={this.props.placeholder} value={this.props.searchValue} id="searchUserGroupUsers"  updateField={this.props.searchUsers} />
             </DialogRow>
             <DialogRow>
@@ -312,7 +312,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
             <DialogRow>
             <Pager identifier={this.props.identifier + "All"} current={this.state.currentAllPage} onClick={this.goToAllUsersPage} pages={this.props.pages}></Pager>
             </DialogRow>
-          </DialogRow>
+          </form>
         }
       },
       {
@@ -320,7 +320,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
         name: this.props.removeTabTitle,
         component: ()=>{
           let removePages = Math.ceil(this.props.removeUsers.length / this.maxRemoveUsersPerPage);
-          return <DialogRow>
+          return <form>
             <DialogRow>
               <ApplicationList modifiers="dialog-remove-users">
                 {this.state.removeUsersPage.length > 0 ?
@@ -341,7 +341,7 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
               {this.props.removeUsers.length > 0 ?
               <Pager identifier={this.props.identifier + "Remove"} current={this.state.currentRemovePage} onClick={this.goToRemovePage} pages={removePages}></Pager> : null }
             </DialogRow>
-          </DialogRow>
+          </form>
         }
       }
     ]} />
