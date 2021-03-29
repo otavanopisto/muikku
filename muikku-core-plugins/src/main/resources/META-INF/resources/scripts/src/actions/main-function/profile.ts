@@ -562,6 +562,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
     data.factor === data.item.factor &&
     data.price === data.item.price
   ) {
+    data.success && data.success();
     return;
   }
 
