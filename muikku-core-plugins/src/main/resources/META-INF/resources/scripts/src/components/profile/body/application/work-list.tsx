@@ -61,7 +61,15 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     });
   }
 
-  public toggleSection(index: number) {
+  public onFormSubmit(e: React.FormEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  public toggleSection(index: number, e: React.MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
     this.props.loadProfileWorklistSection(index);
     const sectionToOpen = this.props.profile.worklist[index];
     const hasItInIt = this.state.openedSections.some((n) => n === sectionToOpen.summary.beginDate);
@@ -117,7 +125,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     );
 
     return <section>
-      <form>
+      <form onSubmit={this.onFormSubmit}>
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addNewEntry')}</h3>
