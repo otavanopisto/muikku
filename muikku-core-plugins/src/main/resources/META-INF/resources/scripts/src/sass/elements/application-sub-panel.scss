@@ -363,7 +363,7 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  margin: 0 10px 10px 0;
+  margin: 2px 10px 2px 0;
 
   .application-sub-panel__item-title {
     flex-basis: 100%;
@@ -404,39 +404,36 @@
   flex-basis: 100px;
   flex-grow: 0;
   flex-shrink: 0;
-
-  @include breakpoint($breakpoint-pad) {
-
-  }
+  justify-content: center;
 }
 
  .application-sub-panel__multiple-item-container--worklist-price {
   flex-basis: 60px;
   flex-grow: 0;
   flex-shrink: 0;
-
-  @include breakpoint($breakpoint-pad) {
-
-  }
+  justify-content: center;
 }
 
  .application-sub-panel__multiple-item-container--worklist-factor {
   flex-basis: 60px;
   flex-grow: 0;
   flex-shrink: 0;
-
-  @include breakpoint($breakpoint-pad) {
-
-  }
+  justify-content: center;
 }
 
 .application-sub-panel__multiple-item-container--worklist-submit {
-  margin: 0 0 10px;
-  padding: 1.5rem 0 0;
+  align-self: flex-end;
+  margin: 0 0 2px;
+}
 
-  @include breakpoint($breakpoint-pad) {
-
-  }
+.application-sub-panel__multiple-item-container--worklist-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: 85px;
+  flex-grow: 1;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+  margin: 2px 0;
 }
 
 // Subpanel Item

@@ -103,8 +103,14 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
         return (
           <div key={section.summary.beginDate}>
-            <button onClick={this.toggleSection.bind(this, index)}>{section.summary.displayName}</button>
-            {entries && entries.reverse()}
+            <h3 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header">
+              <span className={isOpen ? "icon-minus" : "icon-plus"}></span>
+              <span>{section.summary.displayName} ({section.summary.count})</span>
+            </h3>
+            <div className="application-sub-panel__body">
+              {entries && entries.reverse()}
+            </div>
+
           </div>
         );
       })
@@ -114,19 +120,17 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       <form>
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
         <div className="application-sub-panel">
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addNewEntry')}</h3>
           <div className="application-sub-panel__body">
-            <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addNewEntry')}</h3>
             <WorkListEditable
               base={this.state.currentTemplate}
               onSubmit={this.insertNew}
-              resetOnSubmit={true}
-              submitIcon="plus"
-            >
+              isEditMode={false}
+              resetOnSubmit={true}>
               <select
                 className="form-element__select form-element__select--worklist-template"
                 value={(this.state.currentTemplate && this.state.currentTemplate.id) || ""}
-                onChange={this.onSelect}
-              >
+                onChange={this.onSelect}>
                 {this.props.profile.worklistTemplates && this.props.profile.worklistTemplates.map((v) => {
                   return (
                     <option value={v.id} key={v.id}>
@@ -136,9 +140,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
                 })}
               </select>
             </WorkListEditable>
-
-            {sections && sections.reverse()}
           </div>
+        </div>
+        <div className="application-sub-panel">
+          {sections && sections.reverse()}
         </div>
       </form>
     </section>;

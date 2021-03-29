@@ -20,7 +20,7 @@ interface IWorkListEditableProps {
   }) => Promise<boolean>;
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
-  submitIcon: string;
+  isEditMode: boolean;
 }
 
 interface IWorksListEditableState {
@@ -111,7 +111,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     // this represents the row itself when it's in edit mode, the children is basically
     // the picker for the template mode, or whatever wants to be added
     return (
-      <div className="application-sub-panel__multiple-items">
+      <div className={`application-sub-panel__multiple-items ${this.props.isEditMode ? "application-sub-panel__multiple-items--edit-mode" : null}`}>
         {this.props.children ? <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
           <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.template.label")}</label>
           <div className="application-sub-panel__item-data">
@@ -119,7 +119,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
           </div>
         </div> : null}
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description form-element">
-          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
+          {!this.props.isEditMode && <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>}
           <div className="application-sub-panel__item-data">
           <input
             className="form-element__input form-element__input--worklist-description"
@@ -131,7 +131,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
           </div>
         </div>
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date form-element">
-          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</label>
+          {!this.props.isEditMode && <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</label>}
           <div className="application-sub-panel__item-data">
             <DatePicker
               disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.ENTRYDATE)}
@@ -144,37 +144,44 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
           </div>
         </div>
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price form-element">
-          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.price.label")}</label>
+          {!this.props.isEditMode && <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.price.label")}</label>}
           <div className="application-sub-panel__item-data">
             <input
               className="form-element__input form-element__input--worklist-price"
               type="text"
               value={this.state.price}
               onChange={this.updateOne.bind(this, "price")}
-              size={2}
               disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.PRICE)}
             />
           </div>
         </div>
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor form-element">
-          <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.factor.label")}</label>
+          {!this.props.isEditMode && <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.factor.label")}</label>}
           <div className="application-sub-panel__item-data">
             <input
               className="form-element__input form-element__input--worklist-factor"
               type="text"
               value={this.state.factor}
               onChange={this.updateOne.bind(this, "factor")}
-              size={2}
               disabled={this.props.base && !this.props.base.editableFields.includes(EditableField.FACTOR)}
             />
           </div>
         </div>
-        <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-submit form-element">
-          <div className="application-sub-panel__item-data">
-            <ButtonPill buttonModifiers="add-worklist-entry" icon={this.props.submitIcon} onClick={this.submit} />
+        {this.props.isEditMode ?
+          <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions">
+            <div className="application-sub-panel__item-data">
+                <ButtonPill buttonModifiers="cancel-worklist-entry" icon="back" />
+                <ButtonPill buttonModifiers="save-worklist-entry" icon="check" onClick={this.submit} />
+              </div>
           </div>
+          :
+          <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-submit">
+            <div className="application-sub-panel__item-data">
+              <ButtonPill buttonModifiers={`${this.props.isEditMode ? "save-worklist-entry" : "add-worklist-entry"}`} icon="plus" onClick={this.submit} />
+            </div>
+          </div>
+        }
         </div>
-      </div>
     );
   }
 }

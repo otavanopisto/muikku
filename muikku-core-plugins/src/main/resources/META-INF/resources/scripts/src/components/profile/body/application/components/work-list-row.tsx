@@ -77,32 +77,30 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
           base={this.props.item}
           onSubmit={this.onEdit}
           resetOnSubmit={false}
-          submitIcon="edit"
+          isEditMode={true}
         />
       );
     }
 
     return (
       <div className="application-sub-panel__multiple-items">
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description form-element">
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
           {this.props.item.description}
         </div>
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date form-element">
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
           {this.props.i18n.time.format(this.props.item.entryDate)}
         </div>
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price form-element">
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
           {this.props.item.price}
         </div>
-        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor form-element">
+        <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}
         </div>
-        <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-submit form-element">
+        <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
           <div className="application-sub-panel__item-data">
-            <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />
+            {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
+            {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
           </div>
-          {this.props.item.removable ? <div className="application-sub-panel__item-data">
-            <ButtonPill buttonModifiers="edit-worklist-entry" icon="delete" onClick={this.onDelete} />
-          </div> : null}
         </div>
       </div>
     );
