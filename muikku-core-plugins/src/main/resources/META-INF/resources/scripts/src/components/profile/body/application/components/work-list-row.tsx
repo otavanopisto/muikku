@@ -9,6 +9,7 @@ import WorkListEditable from "./work-list-editable";
 import { DeleteProfileWorklistItemTriggerType, deleteProfileWorklistItem,
   editProfileWorklistItem, EditProfileWorklistItemTriggerType} from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
+import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 
 interface IWorkListRowProps {
   i18n: i18nType,
@@ -19,6 +20,7 @@ interface IWorkListRowProps {
 
 interface IWorksListEditableState {
   editMode: boolean;
+  deleteMode: boolean;
 }
 
 class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableState> {
@@ -26,11 +28,13 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
     super(props);
 
     this.toggleEditMode = this.toggleEditMode.bind(this);
+    this.closeDeleteDialog = this.closeDeleteDialog.bind(this);
     this.onEdit = this.onEdit.bind(this);
     this.onDelete = this.onDelete.bind(this);
 
     this.state = {
       editMode: false,
+      deleteMode: false,
     }
   }
   public toggleEditMode() {
@@ -64,11 +68,15 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
       });
     });
   }
+  public closeDeleteDialog() {
+    this.setState({
+      deleteMode: false,
+    })
+  }
   public onDelete() {
-    // Maybe show a dialog? this is too quick to execute
-    this.props.deleteProfileWorklistItem({
-      item: this.props.item,
-    });
+    this.setState({
+      deleteMode: true,
+    })
   }
   public render() {
     if (this.state.editMode) {
@@ -104,6 +112,12 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
             <ButtonPill buttonModifiers="edit-worklist-entry" icon="delete" onClick={this.onDelete} />
           </div> : null}
         </div>
+
+        <DeleteWorklistItemDialog
+          isOpen={this.state.deleteMode}
+          item={this.props.item}
+          onClose={this.closeDeleteDialog}
+        />
       </div>
     );
   }
