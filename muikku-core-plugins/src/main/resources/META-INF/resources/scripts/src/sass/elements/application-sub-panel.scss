@@ -406,6 +406,11 @@
   }
 }
 
+.application-sub-panel__multiple-items--edit-mode {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 5px 0;
+}
+
 .application-sub-panel__multiple-item-container--worklist-template {
   flex-basis: 100%;
 
