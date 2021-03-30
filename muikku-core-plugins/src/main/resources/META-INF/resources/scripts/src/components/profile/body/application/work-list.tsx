@@ -117,6 +117,22 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
               <span>{section.summary.displayName} ({section.summary.count})</span>
             </h3>
             <div className="application-sub-panel__body">
+              {isOpen && <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.price.label")}</label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.factor.label")}</label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
+                </div>
+              </div>}
               {entries && entries.reverse()}
             </div>
           </div>

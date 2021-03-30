@@ -435,9 +435,8 @@
 .application-sub-panel__multiple-item-container--worklist-description {
   flex-basis: 100%;
 
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: calc(100% - 60px);
-
+  .application-sub-panel__item-title--worklist-list-mode {
+    margin: 0;
   }
 }
 
@@ -446,6 +445,13 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
 }
 
  .application-sub-panel__multiple-item-container--worklist-price {
@@ -453,6 +459,13 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
 }
 
  .application-sub-panel__multiple-item-container--worklist-factor {
@@ -460,6 +473,13 @@
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
 }
 
 .application-sub-panel__multiple-item-container--worklist-submit {
