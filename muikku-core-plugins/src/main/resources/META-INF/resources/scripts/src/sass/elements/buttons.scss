@@ -635,7 +635,7 @@
   }
 
   &.disabled,
-  &:disabled {
+  &.disabled:hover {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
     cursor: default;
