@@ -84,7 +84,9 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
         <WorkListEditable
           base={this.props.item}
           onSubmit={this.onEdit}
+          onCancel={this.toggleEditMode}
           resetOnSubmit={false}
+          enableDisableSubmitOnEquality={true}
           isEditMode={true}
         />
       );
