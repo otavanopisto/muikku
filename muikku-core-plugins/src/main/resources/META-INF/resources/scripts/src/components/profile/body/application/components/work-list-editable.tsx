@@ -18,6 +18,8 @@ interface IWorkListEditableProps {
     price: number;
     factor: number;
   }) => Promise<boolean>;
+  onCancel?: () => void;
+  enableDisableSubmitOnEquality?: boolean;
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
   isEditMode: boolean;
@@ -36,7 +38,9 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
 
     this.state = this.setupState(props, true);
     this.submit = this.submit.bind(this);
+    this.cancel = this.cancel.bind(this);
     this.updateOne = this.updateOne.bind(this);
+    this.canSubmitOnInequality = this.canSubmitOnInequality.bind(this);
   }
   public async submit() {
     const description = this.state.description.trim();
@@ -54,6 +58,22 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     if (submitStatus && this.props.resetOnSubmit) {
       this.setupState();
     }
+  }
+  public cancel() {
+    this.props.onCancel();
+  }
+  public canSubmitOnInequality() {
+    const description = this.state.description.trim();
+    const date = this.state.date.format("YYYY-MM-DD");
+    const price = parseFloat(this.state.price.replace(",","."));
+    const factor = parseFloat(this.state.factor.replace(",","."));
+
+    return (
+      this.props.base.description !== description ||
+      ((this.props.base as StoredWorklistItem).entryDate || null) !== date ||
+      this.props.base.price !== price ||
+      this.props.base.factor !== factor
+    );
   }
   public setupState(props: IWorkListEditableProps = this.props, setupPhase: boolean = false): IWorksListEditableState {
     const newState: IWorksListEditableState = {
@@ -106,6 +126,8 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     } as any);
   }
   public render() {
+    const disableSubmitButton = this.props.enableDisableSubmitOnEquality ? !this.canSubmitOnInequality() : false;
+
     // this component is what should display both for introducing new elements
     // in the work list, aka, edit based on a template, and to edit existing elements
     // this represents the row itself when it's in edit mode, the children is basically
@@ -170,14 +192,14 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
         {this.props.isEditMode ?
           <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions">
             <div className="application-sub-panel__item-data">
-                <ButtonPill buttonModifiers="cancel-worklist-entry" icon="back" />
-                <ButtonPill buttonModifiers="save-worklist-entry" icon="check" onClick={this.submit} />
+                <ButtonPill buttonModifiers="cancel-worklist-entry" icon="back" onClick={this.cancel} />
+                <ButtonPill buttonModifiers="save-worklist-entry" icon="check" onClick={this.submit} disabled={disableSubmitButton}/>
               </div>
           </div>
           :
           <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-submit">
             <div className="application-sub-panel__item-data">
-              <ButtonPill buttonModifiers={`${this.props.isEditMode ? "save-worklist-entry" : "add-worklist-entry"}`} icon="plus" onClick={this.submit} />
+              <ButtonPill disabled={disableSubmitButton} buttonModifiers={`${this.props.isEditMode ? "save-worklist-entry" : "add-worklist-entry"}`} icon="plus" onClick={this.submit} />
             </div>
           </div>
         }
