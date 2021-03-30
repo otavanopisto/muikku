@@ -74,6 +74,21 @@
   padding: 0;
 }
 
+.application-sub-panel__header--worklist-entries {
+  background: $color-subpanel-header-background;
+  cursor: pointer;
+  margin:0;
+  padding: 5px;
+}
+
+.application-sub-panel__header-action {
+  border-radius: 3px;
+  border: 1px solid $color-subpanel-border;
+  font-size: 1rem;
+  margin: 0 10px 0 0;
+  padding: 4px;
+}
+
 .application-sub-panel__header-main-container {
   align-items: flex-start;
   display: flex;
@@ -376,6 +391,18 @@
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
+  }
+}
+
+.application-sub-panel__multiple-items--list-mode {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 5px 0;
+
+  .application-sub-panel__multiple-item-container--worklist-description {
+
+    @include breakpoint($breakpoint-pad) {
+      padding: 0 12px;
+    }
   }
 }
 
@@ -818,14 +845,6 @@
 }
 
 // Studies
-.application-sub-panel__header--studies-detailed-info {
-  padding: 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 0;
-  }
-}
-
 .application-sub-panel__header--studies-hops,
 .application-sub-panel__header--studies-vops {
   font-size: 1.1875rem;

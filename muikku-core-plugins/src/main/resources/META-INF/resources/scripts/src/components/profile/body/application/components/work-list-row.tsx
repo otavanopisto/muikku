@@ -91,7 +91,7 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
     }
 
     return (
-      <div className="application-sub-panel__multiple-items">
+      <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
           {this.props.item.description}
         </div>

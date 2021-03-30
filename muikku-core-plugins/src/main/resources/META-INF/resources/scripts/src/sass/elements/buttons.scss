@@ -1501,6 +1501,22 @@
 }
 
 // Teacher's Worklist
+.button-pill--expand-worklist {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-default-helper;
+  font-size: 0.625rem;
+  height: 1.5rem;
+  width: 1.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
 .button-pill--add-worklist-entry {
   border-radius: 3px;
   color: $color-default;
@@ -1521,6 +1537,13 @@
   margin: 0 0 0 5px;
   width: 2.25rem;
 
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: darken($color-execute, 20%);
+  }
+
   @include breakpoint($breakpoint-pad) {
     height: 2.5rem;
     width: 2.5rem;
@@ -1534,6 +1557,13 @@
   height: 2.25rem;
   width: 2.25rem;
 
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: darken($color-cancel, 20%);
+  }
+
   @include breakpoint($breakpoint-pad) {
     height: 2.5rem;
     width: 2.5rem;
@@ -1544,17 +1574,33 @@
   background: transparent;
   border-radius: 3px;
   color: $color-info;
+  font-size: 0.875rem;
   height: 1.5rem;
   width: 2.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
 }
 
 .button-pill--delete-worklist-entry {
   background: transparent;
   border-radius: 3px;
   color: $color-fatal;
+  font-size: 0.875rem;
   height: 1.5rem;
   margin: 0 0 0 5px;
   width: 2.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
 }
 
 .button--wizard {

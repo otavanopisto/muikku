@@ -7,6 +7,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import WorkListRow from "./components/work-list-row";
+import { ButtonPill } from '~/components/general/button';
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -110,15 +111,14 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         ) : null;
 
         return (
-          <div key={section.summary.beginDate}>
-            <h3 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header">
-              <span className={isOpen ? "icon-minus" : "icon-plus"}></span>
+          <div key={section.summary.beginDate} className="application-sub-panel">
+            <h3 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
+              <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
               <span>{section.summary.displayName} ({section.summary.count})</span>
             </h3>
             <div className="application-sub-panel__body">
               {entries && entries.reverse()}
             </div>
-
           </div>
         );
       })
@@ -150,9 +150,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             </WorkListEditable>
           </div>
         </div>
-        <div className="application-sub-panel">
-          {sections && sections.reverse()}
-        </div>
+        {sections && sections.reverse()}
       </form>
     </section>;
   }
