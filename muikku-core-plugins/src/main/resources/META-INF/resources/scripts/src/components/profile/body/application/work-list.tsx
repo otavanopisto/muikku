@@ -127,7 +127,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     return <section>
       <form onSubmit={this.onFormSubmit}>
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.worklist')}</h2>
-        <div className="application-sub-panel">
+        <div className="application-sub-panel application-sub-panel--worklist">
           <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addNewEntry')}</h3>
           <div className="application-sub-panel__body">
             <WorkListEditable
