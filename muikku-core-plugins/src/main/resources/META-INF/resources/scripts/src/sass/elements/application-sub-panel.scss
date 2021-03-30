@@ -13,6 +13,14 @@
   }
 }
 
+.application-sub-panel--worklist {
+
+  &:last-child {
+    border-bottom: 1px solid $color-subpanel-border;
+    margin: 0;
+  }
+}
+
 .application-sub-panel--yo-status-container {
   border-bottom: 0;
   flex-basis: 50%;

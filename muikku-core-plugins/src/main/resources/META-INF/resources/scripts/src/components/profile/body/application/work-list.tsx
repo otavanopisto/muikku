@@ -111,7 +111,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         ) : null;
 
         return (
-          <div key={section.summary.beginDate} className="application-sub-panel">
+          <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
             <h3 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
               <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
               <span>{section.summary.displayName} ({section.summary.count})</span>
