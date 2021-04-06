@@ -9,7 +9,7 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { GuiderType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
-import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { SearchFormElement } from '~/components/general/form-element';
 

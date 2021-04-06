@@ -23,7 +23,7 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
-import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { SearchFormElement } from '~/components/general/form-element';
 
