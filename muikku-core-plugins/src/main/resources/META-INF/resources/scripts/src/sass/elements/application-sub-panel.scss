@@ -14,7 +14,7 @@
 }
 
 .application-sub-panel--worklist {
-    margin: 0 0 10px;
+  margin: 0 0 10px;
 
   &:last-child {
     border-bottom: 1px solid $color-subpanel-border;
@@ -86,13 +86,13 @@
 .application-sub-panel__header--worklist-entries {
   background: $color-subpanel-header-background;
   cursor: pointer;
-  margin:0;
+  margin: 0;
   padding: 5px;
 }
 
 .application-sub-panel__header-action {
-  border-radius: 3px;
   border: 1px solid $color-subpanel-border;
+  border-radius: 3px;
   font-size: 1rem;
   margin: 0 10px 0 0;
   padding: 4px;
@@ -372,7 +372,7 @@
   padding: 0 10px 10px;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 0 0 10px 0;
+    padding: 0 0 10px;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -383,8 +383,8 @@
 // Subpanel container for single item inside multiple-items wrapper
 .application-sub-panel__multiple-item-container {
   display: flex;
-  flex-flow: row wrap;
   flex-basis: auto;
+  flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
   margin: 2px 10px 2px 0;
@@ -440,7 +440,7 @@
   }
 }
 
- .application-sub-panel__multiple-item-container--worklist-date {
+.application-sub-panel__multiple-item-container--worklist-date {
   flex-basis: 100px;
   flex-grow: 0;
   flex-shrink: 0;
@@ -454,7 +454,7 @@
   }
 }
 
- .application-sub-panel__multiple-item-container--worklist-price {
+.application-sub-panel__multiple-item-container--worklist-price {
   flex-basis: 60px;
   flex-grow: 0;
   flex-shrink: 0;
@@ -468,7 +468,7 @@
   }
 }
 
- .application-sub-panel__multiple-item-container--worklist-factor {
+.application-sub-panel__multiple-item-container--worklist-factor {
   flex-basis: 60px;
   flex-grow: 0;
   flex-shrink: 0;
@@ -491,8 +491,8 @@
   align-items: center;
   display: flex;
   flex-basis: 85px;
-  flex-grow: 1;
   flex-flow: row nowrap;
+  flex-grow: 1;
   flex-shrink: 0;
   margin: 2px 0;
 }
