@@ -45,12 +45,13 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
     let newValue = parseInt(e.target.value) || null;
     this.props.loadCurrentWorkspaceJournalsFromServer(newValue);
   }
+
   render() {
     let title = this.props.i18n.text.get('plugin.workspace.journal.pageTitle');
-    let toolbar = <Toolbar />
+    let toolbar = <Toolbar />;
     let primaryOption;
     if (this.props.workspace) {
-      primaryOption = !this.props.status.isStudent && this.props.workspace.journals ?
+      primaryOption = !this.props.status.isStudent && this.props.workspace.journals && this.props.workspace.students ?
         <div className="form-element form-element--main-action">
           <label htmlFor="selectJournal" className="visually-hidden">{this.props.i18n.text.get("plugin.wcag.journalSelect.label")}</label>
           <select id="selectJournal" className="form-element__select form-element__select--main-action"
