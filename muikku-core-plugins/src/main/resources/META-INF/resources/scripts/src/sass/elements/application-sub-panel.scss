@@ -428,7 +428,7 @@
 .application-sub-panel__multiple-item-container--worklist-template {
   flex-basis: 100%;
 
-    @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
   }
 }
