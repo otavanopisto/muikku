@@ -190,9 +190,7 @@ export default class ApplicationPanelBody extends React.Component<
 
   render() {
     const helperContainerHeight =
-      this.state.remainingHeight - this.props.offsetBorderAgainstBottom;
-
-    console.log(helperContainerHeight);
+      this.state.remainingHeight - this.props.offsetBorderAgainstBottom || 0;
 
     return (
       <div
