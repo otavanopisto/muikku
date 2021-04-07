@@ -97,7 +97,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       return null;
     }
 
-    const sectionLabels = (<div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
+    const sectionLabels = (<div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode application-sub-panel__multiple-items--item-labels">
       <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
       </div>

@@ -403,54 +403,65 @@
   }
 }
 
+.application-sub-panel__multiple-items--item-labels {
+  display: none;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: flex;
+  }
+}
+
 .application-sub-panel__multiple-items--list-mode {
   border-top: 1px solid $color-default-separator-border;
-  padding: 5px 0;
-
-  .application-sub-panel__multiple-item-container--worklist-description {
-
-    @include breakpoint($breakpoint-pad) {
-      padding: 0 12px;
-    }
-  }
+  padding: 5px 0 5px 12px;
 }
 
 .application-sub-panel__multiple-items--edit-mode {
   border-top: 1px solid $color-default-separator-border;
-  padding: 5px 0;
+  padding: 5px 12px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
 }
 
 .application-sub-panel__multiple-item-container--worklist-template {
   flex-basis: 100%;
 
-  @include breakpoint($breakpoint-pad) {
-
-  }
-
-  @include breakpoint($breakpoint-desktop) {
+    @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
   }
 }
 
 .application-sub-panel__multiple-item-container--worklist-description {
   flex-basis: 100%;
+  margin: 2px 0;
 
   .application-sub-panel__item-title--worklist-list-mode {
     margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    margin: 2px 10px 2px 0;
   }
 }
 
 .application-sub-panel__multiple-item-container--worklist-date {
   flex-basis: 100px;
-  flex-grow: 0;
+  flex-grow: 1;
   flex-shrink: 0;
-  justify-content: center;
+  justify-content: flex-start;
 
   .application-sub-panel__item-title--worklist-list-mode {
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 1;
     margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 0;
+    justify-content: center;
   }
 }
 
@@ -492,9 +503,14 @@
   display: flex;
   flex-basis: 85px;
   flex-flow: row nowrap;
-  flex-grow: 1;
+  flex-grow: 0;
   flex-shrink: 0;
+  justify-content: flex-end;
   margin: 2px 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+  }
 }
 
 // Subpanel Item
