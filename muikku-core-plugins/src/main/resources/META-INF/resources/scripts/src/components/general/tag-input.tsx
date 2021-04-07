@@ -108,7 +108,7 @@ export class TagItems extends React.Component<TagItemsProps, TagItemsState> {
   render() {
     return <div className={`tag-input__selected-items ${this.props.modifier ? "tag-input__selected-items--" + this.props.modifier : ""}`}>
       {this.props.tags && this.props.tags.map((tag, index) => {
-        <TagItem key={this.props.identifier + index} tag={tag} onDelete={this.props.onDelete} />
+        return <TagItem key={this.props.identifier + index} tag={tag} onDelete={this.props.onDelete} />
       })}
     </div>
   }
