@@ -581,7 +581,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
         price: data.price,
         factor: data.factor,
       }), 'callback')() as StoredWorklistItem;
-  
+
       const expectedSummaryBeginDate = moment(newWorklistItem.entryDate).startOf("month").format("YYYY-MM-DD");
 
       const currWorklist = getState().profile.worklist;
@@ -592,7 +592,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
           if (i.id === data.item.id) {
             return newWorklistItem;
           }
-          
+
           return i;
         });
 
@@ -692,7 +692,7 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
         type: "SET_WORKLIST",
         payload: newWorkList,
       });
-  
+
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;

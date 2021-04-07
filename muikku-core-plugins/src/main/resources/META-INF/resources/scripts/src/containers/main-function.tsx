@@ -172,7 +172,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
     if (location === "work") {
       this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
-      this.props.store.dispatch(loadProfileWorklistSections() as Action); 
+      this.props.store.dispatch(loadProfileWorklistSections() as Action);
     }
   }
 
