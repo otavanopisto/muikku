@@ -124,7 +124,6 @@ export default class ApplicationPanelBody extends React.Component<
     }
 
     //So we save that here
-
     this.setState({
       offsetElementAgainstTop: this.offsetElementAgainstTop,
     });
@@ -161,7 +160,7 @@ export default class ApplicationPanelBody extends React.Component<
         (this.refs["sticky"] as HTMLElement).offsetTop -
         top;
 
-    const bottom = Math.round(scrollHeight - top) - height;
+    const bottom = scrollHeight - top - height;
 
     let borderBottomSize = bottom + this.borderWidth;
 
@@ -208,6 +207,9 @@ export default class ApplicationPanelBody extends React.Component<
       asideBeforeWidth,
     } = this.state;
 
+    /**
+     * Calculating remaining helperContainerHeight if parrent panel component has passed padding-bottom value
+     */
     const helperContainerHeight =
       remainingHeight - offsetBorderAgainstBottom || 0;
 
