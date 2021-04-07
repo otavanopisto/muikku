@@ -14,6 +14,7 @@ export interface AutofillSelectorProps {
   placeholder?: string,
   label?: string,
   modifier: string,
+  identifier: string,
   searchItems: UiSelectItem[],
   selectedItems: UiSelectItem[],
   autofocus?: boolean,
@@ -32,8 +33,7 @@ export interface AutofillSelectorState {
 
 export default class AutofillSelector extends React.Component<AutofillSelectorProps, AutofillSelectorState> {
   private blurTimeout: NodeJS.Timer;
-  private selectedHeight: number;
-  private activeSearchId: number;
+  // private selectedHeight: number;
   private activeSearchTimeout: NodeJS.Timer;
 
   constructor(props: AutofillSelectorProps) {
@@ -48,13 +48,13 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     }
 
     this.blurTimeout = null;
-    this.selectedHeight = null;
+    // this.selectedHeight = null;
     this.onInputChange = this.onInputChange.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
 
-    this.activeSearchId = null;
+    // this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
 
@@ -91,10 +91,10 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     }
   }
 
-  componentDidMount() {
-    let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
-    this.selectedHeight = selectedHeight;
-  }
+  // componentDidMount() {
+  //   let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
+  //   this.selectedHeight = selectedHeight;
+  // }
 
   render() {
     let selectedItems = this.props.selectedItems.map((item) => {
@@ -131,7 +131,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
 
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
-      <TagInput ref="taginput" modifier={this.props.modifier}
+      <TagInput identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         label={this.props.label} placeholder={this.props.placeholder}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.props.onDelete} />

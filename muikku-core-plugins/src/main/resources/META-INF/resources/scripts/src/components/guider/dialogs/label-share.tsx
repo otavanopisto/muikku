@@ -1,10 +1,10 @@
 import * as React from 'react';
 import Dialog from '~/components/general/dialog';
 import Link from '~/components/general/link';
-import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {AnyActionType} from '~/actions';
-import {i18nType } from '~/reducers/base/i18n';
+import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { AnyActionType } from '~/actions';
+import { i18nType } from '~/reducers/base/i18n';
 import mApi from '~/lib/mApi';
 
 import '~/sass/elements/buttons.scss';
@@ -17,7 +17,7 @@ import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/user-index';
 import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
-import {StateType} from '~/reducers';
+import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 
 const KEYCODES = {
@@ -28,7 +28,7 @@ interface GuiderLabelShareDialogProps {
   children: React.ReactElement<any>,
   label: GuiderUserLabelType,
   isOpen?: boolean,
-  onClose?: ()=>any,
+  onClose?: () => any,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType,
   userIndex: UserIndexType
@@ -40,7 +40,7 @@ interface GuiderLabelShareDialogState {
 
 class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps, GuiderLabelShareDialogState> {
   sharesResult: any;
-  constructor(props: GuiderLabelShareDialogProps){
+  constructor(props: GuiderLabelShareDialogProps) {
     super(props);
 
     this.share = this.share.bind(this);
@@ -54,14 +54,14 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
       selectedItems: []
     }
   }
-  componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps){
-    if (nextProps.userIndex !== this.props.userIndex){
+  componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps) {
+    if (nextProps.userIndex !== this.props.userIndex) {
       this.updateSharesState(nextProps);
     }
   }
-  updateSharesState(props=this.props){
+  updateSharesState(props = this.props) {
     this.setState({
-      selectedItems: this.sharesResult.map((result:any)=>{
+      selectedItems: this.sharesResult.map((result: any) => {
         return {
           type: "staff",
           value: {
@@ -73,22 +73,22 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
             userEntityId: result.user.userEntityId
           }
         }
-      }).filter((r:StaffRecepientType)=>r!==null)
+      }).filter((r: StaffRecepientType) => r !== null)
     })
   }
-  async getShares(){
-    this.setState({selectedItems: []});
+  async getShares() {
+    this.setState({ selectedItems: [] });
     try {
       this.sharesResult = await promisify(mApi().user.flags.shares.read(this.props.label.id), 'callback')();
       this.updateSharesState();
-    } catch (e){
+    } catch (e) {
       this.props.displayNotification(e.message, "error");
     }
   }
-  share(closeDialog: ()=>any){
-    this.state.selectedItems.forEach(async (member:StaffRecepientType)=>{
-      let wasAdded = !this.sharesResult.find((share:any)=>{return share.userIdentifier === member.value.id});
-      if (wasAdded){
+  share(closeDialog: () => any) {
+    this.state.selectedItems.forEach(async (member: StaffRecepientType) => {
+      let wasAdded = !this.sharesResult.find((share: any) => { return share.userIdentifier === member.value.id });
+      if (wasAdded) {
         try {
           await promisify(mApi().user.flags.shares.create(this.props.label.id, {
             flagId: this.props.label.id,
@@ -99,9 +99,9 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
         }
       }
     });
-    this.sharesResult.forEach(async (share:any)=>{
-      let wasRemoved = !this.state.selectedItems.find((member:StaffRecepientType)=>{return member.value.id === share.userIdentifier});
-      if (wasRemoved){
+    this.sharesResult.forEach(async (share: any) => {
+      let wasRemoved = !this.state.selectedItems.find((member: StaffRecepientType) => { return member.value.id === share.userIdentifier });
+      if (wasRemoved) {
         try {
           await promisify(mApi().user.flags.shares.del(this.props.label.id, share.id), 'callback')();
         } catch (e) {
@@ -111,11 +111,11 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     });
     closeDialog();
   }
-  onSharedMembersChange(members: StaffRecepientType[]){
-    this.setState({selectedItems: members});
+  onSharedMembersChange(members: StaffRecepientType[]) {
+    this.setState({ selectedItems: members });
   }
-  render(){
-    let footer = (closeDialog: ()=>any)=>{
+  render() {
+    let footer = (closeDialog: () => any) => {
       return <div className="dialog__button-set">
         <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
           {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
@@ -125,28 +125,28 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
         </Button>
       </div>
     }
-    let content = (closeDialog: ()=>any)=>{
+    let content = (closeDialog: () => any) => {
       return (
-        <InputContactsAutofill modifier="guider" onChange={this.onSharedMembersChange}
+        <InputContactsAutofill identifier="guiderLabelShare" modifier="guider" onChange={this.onSharedMembersChange}
           selectedItems={this.state.selectedItems} hasGroupPermission={false} hasUserPermission={false}
-          hasWorkspacePermission={false} hasStaffPermission autofocus showEmails={false} showFullNames/>
+          hasWorkspacePermission={false} hasStaffPermission autofocus showEmails={false} showFullNames />
       )
     }
     return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onOpen={this.getShares} modifier="guider-share-label"
-     title={this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.title', this.props.label.name)}
-     content={content} footer={footer}>{this.props.children}</Dialog>
+      title={this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.title', this.props.label.name)}
+      content={content} footer={footer}>{this.props.children}</Dialog>
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     userIndex: state.userIndex
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({displayNotification}, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 };
 
 export default connect(

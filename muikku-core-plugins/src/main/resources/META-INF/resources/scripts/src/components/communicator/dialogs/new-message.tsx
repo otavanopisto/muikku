@@ -106,7 +106,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       to: this.state.selectedItems,
       subject: this.state.subject,
       text: ((this.props.signature && this.state.includesSignature) ?
-        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>'):
+        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>') :
         this.state.text),
       success: () => {
         closeDialog();
@@ -154,37 +154,37 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       }), 'callback')
     }
   }
-  render(){
+  render() {
     let editorTitle = this.props.i18n.text.get('plugin.communicator.createmessage.label') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content');
 
-    let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill wcagLabel="communicatorRecipients" modifier="new-message" key="1"
-          loaders={this.inputContactsAutofillLoaders()}
-          hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
-          hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
-          placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-          label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-          selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
-          showFullNames={!this.props.status.isStudent}/>),
+    let content = (closeDialog: () => any) => [
+      (<InputContactsAutofill identifier="communicatorRecipients" modifier="new-message" key="new-message-1"
+        loaders={this.inputContactsAutofillLoaders()}
+        hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+        hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+        placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+        label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
+        showFullNames={!this.props.status.isStudent} />),
       (
-       <div className="env-dialog__row" key="2">
-        <div className="env-dialog__form-element-container">
-          <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
-          <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
-          value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
+        <div className="env-dialog__row" key="new-message-2">
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
+            <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
+              value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems} />
+          </div>
         </div>
-      </div>
       ),
       (
-      <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
-        <div className="env-dialog__form-element-container">
-          <label className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</label>
-          <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        <div className="env-dialog__row env-dialog__row--ckeditor" key="new-message-3">
+          <div className="env-dialog__form-element-container">
+            <label className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</label>
+            <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          </div>
         </div>
-      </div>
       ),
-      (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
-        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+      (this.props.signature ? <div key="new-message-4" className="env-dialog__row env-dialog__row--communicator-signature">
+        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick} />
         <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
         <span className="env-dialog__input-description">
           <i className="mf-signature" dangerouslySetInnerHTML={{ __html: this.props.signature.signature }} />

@@ -344,7 +344,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-students"
+            <AutofillSelector identifier="addNewWorkspaceStudents" modifier="add-students"
               loader={this.doStudentSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
               selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
@@ -361,7 +361,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-teachers"
+            <AutofillSelector identifier="addNewWorkspaceTeachers" modifier="add-teachers"
               loader={this.doStaffSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
               selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />

@@ -9,7 +9,8 @@ interface Tag {
 }
 
 interface TagInputProps {
-  modifier: string,
+  modifier?: string,
+  identifier: string,
   inputValue: string,
   onInputDataChange: (e: React.ChangeEvent<HTMLInputElement>) => any,
   onDelete: (v: any) => any,
@@ -33,12 +34,13 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
       (this.refs["input"] as HTMLElement).focus();
     }
   }
+
   constructor(props: TagInputProps) {
     super(props);
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.focus = this.focus.bind(this);
-    this.onDeleteTag = this.onDeleteTag.bind(this);
+    // this.onDeleteTag = this.onDeleteTag.bind(this);
   }
 
   onKeyDown(e: React.KeyboardEvent<any>) {
@@ -77,27 +79,73 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
     }
   }
 
+
+  render() {
+    return <div className={`container ${this.props.modifier ? "container--" + this.props.modifier : ""} ${this.props.isFocused ? "focus" : ""}`}>
+      <div className="tag-input" ref="inputbody" onClick={(e) => this.props.onFocus(e as any)}>
+        <label htmlFor={this.props.wcagLabel ? this.props.wcagLabel : ""} className="tag-input__label">{this.props.label}</label>
+        <input id={this.props.wcagLabel ? this.props.wcagLabel : ""} className={`tag-input__input ${this.props.modifier ? "tag-input__input--" + this.props.modifier : null}`} placeholder={this.props.placeholder} value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
+          onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
+        <TagItems ref="selected" identifier={this.props.identifier} onDelete={this.props.onDelete} tags={this.props.tags} />
+      </div>
+    </div>
+  }
+}
+
+interface TagItemsProps {
+  modifier?: string,
+  identifier: string,
+  icon?: string,
+  onDelete: (v: any) => any,
+  tags: Tag[],
+}
+
+interface TagItemsState {
+}
+
+export class TagItems extends React.Component<TagItemsProps, TagItemsState> {
+
+  render() {
+    return <div className={`tag-input__selected-items ${this.props.modifier ? "tag-input__selected-items--" + this.props.modifier : ""}`}>
+      {this.props.tags && this.props.tags.map((tag, index) => {
+        <TagItem key={this.props.identifier + index} tag={tag} onDelete={this.props.onDelete} />
+      })}
+    </div>
+  }
+}
+
+interface TagItemProps {
+  modifier?: string,
+  disabled?: boolean,
+  icon?: string,
+  onDelete: (v: any) => any,
+  tag: Tag,
+}
+
+interface TagItemState {
+}
+
+export class TagItem extends React.Component<TagItemProps, TagItemState> {
+
+  constructor(props: TagItemProps) {
+    super(props);
+    this.onDeleteTag = this.onDeleteTag.bind(this);
+  }
+
   onDeleteTag(tag: Tag) {
     if (!tag.disabled) {
       this.props.onDelete(tag.value);
     }
   }
-  render() {
-    return <div className={`container ${this.props.modifier ? "container--" + this.props.modifier : null} ${this.props.isFocused ? "focus" : ""}`}>
-      <div className="tag-input" ref="inputbody" onClick={(e) => this.props.onFocus(e as any)}>
-        <label htmlFor={this.props.wcagLabel ? this.props.wcagLabel : ""} className="tag-input__label">{this.props.label}</label>
-        <input id={this.props.wcagLabel ? this.props.wcagLabel : ""} className={`tag-input__input ${this.props.modifier ? "tag-input__input--" + this.props.modifier : null}`} placeholder={this.props.placeholder} value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
-          onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />
 
-        <div ref="selected" className="tag-input__selected-items">
-          {this.props.tags.map((tag, index) => {
-            return <span key={index} className={`tag-input__selected-item ${tag.disabled ? "state-DISABLED" : ""}`}>
-              <span className="tag-input__selected-item-label">{tag.node}</span>
-              <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, tag)}></span>
-            </span>
-          })}
-        </div>
-      </div>
-    </div>
+  render() {
+    return <span className={`tag-input__selected-item ${this.props.modifier ? "tag-input__selected-item--" + this.props.modifier : null} ${this.props.tag.disabled ? "state-DISABLED" : ""}`}>
+      {this.props.icon ?
+        <span className={`glyph ${"icon" + this.props.icon}`}></span>
+        : null}
+      <span className="tag-input__selected-item-label">{this.props.tag.node}</span>
+      <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, this.props.tag)}></span>
+    </span>
   }
+
 }

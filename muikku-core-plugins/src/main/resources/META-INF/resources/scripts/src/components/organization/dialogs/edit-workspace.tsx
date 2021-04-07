@@ -15,6 +15,7 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType, WorkspaceDetailsType } from '~/reducers/workspaces';
 import moment from '~/lib/moment';
+import Tag from '~/components/general/tag-input';
 
 interface ValidationType {
   nameValid: number
@@ -397,7 +398,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step2.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-students"
+            <AutofillSelector identifier="addWorkspaceStudents" modifier="add-students"
               loader={this.doStudentSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
               selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
@@ -424,7 +425,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.step4.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-teachers"
+            <AutofillSelector identifier="addWorkspaceTeachers" modifier="add-teachers"
               loader={this.doStaffSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.teachers.placeholder')}
               selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
