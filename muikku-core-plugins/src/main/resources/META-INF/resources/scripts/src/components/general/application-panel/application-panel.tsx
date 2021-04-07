@@ -52,8 +52,6 @@ export default class ApplicationPanel extends React.Component<
   };
 
   render() {
-    console.log("???", this.state.offsetBorderAgainstBottom);
-
     return (
       <main
         className={`application-panel application-panel--${this.props.modifier}`}
