@@ -70,7 +70,7 @@ export default class ApplicationPanelBody extends React.Component<
       (this.refs["body"] as HTMLElement).getBoundingClientRect().left +
       this.borderWidth;
 
-    let root: Element = document.querySelector("#root");
+    const root: Element = document.querySelector("#root");
     this.extraPaddingRight =
       root.getBoundingClientRect().width -
       ((this.refs["body"] as HTMLElement).getBoundingClientRect().width +
@@ -89,7 +89,7 @@ export default class ApplicationPanelBody extends React.Component<
       return;
     }
 
-    let computedStyle = document.defaultView.getComputedStyle(
+    const computedStyle = document.defaultView.getComputedStyle(
       this.refs["sticky"] as HTMLElement
     );
     if (computedStyle.getPropertyValue("position") === "fixed") {
@@ -110,11 +110,11 @@ export default class ApplicationPanelBody extends React.Component<
     ] as HTMLElement).offsetTop;
 
     //We take the element that is supposed to stick to
-    let element: Element = document.querySelector("#stick");
+    const element: Element = document.querySelector("#stick");
     if (!element) {
       this.offsetElementAgainstTop = 0;
     } else {
-      let stickyElementComputedStyle = document.defaultView.getComputedStyle(
+      const stickyElementComputedStyle = document.defaultView.getComputedStyle(
         element
       );
       //this one represents the navbar basically the amount of pixels to the bottom
@@ -129,7 +129,7 @@ export default class ApplicationPanelBody extends React.Component<
       offsetElementAgainstTop: this.offsetElementAgainstTop,
     });
 
-    let asideBefore: HTMLElement = this.refs["asideBefore"] as HTMLElement;
+    const asideBefore: HTMLElement = this.refs["asideBefore"] as HTMLElement;
     if (asideBefore) {
       this.asideBeforeWidth = asideBefore.offsetWidth;
       this.setState({
@@ -175,10 +175,9 @@ export default class ApplicationPanelBody extends React.Component<
   }
 
   onScroll(e: Event) {
-    let test = this.state.sticky;
-    let top = document.documentElement.scrollTop || document.body.scrollTop;
-    let diff = this.offsetStickyElementTop - top;
-    let isSticky = diff < this.offsetElementAgainstTop;
+    const top = document.documentElement.scrollTop || document.body.scrollTop;
+    const diff = this.offsetStickyElementTop - top;
+    const isSticky = diff < this.offsetElementAgainstTop;
     if (isSticky !== this.state.sticky) {
       this.setState({ sticky: isSticky });
       if (isSticky) {
@@ -189,99 +188,108 @@ export default class ApplicationPanelBody extends React.Component<
   }
 
   render() {
+    const {
+      offsetBorderAgainstBottom,
+      modifier,
+      primaryOption,
+      toolbar,
+      children,
+      asideAfter,
+      asideBefore,
+    } = this.props;
+
+    const {
+      remainingHeight,
+      sticky,
+      stickyHeight,
+      offsetElementAgainstTop,
+      extraPaddingLeft,
+      extraPaddingRight,
+      asideBeforeWidth,
+    } = this.state;
+
     const helperContainerHeight =
-      this.state.remainingHeight - this.props.offsetBorderAgainstBottom || 0;
+      remainingHeight - offsetBorderAgainstBottom || 0;
 
     return (
       <div
         className={`application-panel__body ${
-          this.props.modifier
-            ? "application-panel__body--" + this.props.modifier
-            : ""
+          modifier ? "application-panel__body--" + modifier : ""
         }`}
         ref="body"
       >
         <div
           style={{
-            display: this.state.sticky ? "block" : "none",
-            height: this.state.stickyHeight,
+            display: sticky ? "block" : "none",
+            height: stickyHeight,
           }}
         ></div>
         <div
           className="application-panel__actions"
           ref="sticky"
           style={
-            this.state.sticky
+            sticky
               ? {
                   position: "fixed",
-                  top: this.state.offsetElementAgainstTop,
-                  left: this.state.extraPaddingLeft,
-                  right: this.state.extraPaddingRight,
+                  top: offsetElementAgainstTop,
+                  left: extraPaddingLeft,
+                  right: extraPaddingRight,
                 }
               : null
           }
         >
-          {this.props.primaryOption ? (
+          {primaryOption ? (
             <div
               className={`application-panel__helper-container application-panel__helper-container--main-action ${
-                this.props.modifier
-                  ? "application-panel__helper-container--" +
-                    this.props.modifier
+                modifier
+                  ? "application-panel__helper-container--" + modifier
                   : ""
               }`}
             >
-              {this.props.primaryOption}
+              {primaryOption}
             </div>
           ) : null}
-          {this.props.toolbar ? (
+          {toolbar ? (
             <div
               className={`application-panel__main-container application-panel__main-container--actions ${
-                this.props.modifier
-                  ? "application-panel__main-container--" + this.props.modifier
-                  : ""
+                modifier ? "application-panel__main-container--" + modifier : ""
               }`}
             >
-              {this.props.toolbar}
+              {toolbar}
             </div>
           ) : null}
         </div>
         <div
           className="application-panel__content"
-          style={
-            this.state.sticky
-              ? { paddingLeft: this.state.asideBeforeWidth }
-              : null
-          }
+          style={sticky ? { paddingLeft: asideBeforeWidth } : null}
         >
-          {this.props.asideBefore ? (
+          {asideBefore ? (
             <div
               className="application-panel__helper-container"
               ref="asideBefore"
               style={{
-                position: this.state.sticky ? "fixed" : null,
-                top: this.state.sticky
-                  ? this.state.offsetElementAgainstTop + this.state.stickyHeight
-                  : null,
-                left: this.state.sticky ? this.state.extraPaddingLeft : null,
+                position: sticky ? "fixed" : null,
+                top: sticky ? offsetElementAgainstTop + stickyHeight : null,
+                left: sticky ? extraPaddingLeft : null,
                 height: helperContainerHeight,
-                width: this.state.sticky ? this.state.asideBeforeWidth : null,
+                width: sticky ? asideBeforeWidth : null,
                 overflowY: "auto",
               }}
             >
-              {this.props.asideBefore}
+              {asideBefore}
             </div>
           ) : null}
           <div className={`application-panel__main-container loader-empty`}>
-            {this.props.children}
+            {children}
           </div>
-          {this.props.asideAfter ? (
+          {asideAfter ? (
             <div
               className="application-panel__helper-container"
               style={{
                 height: helperContainerHeight,
               }}
             >
-              {this.props.asideAfter}
+              {asideAfter}
             </div>
           ) : null}
         </div>

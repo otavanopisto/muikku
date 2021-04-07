@@ -39,7 +39,7 @@ export default class ApplicationPanel extends React.Component<
   }
 
   private calculate = () => {
-    let panelComputedStyle = document.defaultView.getComputedStyle(
+    const panelComputedStyle = document.defaultView.getComputedStyle(
       this.refs["panel"] as HTMLElement
     );
     const offsetBorderAgainstBottom = parseInt(
