@@ -53,8 +53,6 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
-
-    // this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
 
@@ -78,9 +76,9 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
     this.setState({ autocompleteOpened: true, textInput: textInput });
     clearTimeout(this.activeSearchTimeout);
     if (textInput) {
-      this.props.loader(textInput);
+      this.activeSearchTimeout = setTimeout(this.props.loader(textInput), 400);
     } else {
-      this.props.loader("");
+      this.activeSearchTimeout = setTimeout(this.props.loader(""), 400);
     }
   }
 

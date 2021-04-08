@@ -15,7 +15,7 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType, WorkspaceDetailsType } from '~/reducers/workspaces';
 import moment from '~/lib/moment';
-import Tag from '~/components/general/tag-input';
+import { TagItem } from '~/components/general/tag-input';
 
 interface ValidationType {
   nameValid: number
@@ -460,12 +460,23 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
             <DialogRowContent modifiers="new-workspace">
               {this.state.addStudents.length > 0 ?
                 this.state.addStudents.map((student) => {
-                  return <span key={student.id} className="tag-input__selected-item">
+
+                  const tag = {
+                    node: student.label,
+                    value: student.id,
+                    icon: student.icon,
+                  }
+
+                  return <TagItem key={"addStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
+
+
+                  {/* <span key={student.id} className="tag-input__selected-item">
                     {student.icon ?
                       <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
                       : null}
                     {student.label}
-                  </span>
+                  </span> */}
+
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
