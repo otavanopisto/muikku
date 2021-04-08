@@ -113,7 +113,7 @@ let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadT
 
   let data: WorkspaceQueryDataType = {
     templates: 'ONLY_TEMPLATES',
-    maxResults: 4
+    maxResults: 5
   }
 
   if (query) {
@@ -1747,12 +1747,12 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
             data.progress && data.progress("workspace-create")
           ));
 
-      if(data.beginDate || data.endDate) {
+      if (data.beginDate || data.endDate) {
 
         workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
-        .details.read(workspace.id), 'callback')());
+          .details.read(workspace.id), 'callback')());
 
-          workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+        workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
           .details.update(workspace.id, {
             ...workspace.details,
             beginDate: data.beginDate,
@@ -1760,7 +1760,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           }), 'callback')().then(
             data.progress && data.progress("add-details")
           ));
-        }
+      }
 
       if (data.students.length > 0) {
         let groupIdentifiers: number[] = [];

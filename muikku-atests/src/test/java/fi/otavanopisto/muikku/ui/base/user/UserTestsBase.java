@@ -104,29 +104,17 @@ public class UserTestsBase extends AbstractUITest {
       
       login();
       selectFinnishLocale();
-      navigate("/profile", false);
-      waitForVisible(".profile-element__title");
-      assertTextIgnoreCase(".profile-element__title", "admin user");
-      waitForVisible(".profile-element__item .profile-element__data");
-      assertTextIgnoreCase(".profile-element__item .profile-element__data", "admin@example.com");
+      navigate("/profile#contact", false);
+      waitForVisible(".application-panel__header-title");
+      assertTextIgnoreCase(".application-panel__header-title", "admin user");
+      waitForVisible(".application-sub-panel__item .application-sub-panel__item-data span");
+      assertTextIgnoreCase(".application-sub-panel__item .application-sub-panel__item-data span", "admin@example.com");
       
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profilePhoneNumber']", "Puhelinnumero");
-      assertVisible(".application-panel__main-container .profile-element__item input#profilePhoneNumber");
+      assertTextIgnoreCase(".application-sub-panel__item .application-sub-panel__item-title[for='profilePhoneNumber']", "Puhelinnumero");
+      assertVisible(".application-sub-panel__item .application-sub-panel__item-data input#profilePhoneNumber");
 
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profileVacationStart']", "Loma alkaa");
-      assertVisible(".application-panel__main-container .profile-element__item input#profileVacationStart");
-      
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='profileVacationEnd']", "Loma loppuu");
-      assertVisible(".application-panel__main-container .profile-element__item input#profileVacationEnd");
-      
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='chatVisibility']", "Chatin näkyvyys");
-      assertVisible(".application-panel__main-container .profile-element__item select#chatVisibility");
-
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item label[for='chatNickname']", "Chatin nimimerkki");
-      assertVisible(".application-panel__main-container .profile-element__item input#chatNickname");
-      
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item .button--primary-function-save", "Tallenna");
-      assertVisible(".application-panel__main-container .profile-element__item .button--primary-function-save");
+      assertTextIgnoreCase(".application-sub-panel__item-actions .button--primary-function-save", "Tallenna");
+      assertVisible(".application-sub-panel__item-actions .button--primary-function-save");
     }finally {
       mockBuilder.wiremockReset();
     }

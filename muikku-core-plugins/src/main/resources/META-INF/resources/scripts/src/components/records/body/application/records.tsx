@@ -222,7 +222,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
 
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
-      <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.records.title")}</div>
+      <h2 className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.records.title")}</h2>
 
       {studentRecords}
       <div className="application-sub-panel">

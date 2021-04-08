@@ -243,7 +243,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
 
   nextStep() {
     if (this.state.currentStep === 2) {
-       this.doUserGroupStudentSearch("");
+      this.doUserGroupStudentSearch("");
     }
     if (this.state.currentStep === 4) {
       this.doUserGroupStaffSearch("");
@@ -419,14 +419,14 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
       case 6:
         return <DialogRow modifiers="edit-workspace-summary">
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} />
+            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.userGroupName')} />
             <DialogRowContent modifiers="new-workspace">
               <span>{this.state.userGroupName}</span>
               <span>{this.state.isGuidanceGroup ? " (" + this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.isGuidanceGroup') + ")" : ""}</span>
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.addStudents')} />
+            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.addStudents')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.addStudents.length > 0 ?
                 this.state.addStudents.map((student) => {
@@ -440,7 +440,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.addStaff')} />
+            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.addStaff')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.addStaff.length > 0 ?
                 this.state.addStaff.map((staff) => {
@@ -454,7 +454,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.removeStudents')} />
+            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.removeStudents')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.removeStudents.length > 0 ?
                 this.state.removeStudents.map((student) => {
@@ -468,7 +468,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
-            <DialogRowHeader modifiers="new-workspace" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.removeStaff')} />
+            <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.label.removeStaff')} />
             <DialogRowContent modifiers="new-workspace">
               {this.state.removeStaff.length > 0 ?
                 this.state.removeStaff.map((staff) => {

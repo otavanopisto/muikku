@@ -3,12 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-panel-wrapper {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
 .application-panel {
   align-items: center;
   display: flex;
@@ -20,6 +14,15 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
+// This removes the unnecessary top-padding in studies and profile view as there is no toolbar present
+.application-panel--studies,
+.application-panel--profile {
+
+  .application-panel__content {
+    padding: 10px 0;
   }
 }
 
@@ -198,7 +201,6 @@
   font-weight: 300;
   margin-bottom: 20px;
   margin-left: 10px;
-  text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
@@ -296,32 +298,5 @@
 
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
-  }
-}
-
-
-// Profile
-.application-panel--profile {
-
-  .application-panel__helper-container {
-    display: block;
-
-    @include breakpoint($breakpoint-pad) {
-      display: flex;
-      flex-basis: 294px;
-      justify-content: center;
-    }
-  }
-
-  .application-panel__content {
-    padding: 10px 0 0;
-  }
-}
-
-// Records
-.application-panel--records {
-
-  .application-panel__content {
-    padding: 10px 0 0;
   }
 }
