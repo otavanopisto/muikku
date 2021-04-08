@@ -163,8 +163,6 @@ export interface ToggleMessageThreadsReadStatusTriggerType {
   ( threads: MessageThreadListType ): AnyActionType
 }
 
-
-
 export interface DeleteSelectedMessageThreadsTriggerType {
   (): AnyActionType
 }
@@ -203,14 +201,6 @@ export interface ToggleSelectAllMessageThreadsTriggerType {
 }
 
 /////////////////// ACTUAL DEFINITIONS
-
-
-/* const toggleAllMessageItems: ActionCreator<ToggleAllMessageItemsAction> = () => {
-  return {
-    type: MessageActionType.TOGGLE_ALL_ITEMS
-  }
-} */
-
 let toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType = function toggleAllMessageItems() {
   return {
     type: "TOGGLE_ALL_MESSAGE_ITEMS", payload: null  }
