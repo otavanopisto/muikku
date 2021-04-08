@@ -13,6 +13,7 @@ export interface UpdateMessageThreadsCountTriggerType {
   ( ): AnyActionType
 }
 
+export interface TOGGLE_ALL_MESSAGE_ITEMS extends SpecificActionType<"TOGGLE_ALL_MESSAGE_ITEMS", undefined> {}
 export interface UPDATE_UNREAD_MESSAGE_THREADS_COUNT extends SpecificActionType<"UPDATE_UNREAD_MESSAGE_THREADS_COUNT", number> { }
 export interface UPDATE_MESSAGE_THREADS extends SpecificActionType<"UPDATE_MESSAGE_THREADS", MessageThreadListType> { }
 export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", MessageThreadExpandedType> { }
@@ -37,6 +38,7 @@ export interface UPDATE_MESSAGES_SIGNATURE extends SpecificActionType<"UPDATE_ME
 export interface DELETE_MESSAGE_THREAD extends SpecificActionType<"DELETE_MESSAGE_THREAD", MessageThreadType> { }
 export interface UPDATE_SELECTED_MESSAGE_THREADS extends SpecificActionType<"UPDATE_SELECTED_MESSAGE_THREADS", MessageThreadListType> { }
 export interface ADD_TO_MESSAGES_SELECTED_THREADS extends SpecificActionType<"ADD_TO_MESSAGES_SELECTED_THREADS", MessageThreadType> { }
+export interface ADD_TO_ALL_MESSAGES_SELECTED_THREADS extends SpecificActionType<"ADD_TO_ALL_MESSAGES_SELECTED_THREADS", MessageThreadType> { }
 export interface REMOVE_FROM_MESSAGES_SELECTED_THREADS extends SpecificActionType<"REMOVE_FROM_MESSAGES_SELECTED_THREADS", MessageThreadType> { }
 export interface PUSH_MESSAGE_LAST_IN_CURRENT_THREAD extends SpecificActionType<"PUSH_MESSAGE_LAST_IN_CURRENT_THREAD", MessageType> { }
 export interface UPDATE_MESSAGES_NAVIGATION_LABELS extends SpecificActionType<"UPDATE_MESSAGES_NAVIGATION_LABELS", MessagesNavigationItemListType>{}
@@ -161,6 +163,8 @@ export interface ToggleMessageThreadsReadStatusTriggerType {
   ( threads: MessageThreadListType ): AnyActionType
 }
 
+
+
 export interface DeleteSelectedMessageThreadsTriggerType {
   (): AnyActionType
 }
@@ -193,7 +197,25 @@ export interface UpdateSignatureTriggerType {
   ( newSignature: string ): AnyActionType
 }
 
+// Jotain
+export interface ToggleSelectAllMessageThreadsTriggerType {
+  (): AnyActionType
+}
+
 /////////////////// ACTUAL DEFINITIONS
+
+
+/* const toggleAllMessageItems: ActionCreator<ToggleAllMessageItemsAction> = () => {
+  return {
+    type: MessageActionType.TOGGLE_ALL_ITEMS
+  }
+} */
+
+let toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType = function toggleAllMessageItems() {
+  return {
+    type: "TOGGLE_ALL_MESSAGE_ITEMS", payload: null  }
+}
+
 let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
   let recepientWorkspaces = message.to.filter( x => x.type === "workspace" ).map( x => x.value.id )
   let data = {
@@ -979,5 +1001,5 @@ export {
   deleteSelectedMessageThreads, deleteCurrentMessageThread, loadMessageThread, loadNewlyReceivedMessage,
   loadSignature, updateSignature, updateUnreadMessageThreadsCount, loadLastMessageThreadsFromServer,
   loadMessagesNavigationLabels, addMessagesNavigationLabel, updateMessagesNavigationLabel, removeMessagesNavigationLabel,
-  restoreSelectedMessageThreads, restoreCurrentMessageThread
+  restoreSelectedMessageThreads, restoreCurrentMessageThread, toggleAllMessageItems
 }
