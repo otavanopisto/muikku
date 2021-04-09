@@ -401,7 +401,7 @@ class CommunicatorToolbar extends React.Component<
         <ButtonPill
           buttonModifiers="toggle"
           icon="check"
-          disabled={false}
+          disabled={this.props.messages.threads.length < 1}
           onClick={this.props.toggleAllMessageItems}
         />
         <ButtonPill
