@@ -195,7 +195,6 @@ export interface UpdateSignatureTriggerType {
   ( newSignature: string ): AnyActionType
 }
 
-// Jotain
 export interface ToggleSelectAllMessageThreadsTriggerType {
   (): AnyActionType
 }
