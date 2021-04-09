@@ -12,7 +12,12 @@ export interface LoadProfilePropertiesSetTriggerType {
 }
 
 export interface SaveProfilePropertyTriggerType {
-  (key: string, value: string, callback?: ()=>any):AnyActionType
+  (data: {
+    key: string,
+    value: string,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
 }
 
 export interface LoadProfileUsernameTriggerType {
@@ -67,7 +72,12 @@ export interface SET_PROFILE_USER_PROPERTY extends SpecificActionType<"SET_PROFI
   value: string
 }>{}
 
+export interface SetProfileLocationTriggerType {
+  (location: string):AnyActionType
+}
+
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
+export interface SET_PROFILE_LOCATION extends SpecificActionType<"SET_PROFILE_LOCATION", string>{}
 export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
 export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
 export interface SET_PROFILE_CHAT_SETTINGS extends SpecificActionType<"SET_PROFILE_CHAT_SETTINGS", UserChatSettingsType>{}
@@ -99,21 +109,24 @@ let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loa
   }
 }
 
-let saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfileProperty(key, value, callback){
+let saveProfileProperty:SaveProfilePropertyTriggerType = function saveProfileProperty(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().user.property.create({key, value}), 'callback')();
+      const prop = {key: data.key, value: data.value};
+      await promisify(mApi().user.property.create(prop), 'callback')();
 
       dispatch({
         type: "SET_PROFILE_USER_PROPERTY",
-        payload: {key, value}
+        payload: prop,
       });
 
-      callback && callback();
+      data.success && data.success();
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
+
+      data.fail && data.fail();
     }
   }
 }
@@ -212,16 +225,12 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
         })
       }))
 
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.successful'), 'success'));
-
       data.success && data.success();
 
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
-
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -295,16 +304,10 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
         data.fail && data.fail();
       }
 
-      // dispatch({
-      //   type: "SET_PROFILE_CHAT_SETTINGS",
-      //   payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({visibility: data.visibility, nick: data.nick}), 'callback')())
-      // });
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
-
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -382,5 +385,13 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage};
+const setProfileLocation: SetProfileLocationTriggerType = function setProfileLocation(location: string) {
+  return {
+    type: "SET_PROFILE_LOCATION",
+    payload: location,
+  }
+}
+
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
+  updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage, setProfileLocation};
 

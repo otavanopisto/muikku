@@ -252,7 +252,7 @@
   width: 100%;
 }
 
-.form-element__input--profile-wrong {
+.form-element__input--profile-error {
   color: $color-fatal;
 }
 
@@ -451,6 +451,10 @@
   input {
     margin-right: 5px;
   }
+}
+
+.form-element__radio-option-container--profile {
+  padding: 0;
 }
 
 .form-element__check-option-container {
