@@ -318,7 +318,15 @@ export default function messages(
     return Object.assign({}, state, { state: newState });
   } else if (action.type === "UPDATE_MESSAGES_ALL_PROPERTIES") {
     let newAllProperties: MessagesPatchType = action.payload;
-    return Object.assign({}, state, newAllProperties);
+    return Object.assign({}, state, {
+      ...newAllProperties,
+      selectedThreads: state.toggleSelectAllMessageItemsActive
+        ? newAllProperties.threads.map((thread) => thread)
+        : state.selectedThreads,
+      selectedThreadsIds: state.toggleSelectAllMessageItemsActive
+        ? newAllProperties.threads.map((thread) => thread.communicatorMessageId)
+        : state.selectedThreadsIds,
+    });
   } else if (action.type === "UPDATE_SELECTED_MESSAGE_THREADS") {
     let newThreads: MessageThreadListType = action.payload;
     return Object.assign({}, state, {
