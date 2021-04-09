@@ -399,8 +399,8 @@ class CommunicatorToolbar extends React.Component<
           />
         ) : null}
         <ButtonPill
-          buttonModifiers="delete"
-          icon="trash"
+          buttonModifiers="toggle"
+          icon="check"
           disabled={false}
           onClick={this.props.toggleAllMessageItems}
         />
