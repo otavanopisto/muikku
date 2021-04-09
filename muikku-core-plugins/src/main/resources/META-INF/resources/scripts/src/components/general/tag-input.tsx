@@ -2,7 +2,7 @@ import * as React from 'react';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/tag-input.scss';
 
-interface Tag {
+export interface Tag {
   node: React.ReactElement<any> | string,
   value: any,
   disabled?: boolean,
@@ -141,7 +141,7 @@ export class TagItem extends React.Component<TagItemProps, TagItemState> {
   render() {
     return <span className={`tag-input__selected-item ${this.props.modifier ? "tag-input__selected-item--" + this.props.modifier : null} ${this.props.tag.disabled ? "state-DISABLED" : ""}`}>
       {this.props.tag.icon ?
-        <span className={`glyph ${"icon" + this.props.tag.icon}`}></span>
+        <span className={`glyph ${this.props.modifier ? "glyph--" + this.props.modifier : null} ${"icon-" + this.props.tag.icon}`}></span>
         : null}
       <span className="tag-input__selected-item-label">{this.props.tag.node}</span>
       <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, this.props.tag)}></span>

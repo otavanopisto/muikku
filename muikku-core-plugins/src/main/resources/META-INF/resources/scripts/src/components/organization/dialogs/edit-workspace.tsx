@@ -15,7 +15,7 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType, WorkspaceDetailsType } from '~/reducers/workspaces';
 import moment from '~/lib/moment';
-import { TagItem } from '~/components/general/tag-input';
+import { TagItem, Tag } from '~/components/general/tag-input';
 
 interface ValidationType {
   nameValid: number
@@ -155,6 +155,20 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
     this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
   }
+
+  // summaryRemoveUser(user: Tag) {
+  //   const studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === user.value);
+  //   const studentIsRemoved = this.state.removeStudents.some(aStudent => aStudent.id === user.id)
+  //   const staffIsAdded = this.state.addStudents.some(aStudent => aStudent.id === user.value);
+  //   const staffIsRemoved = this.state.removeStudents.some(aStudent => aStudent.id === user.id)
+
+  //   let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
+  //   let newRemoveState = studentIsAdded ? this.state.removeStudents : this.state.removeStudents.concat(student);
+  //   let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
+  //   this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
+  // }
+
+
 
   setSelectedWorkspace() {
     this.props.setCurrentOrganizationWorkspace({
@@ -457,40 +471,29 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addStudents')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent>
               {this.state.addStudents.length > 0 ?
                 this.state.addStudents.map((student) => {
-
                   const tag = {
                     node: student.label,
-                    value: student.id,
+                    value: student,
                     icon: student.icon,
                   }
-
-                  return <TagItem key={"addStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
-
-
-                  {/* <span key={student.id} className="tag-input__selected-item">
-                    {student.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
-                      : null}
-                    {student.label}
-                  </span> */}
-
+                  return <TagItem modifier="selected-recipient" key={"addStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addTeachers')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent>
               {this.state.addStaff.length > 0 ?
                 this.state.addStaff.map((staff) => {
-                  return <span key={staff.id} className="tag-input__selected-item">
-                    {staff.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
-                      : null}
-                    {staff.label}
-                  </span>
+                  const tag = {
+                    node: staff.label,
+                    value: staff,
+                    icon: staff.icon,
+                  }
+                  return <TagItem modifier="selected-recipient" key={"addStudent" + staff.id} tag={tag} onDelete={this.deleteStaff}></TagItem>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>
