@@ -133,7 +133,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     // this represents the row itself when it's in edit mode, the children is basically
     // the picker for the template mode, or whatever wants to be added
     return (
-      <div className={`application-sub-panel__multiple-items ${this.props.isEditMode ? "application-sub-panel__multiple-items--edit-mode" : null}`}>
+      <div className={`application-sub-panel__multiple-items ${this.props.isEditMode ? "application-sub-panel__multiple-items--edit-mode" : ""}`}>
         {this.props.children ? <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
           <label className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.profile.worklist.template.label")}</label>
           <div className="application-sub-panel__item-data">

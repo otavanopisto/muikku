@@ -107,10 +107,8 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
           {this.props.item.factor}
         </div>
         <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
-          <div className="application-sub-panel__item-data">
-            {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
-            {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
-          </div>
+          {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
+          {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
         </div>
 
         <DeleteWorklistItemDialog

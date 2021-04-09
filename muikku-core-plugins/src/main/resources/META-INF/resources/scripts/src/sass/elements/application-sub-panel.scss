@@ -813,16 +813,16 @@
   }
 }
 
-.application-sub-panel__item-data--study-start-date .application-sub-panel__item-data-single-entry {
+.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date .application-sub-panel__item-data-single-entry {
+.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
 
-.application-sub-panel__item-data-single-entry {
+.application-sub-panel__single-entry {
   background-color: $color-hops-readable-inline-background;
   border-radius: 3px;
   display: inline-block;

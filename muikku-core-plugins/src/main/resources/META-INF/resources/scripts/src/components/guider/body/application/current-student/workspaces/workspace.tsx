@@ -55,7 +55,7 @@ function CourseActivityRow(props: {
   return <div className="application-sub-panel__item application-sub-panel__item--course-activity">
     <div className="application-sub-panel__item-title">{props.i18n.text.get(props.labelTranslationString)}</div>
     <div className="application-sub-panel__item-data">
-      <span className="application-sub-panel__item-data-single-entry">{output}</span>
+      <span className="application-sub-panel__single-entry">{output}</span>
     </div>
   </div>
 }
@@ -166,7 +166,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <div className="application-sub-panel__item application-sub-panel__item--course-activity">
               <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>
               <div className="application-sub-panel__item-data">
-                <span className="application-sub-panel__item-data-single-entry">{resultingStateText}</span></div>
+                <span className="application-sub-panel__single-entry">{resultingStateText}</span></div>
               </div>
 
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits" givenDateAttributeLocale="plugin.guider.user.details.lastVisit" labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
