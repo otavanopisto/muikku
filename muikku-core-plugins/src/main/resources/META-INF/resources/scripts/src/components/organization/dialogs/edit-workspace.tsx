@@ -458,7 +458,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.workspaceName')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               <div>{this.state.workspaceName} {this.state.workspaceNameExtension ? "(" + this.state.workspaceNameExtension + ")" : null}</div>
             </DialogRowContent>
           </DialogRow>
@@ -471,7 +471,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addStudents')} />
-            <DialogRowContent>
+            <DialogRowContent modifiers="summary">
               {this.state.addStudents.length > 0 ?
                 this.state.addStudents.map((student) => {
                   const tag = {
@@ -480,12 +480,12 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
                     icon: student.icon,
                   }
                   return <TagItem modifier="selected-recipient" key={"addStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
+                }) : <div className="empty empty--dialog-row">{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.addTeachers')} />
-            <DialogRowContent>
+            <DialogRowContent modifiers="summary">
               {this.state.addStaff.length > 0 ?
                 this.state.addStaff.map((staff) => {
                   const tag = {
@@ -494,34 +494,36 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
                     icon: staff.icon,
                   }
                   return <TagItem modifier="selected-recipient" key={"addStudent" + staff.id} tag={tag} onDelete={this.deleteStaff}></TagItem>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
+                }) : <div className="empty empty--dialog-row">{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeStudents')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               {this.state.removeStudents.length > 0 ?
                 this.state.removeStudents.map((student) => {
-                  return <span key={student.id} className="tag-input__selected-item">
-                    {student.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
-                      : null}
-                    {student.label}
-                  </span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
+
+                  const tag = {
+                    node: student.label,
+                    value: student,
+                    icon: student.icon,
+                  }
+                  return <TagItem modifier="selected-recipient" key={"removeStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
+                }) : <div className="empty empty--dialog-row">{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.label.removeTeachers')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               {this.state.removeStaff.length > 0 ?
                 this.state.removeStaff.map((staff) => {
-                  return <span key={staff.id} className="tag-input__selected-item">
-                    {staff.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
-                      : null}
-                    {staff.label}</span>
-                }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
+                  const tag = {
+                    node: staff.label,
+                    value: staff,
+                    icon: staff.icon,
+                  }
+                  return <TagItem modifier="selected-recipient" key={"addStudent" + staff.id} tag={tag} onDelete={this.deleteStaff}></TagItem>
+                }) : <div className="empty empty--dialog-row">{this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>
         </DialogRow>;
