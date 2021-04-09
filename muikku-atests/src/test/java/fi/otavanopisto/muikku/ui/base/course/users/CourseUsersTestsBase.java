@@ -34,7 +34,6 @@ public class CourseUsersTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).addStudent(student3).addStudent(student4).mockLogin(admin).build();
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
-      .addStaffMember(admin)
       .mockLogin(admin)
       .addCourse(course1)
       .build();
@@ -45,7 +44,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       MockCourseStudent mcs3 = new MockCourseStudent(3l, course1.getId(), student3.getId());
       MockCourseStudent mcs4 = new MockCourseStudent(4l, course1.getId(), student4.getId());
 
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(5l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStudent(course1.getId(), mcs2)
