@@ -15,7 +15,7 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { WorkspaceUpdateType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType, WorkspaceDetailsType } from '~/reducers/workspaces';
 import moment from '~/lib/moment';
-import { TagItem, Tag } from '~/components/general/tag-input';
+import { TagItem } from '~/components/general/tag-input';
 
 interface ValidationType {
   nameValid: number
