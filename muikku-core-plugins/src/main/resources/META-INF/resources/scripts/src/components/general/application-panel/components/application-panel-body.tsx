@@ -17,7 +17,8 @@ interface ApplicationPanelBodyState {
   offsetElementAgainstTop: number,
   extraPaddingLeft: number,
   extraPaddingRight: number,
-  asideBeforeWidth: number
+  asideBeforeWidth: number,
+  mobileWidth: boolean,
 }
 
 export default class ApplicationPanelBody extends React.Component<ApplicationPanelBodyProps, ApplicationPanelBodyState> {
@@ -40,16 +41,20 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       offsetElementAgainstTop: null,
       extraPaddingLeft: null,
       extraPaddingRight: null,
-      asideBeforeWidth: null
+      asideBeforeWidth: null,
+      mobileWidth: false,
 
     }
     this.onScroll = this.onScroll.bind(this);
     this.calculate = this.calculate.bind(this);
     this.calculateSides = this.calculateSides.bind(this);
+    this.checkWidth = this.checkWidth.bind(this);
 
   }
 
   componentDidMount(){
+    window.addEventListener("resize", this.checkWidth);
+
     this.calculate();
     if (!this.disabled){
       window.addEventListener("scroll", this.onScroll);
@@ -58,12 +63,18 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
   }
 
   componentWillUnmount(){
+    window.removeEventListener("resize", this.checkWidth);
+
     if (!this.disabled){
       window.removeEventListener("scroll", this.onScroll);
       window.removeEventListener("resize", this.calculateSides);
     }
   }
 
+  /**
+   * calculate
+   * @returns 
+   */
   calculate(){
     this.disabled = this.props.disableStickyScrolling;
     if (this.disabled){
@@ -113,6 +124,9 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     this.setRemainingHeight(false);
   }
 
+  /**
+   * calculateSides
+   */
   calculateSides(){
     this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
 
@@ -126,6 +140,11 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     });
   }
 
+  /**
+   * setRemainingHeight
+   * @param isSticky 
+   * @returns 
+   */
   setRemainingHeight(isSticky: boolean){
     if (!this.props.asideBefore){
      return;
@@ -147,6 +166,13 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     this.setState({remainingHeight: remainingUsableWindow});
   }
 
+  /**
+   * onScroll
+   * Fires when scrolling happens
+   * sets offsetvalues to state and trickers calculatesSides and setRemainingHeight
+   * to calculate new values
+   * @param e 
+   */
   onScroll(e: Event){
     const top = (document.documentElement.scrollTop || document.body.scrollTop);
     const diff = this.offsetStickyElementTop - top;
@@ -173,15 +199,33 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     this.setRemainingHeight(isSticky);
   }
 
+  /**
+   * checkWidth
+   * Checks when window size in within Mobile and Pad sizes
+   * This then sets boolean variable to state indicating that Mobile/Pad width is active
+   * @param e 
+   */
+  checkWidth(e: Event) {
+    const match = window.matchMedia(`(max-width: 768px)`);
+    if(this.state.mobileWidth !== match.matches){
+      this.setState({
+        mobileWidth: match.matches
+      })
+    }
+  }
+
+  /**
+   * render
+   * @returns 
+   */
   render(){
     return (
       <div className={`application-panel__body ${this.props.modifier ? "application-panel__body--" + this.props.modifier : ""}`} ref="body">
-        <div className="application-panel__actions" ref="sticky" style={this.state.sticky ? {
-             position: "fixed",
+        <div className="application-panel__actions" ref="sticky" style={ this.state.sticky ? {
              top: this.state.offsetElementAgainstTop,
-             left: this.state.extraPaddingLeft,
-             right: this.state.extraPaddingRight
-           } : null}>
+             left: !this.state.mobileWidth ? this.state.extraPaddingLeft : 0,
+             right: !this.state.mobileWidth ? this.state.extraPaddingRight : 0
+           } : null }>
           {this.props.primaryOption ? <div className={`application-panel__helper-container application-panel__helper-container--main-action ${this.props.modifier ? "application-panel__helper-container--" + this.props.modifier : ""}`}>{this.props.primaryOption}</div> : null}
           {this.props.toolbar ? <div className={`application-panel__main-container application-panel__main-container--actions ${this.props.modifier ? "application-panel__main-container--" + this.props.modifier : ""}`}>{this.props.toolbar}</div> : null}
         </div>
