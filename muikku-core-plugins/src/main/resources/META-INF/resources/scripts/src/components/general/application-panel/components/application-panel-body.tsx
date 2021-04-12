@@ -49,76 +49,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
 
   }
 
-  calculateSides(){
-    this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
-
-    let root:Element = document.querySelector("#root");
-    this.extraPaddingRight = root.getBoundingClientRect().width -
-      ((this.refs["body"] as HTMLElement).getBoundingClientRect().width + this.extraPaddingLeft) + (this.borderWidth*2);
-
-    this.setState({
-      extraPaddingLeft: this.extraPaddingLeft,
-      extraPaddingRight: this.extraPaddingRight
-    });
-  }
-
-  calculate(){
-    this.disabled = this.props.disableStickyScrolling;
-    if (this.disabled){
-      return;
-    }
-
-    let computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
-    if (computedStyle.getPropertyValue("position") === "fixed"){
-      this.disabled = true;
-      return;
-    }
-
-    //Sticky height represents the height of the sticky thing on top
-    this.stickyHeight = parseInt(computedStyle.getPropertyValue("height"));
-    this.setState({
-      stickyHeight: this.stickyHeight
-    });
-
-    //offset top represents the amount of offset that the sticky has to the top of the screen
-
-    this.offsetStickyElementTop = (this.refs["sticky"] as HTMLElement).offsetTop;
-
-    //We take the element that is supposed to stick to
-    let element:Element = document.querySelector("#stick");
-    if (!element){
-      this.offsetElementAgainstTop = 0;
-    } else {
-      let stickyElementComputedStyle = document.defaultView.getComputedStyle(element);
-      //this one represents the navbar basically the amount of pixels to the bottom
-      this.offsetElementAgainstTop = parseInt(stickyElementComputedStyle.getPropertyValue("height"));
-    }
-
-    //So we save that here
-
-    this.setState({
-      offsetElementAgainstTop: this.offsetElementAgainstTop
-    })
-
-
-    // offsetBorderAgainstBottom is lacking at the moment. before the change it used "panel" ref, I changed it to body. Maybe it works, maybe not.
-
-     let panelComputedStyle = document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement);
-     this.offsetBorderAgainstBottom = parseInt(panelComputedStyle.getPropertyValue("padding-bottom"));
-
-    let asideBefore:HTMLElement = (this.refs["asideBefore"] as HTMLElement);
-    if (asideBefore){
-      this.asideBeforeWidth = asideBefore.offsetWidth;
-      this.setState({
-        asideBeforeWidth: this.asideBeforeWidth
-      });
-    }
-
-    this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-left-width"));
-    this.calculateSides();
-    this.setRemainingHeight(false);
-  }
-
   componentDidMount(){
     this.calculate();
     if (!this.disabled){
@@ -134,32 +64,109 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     }
   }
 
+  calculate(){
+    this.disabled = this.props.disableStickyScrolling;
+    if (this.disabled){
+      return;
+    }
+
+    const computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
+
+    //Sticky height represents the height of the sticky thing on top
+    this.stickyHeight = parseInt(computedStyle.getPropertyValue("height"));
+    this.setState({
+      stickyHeight: this.stickyHeight
+    });
+
+    //offset top represents the amount of offset that the sticky has to the top of the screen
+    this.offsetStickyElementTop = (this.refs["sticky"] as HTMLElement).offsetTop;
+
+    //We take the element that is supposed to stick to
+    const element:Element = document.querySelector("#stick");
+    if (!element){
+      this.offsetElementAgainstTop = 0;
+    } else {
+      const stickyElementComputedStyle = document.defaultView.getComputedStyle(element);
+      //this one represents the navbar basically the amount of pixels to the bottom
+      this.offsetElementAgainstTop = parseInt(stickyElementComputedStyle.getPropertyValue("height"));
+    }
+
+    //So we save that here
+    this.setState({
+      offsetElementAgainstTop: this.offsetElementAgainstTop
+    })
+
+    // offsetBorderAgainstBottom is lacking at the moment. before the change it used "panel" ref, I changed it to body. Maybe it works, maybe not.
+    const panelComputedStyle = document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement);
+    this.offsetBorderAgainstBottom = parseInt(panelComputedStyle.getPropertyValue("padding-bottom"));
+
+    const asideBefore:HTMLElement = (this.refs["asideBefore"] as HTMLElement);
+    if (asideBefore){
+      this.asideBeforeWidth = asideBefore.offsetWidth;
+      this.setState({
+        asideBeforeWidth: this.asideBeforeWidth
+      });
+    }
+
+    this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-left-width"));
+    this.calculateSides();
+    this.setRemainingHeight(false);
+  }
+
+  calculateSides(){
+    this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
+
+    const root:Element = document.querySelector("#root");
+    this.extraPaddingRight = root.getBoundingClientRect().width -
+      ((this.refs["body"] as HTMLElement).getBoundingClientRect().width + this.extraPaddingLeft) + (this.borderWidth*2);
+
+    this.setState({
+      extraPaddingLeft: this.extraPaddingLeft,
+      extraPaddingRight: this.extraPaddingRight
+    });
+  }
+
   setRemainingHeight(isSticky: boolean){
     if (!this.props.asideBefore){
      return;
     }
 
+    const top = (document.documentElement.scrollTop || document.body.scrollTop);
+    const height = document.documentElement.offsetHeight;
+    const scrollHeight = document.documentElement.scrollHeight;
 
-    let top = (document.documentElement.scrollTop || document.body.scrollTop);
-    let height = document.documentElement.offsetHeight;
-    let scrollHeight = document.documentElement.scrollHeight;
-    let offsetTopHeight = isSticky ?
+    const offsetTopHeight = isSticky ?
       this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight :
       (this.refs["sticky"] as HTMLElement).offsetHeight + (this.refs["sticky"] as HTMLElement).offsetTop - top;
-    let bottom = Math.round(scrollHeight - top) - height;
+    
+    const bottom = Math.round(scrollHeight - top) - height;
+    
     let borderBottomSize = this.offsetBorderAgainstBottom - bottom + this.borderWidth;
     if (borderBottomSize < 0){
       borderBottomSize = 0;
     }
-    let remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
+    const remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
     this.setState({remainingHeight: remainingUsableWindow});
   }
 
   onScroll(e: Event){
-    let test = this.state.sticky;
-    let top = (document.documentElement.scrollTop || document.body.scrollTop);
-    let diff = this.offsetStickyElementTop - top;
-    let isSticky = (diff < this.offsetElementAgainstTop);
+    const top = (document.documentElement.scrollTop || document.body.scrollTop);
+    const diff = this.offsetStickyElementTop - top;
+
+    const element:Element = document.querySelector("#stick");
+    if (!element){
+      this.offsetElementAgainstTop = 0;
+    } else {
+      const stickyElementComputedStyle = document.defaultView.getComputedStyle(element);
+      this.offsetElementAgainstTop = parseInt(stickyElementComputedStyle.getPropertyValue("height"));
+    }
+    
+    this.setState({
+      offsetElementAgainstTop: this.offsetElementAgainstTop
+    })
+
+    const isSticky = (diff < this.offsetElementAgainstTop);
+
     if (isSticky !== this.state.sticky){
       this.setState({sticky: isSticky});
       if (isSticky){
@@ -172,7 +179,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
   render(){
     return (
       <div className={`application-panel__body ${this.props.modifier ? "application-panel__body--" + this.props.modifier : ""}`} ref="body">
-        <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
         <div className="application-panel__actions" ref="sticky" style={this.state.sticky ? {
              position: "fixed",
              top: this.state.offsetElementAgainstTop,
@@ -182,9 +188,9 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
           {this.props.primaryOption ? <div className={`application-panel__helper-container application-panel__helper-container--main-action ${this.props.modifier ? "application-panel__helper-container--" + this.props.modifier : ""}`}>{this.props.primaryOption}</div> : null}
           {this.props.toolbar ? <div className={`application-panel__main-container application-panel__main-container--actions ${this.props.modifier ? "application-panel__main-container--" + this.props.modifier : ""}`}>{this.props.toolbar}</div> : null}
         </div>
-        <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth} : null}>
+        <div className="application-panel__content">
           {this.props.asideBefore ? <div className="application-panel__helper-container" ref="asideBefore" style={{
-             position: this.state.sticky ? "fixed" : null,
+             position: this.state.sticky ? "sticky" : null,
              top: this.state.sticky ? this.state.offsetElementAgainstTop + this.state.stickyHeight : null,
              left: this.state.sticky ? this.state.extraPaddingLeft : null,
              height: this.state.remainingHeight,
