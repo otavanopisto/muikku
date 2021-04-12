@@ -41,7 +41,6 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.focus = this.focus.bind(this);
-    // this.onDeleteTag = this.onDeleteTag.bind(this);
   }
 
   onKeyDown(e: React.KeyboardEvent<any>) {
