@@ -25,7 +25,6 @@ interface GuiderToolbarState {
 }
 
 class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarState> {
-  private searchTimer: NodeJS.Timer;
   constructor(props: GuiderToolbarProps) {
     super(props);
 
@@ -37,11 +36,8 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.getBackByHash = this.getBackByHash.bind(this);
-
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
-
-    this.searchTimer = null;
   }
 
   getBackByHash(): string {

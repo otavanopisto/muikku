@@ -29,3 +29,5 @@ jobs:
         run: python prepare-maven.py
       - name: Deploy snapshot
         run: mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin
+      - name: Webhook to staging
+        run: curl -X POST https://${{ secrets.STAGING_WEBHOOK_USER }}:${{ secrets.STAGING_WEBHOOK_USER_PASS }}@${{ secrets.STAGING_WEBHOOK_URL }}

@@ -22,7 +22,6 @@ interface CoursepickerToolbarState {
 }
 
 class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, CoursepickerToolbarState> {
-  private searchTimer: NodeJS.Timer;
   private focused: boolean;
   constructor(props: CoursepickerToolbarProps) {
     super(props);
@@ -35,7 +34,6 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
-    this.searchTimer = null;
     this.focused = false;
   }
 

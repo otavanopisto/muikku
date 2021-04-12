@@ -545,7 +545,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       
       if (recipient != null) {
         if (!studentMessaging) {
-          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(recipient);
           if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
             return Response.status(Status.BAD_REQUEST).build();
           }

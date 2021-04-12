@@ -52,7 +52,6 @@ interface CommunicatorToolbarState {
 }
 
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
-  private searchTimer: NodeJS.Timer;
   private focused: boolean;
   constructor(props: CommunicatorToolbarProps) {
     super(props);
