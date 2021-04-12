@@ -117,9 +117,9 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name }, workspaceName: e.target.name });
   }
 
-  doStudentSearch(value: string) {
-    this.props.loadStudents(value);
-    this.props.loadUserGroups(value);
+  doStudentSearch(q: string) {
+    this.props.loadStudents({payload:{q}});
+    this.props.loadUserGroups({payload:{q}});
   }
 
   selectStudent(student: SelectItem) {
@@ -132,8 +132,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ selectedStudents: newState });
   }
 
-  doStaffSearch(value: string) {
-    this.props.loadStaff(value);
+  doStaffSearch(q: string) {
+    this.props.loadStaff({payload:{q}});
   }
 
   selectStaff(staff: SelectItem) {
@@ -333,7 +333,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
 
-        let groups: UiSelectItem[] = this.props.users.userGroups.map(group => {
+        let groups: UiSelectItem[] = this.props.users.usergroups.map(group => {
           return { id: group.id, label: group.name, icon: "users", type: "student-group" }
         });
 

@@ -56,6 +56,16 @@
   }
 }
 
+.dialog__window--edit-user-group {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 460px;
+    }
+  }
+}
+
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
@@ -248,6 +258,11 @@
   label {
     font-weight: 600;
   }
+}
+
+
+.dialog__content-row--user-search {
+  margin: 10px 0;
 }
 
 .dialog__content-row--dates {

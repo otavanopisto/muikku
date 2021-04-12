@@ -156,7 +156,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
   }
 
   onScroll(e: Event){
-    let test = this.state.sticky;
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
     let diff = this.offsetStickyElementTop - top;
     let isSticky = (diff < this.offsetElementAgainstTop);

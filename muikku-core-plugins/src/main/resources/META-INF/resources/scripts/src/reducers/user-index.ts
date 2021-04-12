@@ -82,12 +82,6 @@ export interface OrganizationType {
   name: string
 }
 
-export interface UserGroupType {
-  id: number,
-  name: string,
-  userCount: number,
-  organization?: OrganizationType
-}
 
 export interface UserStaffType {
   id: string,
@@ -111,7 +105,14 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   hasImage: boolean
 }
 
-export type UserGroupListType = Array<UserGroupType>;
+export interface UserGroupType {
+  id: number,
+  identifier?: string,
+  name: string,
+  userCount: number,
+  organization?: OrganizationType,
+  isGuidanceGroup?: boolean,
+}
 
 export interface UserBaseIndexType {
   [index: number]: UserType

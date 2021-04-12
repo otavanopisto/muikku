@@ -4,7 +4,7 @@ import { connect, Dispatch } from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import UserPanel from '~/components/general/user-panel';
 import { bindActionCreators } from 'redux';
-import users, { UsersType } from '~/reducers/main-function/users';
+import { UsersType } from '~/reducers/main-function/users';
 import { LoadUsersTriggerType, loadStudents, loadStaff } from '~/actions/main-function/users';
 interface OrganizationUsersProps {
   i18n: i18nType,
@@ -24,11 +24,11 @@ class OrganizationUsers extends React.Component<OrganizationUsersProps, Organiza
   }
 
   staffPanelPageChange(q: string, first: number, last: number) {
-    this.props.loadStaff(q, first, last);
+    this.props.loadStaff({payload:{q, firstResult: first, lastResult: last}});
   }
 
   studentPanelPageChange(q: string, first: number, last: number) {
-    this.props.loadStudents(q, first, last);
+    this.props.loadStudents({payload:{q, firstResult: first, lastResult: last}});
   }
 
   render() {

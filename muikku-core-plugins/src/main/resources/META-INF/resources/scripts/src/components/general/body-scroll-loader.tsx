@@ -6,6 +6,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
   public hasMorePropertyLocation:string;
   public hasMore:()=>boolean;
   public loadMoreTriggerFunctionLocation:string;
+  public loadMoreTriggerFunctionParameters:any;
   public loadMoreTriggerFunction: any;
   public cancellingLoadingPropertyLocation: string;
   private lastTimeCalledLoadMore: number;
