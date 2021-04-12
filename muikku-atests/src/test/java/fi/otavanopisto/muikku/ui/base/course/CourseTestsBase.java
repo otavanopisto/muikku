@@ -168,7 +168,7 @@ public class CourseTestsBase extends AbstractUITest {
 //
 //      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
 //      
-//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
 //      mockBuilder
 //        .addCourseStaffMember(courseId, courseStaffMember)
 //        .addCourseStudent(courseId, courseStudent)
@@ -238,7 +238,7 @@ public class CourseTestsBase extends AbstractUITest {
 //
 //      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
 //      
-//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+//      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
 //      mockBuilder
 //        .addCourseStaffMember(courseId, courseStaffMember)
 //        .addCourseStudent(courseId, courseStudent)

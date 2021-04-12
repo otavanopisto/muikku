@@ -84,7 +84,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -123,7 +123,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
@@ -167,7 +167,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
