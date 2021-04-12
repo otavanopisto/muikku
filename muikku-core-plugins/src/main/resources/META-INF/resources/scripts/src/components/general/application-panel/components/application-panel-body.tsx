@@ -138,7 +138,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     const offsetTopHeight = isSticky ?
       this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight :
       (this.refs["sticky"] as HTMLElement).offsetHeight + (this.refs["sticky"] as HTMLElement).offsetTop - top;
-    
     const bottom = Math.round(scrollHeight - top) - height;
     let borderBottomSize = this.offsetBorderAgainstBottom - bottom + this.borderWidth;
     if (borderBottomSize < 0){
