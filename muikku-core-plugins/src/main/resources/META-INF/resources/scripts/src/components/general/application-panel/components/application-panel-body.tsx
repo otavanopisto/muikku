@@ -142,7 +142,7 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
 
   /**
    * setRemainingHeight
-   * @param isSticky 
+   * @param isSticky
    * @returns
    */
   setRemainingHeight(isSticky: boolean){
