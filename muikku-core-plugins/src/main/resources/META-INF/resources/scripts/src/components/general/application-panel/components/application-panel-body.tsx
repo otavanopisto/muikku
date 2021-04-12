@@ -70,7 +70,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       window.removeEventListener("resize", this.calculateSides);
     }
   }
-
   /**
    * calculate
    * @returns 
@@ -123,7 +122,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     this.calculateSides();
     this.setRemainingHeight(false);
   }
-
   /**
    * calculateSides
    */
@@ -139,7 +137,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       extraPaddingRight: this.extraPaddingRight
     });
   }
-
   /**
    * setRemainingHeight
    * @param isSticky 
@@ -165,7 +162,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     const remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
     this.setState({remainingHeight: remainingUsableWindow});
   }
-
   /**
    * onScroll
    * Fires when scrolling happens
@@ -198,7 +194,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     }
     this.setRemainingHeight(isSticky);
   }
-
   /**
    * checkWidth
    * Checks when window size in within Mobile and Pad sizes
@@ -213,7 +208,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       })
     }
   }
-
   /**
    * render
    * @returns 
