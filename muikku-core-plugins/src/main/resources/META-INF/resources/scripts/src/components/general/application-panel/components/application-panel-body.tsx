@@ -70,9 +70,10 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       window.removeEventListener("resize", this.calculateSides);
     }
   }
+  
   /**
    * calculate
-   * @returns 
+   * @returns
    */
   calculate(){
     this.disabled = this.props.disableStickyScrolling;
@@ -122,6 +123,7 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     this.calculateSides();
     this.setRemainingHeight(false);
   }
+
   /**
    * calculateSides
    */
@@ -137,10 +139,11 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       extraPaddingRight: this.extraPaddingRight
     });
   }
+
   /**
    * setRemainingHeight
    * @param isSticky 
-   * @returns 
+   * @returns
    */
   setRemainingHeight(isSticky: boolean){
     if (!this.props.asideBefore){
@@ -162,12 +165,13 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     const remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
     this.setState({remainingHeight: remainingUsableWindow});
   }
+
   /**
    * onScroll
    * Fires when scrolling happens
    * sets offsetvalues to state and trickers calculatesSides and setRemainingHeight
    * to calculate new values
-   * @param e 
+   * @param e
    */
   onScroll(e: Event){
     const top = (document.documentElement.scrollTop || document.body.scrollTop);
@@ -194,11 +198,12 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     }
     this.setRemainingHeight(isSticky);
   }
+
   /**
    * checkWidth
    * Checks when window size in within Mobile and Pad sizes
    * This then sets boolean variable to state indicating that Mobile/Pad width is active
-   * @param e 
+   * @param e
    */
   checkWidth(e: Event) {
     const match = window.matchMedia(`(max-width: 768px)`);
@@ -208,9 +213,10 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       })
     }
   }
+
   /**
    * render
-   * @returns 
+   * @returns
    */
   render(){
     return (
