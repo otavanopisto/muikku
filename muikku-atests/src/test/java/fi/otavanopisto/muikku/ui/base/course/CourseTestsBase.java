@@ -328,7 +328,7 @@ public class CourseTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     long courseId = 1l;
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
     MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
     
     mockBuilder
