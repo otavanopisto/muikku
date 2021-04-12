@@ -32,7 +32,7 @@ import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -103,6 +103,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     } else if (window.location.pathname.includes("/organization")) {
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), true, false);
+    } else if (window.location.pathname.includes("/profile")) {
+      this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
     }
   }
 
@@ -163,6 +165,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(updateStatistics() as Action);
     }
     this.props.store.dispatch(updateHops() as Action);
+  }
+
+  loadProfileData(location: string) {
+    this.props.store.dispatch(setProfileLocation(location) as Action);
   }
 
   loadAnnouncerData(location: string[]) {
@@ -479,6 +485,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }
 
       this.props.store.dispatch(loadProfileChatSettings() as Action);
+
+      if (!window.location.hash) {
+        window.location.hash = "#general";
+      } else {
+        this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
+      }
     }
 
     return <ProfileBody />
@@ -491,7 +503,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
 
-      this.props.websocket && this.props.websocket.restoreEventListeners(); this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));

@@ -19,6 +19,9 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
 public interface UserSchoolDataBridge {
     
@@ -28,6 +31,15 @@ public interface UserSchoolDataBridge {
    * @return school data source identifier
    */
   public String getSchoolDataSource();
+  
+  /* Worklist */
+  
+  public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates();
+  public BridgeResponse<WorklistItemRestModel> createWorklistItem(WorklistItemRestModel item);
+  public BridgeResponse<WorklistItemRestModel> updateWorklistItem(WorklistItemRestModel item);
+  public void removeWorklistItem(WorklistItemRestModel item);
+  public BridgeResponse<List<WorklistItemRestModel>> listWorklistItemsByOwnerAndTimeframe(String identifier, String beginDate, String endDate);
+  public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier);
   
   /* User */
   

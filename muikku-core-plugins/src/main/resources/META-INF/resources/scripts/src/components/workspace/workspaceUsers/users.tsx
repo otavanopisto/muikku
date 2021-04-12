@@ -11,8 +11,8 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/tabs.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/avatar.scss';
-import { getName, filterMatch, filterHighlight } from "~/util/modifiers";
-import { ShortWorkspaceUserWithActiveStatusType, UserIndexType, UserType } from "~/reducers/user-index";
+import { getName, filterMatch } from "~/util/modifiers";
+import { ShortWorkspaceUserWithActiveStatusType, UserType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import { MobileOnlyTabs } from "~/components/general/tabs";
 import Avatar from "~/components/general/avatar";
@@ -136,7 +136,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
                 <div className="form-element form-element--search">
 
-                  <SearchFormElement value={this.state.currentSearch} updateField={this.updateSearch} id="WorkspaceUserFilter" name="workspace-user-filter" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')} />
+                  <SearchFormElement delay={0} value={this.state.currentSearch} updateField={this.updateSearch} id="WorkspaceUserFilter" name="workspace-user-filter" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')} />
                 </div>
                 <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
                   {

@@ -216,7 +216,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--label");
         waitForVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
-        waitAndClick(".dropdown--communicator-labels span.link--full");
+        waitAndClick(".dropdown--communicator-labels .link--full");
         waitForPresent(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body");
         assertText(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body", "Test");
       }finally{
@@ -351,7 +351,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--label");
         waitForVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
-        waitAndClick(".dropdown--communicator-labels span.link--full");
+        waitAndClick(".dropdown--communicator-labels .link--full");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
     
         waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");

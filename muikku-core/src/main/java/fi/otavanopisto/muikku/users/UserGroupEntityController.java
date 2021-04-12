@@ -54,6 +54,10 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.create(userGroupEntity, schoolDataSource, identifier, userSchoolDataIdentifier, false);
   }
   
+  public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier(), false);
+  }
+  
   public UserGroupEntity findUserGroupEntityByIdentifier(SchoolDataIdentifier identifier) {
     return findUserGroupEntityByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
@@ -78,6 +82,10 @@ public class UserGroupEntityController {
 
   public Long getGroupUserCount(UserGroupEntity userGroupEntity) {
     return userGroupEntityDAO.countGroupUsers(userGroupEntity);
+  }
+  
+  public UserGroupUserEntity findUserGroupUserEntityBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    return findUserGroupUserEntityByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier(), false);
   }
   
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {

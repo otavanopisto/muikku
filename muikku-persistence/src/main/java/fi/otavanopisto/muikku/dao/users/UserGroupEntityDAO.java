@@ -11,11 +11,13 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.base.SchoolDataSource_;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity_;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity_;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
 
@@ -33,6 +35,24 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     return userGroup;
   }
 
+  public UserGroupEntity findBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
+    Root<UserGroupEntity> root = criteria.from(UserGroupEntity.class);
+    Join<UserGroupEntity, SchoolDataSource> joinSchoolDataSource = root.join(UserGroupEntity_.schoolDataSource);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(          
+        criteriaBuilder.equal(joinSchoolDataSource.get(SchoolDataSource_.identifier), schoolDataIdentifier.getDataSource()),
+        criteriaBuilder.equal(root.get(UserGroupEntity_.identifier), schoolDataIdentifier.getIdentifier())
+      )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
   public UserGroupEntity findByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
     EntityManager entityManager = getEntityManager();
     

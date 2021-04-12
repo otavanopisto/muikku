@@ -315,10 +315,14 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
 
       workspace = await reuseExistantValue(true, workspace, () => promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')());
 
-      dispatch({
-        type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-        payload: workspace
-      });
+      workspace.details = (data.loadDetails || workspace && workspace.details) ? await reuseExistantValue(true, workspace && workspace.details,
+        () => promisify(mApi().workspace.workspaces
+          .details.read(data.workspaceId), 'callback')()) : null,
+
+        dispatch({
+          type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
+          payload: workspace
+        });
 
       data.success && data.success(workspace);
     } catch (err) {
@@ -820,7 +824,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(data)
         });
         await Promise.all(newPermissions.map(permission => {
           let originalPermission = currentWorkspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
-          promisify(mApi().permission.workspaceSettings.userGroups
+          promisify(mApi().workspace.workspaces.signupGroups
             .update(currentWorkspace.id, originalPermission.userGroupEntityId, permission), 'callback')();
         }
         ));
@@ -897,18 +901,31 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
-      let originalWorkspace = data.workspace;
+      let originalWorkspace: WorkspaceType = data.workspace;
+      let newDetails = data.update.details;
 
       // Take off data that'll cramp the update
       delete originalWorkspace["staffMemberSelect"];
       delete originalWorkspace["studentsSelect"];
+      delete originalWorkspace["details"];
 
-      if (data.update) {
+      // Delete details from update so it wont fail
+
+      delete data.update["details"];
+
+      if (data.update && Object.keys(data.update).length !== 0) {
         await promisify(mApi().workspace.workspaces.update(data.workspace.id,
           Object.assign(data.workspace, data.update)
         ), 'callback')().then(
           data.progress && data.progress("workspace-update")
         );
+      }
+
+      if (newDetails) {
+        await promisify(mApi().workspace.workspaces
+          .details.update(data.workspace.id, newDetails), 'callback')().then(
+            data.progress && data.progress("add-details")
+          );
       }
 
       if (data.addStudents.length > 0) {
@@ -1390,8 +1407,8 @@ export interface CopyCurrentWorkspaceTriggerType {
   }): AnyActionType
 }
 
-export type CreateWorkspaceStateType = "workspace-create" | "add-students" | "add-teachers" | "done";
-export type UpdateWorkspaceStateType = "workspace-update" | "add-students" | "remove-students" | "add-teachers" | "remove-teachers" | "done";
+export type CreateWorkspaceStateType = "workspace-create" | "add-details" | "add-students" | "add-teachers" | "done";
+export type UpdateWorkspaceStateType = "workspace-update" | "add-details" | "add-students" | "remove-students" | "add-teachers" | "remove-teachers" | "done";
 
 
 export interface CreateWorkspaceTriggerType {
@@ -1399,6 +1416,8 @@ export interface CreateWorkspaceTriggerType {
     id: number,
     name?: string,
     access?: string,
+    beginDate?: string,
+    endDate?: string,
     nameExtension?: string,
     students: SelectItem[],
     staff: SelectItem[],
@@ -1720,13 +1739,28 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(data)
           {
             name: data.name,
             nameExtension: data.nameExtension,
-            access: data.access
+            access: data.access,
           },
           {
             sourceWorkspaceEntityId: data.id
           }), 'callback')().then(
             data.progress && data.progress("workspace-create")
           ));
+
+      if (data.beginDate || data.endDate) {
+
+        workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.read(workspace.id), 'callback')());
+
+        workspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.update(workspace.id, {
+            ...workspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate
+          }), 'callback')().then(
+            data.progress && data.progress("add-details")
+          ));
+      }
 
       if (data.students.length > 0) {
         let groupIdentifiers: number[] = [];
@@ -1894,7 +1928,7 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
-      let permissions: WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().permission.workspaceSettings.userGroups
+      let permissions: WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().workspace.workspaces.signupGroups
         .read(getState().workspaces.currentWorkspace.id), 'callback')());
 
       dispatch({
@@ -1912,56 +1946,6 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToLoadWorkspacePermissions'), 'error'));
-    }
-  }
-}
-
-let updateCurrentWorkspaceUserGroupPermission: UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(data) {
-  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
-    let currentPermissions;
-    try {
-      let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
-      currentPermissions = currentWorkspace.permissions;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            permissions: currentPermissions.map((permissionValue) => {
-              if (permissionValue.userGroupEntityId === data.update.userGroupEntityId) {
-                return data.update;
-              }
-
-              return permissionValue;
-            })
-          }
-        }
-      });
-
-      await promisify(mApi().permission.workspaceSettings.userGroups
-        .update(currentWorkspace.id, data.original.userGroupEntityId, data.update), 'callback')();
-
-      data.success && data.success();
-
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-      data.fail && data.fail();
-
-      let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: currentWorkspace,
-          update: {
-            permissions: currentPermissions
-          }
-        }
-      });
-      dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.management.notification.failedToUpdateWorkspacePermissions'), 'error'));
     }
   }
 }
@@ -2471,7 +2455,7 @@ export {
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspace, updateOrganizationWorkspace, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
+  loadCurrentWorkspaceUserGroupPermissions, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, loadMoreOrganizationWorkspacesFromServer,
   loadTemplatesFromServer, updateWorkspaceEditModeState, loadWholeWorkspaceHelp, setWholeWorkspaceHelp

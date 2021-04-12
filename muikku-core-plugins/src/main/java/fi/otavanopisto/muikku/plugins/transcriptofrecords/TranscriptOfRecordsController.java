@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -35,6 +34,7 @@ import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -68,10 +68,10 @@ public class TranscriptOfRecordsController {
   private WorkspaceController workspaceController;
 
   @Inject
-  private UserGroupEntityController userGroupEntityController;
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
-  private PermissionController permissionController;
+  private UserGroupEntityController userGroupEntityController;
 
   @Inject
   private CourseMetaController courseMetaController;
@@ -447,11 +447,11 @@ public class TranscriptOfRecordsController {
       studentIdentifier,
       studentAssessments,
       userGroupEntityController,
-      permissionController,
       studiesViewCourseChoiceController,
       studentIdentifierString,
       gradingController,
-      educationTypeMapping
+      educationTypeMapping,
+      workspaceEntityController
     );
     lister.performListing();
     VopsLister.Result listerResult = lister.getResult();

@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata;
 
 import java.util.List;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -54,6 +55,8 @@ public interface WorkspaceSchoolDataBridge {
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active);
   public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean active);
 
-
+  public void addWorkspaceSignupGroup(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userGroupIdentifier);
+  public void removeWorkspaceSignupGroup(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userGroupIdentifier);
+  public Set<SchoolDataIdentifier> listWorkspaceSignupGroups(SchoolDataIdentifier workspaceIdentifier);
 
 }

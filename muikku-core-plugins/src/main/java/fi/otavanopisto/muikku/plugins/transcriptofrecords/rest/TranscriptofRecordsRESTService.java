@@ -29,7 +29,6 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
@@ -50,6 +49,7 @@ import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
@@ -93,9 +93,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private UserGroupEntityController userGroupEntityController;  
   
   @Inject
-  private PermissionController permissionController;  
-  
-  @Inject
   private CourseMetaController courseMetaController;  
   
   @Inject
@@ -103,6 +100,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -228,11 +228,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       studentIdentifier,
       studentAssessments,
       userGroupEntityController,
-      permissionController,
       studiesViewCourseChoiceController,
       studentIdentifierString,
       gradingController,
-      educationTypeMapping
+      educationTypeMapping,
+      workspaceEntityController
     );
     
     lister.performListing();

@@ -6,11 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
@@ -44,6 +46,11 @@ public class UserGroupEntity implements ContextReference {
     this.identifier = identifier;
   }
 
+  @Transient
+  public SchoolDataIdentifier schoolDataIdentifier() {
+    return new SchoolDataIdentifier(getIdentifier(), getSchoolDataSource().getIdentifier());
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;

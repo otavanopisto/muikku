@@ -52,7 +52,6 @@ interface CommunicatorToolbarState {
 }
 
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
-  private searchTimer: NodeJS.Timer;
   private focused: boolean;
   constructor(props: CommunicatorToolbarProps) {
     super(props);
@@ -76,12 +75,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   }
 
   updateSearchWithQuery(query: string) {
-    clearTimeout(this.searchTimer);
     this.setState({
       searchquery: query
     });
-    clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(this.props.loadMessageThreads(null, query) as any, 400);
+    this.props.loadMessageThreads(null, query);
   }
 
   loadMessage(messageId: number) {
@@ -239,9 +236,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
               type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
           </div>,
-          <span className="link link--full" onClick={this.onCreateNewLabel}>
+          <Link tabIndex={0} className="link link--full" onClick={this.onCreateNewLabel}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
-          </span>
+          </Link>
         ].concat(this.props.messages.navigation.filter((item) => {
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
         }).map((label) => {
@@ -265,9 +262,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         updateField={this.updateSearchWithQuery}
         name="message-search"
         id="searchMessages"
+        modifiers="communicator-message-search"
         onFocus={this.onInputFocus}
         onBlur={this.onInputBlur}
-        placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}
+        placeholder={this.props.i18n.text.get('plugin.communicator.search.placeholder')}
         value={this.state.searchquery}
       />
     </ApplicationPanelToolbar>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserRoleType;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
@@ -350,4 +352,17 @@ public class WorkspaceController {
   public void deleteWorkspaceMaterialProducer(WorkspaceMaterialProducer workspaceMaterialProducer) {
     workspaceMaterialProducerDAO.delete(workspaceMaterialProducer); 
   }
+
+  public void addWorkspaceSignupGroup(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity) {
+    workspaceSchoolDataController.addWorkspaceSignupGroup(workspaceEntity.schoolDataIdentifier(), userGroupEntity.schoolDataIdentifier());
+  }
+
+  public Set<SchoolDataIdentifier> listWorkspaceSignupGroups(WorkspaceEntity workspaceEntity) {
+    return workspaceSchoolDataController.listWorkspaceSignupGroups(workspaceEntity.schoolDataIdentifier());
+  }
+
+  public void removeWorkspaceSignupGroup(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity) {
+    workspaceSchoolDataController.removeWorkspaceSignupGroup(workspaceEntity.schoolDataIdentifier(), userGroupEntity.schoolDataIdentifier());
+  }
+  
 }
