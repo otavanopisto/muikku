@@ -156,20 +156,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
   }
 
-  // summaryRemoveUser(user: Tag) {
-  //   const studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === user.value);
-  //   const studentIsRemoved = this.state.removeStudents.some(aStudent => aStudent.id === user.id)
-  //   const staffIsAdded = this.state.addStudents.some(aStudent => aStudent.id === user.value);
-  //   const staffIsRemoved = this.state.removeStudents.some(aStudent => aStudent.id === user.id)
-
-  //   let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
-  //   let newRemoveState = studentIsAdded ? this.state.removeStudents : this.state.removeStudents.concat(student);
-  //   let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
-  //   this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
-  // }
-
-
-
   setSelectedWorkspace() {
     this.props.setCurrentOrganizationWorkspace({
       workspaceId: this.props.workspace.id,
