@@ -69,8 +69,7 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       window.removeEventListener("scroll", this.onScroll);
       window.removeEventListener("resize", this.calculateSides);
     }
-  }
-  
+  }  
   /**
    * calculate
    * @returns
