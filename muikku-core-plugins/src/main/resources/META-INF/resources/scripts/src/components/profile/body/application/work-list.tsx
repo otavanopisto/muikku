@@ -41,6 +41,14 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         currentTemplate: this.props.profile.worklistTemplates[0],
       });
     }
+
+    if (
+      this.props.profile.worklist !== prevProps.profile.worklist &&
+      this.props.profile.worklist.length &&
+      this.state.openedSections.length === 0
+    ) {
+      this.toggleSection(this.props.profile.worklist.length - 1, null);
+    }
   }
 
   public async insertNew(data: {
@@ -68,8 +76,8 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
   }
 
   public toggleSection(index: number, e: React.MouseEvent) {
-    e.stopPropagation();
-    e.preventDefault();
+    e && e.stopPropagation();
+    e && e.preventDefault();
 
     this.props.loadProfileWorklistSection(index);
     const sectionToOpen = this.props.profile.worklist[index];
