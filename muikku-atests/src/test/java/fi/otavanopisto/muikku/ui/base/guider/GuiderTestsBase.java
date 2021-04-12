@@ -87,7 +87,7 @@ public class GuiderTestsBase extends AbstractUITest {
     Workspace workspace2 = createWorkspace("diffentscourse", "Second test course", "4", Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(4l, workspace.getId(), student.getId());
     MockCourseStudent mcs2 = new MockCourseStudent(5l, workspace2.getId(), student2.getId());
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
     mockBuilder
       .addCourseStudent(workspace.getId(), mcs)
       .addCourseStudent(workspace.getId(), mcs2)

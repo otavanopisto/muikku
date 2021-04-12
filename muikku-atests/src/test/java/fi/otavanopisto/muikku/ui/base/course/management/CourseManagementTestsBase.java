@@ -59,7 +59,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
