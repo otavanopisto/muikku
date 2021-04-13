@@ -10,12 +10,21 @@ import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 import LazyLoader from "~/components/general/lazy-loader";
+import { StatusType } from '../../../../reducers/base/status';
+import { SetCurrentWorkspaceTriggerType } from '../../../../actions/workspaces/index';
+import { setCurrentWorkspace } from '~/actions/workspaces';
+import { bindActionCreators } from 'redux';
 
 interface HelpMaterialProps {
   i18n: i18nType,
+  status: StatusType,
   workspaceEditMode: WorkspaceEditModeStateType,
   materialContentNode: MaterialContentNodeType,
+  folder: MaterialContentNodeType,
+  compositeReplies: MaterialCompositeRepliesType,
+  isViewRestricted: boolean,
   workspace: WorkspaceType,
+  setCurrentWorkspace: SetCurrentWorkspaceTriggerType,
 }
 
 interface HelpMaterialState {
@@ -55,11 +64,12 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
+    status: state.status,
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({setCurrentWorkspace}, dispatch);
 };
 
 export default connect(
