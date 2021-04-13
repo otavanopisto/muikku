@@ -252,7 +252,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
         return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-students"
+          <AutofillSelector identifier="addStudentsSelector" modifier="add-students"
             loader={this.doStudentSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
             selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
@@ -262,7 +262,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
         });
         return <DialogRow modifiers="edit-workspace">
-          <AutofillSelector modifier="add-teachers"
+          <AutofillSelector identifier="addTeachersSelector" modifier="add-teachers"
             loader={this.doStaffSearch}
             placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
             selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
