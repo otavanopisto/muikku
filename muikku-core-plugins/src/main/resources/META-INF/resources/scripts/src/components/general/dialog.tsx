@@ -288,7 +288,6 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
   }
 
   render() {
-
     return (
       <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
         {
@@ -302,7 +301,6 @@ export class DialogRemoveUsers extends React.Component<DialogRemoveUsersProps, D
               <DialogRow>
                 <ApplicationList modifiers="dialog-users">
                   {this.props.users.length > 0 ?
-
                     this.props.users.map((user: SelectItem) => {
                       return <ApplicationListItem className="course" classState={this.checkUserInRemoveList(user.id as string, this.props.removeUsers) ? "disabled" : ""} key={"all-" + user.id}>
                         <ApplicationListItemContentWrapper>

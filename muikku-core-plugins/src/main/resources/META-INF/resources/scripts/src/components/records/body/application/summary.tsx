@@ -15,7 +15,6 @@ import CommunicatorNewMessage from '~/components/communicator/dialogs/new-messag
 import Button from "~/components/general/button";
 import { getUserImageUrl } from "~/util/modifiers";
 import moment from '~/lib/moment';
-import '~/sass/elements/application-sub-panel.scss';
 import { StatusType } from '~/reducers/base/status';
 
 interface SummaryProps {
@@ -44,7 +43,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
               <span>{this.props.summary.data.studentsDetails.studyStartDate ?
                 this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyStartDate) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span>
             </div>
@@ -52,7 +51,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.summary.data.studentsDetails.studyEndDate ? "plugin.records.studyEndDateLabel" :
               "plugin.records.studyTimeEndLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date"><span>{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
               this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
           </div>
 
@@ -120,8 +119,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>;
 
       return (
-        <div>
-          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>
+        <section>
+          <h2 className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ?
             <div className="react-container">
@@ -144,12 +143,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </div>
               </div>
               <div className="application-sub-panel">
-                <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
+                <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
                 {this.props.summary.data.graphData.activity && this.props.summary.data.graphData.workspaces ? <MainChart workspaces={this.props.summary.data.graphData.workspaces} activityLogs={this.props.summary.data.graphData.activity} /> : null}
               </div>
             </div>
             : null}
-        </div>
+        </section>
       )
     }
   }

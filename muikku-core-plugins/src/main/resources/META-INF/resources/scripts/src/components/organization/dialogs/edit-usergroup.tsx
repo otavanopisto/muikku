@@ -191,7 +191,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
 
   selectStudent(student: SelectItem) {
     const newAddState = [...this.state.addStudents, student];
-    this.setState({ addStudents: newAddState});
+    this.setState({ addStudents: newAddState });
   }
 
   deleteStudent(student: SelectItem) {
@@ -205,11 +205,11 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
 
   selectStaff(staff: SelectItem) {
     const newAddState = [...this.state.addStaff, staff];
-    this.setState({ addStaff: newAddState});
+    this.setState({ addStaff: newAddState });
   }
 
   deleteStaff(staff: SelectItem) {
-    const newAddState =  this.state.addStaff.filter(stf => stf.id !== staff.id);
+    const newAddState = this.state.addStaff.filter(stf => stf.id !== staff.id);
     this.setState({ addStaff: newAddState });
   }
 
