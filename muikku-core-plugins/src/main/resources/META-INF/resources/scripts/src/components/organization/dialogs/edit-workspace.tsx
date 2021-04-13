@@ -106,7 +106,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.doStudentSearch = this.doStudentSearch.bind(this);
     this.selectStudent = this.selectStudent.bind(this);
     this.deleteStudent = this.deleteStudent.bind(this);
-    this.setSelectedStudents = this.setSelectedStudents.bind(this);
     this.setWorkspaceName = this.setWorkspaceName.bind(this);
     this.setWorkspaceNameExtension = this.setWorkspaceNameExtension.bind(this);
     this.saveWorkspace = this.saveWorkspace.bind(this);
@@ -115,13 +114,9 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.getLocaledDate = this.getLocaledDate.bind(this);
 
   }
-  doStudentSearch(value: string) {
-    this.props.loadStudents(value);
-    this.props.loadUserGroups(value);
-  }
-
-  doStaffSearch(value: string) {
-    this.props.loadStaff(value);
+  doStudentSearch(q: string) {
+    this.props.loadStudents({payload:{q}});
+    this.props.loadUserGroups({payload:{q}});
   }
 
   selectStudent(student: SelectItem) {
@@ -130,6 +125,18 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     let newAddState = studentIsDeleted ? this.state.addStudents : this.state.addStudents.concat(student);
     let newRemoveState = studentIsDeleted ? this.state.removeStudents.filter(rStudent => rStudent.id !== student.id) : this.state.removeStudents;
     this.setState({ selectedStudents: newSelectedState, addStudents: newAddState, removeStudents: newRemoveState });
+  }
+
+  deleteStudent(student: SelectItem) {
+    let studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === student.id);
+    let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
+    let newRemoveState = studentIsAdded ? this.state.removeStudents : this.state.removeStudents.concat(student);
+    let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
+    this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
+  }
+
+  doStaffSearch(q: string) {
+    this.props.loadStaff({payload:{q}});
   }
 
   selectStaff(staff: SelectItem) {
@@ -148,14 +155,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
     this.setState({ selectedStaff: newSelectedState, removeStaff: newRemoveState, addStaff: newAddState });
   }
 
-  deleteStudent(student: SelectItem) {
-    let studentIsAdded = this.state.addStudents.some(aStudent => aStudent.id === student.id);
-    let newSelectedState = this.state.selectedStudents.filter(selectedItem => selectedItem.id !== student.id);
-    let newRemoveState = studentIsAdded ? this.state.removeStudents : this.state.removeStudents.concat(student);
-    let newAddState = studentIsAdded ? this.state.addStudents.filter(aStudent => aStudent.id !== student.id) : this.state.addStudents;
-    this.setState({ selectedStudents: newSelectedState, removeStudents: newRemoveState, addStudents: newAddState });
-  }
-
   setSelectedWorkspace() {
     this.props.setCurrentOrganizationWorkspace({
       workspaceId: this.props.workspace.id,
@@ -168,10 +167,6 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
         });
       }
     });
-  }
-
-  setSelectedStudents(addStudents: Array<SelectItem>) {
-    this.setState({ addStudents });
   }
 
   setWorkspaceName(value: string) {
@@ -383,7 +378,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
 
-        let groups = this.props.users.userGroups.map(group => {
+        let groups = this.props.users.usergroups.map(group => {
           return { id: group.id, label: group.name, icon: "users", type: "student-group" }
         });
 

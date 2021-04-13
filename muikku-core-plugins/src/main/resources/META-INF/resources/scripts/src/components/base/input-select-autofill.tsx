@@ -88,7 +88,7 @@ export default class AutofillSelector extends React.Component<AutofillSelectorPr
   }
 
   render() {
-    let selectedItems = this.props.selectedItems.map((item) => {
+    let selectedItems = this.props.selectedItems && this.props.selectedItems.map((item) => {
       return {
         node: <span className="autocomplete__selected-item">
           {item.icon ?

@@ -47,10 +47,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
 
-    return (<div>
-      <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>
+    return (<section>
+      <h2 className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.hops.title")}</h2>
       <HopsGraph onHopsChange={this.setHopsToWithDelay} />
-    </div>)
+    </section>)
   }
 }
 

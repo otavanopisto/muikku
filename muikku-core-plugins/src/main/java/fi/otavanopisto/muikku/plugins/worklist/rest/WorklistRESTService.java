@@ -59,7 +59,8 @@ public class WorklistRESTService {
    *      "ENTRYDATE,"
    *      "DESCRIPTION",
    *      "PRICE",
-   *      "FACTOR"
+   *      "FACTOR",
+   *      "BILLING_NUMBER"
    *    ]
    *   },
    *    
@@ -91,7 +92,8 @@ public class WorklistRESTService {
    *  entryDate: 2021-02-15
    *  description: "Something something",
    *  price: 25,
-   *  factor: 2
+   *  factor: 2,
+   *  billingNumber: 123456
    * }
    *  
    * NOTE: If trying to pass along a value for a field that is not editable according
@@ -105,11 +107,13 @@ public class WorklistRESTService {
    *  description: "Something something",
    *  price: 25,
    *  factor: 2,
+   *  billingNumber: 123456
    *  editableFields: [
    *    "ENTRYDATE",
    *    "DESCRIPTION",
    *    "PRICE",
-   *    "FACTOR"
+   *    "FACTOR",
+   *    "BILLING_NUMBER"
    *  ]
    * }
    */
@@ -196,11 +200,13 @@ public class WorklistRESTService {
    *    description: "Something something",
    *    price: 25,
    *    factor: 2,
+   *    billingNumber: 123456
    *    editableFields: [
    *      "ENTRYDATE",
    *      "DESCRIPTION",
    *      "PRICE",
-   *      "FACTOR"
+   *      "FACTOR",
+   *      "BILLING_NUMBER"
    *    ],
    *    removable: true
    *   },
@@ -211,6 +217,7 @@ public class WorklistRESTService {
    *    description: "Course assessment",
    *    price: 75,
    *    factor: 1,
+   *    billingNumber: 123456,
    *    courseAssessment: {
    *      courseName: "BI1 - Ihmisen biologia",
    *      studentName: "John "Joe" Doe (Nettilukio)",

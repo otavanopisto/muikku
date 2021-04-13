@@ -146,5 +146,4 @@ export class TagItem extends React.Component<TagItemProps, TagItemState> {
       <span className="tag-input__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, this.props.tag)}></span>
     </span>
   }
-
 }
