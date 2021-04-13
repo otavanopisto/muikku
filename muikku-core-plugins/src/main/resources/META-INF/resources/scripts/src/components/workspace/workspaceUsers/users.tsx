@@ -105,7 +105,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               </h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-staff-members">
                 <div className="application-list application-list--workspace-staff-members">
-                  {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff) => {
+                  {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.results.map((staff) => {
                     let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
                     return <div className="application-list__item application-list__item--workspace-staff-member" key={staff.userEntityId}>
                       <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-user">
@@ -145,7 +145,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                     type: "workspace-students",
                     component: () => {
                       let activeStudents = this.props.workspace && this.props.workspace.students &&
-                        this.props.workspace.students
+                        this.props.workspace.students.results
                           .filter(s => s.active)
                           .filter(s => filterMatch(getName(s, true), this.state.currentSearch))
                           .map(s => <WorkspaceUser highlight={this.state.currentSearch}
@@ -165,7 +165,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                     type: "workspace-students",
                     component: () => {
                       let inactiveStudents = this.props.workspace && this.props.workspace.students &&
-                        this.props.workspace.students
+                        this.props.workspace.students.results
                           .filter(s => !s.active)
                           .filter(s => filterMatch(getName(s, true), this.state.currentSearch))
                           .map(s => <WorkspaceUser onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}

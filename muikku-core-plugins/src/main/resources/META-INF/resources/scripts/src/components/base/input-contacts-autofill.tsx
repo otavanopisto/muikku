@@ -5,7 +5,7 @@ import promisify from '~/util/promisify';
 import { filterHighlight, getName } from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/workspaces';
-import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
+import { ContactRecepientType, WorkspaceStaffListType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
@@ -148,10 +148,10 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     let searchResults = await Promise.all(
       [
-        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]): any[] => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
         checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
         checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
-        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: WorkspaceStaffListType) => result.results || []).catch((err: any): any[] => []) : [],
       ]
     );
 
