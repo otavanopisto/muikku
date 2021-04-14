@@ -3,8 +3,6 @@ export interface SpecificActionType<ActionType, PayloadType> {
   payload: PayloadType | null;
 }
 
-type dispatch = (action: any) => any;
-type getState = () => any;
 type AsyncDeferredAction = (
   dispatch: (arg: AnyActionType) => any,
   getState: () => any
@@ -140,6 +138,7 @@ import {
   UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE,
   UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STUDENT_SELECT_STATE,
 } from "./workspaces";
+
 import {
   UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS,
   UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES,
@@ -170,6 +169,7 @@ import {
   UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE,
   UPDATE_RECORDS_SET_FILES,
 } from "./main-function/records";
+
 import {
   UPDATE_STUDIES_SUMMARY,
   UPDATE_STUDIES_SUMMARY_STATUS,
@@ -202,6 +202,8 @@ import {
   SET_PROFILE_STUDENT,
   SET_PROFILE_CHAT_SETTINGS,
   SET_PROFILE_LOCATION,
+  SET_WORKLIST,
+  SET_WORKLIST_TEMPLATES,
 } from "./main-function/profile";
 import {
   WEBSOCKET_EVENT,
@@ -367,6 +369,8 @@ export type ActionType =
   | UPDATE_WORKSPACES_SET_CURRENT_HELP
   | SET_PROFILE_CHAT_SETTINGS
   | SET_PROFILE_LOCATION
+  | SET_WORKLIST_TEMPLATES
+  | SET_WORKLIST
   | TOGGLE_ALL_MESSAGE_ITEMS;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

@@ -32,7 +32,7 @@ import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -169,6 +169,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
   loadProfileData(location: string) {
     this.props.store.dispatch(setProfileLocation(location) as Action);
+
+    if (location === "work") {
+      this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
+      this.props.store.dispatch(loadProfileWorklistSections() as Action);
+    }
   }
 
   loadAnnouncerData(location: string[]) {

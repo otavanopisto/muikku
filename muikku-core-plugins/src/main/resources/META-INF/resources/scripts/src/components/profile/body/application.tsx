@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import { StateType } from 'reducers';
 import { StatusType } from "~/reducers/base/status";
 import ChatSettings from "./application/chat-settings";

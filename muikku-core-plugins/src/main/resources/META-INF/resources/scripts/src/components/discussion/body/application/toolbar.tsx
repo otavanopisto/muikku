@@ -16,7 +16,7 @@ import ModifyArea from '../../dialogs/modify-area';
 import DeleteArea from '../../dialogs/delete-area';
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
-import { ApplicationPanelToolbar } from '~/components/general/application-panel';
+import { ApplicationPanelToolbar } from '~/components/general/application-panel/application-panel';
 import { ButtonPill } from '~/components/general/button';
 
 interface DiscussionToolbarProps {

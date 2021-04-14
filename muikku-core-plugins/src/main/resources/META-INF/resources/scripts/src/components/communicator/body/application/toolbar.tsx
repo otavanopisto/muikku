@@ -4,56 +4,29 @@ import { bindActionCreators } from "redux";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import {
-  deleteCurrentMessageThread,
-  addLabelToCurrentMessageThread,
-  removeLabelFromSelectedMessageThreads,
-  deleteSelectedMessageThreads,
-  toggleMessageThreadsReadStatus,
-  addMessagesNavigationLabel,
-  addLabelToSelectedMessageThreads,
-  removeLabelFromCurrentMessageThread,
-  toggleAllMessageItems,
-  DeleteCurrentMessageThreadTriggerType,
-  AddLabelToCurrentMessageThreadTriggerType,
-  RemoveLabelFromSelectedMessageThreadsTriggerType,
-  DeleteSelectedMessageThreadsTriggerType,
-  ToggleMessageThreadsReadStatusTriggerType,
-  AddMessagesNavigationLabelTriggerType,
-  AddLabelToSelectedMessageThreadsTriggerType,
-  RemoveLabelFromCurrentMessageThreadTriggerType,
-  restoreCurrentMessageThread,
-  RestoreCurrentMessageThreadTriggerType,
-  restoreSelectedMessageThreads,
-  RestoreSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus,
-  ToggleMessageThreadReadStatusTriggerType,
-  loadMessageThreads,
-  LoadMessageThreadsTriggerType,
-  ToggleSelectAllMessageThreadsTriggerType,
-} from "~/actions/main-function/messages";
-import {
-  filterMatch,
-  filterHighlight,
-  intersect,
-  difference,
-  flatten,
-} from "~/util/modifiers";
-import LabelUpdateDialog from "../../dialogs/label-update";
-import { MessagesType } from "~/reducers/main-function/messages";
-import { i18nType } from "~/reducers/base/i18n";
-import { StateType } from "~/reducers";
-import "~/sass/elements/link.scss";
-import "~/sass/elements/application-panel.scss";
-import "~/sass/elements/buttons.scss";
-import "~/sass/elements/glyph.scss";
-import "~/sass/elements/form-elements.scss";
-import {
-  ApplicationPanelToolbar,
-  ApplicationPanelToolbarActionsMain,
-  ApplicationPanelToolbarActionsAside,
-} from "~/components/general/application-panel";
-import { ButtonPill } from "~/components/general/button";
-import { SearchFormElement } from "~/components/general/form-element";
+  deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelFromSelectedMessageThreads,
+  deleteSelectedMessageThreads, toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
+  removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType,
+  AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
+  ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
+  RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
+  restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType,
+  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType, loadMessageThreads, LoadMessageThreadsTriggerType
+} from '~/actions/main-function/messages';
+import { filterMatch, filterHighlight, intersect, difference, flatten } from '~/util/modifiers';
+import LabelUpdateDialog from '../../dialogs/label-update';
+import { MessagesType } from '~/reducers/main-function/messages';
+import { i18nType } from '~/reducers/base/i18n';
+import { StateType } from '~/reducers';
+import '~/sass/elements/link.scss';
+import '~/sass/elements/application-panel.scss';
+import '~/sass/elements/buttons.scss';
+import '~/sass/elements/glyph.scss';
+import '~/sass/elements/form-elements.scss';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel/application-panel';
+import { ButtonPill } from '~/components/general/button';
+import { SearchFormElement } from '~/components/general/form-element';
+import { ToggleSelectAllMessageThreadsTriggerType, toggleAllMessageItems } from '../../../../actions/main-function/messages/index';
 
 interface CommunicatorToolbarProps {
   messages: MessagesType;
