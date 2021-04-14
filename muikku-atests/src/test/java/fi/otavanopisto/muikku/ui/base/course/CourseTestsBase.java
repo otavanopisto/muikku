@@ -345,14 +345,14 @@ public class CourseTestsBase extends AbstractUITest {
     .addCourseStudent(courseId, courseStudent)
     .build();
     try{
-      navigate("/profile", false);
-      waitForPresent(".application-panel__main-container .profile-element__item input#profileVacationStart");
-      sendKeys(".application-panel__main-container .profile-element__item input#profileVacationStart", "21.12.2010");
-      waitAndClick(".profile-element__title");
-      waitForPresent(".application-panel__main-container .profile-element__item input#profileVacationEnd");
-      sendKeys(".application-panel__main-container .profile-element__item input#profileVacationEnd", "21.12.2025");
-      waitAndClick(".profile-element__title");
-      waitAndClick(".button--primary-function-save");
+      navigate("/profile#vacation", false);
+      waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart");
+      sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart", "21.12.2010");
+      waitAndClick(".application-panel__content-header");
+      waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
+      sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd", "21.12.2025");
+      waitAndClick(".application-panel__content-header");
+      waitAndClick(".application-sub-panel__item-actions .button--primary-function-save");
       sleep(500);
       logout();
       mockBuilder.mockLogin(student);

@@ -3,7 +3,7 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType} from '~/reducers/main-function/guider';
 import {loadStudentsHelper} from './helpers';
 import promisify from '~/util/promisify';
-import {UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType} from 'reducers/user-index';
+import {UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, UserGroupType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType} from '~/reducers/main-function/guider';
 import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/workspaces';
@@ -200,7 +200,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "basic", value: basic}})
           }),
         promisify(mApi().usergroup.groups.read({userIdentifier: id}), 'callback')()
-          .then((usergroups:UserGroupListType)=>{
+          .then((usergroups:UserGroupType[])=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "usergroups", value: usergroups}})
           }),
         promisify(mApi().user.students.flags.read(id, {

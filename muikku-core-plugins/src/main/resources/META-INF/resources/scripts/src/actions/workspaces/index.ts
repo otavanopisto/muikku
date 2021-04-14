@@ -5,7 +5,7 @@ import { WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Works
 import { AnyActionType, SpecificActionType } from '~/actions';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
-import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
+import { ShortWorkspaceUserWithActiveStatusType, WorkspaceStudentListType, WorkspaceStaffListType } from '~/reducers/user-index';
 import {
   MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
@@ -96,7 +96,6 @@ type WorkspaceQueryDataType = {
   firstResult?: number,
   maxResults?: number
 }
-
 
 export interface SelectItem {
   id: string | number,
@@ -437,7 +436,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
   }
 }
 
-
 export interface RequestAssessmentAtWorkspaceTriggerType {
   (data: { workspace: WorkspaceType, text: string, success?: () => any, fail?: () => any }): AnyActionType
 }
@@ -606,12 +604,18 @@ export interface UpdateWorkspaceTriggerType {
   }): AnyActionType
 }
 
-export interface LoadStaffMembersOfWorkspaceTriggerType {
-  (workspace: WorkspaceType, loadOrganizationStaff?: boolean): AnyActionType
-}
-
-export interface LoadStudentsOfWorkspaceTriggerType {
-  (workspace: WorkspaceType): AnyActionType
+export interface LoadUsersOfWorkspaceTriggerType {
+  (data: {
+    workspace: WorkspaceType,
+    payload?: {
+      q: string,
+      firstResult: number,
+      maxResults: number,
+    },
+    success?: (students: WorkspaceStudentListType | WorkspaceStaffListType) => any,
+    fail?: () => any,
+  }
+  ): AnyActionType
 }
 
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
@@ -1002,38 +1006,31 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
   }
 }
 
-
-
-let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStaff(workspace) {
+let loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStaff(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-        payload: { id: workspace.id, staffMemberSelect: { state: "LOADING", users: [] } }
+        payload: { id: data.workspace.id, staffMemberSelect: { state: "LOADING", users: [] } }
       });
 
-      let staffMembers: UserStaffType[] = <Array<UserStaffType>>(await promisify(mApi().user.staffMembers.read({
-        workspaceEntityId: workspace.id
+      let staffMembers: WorkspaceStaffListType = <WorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
+        ...data.payload,
+        workspaceEntityId: data.workspace.id,
       }), 'callback')());
 
-      let staffMemberSelect = staffMembers.map((staffMember: UserStaffType) => {
-        return {
-          id: staffMember.id,
-          label: staffMember.firstName + " " + staffMember.lastName,
-          type: "user",
-          disabled: true
-        }
-      });
-
       let update: WorkspaceUpdateType = {
-        staffMemberSelect: { users: staffMemberSelect, state: "READY" },
-        id: workspace.id
+        staffMembers,
+        id: data.workspace.id
       }
 
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
         payload: update
       });
+
+      data.success && data.success(staffMembers);
+
     }
     catch (err) {
       if (!(err instanceof MApiError)) {
@@ -1048,11 +1045,11 @@ let loadCurrentOrganizationWorkspaceSelectStaff: LoadStaffMembersOfWorkspaceTrig
   }
 }
 
-let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace) {
+let loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let staffMembers = <Array<UserStaffType>>(await promisify(mApi().user.staffMembers.read({
-        workspaceEntityId: workspace.id,
+      let staffMembers = <WorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
+        workspaceEntityId: data.workspace.id,
         properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
       }), 'callback')());
 
@@ -1063,10 +1060,11 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
       dispatch({
         type: 'UPDATE_WORKSPACE',
         payload: {
-          original: workspace,
+          original: data.workspace,
           update
         }
       });
+
     } catch (err) {
       if (!(err instanceof MApiError)) {
         throw err;
@@ -1076,35 +1074,29 @@ let loadStaffMembersOfWorkspace: LoadStaffMembersOfWorkspaceTriggerType = functi
   }
 }
 
-let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceSelectStudents(workspace) {
+let loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType = function loadCurrentOrganizationWorkspaceStudents(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
-        payload: { id: workspace.id, studentsSelect: { state: "LOADING", users: [] } }
+        payload: { id: data.workspace.id, studentsSelect: { state: "LOADING", users: [] } }
       });
 
-      let students: ShortWorkspaceUserWithActiveStatusType[] = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
-
-      let selectStudents: SelectItem[] = students.map((student) => {
-        return {
-          id: student.userIdentifier,
-          label: student.firstName + " " + student.lastName,
-          type: "user",
-          disabled: true
-        }
-      });
+      let students: WorkspaceStudentListType = <WorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id, data.payload), 'callback')());
 
       let update: WorkspaceUpdateType = {
-        studentsSelect: { users: selectStudents, state: "READY" },
-        id: workspace.id
+        students,
+        id: data.workspace.id
       }
 
       dispatch({
         type: 'UPDATE_ORGANIZATION_SELECTED_WORKSPACE',
         payload: update
       });
+
+      data.success && data.success(students);
+
     }
     catch (err) {
       if (!(err instanceof MApiError)) {
@@ -1120,11 +1112,10 @@ let loadCurrentOrganizationWorkspaceSelectStudents: LoadStudentsOfWorkspaceTrigg
   }
 }
 
-
-let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace) {
+let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStudentsOfWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let students = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
+      let students = <WorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id), 'callback')());
       let update: WorkspaceUpdateType = {
         students
       };
@@ -1132,7 +1123,7 @@ let loadStudentsOfWorkspace: LoadStudentsOfWorkspaceTriggerType = function loadS
       dispatch({
         type: 'UPDATE_WORKSPACE',
         payload: {
-          original: workspace,
+          original: data.workspace,
           update
         }
       });
@@ -1150,13 +1141,18 @@ let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspace
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let oldStudents = data.workspace.students;
     try {
-      let newStudent = { ...data.student, active: !data.student.active };
-      let newStudents = data.workspace.students && data.workspace.students.map(student => {
+      let newStudent: ShortWorkspaceUserWithActiveStatusType = { ...data.student, active: !data.student.active };
+      let newStudents = data.workspace.students && data.workspace.students.results.map(student => {
         if (student.workspaceUserEntityId === newStudent.workspaceUserEntityId) {
           return newStudent;
         }
         return student;
       });
+
+      let payload: WorkspaceStudentListType = {
+        ...data.workspace.students,
+        results: newStudents
+      }
 
       await promisify(mApi().workspace.workspaces.students.update(data.workspace.id, newStudent.workspaceUserEntityId, {
         workspaceUserEntityId: newStudent.workspaceUserEntityId,
@@ -1169,7 +1165,7 @@ let toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspace
           payload: {
             original: data.workspace,
             update: {
-              students: newStudents
+              students: payload
             }
           }
         });
@@ -1426,7 +1422,6 @@ export interface CreateWorkspaceTriggerType {
     fail: () => any,
   }): AnyActionType
 }
-
 
 let createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -2448,7 +2443,7 @@ let updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType = func
 export {
   loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, setWorkspaceStateFilters,
   loadUserWorkspaceOrganizationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
-  setCurrentOrganizationWorkspace, loadCurrentOrganizationWorkspaceSelectStaff, loadCurrentOrganizationWorkspaceSelectStudents,
+  setCurrentOrganizationWorkspace, loadCurrentOrganizationWorkspaceStaff, loadCurrentOrganizationWorkspaceStudents,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWorkspaceChatStatus, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,

@@ -223,9 +223,10 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
+  updateField: (value: string | boolean, valid: boolean, name: string) => any,
   id: string,
-  updateField: (value: string, valid: boolean, Name: string) => any,
   value?: string,
+  checked?: boolean,
   type?: string,
   mandatory?: boolean,
   valid?: number,
@@ -246,7 +247,6 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     // 0 = invalid, 1 = valid, 2 = neutral
 
     this.state = {
-      // value: this.props.value ? this.props.value : "",
       valid: this.props.valid != null ? this.props.valid : 2
     }
   }
@@ -255,7 +255,6 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     let value = e.target.value;
     let name = e.target.name;
     let valid = false;
-    // this.setState({ value: value });
     if (this.props.mandatory != null && this.props.mandatory == true) {
       if (value.trim().length == 0) {
         this.setState({ valid: 0 });
@@ -265,7 +264,13 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
         valid = true;
       }
     }
-    this.props.updateField(value, valid, name);
+    switch(this.props.type) {
+      case "checkbox":
+        this.props.updateField(e.target.checked, valid, name);
+        break;
+      default:
+        this.props.updateField(value, valid, name);
+    }
   }
 
   componentDidUpdate(prevProps: any) {
@@ -276,11 +281,10 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
 
   render() {
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
         <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
-        <input id={this.props.id} value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <input id={this.props.id} value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} checked={this.props.checked} />
       </div>
     );
   }

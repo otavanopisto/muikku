@@ -57,10 +57,10 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
         <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
         <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</h2>
       </div>
-      {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? (
+      {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.results.length ? (
         <div className="panel__body">
           <div className="item-list item-list--panel-teachers">
-            {this.props.workspace.staffMembers.map((teacher) => {
+            {this.props.workspace.staffMembers.results.map((teacher) => {
               // by default wether we display the vacation period depends on whether the vacation starts at all
               let displayVacationPeriod = !!teacher.properties['profile-vacation-start'];
               // however if we have a range
@@ -104,10 +104,10 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
           </div>
         </div>
       ) : (
-          <div className="panel__body panel__body--empty">
-            {this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}
-          </div>
-        )}
+        <div className="panel__body panel__body--empty">
+          {this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}
+        </div>
+      )}
     </div>
   }
 }
