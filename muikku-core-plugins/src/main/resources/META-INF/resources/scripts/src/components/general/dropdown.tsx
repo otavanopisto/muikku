@@ -155,7 +155,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     (this.refs["portal"] as Portal).closePortal();
   }
   onKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Tab") {
+    if (e.key === "Tab" || !this.props.items) {
       return;
     }
 

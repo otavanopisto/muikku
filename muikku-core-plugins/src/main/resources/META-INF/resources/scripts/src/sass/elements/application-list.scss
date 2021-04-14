@@ -15,6 +15,14 @@
   }
 }
 
+.application-list--dialog-users {
+  height: 234px;
+}
+
+.application-list--dialog-remove-users {
+  height: 285px;
+ }
+
 .application-list__header-container {
   align-items: flex-start;
   display: flex;
@@ -68,7 +76,7 @@
 }
 
 .application-list--workspace-templates {
-  min-height: 260px;
+  min-height: 208px;
   overflow: hidden;
 }
 
@@ -362,9 +370,15 @@
       }
     }
   }
+  // scss-lint:disable SelectorFormat
+  &.state-DISABLED {
+    background-color: $color-main-function-application-list-item-disabled-background;
+    color: $color-main-function-application-list-item-disabled-text;
+  }
+    // scss-lint:enable SelectorFormat
 }
 
-.application-list__item--notification {
+.application-list__item-- .application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 10px 10px 10px 0;

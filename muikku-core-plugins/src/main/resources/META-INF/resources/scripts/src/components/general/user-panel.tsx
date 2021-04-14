@@ -7,7 +7,7 @@ import { getName } from "~/util/modifiers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemContentData } from "~/components/general/application-list";
 import '~/sass/elements/application-list.scss';
-import { UserPanelUsersType } from '~/reducers/main-function/users';
+import { UserPanelUsersType, UsersListType } from '~/reducers/main-function/users';
 import Pager from '~/components/general/pager';
 
 interface UserPanelProps {
@@ -57,12 +57,12 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   }
 
   render() {
-
+    let results = this.props.users.results as UsersListType;
     return (
       <ApplicationSubPanel i18n={this.props.i18n} modifier="organization-users" bodyModifier="organization-users" title={this.props.i18n.text.get(this.props.title)}>
         {this.props.users.results.length > 0 ?
           <ApplicationList >
-            {this.props.users && this.props.users.results.map((user) => {
+            {this.props.users && results.map((user) => {
               let aside = <Avatar id={user.userEntityId} hasImage={user.hasImage} firstName={user.firstName} />;
               let data = {
                 firstName: user.firstName,

@@ -16,7 +16,7 @@ import { loadLoggedUser } from '~/actions/user-index';
 import { UserType } from '~/reducers/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, setWorkspaceStateFilters, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
-import { loadUsers, loadStudyprogrammes } from '~/actions/main-function/users';
+import { loadUsers, loadUserGroups, loadStudyprogrammes } from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
@@ -32,7 +32,7 @@ import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -169,6 +169,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
   loadProfileData(location: string) {
     this.props.store.dispatch(setProfileLocation(location) as Action);
+
+    if (location === "work") {
+      this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
+      this.props.store.dispatch(loadProfileWorklistSections() as Action);
+    }
   }
 
   loadAnnouncerData(location: string[]) {
@@ -353,7 +358,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers(null, 0, 10) as Action);
+      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, lastResult: 10 } }) as Action);
+      this.props.store.dispatch(loadUserGroups({ payload: { q: "", firstResult: 0, maxResults: 25 } }) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }

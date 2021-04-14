@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import { i18nType } from 'reducers/base/i18n';
 import Records from './application/records';
 import CurrentRecord from './application/current-record';
