@@ -230,6 +230,29 @@
   // scss-lint:enable SelectorFormat
 }
 
+
+// Teacher's Worklist Specific fields
+.form-element__input--worklist-description,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor,
+.form-element__input--worklist-date {
+  max-width: 100%;
+  width: 100%;
+}
+
+.form-element__input--worklist-date,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor {
+  text-align: center;
+}
+
+.form-element__input--worklist-description[disabled],
+.form-element__input--worklist-price[disabled],
+.form-element__input--worklist-factor[disabled] {
+  background: $color-disabled-background;
+  border-color: $color-disabled-background;
+}
+
 .form-element__input--profile-auto-reply {
   width: 100%;
 
@@ -347,6 +370,7 @@
   font-size: $text-mobile-font-size;
   height: 2.25rem;
   padding: 0 25px 0 10px;
+  position: relative;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -364,6 +388,11 @@
   }
 
   // scss-lint:enable SelectorFormat
+}
+
+.form-element__select--worklist-template {
+  max-width: 200px;
+  width: 200px;
 }
 
 .form-element__select--matriculation-exam {

@@ -46,7 +46,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
          {this.props.i18n.text.get("plugin.records.hops.goals.upperSecondary")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.goalSecondarySchoolDegree ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.goalSecondarySchoolDegree) : "-"}
           </span>
@@ -57,7 +57,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.goals.matriculationExam")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.goalMatriculationExam ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.goalMatriculationExam) : "-"}
           </span>
@@ -73,7 +73,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears2")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.goalJustMatriculationExam ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.goalJustMatriculationExam) : "-"}
           </span>
@@ -89,7 +89,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.goals.justTransferCredits2")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.justTransferCredits ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.justTransferCredits) : "-"}
           </span>
@@ -110,7 +110,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.languages.mandatory.title")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>{
+          <span className="application-sub-panel__single-entry">{
             !this.state.hops.finnish ? "-" : (this.state.hops.finnish === "AI" ?
               this.props.i18n.text.get("plugin.records.hops.languages.finnish.native") :
               this.props.i18n.text.get("plugin.records.hops.languages.finnish.foreign"))
@@ -128,7 +128,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item-data">
           <label className="application-sub-panel__item-label">{this.props.i18n.text.get("plugin.records.hops.languages.german")}</label>
-          <span>{
+          <span className="application-sub-panel__single-entry">{
             !this.state.hops.german ? "-" : (this.state.hops.german ?
               this.props.i18n.text.get("plugin.records.hops.goals.yes") :
               this.props.i18n.text.get("plugin.records.hops.goals.no"))
@@ -138,7 +138,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <label className="application-sub-panel__item-label">
             {this.props.i18n.text.get("plugin.records.hops.languages.french")}
           </label>
-          <span>{
+          <span className="application-sub-panel__single-entry">{
             !this.state.hops.french ? "-" : (this.state.hops.french ?
               this.props.i18n.text.get("plugin.records.hops.goals.yes") :
               this.props.i18n.text.get("plugin.records.hops.goals.no"))
@@ -148,7 +148,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <label className="application-sub-panel__item-label">
             {this.props.i18n.text.get("plugin.records.hops.languages.italian")}
           </label>
-          <span>{
+          <span className="application-sub-panel__single-entry">{
             !this.state.hops.italian ? "-" : (this.state.hops.italian ?
               this.props.i18n.text.get("plugin.records.hops.goals.yes") :
               this.props.i18n.text.get("plugin.records.hops.goals.no"))
@@ -158,7 +158,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <label className="application-sub-panel__item-label">
             {this.props.i18n.text.get("plugin.records.hops.languages.spanish")}
           </label>
-          <span>{
+          <span className="application-sub-panel__single-entry">{
             !this.state.hops.spanish ? "-" : (this.state.hops.spanish ?
               this.props.i18n.text.get("plugin.records.hops.goals.yes") :
               this.props.i18n.text.get("plugin.records.hops.goals.no"))
@@ -170,7 +170,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.mathSyllabus.title")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.mathSyllabus ?
               this.props.i18n.text.get("plugin.records.hops.mathSyllabus." + this.state.hops.mathSyllabus) : "-"}
           </span>
@@ -181,7 +181,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.science.title")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.science ?
               this.props.i18n.text.get("plugin.records.hops.science." + this.state.hops.science) : "-"}
           </span>
@@ -192,7 +192,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           {this.props.i18n.text.get("plugin.records.hops.religion.title")}
         </div>
         <div className="application-sub-panel__item-data">
-          <span>
+          <span className="application-sub-panel__single-entry">
             {this.state.hops.religion ?
               this.props.i18n.text.get("plugin.records.hops.religion." + this.state.hops.religion) : "-"}
           </span>
@@ -204,7 +204,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
             {this.props.i18n.text.get("plugin.records.hops.additionalInfo.title")}
           </div>
           <div className="application-sub-panel__item-data">
-            <span>
+            <span className="application-sub-panel__single-entry">
               {this.state.hops.additionalInfo}
             </span>
           </div>

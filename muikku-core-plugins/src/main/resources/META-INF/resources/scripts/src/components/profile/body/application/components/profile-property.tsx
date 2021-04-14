@@ -18,10 +18,10 @@ export default function ProfileProperty(props: {
     <label className="application-sub-panel__item-title">{props.i18n.text.get(props.label)}</label>
     <div className={`application-sub-panel__item-data ${props.modifier ? "application-sub-panel__item-data--" + props.modifier : ""}`}>
       {typeof props.value === "string" ?
-        <span>{props.value}</span> :
+        <span className="application-sub-panel__single-entry">{props.value}</span> :
         props.value.map((v)=>{
-          return typeof v === "string" ? <span key={v}>{v}</span> :
-            <span key={v.key}>{v.value}</span>
+          return typeof v === "string" ? <span className="application-sub-panel__single-entry" key={v}>{v}</span> :
+            <span className="application-sub-panel__single-entry" key={v.key}>{v.value}</span>
         })}
     </div>
   </div>
