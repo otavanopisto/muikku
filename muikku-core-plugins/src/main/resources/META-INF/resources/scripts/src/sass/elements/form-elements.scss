@@ -33,6 +33,7 @@
     height: 1rem;
     justify-content: center;
     margin-right: 5px;
+    padding: 0;
     width: 1rem;
   }
 
@@ -192,6 +193,11 @@
   }
 }
 
+.form-element__label {
+  display: inline-block;
+  padding: 0 0 5px;
+}
+
 .form-element__input {
   @include prefix(
     transition,
@@ -242,6 +248,7 @@
 .form-element__input--communicator-label-name,
 .form-element__input--profile,
 .form-element__input--workspace-name,
+.form-element__input--user-group-name,
 .form-element__input--workspace-name-extension,
 .form-element__input--new-user {
   width: 100%;
@@ -252,7 +259,7 @@
   width: 100%;
 }
 
-.form-element__input--profile-wrong {
+.form-element__input--profile-error {
   color: $color-fatal;
 }
 
@@ -451,6 +458,10 @@
   input {
     margin-right: 5px;
   }
+}
+
+.form-element__radio-option-container--profile {
+  padding: 0;
 }
 
 .form-element__check-option-container {

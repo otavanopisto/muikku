@@ -73,7 +73,7 @@ class YO extends React.Component<YOProps, YOState> {
         // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.
         // Github issue: #4840
         <div>
-          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
+          <h2 className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</h2>
           <div className="application-sub-panel application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}</div>
             {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "ELIGIBLE" ?

@@ -16,7 +16,7 @@ import { loadLoggedUser } from '~/actions/user-index';
 import { UserType } from '~/reducers/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, setWorkspaceStateFilters, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
-import { loadUsers, loadStudyprogrammes } from '~/actions/main-function/users';
+import { loadUsers, loadUserGroups, loadStudyprogrammes } from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
@@ -32,7 +32,7 @@ import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -103,6 +103,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     } else if (window.location.pathname.includes("/organization")) {
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), true, false);
+    } else if (window.location.pathname.includes("/profile")) {
+      this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
     }
   }
 
@@ -163,6 +165,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(updateStatistics() as Action);
     }
     this.props.store.dispatch(updateHops() as Action);
+  }
+
+  loadProfileData(location: string) {
+    this.props.store.dispatch(setProfileLocation(location) as Action);
   }
 
   loadAnnouncerData(location: string[]) {
@@ -347,7 +353,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers(null, 0, 10) as Action);
+      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, lastResult: 10 } }) as Action);
+      this.props.store.dispatch(loadUserGroups({ payload: { q: "", firstResult: 0, maxResults: 25 } }) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
@@ -479,6 +486,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }
 
       this.props.store.dispatch(loadProfileChatSettings() as Action);
+
+      if (!window.location.hash) {
+        window.location.hash = "#general";
+      } else {
+        this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
+      }
     }
 
     return <ProfileBody />
@@ -491,7 +504,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
 
-      this.props.websocket && this.props.websocket.restoreEventListeners(); this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));

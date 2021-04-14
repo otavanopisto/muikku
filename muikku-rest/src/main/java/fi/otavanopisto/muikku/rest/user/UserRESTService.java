@@ -91,6 +91,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
@@ -1649,7 +1650,11 @@ public class UserRESTService extends AbstractRESTService {
     List<SchoolDataIdentifier> userIdentifiers = null; 
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
-    if (elasticSearchProvider != null) {
+    
+    if (elasticSearchProvider == null) {
+    	return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Search provider not found").build();
+    }
+
       String[] fields;
       if (StringUtils.isNumeric(searchString)) {
         fields = new String[] { "firstName", "lastName", "userEntityId", "email" };
@@ -1752,9 +1757,9 @@ public class UserRESTService extends AbstractRESTService {
             hasImage));
         }
       }
-    }
 
-    return Response.ok(staffMembers).build();
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
+    return Response.ok(responseStaffMembers).build();
   }
   
   private fi.otavanopisto.muikku.rest.model.User createRestModel(UserEntity userEntity,

@@ -3,13 +3,14 @@ import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType } 
 
 
 export interface ProfileType {
+  location: string;
   properties: {
     [key: string]: string
-  },
-  username?: string,
-  addresses?: Array<StudentUserAddressType>,
-  student?: UserWithSchoolDataType,
-  chatSettings?: UserChatSettingsType
+  };
+  username?: string;
+  addresses?: Array<StudentUserAddressType>;
+  student?: UserWithSchoolDataType;
+  chatSettings?: UserChatSettingsType;
 }
 
 export default function profile(state: ProfileType = {
@@ -17,6 +18,7 @@ export default function profile(state: ProfileType = {
   username: null,
   addresses: null,
   chatSettings: null,
+  location: null,
 }, action: ActionType): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY"){
     let newProperties = {...state.properties}
@@ -39,6 +41,10 @@ export default function profile(state: ProfileType = {
   } else if (action.type === "SET_PROFILE_CHAT_SETTINGS"){
     return {...state, ...{
       chatSettings: action.payload
+    }}
+  } else if (action.type === "SET_PROFILE_LOCATION") {
+    return {...state, ...{
+      location: action.payload
     }}
   }
   return state;

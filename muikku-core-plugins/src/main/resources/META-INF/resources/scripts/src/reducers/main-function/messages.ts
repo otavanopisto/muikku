@@ -1,7 +1,8 @@
 import { ActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 
-import { UserType, UserGroupListType } from "~/reducers/user-index";
+import { UserGroupType, UserType } from '~/reducers/user-index';
+
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
@@ -23,16 +24,16 @@ export interface MessageSearchResult {
     labelName: string;
   }>;
   sender: {
-    userEntityId: number;
-    firstName: string;
-    lastName: string;
-    nickName: string;
-  };
-  senderId: number;
-  tags: any;
-  recipients?: Array<MessageRecepientType>;
-  userGroupRecipients?: UserGroupListType;
-  workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
+    userEntityId: number,
+    firstName: string,
+    lastName: string,
+    nickName: string,
+  },
+  senderId: number,
+  tags: any,
+  recipients?: Array<MessageRecepientType>,
+  userGroupRecipients?: Array<UserGroupType>,
+  workspaceRecipients?: Array<MessageWorkspaceRecipientType>,
 }
 export interface MessageThreadLabelType {
   id: number;
@@ -53,21 +54,21 @@ export interface MessageThreadLabelUpdateType {
 export type MessageThreadLabelListType = Array<MessageThreadLabelType>;
 
 export interface MessageThreadType {
-  caption: string;
-  categoryName: "message";
-  communicatorMessageId: number;
-  created: string;
-  id: number;
-  labels: MessageThreadLabelListType;
-  messageCountInThread: number;
-  recipientCount?: number;
-  recipients?: Array<MessageRecepientType>;
-  sender: UserType;
-  senderId: number;
-  tags: any;
-  threadLatestMessageDate: string;
-  unreadMessagesInThread: boolean;
-  userGroupRecipients?: UserGroupListType;
+  caption: string,
+  categoryName: "message",
+  communicatorMessageId: number,
+  created: string,
+  id: number,
+  labels: MessageThreadLabelListType,
+  messageCountInThread: number,
+  recipientCount?: number,
+  recipients?: Array<MessageRecepientType>,
+  sender: UserType,
+  senderId: number,
+  tags: any,
+  threadLatestMessageDate: string,
+  unreadMessagesInThread: boolean,
+  userGroupRecipients?: Array<UserGroupType>,
   workspaceRecipients?: Array<{
     archetype: string;
     workspaceEntityId: number;
@@ -95,19 +96,19 @@ export interface MessageThreadExpandedType {
   labels: MessageThreadLabelListType;
 }
 export interface MessageType {
-  caption: string;
-  categoryName: "message";
-  communicatorMessageId: number;
-  content: string;
-  created: string;
-  id: number;
-  recipientCount: number;
-  recipients: Array<MessageRecepientType>;
-  sender: UserType;
-  senderId: number;
-  tags: any;
-  userGroupRecipients: UserGroupListType;
-  workspaceRecipients: Array<MessageWorkspaceRecipientType>;
+  caption: string,
+  categoryName: "message",
+  communicatorMessageId: number,
+  content: string,
+  created: string,
+  id: number,
+  recipientCount: number,
+  recipients: Array<MessageRecepientType>,
+  sender: UserType,
+  senderId: number,
+  tags: any,
+  userGroupRecipients: Array<UserGroupType>,
+  workspaceRecipients: Array<MessageWorkspaceRecipientType>
 }
 export interface MessageRecepientType {
   communicatorMessageId: number;

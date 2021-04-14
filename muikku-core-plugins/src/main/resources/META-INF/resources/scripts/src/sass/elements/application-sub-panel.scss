@@ -5,10 +5,11 @@
 
 .application-sub-panel {
   border-bottom: 1px solid $color-subpanel-border;
-  margin: 0 10px 20px;
+  margin: 0 0 30px;
 
   &:last-child {
     border: 0;
+    margin: 0;
   }
 }
 
@@ -35,7 +36,7 @@
 
   @include breakpoint($breakpoint-pad) {
     display: block;
-    padding: 20px 5px;
+    padding: 20px 0;
   }
 }
 
@@ -54,16 +55,11 @@
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  line-height: 1;
-  margin: 0 0 10px;
-  text-transform: uppercase;
-}
+  margin: 0 10px 10px;
 
-.application-sub-panel__header--guider-header {
-  font-family: $text-font-family;
-  font-size: 1.1875rem;
-  font-weight: 400;
-  text-transform: uppercase;
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+  }
 }
 
 .application-sub-panel__header--workspace-settings {
@@ -201,7 +197,11 @@
 }
 
 .application-sub-panel__notification-body--studies-yo-subjects {
-  padding: 10px 10px 10px 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
 }
 
 .application-sub-panel__notification-content {
@@ -341,7 +341,6 @@
 }
 
 // Subpanel Item
-
 .application-sub-panel__item {
   align-items: center;
   display: flex;
@@ -349,7 +348,13 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px 0;
+  padding: 10px;
+
+  // scss-lint:disable SelectorFormat
+  &.NON-ACTIVE {
+    opacity: 0.5;
+  }
+  // scss-lint:enable SelectorFormat
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -573,7 +578,6 @@
 }
 
 // Subpanel item title & label
-
 .application-sub-panel__item-title {
   flex-basis: 100%;
   flex-grow: 0;
@@ -582,7 +586,7 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: 250px;
-    margin: 0 10px 0 0;
+    margin: 0 10px 5px 0;
   }
 }
 
@@ -593,7 +597,6 @@
 }
 
 // Subpanel item inline value
-
 .application-sub-panel__item-inline-value {
   background-color: $color-hops-readable-inline-background;
   border-radius: 3px;
@@ -604,13 +607,16 @@
 }
 
 // Subpanel item actions
-
 .application-sub-panel__item-actions {
-  padding: 10px 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+
 }
 
 // Subpanel item data
-
 .application-sub-panel__item-data {
   align-items: center;
   display: flex;
@@ -642,17 +648,25 @@
   }
 }
 
-.application-sub-panel__item-data--summary-start-date span {
+.application-sub-panel__item-data--study-start-date span {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--summary-end-date span {
+.application-sub-panel__item-data--study-end-date span {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
 
-// HOPS in Guider in readable state
+.application-sub-panel__item-description {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.8125rem;
+  font-style: italic;
+  margin: 10px 0 0;
+}
 
+// HOPS in Guider in readable state
 .application-sub-panel__item--hops-readable {
   flex-flow: row wrap;
 
@@ -692,6 +706,21 @@
   }
 }
 
+// Profile view
+.application-sub-panel__item--profile {
+  align-items: flex-start;
+  flex-flow: row wrap;
+
+  .application-sub-panel__item-title {
+    flex-basis: 100%;
+    font-weight: 600;
+  }
+
+  .application-sub-panel__item-data {
+    flex-basis: 100%;
+  }
+}
+
 // Studies
 .application-sub-panel__header--studies-detailed-info {
   padding: 10px;
@@ -723,7 +752,6 @@
 }
 
 // Guider
-
 .application-sub-panel--guider-student-header {
   border: 0;
   margin: 0;
