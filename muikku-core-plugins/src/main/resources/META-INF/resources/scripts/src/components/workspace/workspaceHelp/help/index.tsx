@@ -191,28 +191,28 @@ startupEditor(section: MaterialContentNodeType) {
    * @param nextSibling 
    */
   createSection(nextSibling: MaterialContentNodeType) {
-    console.log("Muutoksia 1", [nextSibling, this.props.workspace.details.rootFolderId])
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       rootParentId: this.props.workspace.details.rootFolderId,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
       makeFolder: true,
-    });
+    }, "help");
   }
 
   /**
    * nextSibling
    * @param nextSibling
    */
-  createPage(nextSibling: MaterialContentNodeType) {
+   createPage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
-      rootParentId: this.props.workspace.details.helpFolderId,
+      rootParentId: this.props.workspace.details.rootFolderId,
+      parentMaterial: section,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
       makeFolder: false,
-    });
+    }, "help");
   }
 
   /**
@@ -231,7 +231,7 @@ startupEditor(section: MaterialContentNodeType) {
       title: e.target.files[0].name,
       file: e.target.files[0],
       makeFolder: false,
-    });
+    }, "help");
   }
 
   /**
@@ -250,7 +250,7 @@ startupEditor(section: MaterialContentNodeType) {
         copyMaterialId: parseInt(workspaceMaterialCopiedId),
         copyWorkspaceId: parseInt(workspaceCopiedId),
         makeFolder: false,
-      })
+      }, "help")
     }
   }
 
@@ -334,12 +334,10 @@ startupEditor(section: MaterialContentNodeType) {
    */
   render(){
     if (this.state.redirect) {
-      console.log("this.state.redirect", this.state.redirect)
       return <Redirect push to={this.state.redirect}/>
     }
 
     if (!this.props.materials || !this.props.workspace){
-      console.log("!this.props.materials || !this.props.workspace", [!this.props.materials, !this.props.workspace])
       return null;
     }
 
@@ -347,11 +345,9 @@ startupEditor(section: MaterialContentNodeType) {
 
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
-      console.log("Map materials");
       const isSectionViewRestricted = (section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
 
       if (index === 0 && isEditable) {
-        console.log("index === 0 && isEditable", index === 0 && isEditable)
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
             <ButtonPill buttonModifiers="material-management-master" icon="plus" onClick={this.createSection.bind(this, section)}/>
@@ -384,7 +380,7 @@ startupEditor(section: MaterialContentNodeType) {
       ) : null;
 
       const sectionSpecificContentData: any = [];
-
+             
       section.children.forEach((node)=>{
         if (isSectionViewRestricted) {
           return;
@@ -494,7 +490,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    materials: state.workspaces.currentMaterials,
+    materials: state.workspaces.currentHelp,
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,

@@ -792,22 +792,30 @@ export default function workspaces(state: WorkspacesType = {
       materialEditor: newEditor,
     }
   } else if (action.type === "INSERT_MATERIAL_CONTENT_NODE") {
-    let insertedContentNode: MaterialContentNodeType = action.payload;
-    let newCurrentMaterials = state.currentMaterials ? [...state.currentMaterials] : state.currentMaterials;
-    let newHelpMaterials = state.currentHelp ? [...state.currentHelp] : state.currentHelp;
+    const apiPath = action.payload.apiPath;
+    let insertedContentNode: MaterialContentNodeType = action.payload.nodeContent;
 
-    // so the target depends, if it's the parent id of the help folder then the target is help
-    // however otherwise is current materials
-    let targetArray = insertedContentNode.parentId === state.currentWorkspace.details.helpFolderId ? newHelpMaterials : newCurrentMaterials;
-    // if it's current materials, and it's not help then we got to check if we are in the root or into a folder
+
+    const targetArray = apiPath === "help" ? [...state.currentHelp] : [...state.currentMaterials];
+    console.log("targetArray before ifs", targetArray);
+    
     if (
       insertedContentNode.parentId !== state.currentWorkspace.details.helpFolderId &&
       insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId
     ) {
-      const targetIndex = newCurrentMaterials.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
-      newCurrentMaterials[targetIndex] = { ...newCurrentMaterials[targetIndex] };
-      newCurrentMaterials[targetIndex].children = [...newCurrentMaterials[targetIndex].children];
-      targetArray = newCurrentMaterials[targetIndex].children;
+      console.log("current state", [state.currentHelp, state.currentMaterials]);
+
+      const targetIndex = targetArray.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
+      console.log(targetIndex);
+      console.log("{ ...targetArray[targetIndex] }",{ ...targetArray[targetIndex] })
+
+      console.log(targetArray);
+
+      targetArray[targetIndex] = { ...targetArray[targetIndex] };
+      console.log(targetArray);
+
+      targetArray[targetIndex].children = [...targetArray[targetIndex].children];
+      console.log(targetArray);
     }
     if (insertedContentNode.nextSiblingId) {
       const siblingIndex = targetArray.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId);
@@ -816,11 +824,20 @@ export default function workspaces(state: WorkspacesType = {
       targetArray.push(insertedContentNode);
     }
 
-    return {
-      ...state,
-      currentMaterials: newCurrentMaterials ? repairContentNodes(newCurrentMaterials) : newCurrentMaterials,
-      currentHelp: newHelpMaterials ? repairContentNodes(newHelpMaterials) : newHelpMaterials,
+    if(apiPath === "help"){
+      console.log("help");
+      return {
+        ...state,
+        currentHelp: repairContentNodes(targetArray)
+      }
+    }else{
+      console.log("materials");
+      return {
+        ...state,
+        currentMaterials: repairContentNodes(targetArray)
+      }
     }
+    
   } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
     return {
       ...state,
