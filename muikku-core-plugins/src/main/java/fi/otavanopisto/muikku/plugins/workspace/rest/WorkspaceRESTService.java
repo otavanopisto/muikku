@@ -2609,10 +2609,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     WorkspaceNode rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
+    WorkspaceNode parentFolder = restFolder.getParentId() == null ? rootFolder : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
+    String title = restFolder.getTitle() == null ? "Untitled" : restFolder.getTitle();
     
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(rootFolder, "Untitled");
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title);
     if (nextSibling != null) {
-        workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
+      workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
