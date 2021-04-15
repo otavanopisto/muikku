@@ -191,9 +191,10 @@ startupEditor(section: MaterialContentNodeType) {
    * @param nextSibling 
    */
   createSection(nextSibling: MaterialContentNodeType) {
+    console.log("Muutoksia ::::>", this.props.workspace.details.helpFolderId);
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
-      rootParentId: this.props.workspace.details.rootFolderId,
+      rootParentId: this.props.workspace.details.helpFolderId,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
       makeFolder: true,
@@ -207,7 +208,7 @@ startupEditor(section: MaterialContentNodeType) {
    createPage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
-      rootParentId: this.props.workspace.details.rootFolderId,
+      rootParentId: this.props.workspace.details.helpFolderId,
       parentMaterial: section,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
@@ -220,33 +221,36 @@ startupEditor(section: MaterialContentNodeType) {
    * @param nextSibling
    * @param e
    */
-  createPageFromBinary(
-      nextSibling: MaterialContentNodeType,
-      e: React.ChangeEvent<HTMLInputElement>
-  ) {
-    this.props.createWorkspaceMaterialContentNode({
-      workspace: this.props.workspace,
-      nextSibling,
-      rootParentId: this.props.workspace.details.helpFolderId,
-      title: e.target.files[0].name,
-      file: e.target.files[0],
-      makeFolder: false,
-    }, "help");
-  }
+   createPageFromBinary(
+    section: MaterialContentNodeType,
+    nextSibling: MaterialContentNodeType,
+    e: React.ChangeEvent<HTMLInputElement>
+) {
+  this.props.createWorkspaceMaterialContentNode({
+    workspace: this.props.workspace,
+    rootParentId: this.props.workspace.details.helpFolderId,
+    parentMaterial: section,
+    nextSibling,
+    title: e.target.files[0].name,
+    file: e.target.files[0],
+    makeFolder: false,
+  }, "help");
+}
 
   /**
    * nextSibling
    * @param nextSibling
    */
-  pastePage(nextSibling: MaterialContentNodeType) {
+   pastePage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
 
     if (workspaceMaterialCopiedId) {
       this.props.createWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
-        nextSibling,
+        parentMaterial: section,
         rootParentId: this.props.workspace.details.helpFolderId,
+        nextSibling,
         copyMaterialId: parseInt(workspaceMaterialCopiedId),
         copyWorkspaceId: parseInt(workspaceCopiedId),
         makeFolder: false,
