@@ -3540,6 +3540,8 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
       const parentId = data.parentMaterial
         ? data.parentMaterial.workspaceMaterialId
         : data.rootParentId;
+
+      console.log("parentId action" ,parentId);  
       const nextSiblingId = data.nextSibling
         ? data.nextSibling.workspaceMaterialId
         : null;
