@@ -385,6 +385,8 @@ startupEditor(section: MaterialContentNodeType) {
 
       const sectionSpecificContentData: any = [];
              
+             console.log("section",section);
+
       section.children.forEach((node)=>{
         if (isSectionViewRestricted) {
           return;

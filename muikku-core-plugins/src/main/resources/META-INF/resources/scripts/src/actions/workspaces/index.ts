@@ -3532,16 +3532,10 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           ? mApi().workspace.workspaces.help
           : mApi().workspace.workspaces.materials;
 
-      console.log(mApi());
-      console.log("data", data);
-      console.log("apiRef",apiRef);    
-      console.log("data.parentMaterial",data.parentMaterial);
-
       const parentId = data.parentMaterial
         ? data.parentMaterial.workspaceMaterialId
         : data.rootParentId;
 
-      console.log("parentId action" ,parentId);  
       const nextSiblingId = data.nextSibling
         ? data.nextSibling.workspaceMaterialId
         : null;
@@ -3612,7 +3606,9 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           ),
           "callback"
         )()) as any).id;
+
       } else if (!data.makeFolder) {
+
         const materialId = ((await promisify(
           mApi().materials.html.create({
             title: data.title,
@@ -3622,26 +3618,24 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
         )()) as any).id;
 
         workspaceMaterialId = ((await promisify(
-          apiRef.create(data.workspace.id, {
+          mApi().workspace.workspaces.materials.create(data.workspace.id, {
             materialId,
             parentId,
             nextSiblingId,
           }),
           "callback"
         )()) as any).id;
+
       } else {
         workspaceMaterialId = ((await promisify(
           mApi().workspace.workspaces.folders.create(data.workspace.id, {
-            nextSiblingId,
+            parentId,
+            nextSiblingId
           }),
           "callback"
         )()) as any).id;
 
-        console.log("else", workspaceMaterialId);
-
       }
-
-
 
       const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(
         await promisify(
@@ -3652,8 +3646,6 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           "callback"
         )()
       );
-
-      console.log("newContentNode",newContentNode);
 
       dispatch({
         type: "INSERT_MATERIAL_CONTENT_NODE",
