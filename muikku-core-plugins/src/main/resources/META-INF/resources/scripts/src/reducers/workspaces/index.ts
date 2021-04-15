@@ -795,29 +795,16 @@ export default function workspaces(state: WorkspacesType = {
     const apiPath = action.payload.apiPath;
     let insertedContentNode: MaterialContentNodeType = action.payload.nodeContent;
 
-
-    const targetArray = apiPath === "help" ? [...state.currentHelp] : [...state.currentMaterials];
-    console.log("targetArray before ifs", targetArray);
+    let targetArray = apiPath === "help" ? [...state.currentHelp] : [...state.currentMaterials];
     
     if (
       insertedContentNode.parentId !== state.currentWorkspace.details.helpFolderId &&
       insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId
     ) {
-      console.log("current state", [state.currentHelp, state.currentMaterials]);
-
       const targetIndex = targetArray.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
-      console.log(targetIndex);
-      console.log("{ ...targetArray[targetIndex] }",{ ...targetArray[targetIndex] })
-
-      console.log(targetArray);
-
-      targetArray[targetIndex] = { ...targetArray[targetIndex] };
-      console.log(targetArray);
-
-      targetArray[targetIndex].children = [...targetArray[targetIndex].children];
-      console.log(targetArray);
+      targetArray[targetIndex].children.push(insertedContentNode)
     }
-    if (insertedContentNode.nextSiblingId) {
+     else if (insertedContentNode.nextSiblingId) {
       const siblingIndex = targetArray.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId);
       targetArray.splice(siblingIndex, 0, insertedContentNode);
     } else {
@@ -825,13 +812,11 @@ export default function workspaces(state: WorkspacesType = {
     }
 
     if(apiPath === "help"){
-      console.log("help");
       return {
         ...state,
         currentHelp: repairContentNodes(targetArray)
       }
     }else{
-      console.log("materials");
       return {
         ...state,
         currentMaterials: repairContentNodes(targetArray)
