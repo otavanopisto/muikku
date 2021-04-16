@@ -13,6 +13,7 @@ import { SelectItem } from '~/actions/workspaces/index';
 import { UsersSelectType } from '~/reducers/main-function/users';
 import { CreateWorkspaceType, WorkspaceType, WorkspaceAccessType, WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import '~/sass/elements/course.scss';
+import { TagItem } from '~/components/general/tag-input';
 
 interface ValidationType {
   templateSelected: boolean,
@@ -344,7 +345,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step3.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-students"
+            <AutofillSelector identifier="addNewWorkspaceStudents" modifier="add-students"
               loader={this.doStudentSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.students.placeholder')}
               selectedItems={this.state.selectedStudents} searchItems={allItems} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
@@ -361,7 +362,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step4.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-teachers"
+            <AutofillSelector identifier="addNewWorkspaceTeachers" modifier="add-teachers"
               loader={this.doStaffSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.search.teachers.placeholder')}
               selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
@@ -375,7 +376,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.template')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               {this.state.template.label && this.state.template.label !== "" ?
                 <div>{this.state.template.label}</div>
                 : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.template')}</div>}
@@ -383,7 +384,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.workspaceName')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               {this.state.workspaceName !== "" ?
                 <div>{this.state.workspaceName} {this.state.workspaceNameExtension ? "(" + this.state.workspaceNameExtension + ")" : null}</div>
                 : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.workspaceName')}</div>}
@@ -398,30 +399,29 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.students')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               {this.state.selectedStudents.length > 0 ?
                 this.state.selectedStudents.map((student) => {
-                  return <span key={student.id} className="tag-input__selected-item">
-                    {student.icon ?
-                      <span className={`glyph glyph--selected-recipient icon-${student.icon}`} />
-                      : null}
-                    {student.label}
-                  </span>
+                  const tag = {
+                    node: student.label,
+                    value: student,
+                    icon: student.icon,
+                  }
+                  return <TagItem modifier="selected-recipient" key={"selectedStudent" + student.id} tag={tag} onDelete={this.deleteStudent}></TagItem>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.students')}</div>}
             </DialogRowContent>
           </DialogRow>
           <DialogRow>
             <DialogRowHeader modifiers="new-workspace" title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.label.teachers')} />
-            <DialogRowContent modifiers="new-workspace">
+            <DialogRowContent modifiers="summary">
               {this.state.selectedStaff.length > 0 ?
                 this.state.selectedStaff.map((staff) => {
-                  return <span key={staff.id} className="tag-input__selected-item">
-                    {
-                      staff.icon ?
-                        <span className={`glyph glyph--selected-recipient icon-${staff.icon}`} />
-                        : null
-                    }
-                    {staff.label}</span>
+                  const tag = {
+                    node: staff.label,
+                    value: staff,
+                    icon: staff.icon,
+                  }
+                  return <TagItem modifier="selected-recipient" key={"selectStaff" + staff.id} tag={tag} onDelete={this.deleteStaff}></TagItem>
                 }) : <div>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.empty.teachers')}</div>}
             </DialogRowContent>
           </DialogRow>

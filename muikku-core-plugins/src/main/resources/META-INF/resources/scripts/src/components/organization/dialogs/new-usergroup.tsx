@@ -53,7 +53,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
     super(props);
     this.totalSteps = 4;
     this.state = {
-      usergroupName: null,
+      usergroupName: "",
       isGuidanceGroup: false,
       selectedStudents: [],
       selectedStaff: [],
@@ -138,7 +138,8 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
   clearComponentState() {
     this.setState({
       locked: true,
-      usergroupName: null,
+      usergroupName: "",
+      isGuidanceGroup: false,
       studentsLoaded: false,
       executing: false,
       currentStep: 1,
@@ -248,9 +249,9 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
               <InputFormElement id="userGroupName" modifiers="user-group-name" mandatory={true} updateField={this.setUsergroupName} valid={this.state.validation.nameValid} name="usergroupName" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.name.label')} value={this.state.usergroupName}></InputFormElement>
             </DialogRow>
             <DialogRow modifiers="edit-workspace">
-              <InputFormElement id="isGuidanceGroup" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} name="is-guidance-group" type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
+              <InputFormElement id="isGuidanceGroup" label={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.guidanceSelect.label')} checked={this.state.isGuidanceGroup} name="is-guidance-group" type="checkbox" updateField={this.setGuidanceGroup}></InputFormElement>
             </DialogRow>
-          </form>;
+          </form>
         </DialogRow>
       case 2:
         let students = this.props.users.students.map(student => {
@@ -260,11 +261,13 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step2.description')} />
           </DialogRow>
-          <AutofillSelector modifier="add-students"
-            loader={this.doStudentSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
-            selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
-        </DialogRow>;
+          <DialogRow modifiers="edit-workspace">
+            <AutofillSelector identifier="addStudentsSelector" modifier="add-students"
+              loader={this.doStudentSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.workspaces.editWorkspace.search.students.placeholder')}
+              selectedItems={this.state.selectedStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
+          </DialogRow>
+        </DialogRow>
       case 3:
         let staffSearchItems = this.props.users.staff.map(staff => {
           return { id: staff.id, label: staff.firstName + " " + staff.lastName, icon: "user" }
@@ -272,12 +275,12 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
         return <DialogRow>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step3.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.create.step3.description')} />
+            <AutofillSelector identifier="addTeachersSelector" modifier="add-teachers"
+              loader={this.doStaffSearch}
+              placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
+              selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
           </DialogRow>
-          <AutofillSelector modifier="add-teachers"
-            loader={this.doStaffSearch}
-            placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.groupStaff.placeholder')}
-            selectedItems={this.state.selectedStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
-        </DialogRow>;
+        </DialogRow>
       case 4:
         return <DialogRow modifiers="edit-workspace-summary">
           <DialogRow>
@@ -318,7 +321,7 @@ class OrganizationNewUserGroup extends React.Component<OrganizationNewUserGroupP
                 }) : <div>{this.props.i18n.text.get('plugin.organization.userGroups.dialogs.summary.empty.staff')}</div>}
             </DialogRowContent>
           </DialogRow>
-        </DialogRow >;
+        </DialogRow>
       default: return <div>EMPTY</div>
     }
   }
