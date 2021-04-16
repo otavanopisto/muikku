@@ -104,6 +104,13 @@ export interface SelectItem {
   disabled?: boolean
 }
 
+export interface workspaceStudentsQueryDataType {
+  q: string | null,
+  firstResult: number | null,
+  maxResults: number | null,
+  active?: boolean,
+}
+
 export interface LoadTemplatesFromServerTriggerType {
   (query?: string): AnyActionType
 }
@@ -609,6 +616,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
     workspace: WorkspaceType,
     payload?: {
       q: string,
+      active?: boolean,
       firstResult: number,
       maxResults: number,
     },
@@ -1050,7 +1058,9 @@ let loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType = function load
     try {
       let staffMembers = <WorkspaceStaffListType>(await promisify(mApi().user.staffMembers.read({
         workspaceEntityId: data.workspace.id,
-        properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
+        properties: 'profile-phone,profile-vacation-start,profile-vacation-end',
+        firstResult: data.payload ? data.payload.firstResult : 0,
+        maxResults: data.payload ? data.payload.maxResults : 10,
       }), 'callback')());
 
       let update: WorkspaceUpdateType = {
@@ -1115,10 +1125,30 @@ let loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType = 
 let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStudentsOfWorkspace(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      let students = <WorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id), 'callback')());
+
+      const hasPayload: boolean = data.payload ? true : false;
+
+      const payload: workspaceStudentsQueryDataType = {
+        q: data.payload && data.payload.q ? data.payload.q : "",
+        firstResult: data.payload && data.payload.firstResult ? data.payload.firstResult : 0,
+        maxResults: data.payload && data.payload.maxResults ? data.payload.maxResults : 10,
+      }
+
+      if (data.payload && data.payload.active !== undefined) {
+        payload.active = data.payload.active
+      }
+
+      const students = <WorkspaceStudentListType>(await promisify(mApi().workspace.workspaces.students.read(data.workspace.id, payload), 'callback')());
+
       let update: WorkspaceUpdateType = {
         students
       };
+
+      if (data.payload && data.payload.active !== undefined && !data.payload.active) {
+        update = {
+          inactiveStudents: students
+        }
+      }
 
       dispatch({
         type: 'UPDATE_WORKSPACE',
