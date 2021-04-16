@@ -60,6 +60,46 @@ public class CommunicatorTestsBase extends AbstractUITest {
   }
   
   @Test
+  public void communicatorStudentSendsMessageToTeacherTest() throws Exception {
+    MockStaffMember teacher = new MockStaffMember(3l, 3l, 1l, "Teacher", "User", UserRole.TEACHER, "221212-1234", "teacher@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(student).build();
+    try{
+      try{
+        login();
+        navigate("/communicator", false);
+        waitAndClick("a.button.button--primary-function");
+        waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
+        sendKeys(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input", "Teacher");
+        waitAndClick(".autocomplete__recipient");
+        waitForVisible(".env-dialog__input--new-message-title");
+        sendKeys(".env-dialog__input--new-message-title", "T");
+        waitAndClick("#cke_1_contents");
+        addTextToCKEditor("Communicator test");
+        waitAndClick(".button--dialog-execute");
+        waitForNotVisible(".env-dialog__wrapper");
+        getWebDriver().get("about:blank");
+        navigate("/communicator#sent", false);
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
+        logout();
+        mockBuilder.mockLogin(teacher);
+        login();
+        navigate("/communicator", false);
+        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester");
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
+      }finally{
+        deleteCommunicatorMessages();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    } 
+  }
+  
+  @Test
   public void communicatorPagingTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
