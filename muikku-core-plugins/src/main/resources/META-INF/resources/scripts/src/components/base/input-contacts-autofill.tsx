@@ -32,7 +32,7 @@ export interface InputContactsAutofillProps {
   showEmails?: boolean,
   autofocus?: boolean,
   loaders?: InputContactsAutofillLoaders,
-  wcagLabel?: string,
+  identifier: string,
 }
 
 export interface InputContactsAutofillState {
@@ -262,7 +262,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
-      <TagInput wcagLabel={this.props.wcagLabel ? this.props.wcagLabel : ""} ref="taginput" modifier={this.props.modifier}
+      <TagInput identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         label={this.props.label}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete} />
