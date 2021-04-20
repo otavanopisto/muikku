@@ -187,7 +187,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     return (
       <ApplicationPanel modifier="workspace-users" title={this.props.i18n.text.get('plugin.workspace.users.pageTitle')}>
         <ApplicationSubPanel modifier="workspace-users" title={this.props.i18n.text.get('plugin.workspace.users.teachers.title')} i18n={this.props.i18n}>
-          <ApplicationList footer={staffPager} modifiers="workspace-staff-members" >
+          <ApplicationList footer={staffPager} modifiers="workspace-staff-members" contentState={staffPager ? "state-FULL" : ""} >
             {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.results.map((staff) => {
               const staffActions = <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                 type: "staff",
