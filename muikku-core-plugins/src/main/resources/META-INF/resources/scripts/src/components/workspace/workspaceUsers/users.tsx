@@ -26,8 +26,6 @@ import FormElement, { SearchFormElement } from '~/components/general/form-elemen
 import WorkspaceUser from "~/components/general/workspace-user";
 import { loadStaffMembersOfWorkspace, loadStudentsOfWorkspace, LoadUsersOfWorkspaceTriggerType } from '~/actions/workspaces';
 
-
-
 interface WorkspaceUsersProps {
   status: StatusType,
   workspace: WorkspaceType,
@@ -75,21 +73,25 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     this.loadActiveStudents = this.loadActiveStudents.bind(this);
     this.loadInActiveStudents = this.loadInActiveStudents.bind(this);
   }
+
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
     this.setState({
       studentCurrentlyBeingSentMessage: student
     });
   }
+
   removeStudentBeingSentMessage() {
     this.setState({
       studentCurrentlyBeingSentMessage: null
     });
   }
+
   onTabChange(id: "ACTIVE" | "INACTIVE") {
     this.setState({
       activeTab: id
     });
   }
+
   updateSearch(query: string) {
     this.props.loadStudents({ workspace: this.props.workspace, payload: { q: query, active: true, firstResult: 0, maxResults: this.usersPerPage } });
     this.props.loadStudents({ workspace: this.props.workspace, payload: { q: query, active: false, firstResult: 0, maxResults: this.usersPerPage } });
@@ -156,9 +158,6 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     this.setState({ currentInactiveStudentPage: page });
   };
 
-
-
-
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(nextProps.workspace.staffMembers.totalHitCount / this.usersPerPage);
@@ -170,7 +169,6 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
       this.allInActiveStudentsPages = Math.ceil(nextProps.workspace.inactiveStudents.totalHitCount / this.usersPerPage);
     }
   }
-
 
   render() {
     const currentStudentBeingSentMessage: UserType = this.state.studentCurrentlyBeingSentMessage &&
@@ -278,7 +276,6 @@ function mapStateToProps(state: StateType) {
     status: state.status
   }
 };
-
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({
