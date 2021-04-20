@@ -7,6 +7,7 @@ interface ApplicationListProps {
   className?: string,
   sortKey?: string,
   sortData?: any
+  footer?: React.ReactElement<any>,
 }
 
 interface ApplicationListState {
@@ -17,7 +18,8 @@ export default class ApplicationList extends React.Component<ApplicationListProp
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return <div className={`application-list ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list--${m}`).join(" ") : ""}`}>
-      {this.props.children}
+      <div className={`application-list__content ${this.props.modifiers ? modifiers.map(m => `application-list__content--${m}`).join(" ") : ""}`}>{this.props.children}</div>
+      {this.props.footer ? this.props.footer : null}
     </div>
   }
 }
@@ -37,7 +39,7 @@ export class ApplicationListItem extends React.Component<ApplicationListItemProp
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     delete newProps["modifiers"];
     delete newProps["classState"];
-    return <div tabIndex={0} {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""} ${this.props.classState? "state-" + this.props.classState.toUpperCase() : ""}`}>
+    return <div tabIndex={0} {...newProps} className={`application-list__item ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m => `application-list__item--${m}`).join(" ") : ""} ${this.props.classState ? "state-" + this.props.classState.toUpperCase() : ""}`}>
       {this.props.children}
     </div>
   }

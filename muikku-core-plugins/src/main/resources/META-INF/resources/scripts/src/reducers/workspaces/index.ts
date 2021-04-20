@@ -244,6 +244,7 @@ export interface WorkspaceType {
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: WorkspaceStudentListType,
+  inactiveStudents?: WorkspaceStudentListType,
   studentsSelect?: UserSelectType,
   details?: WorkspaceDetailsType,
   permissions?: WorkspacePermissionsType[],
