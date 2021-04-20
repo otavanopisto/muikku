@@ -6,7 +6,7 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/wcag.scss';
 import { StateType } from '~/reducers';
-import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel/application-panel';
 import { WorkspacesType } from '~/reducers/workspaces';
 import { SearchFormElement } from '~/components/general/form-element';
 

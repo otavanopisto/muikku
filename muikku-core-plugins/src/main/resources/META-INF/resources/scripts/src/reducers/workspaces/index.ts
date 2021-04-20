@@ -2,7 +2,8 @@ import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
   UserStaffType,
-  ShortWorkspaceUserWithActiveStatusType,
+  WorkspaceStaffListType,
+  WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -261,12 +262,13 @@ export interface WorkspaceType {
   feeInfo?: WorkspaceFeeInfoType;
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>;
   additionalInfo?: WorkspaceAdditionalInfoType;
-  staffMembers?: Array<UserStaffType>;
+  staffMembers?: WorkspaceStaffListType;
   staffMemberSelect?: UserSelectType;
   producers?: Array<WorkspaceProducerType>;
   contentDescription?: MaterialContentNodeType;
   activityLogs?: ActivityLogType[];
-  students?: Array<ShortWorkspaceUserWithActiveStatusType>;
+  students?: WorkspaceStudentListType;
+  inactiveStudents?: WorkspaceStudentListType;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetailsType;
   permissions?: WorkspacePermissionsType[];

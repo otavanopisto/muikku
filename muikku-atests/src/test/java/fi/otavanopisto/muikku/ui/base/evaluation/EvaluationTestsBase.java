@@ -63,7 +63,7 @@ public class EvaluationTestsBase extends AbstractUITest {
       
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
@@ -149,7 +149,7 @@ public class EvaluationTestsBase extends AbstractUITest {
     
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
@@ -264,7 +264,7 @@ public class EvaluationTestsBase extends AbstractUITest {
     
       Workspace workspace = createWorkspace("testcourse", "test course for testing", courseId.toString(), Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)

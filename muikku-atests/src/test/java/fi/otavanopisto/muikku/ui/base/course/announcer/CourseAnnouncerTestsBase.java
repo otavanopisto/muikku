@@ -29,7 +29,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Long courseId = 1l;
     Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
     mockBuilder
     .addCourseStaffMember(courseId, courseStaffMember)
     .build();
@@ -63,7 +63,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Long courseId = 1l;
     Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
     mockBuilder
     .addCourseStaffMember(courseId, courseStaffMember)
     .build();

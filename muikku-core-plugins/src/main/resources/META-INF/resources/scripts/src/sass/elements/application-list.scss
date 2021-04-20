@@ -15,6 +15,14 @@
   }
 }
 
+.application-list--dialog-users {
+  height: 234px;
+}
+
+.application-list--dialog-remove-users {
+  height: 285px;
+ }
+
 .application-list__header-container {
   align-items: flex-start;
   display: flex;
@@ -53,12 +61,8 @@
   margin-bottom: 0;
 }
 
-.application-list--workspace-staff-members {
-  display: flex;
-  flex-wrap: wrap;
-  height: auto;
-  padding: 0;
-}
+
+
 
 .application-list--workspace-users {
   display: flex;
@@ -68,8 +72,26 @@
 }
 
 .application-list--workspace-templates {
-  min-height: 260px;
+  min-height: 208px;
   overflow: hidden;
+}
+
+.application-list__content--workspace-staff-members {
+  display: block;
+  min-height: 0;
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 330px;
+  }
+}
+
+.application-list__content--workspace-users {
+  @include breakpoint($breakpoint-pad) {
+    height: 660px;
+  }
 }
 
 .application-list__title {
@@ -362,9 +384,15 @@
       }
     }
   }
+  // scss-lint:disable SelectorFormat
+  &.state-DISABLED {
+    background-color: $color-main-function-application-list-item-disabled-background;
+    color: $color-main-function-application-list-item-disabled-text;
+  }
+    // scss-lint:enable SelectorFormat
 }
 
-.application-list__item--notification {
+.application-list__item-- .application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 10px 10px 10px 0;

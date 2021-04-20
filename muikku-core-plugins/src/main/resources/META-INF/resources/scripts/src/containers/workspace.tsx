@@ -32,6 +32,7 @@ import {
   loadCurrentWorkspaceJournalsFromServer,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
+  workspaceStudentsQueryDataType,
   loadCurrentWorkspaceUserGroupPermissions,
   loadWorkspaceChatStatus,
   loadWholeWorkspaceHelp
@@ -78,7 +79,6 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
     this.renderWorkspacePermissions = this.renderWorkspacePermissions.bind(this);
-
     this.loadWorkspaceDiscussionData = this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData = this.loadWorkspaceAnnouncementsData.bind(this);
     this.loadWorkspaceAnnouncerData = this.loadWorkspaceAnnouncerData.bind(this);
@@ -258,7 +258,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId, success: (workspace) => {
           if (!workspace.staffMembers && state.status.loggedIn) {
-            this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
+            this.props.store.dispatch(loadStaffMembersOfWorkspace({ workspace }) as Action)
           }
         }
       }) as Action);
@@ -446,7 +446,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, state.status.permissions.WORKSPACE_MANAGE_WORKSPACE, (result) => {
         if (!hasLocationHashAndWillHaveToScrollIntoPosition && result[0] && result[0].children && result[0].children[0]) {
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
-        } else if (hasLocationHashAndWillHaveToScrollIntoPosition){
+        } else if (hasLocationHashAndWillHaveToScrollIntoPosition) {
           // this is executing on first time
           const scrollToElement = () => {
             const element = document.querySelector(window.location.hash);
@@ -545,10 +545,11 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace) => {
           if (!workspace.staffMembers && state.status.loggedIn) {
-            this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
+            this.props.store.dispatch(loadStaffMembersOfWorkspace({ workspace }) as Action)
           }
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
-            this.props.store.dispatch(loadStudentsOfWorkspace(workspace) as Action)
+            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace, payload: { q: "", firstResult: 0, maxResults: 10, active: true } }) as Action);
+            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace, payload: { q: "", firstResult: 0, maxResults: 10, active: false } }) as Action)
           }
         }
       }) as Action);
@@ -575,7 +576,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace) => {
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
-            this.props.store.dispatch(loadStudentsOfWorkspace(workspace) as Action);
+            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace }) as Action);
           }
           if (!workspace.journals) {
             if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
@@ -644,7 +645,6 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
   render() {
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
-
       <Route exact path="/workspace/:workspaceUrl/" render={this.renderWorkspaceHome} />
       <Route path="/workspace/:workspaceUrl/help" render={this.renderWorkspaceHelp} />
       <Route path="/workspace/:workspaceUrl/discussions" render={this.renderWorkspaceDiscussions} />

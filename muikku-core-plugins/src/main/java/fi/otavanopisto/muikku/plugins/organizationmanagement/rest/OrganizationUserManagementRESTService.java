@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -20,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -75,6 +78,7 @@ public class OrganizationUserManagementRESTService {
   public Response searchStaffMembers(
       @QueryParam("q") String searchString,
       @QueryParam("properties") String properties,
+      @QueryParam("userGroupIds") List<Long> userGroupIds,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
     
@@ -104,6 +108,12 @@ public class OrganizationUserManagementRESTService {
     roleArchetypes.add(EnvironmentRoleArchetype.STUDY_GUIDER);
     roleArchetypes.add(EnvironmentRoleArchetype.TEACHER);
 
+    Set<Long> userGroupFilters = null;
+    if (!CollectionUtils.isEmpty(userGroupIds)) {
+      userGroupFilters = new HashSet<Long>();
+      userGroupFilters.addAll(userGroupIds);
+    }
+
     String[] fields = new String[] { "firstName", "lastName", "email" };
     
     SearchResult result = searchProvider.searchUsers(
@@ -111,7 +121,7 @@ public class OrganizationUserManagementRESTService {
         searchString, 
         fields, 
         roleArchetypes, 
-        null,              // userGroupFilters 
+        userGroupFilters, 
         null,              // workspaceFilters 
         null,              // userFilters
         false,             // includeInactiveStudents
@@ -166,6 +176,7 @@ public class OrganizationUserManagementRESTService {
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_SEARCH_STUDENTS)
   public Response searchStudents(
       @QueryParam("q") String searchString,
+      @QueryParam("userGroupIds") List<Long> userGroupIds,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
     
@@ -176,6 +187,12 @@ public class OrganizationUserManagementRESTService {
     SearchProvider searchProvider = searchProviderInstance.get();
     if (searchProvider == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    Set<Long> userGroupFilters = null;
+    if (!CollectionUtils.isEmpty(userGroupIds)) {
+      userGroupFilters = new HashSet<Long>();
+      userGroupFilters.addAll(userGroupIds);
     }
 
     List<fi.otavanopisto.muikku.rest.model.Student> students = new ArrayList<>();
@@ -191,7 +208,7 @@ public class OrganizationUserManagementRESTService {
         searchString,
         fields,
         Arrays.asList(EnvironmentRoleArchetype.STUDENT),
-        null,                                                 // userGroupFilters
+        userGroupFilters,
         null,                                                 // workspaceFilters
         null,                                                 // userIdentifiers
         false,                                                // includeInactiveStudents

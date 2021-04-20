@@ -56,6 +56,28 @@
   }
 }
 
+.dialog__window--edit-workspace,
+.dialog__window--edit-user-group {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 546px;
+    }
+  }
+}
+
+
+// .dialog__window--edit-user-group {
+//   @include breakpoint($breakpoint-pad) {
+//     max-width: 815px;
+
+//     .dialog__content {
+//       height: 546px;
+//     }
+//   }
+// }
+
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
@@ -250,6 +272,11 @@
   }
 }
 
+
+.dialog__content-row--user-search {
+  margin: 10px 0;
+}
+
 .dialog__content-row--dates {
   display: flex;
 }
@@ -295,11 +322,15 @@
 .dialog__content-row-content--new-workspace,
 .dialog__content-row-content--edit-workspace,
 .dialog__content-row-content--summary-dates {
-  margin-left: 20px;
+  padding-left: 20px;
 
   span {
     margin-left: 10px;
   }
+}
+
+.dialog__content-row-content--summary {
+  padding-left: 20px;
 }
 
 .dialog__content-row-content--summary-dates span {

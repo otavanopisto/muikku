@@ -160,7 +160,7 @@ public class UserGroupRESTService extends AbstractRESTService {
     // User group creation
     
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<StudentGroupPayload> response = userGroupController.createStudentGroup(dataSource, payload);
+    BridgeResponse<StudentGroupPayload> response = userGroupController.updateStudentGroup(dataSource, payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }

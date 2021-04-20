@@ -28,6 +28,7 @@
   color: $color-pager-page-index-font;
   cursor: pointer;
   display: flex;
+  flex-wrap: wrap;
   height: 34px;
   justify-content: center;
   margin: 0 0 0 10px;
