@@ -225,7 +225,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     this.checkAnswers();
   }
   //swapping the fields
-  swapField(fielda: FieldType, fieldb: FieldType){
+  swapField(triggerChange: boolean, fielda: FieldType, fieldb: FieldType){
     //if the same then it's pointless
     if (fielda.name === fieldb.name){
       return;
@@ -241,10 +241,10 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         }
         return f;
       })
-    }, this.triggerChange)
+    }, triggerChange ? this.triggerChange : null)
   }
   //swapping two counterparts, same as fields
-  swapCounterpart(fielda: FieldType, fieldb: FieldType){
+  swapCounterpart(triggerChange: boolean, fielda: FieldType, fieldb: FieldType){
     if (fielda.name === fieldb.name){
       return;
     }
@@ -257,12 +257,12 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         }
         return f;
       })
-    }, this.triggerChange)
+    }, triggerChange ? this.triggerChange : null)
   }
   //ok so this is about picking a field, whether it is counterpart or not, and the index it is in
   //I could've found the index it is in, by searching, but I am lazy
   //and I want it in the function
-  pickField(field: FieldType, isCounterpart: boolean, index: number){
+  pickField(triggerChange: boolean, field: FieldType, isCounterpart: boolean, index: number){
     //if by the time this function runs there is no selected field
     //then we just set the state that this one is the first selected
     //And we got no business to do
@@ -284,7 +284,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       //then we need to swap two counterparts
       if (this.state.selectedIsCounterpart && isCounterpart){
         //we swap them
-        this.swapCounterpart(this.state.selectedField, field);
+        this.swapCounterpart(triggerChange, this.state.selectedField, field);
 
         //however we need to figure out for the edited things
         //the opposite of the
@@ -305,7 +305,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       //Otherwise if we are doing a field field swap
       } else if (!this.state.selectedIsCounterpart && !isCounterpart){
         //we do basically the same as before but in the opposite way
-        this.swapField(this.state.selectedField, field);
+        this.swapField(triggerChange, this.state.selectedField, field);
 
         let diametricOpposite = this.state.counterparts[this.state.selectedIndex];
         editedIds.delete(diametricOpposite.name);
@@ -328,7 +328,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         let diametricOpposite = this.state.fields[counterpartIndex];
 
         //we swap the counterparts only
-        this.swapCounterpart(counterpart, opposite);
+        this.swapCounterpart(triggerChange, counterpart, opposite);
 
         //we delete all the opposites from the edited list
         editedIds.delete(opposite.name);
@@ -450,9 +450,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
            //the parent container selector is the field on its own
            return <Draggable as="span" interactionData={{field, index, isCounterpart: true}}
              interactionGroup={this.props.content.name + "-counterparts-container"}
-             onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
-             onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".material-page__connectfield"
-             onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
+             onDrag={()=>{this.cancelPreviousPick(); this.pickField(false, field, true, index);}}
+             onClick={this.pickField.bind(this, true, field, true, index)} parentContainerSelector=".material-page__connectfield"
+             onDropInto={(data)=>this.pickField(true, data.field, data.isCounterpart, data.index)}
              className={className} key={field.name}>
                <span className="material-page__connectfield-counterpart-data-container">
                  <span className="material-page__connectfield-counterpart-icon icon-move"></span>

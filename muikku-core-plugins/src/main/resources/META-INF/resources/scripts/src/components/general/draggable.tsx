@@ -163,6 +163,11 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     document.body.removeEventListener("touchcancel", this.onRootSeletEnd);
   }
   onRootSelectStart(e: MouseEvent | TouchEvent, force?: boolean){
+    // not left click
+    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+      return;
+    }
+
     let rootElement:HTMLElement;
     if (this.props.interactionData){
       rootElement = (this.refs.root as Droppable).getDOMComponent();
@@ -231,6 +236,11 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     }, queueJax);
   }
   onMove(e: MouseEvent | TouchEvent){
+    // not left click
+    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+      return;
+    }
+
     const pageX = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX;
     const pageY = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY;
 
@@ -271,6 +281,11 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     }
   }
   onRootSeletEnd(e: MouseEvent | TouchEvent){
+    // not left click
+    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+      return;
+    }
+
     if (this.props.__debugVoidStyle){
       return;
     }
