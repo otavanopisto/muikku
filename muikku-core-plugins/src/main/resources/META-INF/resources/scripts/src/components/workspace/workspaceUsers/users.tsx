@@ -16,12 +16,16 @@ import { getName, filterMatch } from "~/util/modifiers";
 import { ShortWorkspaceUserWithActiveStatusType, UserType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import Tabs, { MobileOnlyTabs } from "~/components/general/tabs";
+import ApplicationPanel from "~/components/general/application-panel/application-panel";
+import ApplicationSubPanel from "~/components/general/application-sub-panel"
+import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper } from "~/components/general/application-list";
 import Pager from '~/components/general/pager';
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from './dialogs/deactivate-reactivate-user';
-import { SearchFormElement } from '~/components/general/form-element';
+import FormElement, { SearchFormElement } from '~/components/general/form-element';
 import WorkspaceUser from "~/components/general/workspace-user";
 import { loadStaffMembersOfWorkspace, loadStudentsOfWorkspace, LoadUsersOfWorkspaceTriggerType } from '~/actions/workspaces';
+
 
 
 interface WorkspaceUsersProps {
@@ -169,7 +173,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
 
 
   render() {
-    let currentStudentBeingSentMessage: UserType = this.state.studentCurrentlyBeingSentMessage &&
+    const currentStudentBeingSentMessage: UserType = this.state.studentCurrentlyBeingSentMessage &&
     {
       id: this.state.studentCurrentlyBeingSentMessage.userEntityId,
       firstName: this.state.studentCurrentlyBeingSentMessage.firstName,
@@ -178,109 +182,92 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
       studyProgrammeName: this.state.studentCurrentlyBeingSentMessage.studyProgrammeName,
     }
 
-    return (<div className="application-panel-wrapper">
-      <div className="application-panel application-panel--workspace-users">
-        <div className="application-panel__container">
-          <div className="application-panel__header">
-            <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')}</h2>
-          </div>
-          <div className="application-panel__body">
-            <div className="application-sub-panel application-sub-panel--workspace-users">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">
-                {this.props.i18n.text.get('plugin.workspace.users.teachers.title')}
-              </h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-staff-members">
-                <div className="application-list application-list--workspace-staff-members">
-                  {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.results.map((staff) => {
-                    return <div className="application-list__item application-list__item--workspace-staff-member" key={staff.userEntityId}>
-                      <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-user">
-                        <div className="application-list__item-content-aside application-list__item-content-aside--workspace-user">
-                          <div className="item-list__profile-picture">
-                            <Avatar id={staff.userEntityId} hasImage={staff.hasImage} firstName={staff.firstName} />
-                          </div>
-                        </div>
-                        <div className="application-list__item-content-main application-list__item-content-main--workspace-user">
-                          <div>{getName(staff, true)}</div>
-                          <div className="application-list__item-content-secondary-data">{staff.email}</div>
-                        </div>
-                        <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
-                          type: "staff",
-                          value: staff
-                        }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
-                          initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                          <IconButton buttonModifiers="workspace-users-contact" icon="envelope" />
-                        </CommunicatorNewMessage>
-                      </div>
-                    </div>
-                  })}
-                </div>{this.allStaffPages > 1 ?
-                  < Pager identifier="staffPager" current={this.state.currentStaffPage} pages={this.allStaffPages} onClick={this.loadStaffMembers} />
-                  : null}
-              </div>
-            </div>
-            <div className="application-sub-panel application-sub-panel--workspace-users">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
-              <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
-                <div className="form-element form-element--search">
-                  <SearchFormElement delay={0} value={this.state.currentSearch} updateField={this.updateSearch} id="WorkspaceUserFilter" name="workspace-user-filter" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')} />
-                </div>
-                <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
-                  {
-                    id: "ACTIVE",
-                    name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
-                    type: "workspace-students",
-                    component: () => {
-                      let activeStudents = this.props.workspace && this.props.workspace.students &&
-                        this.props.workspace.students.results.map(s => <WorkspaceUser highlight={this.state.currentSearch}
-                          onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
-                          key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props} />);
+    const staffPager = this.allStaffPages > 1 ?
+      < Pager identifier="staffPager" current={this.state.currentStaffPage} pages={this.allStaffPages} onClick={this.loadStaffMembers} />
+      : null;
 
-                      return <div className="application-list application-list--workspace-users">
-                        {this.props.workspace && this.props.workspace.students ? (
-                          activeStudents.length ? activeStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.activeStudents.empty')}</div>
-                        ) : null}
-                        {this.allActiveStudentsPages > 1 ?
-                          <Pager identifier="activeStudentsPager" current={this.state.currentActiveStudentPage} pages={this.allActiveStudentsPages} onClick={this.loadActiveStudents} />
-                          : null}
-                      </div>
-                    }
-                  },
-                  {
-                    id: "INACTIVE",
-                    name: this.props.i18n.text.get('plugin.workspace.users.students.link.inactive'),
-                    type: "workspace-students",
-                    component: () => {
-                      let inactiveStudents = this.props.workspace && this.props.workspace.inactiveStudents &&
-                        this.props.workspace.inactiveStudents.results
-                          .map(s => <WorkspaceUser onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
-                            highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props} />);
+    return (
+      <ApplicationPanel modifier="workspace-users" title={this.props.i18n.text.get('plugin.workspace.users.pageTitle')}>
+        <ApplicationSubPanel modifier="workspace-users" title={this.props.i18n.text.get('plugin.workspace.users.teachers.title')} i18n={this.props.i18n}>
+          <ApplicationList footer={staffPager} modifiers="workspace-staff-members" >
+            {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.results.map((staff) => {
+              const staffActions = <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
+                type: "staff",
+                value: staff
+              }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
+                initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
+                <IconButton buttonModifiers="workspace-users-contact" icon="envelope" />
+              </CommunicatorNewMessage>;
+              return <ApplicationListItem key={staff.userEntityId} modifiers="workspace-staff-member">
+                <ApplicationListItemContentWrapper modifiers="workspace-user" asideModifiers="workspace-user" mainModifiers="workspace-user" actions={staffActions} aside={<div className="item-list__profile-picture"><Avatar id={staff.userEntityId} hasImage={staff.hasImage} firstName={staff.firstName} /></div>}>
+                  <div>{getName(staff, true)}</div>
+                  <div className="application-list__item-content-secondary-data">{staff.email}</div>
+                </ApplicationListItemContentWrapper>
+              </ApplicationListItem>
+            })}
+          </ApplicationList>
+        </ApplicationSubPanel>
+        <ApplicationSubPanel modifier="workspace-users" i18n={this.props.i18n} title={this.props.i18n.text.get('plugin.workspace.users.students.title')}>
+          <SearchFormElement delay={0} value={this.state.currentSearch} updateField={this.updateSearch} id="WorkspaceUserFilter" name="workspace-user-filter" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')} />
+          <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
+            {
+              id: "ACTIVE",
+              name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
+              type: "workspace-students",
+              component: () => {
+                const activeStudents = this.props.workspace && this.props.workspace.students &&
+                  this.props.workspace.students.results.map(s => <WorkspaceUser highlight={this.state.currentSearch}
+                    onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                    key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props} />);
 
-                      return <div className="application-list application-list--workspace-users">
-                        {this.props.workspace && this.props.workspace.inactiveStudents ? (
-                          inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>
-                        ) : null}
-                        {this.allInActiveStudentsPages > 1 ?
-                          <Pager identifier="archivedStudentsPager" current={this.state.currentInactiveStudentPage} pages={this.allInActiveStudentsPages} onClick={this.loadInActiveStudents} />
-                          : null}
-                      </div>
-                    }
-                  }
-                ]} />
-              </div>
-            </div >
-          </div>
-        </div>
+                const pager = this.allActiveStudentsPages > 1 ?
+                  <Pager identifier="activeStudentsPager" current={this.state.currentActiveStudentPage} pages={this.allActiveStudentsPages} onClick={this.loadActiveStudents} />
+                  : null;
+                return <ApplicationList footer={pager} modifiers="workspace-users">
+                  {this.props.workspace && this.props.workspace.students ? (
+                    activeStudents.length ? activeStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.activeStudents.empty')}</div>
+                  ) : null}
 
-        {currentStudentBeingSentMessage ? <CommunicatorNewMessage isOpen onClose={this.removeStudentBeingSentMessage}
-          extraNamespace="workspace-students" initialSelectedItems={[{
-            type: "user",
-            value: currentStudentBeingSentMessage
-          }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
-          initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)} /> : null}
-        {this.state.studentCurrentBeingToggledStatus ? <DeactivateReactivateUserDialog isOpen
-          onClose={this.removeStudentBeingToggledStatus} user={this.state.studentCurrentBeingToggledStatus} /> : null}
-      </div>
-    </div>);
+                </ApplicationList>
+              }
+            },
+            {
+              id: "INACTIVE",
+              name: this.props.i18n.text.get('plugin.workspace.users.students.link.inactive'),
+              type: "workspace-students",
+              component: () => {
+                const inactiveStudents = this.props.workspace && this.props.workspace.inactiveStudents &&
+                  this.props.workspace.inactiveStudents.results
+                    .map(s => <WorkspaceUser onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                      highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props} />);
+                const pager = this.allInActiveStudentsPages > 1 ?
+                  <Pager identifier="archivedStudentsPager" current={this.state.currentInactiveStudentPage} pages={this.allInActiveStudentsPages} onClick={this.loadInActiveStudents} />
+                  : null;
+                return <ApplicationList footer={pager} modifiers="workspace-users">
+                  {this.props.workspace && this.props.workspace.inactiveStudents ? (
+                    inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>
+                  ) : null}
+                </ApplicationList>
+              }
+            }
+          ]} />
+
+        </ApplicationSubPanel >
+
+        { currentStudentBeingSentMessage ? <CommunicatorNewMessage isOpen onClose={this.removeStudentBeingSentMessage}
+          extraNamespace="workspace-students" initialSelectedItems={
+            [{
+              type: "user",
+              value: currentStudentBeingSentMessage
+            }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
+          initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)} /> : null
+        }
+        {
+          this.state.studentCurrentBeingToggledStatus ? <DeactivateReactivateUserDialog isOpen
+            onClose={this.removeStudentBeingToggledStatus} user={this.state.studentCurrentBeingToggledStatus} /> : null
+        }
+      </ApplicationPanel >
+    );
   }
 }
 
