@@ -70,8 +70,8 @@ public class IndexPageTestsBase extends AbstractUITest {
         .build();
       login();
       createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
-      long sender = getUserIdByEmail("admin@example.com");
-      long recipient = getUserIdByEmail("student@example.com");
+      long sender = fetchUserIdByEmail("admin@example.com");
+      long recipient = fetchUserIdByEmail("student@example.com");
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       logout();
