@@ -1,41 +1,41 @@
-import * as React from "react";
+import * as React from "react"
 
 interface ApplicationPanelBodyProps {
-  modifier?: string;
-  primaryOption?: React.ReactElement<any>;
-  toolbar?: React.ReactElement<any>;
-  asideBefore?: React.ReactElement<any>;
-  asideAfter?: React.ReactElement<any>;
-  children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
-  disableStickyScrolling?: boolean;
-  offsetBorderAgainstBottom?: number;
+  modifier?: string
+  primaryOption?: React.ReactElement<any>
+  toolbar?: React.ReactElement<any>
+  asideBefore?: React.ReactElement<any>
+  asideAfter?: React.ReactElement<any>
+  children?: React.ReactElement<any> | Array<React.ReactElement<any>>
+  disableStickyScrolling?: boolean
+  offsetBorderAgainstBottom?: number
 }
 
 interface ApplicationPanelBodyState {
-  sticky: boolean;
-  remainingHeight: number;
-  stickyHeight: number;
-  offsetElementAgainstTop: number;
-  extraPaddingLeft: number;
-  extraPaddingRight: number;
-  asideBeforeWidth: number;
+  sticky: boolean
+  remainingHeight: number
+  stickyHeight: number
+  offsetElementAgainstTop: number
+  extraPaddingLeft: number
+  extraPaddingRight: number
+  asideBeforeWidth: number
 }
 
 export default class ApplicationPanelBody extends React.Component<
   ApplicationPanelBodyProps,
   ApplicationPanelBodyState
 > {
-  private offsetElementAgainstTop: number;
-  private offsetStickyElementTop: number;
-  private stickyHeight: number;
-  private extraPaddingLeft: number;
-  private extraPaddingRight: number;
-  private asideBeforeWidth: number;
-  private borderWidth: number;
-  private disabled: boolean;
+  private offsetElementAgainstTop: number
+  private offsetStickyElementTop: number
+  private stickyHeight: number
+  private extraPaddingLeft: number
+  private extraPaddingRight: number
+  private asideBeforeWidth: number
+  private borderWidth: number
+  private disabled: boolean
 
   constructor(props: ApplicationPanelBodyProps) {
-    super(props);
+    super(props)
     this.state = {
       sticky: false,
       remainingHeight: null,
@@ -44,146 +44,144 @@ export default class ApplicationPanelBody extends React.Component<
       extraPaddingLeft: null,
       extraPaddingRight: null,
       asideBeforeWidth: null,
-    };
-    this.onScroll = this.onScroll.bind(this);
-    this.calculate = this.calculate.bind(this);
-    this.calculateSides = this.calculateSides.bind(this);
+    }
+    this.onScroll = this.onScroll.bind(this)
+    this.calculate = this.calculate.bind(this)
+    this.calculateSides = this.calculateSides.bind(this)
   }
 
   componentDidMount() {
-    this.calculate();
+    this.calculate()
     if (!this.disabled) {
-      window.addEventListener("scroll", this.onScroll);
-      window.addEventListener("resize", this.calculateSides);
+      window.addEventListener("scroll", this.onScroll)
+      window.addEventListener("resize", this.calculateSides)
     }
   }
 
   componentWillUnmount() {
     if (!this.disabled) {
-      window.removeEventListener("scroll", this.onScroll);
-      window.removeEventListener("resize", this.calculateSides);
+      window.removeEventListener("scroll", this.onScroll)
+      window.removeEventListener("resize", this.calculateSides)
     }
   }
 
   calculateSides() {
     this.extraPaddingLeft =
       (this.refs["body"] as HTMLElement).getBoundingClientRect().left +
-      this.borderWidth;
+      this.borderWidth
 
-    const root: Element = document.querySelector("#root");
+    const root: Element = document.querySelector("#root")
     this.extraPaddingRight =
       root.getBoundingClientRect().width -
       ((this.refs["body"] as HTMLElement).getBoundingClientRect().width +
         this.extraPaddingLeft) +
-      this.borderWidth * 2;
+      this.borderWidth * 2
 
     this.setState({
       extraPaddingLeft: this.extraPaddingLeft,
       extraPaddingRight: this.extraPaddingRight,
-    });
+    })
   }
 
   calculate() {
-    this.disabled = this.props.disableStickyScrolling;
+    this.disabled = this.props.disableStickyScrolling
     if (this.disabled) {
-      return;
+      return
     }
 
     const computedStyle = document.defaultView.getComputedStyle(
       this.refs["sticky"] as HTMLElement
-    );
+    )
     if (computedStyle.getPropertyValue("position") === "fixed") {
-      this.disabled = true;
-      return;
+      this.disabled = true
+      return
     }
 
     //Sticky height represents the height of the sticky thing on top
-    this.stickyHeight = parseInt(computedStyle.getPropertyValue("height"));
+    this.stickyHeight = parseInt(computedStyle.getPropertyValue("height"))
     this.setState({
       stickyHeight: this.stickyHeight,
-    });
+    })
 
     //offset top represents the amount of offset that the sticky has to the top of the screen
 
-    this.offsetStickyElementTop = (this.refs[
-      "sticky"
-    ] as HTMLElement).offsetTop;
+    this.offsetStickyElementTop = (this.refs["sticky"] as HTMLElement).offsetTop
 
     //We take the element that is supposed to stick to
-    const element: Element = document.querySelector("#stick");
+    const element: Element = document.querySelector("#stick")
     if (!element) {
-      this.offsetElementAgainstTop = 0;
+      this.offsetElementAgainstTop = 0
     } else {
       const stickyElementComputedStyle = document.defaultView.getComputedStyle(
         element
-      );
+      )
       //this one represents the navbar basically the amount of pixels to the bottom
       this.offsetElementAgainstTop = parseInt(
         stickyElementComputedStyle.getPropertyValue("height")
-      );
+      )
     }
 
     //So we save that here
     this.setState({
       offsetElementAgainstTop: this.offsetElementAgainstTop,
-    });
+    })
 
-    const asideBefore: HTMLElement = this.refs["asideBefore"] as HTMLElement;
+    const asideBefore: HTMLElement = this.refs["asideBefore"] as HTMLElement
     if (asideBefore) {
-      this.asideBeforeWidth = asideBefore.offsetWidth;
+      this.asideBeforeWidth = asideBefore.offsetWidth
       this.setState({
         asideBeforeWidth: this.asideBeforeWidth,
-      });
+      })
     }
 
     this.borderWidth = parseInt(
       document.defaultView
         .getComputedStyle(this.refs["body"] as HTMLElement)
         .getPropertyValue("border-left-width")
-    );
-    this.calculateSides();
-    this.setRemainingHeight(false);
+    )
+    this.calculateSides()
+    this.setRemainingHeight(false)
   }
 
   setRemainingHeight(isSticky: boolean) {
     if (!this.props.asideBefore) {
-      return;
+      return
     }
 
-    const top = document.documentElement.scrollTop || document.body.scrollTop;
-    const height = document.documentElement.offsetHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
+    const top = document.documentElement.scrollTop || document.body.scrollTop
+    const height = document.documentElement.offsetHeight
+    const scrollHeight = document.documentElement.scrollHeight
     const offsetTopHeight = isSticky
       ? this.offsetElementAgainstTop +
         (this.refs["sticky"] as HTMLElement).offsetHeight
       : (this.refs["sticky"] as HTMLElement).offsetHeight +
         (this.refs["sticky"] as HTMLElement).offsetTop -
-        top;
+        top
 
-    const bottom = scrollHeight - top - height;
+    const bottom = scrollHeight - top - height
 
-    let borderBottomSize = bottom + this.borderWidth;
+    let borderBottomSize = bottom + this.borderWidth
 
     if (borderBottomSize < 0) {
-      borderBottomSize = 0;
+      borderBottomSize = 0
     }
 
-    const remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
+    const remainingUsableWindow = height - offsetTopHeight - borderBottomSize
 
-    this.setState({ remainingHeight: remainingUsableWindow });
+    this.setState({ remainingHeight: remainingUsableWindow })
   }
 
   onScroll(e: Event) {
-    const top = document.documentElement.scrollTop || document.body.scrollTop;
-    const diff = this.offsetStickyElementTop - top;
-    const isSticky = diff < this.offsetElementAgainstTop;
+    const top = document.documentElement.scrollTop || document.body.scrollTop
+    const diff = this.offsetStickyElementTop - top
+    const isSticky = diff < this.offsetElementAgainstTop
     if (isSticky !== this.state.sticky) {
-      this.setState({ sticky: isSticky });
+      this.setState({ sticky: isSticky })
       if (isSticky) {
-        this.calculateSides();
+        this.calculateSides()
       }
     }
-    this.setRemainingHeight(isSticky);
+    this.setRemainingHeight(isSticky)
   }
 
   render() {
@@ -195,7 +193,7 @@ export default class ApplicationPanelBody extends React.Component<
       children,
       asideAfter,
       asideBefore,
-    } = this.props;
+    } = this.props
 
     const {
       remainingHeight,
@@ -205,13 +203,13 @@ export default class ApplicationPanelBody extends React.Component<
       extraPaddingLeft,
       extraPaddingRight,
       asideBeforeWidth,
-    } = this.state;
+    } = this.state
 
     /**
      * Calculating remaining helperContainerHeight if parrent panel component has passed padding-bottom value
      */
     const helperContainerHeight =
-      remainingHeight - offsetBorderAgainstBottom || 0;
+      remainingHeight - offsetBorderAgainstBottom || "auto"
 
     return (
       <div
@@ -296,6 +294,6 @@ export default class ApplicationPanelBody extends React.Component<
           ) : null}
         </div>
       </div>
-    );
+    )
   }
 }
