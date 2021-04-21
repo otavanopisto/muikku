@@ -212,6 +212,7 @@
 
 .application-panel__helper-container {
   display: none;
+  height: auto;
 
   @include breakpoint($breakpoint-pad) {
     @include no-scrollbars;
