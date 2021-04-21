@@ -114,8 +114,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("student@example.com");
+
         for(int i = 0; i < 40; i++)
           createCommunicatorMesssage("Test " + i, "Test content " + i, sender, recipient);
         logout();
@@ -133,7 +134,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void communicatorLatestMessagesIndexWidget() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -143,8 +144,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
         mockBuilder.mockLogin(student);
@@ -174,8 +175,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long sender = getUserIdByEmail("admin@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
         mockBuilder.mockLogin(student);
@@ -203,8 +204,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     login();
     try{
-      long sender = getUserIdByEmail("admin@example.com");
-      long recipient = getUserIdByEmail("student@example.com");
+      long sender = fetchUserIdByEmail("admin@example.com");
+      long recipient = fetchUserIdByEmail("student@example.com");
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       navigate("/communicator#sent", false);
       waitAndClick(".application-list__item-content-aside .message__select-container input");
@@ -253,8 +254,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
+        long recipient = fetchUserIdByEmail("admin@example.com");
+        long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
@@ -290,8 +291,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
+        long recipient = fetchUserIdByEmail("admin@example.com");
+        long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
@@ -323,8 +324,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
+        long recipient = fetchUserIdByEmail("admin@example.com");
+        long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
@@ -360,8 +361,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       try{
         login();
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
+        long recipient = fetchUserIdByEmail("admin@example.com");
+        long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         navigate("/communicator", false);
@@ -400,8 +401,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        long recipient = getUserIdByEmail("admin@example.com");
-        long sender = getUserIdByEmail("student@example.com");
+        long recipient = fetchUserIdByEmail("admin@example.com");
+        long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
@@ -428,8 +429,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
       login();
       try{
-        long sender = getUserIdByEmail("teacher@example.com");
-        long recipient = getUserIdByEmail("student@example.com");
+        long sender = fetchUserIdByEmail("teacher@example.com");
+        long recipient = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
         mockBuilder.mockLogin(student);
