@@ -11,6 +11,7 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.OrganizationEntityDAO;
 import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationWorkspaceVisibility;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -25,7 +26,7 @@ public class OrganizationEntityController {
   
   @Inject
   private SessionController sessionController;
-  
+
   @Inject
   private OrganizationEntityDAO organizationEntityDAO;
   
@@ -150,6 +151,22 @@ public class OrganizationEntityController {
 
   public void delete(OrganizationEntity organizationEntity) {
     organizationEntityDAO.delete(organizationEntity);
+  }
+  
+  public OrganizationEntity getCurrentUserOrganization() {
+    UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(
+        sessionController.getLoggedUserEntity());
+    return usdi != null ? usdi.getOrganization() : null;
+  }
+  
+  public boolean canCurrentUserAccessAllOrganizations() {
+    UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(
+        sessionController.getLoggedUserEntity());
+    // TODO Configurable default organization rather than considering one with id 1 as The One
+    return usdi != null &&
+        EnvironmentRoleArchetype.ADMINISTRATOR.equals(usdi.getRole().getArchetype()) &&
+        usdi.getOrganization() != null &&
+        usdi.getOrganization().getId().equals(1L);
   }
 
 }
