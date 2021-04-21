@@ -47,7 +47,7 @@ public class GuiderTestsBase extends AbstractUITest {
     MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
     MockCourseStudent mcs2 = new MockCourseStudent(3l, courseId, student2.getId());
 
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
     mockBuilder
       .addStudent(student)
       .addStudent(student2)
@@ -87,7 +87,7 @@ public class GuiderTestsBase extends AbstractUITest {
     Workspace workspace2 = createWorkspace("diffentscourse", "Second test course", "4", Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(4l, workspace.getId(), student.getId());
     MockCourseStudent mcs2 = new MockCourseStudent(5l, workspace2.getId(), student2.getId());
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
     mockBuilder
       .addCourseStudent(workspace.getId(), mcs)
       .addCourseStudent(workspace.getId(), mcs2)
@@ -119,7 +119,7 @@ public class GuiderTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(6l, workspace.getId(), student.getId());
     
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), 7l);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), 1l);
 
     mockBuilder
       .addCourseStaffMember(workspace.getId(), courseStaffMember)
@@ -177,7 +177,7 @@ public class GuiderTestsBase extends AbstractUITest {
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
@@ -261,9 +261,9 @@ public class GuiderTestsBase extends AbstractUITest {
       MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
       MockCourseStudent mcs2 = new MockCourseStudent(2l, course2.getId(), student.getId());
       MockCourseStudent mcs3 = new MockCourseStudent(3l, course3.getId(), student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
-      CourseStaffMember courseStaffMember2 = new CourseStaffMember(2l, course2.getId(), admin.getId(), 7l);
-      CourseStaffMember courseStaffMember3 = new CourseStaffMember(3l, course3.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember2 = new CourseStaffMember(2l, course2.getId(), admin.getId(), 1l);
+      CourseStaffMember courseStaffMember3 = new CourseStaffMember(3l, course3.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStudent(course2.getId(), mcs2)

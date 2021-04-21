@@ -381,7 +381,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step2.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step2.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-students"
+            <AutofillSelector identifier="addStudentsSelector" modifier="add-students"
               loader={this.doStudentSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.students.placeholder')}
               selectedItems={this.state.addStudents} searchItems={students} onDelete={this.deleteStudent} onSelect={this.selectStudent} />
@@ -416,7 +416,7 @@ class OrganizationEditUsergroup extends React.Component<OrganizationEditUsergrou
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step4.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.edit.step4.description')} />
           </DialogRow>
           <DialogRow>
-            <AutofillSelector modifier="add-teachers"
+            <AutofillSelector identifier="addTeachersSelector" modifier="add-teachers"
               loader={this.doStaffSearch}
               placeholder={this.props.i18n.text.get('plugin.organization.userGroups.dialogs.search.staff.placeholder')}
               selectedItems={this.state.addStaff} searchItems={staffSearchItems} onDelete={this.deleteStaff} onSelect={this.selectStaff} />
