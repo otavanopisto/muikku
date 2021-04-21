@@ -200,11 +200,13 @@ public class PyramusUpdater {
     if (studentGroup == null) {
       if (userGroupEntity != null)
         fireUserGroupRemoved(identifier);
-    } else {
+    }
+    else {
+      String organizationIdentifier = identifierMapper.getOrganizationIdentifier(studentGroup.getOrganizationId()).getIdentifier();
       if (userGroupEntity == null) {
-        fireUserGroupDiscovered(identifier);
+        fireUserGroupDiscovered(identifier, organizationIdentifier);
       } else {
-        fireUserGroupUpdated(identifier);
+        fireUserGroupUpdated(identifier, organizationIdentifier);
       }
     }
   }
@@ -265,11 +267,13 @@ public class PyramusUpdater {
     if (studentGroup == null) {
       if (userGroupEntity != null)
         fireUserGroupRemoved(identifier);
-    } else {
+    }
+    else {
+      String organizationIdentifier = identifierMapper.getOrganizationIdentifier(studentGroup.getOrganizationId()).getIdentifier();
       if (userGroupEntity == null) {
-        fireUserGroupDiscovered(identifier);
+        fireUserGroupDiscovered(identifier, organizationIdentifier);
       } else {
-        fireUserGroupUpdated(identifier);
+        fireUserGroupUpdated(identifier, organizationIdentifier);
       }
     }
   }
@@ -864,14 +868,18 @@ public class PyramusUpdater {
         userIdentifier));
   }
 
-  private void fireUserGroupDiscovered(String userGroupIdentifier) {
+  private void fireUserGroupDiscovered(String identifier, String organizationIdentifier) {
+    Map<String, Object> extra = new HashMap<>();
+    extra.put("organizationIdentifier", organizationIdentifier);
     schoolDataUserGroupDiscoveredEvent.fire(new SchoolDataUserGroupDiscoveredEvent(
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, extra));
   }
 
-  private void fireUserGroupUpdated(String userGroupIdentifier) {
+  private void fireUserGroupUpdated(String identifier, String organizationIdentifier) {
+    Map<String, Object> extra = new HashMap<>();
+    extra.put("organizationIdentifier", organizationIdentifier);
     schoolDataUserGroupUpdatedEvent.fire(new SchoolDataUserGroupUpdatedEvent(
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, extra));
   }
   
   private void fireUserGroupRemoved(String userGroupIdentifier) {
