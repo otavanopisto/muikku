@@ -360,14 +360,6 @@
                   <goal>create</goal>
                 </goals>
               </execution>
-<!--               <execution>
-                <id>drop-db-after-test</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  	
-                </goals>
-              </execution> 
--->
             </executions>
           </plugin>
 
@@ -749,14 +741,8 @@
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>create</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>drop-db-after-test</id>
-                <phase>post-integration-test</phase>
-                <goals>
                   <goal>drop</goal>
+                  <goal>create</goal>
                 </goals>
               </execution>
             </executions>
@@ -1506,14 +1492,8 @@
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>create</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>drop-db-after-test</id>
-                <phase>post-integration-test</phase>
-                <goals>
                   <goal>drop</goal>
+                  <goal>create</goal>
                 </goals>
               </execution>
             </executions>
