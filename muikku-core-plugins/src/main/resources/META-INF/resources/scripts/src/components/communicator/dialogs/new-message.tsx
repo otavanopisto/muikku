@@ -74,6 +74,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       includesSignature: true
     }, getStateIdentifier(props));
   }
+  
+  /**
+   * checkAgainstStoredState
+   */
   checkAgainstStoredState() {
     this.checkStoredAgainstThisState({
       text: this.props.initialMessage || "",
@@ -85,6 +89,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
     this.props.onOpen && this.props.onOpen();
   }
+
+  /**
+   * onCKEditorChange
+   * @param text 
+   * @returns 
+   */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
@@ -92,12 +102,27 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     }
     this.setStateAndStore({ text }, getStateIdentifier(this.props));
   }
+
+  /**
+   * setSelectedItems
+   * @param selectedItems 
+   */
   setSelectedItems(selectedItems: Array<ContactRecepientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
   }
+
+  /**
+   * onSubjectChange
+   * @param e 
+   */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore({ subject: e.target.value }, getStateIdentifier(this.props));
   }
+
+  /**
+   * sendMessage
+   * @param closeDialog 
+   */
   sendMessage(closeDialog: () => any) {
     this.setState({
       locked: true
@@ -129,9 +154,17 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       replyThreadId: this.props.replyThreadId
     });
   }
+
+  /**
+   * onSignatureToggleClick
+   */
   onSignatureToggleClick() {
     this.setState({ includesSignature: !this.state.includesSignature });
   }
+
+  /**
+   * clearUp
+   */
   clearUp() {
     this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
     setTimeout(() => {
@@ -144,6 +177,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       locked: false
     }, getStateIdentifier(this.props));
   }
+
+  /**
+   * inputContactsAutofillLoaders
+   * @returns 
+   */
   inputContactsAutofillLoaders() {
     return {
       studentsLoader: (searchString: string) => promisify(mApi().communicator.recipientsUsersSearch.read({
@@ -154,6 +192,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       }), 'callback')
     }
   }
+
+  /**
+   * render
+   * @returns 
+   */
   render() {
     let editorTitle = this.props.i18n.text.get('plugin.communicator.createmessage.label') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content');
 
