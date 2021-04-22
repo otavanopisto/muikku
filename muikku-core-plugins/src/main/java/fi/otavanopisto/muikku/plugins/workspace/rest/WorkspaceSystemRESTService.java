@@ -33,10 +33,13 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.otavanopisto.muikku.schooldata.RoleController;
@@ -73,6 +76,9 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -407,6 +413,44 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     }
 
     return null;
+  }
+  
+  @GET
+  @Path("/relocatehelppages")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response relocateHelpPages(@Context Request request) {
+    
+    // Access check
+    
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Go through all workspaces...
+    
+    List<WorkspaceEntity> workspaces = workspaceEntityController.listWorkspaceEntities();
+    for (WorkspaceEntity workspace : workspaces) {
+      
+      // ...find the help folder...
+      
+      WorkspaceFolder helpRoot = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspace);
+      
+      // ...and the pages under it...
+      
+      List<WorkspaceMaterial> helpPages = workspaceMaterialController.listWorkspaceMaterialsByParent(helpRoot);
+      if (!helpPages.isEmpty()) {
+        
+        // ...and if there are any, create a new section under the help folder and move all pages under that
+        
+        WorkspaceFolder helpSection = workspaceMaterialController.createWorkspaceFolder(helpRoot, "Suoritusohjeet", "suoritusohjeet", 0);
+        for (WorkspaceMaterial helpPage : helpPages) {
+          workspaceMaterialController.moveUnderParent(helpPage, helpSection);
+        }
+      }
+    }
+
+    return Response.ok().build();
   }
   
   private void ensureCorrectWorkspaceStudent(WorkspaceUserEntity muikkuWorkspaceStudent, SchoolDataIdentifier muikkuStudentIdentifier, SchoolDataIdentifier pyramusStudentIdentifier) {
