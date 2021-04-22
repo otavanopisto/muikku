@@ -1,9 +1,11 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -441,7 +443,11 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
       List<WorkspaceMaterial> helpPages = workspaceMaterialController.listWorkspaceMaterialsByParent(helpRoot);
       if (!helpPages.isEmpty()) {
         
-        // ...and if there are any, create a new section under the help folder and move all pages under that
+        // ...if there are any, preserve their original order...
+        
+        helpPages = helpPages.stream().sorted(Comparator.comparing(WorkspaceMaterial::getOrderNumber)).collect(Collectors.toList());
+        
+        // ...then create a new section under the help folder and move all pages under it
         
         WorkspaceFolder helpSection = workspaceMaterialController.createWorkspaceFolder(helpRoot, "Suoritusohjeet", "suoritusohjeet", 0);
         for (WorkspaceMaterial helpPage : helpPages) {
