@@ -45,6 +45,11 @@ interface CommunicatorNewMessageState {
   includesSignature: boolean
 }
 
+/**
+ * getStateIdentifier
+ * @param props 
+ * @returns 
+ */
 function getStateIdentifier(props: CommunicatorNewMessageProps) {
   if (!props.replyThreadId) {
     return;
@@ -259,6 +264,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state 
+ * @returns 
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -267,6 +277,11 @@ function mapStateToProps(state: StateType) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch 
+ * @returns 
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);
 };
