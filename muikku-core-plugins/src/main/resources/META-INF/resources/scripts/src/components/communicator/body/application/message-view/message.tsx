@@ -112,8 +112,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         studiesEnded: r.studiesEnded,
         archived: r.archived
       }
-    })).filter(user => user.value.id !== this.props.status.userId && user.value.studiesEnded !== true && user.value.archived !== true) 
-
+    })).filter(user => user.value.id !== this.props.status.userId && user.value.studiesEnded !== true && user.value.archived !== true)
 
     /**
      * These are the usergroup recepients

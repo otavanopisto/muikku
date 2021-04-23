@@ -47,8 +47,8 @@ interface CommunicatorNewMessageState {
 
 /**
  * getStateIdentifier
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 function getStateIdentifier(props: CommunicatorNewMessageProps) {
   if (!props.replyThreadId) {
