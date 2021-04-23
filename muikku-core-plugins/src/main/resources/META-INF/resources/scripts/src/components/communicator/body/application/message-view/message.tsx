@@ -148,7 +148,6 @@ class Message extends React.Component<MessageProps, MessageState> {
      * recipients that have permissions to receive messages
      * It its possible that now this replyTarget can have multiple
      * recipients
-     * 
      * The last filtering will remove duplicate current user that may have
      * come with userGroupList or workspaceList
      */

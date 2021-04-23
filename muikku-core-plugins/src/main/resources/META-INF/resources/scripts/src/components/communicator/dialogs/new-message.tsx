@@ -79,7 +79,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       includesSignature: true
     }, getStateIdentifier(props));
   }
-  
+
   /**
    * checkAgainstStoredState
    */
