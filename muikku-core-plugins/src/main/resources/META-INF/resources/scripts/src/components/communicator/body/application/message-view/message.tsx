@@ -38,8 +38,8 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * getMessageSender
-   * @param sender 
-   * @returns 
+   * @param sender
+   * @returns
    * Returns span element with sender name
    */
   getMessageSender(sender: UserType): JSX.Element {
@@ -56,7 +56,7 @@ class Message extends React.Component<MessageProps, MessageState> {
    * getMessageRecipients
    * @param message MessageType
    * @returns JSX.Element[][]
-   * 
+   *
    * Returns array of arrays that contains span elements with corresponding
    * recipients depending are they recipients, userGroups or workspaceRecipients
    */
@@ -86,7 +86,7 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * render
-   * @returns 
+   * @returns
    */
   render() {
     /**
@@ -220,8 +220,8 @@ class Message extends React.Component<MessageProps, MessageState> {
 
 /**
  * mapStateToProps
- * @param state 
- * @returns 
+ * @param state
+ * @returns
  */
 function mapStateToProps( state: StateType ) {
   return {
@@ -232,8 +232,8 @@ function mapStateToProps( state: StateType ) {
 
 /**
  * mapDispatchToProps
- * @param dispatch 
- * @returns 
+ * @param dispatch
+ * @returns
  */
 function mapDispatchToProps( dispatch: Dispatch<any> ) {
   return {};

@@ -97,8 +97,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
   /**
    * onCKEditorChange
-   * @param text 
-   * @returns 
+   * @param text
+   * @returns
    */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
@@ -110,7 +110,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
   /**
    * setSelectedItems
-   * @param selectedItems 
+   * @param selectedItems
    */
   setSelectedItems(selectedItems: Array<ContactRecepientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
@@ -118,7 +118,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
   /**
    * onSubjectChange
-   * @param e 
+   * @param e
    */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore({ subject: e.target.value }, getStateIdentifier(this.props));
@@ -126,7 +126,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
   /**
    * sendMessage
-   * @param closeDialog 
+   * @param closeDialog
    */
   sendMessage(closeDialog: () => any) {
     this.setState({
@@ -185,7 +185,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
   /**
    * inputContactsAutofillLoaders
-   * @returns 
+   * @returns
    */
   inputContactsAutofillLoaders() {
     return {
@@ -200,7 +200,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
   /**
    * render
-   * @returns 
+   * @returns
    */
   render() {
     let editorTitle = this.props.i18n.text.get('plugin.communicator.createmessage.label') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content');
@@ -266,8 +266,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
 /**
  * mapStateToProps
- * @param state 
- * @returns 
+ * @param state
+ * @returns
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -279,8 +279,8 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch 
- * @returns 
+ * @param dispatch
+ * @returns
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);
