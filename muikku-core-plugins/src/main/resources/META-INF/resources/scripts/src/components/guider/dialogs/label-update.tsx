@@ -120,27 +120,29 @@ class GuiderLabelUpdateDialog extends React.Component<
       { arrayFormat: "bracket" }
     );
 
-    // Find the label id from the array
-
     if (this.state.locked) {
       return;
     }
     const success = () => {
-      // lets remove the removed label from the locationdata if we are removing current location
-      // and turn the object into a querystring again
+      // If there are no labels selected, no need for this
 
       if (locationData.l) {
-        //  Locationdata returns an array of string, lets turn them into numbers
+        //  Locationdata returns an array of strings --> turn them into numbers
         //  so we can see if we are in the location we wish to remove
 
         const labelIds: number[] = locationData.l.map((element: string) =>
           parseInt(element)
         );
 
+        // Find out if we are removeing current location
+
         const removeCurrentLocation =
           this.state.removed && labelIds.includes(this.props.label.id);
 
         if (removeCurrentLocation) {
+          //  Remove the removed label from the locationdata if we are removing current location
+          // and turn the object into a querystring again
+
           const newLocationData = Object.assign({}, locationData, {
             l: labelIds.filter((id) => id !== this.props.label.id),
           });
