@@ -83,7 +83,10 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
     this.setStateAndStore({text}, this.props.journal ? this.props.journal.id : "");
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setStateAndStore({title: e.target.value},  this.props.journal ? this.props.journal.id : "");
+    const { value, maxLength } = e.target;
+    const title = value.slice(0, maxLength);
+
+    this.setStateAndStore({title},  this.props.journal ? this.props.journal.id : "");
   }
   createOrModifyJournal(closeDialog: ()=>any){
     this.setState({locked: true});
@@ -132,7 +135,7 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
           <div className="env-dialog__form-element-container">
             <label htmlFor="journalTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.title.label')}</label>
             <input id="journalTitle" type="text" className="env-dialog__input env-dialog__input--new-edit-journal-title"
-             value={this.state.title} onChange={this.onTitleChange} autoFocus={!this.props.journal}/>
+             value={this.state.title} onChange={this.onTitleChange} autoFocus={!this.props.journal} maxLength={255}/>
           </div>
         </div>
       ),
