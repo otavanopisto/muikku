@@ -206,7 +206,6 @@ let toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType = function t
 }
 
 let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
-  console.log("message.to",message.to);
   let recepientWorkspaces = message.to.filter( x => x.type === "workspace" ).map( x => x.value.id )
   let data = {
     caption: message.subject,
@@ -217,7 +216,6 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
     recipientStudentsWorkspaceIds: recepientWorkspaces,
     recipientTeachersWorkspaceIds: recepientWorkspaces
   };
-  console.log("data",data);
 
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     if (!message.subject){
