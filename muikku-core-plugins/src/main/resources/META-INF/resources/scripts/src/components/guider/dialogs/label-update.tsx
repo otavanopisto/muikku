@@ -120,17 +120,7 @@ class GuiderLabelUpdateDialog extends React.Component<
       { arrayFormat: "bracket" }
     );
 
-    //  Locationdata returns an array of string, lets turn them into numbers
-    //  so we can see if we are in the location we wish to remove
-
-    const labelIds: number[] = locationData.l.map((element: string) =>
-      parseInt(element)
-    );
-
     // Find the label id from the array
-
-    const removeCurrentLocation =
-      this.state.removed && labelIds.includes(this.props.label.id);
 
     if (this.state.locked) {
       return;
@@ -139,14 +129,27 @@ class GuiderLabelUpdateDialog extends React.Component<
       // lets remove the removed label from the locationdata if we are removing current location
       // and turn the object into a querystring again
 
-      if (removeCurrentLocation) {
-        const newLocationData = Object.assign({}, locationData, {
-          l: labelIds.filter((id) => id !== this.props.label.id),
-        });
-        window.location.hash =
-          "#?" +
-          queryString.stringify(newLocationData, { arrayFormat: "bracket" });
+      if (locationData.l) {
+        //  Locationdata returns an array of string, lets turn them into numbers
+        //  so we can see if we are in the location we wish to remove
+
+        const labelIds: number[] = locationData.l.map((element: string) =>
+          parseInt(element)
+        );
+
+        const removeCurrentLocation =
+          this.state.removed && labelIds.includes(this.props.label.id);
+
+        if (removeCurrentLocation) {
+          const newLocationData = Object.assign({}, locationData, {
+            l: labelIds.filter((id) => id !== this.props.label.id),
+          });
+          window.location.hash =
+            "#?" +
+            queryString.stringify(newLocationData, { arrayFormat: "bracket" });
+        }
       }
+
       this.setState({
         locked: false,
       });
