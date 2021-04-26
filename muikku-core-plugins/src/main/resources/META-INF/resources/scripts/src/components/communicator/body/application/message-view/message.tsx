@@ -143,13 +143,15 @@ class Message extends React.Component<MessageProps, MessageState> {
     let replyTarget = [senderObject];
 
     /**
-     * If current logged sender is the original sender
-     * We don't want to send message back to him, but rather to
-     * recipients that have permissions to receive messages
-     * It its possible that now this replyTarget can have multiple
-     * recipients
-     * The last filtering will remove duplicate current user that may have
-     * come with userGroupList or workspaceList
+     * If the logged in user is the message sender, we filter him out from the message recipients
+     * so "reply to self" is not possible. Therefore reply will target the message recipients instead.
+     * Also we filter message recipients based on whether logged in user has permission to sent message to
+     * usergroups or workspaces.
+     * replyTarget can have multiple recipients IF message sender is the same as currently logged in user 
+     * AND message has been sent to multiple recipients AND currently logged in user has permissions to 
+     * send the message to said recipients.
+     * The last filter will filter out currently logged in user from userGroupList and workspaceList so 
+     * user cannot send messages to him self.
      */
     if (senderObject.value.userEntityId === this.props.status.userId) {
       replyTarget = [senderObject].concat(recipientsList as any)
