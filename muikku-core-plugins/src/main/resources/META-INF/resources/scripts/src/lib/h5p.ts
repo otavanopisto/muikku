@@ -18,7 +18,7 @@ actionHandlers.hello = (iframe: HTMLIFrameElement, data: any, respond: Function)
     iframe.getBoundingClientRect();
 
     // Tell iframe that it needs to resize when our window resizes
-    var resize = function () {
+    const resize = function () {
         if (iframe.contentWindow) {
             // Limit resize calls to avoid flickering
             respond('resize');
@@ -78,8 +78,8 @@ window.addEventListener('message', (event) => {
     }
 
     // Find out who sent the message
-    var iframe, iframes = document.getElementsByTagName('iframe');
-    for (var i = 0; i < iframes.length; i++) {
+    let iframe, iframes = document.getElementsByTagName('iframe');
+    for (let i = 0; i < iframes.length; i++) {
         if (iframes[i].contentWindow === event.source) {
             iframe = iframes[i];
             break;
