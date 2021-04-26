@@ -19,9 +19,7 @@ interface ApplicationPanelProps {
   disableStickyScrolling?: boolean;
 }
 
-interface ApplicationPanelState {
-  offsetBorderAgainstBottom: number;
-}
+interface ApplicationPanelState {}
 
 export default class ApplicationPanel extends React.Component<
   ApplicationPanelProps,
@@ -29,27 +27,7 @@ export default class ApplicationPanel extends React.Component<
 > {
   constructor(props: ApplicationPanelProps) {
     super(props);
-    this.state = {
-      offsetBorderAgainstBottom: 0,
-    };
   }
-
-  componentDidMount() {
-    this.calculate();
-  }
-
-  private calculate = () => {
-    const panelComputedStyle = document.defaultView.getComputedStyle(
-      this.refs["panel"] as HTMLElement
-    );
-    const offsetBorderAgainstBottom = parseInt(
-      panelComputedStyle.getPropertyValue("padding-bottom")
-    );
-
-    this.setState({
-      offsetBorderAgainstBottom,
-    });
-  };
 
   render() {
     return (
@@ -85,7 +63,6 @@ export default class ApplicationPanel extends React.Component<
               asideAfter={this.props.asideAfter}
               asideBefore={this.props.asideBefore}
               disableStickyScrolling={this.props.disableStickyScrolling}
-              offsetBorderAgainstBottom={this.state.offsetBorderAgainstBottom}
             >
               {this.props.children}
             </ApplicationPanelBody>
