@@ -64,6 +64,10 @@ actionHandlers.prepareResize = (iframe: HTMLIFrameElement, data: any, respond: F
 actionHandlers.resize = (iframe: HTMLIFrameElement, data: any) => {
     // Resize iframe so all content is visible. Use scrollHeight to make sure we get everything
     iframe.style.height = data.scrollHeight + 'px';
+
+    if (iframe.parentElement && iframe.parentElement.classList.contains("material-page__iframe-wrapper")) {
+        iframe.parentElement.style.height = data.scrollHeight + 'px';
+    }
 };
 
 
