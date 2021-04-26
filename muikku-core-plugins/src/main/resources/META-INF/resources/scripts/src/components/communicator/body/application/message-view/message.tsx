@@ -147,10 +147,10 @@ class Message extends React.Component<MessageProps, MessageState> {
      * so "reply to self" is not possible. Therefore reply will target the message recipients instead.
      * Also we filter message recipients based on whether logged in user has permission to sent message to
      * usergroups or workspaces.
-     * replyTarget can have multiple recipients IF message sender is the same as currently logged in user 
-     * AND message has been sent to multiple recipients AND currently logged in user has permissions to 
+     * replyTarget can have multiple recipients IF message sender is the same as currently logged in user
+     * AND message has been sent to multiple recipients AND currently logged in user has permissions to
      * send the message to said recipients.
-     * The last filter will filter out currently logged in user from userGroupList and workspaceList so 
+     * The last filter will filter out currently logged in user from userGroupList and workspaceList so
      * user cannot send messages to him self.
      */
     if (senderObject.value.userEntityId === this.props.status.userId) {
