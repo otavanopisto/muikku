@@ -84,6 +84,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
   isReplyOfReply?: boolean,
   isReply?: boolean,
   avatar: any
+  hidden: boolean,
 }, {}> {
   render(){
     let baseMod = this.props.isOpMessage ? "discussion-message" : (
@@ -91,7 +92,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
           "discussion-reply"
     );
 
-    return <ApplicationListItem modifiers={baseMod}>
+    return !this.props.hidden && <ApplicationListItem modifiers={baseMod}>
       <ApplicationListItemContentWrapper asideModifiers="discussion" mainModifiers="discussion" aside={this.props.avatar}>
         {this.props.children}
       </ApplicationListItemContentWrapper>

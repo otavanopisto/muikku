@@ -48,9 +48,11 @@
 }
 
 .application-list__header--discussion {
+  align-items: center;
+  display: inline-flex;
   margin-bottom: 0;
   margin-left: 10px;
-
+  
   @include breakpoint($breakpoint-pad) {
     margin-left: 0;
   }
@@ -712,9 +714,11 @@
 }
 
 .application-list__item-header-main-content--discussion-message-creator {
+  align-items: center;
+  display: inline-flex;
   font-size: 0.875rem;
   font-weight: 600;
-
+  
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
     font-weight: 400;
