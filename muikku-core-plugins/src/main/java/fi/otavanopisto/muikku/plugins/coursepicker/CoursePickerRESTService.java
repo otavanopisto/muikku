@@ -41,6 +41,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -593,9 +594,13 @@ public class CoursePickerRESTService extends PluginRESTService {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
       Boolean isUnassessed = false;
       if (workspaceUserEntity != null) {
-        WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-        if (!assessmentState.getState().equals(WorkspaceAssessmentState.UNASSESSED)) {
-          isUnassessed = true;
+        WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
+        WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
+        if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
+          WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+          if (!assessmentState.getState().equals(WorkspaceAssessmentState.UNASSESSED)) {
+            isUnassessed = true;
+          }
         }
       }
       return isUnassessed;
