@@ -52,7 +52,6 @@
   display: inline-flex;
   margin-bottom: 0;
   margin-left: 10px;
-  
   @include breakpoint($breakpoint-pad) {
     margin-left: 0;
   }
@@ -718,7 +717,6 @@
   display: inline-flex;
   font-size: 0.875rem;
   font-weight: 600;
-  
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
     font-weight: 400;

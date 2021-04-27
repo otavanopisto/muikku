@@ -45,7 +45,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
   /**
    * getToPage
-   * @param n 
+   * @param n
    */
   getToPage(n: number) {
     if (this.props.discussion.areaId === this.props.discussion.current.forumAreaId) {
@@ -81,7 +81,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
   /**
    * render
-   * @returns 
+   * @returns
    */
   render() {
     if (!this.props.discussion.current) {
@@ -108,8 +108,6 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     const canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessages;
     const threadLocked = this.props.discussion.current.locked === true;
     const student = this.props.status.isStudent === true;
-
-    console.log("hiddenParentsLists",this.state.hiddenParentsLists);
 
     return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
       title={<h2 className="application-list__title">{this.props.discussion.current.title}</h2>}>
@@ -174,7 +172,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return (
               <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar} hidden={isHiddenElement}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
-                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}{reply.childReplyCount > 0 && 
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}{reply.childReplyCount > 0 &&
                   <IconButton icon={parentHasHiddenSiblings ? "plus" : "minus"} onClick={this.onHideShowSubRepliesClick(reply.childReplyCount > 0 && reply.id)}/>
                 }</span>
               </DiscussionThreadHeader>
@@ -202,7 +200,6 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
                   <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                 </DeleteThreadComponent> : null}
-                
               </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>
           )
