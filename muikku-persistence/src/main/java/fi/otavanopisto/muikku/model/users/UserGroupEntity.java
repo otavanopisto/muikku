@@ -51,6 +51,14 @@ public class UserGroupEntity implements ContextReference {
     return new SchoolDataIdentifier(getIdentifier(), getSchoolDataSource().getIdentifier());
   }
   
+  public OrganizationEntity getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(OrganizationEntity organization) {
+    this.organization = organization;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -62,6 +70,9 @@ public class UserGroupEntity implements ContextReference {
   @NotNull
   @Column(nullable = false)
   private String identifier;
+
+  @ManyToOne
+  private OrganizationEntity organization;
 
   @NotNull
   @Column(nullable = false)

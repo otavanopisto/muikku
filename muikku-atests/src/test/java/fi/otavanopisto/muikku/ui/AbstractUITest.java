@@ -1471,6 +1471,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(200);
   }
   
+  protected long fetchUserIdByEmail(String email) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Response response = asAdmin()
+        .contentType("application/json")
+        .get("/test/users/id/{EMAIL}", email);
+      
+      response.then()
+        .statusCode(200);
+      
+      Long result = objectMapper.readValue(response.asString(), Long.class);
+      return result;
+  }
+  
   protected void deleteUserGroup(Long userGroupId) {
     asAdmin()
       .delete("/test/userGroups/{USERGROUPID}", userGroupId)

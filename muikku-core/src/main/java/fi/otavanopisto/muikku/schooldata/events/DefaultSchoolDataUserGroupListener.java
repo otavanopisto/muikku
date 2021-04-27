@@ -8,9 +8,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
@@ -21,6 +23,9 @@ public class DefaultSchoolDataUserGroupListener {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -45,12 +50,15 @@ public class DefaultSchoolDataUserGroupListener {
       event.setDiscoveredUserGroupEntityId(discoveredUserGroups.get(discoverId));
       return;
     }
+
+    String organizationIdentifier = String.valueOf(event.getExtra().get("organizationIdentifier"));
+    OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), organizationIdentifier);
     
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     
     if ((userGroupEntity == null) || (userGroupEntity.getArchived())) {
       if (userGroupEntity == null) {
-        userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier());
+        userGroupEntity = userGroupEntityController.createUserGroupEntity(event.getDataSource(), event.getIdentifier(), organizationEntity);
       }
       else {
         userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
@@ -74,6 +82,12 @@ public class DefaultSchoolDataUserGroupListener {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
     if (userGroupEntity != null && Boolean.TRUE.equals(userGroupEntity.getArchived())) {
       userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
+    }
+    // #5438: Support for organization of the group having been changed 
+    String organizationIdentifier = String.valueOf(event.getExtra().get("organizationIdentifier"));
+    OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), organizationIdentifier);
+    if (!userGroupEntity.getOrganization().getId().equals(organizationEntity.getId())) {
+      userGroupEntityController.updateUserGroupEntityOrganization(userGroupEntity, organizationEntity);
     }
   }  
   
