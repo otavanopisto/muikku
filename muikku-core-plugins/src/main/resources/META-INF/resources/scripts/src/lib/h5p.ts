@@ -70,7 +70,6 @@ actionHandlers.resize = (iframe: HTMLIFrameElement, data: any) => {
     }
 };
 
-
 // Listen for messages from iframes
 window.addEventListener('message', (event) => {
     if (event.data.context !== 'h5p') {
