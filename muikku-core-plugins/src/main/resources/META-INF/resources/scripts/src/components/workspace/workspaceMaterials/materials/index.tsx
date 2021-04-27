@@ -161,7 +161,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
       makeFolder: false,
-    });
+    }, "materials");
   }
   createPageFromBinary(
       section: MaterialContentNodeType,
@@ -176,7 +176,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       title: e.target.files[0].name,
       file: e.target.files[0],
       makeFolder: false,
-    });
+    }, "materials");
   }
   createSection(nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode({
@@ -185,7 +185,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
       makeFolder: true,
-    });
+    }, "materials");
   }
   pastePage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
@@ -200,7 +200,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         copyMaterialId: parseInt(workspaceMaterialCopiedId),
         copyWorkspaceId: parseInt(workspaceCopiedId),
         makeFolder: false,
-      })
+      }, "materials")
     }
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
