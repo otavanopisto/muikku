@@ -218,7 +218,7 @@ export interface WorkspaceType {
   subjectIdentifier: string | number,
   urlName: string,
   chatStatus?: WorkspaceChatStatusType,
-
+  isEvaluated?: boolean,
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccessType,

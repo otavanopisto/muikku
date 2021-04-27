@@ -37,9 +37,18 @@ class Course extends React.Component<CourseProps, CourseState>{
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
+
+  /**
+   * toggleExpanded
+   */
   toggleExpanded() {
     this.setState({ expanded: !this.state.expanded })
   }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
@@ -55,11 +64,11 @@ class Course extends React.Component<CourseProps, CourseState>{
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
             <Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}>
-              {this.props.workspace.isCourseMember ?
+              {!this.props.workspace.isEvaluated && this.props.workspace.isCourseMember ?
                 this.props.i18n.text.get("plugin.coursepicker.course.goto") :
                 this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Button>
-            {this.props.workspace.canSignup && this.props.status.loggedIn ?
+            {this.props.workspace.canSignup && this.props.status.loggedIn && !this.props.workspace.isEvaluated ?
               <WorkspaceSignupDialog workspace={this.props.workspace}><Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
                 {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
               </Button></WorkspaceSignupDialog> : null}
@@ -70,6 +79,11 @@ class Course extends React.Component<CourseProps, CourseState>{
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -77,6 +91,11 @@ function mapStateToProps(state: StateType) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
