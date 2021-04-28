@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -103,6 +104,7 @@ public class WorklistRESTService {
    * 
    * {id: 123,
    *  templateId: 1,
+   *  state: ENTERED|PROPOSED|APPROVED|PAID,
    *  entryDate: 2021-02-15,
    *  description: "Something something",
    *  price: 25,
@@ -144,7 +146,7 @@ public class WorklistRESTService {
    * Output: Updated worklist item
    * 
    * Errors:
-   * 403 if trying to update a worklist item that has editable false
+   * 403 if trying to update a worklist item that is already approved or paid
    */
   @Path("/worklistItems")
   @PUT
@@ -170,7 +172,7 @@ public class WorklistRESTService {
    * Output: 204 (no content)
    * 
    * Errors:
-   * 403 if trying to remove a worklist item that has removable false
+   * 403 if trying to remove a worklist item that is already approved or paid
    */
   @Path("/worklistItems")
   @DELETE
@@ -196,6 +198,7 @@ public class WorklistRESTService {
    * [
    *   {id: 1,
    *    templateId: 1,
+   *    state: ENTERED|PROPOSED|APPROVED|PAID,
    *    entryDate: 2021-02-15,
    *    description: "Something something",
    *    price: 25,
@@ -213,6 +216,7 @@ public class WorklistRESTService {
    *   
    *   {id: 123,
    *    templateId: 2,
+   *    state: ENTERED|PROPOSED|APPROVED|PAID,
    *    entryDate: 2021-03-01,
    *    description: "Course assessment",
    *    price: 75,
@@ -282,6 +286,46 @@ public class WorklistRESTService {
     }
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     BridgeResponse<List<WorklistSummaryItemRestModel>> response = userSchoolDataController.getWorklistSummary(dataSource, identifier);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  /**
+   * PUT mApi().worklist.changeItemsState
+   * 
+   * Updates all worklist items of the given user in the given timeframe to the given state.
+   * 
+   * Payload: State change payload item
+   * 
+   * {userIdentifier: PYRAMUS-STAFF-123,
+   *  startDate: 2021-02-01,
+   *  endDate: 2021-02-28,
+   *  state: "PROPOSED"
+   * }
+   *  
+   * Output: All workspace items of the timeframe, with an updated state
+   */
+  @Path("/updateWorklistItemsState")
+  @PUT
+  @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
+  public Response updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
+    
+    // Do the actual update
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    userSchoolDataController.updateWorklistItemsState(dataSource, stateChange);
+    
+    // Fetch and return user's all worklist items in the timeframe  
+    
+    BridgeResponse<List<WorklistItemRestModel>> response = userSchoolDataController.listWorklistItemsByOwnerAndTimeframe(
+        dataSource,
+        stateChange.getUserIdentifier(),
+        stateChange.getBeginDate().toString(),
+        stateChange.getEndDate().toString());
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
