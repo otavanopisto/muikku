@@ -42,7 +42,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   getToPage(n: number) {
     let pageStart: number = (n - 1) * this.usersPerPage;
     let pageEnd: number = n * this.usersPerPage;
-    let query: string = this.props.searchString ? this.props.searchString : null;
+    let query: string = this.props.searchString ? this.props.searchString : "";
     this.setState({ currentPage: n });
     this.props.pageChange(query, pageStart, pageEnd)
   }

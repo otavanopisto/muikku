@@ -530,11 +530,11 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
       (workspace.details =
         data.loadDetails || (workspace && workspace.details)
           ? await reuseExistantValue(true, workspace && workspace.details, () =>
-              promisify(
-                mApi().workspace.workspaces.details.read(data.workspaceId),
-                "callback"
-              )()
-            )
+            promisify(
+              mApi().workspace.workspaces.details.read(data.workspaceId),
+              "callback"
+            )()
+          )
           : null),
         dispatch({
           type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
@@ -662,21 +662,21 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
 
         getState().status.loggedIn
           ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
-            // And rerequest
-            reuseExistantValue(
-              true,
-              typeof data.refreshActivity !== "undefined" &&
-                data.refreshActivity
-                ? null
-                : workspace && workspace.studentActivity,
-              () =>
-                promisify(
-                  mApi()
-                    .guider.workspaces.activity.cacheClear()
-                    .read(data.workspaceId),
-                  "callback"
-                )()
-            )
+          // And rerequest
+          reuseExistantValue(
+            true,
+            typeof data.refreshActivity !== "undefined" &&
+              data.refreshActivity
+              ? null
+              : workspace && workspace.studentActivity,
+            () =>
+              promisify(
+                mApi()
+                  .guider.workspaces.activity.cacheClear()
+                  .read(data.workspaceId),
+                "callback"
+              )()
+          )
           : null,
 
         reuseExistantValue(true, workspace && workspace.additionalInfo, () =>
@@ -711,36 +711,36 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
 
         getState().status.loggedIn
           ? reuseExistantValue(
-              true,
-              workspace &&
-                typeof workspace.isCourseMember !== "undefined" &&
-                workspace.isCourseMember,
-              () =>
-                promisify(
-                  mApi().workspace.workspaces.amIMember.read(data.workspaceId),
-                  "callback"
-                )()
-            )
+            true,
+            workspace &&
+            typeof workspace.isCourseMember !== "undefined" &&
+            workspace.isCourseMember,
+            () =>
+              promisify(
+                mApi().workspace.workspaces.amIMember.read(data.workspaceId),
+                "callback"
+              )()
+          )
           : false,
 
         reuseExistantValue(true, workspace && workspace.journals, () => null),
 
         data.loadDetails || (workspace && workspace.details)
           ? reuseExistantValue(true, workspace && workspace.details, () =>
-              promisify(
-                mApi().workspace.workspaces.details.read(data.workspaceId),
-                "callback"
-              )()
-            )
+            promisify(
+              mApi().workspace.workspaces.details.read(data.workspaceId),
+              "callback"
+            )()
+          )
           : null,
 
         getState().status.loggedIn
           ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-              promisify(
-                mApi().chat.workspaceChatSettings.read(data.workspaceId),
-                "callback"
-              )()
-            )
+            promisify(
+              mApi().chat.workspaceChatSettings.read(data.workspaceId),
+              "callback"
+            )()
+          )
           : null,
       ])) as any;
       workspace.studentAssessments = assesments;
@@ -797,15 +797,15 @@ let requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType = func
     try {
       let assessmentRequest: WorkspaceAssessmentRequestType = <
         WorkspaceAssessmentRequestType
-      >await promisify(
-        mApi().assessmentrequest.workspace.assessmentRequests.create(
-          data.workspace.id,
-          {
-            requestText: data.text,
-          }
-        ),
-        "callback"
-      )();
+        >await promisify(
+          mApi().assessmentrequest.workspace.assessmentRequests.create(
+            data.workspace.id,
+            {
+              requestText: data.text,
+            }
+          ),
+          "callback"
+        )();
 
       let newAssessmentState = data.workspace.studentAssessments
         ? data.workspace.studentAssessments.assessmentState
@@ -875,7 +875,7 @@ let cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType = functi
     try {
       let assessmentRequest: WorkspaceAssessmentRequestType =
         data.workspace.assessmentRequests[
-          data.workspace.assessmentRequests.length - 1
+        data.workspace.assessmentRequests.length - 1
         ];
       if (!assessmentRequest) {
         dispatch(
@@ -1261,9 +1261,8 @@ let signupIntoWorkspace: SignupIntoWorkspaceTriggerType = function signupIntoWor
         }),
         "callback"
       )();
-      window.location.href = `${getState().status.contextPath}/workspace/${
-        data.workspace.urlName
-      }`;
+      window.location.href = `${getState().status.contextPath}/workspace/${data.workspace.urlName
+        }`;
       data.success();
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -1417,10 +1416,10 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
           existingProducers.length == 0
             ? appliedProducers
             : appliedProducers.filter((producer) => {
-                if (!producer.id) {
-                  return producer;
-                }
-              });
+              if (!producer.id) {
+                return producer;
+              }
+            });
 
         let workspaceProducersToDelete = existingProducers.filter(
           (producer) => {
@@ -1521,6 +1520,26 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       delete originalWorkspace["staffMemberSelect"];
       delete originalWorkspace["studentsSelect"];
       delete originalWorkspace["details"];
+      delete originalWorkspace["studentActivity"];
+      delete originalWorkspace["forumStatistics"];
+      delete originalWorkspace["studentAssessments"];
+      delete originalWorkspace["studentAssessmentState"];
+      delete originalWorkspace["activityStatistics"];
+      delete originalWorkspace["feeInfo"];
+      delete originalWorkspace["assessmentRequests"];
+      delete originalWorkspace["additionalInfo"];
+      delete originalWorkspace["staffMembers"];
+      delete originalWorkspace["students"];
+      delete originalWorkspace["details"];
+      delete originalWorkspace["producers"];
+      delete originalWorkspace["contentDescription"];
+      delete originalWorkspace["isCourseMember"];
+      delete originalWorkspace["journals"];
+      delete originalWorkspace["activityLogs"];
+      delete originalWorkspace["permissions"];
+      delete originalWorkspace["chatStatus"];
+
+
 
       // Delete details from update so it wont fail
 
@@ -2072,10 +2091,10 @@ let loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies
       }
       let compositeReplies: MaterialCompositeRepliesListType = <
         MaterialCompositeRepliesListType
-      >await promisify(
-        mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
-        "callback"
-      )();
+        >await promisify(
+          mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
+          "callback"
+        )();
       dispatch({
         type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
         payload: compositeReplies || [],
@@ -2117,20 +2136,20 @@ let updateAssignmentState: UpdateAssignmentStateTriggerType = function updateAss
         let replyGenerated: any = await promisify(
           existantReplyId
             ? mApi().workspace.workspaces.materials.replies.update(
-                workspaceId,
-                workspaceMaterialId,
-                existantReplyId,
-                {
-                  state: successState,
-                }
-              )
+              workspaceId,
+              workspaceMaterialId,
+              existantReplyId,
+              {
+                state: successState,
+              }
+            )
             : mApi().workspace.workspaces.materials.replies.create(
-                workspaceId,
-                workspaceMaterialId,
-                {
-                  state: successState,
-                }
-              ),
+              workspaceId,
+              workspaceMaterialId,
+              {
+                state: successState,
+              }
+            ),
           "callback"
         )();
         replyId = replyGenerated ? replyGenerated.id : existantReplyId;
@@ -2615,10 +2634,10 @@ let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurr
         existingProducers.length == 0
           ? data.appliedProducers
           : data.appliedProducers.filter((producer) => {
-              if (!producer.id) {
-                return producer;
-              }
-            });
+            if (!producer.id) {
+              return producer;
+            }
+          });
 
       let workspaceProducersToDelete = existingProducers.filter((producer) => {
         if (producer.id) {
@@ -2656,12 +2675,12 @@ let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurr
       // it's a mess but whatever
       let newActualWorkspaceProducers: Array<WorkspaceProducerType> = <
         Array<WorkspaceProducerType>
-      >await promisify(
-        mApi()
-          .workspace.workspaces.materialProducers.cacheClear()
-          .read(state.workspaces.currentWorkspace.id),
-        "callback"
-      )();
+        >await promisify(
+          mApi()
+            .workspace.workspaces.materialProducers.cacheClear()
+            .read(state.workspaces.currentWorkspace.id),
+          "callback"
+        )();
 
       let currentWorkspace: WorkspaceType = getState().workspaces
         .currentWorkspace;
@@ -3068,12 +3087,12 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
         .currentWorkspace;
       let permissions: WorkspacePermissionsType[] = <
         WorkspacePermissionsType[]
-      >await promisify(
-        mApi().workspace.workspaces.signupGroups.read(
-          getState().workspaces.currentWorkspace.id
-        ),
-        "callback"
-      )();
+        >await promisify(
+          mApi().workspace.workspaces.signupGroups.read(
+            getState().workspaces.currentWorkspace.id
+          ),
+          "callback"
+        )();
 
       dispatch({
         type: "UPDATE_WORKSPACE",
@@ -3113,9 +3132,9 @@ let setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType 
     let currentDraftNodeValue;
     const currentDraftNodeValueByStorage = localStorage.getItem(
       "TEMPORARY_LOCAL_DRAFT_" +
-        currentNodeValue.workspaceMaterialId +
-        "_" +
-        newState.currentNodeWorkspace.id
+      currentNodeValue.workspaceMaterialId +
+      "_" +
+      newState.currentNodeWorkspace.id
     );
     if (!currentDraftNodeValueByStorage) {
       newState.currentDraftNodeValue = { ...currentNodeValue };
@@ -3400,9 +3419,9 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
         }
         localStorage.removeItem(
           "TEMPORARY_LOCAL_DRAFT_" +
-            data.material.workspaceMaterialId +
-            "_" +
-            data.workspace.id
+          data.material.workspaceMaterialId +
+          "_" +
+          data.workspace.id
         );
       } else {
         // Trying to update the draft
@@ -3422,16 +3441,16 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
         ) {
           localStorage.removeItem(
             "TEMPORARY_LOCAL_DRAFT_" +
-              data.material.workspaceMaterialId +
-              "_" +
-              data.workspace.id
+            data.material.workspaceMaterialId +
+            "_" +
+            data.workspace.id
           );
         } else {
           localStorage.setItem(
             "TEMPORARY_LOCAL_DRAFT_" +
-              data.material.workspaceMaterialId +
-              "_" +
-              data.workspace.id,
+            data.material.workspaceMaterialId +
+            "_" +
+            data.workspace.id,
             JSON.stringify(newDraftValue)
           );
         }
@@ -3450,7 +3469,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
           if (message.reason === "CONTAINS_ANSWERS") {
             showRemoveAnswersDialogForPublish = true;
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       if (!data.dontTriggerReducerActions) {
@@ -3533,7 +3552,7 @@ let deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrigge
               })
             );
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       data.fail && data.fail();

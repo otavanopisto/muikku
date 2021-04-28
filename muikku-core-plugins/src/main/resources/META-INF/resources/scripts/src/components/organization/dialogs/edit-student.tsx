@@ -33,6 +33,7 @@ interface OrganizationUserState {
 
 class OrganizationUser extends React.Component<OrganizationUserProps, OrganizationUserState> {
 
+  private editTimer: NodeJS.Timer;
   constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
@@ -56,6 +57,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
   }
 
   updateField(value: string, valid: boolean, name: string) {
+    clearTimeout(this.editTimer);
     let fieldName = name;
     let fieldValue = valid ? value : "";
     let newState = Object.assign(this.state.user, { [fieldName]: fieldValue });
@@ -134,12 +136,13 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     let content = (closePortal: () => any) =>
       <div>
         <DialogRow modifiers="new-user">
-          <InputFormElement id="firstName" value={this.state.user.firstName} name="first-name" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
-          <InputFormElement id="lastName" value={this.state.user.lastName} name="last-name" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <InputFormElement id="firstName" value={this.state.user.firstName} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement id="lastName" value={this.state.user.lastName} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
           <EmailFormElement value={this.state.user.email} modifiers={["new-user", "new-user-email"]} valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
         <DialogRow modifiers="new-user">
-          <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
+          {/* This is a mandatory field in creation, it's a very rigid validation and the backend does not provide it, so for no, it is commented from this dialog
+          <SSNFormElement value={this.} modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} /> */}
           <SelectFormElement id="editStudent" valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} value={this.state.user.studyProgrammeIdentifier} >
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme) => {
               return <option key={studyprogramme.identifier} value={studyprogramme.identifier} >{studyprogramme.name}</option>

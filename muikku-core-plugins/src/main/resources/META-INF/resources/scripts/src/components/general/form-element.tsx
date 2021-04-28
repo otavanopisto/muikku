@@ -141,11 +141,9 @@ export class FormWizardActions extends React.Component<FormWizardActionsProps, F
             <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
               {this.props.cancelLabel}
             </Button>
-            {onFirstStep ? null
-              : <Button buttonModifiers="form-element-last" onClick={this.props.lastClick} disabled={this.props.locked}>
-                {this.props.lastLabel}
-              </Button>
-            }
+            <Button buttonModifiers="form-element-last" onClick={this.props.lastClick} disabled={onFirstStep ? true : this.props.locked}>
+              {this.props.lastLabel}
+            </Button>
             <Button buttonModifiers="form-element-next" onClick={this.props.nextClick} disabled={this.props.locked}>
               {this.props.nextLabel}
             </Button>
@@ -223,7 +221,7 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
 interface InputFormElementProps {
   label: string,
   name: string,
-  updateField: (value: string | boolean, valid: boolean, name: string) => any,
+  updateField: (value: string | boolean, valid: boolean, name: string) => any,
   id: string,
   value?: string,
   checked?: boolean,
@@ -234,7 +232,7 @@ interface InputFormElementProps {
 }
 
 interface InputFormElementState {
-  // value: string,
+  value: string,
   valid: number
 }
 
@@ -245,9 +243,9 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     this.updateInputField = this.updateInputField.bind(this);
 
     // 0 = invalid, 1 = valid, 2 = neutral
-
     this.state = {
-      valid: this.props.valid != null ? this.props.valid : 2
+      valid: this.props.valid != null ? this.props.valid : 2,
+      value: this.props.value ? this.props.value : "",
     }
   }
 
@@ -255,6 +253,7 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     let value = e.target.value;
     let name = e.target.name;
     let valid = false;
+
     if (this.props.mandatory != null && this.props.mandatory == true) {
       if (value.trim().length == 0) {
         this.setState({ valid: 0 });
@@ -264,11 +263,12 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
         valid = true;
       }
     }
-    switch(this.props.type) {
+    switch (this.props.type) {
       case "checkbox":
         this.props.updateField(e.target.checked, valid, name);
         break;
       default:
+        this.setState({ value: e.target.value });
         this.props.updateField(value, valid, name);
     }
   }
@@ -284,7 +284,7 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
         <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
-        <input id={this.props.id} value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} checked={this.props.checked} />
+        <input id={this.props.id} value={this.state.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} checked={this.props.checked} />
       </div>
     );
   }
