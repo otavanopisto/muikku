@@ -104,7 +104,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
      */
     const renderPaginationBody = (
       <div className="item-list__item item-list__item--announcements" >
-        <span className="item-list__text-body item-list__text-body--multiline" style={{display:"inline-block", textAlign:"center", margin:0}}>
+        <span className="item-list__text-body item-list__text-body--multiline--footer">
           <Pagination
             innerClass="pagination"
             activePage={currentPage}

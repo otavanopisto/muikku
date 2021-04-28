@@ -263,6 +263,12 @@
   white-space: initial;
 }
 
+.item-list__text-body--multiline--footer {
+  display: inline-block;
+  text-align: center;
+  margin: 0;
+}
+
 // List item dates
 .item-list__latest-message-date,
 .item-list__announcement-date {
