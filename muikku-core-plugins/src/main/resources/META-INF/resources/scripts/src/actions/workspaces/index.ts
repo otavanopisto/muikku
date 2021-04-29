@@ -451,7 +451,6 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
 
 type ApiPath = "materials" | "help";
 
-// Jotain
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
@@ -1950,6 +1949,9 @@ let loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType = functi
   includeHidden,
   callback
 ) {
+
+  console.log("loadWholeWorkspaceMaterials");
+
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
@@ -2026,6 +2028,8 @@ let loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType = function loadWho
 let setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceMaterials(
   materials
 ) {
+  console.log("setWholeWorkspaceMaterials");
+
   return {
     type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
     payload: materials,
@@ -3211,6 +3215,8 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
             "callback"
           )()) as any;
 
+          console.log("materialsAnswer",materialsAnswer);
+
           if (materialsAnswer && materialsAnswer.length > 1) {
             dispatch({
               type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -3564,7 +3570,6 @@ let deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrigge
   };
 };
 
-// Jotain
 let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(
   data,
   apiPath
