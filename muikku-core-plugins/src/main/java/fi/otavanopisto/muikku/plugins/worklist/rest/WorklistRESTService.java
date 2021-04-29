@@ -295,7 +295,7 @@ public class WorklistRESTService {
   }
   
   /**
-   * PUT mApi().worklist.changeItemsState
+   * PUT mApi().worklist.updateWorklistItemsState
    * 
    * Updates all worklist items of the given user in the given timeframe to the given state.
    * 
@@ -309,8 +309,8 @@ public class WorklistRESTService {
    *  
    * Output: All workspace items of the timeframe, with an updated state
    */
-  @Path("/updateWorklistItemsState")
   @PUT
+  @Path("/updateWorklistItemsState")
   @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
   public Response updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
     
