@@ -392,7 +392,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
             //so now we get the fields here
             //the fields cannot be dragged and they remain in order
             //they are simple things
-            return <span key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
+            return <span key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, true, field, false, index)}>
               <span className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
                   "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) && !itemAnswer ? "material-page__connectfield-term--edited" : ""}
                   ${itemStateAfterCheck}`}>
