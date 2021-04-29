@@ -411,12 +411,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       </section>);
     });
 
-    let progressData = this.props.workspace && this.props.workspace.studentActivity ?
-      <ProgressData modifier="workspace-materials" title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
-    : null;
-
     return <div className="content-panel-wrapper">
-      <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
+      <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
         {results}
         {emptyMessage}
         {createSectionElementWhenEmpty}
