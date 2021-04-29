@@ -3589,8 +3589,14 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
       let workspaceMaterialId: number = null;
 
       if (data.copyMaterialId) {
+        /**
+         * Reason why copying uses materials end point naming, is
+         * because it is shared end point for other workspaces functionality
+         * too
+         * Confusing yes, but this is how it works now
+         */
         workspaceMaterialId = ((await promisify(
-          apiRef.create(
+          mApi().workspace.workspaces.materials.create(
             data.workspace.id,
             {
               parentId,
