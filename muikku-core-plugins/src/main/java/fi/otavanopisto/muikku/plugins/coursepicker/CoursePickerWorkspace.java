@@ -16,13 +16,9 @@ public class CoursePickerWorkspace {
       Boolean published,
       String name,
       String nameExtension,
-      String description,
       Long numVisits,
       Date lastVisit,
       String educationTypeName,
-      boolean canSignup,
-      boolean isCourseMember, 
-      boolean isEvaluated,
       boolean hasCustomImage,
       OrganizationRESTModel organization) {
     super();
@@ -32,12 +28,8 @@ public class CoursePickerWorkspace {
     this.published = published;
     this.name = name;
     this.nameExtension = nameExtension;
-    this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
-    this.canSignup = canSignup;
-    this.isCourseMember = isCourseMember;
-    this.isEvaluated = isEvaluated;
     this.educationTypeName = educationTypeName;
     this.hasCustomImage = hasCustomImage;
     this.organization = organization;
@@ -83,14 +75,6 @@ public class CoursePickerWorkspace {
     this.nameExtension = nameExtension;
   }
 
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
   public Long getNumVisits() {
     return numVisits;
   }
@@ -113,30 +97,6 @@ public class CoursePickerWorkspace {
   
   public void setPublished(Boolean published) {
     this.published = published;
-  }
-
-  public Boolean getCanSignup() {
-    return canSignup;
-  }
-
-  public void setCanSignup(Boolean canSignup) {
-    this.canSignup = canSignup;
-  }
-  
-  public Boolean getIsCourseMember() {
-    return isCourseMember;
-  }
-
-  public void setIsCourseMember(Boolean isCourseMember) {
-    this.isCourseMember = isCourseMember;
-  }
-  
-  public Boolean getIsEvaluated() {
-    return isEvaluated;
-  }
-  
-  public void setIsEvaluated(Boolean isEvaluated) {
-    this.isEvaluated = isEvaluated;
   }
 
   public String getEducationTypeName() {
@@ -168,13 +128,9 @@ public class CoursePickerWorkspace {
   private Boolean archived;
   private String name;
   private String nameExtension;
-  private String description;
   private Long numVisits;
   private Date lastVisit;
   private Boolean published;
-  private Boolean canSignup;
-  private Boolean isCourseMember;
-  private Boolean isEvaluated;
   private String educationTypeName;
   private boolean hasCustomImage;
   private OrganizationRESTModel organization;

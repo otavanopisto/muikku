@@ -228,21 +228,20 @@ export interface TemplateWorkspaceType {
 }
 
 export interface WorkspaceType {
-  archived: boolean,
-  curriculumIdentifiers: Array<string>,
-  description: string,
-  hasCustomImage: boolean,
-  id: number,
-  lastVisit: string,
-  materialDefaultLicense: string,
-  name: string,
-  nameExtension?: string | null,
-  numVisits: number,
-  published: boolean,
-  subjectIdentifier: string | number,
-  urlName: string,
-  chatStatus?: WorkspaceChatStatusType,
-  isEvaluated?: boolean,
+  archived: boolean;
+  curriculumIdentifiers: Array<string>;
+  description: string;
+  hasCustomImage: boolean;
+  id: number;
+  lastVisit: string;
+  materialDefaultLicense: string;
+  name: string;
+  nameExtension?: string | null;
+  numVisits: number;
+  published: boolean;
+  subjectIdentifier: string | number;
+  urlName: string;
+  chatStatus?: WorkspaceChatStatusType;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccessType;
