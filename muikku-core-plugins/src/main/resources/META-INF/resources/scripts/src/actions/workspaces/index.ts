@@ -1950,8 +1950,6 @@ let loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType = functi
   callback
 ) {
 
-  console.log("loadWholeWorkspaceMaterials");
-
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
@@ -2028,7 +2026,6 @@ let loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType = function loadWho
 let setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceMaterials(
   materials
 ) {
-  console.log("setWholeWorkspaceMaterials");
 
   return {
     type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
@@ -3214,8 +3211,6 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
             ),
             "callback"
           )()) as any;
-
-          console.log("materialsAnswer",materialsAnswer);
 
           if (materialsAnswer && materialsAnswer.length > 1) {
             dispatch({
