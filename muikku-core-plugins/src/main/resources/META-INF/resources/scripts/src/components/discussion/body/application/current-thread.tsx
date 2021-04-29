@@ -173,7 +173,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar} hidden={isHiddenElement}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}{reply.childReplyCount > 0 &&
-                  <IconButton icon={parentHasHiddenSiblings ? "plus" : "minus"} onClick={this.onHideShowSubRepliesClick(reply.childReplyCount > 0 && reply.id)}/>
+                  <IconButton icon={parentHasHiddenSiblings ? "plus" : "minus"} onClick={this.onHideShowSubRepliesClick(reply.id)}/>
                 }</span>
               </DiscussionThreadHeader>
               <DiscussionThreadBody>
