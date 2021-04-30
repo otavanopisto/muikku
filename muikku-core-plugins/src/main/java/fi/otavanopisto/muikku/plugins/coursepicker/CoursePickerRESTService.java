@@ -458,6 +458,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/signupDetails")
+  @RESTPermit(value = MuikkuPermissions.VIEW_WORKSPACE_FEE, requireLoggedIn = true)
   public Response getSignupDetails(@PathParam("ID") Long workspaceEntityId) {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
