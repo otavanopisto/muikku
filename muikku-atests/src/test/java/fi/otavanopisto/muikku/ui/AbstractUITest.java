@@ -756,7 +756,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected boolean isInSelection(String selector, String compare) {
     Select selectField = new Select(findElementByCssSelector(selector));
     List<WebElement> options = selectField.getOptions();
-    options.size();
     for (WebElement option : options) {
       if(StringUtils.equalsIgnoreCase(option.getText(), compare)) {
         return true;
