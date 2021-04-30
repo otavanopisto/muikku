@@ -20,10 +20,10 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 public class CommunicatorTestsBase extends AbstractUITest {
   @Test
   public void communicatorSendAndReadMessageTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
     try{
       try{
         login();
@@ -48,7 +48,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
-        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Teacher User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
         
@@ -61,13 +61,15 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     } 
   }
   
   @Test
   public void communicatorStudentSendsMessageToTeacherTest() throws Exception {
-    MockStaffMember teacher = new MockStaffMember(3l, 3l, 1l, "Teacher", "User", UserRole.TEACHER, "221212-1234", "teacher@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "221212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(student).build();
@@ -101,6 +103,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     } 
   }
@@ -131,6 +135,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -162,6 +168,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }  
   }
@@ -191,6 +199,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }  
   }
@@ -201,32 +211,34 @@ public class CommunicatorTestsBase extends AbstractUITest {
   MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
   Builder mockBuilder = mocker();
   try{
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
     login();
     try{
-      long sender = fetchUserIdByEmail("admin@example.com");
-      long recipient = fetchUserIdByEmail("student@example.com");
+      long sender = fetchUserIdByEmail("student@example.com");
+      long recipient = fetchUserIdByEmail("admin@example.com");
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       navigate("/communicator#sent", false);
       waitAndClick(".application-list__item-content-aside .message__select-container input");
       waitAndClick(".icon-trash");
       
       waitForPresent(".application-panel__main-container .empty");
-      String currentUrl = getWebDriver().getCurrentUrl();
+      getWebDriver().getCurrentUrl();
       assertPresent(".application-panel__main-container .empty");
       }finally{
         deleteCommunicatorMessages(); 
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
  
   @Test
   public void communicatorCreateLabelTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
     try{
       try{
         login();
@@ -238,27 +250,28 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body");
         assertText(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body", "Test");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(teacher.getId());
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
       mockBuilder.wiremockReset();
     }
   }
 
   @Test
   public void communicatorAddLabelTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
       login();
       try{
-        long recipient = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("teacher@example.com");
         long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
-        createCommunicatorUserLabel(admin.getId(), "test");
+        createCommunicatorUserLabel(teacher.getId(), "test");
         navigate("/communicator", false);
 
         waitAndClick(".application-list__item-content-aside .message__select-container .message__selector");
@@ -274,27 +287,29 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-body--communicator-message span");
         assertText(".application-list__item-body--communicator-message span", "Another one");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(teacher.getId());
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test 
   public void communicatorEditLabelTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
       login();
       try{
-        long recipient = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("teacher@example.com");
         long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        createCommunicatorUserLabel(admin.getId(), "test");
+        createCommunicatorUserLabel(teacher.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
         waitForVisible(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
@@ -307,27 +322,29 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(teacher.getId());
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
 
   @Test
   public void communicatorDeleteLabelTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
       login();
       try{
-        long recipient = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("teacher@example.com");
         long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        createCommunicatorUserLabel(admin.getId(), "test");
+        createCommunicatorUserLabel(teacher.getId(), "test");
         navigate("/communicator", false);
         selectFinnishLocale();
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
@@ -344,24 +361,26 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForNotVisible("div>.dialog>.dialog__window");
         assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(teacher.getId());
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void communicatorUnlabelMessageLabelTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
     try{
       try{
         login();
-        long recipient = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("teacher@example.com");
         long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
@@ -384,24 +403,26 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label-dropdown.selected");
         assertGoesAway(".application-list__item-footer--communicator-message-labels .label__text", 5);
       }finally{
-        deleteCommunicatorUserLabels(admin.getId());
+        deleteCommunicatorUserLabels(teacher.getId());
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void communicatorMoveToTrashTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      mockBuilder.addStaffMember(teacher).addStudent(student).mockLogin(teacher).build();
       login();
       try{
-        long recipient = fetchUserIdByEmail("admin@example.com");
+        long recipient = fetchUserIdByEmail("teacher@example.com");
         long sender = fetchUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
@@ -416,13 +437,15 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages();
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test 
   public void communicatorStudentReplyToTeacherTest() throws Exception {
-    MockStaffMember teacher = new MockStaffMember(5l, 5l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-2334", "teacher@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-2334", "teacher@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try{
@@ -453,6 +476,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         deleteCommunicatorMessages(); 
       }
     }finally {
+      archiveUserByEmail(teacher.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }  
   }

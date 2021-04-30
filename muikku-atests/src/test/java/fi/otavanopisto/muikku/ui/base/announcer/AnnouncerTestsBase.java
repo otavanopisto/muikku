@@ -24,9 +24,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
 
   @Test
   public void createAnnouncementTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember manager = new MockStaffMember(1l, 1l, 1l, "Manager", "User", UserRole.MANAGER, "121212-1235", "manager@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(manager).mockLogin(manager).build();
     try{
       try{
         login();
@@ -49,19 +49,20 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
+      archiveUserByEmail(manager.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void deleteAnnouncementTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember manager = new MockStaffMember(1l, 1l, 1l, "Manager", "User", UserRole.MANAGER, "121212-1235", "manager@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(manager).mockLogin(manager).build();
     try{
       try{
         login();
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
+        createAnnouncement(manager.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         navigate("/announcer", false);
         waitForPresent(".application-list__item-content-header");
         waitAndClick(".announcement__select-container input");
@@ -82,6 +83,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
+      archiveUserByEmail(manager.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -108,6 +110,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -138,6 +142,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -168,6 +174,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteUserGroup(2l);
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -194,18 +202,19 @@ public class AnnouncerTestsBase extends AbstractUITest {
         deleteAnnouncements();
       }
     }finally {
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void pastAnnnouncementsListTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-
+    MockStaffMember manager = new MockStaffMember(1l, 1l, 1l, "Manager", "User", UserRole.MANAGER, "121212-1235", "manager@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(manager).mockLogin(manager).build();
     login();    
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null, null);
+    createAnnouncement(manager.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null, null);
     try {
       navigate("/announcer", false);
       waitForPresent("div.application-panel__main-container.loader-empty");
@@ -221,20 +230,21 @@ public class AnnouncerTestsBase extends AbstractUITest {
       assertTrue("Element found even though it shouldn't be there", isElementPresent(".item-list__item--announcements .item-list__announcement-caption") == false);
     }finally{
       deleteAnnouncements();
+      archiveUserByEmail(manager.getEmail());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void myAnnnouncementsListTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember manager = new MockStaffMember(1l, 1l, 1l, "Manager", "User", UserRole.MANAGER, "121212-1235", "manager@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    MockStaffMember another = new MockStaffMember(3l, 3l, 1l, "Another", "User", UserRole.ADMINISTRATOR, "121212-1234", "blaablaa@example.com", Sex.MALE);
+    MockStaffMember another = new MockStaffMember(3l, 3l, 1l, "Another", "User", UserRole.MANAGER, "121212-1234", "blaablaa@example.com", Sex.MALE);
 
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStaffMember(another).addStudent(student).mockLogin(admin).build();
+    mockBuilder.addStaffMember(manager).addStaffMember(another).addStudent(student).mockLogin(manager).build();
     login();    
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
+    createAnnouncement(manager.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
     createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
     try {
       navigate("/announcer", false);
@@ -248,6 +258,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
       assertCount(".application-list__item-content-header" ,1);
     }finally{
       deleteAnnouncements();
+      archiveUserByEmail(manager.getEmail());
+      archiveUserByEmail(another.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }

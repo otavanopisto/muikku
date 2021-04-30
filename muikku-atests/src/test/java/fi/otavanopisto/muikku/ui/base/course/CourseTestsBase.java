@@ -28,133 +28,56 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 public class CourseTestsBase extends AbstractUITest {
   
   @Test
-  public void courseExistsTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+  public void courseNaviExistsTest() throws Exception {
+    MockStaffMember manager = new MockStaffMember(1l, 1l, 1l, "Manager", "User", UserRole.MANAGER, "121212-1234", "manager@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(manager).addStudent(student).mockLogin(manager).build();
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.className("hero__workspace-title"));
-      boolean elementExists = getWebDriver().findElements(By.className("hero__workspace-title")).size() > 0;
-      assertTrue(elementExists);
-    }finally{
-      deleteWorkspace(workspace.getId());  
-      WireMock.reset();
-    }
-  }
-
-  @Test
-  public void courseHomeButtonExistsTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    logout();
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, workspace.getId(), manager.getId(), 1l);
+    MockCourseStudent courseStudent = new MockCourseStudent(2l, workspace.getId(), student.getId());
+    mockBuilder
+    .mockLogin(student)
+    .addCourseStaffMember(workspace.getId(), courseStaffMember)
+    .addCourseStudent(workspace.getId(), courseStudent)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      
       waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-home");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-home")).size() > 0;
-
+      assertTrue(elementExists);
+      
+      waitForPresent(".navbar .navbar__item .icon-question");
+      elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-question")).size() > 0;
+      assertTrue(elementExists);
+      
+      waitForPresent(".navbar .navbar__item .icon-leanpub");
+      elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-leanpub")).size() > 0;
+      assertTrue(elementExists);
+      
+      waitForPresent(".navbar .navbar__item .icon-bubbles");
+      elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-bubbles")).size() > 0;
+      assertTrue(elementExists);
+      
+      waitForPresent(".navbar .navbar__item .icon-book");
+      elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-book")).size() > 0;
+      assertTrue(elementExists);
+      
+      waitForElementToBePresent(By.className("hero__workspace-title"));
+      elementExists = getWebDriver().findElements(By.className("hero__workspace-title")).size() > 0;
       assertTrue(elementExists);
     }finally{
-      deleteWorkspace(workspace.getId());  
+      deleteWorkspace(workspace.getId());
+      archiveUserByEmail(manager.getEmail());
+      archiveUserByEmail(student.getEmail());
       WireMock.reset();
     }
   }
  
-  @Test
-  public void courseGuideButtonExistsTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .icon-question");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-question")).size() > 0;
-
-      assertTrue(elementExists);
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
-  
-  @Test
-  public void courseMaterialButtonTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .icon-leanpub");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-leanpub")).size() > 0;
-      assertTrue(elementExists);
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
-  
-  @Test
-  public void courseDiscussionButtonTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .icon-bubbles");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-bubbles")).size() > 0;
-      assertTrue(elementExists);
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
-
-  @Test
-  public void courseStudentsAndTeachersButtonTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .icon-users");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-users")).size() > 0;
-      assertTrue(elementExists);
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
-  
-  @Test
-  public void courseJournalButtonTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-    try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .icon-book");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-book")).size() > 0;
-      assertTrue(elementExists);
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
-  
 //  @Test
 //  public void courseProgressWidgetsExistsTest() throws Exception {
 //    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -324,17 +247,17 @@ public class CourseTestsBase extends AbstractUITest {
 
   @Test
   public void courseTeacherVacationInfoTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(3l, 3l, "Student", "Tester", "studentti@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     long courseId = 1l;
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
-    MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, teacher.getId(), 1l);
+    MockCourseStudent courseStudent = new MockCourseStudent(3l, courseId, student.getId());
     
     mockBuilder
     .addStudent(student)
-    .addStaffMember(admin)
-    .mockLogin(admin)
+    .addStaffMember(teacher)
+    .mockLogin(teacher)
     .build();
     
     login();
@@ -352,8 +275,9 @@ public class CourseTestsBase extends AbstractUITest {
       waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
       sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd", "21.12.2025");
       waitAndClick(".application-panel__content-header");
+      sleep(1000);
       waitAndClick(".application-sub-panel__item-actions .button--primary-function-save");
-      sleep(500);
+      sleep(2000);
       logout();
       mockBuilder.mockLogin(student);
       login();
@@ -362,9 +286,33 @@ public class CourseTestsBase extends AbstractUITest {
       waitForPresent(".item-list__item--teacher .item-list__user-vacation-period");
       assertTextIgnoreCase(".item-list__item--teacher .item-list__user-vacation-period", "Poissa 21.12.2010–21.12.2025");      
     }finally{
+      archiveUserByEmail(student.getEmail());
+      deleteWorkspace(workspace.getId());
       WireMock.reset();
-      deleteWorkspace(workspace.getId());  
     }
   }
 
+  @Test
+  public void courseStudentsAndTeachersButtonTest() throws Exception {
+    MockStaffMember teacher = new MockStaffMember(1l, 1l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    long courseId = 1l;
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, teacher.getId(), 1l);
+    mockBuilder
+    .addCourseStaffMember(courseId, courseStaffMember)
+    .build();
+    try{
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForPresent(".navbar .navbar__item .icon-users");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-users")).size() > 0;
+      assertTrue(elementExists);
+    }finally{
+      deleteWorkspace(workspace.getId());
+      WireMock.reset();
+    }
+  }
+  
 }

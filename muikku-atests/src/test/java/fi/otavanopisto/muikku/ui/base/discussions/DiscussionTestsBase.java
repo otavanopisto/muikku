@@ -37,9 +37,9 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionSendMessageTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(4l, 4l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
     login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
@@ -109,9 +109,9 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionReplyTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(4l, 4l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
     login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
@@ -149,7 +149,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionDeleteThreadTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
@@ -191,8 +191,10 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionReplyReplyTest() throws Exception {
-    loginAdmin();
-
+    MockStaffMember teacher = new MockStaffMember(4l, 4l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
+    login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
@@ -219,7 +221,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
-      WireMock.reset();
+      mockBuilder.wiremockReset();
     }
   }
 
@@ -235,9 +237,9 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionQuoteTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(4l, 4l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
     login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
@@ -252,7 +254,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           addToEndCKEditor("Test with quote.");
           waitAndClick(".button--dialog-execute");
           waitForPresent(".application-list__item--discussion-reply .rich-text blockquote p strong");
-          assertText(".application-list__item--discussion-reply .rich-text blockquote p strong", "Admin User");
+          assertText(".application-list__item--discussion-reply .rich-text blockquote p strong", "Teacher User");
           assertText(".application-list__item--discussion-reply .rich-text blockquote p:nth-child(2)", "Testing testing daa daa");
           assertText(".application-list__item--discussion-reply .rich-text>p", "Test with quote.");
         } finally {
@@ -279,9 +281,9 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionEditTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember teacher = new MockStaffMember(4l, 4l, 1l, "Teacher", "User", UserRole.TEACHER, "121212-1234", "teacher@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(teacher).mockLogin(teacher).build();
     login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {

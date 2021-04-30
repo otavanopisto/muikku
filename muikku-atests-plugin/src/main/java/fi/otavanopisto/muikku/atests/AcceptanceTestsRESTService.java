@@ -1028,6 +1028,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response archiveUserByEmail(@PathParam ("EMAIL") String email) {
     UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    if(userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
     userEntity.setArchived(true);
     userEntityController.archiveUserEntity(userEntity);
     userIndexer.removeUser(userEntity.getDefaultSchoolDataSource().getIdentifier(), userEntity.getDefaultIdentifier());
