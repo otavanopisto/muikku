@@ -81,8 +81,8 @@ class Course extends React.Component<CourseProps, CourseState>{
        * otherwise it will flick loader-spinner
        */
       setTimeout(() => {
-        this.setState({ 
-          expanded: true, 
+        this.setState({
+          expanded: true,
           reqs,
           loading: false
         });
