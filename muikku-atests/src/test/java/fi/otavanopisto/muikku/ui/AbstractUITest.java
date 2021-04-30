@@ -1333,7 +1333,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     .statusCode(200);    
   }
   
-   protected void mockImport() {
+  protected void mockImport() {
     asAdmin().get("/test/mockimport").then().statusCode(200);    
   }
   
