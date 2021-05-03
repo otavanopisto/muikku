@@ -612,7 +612,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
         if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
           WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-          if (assessmentState.getState() == WorkspaceAssessmentState.PASS) {
+          if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
             isEvaluated = true;
           }
         }  
