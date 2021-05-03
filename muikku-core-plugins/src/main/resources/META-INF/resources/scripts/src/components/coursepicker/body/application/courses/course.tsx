@@ -17,16 +17,6 @@ import { WorkspaceType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 
-/**
- * Interface for requirements coming from api
- */
-interface Requirements {
-  id:number;
-  description: string;
-  canSignup: boolean;
-  isCourseMember: boolean;
-}
-
 interface CourseProps {
   i18n: i18nType,
   status: StatusType,
@@ -35,7 +25,7 @@ interface CourseProps {
 
 interface CourseState {
   expanded: boolean;
-  reqs?: Requirements;
+  canSignUp?: boolean;
   loading: boolean;
 }
 
@@ -45,7 +35,7 @@ class Course extends React.Component<CourseProps, CourseState>{
 
     this.state = {
       expanded: false,
-      reqs: undefined,
+      canSignUp: undefined,
       loading: false,
     }
 
@@ -58,10 +48,10 @@ class Course extends React.Component<CourseProps, CourseState>{
   async toggleExpanded() {
 
     /**
-     * If we already have course requirements
+     * If we already have fetched signUp requirements
      * no need to get data again
      */
-    if(this.state.reqs){
+    if(this.state.canSignUp !== undefined){
       this.setState({
         expanded: !this.state.expanded
       })
@@ -74,7 +64,7 @@ class Course extends React.Component<CourseProps, CourseState>{
         loading: true
       })
 
-      const reqs = await this.checkParticipationRequirements();
+      const canSignUp = await this.checkSignUpStatus();
 
       /**
        * Timeout for lazier loading because
@@ -83,7 +73,7 @@ class Course extends React.Component<CourseProps, CourseState>{
       setTimeout(() => {
         this.setState({
           expanded: true,
-          reqs,
+          canSignUp,
           loading: false
         });
       }, 500);
@@ -97,9 +87,9 @@ class Course extends React.Component<CourseProps, CourseState>{
    * the course
    * @returns Requirements object
    */
-  checkParticipationRequirements = async ():Promise<Requirements> => {
+  checkSignUpStatus = async ():Promise<boolean> => {
 
-    return await promisify(mApi().coursepicker.workspaces.signupDetails.read(this.props.workspace.id),"callback")() as Requirements;
+    return await promisify(mApi().coursepicker.workspaces.canSignup.read(this.props.workspace.id),"callback")() as boolean;
 
   }
 
@@ -118,15 +108,15 @@ class Course extends React.Component<CourseProps, CourseState>{
       {!this.state.loading && this.state.expanded ?
         <div>
           <ApplicationListItemBody className="application-list__item-body--course">
-            <article className="rich-text" dangerouslySetInnerHTML={{ __html: this.state.reqs.description }}></article>
+            <article className="rich-text" dangerouslySetInnerHTML={{ __html: this.props.workspace.description }}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
             <Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}>
-              {this.state.reqs.isCourseMember ?
+              {this.props.workspace.isCourseMember ?
                 this.props.i18n.text.get("plugin.coursepicker.course.goto") :
                 this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Button>
-            {this.state.reqs.canSignup && this.props.status.loggedIn ?
+            {this.state.canSignUp && this.props.status.loggedIn ?
               <WorkspaceSignupDialog workspace={this.props.workspace}><Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
                 {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
               </Button></WorkspaceSignupDialog> : null}
