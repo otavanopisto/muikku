@@ -466,26 +466,24 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    Workspace workspace = null;
-    
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      workspace = workspaceController.findWorkspace(workspaceEntity);
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
+    String description = null;
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+      if (searchResult.getTotalHitCount() > 0) {
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
+        description = (String) match.get("description");
+      }
     }
-
-    if (workspace == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
     
-    String description = workspace.getDescription();
+    boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     boolean canSignup = getCanSignup(workspaceEntity);
     
-    if (Boolean.TRUE.equals(canSignup)) {
-      canSignup = getIsAlreadyEvaluated(workspaceEntity);
+    if (canSignup) {
+      canSignup = !getIsAlreadyEvaluated(workspaceEntity);
     }
-    boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     
     return Response.ok(createSignupDetailsRestModel(workspaceEntity, description, canSignup, isCourseMember)).build();
 
@@ -618,24 +616,21 @@ public class CoursePickerRESTService extends PluginRESTService {
   }
   
   private boolean getIsAlreadyEvaluated(WorkspaceEntity workspaceEntity) {
+    Boolean isEvaluated = false;
     if (sessionController.isLoggedIn()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
-      Boolean isUnassessed = false;
       if (workspaceUserEntity != null) {
         WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
         WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
         if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
           WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-          if (!assessmentState.getState().equals(WorkspaceAssessmentState.UNASSESSED)) {
-            isUnassessed = true;
+          if (assessmentState.getState() == WorkspaceAssessmentState.PASS) {
+            isEvaluated = true;
           }
         }  
       }
-      return isUnassessed;
     }
-    else {
-      return false;
-    }
+    return isEvaluated;
   }
   
   private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String educationTypeName) {
@@ -661,9 +656,9 @@ public class CoursePickerRESTService extends PluginRESTService {
         organization);
   }
   
-  private CourseSignupDetailsWorkspace createSignupDetailsRestModel(WorkspaceEntity workspaceEntity, String description, boolean canSignup, boolean isCourseMember) {
+  private WorkspaceSignupDetailsRestModel createSignupDetailsRestModel(WorkspaceEntity workspaceEntity, String description, boolean canSignup, boolean isCourseMember) {
     
-    return new CourseSignupDetailsWorkspace(
+    return new WorkspaceSignupDetailsRestModel(
         workspaceEntity.getId(), 
         description, 
         canSignup, 

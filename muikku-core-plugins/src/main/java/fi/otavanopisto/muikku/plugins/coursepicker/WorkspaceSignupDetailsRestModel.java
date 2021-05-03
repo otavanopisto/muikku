@@ -1,12 +1,12 @@
 package fi.otavanopisto.muikku.plugins.coursepicker;
 
 
-public class CourseSignupDetailsWorkspace {
+public class WorkspaceSignupDetailsRestModel {
 
-  public CourseSignupDetailsWorkspace() {
+  public WorkspaceSignupDetailsRestModel() {
   }
 
-  public CourseSignupDetailsWorkspace(Long id, String description, boolean canSignup, boolean isCourseMember) {
+  public WorkspaceSignupDetailsRestModel(Long id, String description, boolean canSignup, boolean isCourseMember) {
     super();
     this.id = id;
     this.description = description;
