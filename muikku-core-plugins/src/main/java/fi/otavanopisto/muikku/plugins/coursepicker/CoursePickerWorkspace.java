@@ -16,9 +16,11 @@ public class CoursePickerWorkspace {
       Boolean published,
       String name,
       String nameExtension,
+      String description,
       Long numVisits,
       Date lastVisit,
       String educationTypeName,
+      boolean isCourseMember, 
       boolean hasCustomImage,
       OrganizationRESTModel organization) {
     super();
@@ -28,8 +30,10 @@ public class CoursePickerWorkspace {
     this.published = published;
     this.name = name;
     this.nameExtension = nameExtension;
+    this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
+    this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
     this.hasCustomImage = hasCustomImage;
     this.organization = organization;
@@ -75,6 +79,14 @@ public class CoursePickerWorkspace {
     this.nameExtension = nameExtension;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public Long getNumVisits() {
     return numVisits;
   }
@@ -97,6 +109,14 @@ public class CoursePickerWorkspace {
   
   public void setPublished(Boolean published) {
     this.published = published;
+  }
+  
+  public Boolean getIsCourseMember() {
+    return isCourseMember;
+  }
+
+  public void setIsCourseMember(Boolean isCourseMember) {
+    this.isCourseMember = isCourseMember;
   }
 
   public String getEducationTypeName() {
@@ -128,9 +148,11 @@ public class CoursePickerWorkspace {
   private Boolean archived;
   private String name;
   private String nameExtension;
+  private String description;
   private Long numVisits;
   private Date lastVisit;
   private Boolean published;
+  private Boolean isCourseMember;
   private String educationTypeName;
   private boolean hasCustomImage;
   private OrganizationRESTModel organization;

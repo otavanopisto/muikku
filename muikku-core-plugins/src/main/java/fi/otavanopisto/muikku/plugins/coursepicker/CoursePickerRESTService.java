@@ -358,6 +358,8 @@ public class CoursePickerRESTService extends PluginRESTService {
 
                 String name = (String) result.get("name");
                 String nameExtension = (String) result.get("nameExtension");
+                String description = (String) result.get("description");
+                boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
                 
@@ -376,7 +378,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                 }
   
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, educationTypeName));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, isCourseMember));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -443,7 +445,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+    boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     String educationTypeName = null;
     
     if (workspace.getWorkspaceTypeId() != null) {
@@ -453,40 +455,26 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), educationTypeName)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, isCourseMember)).build();
   }
   
   @GET
-  @Path("/workspaces/{ID}/signupDetails")
+  @Path("/workspaces/{ID}/canSignup")
   @RESTPermit (handling = Handling.INLINE)
-  public Response getSignupDetails(@PathParam("ID") Long workspaceEntityId) {
+  public Response getCanSignup(@PathParam("ID") Long workspaceEntityId) {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    String description = null;
-    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
-    if (searchProviderIterator.hasNext()) {
-      SearchProvider searchProvider = searchProviderIterator.next();
-      SearchResult searchResult = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
-      if (searchResult.getTotalHitCount() > 0) {
-        List<Map<String, Object>> results = searchResult.getResults();
-        Map<String, Object> match = results.get(0);
-        description = (String) match.get("description");
-      }
-    }
-    
-    boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     boolean canSignup = getCanSignup(workspaceEntity);
     
     if (canSignup) {
       canSignup = !getIsAlreadyEvaluated(workspaceEntity);
     }
     
-    return Response.ok(createSignupDetailsRestModel(workspaceEntity, description, canSignup, isCourseMember)).build();
-
+    return Response.ok(canSignup).build();
   }
   
   @POST
@@ -633,7 +621,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return isEvaluated;
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String educationTypeName) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -649,21 +637,11 @@ public class CoursePickerRESTService extends PluginRESTService {
         workspaceEntity.getPublished(), 
         name, 
         nameExtension,
-        numVisits, 
+        description, numVisits, 
         lastVisit, 
         educationTypeName,
-        hasCustomImage,
-        organization);
-  }
-  
-  private WorkspaceSignupDetailsRestModel createSignupDetailsRestModel(WorkspaceEntity workspaceEntity, String description, boolean canSignup, boolean isCourseMember) {
-    
-    return new WorkspaceSignupDetailsRestModel(
-        workspaceEntity.getId(), 
-        description, 
-        canSignup, 
-        isCourseMember
-        );
+        isCourseMember,
+        hasCustomImage, organization);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
