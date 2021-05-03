@@ -755,6 +755,10 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
       workspace.details = details;
       workspace.chatStatus = chatStatus;
 
+      const canSignUp = await promisify(mApi().coursepicker.workspaces.canSignup.read(workspace.id),"callback")() as boolean;
+
+      workspace.canSignUp = canSignUp;
+
       dispatch({
         type: "SET_CURRENT_WORKSPACE",
         payload: workspace,
