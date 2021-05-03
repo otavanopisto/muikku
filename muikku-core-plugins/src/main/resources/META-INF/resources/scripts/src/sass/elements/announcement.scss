@@ -48,11 +48,8 @@
 // define by hand
 .pagination > li {
   display: inline-block;
-  padding-left: 0;
-}
-
-.pagination > li {
   list-style: none;
+  padding-left: 0;
 }
 
 .pagination > li > a,
@@ -68,7 +65,7 @@
   text-decoration: none;
 }
 
-.pagination>li.active>a {
+.pagination > li.active > a {
   background-color: $color-primary;
   border-color: $color-primary;
   color: $color-default;
