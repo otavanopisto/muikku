@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.worklist.rest;
 
 import java.text.MessageFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -375,13 +376,15 @@ public class WorklistRESTService {
         UserEntityName currentUserName = userEntityController.getName(sessionController.getLoggedUserEntity());
         mailContent = MessageFormat.format(
             mailContent,
+            // Parameters for the human readable content of the message
             currentUserName.getDisplayName(),
-            stateChange.getBeginDate().toString(),
-            stateChange.getEndDate().toString(),
+            stateChange.getBeginDate().format(DateTimeFormatter.ofPattern("d.M.yyyy")), // e.g. 1.2.2021
+            stateChange.getEndDate().format(DateTimeFormatter.ofPattern("d.M.yyyy")), // e.g. 28.2.2021
+            // Parameters for the link to Pyramus
             // TODO Not the prettiest way of resolving current user's id in Pyramus but about the only one that can be used here :| 
             StringUtils.substringAfterLast(stateChange.getUserIdentifier(), "-"),
-            stateChange.getBeginDate().toString(),
-            stateChange.getEndDate().toString()
+            stateChange.getBeginDate().toString(), // e.g. 2021-02-01
+            stateChange.getEndDate().toString() // e.g. 2021-02-28
         );
         mailer.sendMail(MailType.HTML, approverEmails, mailSubject, mailContent);
       }
