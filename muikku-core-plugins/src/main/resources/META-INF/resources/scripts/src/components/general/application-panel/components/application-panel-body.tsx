@@ -8,12 +8,10 @@ interface ApplicationPanelBodyProps {
   asideAfter?: React.ReactElement<any>;
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   disableStickyScrolling?: boolean;
-  offsetBorderAgainstBottom?: number;
 }
 
 interface ApplicationPanelBodyState {
   sticky: boolean;
-  remainingHeight: number;
   stickyHeight: number;
   offsetElementAgainstTop: number;
   extraPaddingLeft: number;
@@ -38,7 +36,6 @@ export default class ApplicationPanelBody extends React.Component<
     super(props);
     this.state = {
       sticky: false,
-      remainingHeight: null,
       stickyHeight: null,
       offsetElementAgainstTop: null,
       extraPaddingLeft: null,
@@ -142,35 +139,6 @@ export default class ApplicationPanelBody extends React.Component<
         .getPropertyValue("border-left-width")
     );
     this.calculateSides();
-    this.setRemainingHeight(false);
-  }
-
-  setRemainingHeight(isSticky: boolean) {
-    if (!this.props.asideBefore) {
-      return;
-    }
-
-    const top = document.documentElement.scrollTop || document.body.scrollTop;
-    const height = document.documentElement.offsetHeight;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const offsetTopHeight = isSticky
-      ? this.offsetElementAgainstTop +
-        (this.refs["sticky"] as HTMLElement).offsetHeight
-      : (this.refs["sticky"] as HTMLElement).offsetHeight +
-        (this.refs["sticky"] as HTMLElement).offsetTop -
-        top;
-
-    const bottom = scrollHeight - top - height;
-
-    let borderBottomSize = bottom + this.borderWidth;
-
-    if (borderBottomSize < 0) {
-      borderBottomSize = 0;
-    }
-
-    const remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
-
-    this.setState({ remainingHeight: remainingUsableWindow });
   }
 
   onScroll(e: Event) {
@@ -183,12 +151,10 @@ export default class ApplicationPanelBody extends React.Component<
         this.calculateSides();
       }
     }
-    this.setRemainingHeight(isSticky);
   }
 
   render() {
     const {
-      offsetBorderAgainstBottom,
       modifier,
       primaryOption,
       toolbar,
@@ -198,7 +164,6 @@ export default class ApplicationPanelBody extends React.Component<
     } = this.props;
 
     const {
-      remainingHeight,
       sticky,
       stickyHeight,
       offsetElementAgainstTop,
@@ -206,12 +171,6 @@ export default class ApplicationPanelBody extends React.Component<
       extraPaddingRight,
       asideBeforeWidth,
     } = this.state;
-
-    /**
-     * Calculating remaining helperContainerHeight if parrent panel component has passed padding-bottom value
-     */
-    const helperContainerHeight =
-      remainingHeight - offsetBorderAgainstBottom || "auto";
 
     return (
       <div
@@ -273,7 +232,6 @@ export default class ApplicationPanelBody extends React.Component<
                 position: sticky ? "fixed" : null,
                 top: sticky ? offsetElementAgainstTop + stickyHeight : null,
                 left: sticky ? extraPaddingLeft : null,
-                height: helperContainerHeight,
                 width: sticky ? asideBeforeWidth : null,
                 overflowY: "auto",
               }}
@@ -285,12 +243,7 @@ export default class ApplicationPanelBody extends React.Component<
             {children}
           </div>
           {asideAfter ? (
-            <div
-              className="application-panel__helper-container"
-              style={{
-                height: helperContainerHeight,
-              }}
-            >
+            <div className="application-panel__helper-container">
               {asideAfter}
             </div>
           ) : null}

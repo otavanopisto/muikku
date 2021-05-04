@@ -34,6 +34,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
@@ -83,6 +84,10 @@ public class UserSchoolDataController {
 
   public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String dataSource, String identifier) {
     return getUserBridge(dataSource).getWorklistSummary(identifier);
+  }
+  
+  public void updateWorklistItemsState(String dataSource, WorklistItemStateChangeRestModel stateChange) {
+    getUserBridge(dataSource).updateWorklistItemsState(stateChange);
   }
   
   

@@ -49,6 +49,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 
@@ -663,6 +664,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public void updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

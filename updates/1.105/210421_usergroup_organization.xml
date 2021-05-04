@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table UserGroupEntity add column organization_id bigint;</sql>
+  <sql>alter table UserGroupEntity add constraint FK27gnjorttjmvakx3mnuatpqoa foreign key (organization_id) references OrganizationEntity (id);</sql>
+  <sql>update UserGroupEntity set organization_id=1;</sql>
+
+</update>

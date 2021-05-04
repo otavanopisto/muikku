@@ -82,9 +82,14 @@
   padding: 0;
 
   @include breakpoint($breakpoint-pad) {
+    align-content: start;
     display: flex;
     flex-wrap: wrap;
-    min-height: 330px;
+    // scss-lint:disable SelectorFormat
+    &.state-FULL {
+      min-height: 330px;
+    }
+    // scss-lint:enable SelectorFormat
   }
 }
 
