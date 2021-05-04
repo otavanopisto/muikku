@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import { StoredWorklistItem } from "~/reducers/main-function/profile";
+import { StoredWorklistItem, WorklistBillingState } from "~/reducers/main-function/profile";
 import { ButtonPill } from '~/components/general/button';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
@@ -47,6 +47,7 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
     date: string;
     price: number;
     factor: number;
+    billingNumber: number;
   }): Promise<boolean> {
     return new Promise((r) => {
       this.props.editProfileWorklistItem({
@@ -55,6 +56,7 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
         entryDate: data.date,
         factor: data.factor,
         price: data.price,
+        billingNumber: data.billingNumber,
         success: () => {
           r(true);
 
@@ -92,8 +94,14 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
       );
     }
 
+    const canBeEdited = this.props.item.state !== WorklistBillingState.PAID && this.props.item.state !== WorklistBillingState.APPROVED;
+
+    // we can use the state in order to get a languag string as well
+    // this.props.i18n.text.get(`worklist.states.${this.props.item.state}`)
+    // they will need to be added to the language file
     return (
       <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
+        {this.props.item.state}
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
           {this.props.item.description}
         </div>
@@ -106,10 +114,14 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}
         </div>
-        <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
-          {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
-          {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
-        </div>
+        {
+          canBeEdited ?
+          <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
+            {this.props.item.editableFields.length > 0 && <ButtonPill buttonModifiers="edit-worklist-entry" icon="pencil" onClick={this.toggleEditMode} />}
+            {this.props.item.removable && <ButtonPill buttonModifiers="delete-worklist-entry" icon="trash" onClick={this.onDelete} />}
+          </div> :
+          null
+        }
 
         <DeleteWorklistItemDialog
           isOpen={this.state.deleteMode}

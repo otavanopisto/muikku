@@ -17,6 +17,7 @@ interface IWorkListEditableProps {
     date: string;
     price: number;
     factor: number;
+    billingNumber: number;
   }) => Promise<boolean>;
   onCancel?: () => void;
   enableDisableSubmitOnEquality?: boolean;
@@ -53,6 +54,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
       date,
       price,
       factor,
+      billingNumber: this.props.base.billingNumber,
     });
 
     if (submitStatus && this.props.resetOnSubmit) {

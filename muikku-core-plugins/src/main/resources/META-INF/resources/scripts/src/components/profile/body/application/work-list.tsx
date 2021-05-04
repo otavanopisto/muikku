@@ -56,6 +56,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     date: string;
     price: number;
     factor: number;
+    billingNumber: number;
   }) {
     return new Promise<boolean>((resolve) => {
       this.props.insertProfileWorklistItem({
@@ -64,6 +65,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         price: data.price,
         factor: data.factor,
         description: data.description,
+        billingNumber: data.billingNumber,
         success: () => resolve(true),
         fail: () => resolve(false),
       });

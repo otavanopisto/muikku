@@ -93,6 +93,7 @@ export interface InsertProfileWorklistItemTriggerType {
     entryDate: string,
     price: number,
     factor: number,
+    billingNumber: number,
     success?: () => void,
     fail?: () => void,
   }): AnyActionType;
@@ -113,6 +114,7 @@ export interface EditProfileWorklistItemTriggerType {
     entryDate: string,
     price: number,
     factor: number,
+    billingNumber: number,
     success?: () => void,
     fail?: () => void,
   }): AnyActionType;
@@ -560,7 +562,8 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
     data.description === data.item.description &&
     data.entryDate === data.item.entryDate &&
     data.factor === data.item.factor &&
-    data.price === data.item.price
+    data.price === data.item.price &&
+    data.billingNumber === data.item.billingNumber
   ) {
     data.success && data.success();
     return;
@@ -580,6 +583,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
         description: data.description,
         price: data.price,
         factor: data.factor,
+        billingNumber: data.billingNumber,
       }), 'callback')() as StoredWorklistItem;
 
       const expectedSummaryBeginDate = moment(newWorklistItem.entryDate).startOf("month").format("YYYY-MM-DD");
