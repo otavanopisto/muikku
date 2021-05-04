@@ -512,7 +512,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         if (!state.status.permissions.WORKSPACE_SIGNUP) {
           this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "notice") as Action);
         } else {
-      
+
           if(state.workspaces.currentWorkspace !== null && state.workspaces.currentWorkspace.canSignUp !== undefined && state.workspaces.currentWorkspace.canSignUp){
             this.props.store.dispatch(displayNotification(
               state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
@@ -520,7 +520,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
               "notice",
             ) as Action);
           }
-          
+
         }
       }
 
