@@ -52,6 +52,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -1252,6 +1253,29 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     return new BridgeResponse<List<WorklistSummaryItemRestModel>>(response.getStatusCode(), items); 
+  }
+
+  @Override
+  public void updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
+    
+    // Convert user identifier (PYRAMUS-STAFF-123) to Pyramus user id (123)
+    
+    SchoolDataIdentifier sdIdentifier = SchoolDataIdentifier.fromId(stateChange.getUserIdentifier());
+    Long staffMemberId = identifierMapper.getPyramusStaffId(sdIdentifier.getIdentifier());
+    if (staffMemberId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus staff member");
+    }
+    stateChange.setUserIdentifier(staffMemberId.toString());
+    
+    // Pyramus update
+    
+    pyramusClient.responsePut(
+        "/worklist/updateItemsState",
+        Entity.entity(stateChange, MediaType.APPLICATION_JSON), WorklistItemStateChangeRestModel.class);
+    
+    // Restore user identifier
+    
+    stateChange.setUserIdentifier(sdIdentifier.toId());
   }
 
 }
