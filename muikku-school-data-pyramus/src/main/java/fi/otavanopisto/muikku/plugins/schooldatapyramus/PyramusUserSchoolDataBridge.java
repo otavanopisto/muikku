@@ -51,6 +51,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
@@ -1276,6 +1277,21 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     // Restore user identifier
     
     stateChange.setUserIdentifier(sdIdentifier.toId());
+  }
+
+  @Override
+  public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers() {
+    BridgeResponse<WorklistApproverRestModel[]> response = pyramusClient.responseGet(
+        "/worklist/approvers",
+        WorklistApproverRestModel[].class);
+    List<WorklistApproverRestModel> approvers = null;
+    if (response.getEntity() != null) {
+      approvers = new ArrayList<>();
+      for (WorklistApproverRestModel approver : response.getEntity()) {
+        approvers.add(approver);
+      }
+    }
+    return new BridgeResponse<List<WorklistApproverRestModel>>(response.getStatusCode(), approvers); 
   }
 
 }

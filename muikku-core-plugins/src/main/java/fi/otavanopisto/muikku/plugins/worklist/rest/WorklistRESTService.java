@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.worklist.rest;
 
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -15,17 +18,25 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -37,10 +48,25 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class WorklistRESTService {
   
   @Inject
+  private Logger logger;
+
+  @Inject
   private SessionController sessionController;
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
+  private Mailer mailer;
 
   /**
    * GET mApi().worklist.templates
@@ -307,7 +333,7 @@ public class WorklistRESTService {
    *  state: "PROPOSED"
    * }
    *  
-   * Output: All workspace items of the timeframe, with an updated state
+   * Output: All worklist items of the timeframe, with an updated state
    */
   @PUT
   @Path("/updateWorklistItemsState")
@@ -318,6 +344,48 @@ public class WorklistRESTService {
     
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     userSchoolDataController.updateWorklistItemsState(dataSource, stateChange);
+    
+    // If changing state to PROPOSED, notify approvers via e-mail
+    
+    if (StringUtils.equals("PROPOSED", stateChange.getState())) {
+      List<WorklistApproverRestModel> approvers = null;
+      
+      // Ask Pyramus for users marked as worklist approvers
+      
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        BridgeResponse<List<WorklistApproverRestModel>> response = userSchoolDataController.listWorklistApprovers(dataSource);
+        if (response.ok()) {
+          approvers = response.getEntity();
+        }
+        else {
+          logger.severe(String.format("Error retrieving worklist approvers: %d (%s)", response.getStatusCode(), response.getMessage()));
+        }
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      // If we have approvers, send the notification
+      
+      if (!CollectionUtils.isEmpty(approvers)) {
+        List<String> approverEmails = approvers.stream().map(WorklistApproverRestModel::getEmail).collect(Collectors.toList());
+        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.worklist.approveMail.subject");
+        String mailContent = localeController.getText(sessionController.getLocale(), "rest.worklist.approveMail.content");
+        UserEntityName currentUserName = userEntityController.getName(sessionController.getLoggedUserEntity());
+        mailContent = MessageFormat.format(
+            mailContent,
+            currentUserName.getDisplayName(),
+            stateChange.getBeginDate().toString(),
+            stateChange.getEndDate().toString(),
+            // TODO Not the prettiest way of resolving current user's id in Pyramus but about the only one that can be used here :| 
+            StringUtils.substringAfterLast(stateChange.getUserIdentifier(), "-"),
+            stateChange.getBeginDate().toString(),
+            stateChange.getEndDate().toString()
+        );
+        mailer.sendMail(MailType.HTML, approverEmails, mailSubject, mailContent);
+      }
+    }
     
     // Fetch and return user's all worklist items in the timeframe  
     
