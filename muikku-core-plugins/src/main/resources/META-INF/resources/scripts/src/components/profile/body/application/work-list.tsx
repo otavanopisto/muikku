@@ -8,6 +8,9 @@ import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile"
 import WorkListEditable from "./components/work-list-editable";
 import WorkListRow from "./components/work-list-row";
 import { ButtonPill } from '~/components/general/button';
+import moment from "~/lib/moment";
+import Link from '~/components/general/link';
+import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -124,6 +127,8 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       </div>
     </div>);
 
+    const lastMonthFirstDay = moment().subtract(1, 'months').startOf("month");
+
     const sections = (
       this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
         const isOpen = this.state.openedSections.includes(section.summary.beginDate);
@@ -137,11 +142,21 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           })
         ) : null;
 
+        const sectionIsLastMonth = moment(section.summary.beginDate).isSame(lastMonthFirstDay);
+        const submitLastMonthButton = (
+          sectionIsLastMonth ?
+          <SubmitWorklistItemsDialog summary={section.summary}>
+            <Link>{this.props.i18n.text.get("plugin.profile.submit.month")}</Link>
+          </SubmitWorklistItemsDialog> :
+          null
+        )
+
         return (
           <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
             <h3 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
               <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
               <span>{section.summary.displayName} ({section.summary.count})</span>
+              {submitLastMonthButton}
             </h3>
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
