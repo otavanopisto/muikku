@@ -6,7 +6,7 @@ import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} f
 import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
-import { StoredWorklistItem, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
+import { StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
 import moment from '~/lib/moment';
 
 export interface LoadProfilePropertiesSetTriggerType {
@@ -117,6 +117,16 @@ export interface EditProfileWorklistItemTriggerType {
     billingNumber: number,
     success?: () => void,
     fail?: () => void,
+  }): AnyActionType;
+}
+
+export interface UpdateProfileWorklistItemsStateTriggerType {
+  (data: {
+    beginDate: string;
+    endDate: string;
+    state: WorklistBillingState;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -706,8 +716,53 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
   }
 }
 
+const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType = function updateProfileWorklistItemsState(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (!state.profile || !state.profile.worklist) {
+      return;
+    }
+
+    try {
+      const updatedItems: Array<StoredWorklistItem> = await promisify(mApi().worklist.updateWorklistItemsState.update({
+        userIdentifier: state.status.userSchoolDataIdentifier,
+        beginDate: data.beginDate,
+        endDate: data.endDate,
+      }), 'callback')() as any;
+
+      // create a new worklist where we would replace the old worklist items with
+      const newWorkList = getState().profile.worklist.map((worklistGroup) => {
+        const newWorklistGroup = {...worklistGroup};
+        if (newWorklistGroup.items) {
+          newWorklistGroup.items = newWorklistGroup.items.map((i) => {
+            const foundInUpdate = updatedItems.find((updatedItem) => updatedItem.id === i.id);
+            // we merge the data in case, as there had been issues with incomplete data from
+            // the update that is partial
+            return {...i, ...foundInUpdate} || i;
+          });
+        }
+        return newWorklistGroup;
+      });
+
+      dispatch({
+        type: "SET_WORKLIST",
+        payload: newWorkList,
+      });
+
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
 export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
   updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
   deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
-  loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem};
+  loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem,
+  updateProfileWorklistItemsState};
 
