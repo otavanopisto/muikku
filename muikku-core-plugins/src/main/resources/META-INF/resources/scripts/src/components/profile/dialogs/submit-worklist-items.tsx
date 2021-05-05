@@ -6,12 +6,14 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/buttons.scss';
 import { bindActionCreators } from 'redux';
 import Button from '~/components/general/button';
-import { WorklistItemsSummary } from '~/reducers/main-function/profile';
+import { WorklistBillingState, WorklistItemsSummary } from '~/reducers/main-function/profile';
+import { UpdateProfileWorklistItemsStateTriggerType, updateProfileWorklistItemsState } from '~/actions/main-function/profile';
 
 interface SubmitWorklistItemsDialogProps {
   i18n: i18nType;
   summary: WorklistItemsSummary;
   children: React.ReactElement<any>;
+  updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType;
 }
 
 interface SubmitWorklistItemsDialogState {
@@ -25,7 +27,12 @@ class SubmitWorklistItemsDialog extends React.Component<SubmitWorklistItemsDialo
     this.submit = this.submit.bind(this);
   }
   submit(closeDialog: ()=>any){
-    
+    this.props.updateProfileWorklistItemsState({
+      beginDate: this.props.summary.beginDate,
+      endDate: this.props.summary.endDate,
+      state: WorklistBillingState.PROPOSED,
+      success: closeDialog,
+    });
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
@@ -53,7 +60,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({updateProfileWorklistItemsState}, dispatch);
 };
 
 export default connect(
