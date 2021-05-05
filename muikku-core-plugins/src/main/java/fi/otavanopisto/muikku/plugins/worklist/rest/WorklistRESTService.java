@@ -329,7 +329,7 @@ public class WorklistRESTService {
    * Payload: State change payload item
    * 
    * {userIdentifier: PYRAMUS-STAFF-123,
-   *  startDate: 2021-02-01,
+   *  beginDate: 2021-02-01,
    *  endDate: 2021-02-28,
    *  state: "PROPOSED"
    * }

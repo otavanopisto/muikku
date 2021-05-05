@@ -1271,7 +1271,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     // Pyramus update
     
     pyramusClient.responsePut(
-        "/worklist/updateItemsState",
+        "/worklist/changeItemsState",
         Entity.entity(stateChange, MediaType.APPLICATION_JSON), WorklistItemStateChangeRestModel.class);
     
     // Restore user identifier
