@@ -139,10 +139,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
         return (
           <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
-            <h3 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
+            <h4 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
               <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
               <span>{section.summary.displayName} ({section.summary.count})</span>
-            </h3>
+            </h4>
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
               {entries && entries.reverse()}
@@ -178,7 +178,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             </WorkListEditable>
           </div>
         </div>
-        {sections && sections.reverse()}
+        <div className="application-sub-panel__panels-wrapper">
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.worklist.addedEntries')}</h3>
+          {sections && sections.reverse()}
+        </div>
       </form>
     </section>;
   }

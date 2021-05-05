@@ -4,6 +4,7 @@ import { StateType } from "~/reducers";
 import { StoredWorklistItem, WorklistBillingState } from "~/reducers/main-function/profile";
 import { ButtonPill } from '~/components/general/button';
 import '~/sass/elements/datepicker/datepicker.scss';
+import '~/sass/elements/glyph.scss';
 import { i18nType } from "~/reducers/base/i18n";
 import WorkListEditable from "./work-list-editable";
 import { DeleteProfileWorklistItemTriggerType, deleteProfileWorklistItem,
@@ -96,13 +97,41 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
 
     const canBeEdited = this.props.item.state !== WorklistBillingState.PAID && this.props.item.state !== WorklistBillingState.APPROVED;
 
-    // we can use the state in order to get a languag string as well
-    // this.props.i18n.text.get(`worklist.states.${this.props.item.state}`)
-    // they will need to be added to the language file
+    let entryStateText;
+    let entryStateIcon;
+    let entryStateClass;
+    switch (this.props.item.state) {
+      case "ENTERED":
+        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.ENTERED")
+        entryStateIcon = "icon-check";
+        entryStateClass = "state-ENTERED";
+        break;
+      case "PROPOSED":
+        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.PROPOSED")
+        entryStateIcon = "icon-check";
+        entryStateClass = "state-PROPOSED";
+        break;
+      case "APPROVED":
+        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.APPROVED")
+        entryStateIcon = "icon-lock";
+        entryStateClass = "state-APPROVED";
+        break;
+      case "PAID":
+        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.PAID")
+        entryStateIcon = "icon-lock";
+        entryStateClass = "state-PAID";
+        break;
+      default:
+        entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.ENTERED")
+        entryStateIcon = "icon-check";
+        entryStateClass = "state-ENTERED";
+        break;
+    }
+
     return (
       <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
-        {this.props.item.state}
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
+          <span title={entryStateText} className={`glyph glyph--worklist-state-indicator ${entryStateClass} ${entryStateIcon}`}></span>
           {this.props.item.description}
         </div>
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">

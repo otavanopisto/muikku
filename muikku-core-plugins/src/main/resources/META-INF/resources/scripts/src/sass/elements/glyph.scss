@@ -24,3 +24,26 @@
   margin-right: 5px;
   min-width: 15px;
 }
+
+.glyph--worklist-state-indicator {
+  font-size: 0.7rem;
+  height: 0.7rem;
+  margin: 0 5px 0 0;
+  width: 0.7rem;
+
+  &.state-ENTERED {
+    color: $color-default-helper;
+  }
+
+  &.state-PROPOSED {
+    color: $color-info;
+  }
+
+  &.state-APPROVED {
+    color: $color-success;
+  }
+
+  &.state-paid {
+    color: $color-default-contrast;
+  }
+}
