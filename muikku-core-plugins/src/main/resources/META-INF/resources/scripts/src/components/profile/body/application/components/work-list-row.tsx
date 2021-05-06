@@ -108,12 +108,12 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
         break;
       case "PROPOSED":
         entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.PROPOSED")
-        entryStateIcon = "icon-check";
+        entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
         entryStateText = this.props.i18n.text.get("plugin.profile.worklist.states.APPROVED")
-        entryStateIcon = "icon-lock";
+        entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":

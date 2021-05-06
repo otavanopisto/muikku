@@ -67,6 +67,12 @@
   }
 }
 
+.application-sub-panel__header-title {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .application-sub-panel__header--workspace-settings {
   padding: 0;
 }

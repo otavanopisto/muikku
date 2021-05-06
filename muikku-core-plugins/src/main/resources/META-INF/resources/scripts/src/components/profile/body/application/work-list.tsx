@@ -146,7 +146,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         const submitLastMonthButton = (
           sectionIsLastMonth ?
           <SubmitWorklistItemsDialog summary={section.summary}>
-            <Link>{this.props.i18n.text.get("plugin.profile.submit.month")}</Link>
+            <Link title={this.props.i18n.text.get("plugin.profile.worklist.submitWorklistForApproval")} as="span" className="glyph glyph--submit-worklist icon-thumb-up"></Link>
           </SubmitWorklistItemsDialog> :
           null
         )
@@ -155,7 +155,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
             <h4 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
               <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
-              <span>{section.summary.displayName} ({section.summary.count})</span>
+              <span className="application-sub-panel__header-title">{section.summary.displayName} ({section.summary.count})</span>
               {submitLastMonthButton}
             </h4>
             <div className="application-sub-panel__body">

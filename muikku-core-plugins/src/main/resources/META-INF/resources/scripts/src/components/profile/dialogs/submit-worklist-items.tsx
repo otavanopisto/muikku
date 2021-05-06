@@ -35,20 +35,20 @@ class SubmitWorklistItemsDialog extends React.Component<SubmitWorklistItemsDialo
     });
   }
   render(){
-    let content = (closeDialog: ()=>any)=><div>
-        <span>{this.props.i18n.text.get('plugin.profile.worklist.submit.dialog.description')}</span>
-      </div>;
-    let footer = (closeDialog: ()=>any)=>{
+    let content = (closeDialog: () => any) => (<div>
+        <span>{this.props.i18n.text.get('plugin.profile.worklist.submitForApproval.dialog.description')}</span>
+      </div>);
+    let footer = (closeDialog: () => any) => {
       return <div className="dialog__button-set">
         <Button buttonModifiers={["success","standard-ok"]} onClick={this.submit.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.profile.worklist.submit.dialog.button.submitLabel')}
+          {this.props.i18n.text.get('plugin.profile.worklist.submitForApproval.dialog.button.submitLabel')}
         </Button>
         <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog}>
-          {this.props.i18n.text.get('plugin.profile.worklist.submit.dialog.button.cancelLabel')}
+          {this.props.i18n.text.get('plugin.profile.worklist.submitForApproval.dialog.button.cancelLabel')}
         </Button>
       </div>
     }
-    return <Dialog title={this.props.i18n.text.get('plugin.profile.worklist.submit.dialog.title')}
+    return <Dialog title={this.props.i18n.text.get('plugin.profile.worklist.submitForApproval.dialog.title')}
       content={content} footer={footer} modifier="submit-worklist-item">{this.props.children}</Dialog>
   }
 }

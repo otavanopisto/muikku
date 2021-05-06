@@ -47,3 +47,17 @@
     color: $color-default-contrast;
   }
 }
+
+.glyph--submit-worklist {
+  align-items: center;
+  color: $color-info;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  height: 1rem;
+  justify-content: center;
+  padding: 4px;
+  width: 1rem;
+}
