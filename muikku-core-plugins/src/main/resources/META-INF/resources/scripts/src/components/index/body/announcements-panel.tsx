@@ -7,14 +7,15 @@ import {AnnouncementListType, AnnouncementType} from '~/reducers/announcements';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/label.scss';
-import Pagination from 'react-js-pagination';
+import ReactPaginate from 'react-paginate';
 import { StateType } from '../../../reducers/index';
 import { connect, Dispatch } from 'react-redux';
 
 interface AnnouncementsPanelProps {
-  i18n: i18nType,
-  status: StatusType,
-  announcements: AnnouncementListType
+  i18n: i18nType;
+  status: StatusType;
+  announcements: AnnouncementListType;
+  overflow?: boolean;
 }
 
 interface AnnouncementsPanelState {
@@ -23,16 +24,17 @@ interface AnnouncementsPanelState {
   itemsPerPage: number
 }
 
+const PER_PAGE = 10;
+
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   constructor(props: AnnouncementsPanelProps){
     super(props);
 
     this.state = {
       itemsPerPage: 5,
-      currentPage: 1,
+      currentPage: 0,
       announcements: props.announcements
     }
-    this.handlePageChange = this.handlePageChange.bind(this);
   }
 
   /**
@@ -50,13 +52,32 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
   }
 
   /**
-   * handleClick
+   * handles page changes,
+   * sets selected page as currentPage to state
    * @param event
    */
-   handlePageChange(pageNumber: number) {
+   handlePageChange = (selectedItem: { selected: number }) => {
+
     this.setState({
-      currentPage: pageNumber
+      currentPage: selectedItem.selected
     });
+  }
+
+  /**
+   * Creates aria-label for a tags depending if link is selected
+   * or not
+   * @param index link index
+   * @param selected if selected
+   * @returns label with correct locale string
+   */
+  handleAriaLabelBuilder = (index: number, selected: boolean): string => {
+    let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
+
+    if(selected){
+      label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
+    }
+
+    return label;
   }
 
   /**
@@ -66,9 +87,18 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
   render(){
     const { announcements, currentPage, itemsPerPage } = this.state;
 
-    const indexOfLastTodo = currentPage * itemsPerPage;
-    const indexOfFirstTodo = indexOfLastTodo - itemsPerPage;
-    const currentAnnouncements = announcements.slice(indexOfFirstTodo, indexOfLastTodo);
+    const offset = currentPage * itemsPerPage;
+
+    /**
+     * Defines current announcements that will be mapped
+     */
+    const currentAnnouncements = announcements.slice(offset, offset + itemsPerPage);
+
+    /**
+     * Calculates amount of pages
+     * depends how many items there is per page
+     */
+    const pageCount = Math.ceil(announcements.length / itemsPerPage);
 
     /**
      * renders announcements
@@ -103,15 +133,25 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
      * renders pagination body as one of announcements list item
      */
     const renderPaginationBody = (
-      <div className="item-list__item item-list__item--announcements" >
+      <div className="item-list__item item-list__item--announcements">
         <span className="item-list__text-body item-list__text-body--multiline--footer">
-          <Pagination
-            innerClass="pagination"
-            activePage={currentPage}
-            itemsCountPerPage={5}
-            totalItemsCount={announcements.length}
-            pageRangeDisplayed={3}
-            onChange={this.handlePageChange}
+          <ReactPaginate
+            previousLabel=""
+            nextLabel=""
+            breakLabel="..."
+            initialPage={currentPage}
+            marginPagesDisplayed={1}
+            pageCount={pageCount}
+            pageRangeDisplayed={2}
+            onPageChange={this.handlePageChange}
+            ariaLabelBuilder={this.handleAriaLabelBuilder}
+            containerClassName={"pagination"}
+            pageClassName="pager__item pager__item"
+            activeClassName={"pager__item pager__item--current"}
+            pageLinkClassName="pagination__link"
+            activeLinkClassName="pagination__link--active"
+            breakClassName="pager__item pager__item--gap"
+            breakLinkClassName="pagination__link"
            />
         </span>
       </div>
@@ -125,13 +165,13 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
         </div>
         {this.props.announcements.length ? (
           <div className="panel__body">
-            <div className="item-list item-list--panel-announcements">
+            <div className="item-list item-list--panel-announcements" style={ this.props.overflow && {overflow: "auto"}}>
               {renderAnnouncements}
             </div>
             {renderPaginationBody}
           </div>
           ) : (
-            <div className="panel__body panel__body--empty">
+            <div className="panel__body panel__body--empty" aria-label={this.props.i18n.text.get("plugin.frontPage.announcementPanel.ariaLabel.announcement.panel")}>
               {this.props.i18n.text.get("plugin.frontPage.announcements.noAnnouncements")}
             </div>
         )}

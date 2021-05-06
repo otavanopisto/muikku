@@ -42,56 +42,25 @@
 }
 
 
-// These are for announcements panel-paginations styles,
-// the component itself uses bootstrap styles by default if
-// bootstrap exist in project, otherwise style classes must be
-// define by hand
-.pagination > li {
-  display: inline-block;
+// These are for announcements panel-paginations spcific styles,
+// otherwise it uses same styles as Pager component
+.pagination {
+  display: flex;
+  justify-content: center;
   list-style: none;
-  padding-left: 0;
+  cursor: pointer;
+  padding: 10px;
 }
 
-.pagination > li > a,
-.pagination > li > span {
-  background-color: $color-default;
-  border: 1px solid $color-primary;
-  color: $color-primary;
-  float: left;
-  line-height: 1.42857143;
-  margin-left: -1px;
-  padding: 6px 12px;
-  position: relative;
-  text-decoration: none;
+.pagination__link {
+  color: $color-pager-page-index-font;
 }
 
-.pagination > li.active > a {
-  background-color: $color-primary;
-  border-color: $color-primary;
-  color: $color-default;
+.pagination__link--active {
+  color: $color-pager-selected-page-index-font;
 }
 
-//  Style the active class (and buttons on mouse-over).
-//  Add this if you wish to add hover color for buttons
-//  .pagination > li > a:hover {
-//  background-color:  $color-default-helper;
-//  color: white;
-// }
-
-.pagination > li:first-child > a,
-.pagination > li:first-child > span {
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
-  display: none;
-  margin-left: 0;
-  padding: 0;
-}
-
-.pagination > li:last-child > a,
-.pagination > li:last-child > span {
-  border-bottom-right-radius: 4px;
-  border-top-right-radius: 4px;
-  display: none;
-  margin-right: 0;
-  padding: 0;
+.pagination__link, 
+.pagination__link--active {
+  padding: 8px;
 }
