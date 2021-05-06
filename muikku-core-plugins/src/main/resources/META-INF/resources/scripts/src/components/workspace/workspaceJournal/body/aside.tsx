@@ -87,9 +87,9 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
     }
     return <Navigation>
       {!this.props.status.isStudent && (
-        <div className="journal-student-list-container">
+        <div className="student-list-container">
           <NavigationTopic name="Opiskelijat">
-            <ul className="journal-student-List">
+            <ul className="student-list">
               {navigationElementList}
             </ul>
           </NavigationTopic>
