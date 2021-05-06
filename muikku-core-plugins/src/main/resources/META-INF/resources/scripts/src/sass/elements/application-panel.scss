@@ -28,6 +28,7 @@
 
 .application-panel--workspace-journal {
   padding: 0;
+  
   @include breakpoint($breakpoint-pad) {
     padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
   }
@@ -254,7 +255,7 @@
   @include breakpoint($breakpoint-pad) {
     height: $navbar-desktop-height;
     padding: 12px;
-    display:flex;
+    display: flex;
   }
 
 }

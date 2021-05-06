@@ -20,14 +20,15 @@
   padding: 15px 0;
 }
 
-.journal__student__list__container {
+.journal__student-list-container {
   display:inline;
+
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
 }
 
-.journal__student__List {
+.journal__student-List {
   margin: 0 0 10px;
   max-height: 200px;
   overflow: auto;

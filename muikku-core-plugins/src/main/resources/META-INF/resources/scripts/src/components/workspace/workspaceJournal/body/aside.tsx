@@ -29,22 +29,19 @@ interface NavigationAsideState {
 }
 
 class NavigationAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
-  
   constructor(props:NavigationAsideProps){
     super(props);
 
     this.state = {
       students: null
     }
-
   }
 
   componentDidUpdate(prevProps: NavigationAsideProps, prevState: NavigationAsideState){
     if(JSON.stringify(prevProps.workspace) !== JSON.stringify(this.props.workspace)){
-      
       this.setState({
         students: this.props.workspace.students
-      })
+      });
     }
   }
 
@@ -58,7 +55,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
 
   }
-  
+
   /**
    * render
    * @returns
@@ -88,12 +85,11 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           <span className="link link--full link--menu">{getName(student, true)}</span></li>)
       }) : undefined;
     }
-      
     return <Navigation>
       {!this.props.status.isStudent && (
-        <div className="journal__student__list__container">
+        <div className="journal__student-list-container">
           <NavigationTopic name="Opiskelijat">
-            <ul className="journal__student__List">
+            <ul className="journal__student-List">
               {navigationElementList}
             </ul>
           </NavigationTopic>
