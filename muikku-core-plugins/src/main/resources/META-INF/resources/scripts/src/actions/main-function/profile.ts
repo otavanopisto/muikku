@@ -729,6 +729,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
         userIdentifier: state.status.userSchoolDataIdentifier,
         beginDate: data.beginDate,
         endDate: data.endDate,
+        state: data.state,
       }), 'callback')() as any;
 
       // create a new worklist where we would replace the old worklist items with
@@ -750,6 +751,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
         payload: newWorkList,
       });
 
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
