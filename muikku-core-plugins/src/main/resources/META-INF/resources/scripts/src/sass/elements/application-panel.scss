@@ -26,6 +26,13 @@
   }
 }
 
+.application-panel--workspace-journal {
+  padding: 0;
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
 .application-panel__container {
   @include text;
   display: flex;
@@ -234,7 +241,7 @@
 
 .application-panel__helper-container--workspace-journal {
   @include no-scrollbars;
-  display: flex;
+  display: none;
   flex-basis: 220px;
   flex-grow: 0;
   flex-shrink: 0;
@@ -247,6 +254,7 @@
   @include breakpoint($breakpoint-pad) {
     height: $navbar-desktop-height;
     padding: 12px;
+    display:flex;
   }
 
 }
