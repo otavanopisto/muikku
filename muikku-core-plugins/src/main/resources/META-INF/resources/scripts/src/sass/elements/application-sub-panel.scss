@@ -67,12 +67,6 @@
   }
 }
 
-.application-sub-panel__header-title {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
 .application-sub-panel__header--workspace-settings {
   padding: 0;
 }
@@ -544,6 +538,11 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--worklist-items-footer {
+  margin: 5px 0 5px 12px;
+  padding: 0;
 }
 
 .application-sub-panel__item--workspace-management {
