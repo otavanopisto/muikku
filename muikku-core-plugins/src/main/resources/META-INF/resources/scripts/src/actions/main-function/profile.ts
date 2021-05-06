@@ -751,6 +751,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
         payload: newWorkList,
       });
 
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
