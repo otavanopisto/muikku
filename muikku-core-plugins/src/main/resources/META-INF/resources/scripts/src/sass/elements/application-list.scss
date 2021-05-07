@@ -21,7 +21,7 @@
 
 .application-list--dialog-remove-users {
   height: 285px;
- }
+}
 
 .application-list__header-container {
   align-items: flex-start;
@@ -60,9 +60,6 @@
   font-size: 0.875rem;
   margin-bottom: 0;
 }
-
-
-
 
 .application-list--workspace-users {
   display: flex;
@@ -290,7 +287,8 @@
   flex-flow: row nowrap;
 }
 
-.application-list__item-content-wrapper--workspace-user {
+.application-list__item-content-wrapper--workspace-user,
+.application-list__item-content-wrapper--dialog-remove-users {
   align-items: center;
 }
 
@@ -394,7 +392,7 @@
     background-color: $color-main-function-application-list-item-disabled-background;
     color: $color-main-function-application-list-item-disabled-text;
   }
-    // scss-lint:enable SelectorFormat
+  // scss-lint:enable SelectorFormat
 }
 
 .application-list__item-- .application-list__item--notification {

@@ -222,6 +222,10 @@ export interface SelectItem {
   label: string;
   type?: string;
   disabled?: boolean;
+  variables?: {
+    identifier?: string | number;
+    boolean?: boolean;
+  };
 }
 
 export interface workspaceStudentsQueryDataType {
