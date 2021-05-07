@@ -34,7 +34,7 @@ export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBody
     return (<div>
       <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl} />
       <ScreenContainer viewModifiers="workspace">
-        <MaterialEditor />
+        <MaterialEditor locationPage="Home" />
         <WorkspaceHomeHeader />
         <div className="panel-group panel-group--workspace-main">
           <WorkspaceDescription />

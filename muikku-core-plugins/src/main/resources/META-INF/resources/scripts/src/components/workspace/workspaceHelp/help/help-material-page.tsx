@@ -78,7 +78,6 @@ class WorkspaceMaterial extends React.Component<
               canDelete
               canRestrictView
               disablePlugins
-              canChangePageType={!isBinary}
               canChangeExerciseType={!isBinary}
               canSetLicense={!isBinary}
               canSetProducers={!isBinary}
