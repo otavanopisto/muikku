@@ -2,6 +2,9 @@ name: Accessibility checks
 on: workflow_dispatch
 jobs:
   WCAG_check:
+    env:
+      OOM2_USER: ${{secrets.OOM2_USER}}
+      OOM2_PASSWORD: ${{secrets.OOM2_PASSWORD}}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
