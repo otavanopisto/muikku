@@ -72,8 +72,6 @@ public class CourseTestsBase extends AbstractUITest {
       assertTrue(elementExists);
     }finally{
       deleteWorkspace(workspace.getId());
-      archiveUserByEmail(manager.getEmail());
-      archiveUserByEmail(student.getEmail());
       WireMock.reset();
     }
   }
@@ -286,7 +284,6 @@ public class CourseTestsBase extends AbstractUITest {
       waitForPresent(".item-list__item--teacher .item-list__user-vacation-period");
       assertTextIgnoreCase(".item-list__item--teacher .item-list__user-vacation-period", "Poissa 21.12.2010–21.12.2025");      
     }finally{
-      archiveUserByEmail(student.getEmail());
       deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
