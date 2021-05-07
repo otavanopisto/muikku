@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { colorIntToHex, getUserImageUrl, getName } from '~/util/modifiers';
-import equals = require( "deep-equal" );
-import i18n, { i18nType } from '~/reducers/base/i18n';
+import { getName } from '~/util/modifiers';
+import { i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
@@ -12,14 +10,13 @@ import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
 
 import { DiscussionType, DiscussionThreadType, DiscussionUserType } from '~/reducers/discussion';
-import { UserType } from '~/reducers/user-index';
-import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import { StateType } from '~/reducers';
 import OverflowDetector from '~/components/general/overflow-detector';
 import { DiscussionThreads, DiscussionThread, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from './threads/threads';
 import { StatusType } from '~/reducers/base/status';
+import Avatar from '~/components/general/avatar';
 
 interface DiscussionThreadsProps {
   discussion: DiscussionType,
@@ -62,21 +59,17 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
     return <BodyScrollKeeper hidden={!!this.props.discussion.current}>
       <DiscussionThreads>{
         this.props.discussion.threads.map( ( thread: DiscussionThreadType, index: number ) => {
-          let user: DiscussionUserType = thread.creator;
+          const user: DiscussionUserType = thread.creator;
 
-          let userCategory = thread.creator.id > 10 ? thread.creator.id % 10 + 1 : thread.creator.id;
-          let threadCategory = thread.forumAreaId > 10 ? thread.forumAreaId % 10 + 1 : thread.forumAreaId;
+          const userCategory = thread.creator.id > 10 ? thread.creator.id % 10 + 1 : thread.creator.id;
+          const threadCategory = thread.forumAreaId > 10 ? thread.forumAreaId % 10 + 1 : thread.forumAreaId;
           let avatar;
           if ( !user ) {
             //This is what it shows when the user is not ready
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <object role="img" aria-label={this.props.i18n.text.get("plugin.wcag.userAvatar.label")} className="avatar-container"
-              data={getUserImageUrl( user )}
-              type="image/jpeg">
-              <div className={`avatar avatar--category-${userCategory}`}>{user.firstName[0]}</div>
-            </object>;
+            avatar = <Avatar key={thread.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory} avatarAriaLabel={this.props.i18n.text.get("plugin.wcag.userAvatar.label")} />
           }
 
           return (
