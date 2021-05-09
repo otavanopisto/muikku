@@ -462,10 +462,14 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
 
     try {
       const worklistItem: StoredWorklistItem = await promisify(mApi().worklist.worklistItems.create(data), 'callback')() as StoredWorklistItem;
+
+      let displayName = state.i18n.time.format(worklistItem.entryDate, "MMMM YYYY");
+      displayName = displayName[0].toUpperCase() + displayName.substr(1);
+
       const expectedSummary: WorklistItemsSummary = {
         beginDate: moment(worklistItem.entryDate).startOf("month").format("YYYY-MM-DD"),
         endDate: moment(worklistItem.entryDate).endOf("month").format("YYYY-MM-DD"),
-        displayName: state.i18n.time.format(worklistItem.entryDate, "MMMM YYYY"),
+        displayName,
         count: 1,
       }
 
@@ -478,15 +482,18 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
           return moment(p.summary.beginDate).isAfter(entryDate);
         });
 
+        // we can add it here right away because not finding
+        // the worklist summary thing means that it was just
+        // created so we can add its single item right away
         if (itemWithMoreIndex === -1) {
           newWorklist.push({
             summary: expectedSummary,
-            items: null,
+            items: [worklistItem],
           });
         } else {
           newWorklist.splice(itemWithMoreIndex, 0, {
             summary: expectedSummary,
-            items: null,
+            items: [worklistItem],
           });
         }
 
@@ -497,8 +504,21 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
       } else {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
         newSummary.summary.count++;
+
+        // on the other hand here we should only add the worklist
+        // item if there are items already rather than null
+        // in which case it hasn't been loaded
         if (newSummary.items) {
-          newSummary.items = [...newSummary.items, worklistItem];
+          const itemWithMoreIndex = newSummary.items.findIndex((p) => {
+            return moment(p.entryDate).isAfter(worklistItem.entryDate);
+          });
+
+          if (itemWithMoreIndex === -1) {
+            newSummary.items = [...newSummary.items, worklistItem];
+          } else {
+            newSummary.items.splice(itemWithMoreIndex, 0, worklistItem);
+          }
+          
         }
 
         const newWorklist = [...currWorklist]
@@ -537,6 +557,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType = function
       if (matchingSummaryIndex !== -1) {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
         newSummary.summary.count--;
+  
         if (newSummary.items) {
           newSummary.items = newSummary.items.filter((i) => i.id !== data.item.id);
         }

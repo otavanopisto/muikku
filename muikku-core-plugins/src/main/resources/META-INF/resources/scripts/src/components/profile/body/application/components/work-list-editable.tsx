@@ -9,6 +9,10 @@ import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
 
+const startOfThisMonth = moment().startOf("month");
+const startOfLastMonth = startOfThisMonth.subtract(1, "months").startOf("month");
+const daysInTheMonthFromToday = moment().daysInMonth();
+
 interface IWorkListEditableProps {
   i18n: i18nType,
   locales: LocaleListType;
@@ -164,6 +168,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
               onChange={this.handleDateChange.bind(this, "date")}
               locale={this.props.i18n.time.getLocale()}
               selected={this.state.date}
+              minDate={daysInTheMonthFromToday <= 10 ? startOfLastMonth : startOfThisMonth}
             />
           </div>
         </div>

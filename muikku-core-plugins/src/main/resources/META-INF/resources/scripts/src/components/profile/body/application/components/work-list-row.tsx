@@ -11,6 +11,10 @@ import { DeleteProfileWorklistItemTriggerType, deleteProfileWorklistItem,
   editProfileWorklistItem, EditProfileWorklistItemTriggerType} from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
+import moment from "~/lib/moment";
+
+const today = moment();
+const lastMonth = today.subtract(1, "months");
 
 interface IWorkListRowProps {
   i18n: i18nType,
@@ -95,7 +99,15 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
       );
     }
 
-    const canBeEdited = this.props.item.state !== WorklistBillingState.PAID && this.props.item.state !== WorklistBillingState.APPROVED;
+    const momentDate = moment(this.props.item.entryDate);
+    const daysInTheMonth = momentDate.daysInMonth();
+    const isCurrentMonth = momentDate.isSame(today, "month");
+    const isPreviousMonth = momentDate.isSame(lastMonth, "month");
+
+    const canBeEdited = (
+      this.props.item.state !== WorklistBillingState.PAID &&
+      this.props.item.state !== WorklistBillingState.APPROVED
+    ) && (isCurrentMonth || (isPreviousMonth && daysInTheMonth <= 10));
 
     let entryStateText;
     let entryStateIcon;
