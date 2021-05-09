@@ -144,23 +144,25 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
         const sectionIsLastMonth = moment(section.summary.beginDate).isSame(lastMonthFirstDay);
         const submitLastMonthButton = (
-          sectionIsLastMonth ?
           <SubmitWorklistItemsDialog summary={section.summary}>
-            <Link title={this.props.i18n.text.get("plugin.profile.worklist.submitWorklistForApproval")} as="span" className="glyph glyph--submit-worklist icon-thumb-up"></Link>
-          </SubmitWorklistItemsDialog> :
-          null
+            <Link className="link link--submit-worklist-approval">{this.props.i18n.text.get("plugin.profile.worklist.submitWorklistForApproval")}</Link>
+          </SubmitWorklistItemsDialog>
         )
 
         return (
           <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
             <h4 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
               <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
-              <span className="application-sub-panel__header-title">{section.summary.displayName} ({section.summary.count})</span>
-              {submitLastMonthButton}
+              <span>{section.summary.displayName} ({section.summary.count})</span>
             </h4>
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
               {entries && entries.reverse()}
+              {isOpen && sectionIsLastMonth ?
+                <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
+                  <div className="application-sub-panel__item-data">{submitLastMonthButton}</div>
+                </div>
+              : null}
             </div>
           </div>
         );
