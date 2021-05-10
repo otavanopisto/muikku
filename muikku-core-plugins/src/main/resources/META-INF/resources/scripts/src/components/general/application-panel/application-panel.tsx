@@ -16,7 +16,6 @@ interface ApplicationPanelProps {
   asideBefore?: React.ReactElement<any>;
   asideAfter?: React.ReactElement<any>;
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
-  disableStickyScrolling?: boolean;
 }
 
 interface ApplicationPanelState {}
@@ -62,7 +61,6 @@ export default class ApplicationPanel extends React.Component<
               primaryOption={this.props.primaryOption}
               asideAfter={this.props.asideAfter}
               asideBefore={this.props.asideBefore}
-              disableStickyScrolling={this.props.disableStickyScrolling}
             >
               {this.props.children}
             </ApplicationPanelBody>
