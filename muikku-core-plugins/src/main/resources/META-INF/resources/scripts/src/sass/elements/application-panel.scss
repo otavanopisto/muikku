@@ -218,10 +218,13 @@
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
+    height: calc(100vh - 145px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border
     margin: 0;
     overflow: auto;
     overscroll-behavior: contain;
     padding: 0 12px;
+    position: sticky;
+    top: 134px; // Navbar height + application-panel__actions height
     z-index: 1;
   }
 }
