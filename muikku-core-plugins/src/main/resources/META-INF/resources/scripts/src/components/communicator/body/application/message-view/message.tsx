@@ -35,7 +35,14 @@ class Message extends React.Component<MessageProps, MessageState> {
     this.getMessageSender = this.getMessageSender.bind(this);
 
   }
-  getMessageSender(sender: UserType): any {
+
+  /**
+   * getMessageSender
+   * @param sender
+   * @returns
+   * Returns span element with sender name
+   */
+  getMessageSender(sender: UserType): JSX.Element {
     if (sender.archived === true) {
       return <span key={sender.userEntityId} className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
     }
@@ -44,7 +51,16 @@ class Message extends React.Component<MessageProps, MessageState> {
     }
     return <span key={sender.userEntityId}>{getName(sender as any, !this.props.status.isStudent)}</span>;
   }
-  getMessageRecipients(message: MessageType): any {
+
+  /**
+   * getMessageRecipients
+   * @param message MessageType
+   * @returns JSX.Element[][]
+   *
+   * Returns array of arrays that contains span elements with corresponding
+   * recipients depending are they recipients, userGroups or workspaceRecipients
+   */
+  getMessageRecipients(message: MessageType): JSX.Element[][] {
     let messageRecipientsList = message.recipients.map((recipient) => {
       if (recipient.archived === true) {
         return <span key={recipient.recipientId} className="message__user-archived">{this.props.i18n.text.get("plugin.communicator.sender.archived")}</span>;
@@ -67,15 +83,26 @@ class Message extends React.Component<MessageProps, MessageState> {
 
     return [messageRecipientsList, userGroupRecipientsList, workspaceRecipientsList];
   }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
-    // This is the sender of the message
-    let senderObject: UserRecepientType = {
+    /**
+     * This is the sender of the message
+     */
+    const senderObject: UserRecepientType = {
       type: "user",
       value: this.props.message.sender
     };
 
-    // These are the receipients of the message
-    let recipientsObject: Array<UserRecepientType> = this.props.message.recipients.map(( r ): UserRecepientType => ( {
+    /**
+     * These are the receipients of the message that are mapped to new array
+     * Then filtering the logged sender away from the recepients,
+     * recipient who has ended his studies and recipient who has been archived
+     */
+    const recipientsList: Array<UserRecepientType> = this.props.message.recipients.map(( r ): UserRecepientType => ( {
       type: "user",
       value: {
         id: r.userEntityId,
@@ -85,40 +112,61 @@ class Message extends React.Component<MessageProps, MessageState> {
         studiesEnded: r.studiesEnded,
         archived: r.archived
       }
-    })).filter(user => user.value.id !== this.props.status.userId) // We are filtering the sender from the recepient, just in case
-      .filter(user => user.value.studiesEnded !== true) // We are filtering recipient who has ended his studies
-      .filter(user => user.value.archived !== true); // We are filtering recipient who has been archived
+    })).filter(user => user.value.id !== this.props.status.userId && user.value.studiesEnded !== true && user.value.archived !== true)
 
-    // These are the usergroup recepients
-    let userGroupObject: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
+    /**
+     * These are the usergroup recepients
+     */
+    const userGroupList: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug): UserGroupRecepientType => ({
       type: "usergroup",
       value: ug
     }));
 
-    let workspaceRecepientsFiltered = this.props.message.workspaceRecipients.filter((w, pos, self)=>{
+    const workspaceRecepientsFiltered = this.props.message.workspaceRecipients.filter((w, pos, self)=>{
       return self.findIndex((w2)=>w2.workspaceEntityId === w.workspaceEntityId) === pos;
     });
 
-    // And the workspace recepients, sadly has to force it
-    let workspaceObject: Array<WorkspaceRecepientType> = workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
+    /**
+     * And the workspace recepients, sadly has to force it
+     */
+    const workspaceList: Array<WorkspaceRecepientType> = workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
       type: "workspace",
-      value: ({
+      value: {
         id: w.workspaceEntityId,
         name: w.workspaceName,
-      } as WorkspaceType)
+      } as WorkspaceType
     }));
 
-    // The basic reply target is the sender
-    let replytarget = [senderObject];
+    /**
+     * The basic reply target is the sender
+     */
+    let replyTarget = [senderObject];
+
+    /**
+     * If the logged in user is the message sender, we filter him out from the message recipients
+     * so "reply to self" is not possible. Therefore reply will target the message recipients instead.
+     * Also we filter message recipients based on whether logged in user has permission to sent message to
+     * usergroups or workspaces.
+     * replyTarget can have multiple recipients IF message sender is the same as currently logged in user
+     * AND message has been sent to multiple recipients AND currently logged in user has permissions to
+     * send the message to said recipients.
+     * The last filter will filter out currently logged in user from userGroupList and workspaceList so
+     * user cannot send messages to him self.
+     */
     if (senderObject.value.userEntityId === this.props.status.userId) {
-      replytarget = [senderObject].concat(recipientsObject as any)
-      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupObject as any : [])
-      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceObject as any : [])
+      replyTarget = [senderObject].concat(recipientsList as any)
+      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupList as any : [])
+      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceList as any : [])
         .filter((t) => t.value.userEntityId !== this.props.status.userId);
     }
-    let replyalltarget = [senderObject].concat(recipientsObject as any)
-    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupObject as any : [])
-    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceObject as any : [])
+
+    /**
+     * Defining what all recipients will get messages depending their
+     * permissions
+     */
+    const replyAllTarget = [senderObject].concat(recipientsList as any)
+    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupList as any : [])
+    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceList as any : [])
       .filter((t) => t.value.userEntityId !== senderObject.value.userEntityId)
       .concat(senderObject as any).filter((t) => t.value.userEntityId !== this.props.status.userId);
 
@@ -152,14 +200,14 @@ class Message extends React.Component<MessageProps, MessageState> {
         <footer className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
           {this.props.message.sender.studiesEnded || this.props.message.sender.archived ? null :
             <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
-              initialSelectedItems={replytarget}
+              initialSelectedItems={replyTarget}
               initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
               <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
             </NewMessage>
           }
           {this.props.message.sender.studiesEnded || this.props.message.sender.archived ? null :
             <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
-              initialSelectedItems={replyalltarget} replyToAll
+              initialSelectedItems={replyAllTarget} replyToAll
               initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
               <Link tabIndex={0} className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
             </NewMessage>
@@ -170,6 +218,11 @@ class Message extends React.Component<MessageProps, MessageState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
@@ -177,6 +230,11 @@ function mapStateToProps( state: StateType ) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps( dispatch: Dispatch<any> ) {
   return {};
 };
