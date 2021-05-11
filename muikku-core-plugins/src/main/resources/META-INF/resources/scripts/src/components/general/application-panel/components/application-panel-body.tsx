@@ -72,9 +72,7 @@ export default class ApplicationPanelBody extends React.Component<
             {children}
           </div>
           {asideAfter ? (
-            <div
-              className="application-panel__helper-container"
-            >
+            <div className="application-panel__helper-container">
               {asideAfter}
             </div>
           ) : null}

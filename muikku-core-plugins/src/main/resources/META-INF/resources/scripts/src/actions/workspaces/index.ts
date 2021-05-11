@@ -451,7 +451,6 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
 
 type ApiPath = "materials" | "help";
 
-// Jotain
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
@@ -1950,6 +1949,7 @@ let loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType = functi
   includeHidden,
   callback
 ) {
+
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
@@ -2026,6 +2026,7 @@ let loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType = function loadWho
 let setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceMaterials(
   materials
 ) {
+
   return {
     type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
     payload: materials,
@@ -3564,7 +3565,6 @@ let deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrigge
   };
 };
 
-// Jotain
 let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(
   data,
   apiPath
@@ -3589,8 +3589,14 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
       let workspaceMaterialId: number = null;
 
       if (data.copyMaterialId) {
+        /**
+         * Reason why copying uses materials end point naming, is
+         * because it is shared end point for other workspaces functionality
+         * too
+         * Confusing yes, but this is how it works now
+         */
         workspaceMaterialId = ((await promisify(
-          apiRef.create(
+          mApi().workspace.workspaces.materials.create(
             data.workspace.id,
             {
               parentId,

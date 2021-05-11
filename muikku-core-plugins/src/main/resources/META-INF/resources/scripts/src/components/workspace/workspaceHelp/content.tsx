@@ -13,7 +13,7 @@ import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials, SetWholeWorkspaceMaterialsTriggerType } from "~/actions/workspaces";
+  setWholeWorkspaceHelp, SetWholeWorkspaceMaterialsTriggerType } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 
 interface ContentProps {
@@ -22,7 +22,7 @@ interface ContentProps {
   activeNodeId: number,
   workspace: WorkspaceType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
+  setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType,
   workspaceEditMode: WorkspaceEditModeStateType,
   doNotSetHashes?: boolean,
   enableTouch?: boolean,
@@ -101,7 +101,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           nextSiblingId: update.nextSiblingId,
         },
         success: () => {
-          this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
+          this.props.setWholeWorkspaceHelp(contentNodesRepaired);
         },
         dontTriggerReducerActions: true,
       })
@@ -148,7 +148,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           nextSiblingId: update.nextSiblingId,
         },
         success: () => {
-          this.props.setWholeWorkspaceMaterials(repariedNodes);
+          this.props.setWholeWorkspaceHelp(repariedNodes);
         },
         dontTriggerReducerActions: true,
       });
@@ -280,7 +280,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials}, dispatch);
+  return bindActionCreators({updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp}, dispatch);
 };
 
 export default connect(
