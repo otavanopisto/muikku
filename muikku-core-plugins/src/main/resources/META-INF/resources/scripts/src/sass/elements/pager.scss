@@ -22,7 +22,8 @@
   }
 }
 
-.pager__item, .pager__item > a {
+.pager__item, 
+.pager__item > a {
   align-items: center;
   border-radius: 10px;
   color: $color-pager-page-index-font;
@@ -36,7 +37,7 @@
 }
 
 .pager__item > a {
-  margin: 0
+  margin: 0;
 }
 
 .pager__items--first {
@@ -47,12 +48,9 @@
   width: 20px;
 }
 
-.pager__item--current {
+.pager__item--current,
+.pager__item--current > a {
   background-color: $color-pager-selected-page-index-background;
   color: $color-pager-selected-page-index-font;
   cursor: initial;
-}
-
-.pager__item--current > a {
-  color: $color-pager-selected-page-index-font;
 }
