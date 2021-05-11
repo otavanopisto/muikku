@@ -24,14 +24,12 @@ interface AnnouncementsPanelState {
   itemsPerPage: number
 }
 
-const PER_PAGE = 10;
-
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   constructor(props: AnnouncementsPanelProps){
     super(props);
 
     this.state = {
-      itemsPerPage: 5,
+      itemsPerPage: 8,
       currentPage: 0,
       announcements: props.announcements
     }
