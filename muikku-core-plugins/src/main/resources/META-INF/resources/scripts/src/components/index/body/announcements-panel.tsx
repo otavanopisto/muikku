@@ -29,7 +29,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
     super(props);
 
     this.state = {
-      itemsPerPage: 8,
+      itemsPerPage: 10,
       currentPage: 0,
       announcements: props.announcements
     }
