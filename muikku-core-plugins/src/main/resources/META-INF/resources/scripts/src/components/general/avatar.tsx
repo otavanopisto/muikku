@@ -11,7 +11,6 @@ interface AvatarProps {
   avatarAriaLabel?: string;
 }
 
-
 const Avatar = (props: AvatarProps) => {
   const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
 
