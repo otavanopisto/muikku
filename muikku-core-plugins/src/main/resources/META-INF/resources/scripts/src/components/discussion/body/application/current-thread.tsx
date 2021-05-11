@@ -165,9 +165,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return (
               <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar} hidden={isHiddenElement}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
-                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}{reply.childReplyCount > 0 &&
-                  <IconButton icon={parentHasHiddenSiblings ? "plus" : "minus"} onClick={this.onHideShowSubRepliesClick(reply.id)}/>
-                }</span>
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
               </DiscussionThreadHeader>
               <DiscussionThreadBody>
                 {reply.deleted ?
@@ -193,6 +191,15 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
                   <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                 </DeleteThreadComponent> : null}
+                {reply.childReplyCount > 0 ?
+                <Link tabIndex={0} as="span" onClick={this.onHideShowSubRepliesClick(reply.id)} className="link link--application-list-item-footer">
+                  {parentHasHiddenSiblings ?
+                    this.props.i18n.text.get("plugin.discussion.reply.showAllReplies")
+                    :
+                    this.props.i18n.text.get("plugin.discussion.reply.hideAllReplies")
+                  }
+                </Link>
+                : null }
               </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>
           )
