@@ -8,9 +8,10 @@ import ReplyThread from '../../dialogs/reply-thread';
 import ModifyThread from '../../dialogs/modify-thread';
 import DeleteThreadComponent from '../../dialogs/delete-thread-component';
 import ModifyThreadReply from '../../dialogs/modify-thread-reply';
-import { getName, getUserImageUrl } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
+import Avatar from '~/components/general/avatar';
 
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/avatar.scss';
@@ -97,11 +98,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       avatar = <div className="avatar avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
-      avatar = <object className="avatar-container"
-        data={getUserImageUrl(userCreator)}
-        type="image/jpeg">
-        <div className={`avatar avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
-      </object>;
+      avatar = <Avatar key={userCreator.id} id={userCreator.id} firstName={userCreator.firstName} hasImage={userCreator.hasImage} userCategory={userCategory} avatarAriaLabel={this.props.i18n.text.get("plugin.wcag.userAvatar.label")}/>
     }
 
     const canRemoveThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.removeThread;
@@ -142,7 +139,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType) => {
           const user: DiscussionUserType = reply.creator;
-          const userCategory = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator;
+          const userCategory = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator.id;
           const canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread;
           const canEditMessage = this.props.userId === reply.creator.id || areaPermissions.editMessages;
 
@@ -152,11 +149,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <object className="avatar-container"
-              data={getUserImageUrl(user)}
-              type="image/jpeg">
-              <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
-            </object>;
+            avatar = <Avatar key={reply.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory}/>
           }
 
           /**
