@@ -21,7 +21,12 @@
 }
 
 .student-list {
+  display: inline;
   margin: 0 0 10px;
   max-height: 200px;
   overflow: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
 }
