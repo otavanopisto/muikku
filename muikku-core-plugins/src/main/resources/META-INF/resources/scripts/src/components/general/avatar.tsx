@@ -7,39 +7,41 @@ interface AvatarProps {
   id: number;
   firstName: string;
   size?: string;
+  userCategory?: number;
+  avatarAriaLabel?: string;
 }
 
-export default function Avatar(props: AvatarProps) {
-  let userCategory = props.id > 10 ? (props.id % 10) + 1 : props.id;
-  return props.hasImage ? (
+
+const Avatar = (props: AvatarProps) => {
+  const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
+
+  const category =
+    (userCategory && userCategory) || id > 10 ? (id % 10) + 1 : id;
+
+  return hasImage ? (
     <object
-      className={`avatar-container ${
-        props.size ? "avatar-container--" + props.size : ""
-      }`}
-      data={getUserImageUrl(props.id)}
+    className={`avatar-container ${
+      props.size ? "avatar-container--" + props.size : ""
+    }`}
+      data={getUserImageUrl(id)}
       type="image/jpeg"
+      aria-label={avatarAriaLabel}
     >
-      <div
-        className={`avatar avatar--category-${userCategory} ${
+      <div className={`avatar avatar--category-${category}${
           props.size ? "avatar--" + props.size : ""
-        }`}
-      >
-        {props.firstName[0]}
+        }`}>
+        {firstName[0]}
       </div>
     </object>
   ) : (
-    <div
-      className={`avatar-container ${
-        props.size ? "avatar-container--" + props.size : ""
-      }`}
-    >
-      <div
-        className={`avatar avatar--category-${userCategory} ${
+    <div className="avatar-container">
+      <div className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
-        }`}
-      >
-        {props.firstName[0]}
+        }`}>
+        {firstName[0]}
       </div>
     </div>
   );
-}
+};
+
+export default Avatar;
