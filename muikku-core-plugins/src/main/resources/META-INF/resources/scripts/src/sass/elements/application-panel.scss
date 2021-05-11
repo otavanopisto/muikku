@@ -218,8 +218,8 @@
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    height: calc(100vh - 145px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border
-    margin: 0;
+    height: calc(100vh - 153px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    margin: 0 0 8px;
     overflow: auto;
     overscroll-behavior: contain;
     padding: 0 12px;
@@ -233,6 +233,7 @@
   align-items: center;
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
   height: $navbar-desktop-height;
+  margin: 0;
 }
 
 .application-panel__helper-container--workspace-journal {
