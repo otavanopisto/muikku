@@ -10,8 +10,8 @@ import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
 
 const startOfThisMonth = moment().startOf("month");
-const startOfLastMonth = startOfThisMonth.subtract(1, "months").startOf("month");
-const daysInTheMonthFromToday = moment().daysInMonth();
+const startOfLastMonth = startOfThisMonth.clone().subtract(1, "months").startOf("month");
+const daysInTheMonthFromToday = moment(new Date()).date();
 
 interface IWorkListEditableProps {
   i18n: i18nType,

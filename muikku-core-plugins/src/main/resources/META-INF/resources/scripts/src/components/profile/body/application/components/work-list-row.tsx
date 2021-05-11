@@ -14,7 +14,7 @@ import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
 
 const today = moment();
-const lastMonth = today.subtract(1, "months");
+const lastMonth = moment().subtract(1, "months");
 
 interface IWorkListRowProps {
   i18n: i18nType,
@@ -100,7 +100,7 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
     }
 
     const momentDate = moment(this.props.item.entryDate);
-    const daysInTheMonth = momentDate.daysInMonth();
+    const daysInTheMonth = momentDate.date();
     const isCurrentMonth = momentDate.isSame(today, "month");
     const isPreviousMonth = momentDate.isSame(lastMonth, "month");
 
