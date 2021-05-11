@@ -623,13 +623,26 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
       const matchingSummaryIndex = currWorklist.findIndex((f) => f.summary.beginDate === expectedSummaryBeginDate);
       if (matchingSummaryIndex !== -1 && currWorklist[matchingSummaryIndex].items) {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
-        newSummary.items = newSummary.items.map((i) => {
+
+        let newItems = newSummary.items.filter((i) => {
           if (i.id === data.item.id) {
-            return newWorklistItem;
+            return false;
           }
 
-          return i;
+          return true;
         });
+
+        const itemWithMoreIndex = newItems.findIndex((p) => {
+          return moment(p.entryDate).isAfter(newWorklistItem.entryDate);
+        });
+
+        if (itemWithMoreIndex === -1) {
+          newItems = [...newSummary.items, newWorklistItem];
+        } else {
+          newItems.splice(itemWithMoreIndex, 0, newWorklistItem);
+        }
+
+        newSummary.items = newItems;
 
         const newWorklist = [...currWorklist]
         newWorklist[matchingSummaryIndex] = newSummary;

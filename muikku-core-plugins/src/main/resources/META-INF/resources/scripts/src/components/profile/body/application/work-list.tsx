@@ -4,13 +4,16 @@ import { bindActionCreators, Dispatch } from "redux";
 import { InsertProfileWorklistItemTriggerType, insertProfileWorklistItem, loadProfileWorklistSection, LoadProfileWorklistSectionTriggerType } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
+import { ProfileType, WorklistBillingState, WorklistTemplate } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import WorkListRow from "./components/work-list-row";
 import { ButtonPill } from '~/components/general/button';
 import moment from "~/lib/moment";
 import Link from '~/components/general/link';
 import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
+
+const today = moment();
+const daysInTodayMonth = today.date();
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -142,7 +145,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           })
         ) : null;
 
+        const sectionHasSubmittableElements = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTEDED);
         const sectionIsLastMonth = moment(section.summary.beginDate).isSame(lastMonthFirstDay);
+        const isLastMonthAvailable = daysInTodayMonth <= 10;
+
         const submitLastMonthButton = (
           <SubmitWorklistItemsDialog summary={section.summary}>
             <Link className="link link--submit-worklist-approval">{this.props.i18n.text.get("plugin.profile.worklist.submitWorklistForApproval")}</Link>
@@ -158,7 +164,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
               {entries && entries.reverse()}
-              {isOpen && sectionIsLastMonth ?
+              {isOpen && sectionHasSubmittableElements && sectionIsLastMonth && isLastMonthAvailable ?
                 <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
                   <div className="application-sub-panel__item-data">{submitLastMonthButton}</div>
                 </div>
