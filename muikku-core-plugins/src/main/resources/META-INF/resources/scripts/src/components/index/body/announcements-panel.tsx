@@ -133,7 +133,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
      * renders pagination body as one of announcements list item
      */
     const renderPaginationBody = (
-      <div className="item-list__item item-list__item--announcements">
+      <div className="item-list__item item-list__item--announcements" aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}>
         <span className="item-list__text-body item-list__text-body--multiline--footer">
           <ReactPaginate
             previousLabel=""
@@ -145,13 +145,10 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
             pageRangeDisplayed={2}
             onPageChange={this.handlePageChange}
             ariaLabelBuilder={this.handleAriaLabelBuilder}
-            containerClassName={"pagination"}
-            pageClassName="pager__item pager__item"
+            containerClassName={"pager__body"}
+            pageClassName="pager__item"
             activeClassName={"pager__item pager__item--current"}
-            pageLinkClassName="pagination__link"
-            activeLinkClassName="pagination__link--active"
             breakClassName="pager__item pager__item--gap"
-            breakLinkClassName="pagination__link"
            />
         </span>
       </div>

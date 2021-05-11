@@ -22,7 +22,7 @@
   }
 }
 
-.pager__item {
+.pager__item, .pager__item > a {
   align-items: center;
   border-radius: 10px;
   color: $color-pager-page-index-font;
@@ -33,6 +33,10 @@
   justify-content: center;
   margin: 0 0 0 10px;
   width: 34px;
+}
+
+.pager__item > a {
+  margin: 0
 }
 
 .pager__items--first {
@@ -47,4 +51,8 @@
   background-color: $color-pager-selected-page-index-background;
   color: $color-pager-selected-page-index-font;
   cursor: initial;
+}
+
+.pager__item--current > a {
+  color: $color-pager-selected-page-index-font;
 }
