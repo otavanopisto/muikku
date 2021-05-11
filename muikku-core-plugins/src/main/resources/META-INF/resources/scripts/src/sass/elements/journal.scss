@@ -20,14 +20,6 @@
   padding: 15px 0;
 }
 
-.student-list-container {
-  display: inline;
-
-  @include breakpoint($breakpoint-pad) {
-    display: none;
-  }
-}
-
 .student-list {
   margin: 0 0 10px;
   max-height: 200px;

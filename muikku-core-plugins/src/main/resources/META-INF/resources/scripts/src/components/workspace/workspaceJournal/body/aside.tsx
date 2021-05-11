@@ -1,20 +1,32 @@
-import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
-import Link from '~/components/general/link';
-import { i18nType } from '~/reducers/base/i18n';
-import * as queryString from 'query-string';
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import Link from "~/components/general/link";
+import { i18nType } from "~/reducers/base/i18n";
+import * as queryString from "query-string";
 
-import '~/sass/elements/buttons.scss';
-import '~/sass/elements/item-list.scss';
-import { StateType } from '~/reducers';
-import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
-import { WorkspaceType } from '../../../../reducers/workspaces/index';
-import { StatusType } from '../../../../reducers/base/status';
-import { getName } from '../../../../util/modifiers';
-import { bindActionCreators } from 'redux';
-import { loadStudentsOfWorkspace, loadCurrentWorkspaceJournalsFromServer } from '~/actions/workspaces';
-import { LoadUsersOfWorkspaceTriggerType, LoadCurrentWorkspaceJournalsFromServerTriggerType } from '../../../../actions/workspaces/index';
-import { WorkspaceStudentListType } from '../../../../reducers/user-index';
+import "~/sass/elements/buttons.scss";
+import "~/sass/elements/item-list.scss";
+import { StateType } from "~/reducers";
+import Navigation, {
+  NavigationTopic,
+  NavigationElement,
+} from "~/components/general/navigation";
+import { WorkspaceType } from "../../../../reducers/workspaces/index";
+import { StatusType } from "../../../../reducers/base/status";
+import { getName } from "../../../../util/modifiers";
+import { bindActionCreators } from "redux";
+import {
+  loadStudentsOfWorkspace,
+  loadCurrentWorkspaceJournalsFromServer,
+} from "~/actions/workspaces";
+import {
+  LoadUsersOfWorkspaceTriggerType,
+  LoadCurrentWorkspaceJournalsFromServerTriggerType,
+} from "../../../../actions/workspaces/index";
+import {
+  WorkspaceStudentListType,
+  ShortWorkspaceUserWithActiveStatusType,
+} from "../../../../reducers/user-index";
 
 interface NavigationAsideProps {
   i18n: i18nType;
@@ -25,22 +37,31 @@ interface NavigationAsideProps {
 }
 
 interface NavigationAsideState {
-  students: WorkspaceStudentListType | null
+  students: WorkspaceStudentListType | null;
 }
 
-class NavigationAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
-  constructor(props:NavigationAsideProps){
+class NavigationAside extends React.Component<
+  NavigationAsideProps,
+  NavigationAsideState
+> {
+  constructor(props: NavigationAsideProps) {
     super(props);
 
     this.state = {
-      students: null
-    }
+      students: null,
+    };
   }
 
-  componentDidUpdate(prevProps: NavigationAsideProps, prevState: NavigationAsideState){
-    if(JSON.stringify(prevProps.workspace) !== JSON.stringify(this.props.workspace)){
+  componentDidUpdate(
+    prevProps: NavigationAsideProps,
+    prevState: NavigationAsideState
+  ) {
+    if (
+      JSON.stringify(prevProps.workspace) !==
+      JSON.stringify(this.props.workspace)
+    ) {
       this.setState({
-        students: this.props.workspace.students
+        students: this.props.workspace.students,
       });
     }
   }
@@ -50,52 +71,97 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
    * @param id
    * @returns
    */
-  handleOnStudentClick = (id:number | null) => (e: React.MouseEvent) => {
-
+  handleOnStudentClick = (id: number | null) => (e: React.MouseEvent) => {
     this.props.loadCurrentWorkspaceJournalsFromServer(id);
+  };
 
-  }
+  /**
+   * filterStudents
+   * @param students
+   * @returns array of students or empty array
+   */
+  filterStudents = (students: WorkspaceStudentListType | null) => {
+    if (students !== null) {
+      return !this.props.status.isStudent && students
+        ? students.results.filter(
+            (student, index, array) =>
+              array.findIndex(
+                (otherStudent) =>
+                  otherStudent.userEntityId === student.userEntityId
+              ) === index
+          )
+        : [];
+    } else {
+      return [];
+    }
+  };
 
   /**
    * render
    * @returns
    */
   render() {
-    const { students } = this.state
+    const { students } = this.state;
+    const { workspace } = this.props;
 
-    const navigationElementList: JSX.Element[] = [];
+    /**
+     * Filtered student list
+     */
+    const filteredStudents = this.filterStudents(students);
 
-    /*
-      const allSelected = this.props.workspace.journals !== null && this.props.workspace.journals.userEntityId === null;
-    */
+    /**
+     * If all student is showed
+     */
+    let allSelected =
+      workspace !== null &&
+      workspace.journals !== null &&
+      workspace.journals.userEntityId === null;
 
-    navigationElementList.push(<li key="showAll" onClick={this.handleOnStudentClick(null)} className={`item-list__item item-list__item--aside-navigation`}>
-      <span className="item-list__icon icon-user"></span>
-      <span className="link link--full link--menu ">{this.props.i18n.text.get("plugin.workspace.journal.studentFilter.showAll")}</span></li>);
+    let navigationElementList: JSX.Element[] = [];
 
-    if(students !== null){
-      !this.props.status.isStudent && students  ? (students.results)
-      .filter((student, index, array) =>
-        array.findIndex((otherStudent) => otherStudent.userEntityId === student.userEntityId) === index
-      ).map((student) => {
-        const selected = student.userEntityId === this.props.workspace.journals.userEntityId;
+    navigationElementList.push(
+      <NavigationElement
+        key="showAll"
+        isActive={allSelected}
+        modifiers="aside-navigation"
+        icon="user"
+        onClick={this.handleOnStudentClick(null)}
+      >
+        {this.props.i18n.text.get(
+          "plugin.workspace.journal.studentFilter.showAll"
+        )}
+      </NavigationElement>
+    );
 
-        navigationElementList.push(<li onClick={this.handleOnStudentClick(student.userEntityId)} className={`item-list__item item-list__item--aside-navigation ${selected && "active"}`} key={student.userEntityId}>
-          <span className="item-list__icon icon-user"></span>
-          <span className="link link--full link--menu">{getName(student, true)}</span></li>)
-      }) : undefined;
-    }
-    return <Navigation>
-      {!this.props.status.isStudent && (
-        <div className="student-list-container">
-          <NavigationTopic name="Opiskelijat">
-            <ul className="student-list">
+    filteredStudents.length > 0 &&
+      filteredStudents.map((student) =>
+        navigationElementList.push(
+          <NavigationElement
+            key={student.userEntityId}
+            isActive={
+              student.userEntityId ===
+              this.props.workspace.journals.userEntityId
+            }
+            modifiers="aside-navigation"
+            icon="user"
+            onClick={this.handleOnStudentClick(student.userEntityId)}
+          >
+            {`${student.firstName} ${student.lastName}`}
+          </NavigationElement>
+        )
+      );
+
+    return (
+      <Navigation>
+        {!this.props.status.isStudent && (
+          <div className="student-list-container">
+            <NavigationTopic name="Opiskelijat" className="student-list">
               {navigationElementList}
-            </ul>
-          </NavigationTopic>
-        </div>
-      )}
-    </Navigation>
+            </NavigationTopic>
+          </div>
+        )}
+      </Navigation>
+    );
   }
 }
 
@@ -104,30 +170,27 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
  * @param state
  * @returns
  */
-function mapStateToProps( state: StateType ) {
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
-  }
-};
+    status: state.status,
+  };
+}
 
 /**
  * mapDispatchToProps
  * @param dispatch
  * @returns
  */
-function mapDispatchToProps( dispatch: Dispatch<any> ) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,
-      loadCurrentWorkspaceJournalsFromServer
+      loadCurrentWorkspaceJournalsFromServer,
     },
     dispatch
-  );;
-};
+  );
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)( NavigationAside );
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
