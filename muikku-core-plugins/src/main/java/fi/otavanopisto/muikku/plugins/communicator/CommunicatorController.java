@@ -388,11 +388,10 @@ public class CommunicatorController {
     } else {
       List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipientsList = communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
       List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = new ArrayList<>();
-      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
 
       for (CommunicatorMessageRecipientWorkspaceGroup workspaceGroup : workspaceGroupRecipientsList) {
         WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
-        WorkspaceUserEntity workspaceUser =  workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, loggedUserEntity.defaultSchoolDataIdentifier());
+        WorkspaceUserEntity workspaceUser =  workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, loggedUser.defaultSchoolDataIdentifier());
         
         if (workspaceUser != null) {
           workspaceGroupRecipients.add(workspaceGroup);
