@@ -16,7 +16,7 @@ const today = moment();
 const daysInCurrentMonth = today.date();
 
 // This sets the date limit of the current month when it is not possible to add new entries to the previous month
-const currentMonthDayLimit: Number = 20;
+const currentMonthDayLimit: Number = 10;
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -150,7 +150,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
         const sectionHasSubmittableEntries = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTERED);
         const sectionIsPreviousMonth = moment(section.summary.beginDate).isSame(previousMonthsFirstDay);
-        const isPreviousMonthAvailable = daysInCurrentMonth <= 12;
+        const isPreviousMonthAvailable = daysInCurrentMonth <= currentMonthDayLimit;
 
         const submitLastMonthButton = (
           <SubmitWorklistItemsDialog summary={section.summary}>

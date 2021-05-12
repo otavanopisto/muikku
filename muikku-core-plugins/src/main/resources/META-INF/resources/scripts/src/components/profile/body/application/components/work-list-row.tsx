@@ -102,7 +102,7 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
     }
 
     const momentDate = moment(this.props.item.entryDate);
-    const dayOfCurrentMonth = momentDate.date();
+    const dayOfCurrentMonth = moment().date();
     const isCurrentMonth = momentDate.isSame(today, "month");
     const isPreviousMonth = momentDate.isSame(previousMonth, "month");
 
