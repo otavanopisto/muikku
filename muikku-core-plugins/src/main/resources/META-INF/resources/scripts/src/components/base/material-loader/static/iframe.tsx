@@ -1,4 +1,5 @@
 import * as React from "react";
+import { prepareH5POn } from "~/lib/h5p";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
 
@@ -14,8 +15,31 @@ interface IframeProps {
 }
 
 export default class Iframe extends React.Component<IframeProps, {}>{
+  private mainParentRef: React.RefObject<HTMLDivElement>;
+  private loadedH5P: boolean = false;
   constructor(props: IframeProps){
     super(props);
+
+    this.mainParentRef = React.createRef();
+
+    this.loadH5PIfNecessary = this.loadH5PIfNecessary.bind(this);
+  }
+  componentDidMount() {
+    this.loadH5PIfNecessary();
+  }
+  componentDidUpdate() {
+    this.loadH5PIfNecessary();
+  }
+  loadH5PIfNecessary() {
+    if (!this.loadedH5P) {
+      const iframe = this.mainParentRef.current && this.mainParentRef.current.querySelector("iframe");
+      if (iframe) {
+        iframe.addEventListener("load", () => {
+          prepareH5POn(iframe);
+        });
+        this.loadedH5P = true;
+      }
+    }
   }
   render (){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
