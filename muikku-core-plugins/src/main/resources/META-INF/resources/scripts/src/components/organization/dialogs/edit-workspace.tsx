@@ -468,7 +468,7 @@ class OrganizationEditWorkspace extends React.Component<OrganizationEditWorkspac
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
 
-        let groups = this.props.users.usergroups.map(group => {
+        let groups = this.props.users.userGroups.map(group => {
           return { id: group.id, label: group.name, icon: "users", type: "student-group" }
         });
 
