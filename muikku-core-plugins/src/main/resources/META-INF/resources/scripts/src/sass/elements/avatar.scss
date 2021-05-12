@@ -20,6 +20,14 @@
   }
 }
 
+.avatar--small {
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-small-font-size;
+    height: $avatar-desktop-small-size;
+    width: $avatar-desktop-small-size;
+  }
+}
+
 .avatar-container {
   align-items: center;
   border-radius: 100%;
@@ -33,6 +41,13 @@
   @include breakpoint($breakpoint-pad) {
     height: $avatar-desktop-size;
     width: $avatar-desktop-size;
+  }
+}
+
+.avatar-container--small {
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-small-size;
+    width: $avatar-desktop-small-size;
   }
 }
 
@@ -75,4 +90,3 @@
 .avatar--category-10 {
   background-color: $color-main-function-category-10;
 }
-

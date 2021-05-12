@@ -12,7 +12,10 @@ import ApplicationList, {
 import Tabs from "~/components/general/tabs";
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
+import Avatar from "~/components/general/avatar";
 import Pager from "~/components/general/pager";
+import { isIdentifier } from "typescript";
+
 
 interface DialogProps {
   children?: React.ReactElement<any>;
@@ -390,6 +393,14 @@ export class DialogRemoveUsers extends React.Component<
     return false;
   }
 
+  // Userids we receive are a string like "PYRAMUS-STAFF-USER-12"
+  // So we need the digits from the end of the string for the avatar
+
+  getNumberFromUserId = (id: string): number => {
+    const digitRegEx: RegExp = /\d+/;
+    return parseInt(digitRegEx.exec(id)[0]);
+  };
+
   componentDidMount() {
     this.refreshRemoveUserpage(
       this.state.currentRemovePage,
@@ -437,7 +448,29 @@ export class DialogRemoveUsers extends React.Component<
                               }
                               key={"all-" + user.id}
                             >
-                              <ApplicationListItemContentWrapper>
+                              <ApplicationListItemContentWrapper
+                                modifiers="dialog-remove-users"
+                                asideModifiers="user"
+                                aside={
+                                  <Avatar
+                                    id={
+                                      user.variables &&
+                                      user.variables.identifier
+                                        ? (user.variables.identifier as number)
+                                        : this.getNumberFromUserId(
+                                            user.id as string
+                                          )
+                                    }
+                                    hasImage={
+                                      user.variables && user.variables.boolean
+                                        ? user.variables.boolean
+                                        : false
+                                    }
+                                    firstName={user.label}
+                                    size="small"
+                                  />
+                                }
+                              >
                                 <ApplicationListItemHeader
                                   onClick={this.toggleUserRemoved.bind(
                                     this,
@@ -489,7 +522,29 @@ export class DialogRemoveUsers extends React.Component<
                               className="course"
                               key={"remove-" + user.id}
                             >
-                              <ApplicationListItemContentWrapper>
+                              <ApplicationListItemContentWrapper
+                                modifiers="dialog-remove-users"
+                                asideModifiers="user"
+                                aside={
+                                  <Avatar
+                                    id={
+                                      user.variables &&
+                                      user.variables.identifier
+                                        ? (user.variables.identifier as number)
+                                        : this.getNumberFromUserId(
+                                            user.id as string
+                                          )
+                                    }
+                                    hasImage={
+                                      user.variables && user.variables.boolean
+                                        ? user.variables.boolean
+                                        : false
+                                    }
+                                    firstName={user.label}
+                                    size="small"
+                                  />
+                                }
+                              >
                                 <ApplicationListItemHeader
                                   onClick={this.toggleUserRemoved.bind(
                                     this,
