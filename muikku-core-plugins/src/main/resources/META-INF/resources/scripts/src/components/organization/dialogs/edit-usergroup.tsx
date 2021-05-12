@@ -204,6 +204,10 @@ class OrganizationEditUsergroup extends React.Component<
       let item: SelectItem = {
         id: users[i].id,
         label: users[i].firstName + " " + users[i].lastName,
+        variables: {
+          identifier: users[i].userEntityId,
+          boolean: users[i].hasImage,
+        },
       };
       selectItems.push(item);
     }
