@@ -416,7 +416,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     : null;
 
     return <div className="content-panel-wrapper">
-      <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
+      <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.helpPage.title")} ref="content-panel">
         {results}
         {emptyMessage}
         {createSectionElementWhenEmpty}
