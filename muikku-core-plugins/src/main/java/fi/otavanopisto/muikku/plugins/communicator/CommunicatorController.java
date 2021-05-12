@@ -359,18 +359,18 @@ public class CommunicatorController {
     UserEntity sender = userEntityController.findUserEntityById(communicatorMessage.getSender());
     if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_READ_RECIPIENTS_LIST)) {
       return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
-    } else if (loggedUser.defaultSchoolDataIdentifier().equals(sender.defaultSchoolDataIdentifier())) {
+    } else if (loggedUser.getDefaultIdentifier().equals(sender.getDefaultIdentifier())) {
       return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
     } else {
       List<CommunicatorMessageRecipientUserGroup> userGroupRecipientsList = communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
-      List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = new ArrayList<CommunicatorMessageRecipientUserGroup>();
+      List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = new ArrayList<>();
       SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier();
   
       for (CommunicatorMessageRecipientUserGroup userGroup : userGroupRecipientsList) {
         UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
-        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroupEntity);
-        UserGroupUserEntity groupUserEntity = userGroupEntityController.findUserGroupUserEntityBySchoolDataIdentifier(loggedUserIdentifier);
-        if (groupUsers.contains(groupUserEntity)) {
+        Boolean isMember = userGroupEntityController.isMember(loggedUserIdentifier, userGroupEntity);
+        
+        if (isMember) {
           userGroupRecipients.add(userGroup);
         }
       }
@@ -387,9 +387,10 @@ public class CommunicatorController {
       return communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
     } else {
       List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipientsList = communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
-      List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = new ArrayList<CommunicatorMessageRecipientWorkspaceGroup>();
+      List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = new ArrayList<>();
+      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+
       for (CommunicatorMessageRecipientWorkspaceGroup workspaceGroup : workspaceGroupRecipientsList) {
-        UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
         WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
         WorkspaceUserEntity workspaceUser =  workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, loggedUserEntity.defaultSchoolDataIdentifier());
         
