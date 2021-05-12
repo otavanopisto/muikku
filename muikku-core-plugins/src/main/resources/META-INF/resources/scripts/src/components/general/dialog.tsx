@@ -14,8 +14,6 @@ import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
 import Pager from "~/components/general/pager";
-import { isIdentifier } from "typescript";
-
 
 interface DialogProps {
   children?: React.ReactElement<any>;
