@@ -63,7 +63,11 @@ export default class ApplicationPanelBody extends React.Component<
         >
           {asideBefore ? (
             <div
-              className="application-panel__helper-container"
+              className={`application-panel__helper-container ${
+                modifier
+                  ? "application-panel__helper-container--" + modifier
+                  : ""
+              }`}
             >
               {asideBefore}
             </div>

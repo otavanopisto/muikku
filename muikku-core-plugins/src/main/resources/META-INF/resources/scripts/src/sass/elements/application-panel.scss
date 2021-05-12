@@ -229,6 +229,16 @@
   }
 }
 
+// Helper container's sticky position for Profile and Studies view has different height and top property values
+.application-panel__helper-container--profile,
+.application-panel__helper-container--studies {
+
+  @include breakpoint($breakpoint-pad) {
+    height: calc(100vh) - 97px; // 100 View-port height - top offset which is 77px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    top: 77px;
+  }
+}
+
 .application-panel__helper-container--main-action {
   align-items: center;
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
