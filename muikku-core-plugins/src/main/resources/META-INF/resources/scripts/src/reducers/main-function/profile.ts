@@ -10,7 +10,7 @@ export enum EditableField {
 }
 
 export enum WorklistBillingState {
-  ENTEDED = "ENTERED",
+  ENTERED = "ENTERED",
   PROPOSED = "PROPOSED",
   APPROVED = "APPROVED",
   PAID = "PAID",

@@ -13,7 +13,10 @@ import Link from '~/components/general/link';
 import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
 
 const today = moment();
-const daysInTodayMonth = today.date();
+const daysInCurrentMonth = today.date();
+
+// This sets the date limit of the current month when it is not possible to add new entries to the previous month
+const currentMonthDayLimit: Number = 20;
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -130,7 +133,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       </div>
     </div>);
 
-    const lastMonthFirstDay = moment().subtract(1, 'months').startOf("month");
+    const previousMonthsFirstDay = moment().subtract(1, 'months').startOf("month");
 
     const sections = (
       this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
@@ -140,14 +143,14 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         const entries = isOpen && hasData ? (
           section.items.map((item) => {
             return (
-              <WorkListRow key={item.id} item={item}/>
+              <WorkListRow key={item.id} item={item} currentMonthDayLimit={currentMonthDayLimit}/>
             );
           })
         ) : null;
 
-        const sectionHasSubmittableElements = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTEDED);
-        const sectionIsLastMonth = moment(section.summary.beginDate).isSame(lastMonthFirstDay);
-        const isLastMonthAvailable = daysInTodayMonth <= 10;
+        const sectionHasSubmittableEntries = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTERED);
+        const sectionIsPreviousMonth = moment(section.summary.beginDate).isSame(previousMonthsFirstDay);
+        const isPreviousMonthAvailable = daysInCurrentMonth <= 12;
 
         const submitLastMonthButton = (
           <SubmitWorklistItemsDialog summary={section.summary}>
@@ -164,7 +167,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
               {entries && entries.reverse()}
-              {isOpen && sectionHasSubmittableElements && sectionIsLastMonth && isLastMonthAvailable ?
+              {isOpen && sectionHasSubmittableEntries && sectionIsPreviousMonth && isPreviousMonthAvailable ?
                 <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
                   <div className="application-sub-panel__item-data">{submitLastMonthButton}</div>
                 </div>
@@ -183,6 +186,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           <div className="application-sub-panel__body">
             <WorkListEditable
               base={this.state.currentTemplate}
+              currentMonthDayLimit={currentMonthDayLimit}
               onSubmit={this.insertNew}
               isEditMode={false}
               resetOnSubmit={true}>

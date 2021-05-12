@@ -9,9 +9,9 @@ import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
 
-const startOfThisMonth = moment().startOf("month");
-const startOfLastMonth = startOfThisMonth.clone().subtract(1, "months").startOf("month");
-const daysInTheMonthFromToday = moment(new Date()).date();
+const startOfCurrentMonth = moment().startOf("month");
+const startOfPreviousMonth = startOfCurrentMonth.clone().subtract(1, "months").startOf("month");
+const dayOfCurrentMonth: Number = moment(new Date()).date();
 
 interface IWorkListEditableProps {
   i18n: i18nType,
@@ -28,6 +28,7 @@ interface IWorkListEditableProps {
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
   isEditMode: boolean;
+  currentMonthDayLimit: Number;
 }
 
 interface IWorksListEditableState {
@@ -135,7 +136,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     const disableSubmitButton = this.props.enableDisableSubmitOnEquality ? !this.canSubmitOnInequality() : false;
 
     // this component is what should display both for introducing new elements
-    // in the work list, aka, edit based on a template, and to edit existing elements
+    // in the work list, aka, add new based on a template, and to edit existing elements
     // this represents the row itself when it's in edit mode, the children is basically
     // the picker for the template mode, or whatever wants to be added
     return (
@@ -168,7 +169,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
               onChange={this.handleDateChange.bind(this, "date")}
               locale={this.props.i18n.time.getLocale()}
               selected={this.state.date}
-              minDate={daysInTheMonthFromToday <= 10 ? startOfLastMonth : startOfThisMonth}
+              minDate={dayOfCurrentMonth <= this.props.currentMonthDayLimit ? startOfPreviousMonth : startOfCurrentMonth}
             />
           </div>
         </div>

@@ -14,13 +14,14 @@ import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
 
 const today = moment();
-const lastMonth = moment().subtract(1, "months");
+const previousMonth = moment().subtract(1, "months");
 
 interface IWorkListRowProps {
-  i18n: i18nType,
+  i18n: i18nType;
   item: StoredWorklistItem;
-  deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType,
-  editProfileWorklistItem: EditProfileWorklistItemTriggerType,
+  deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
+  editProfileWorklistItem: EditProfileWorklistItemTriggerType;
+  currentMonthDayLimit: Number;
 }
 
 interface IWorksListEditableState {
@@ -95,19 +96,20 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
           resetOnSubmit={false}
           enableDisableSubmitOnEquality={true}
           isEditMode={true}
+          currentMonthDayLimit={this.props.currentMonthDayLimit}
         />
       );
     }
 
     const momentDate = moment(this.props.item.entryDate);
-    const daysInTheMonth = momentDate.date();
+    const dayOfCurrentMonth = momentDate.date();
     const isCurrentMonth = momentDate.isSame(today, "month");
-    const isPreviousMonth = momentDate.isSame(lastMonth, "month");
+    const isPreviousMonth = momentDate.isSame(previousMonth, "month");
 
     const canBeEdited = (
       this.props.item.state !== WorklistBillingState.PAID &&
       this.props.item.state !== WorklistBillingState.APPROVED
-    ) && (isCurrentMonth || (isPreviousMonth && daysInTheMonth <= 10));
+    ) && (isCurrentMonth || (isPreviousMonth && dayOfCurrentMonth <= this.props.currentMonthDayLimit));
 
     let entryStateText;
     let entryStateIcon;
