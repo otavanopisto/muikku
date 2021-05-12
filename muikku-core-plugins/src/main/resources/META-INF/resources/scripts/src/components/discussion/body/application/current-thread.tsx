@@ -11,12 +11,16 @@ import ModifyThreadReply from '../../dialogs/modify-thread-reply';
 import { getName } from "~/util/modifiers";
 import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
-import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
 import Avatar from '~/components/general/avatar';
 
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
+
+import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
+import Button from '../../../general/button';
+import { ButtonPill, IconButton } from '../../../general/button';
+import HoverButton from '../../../general/hover-button';
 
 interface CurrentThreadProps {
   discussion: DiscussionType,
@@ -27,10 +31,23 @@ interface CurrentThreadProps {
 }
 
 interface CurrentThreadState {
-
+  hiddenParentsLists: number[]
 }
 
 class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadState> {
+
+  constructor(props: CurrentThreadProps) {
+    super(props);
+
+    this.state = {
+      hiddenParentsLists: []
+    }
+  }
+
+  /**
+   * getToPage
+   * @param n
+   */
   getToPage(n: number) {
     if (this.props.discussion.areaId === this.props.discussion.current.forumAreaId) {
       window.location.hash = this.props.discussion.current.forumAreaId + "/" + this.props.discussion.page +
@@ -40,11 +57,38 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       "/" + this.props.discussion.current.id + "/" + n;
   }
 
+  /**
+   * onHideShowSubReplies
+   * @param parentId
+   * Adds or removes parent elements from/to list depending wheter it is already in list.
+   */
+  onHideShowSubRepliesClick = (parentId: number) => (e: React.MouseEvent) => {
+
+    if(this.state.hiddenParentsLists.includes(parentId)){
+      this.setState({
+        hiddenParentsLists: this.state.hiddenParentsLists.filter(id => id !== parentId)
+      })
+
+    }else{
+      const updatedList = [...this.state.hiddenParentsLists];
+
+      updatedList.push(parentId);
+
+      this.setState({
+        hiddenParentsLists: updatedList
+      })
+    }
+  }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
     if (!this.props.discussion.current) {
       return null;
     }
-    let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
+    const areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
 
     const userCreator: DiscussionUserType = this.props.discussion.current.creator;
     const userCategory = this.props.discussion.current.creator.id > 10 ? this.props.discussion.current.creator.id % 10 + 1 : this.props.discussion.current.creator.id;
@@ -64,7 +108,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
     return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
       title={<h2 className="application-list__title">{this.props.discussion.current.title}</h2>}>
-      <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
+      <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>} hidden={false}>
         <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
           <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
         </DiscussionThreadHeader>
@@ -107,8 +151,19 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             //This is what it shows when the user is ready
             avatar = <Avatar key={reply.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory}/>
           }
+
+          /**
+           * Checks if element parent has hide its siblings
+           */
+          const isHiddenElement = this.state.hiddenParentsLists.includes(reply.parentReplyId);
+
+          /**
+           * Checks if element has siblings that are hidden
+           */
+          const parentHasHiddenSiblings = this.state.hiddenParentsLists.includes(reply.id);
+
           return (
-            <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar}>
+              <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar} hidden={isHiddenElement}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
               </DiscussionThreadHeader>
@@ -136,6 +191,15 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
                   <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                 </DeleteThreadComponent> : null}
+                {reply.childReplyCount > 0 ?
+                <Link tabIndex={0} as="span" onClick={this.onHideShowSubRepliesClick(reply.id)} className="link link--application-list-item-footer">
+                  {parentHasHiddenSiblings ?
+                    this.props.i18n.text.get("plugin.discussion.reply.showAllReplies")
+                    :
+                    this.props.i18n.text.get("plugin.discussion.reply.hideAllReplies")
+                  }
+                </Link>
+                : null }
               </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>
           )
