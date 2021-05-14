@@ -12,6 +12,7 @@ import moment from "~/lib/moment";
 import Link from '~/components/general/link';
 import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
 
+// we use these
 const today = moment();
 const daysInCurrentMonth = today.date();
 
@@ -133,13 +134,17 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       </div>
     </div>);
 
+    // let's get the first day of the previous month this will allow us to check each section
+    // in order to be able to realize if they match
     const previousMonthsFirstDay = moment().subtract(1, 'months').startOf("month");
 
     const sections = (
       this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
+        // check if it's open or it has data in order to see if we are going to make it visible
         const isOpen = this.state.openedSections.includes(section.summary.beginDate);
         const hasData = !!section.items;
 
+        // and we only show if it is open and has data
         const entries = isOpen && hasData ? (
           section.items.map((item) => {
             return (
@@ -148,15 +153,22 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           })
         ) : null;
 
+        // if at least one of them can be submitted and is previous month as the begin date specifies which is also
+        // the start of the month, as remember we can only submit the previous month and if it is within the limit
+        // of the 10 days or what it is
         const sectionHasSubmittableEntries = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTERED);
         const sectionIsPreviousMonth = moment(section.summary.beginDate).isSame(previousMonthsFirstDay);
         const isPreviousMonthAvailable = daysInCurrentMonth <= currentMonthDayLimit;
 
+        // in that case we have this button, but we are only adding it in the render according to the condition
         const submitLastMonthButton = (
           <SubmitWorklistItemsDialog summary={section.summary}>
             <Link className="link link--submit-worklist-approval">{this.props.i18n.text.get("plugin.profile.worklist.submitWorklistForApproval")}</Link>
           </SubmitWorklistItemsDialog>
-        )
+        );
+
+        // which is this one
+        const shouldHaveButtonAvailable = isOpen && sectionHasSubmittableEntries && sectionIsPreviousMonth && isPreviousMonthAvailable;
 
         return (
           <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
@@ -167,7 +179,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
               {entries && entries.reverse()}
-              {isOpen && sectionHasSubmittableEntries && sectionIsPreviousMonth && isPreviousMonthAvailable ?
+              {shouldHaveButtonAvailable ?
                 <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
                   <div className="application-sub-panel__item-data">{submitLastMonthButton}</div>
                 </div>

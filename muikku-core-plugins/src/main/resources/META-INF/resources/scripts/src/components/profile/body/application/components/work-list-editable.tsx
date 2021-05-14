@@ -9,6 +9,8 @@ import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
 
+// these are used to limit the date pickers, first the start of the current month
+// the previous month and the day of the current month
 const startOfCurrentMonth = moment().startOf("month");
 const startOfPreviousMonth = startOfCurrentMonth.clone().subtract(1, "months").startOf("month");
 const dayOfCurrentMonth: Number = moment(new Date()).date();
@@ -169,6 +171,8 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
               onChange={this.handleDateChange.bind(this, "date")}
               locale={this.props.i18n.time.getLocale()}
               selected={this.state.date}
+              // the entry date min date allows us to pick the previous month within the limit, or otherwise
+              // we can only choose from this month forwards
               minDate={dayOfCurrentMonth <= this.props.currentMonthDayLimit ? startOfPreviousMonth : startOfCurrentMonth}
             />
           </div>

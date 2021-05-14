@@ -13,7 +13,11 @@ import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
 
+// get today date in order to be able to calculate the 10 days
+// and next month rule that allows for modification since
+// the worklist allows the edition depending on this rule
 const today = moment();
+// this represents the previous month from the current day
 const previousMonth = moment().subtract(1, "months");
 
 interface IWorkListRowProps {
@@ -25,10 +29,20 @@ interface IWorkListRowProps {
 }
 
 interface IWorksListEditableState {
+  /**
+   * Whether it is in edit mode
+   */
   editMode: boolean;
-  deleteMode: boolean;
+  /**
+   * Whether the delete dialog should be open that allows
+   * to delete
+   */
+  isDeleteDialogOpen: boolean;
 }
 
+/**
+ * The worklist row that shows the row of a worklist item
+ */
 class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableState> {
   constructor(props: IWorkListRowProps) {
     super(props);
@@ -40,14 +54,24 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
 
     this.state = {
       editMode: false,
-      deleteMode: false,
+      isDeleteDialogOpen: false,
     }
   }
+
+  /**
+   * Toggles the edit mode
+   */
   public toggleEditMode() {
     this.setState({
       editMode: !this.state.editMode,
     });
   }
+
+  /**
+   * Triggers on edit and updates
+   * the field and sends the request
+   * to the server
+   */
   public onEdit(data: {
     description: string;
     date: string;
@@ -78,12 +102,12 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
   }
   public closeDeleteDialog() {
     this.setState({
-      deleteMode: false,
+      isDeleteDialogOpen: false,
     })
   }
   public onDelete() {
     this.setState({
-      deleteMode: true,
+      isDeleteDialogOpen: true,
     })
   }
   public render() {
@@ -101,16 +125,24 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
       );
     }
 
-    const momentDate = moment(this.props.item.entryDate);
+    // first we grab the date of the worklist row item
+    const itemEntryDateAsMoment = moment(this.props.item.entryDate);
+    // we get the day of the current month, that is the day from 0-31 or 0-30 or whatever when
+    // its february
     const dayOfCurrentMonth = moment().date();
-    const isCurrentMonth = momentDate.isSame(today, "month");
-    const isPreviousMonth = momentDate.isSame(previousMonth, "month");
+    // whether the entry represents the current month or the previous month
+    const isCurrentMonth = itemEntryDateAsMoment.isSame(today, "month");
+    const isPreviousMonth = itemEntryDateAsMoment.isSame(previousMonth, "month");
 
+    // the rule for can be edited it must not be paid or approved
+    // it must be current month, or if it's previous month the current month
+    // should be less than 10 days or whatever the limit is specified
     const canBeEdited = (
       this.props.item.state !== WorklistBillingState.PAID &&
       this.props.item.state !== WorklistBillingState.APPROVED
     ) && (isCurrentMonth || (isPreviousMonth && dayOfCurrentMonth <= this.props.currentMonthDayLimit));
 
+    // grabbing these states
     let entryStateText;
     let entryStateIcon;
     let entryStateClass;
@@ -167,7 +199,7 @@ class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableS
         }
 
         <DeleteWorklistItemDialog
-          isOpen={this.state.deleteMode}
+          isOpen={this.state.isDeleteDialogOpen}
           item={this.props.item}
           onClose={this.closeDeleteDialog}
         />
