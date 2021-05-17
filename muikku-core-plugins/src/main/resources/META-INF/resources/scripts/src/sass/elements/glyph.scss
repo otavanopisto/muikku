@@ -31,6 +31,7 @@
   margin: 0 5px 0 0;
   width: 0.7rem;
 
+  // scss-lint:disable SelectorFormat
   &.state-ENTERED {
     color: $color-default-helper;
   }
@@ -43,9 +44,10 @@
     color: $color-success;
   }
 
-  &.state-paid {
+  &.state-PAID {
     color: $color-default-contrast;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .glyph--submit-worklist {

@@ -518,7 +518,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
           } else {
             newSummary.items.splice(itemWithMoreIndex, 0, worklistItem);
           }
-          
+
         }
 
         const newWorklist = [...currWorklist]
@@ -557,7 +557,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType = function
       if (matchingSummaryIndex !== -1) {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
         newSummary.summary.count--;
-  
+
         if (newSummary.items) {
           newSummary.items = newSummary.items.filter((i) => i.id !== data.item.id);
         }
