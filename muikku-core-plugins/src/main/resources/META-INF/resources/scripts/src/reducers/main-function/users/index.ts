@@ -53,7 +53,7 @@ export interface UsersType {
 export interface UsersSelectType {
   students: UsersListType,
   staff: UsersListType,
-  usergroups: Array<UserGroupType>,
+  userGroups: Array<UserGroupType>,
 }
 
 export interface CurrentUserGroupType {
@@ -154,7 +154,7 @@ export function userGroups(state: UserGroupsType = {
 export function userSelect(state: UsersSelectType = {
   students: [],
   staff: [],
-  usergroups: [],
+  userGroups: [],
 }, action: ActionType): UsersSelectType {
   if (action.type === "UPDATE_STUDENT_SELECTOR") {
     return Object.assign({}, state, {

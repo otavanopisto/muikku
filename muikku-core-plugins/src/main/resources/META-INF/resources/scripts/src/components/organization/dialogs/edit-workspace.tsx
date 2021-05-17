@@ -658,13 +658,8 @@ class OrganizationEditWorkspace extends React.Component<
           };
         });
 
-        let groups = this.props.users.usergroups.map((group) => {
-          return {
-            id: group.id,
-            label: group.name,
-            icon: "users",
-            type: "student-group",
-          };
+        let groups = this.props.users.userGroups.map(group => {
+          return { id: group.id, label: group.name, icon: "users", type: "student-group" }
         });
 
         let allItems = students.concat(groups);

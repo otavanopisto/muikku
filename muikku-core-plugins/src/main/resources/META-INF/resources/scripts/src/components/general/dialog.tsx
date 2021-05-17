@@ -14,7 +14,6 @@ import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
 import Pager from "~/components/general/pager";
-import { isIdentifier } from "typescript";
 
 interface DialogProps {
   children?: React.ReactElement<any>;
@@ -125,6 +124,18 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                   .map((s) => `dialog__window--${s}`)
                   .join(" ")}`}
               >
+                {this.props.executing && this.props.executing === true ? (
+                  <div className="dialog__overlay dialog__overlay--executing">
+                    {this.props.executeContent ? (
+                      <div className="dialog__overlay-content">
+                        <div className="loader__executing--dialog"></div>
+                        {this.props.executeContent}
+                      </div>
+                    ) : (
+                      <div className="loader__executing"></div>
+                    )}
+                  </div>
+                ) : null}
                 <header
                   className={`dialog__header ${(modifiers || [])
                     .map((s) => `dialog__header--${s}`)

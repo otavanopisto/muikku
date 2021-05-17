@@ -33,7 +33,9 @@ const Avatar = (props: AvatarProps) => {
       </div>
     </object>
   ) : (
-    <div className="avatar-container">
+    <div className={`avatar-container ${
+      props.size ? "avatar-container--" + props.size : ""
+    }`}>
       <div className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
         }`}>
