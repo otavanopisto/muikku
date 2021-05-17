@@ -149,9 +149,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
           <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left`}></Link>
         </div>
         <div className="menu__body">
-          {this.props.navigation ? (this.props.navigation instanceof Array ?
-              this.props.navigation.map((n, i)=><div className="menu__extras" key={i}>{n}</div>):
-              <div className="menu__extras">{this.props.navigation}</div>) : null}
+          {this.props.navigation && this.props.navigation}
           <ul className="menu__items">
             {this.props.items.map((item, index)=>{
               if (!item){

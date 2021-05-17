@@ -140,10 +140,23 @@
   width: 100%;
 }
 
+.menu__items--aside {
+  list-style-type: none;
+  margin: 0 0 10px;
+  width: 100%;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
 .menu__item {
   display: block;
   height: 50px;
   text-transform: uppercase;
+}
+
+.menu__item--extra {
+  display: block;
 }
 
 .menu__item--space {
