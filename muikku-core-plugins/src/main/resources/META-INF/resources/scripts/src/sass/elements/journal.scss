@@ -19,11 +19,3 @@
 .journal--studies {
   padding: 15px 0;
 }
-
-.student-list {
-  display: inline;
-
-  @include breakpoint($breakpoint-pad) {
-    display: none;
-  }
-}

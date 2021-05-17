@@ -15,7 +15,7 @@ export default class Navigation extends React.Component<
 > {
   render() {
     return (
-      <div className={`menu__extras ${this.props.classModifier}`}>
+      <div className={`menu__extras menu__extras--${this.props.classModifier}`}>
         {this.props.children}
       </div>
     );
@@ -40,7 +40,7 @@ export class NavigationTopic extends React.Component<
 > {
   render() {
     return (
-      <ul className={`menu__items ${this.props.classModifier}`}>
+      <ul className={`${this.props.className ? this.props.className + this.props.classModifier : "menu__items--" + this.props.classModifier}`}>
         {this.props.name ? (
           <span className="item-list__title">
             {this.props.icon ? (

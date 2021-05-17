@@ -84,6 +84,14 @@
   }
 }
 
+.menu__extras--student-list {
+  display: inline;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
 .menu__header {
   background-color: $color-menu-default-header-background;
   height: $navbar-mobile-height;
@@ -157,6 +165,8 @@
 
 .menu__item--extra {
   display: block;
+  height: auto;
+  text-transform: none;
 }
 
 .menu__item--space {
