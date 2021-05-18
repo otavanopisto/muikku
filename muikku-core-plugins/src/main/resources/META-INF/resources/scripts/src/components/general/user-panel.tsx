@@ -4,12 +4,14 @@ import Avatar from "~/components/general/avatar";
 import StudentDialog from "~/components/organization/dialogs/edit-student";
 import StaffDialog from "~/components/organization/dialogs/edit-staff";
 import { getName } from "~/util/modifiers";
+import User from "~/components/general/user";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
   ApplicationListItemContentData,
 } from "~/components/general/application-list";
+
 import "~/sass/elements/application-list.scss";
 import {
   UserPanelUsersType,
@@ -52,7 +54,10 @@ export default class UserPanel extends React.Component<
   getToPage(n: number) {
     let pageStart: number = (n - 1) * this.usersPerPage;
     let pageEnd: number = n * this.usersPerPage;
-    let query: string = this.props.searchString ? this.props.searchString : "";
+
+    let query: string = this.props.searchString
+      ? this.props.searchString
+      : null;
     this.setState({ currentPage: n });
     this.props.pageChange(query, pageStart, pageEnd);
   }
@@ -81,13 +86,6 @@ export default class UserPanel extends React.Component<
           <ApplicationList>
             {this.props.users &&
               results.map((user) => {
-                let aside = (
-                  <Avatar
-                    id={user.userEntityId}
-                    hasImage={user.hasImage}
-                    firstName={user.firstName}
-                  />
-                );
                 let data = {
                   firstName: user.firstName,
                   lastName: user.lastName,
@@ -114,24 +112,7 @@ export default class UserPanel extends React.Component<
                       </StaffDialog>
                     </div>
                   );
-                return (
-                  <ApplicationListItem key={user.id} modifiers="user">
-                    <ApplicationListItemContentWrapper
-                      modifiers="user"
-                      actions={actions}
-                      mainModifiers="user"
-                      asideModifiers="user"
-                      aside={aside}
-                    >
-                      <ApplicationListItemContentData modifiers="primary">
-                        {getName(user, true)}
-                      </ApplicationListItemContentData>
-                      <ApplicationListItemContentData modifiers="secondary">
-                        {user.email}
-                      </ApplicationListItemContentData>
-                    </ApplicationListItemContentWrapper>
-                  </ApplicationListItem>
-                );
+                return <User user={user} actions={actions} />;
               })}
           </ApplicationList>
         ) : (

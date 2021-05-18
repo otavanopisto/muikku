@@ -46,6 +46,10 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       locked: false
     }, props.journal ? props.journal.id : "");
   }
+
+  /**
+   * checkAgainstStoredState
+   */
   checkAgainstStoredState(){
     if (this.props.journal){
       this.checkStoredAgainstThisState({
@@ -59,13 +63,31 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       }, "");
     }
   }
+
+  /**
+   * clearUp
+   */
   clearUp(){
+    /**
+     * No existing journal or there is only new unsaved journal
+     */
     if (!this.props.journal){
-      this.setStateAndClear({title: "", text: ""}, this.props.journal.id);
+      /**
+       * Clearing state and storage if there is existing unsaved journal
+       */
+      this.setStateAndClear({title: "", text: ""});
     } else {
+      /**
+       * Clearing state and storage if there is existing journal
+       */
       this.setStateAndClear({title: this.props.journal.title, text: this.props.journal.content}, this.props.journal.id);
     }
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps: NewEditJournalProps){
     if (nextProps.journal && !equals(this.props.journal, nextProps.journal)){
       this.setState(this.getRecoverStoredState({
@@ -79,15 +101,30 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       }, ""));
     }
   }
+
+  /**
+   * onCKEditorChange
+   * @param text
+   */
   onCKEditorChange(text: string){
     this.setStateAndStore({text}, this.props.journal ? this.props.journal.id : "");
   }
+
+  /**
+   * onTitleChange
+   * @param e
+   */
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
     const { value, maxLength } = e.target;
     const title = value.slice(0, maxLength);
 
     this.setStateAndStore({title},  this.props.journal ? this.props.journal.id : "");
   }
+
+  /**
+   * createOrModifyJournal
+   * @param closeDialog
+   */
   createOrModifyJournal(closeDialog: ()=>any){
     this.setState({locked: true});
     if (!this.props.journal){
@@ -124,6 +161,11 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       });
     }
   }
+
+  /**
+   * render
+   * @returns
+   */
   render(){
     let editorTitle = this.props.journal ?
       this.props.i18n.text.get('plugin.workspace.journal.editEntry.title') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content') :
@@ -148,6 +190,7 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
         </div>
       )
     ]
+
     let footer = (closeDialog: ()=>any)=>{
       return (
          <div className="env-dialog__actions">
@@ -175,12 +218,22 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace}, dispatch);
 };

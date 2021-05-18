@@ -35,7 +35,7 @@ class IndexBody extends React.Component<{
         </div>
         <LastMessagesPanel/>
         <ImportantPanel/>
-        <AnnouncementsPanel/></ScreenContainer> : <ScreenContainer viewModifiers="index"><StudiesEnded/></ScreenContainer>}
+        <AnnouncementsPanel overflow={true}/></ScreenContainer> : <ScreenContainer viewModifiers="index"><StudiesEnded/></ScreenContainer>}
       <CheckContactInfoDialog/>
     </div>);
   }

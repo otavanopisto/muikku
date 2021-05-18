@@ -38,7 +38,7 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
         isOpen={this.props.enrollmentDialogOpen} onClose={this.props.onCloseEnrollmentDialog}/>
       <SignupDialog
         isOpen={this.props.signupDialogOpen} onClose={this.props.onCloseSignupDialog}/>
-      <MaterialEditor/>
+      <MaterialEditor locationPage="Materials"/>
       <Materials onOpenNavigation={this.onOpenNavigation}
         navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
     </div>);

@@ -329,7 +329,7 @@ public class FlagTestsBase extends AbstractUITest {
       waitClassPresent(".button--guider-remove-label", "disabled");
       waitUntilAnimationIsDone(".button--guider-remove-label");
       waitUntilAnimationIsDone(".icon-flag");
-      assertTextIgnoreCase(".button--guider-remove-label", "Poistetaan");
+      assertTextIgnoreCase(".button--guider-remove-label", "Poisto tallennuksessa");
       sleep(500);
       waitForClickable(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
       waitAndClick(".dialog--guider-edit-label .dialog__footer .button--standard-ok");

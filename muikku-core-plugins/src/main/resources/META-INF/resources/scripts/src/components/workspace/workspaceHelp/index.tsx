@@ -27,7 +27,7 @@ export default class WorkspaceHelpBody extends React.Component<WorkspaceHelpBody
     let navigationComponent = <TableOfContentsComponent ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="help" workspaceUrl={this.props.workspaceUrl}/>
-      <MaterialEditor/>
+      <MaterialEditor locationPage="Help"/>
       <Help onOpenNavigation={this.onOpenNavigation}
         navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
     </div>);

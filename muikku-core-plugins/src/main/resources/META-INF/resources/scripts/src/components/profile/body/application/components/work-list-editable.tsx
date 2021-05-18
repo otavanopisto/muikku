@@ -9,6 +9,12 @@ import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { i18nType } from "~/reducers/base/i18n";
 
+// these are used to limit the date pickers, first the start of the current month
+// the previous month and the day of the current month
+const startOfCurrentMonth = moment().startOf("month");
+const startOfPreviousMonth = startOfCurrentMonth.clone().subtract(1, "months").startOf("month");
+const dayOfCurrentMonth: Number = moment(new Date()).date();
+
 interface IWorkListEditableProps {
   i18n: i18nType,
   locales: LocaleListType;
@@ -17,12 +23,14 @@ interface IWorkListEditableProps {
     date: string;
     price: number;
     factor: number;
+    billingNumber: number;
   }) => Promise<boolean>;
   onCancel?: () => void;
   enableDisableSubmitOnEquality?: boolean;
   resetOnSubmit: boolean;
   base: WorklistTemplate | StoredWorklistItem;
   isEditMode: boolean;
+  currentMonthDayLimit: Number;
 }
 
 interface IWorksListEditableState {
@@ -53,6 +61,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
       date,
       price,
       factor,
+      billingNumber: this.props.base.billingNumber,
     });
 
     if (submitStatus && this.props.resetOnSubmit) {
@@ -129,7 +138,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
     const disableSubmitButton = this.props.enableDisableSubmitOnEquality ? !this.canSubmitOnInequality() : false;
 
     // this component is what should display both for introducing new elements
-    // in the work list, aka, edit based on a template, and to edit existing elements
+    // in the work list, aka, add new based on a template, and to edit existing elements
     // this represents the row itself when it's in edit mode, the children is basically
     // the picker for the template mode, or whatever wants to be added
     return (
@@ -162,6 +171,9 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
               onChange={this.handleDateChange.bind(this, "date")}
               locale={this.props.i18n.time.getLocale()}
               selected={this.state.date}
+              // the entry date min date allows us to pick the previous month within the limit, or otherwise
+              // we can only choose from this month forwards
+              minDate={dayOfCurrentMonth <= this.props.currentMonthDayLimit ? startOfPreviousMonth : startOfCurrentMonth}
             />
           </div>
         </div>

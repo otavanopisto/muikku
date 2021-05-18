@@ -131,20 +131,20 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     }
 
     this.onRootSelectStart = this.onRootSelectStart.bind(this);
-    this.onRootSeletEnd = this.onRootSeletEnd.bind(this);
+    this.onRootSelectEnd = this.onRootSelectEnd.bind(this);
     this.onMove = this.onMove.bind(this);
     this.detectCollisions = this.detectCollisions.bind(this);
   }
   componentDidMount(){
     document.body.addEventListener("mousedown", this.onRootSelectStart);
     document.body.addEventListener("mousemove", this.onMove);
-    document.body.addEventListener("mouseup", this.onRootSeletEnd);
+    document.body.addEventListener("mouseup", this.onRootSelectEnd);
 
     if (this.props.enableTouch) {
       document.body.addEventListener("touchstart", this.onRootSelectStart);
       document.body.addEventListener("touchmove", this.onMove);
-      document.body.addEventListener("touchend", this.onRootSeletEnd);
-      document.body.addEventListener("touchcancel", this.onRootSeletEnd);
+      document.body.addEventListener("touchend", this.onRootSelectEnd);
+      document.body.addEventListener("touchcancel", this.onRootSelectEnd);
     }
 
     if (this.props.interactionData){
@@ -155,14 +155,19 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
   componentWillUnmount(){
     document.body.removeEventListener("mousedown", this.onRootSelectStart);
     document.body.removeEventListener("mousemove", this.onMove);
-    document.body.removeEventListener("mouseup", this.onRootSeletEnd);
+    document.body.removeEventListener("mouseup", this.onRootSelectEnd);
 
     document.body.removeEventListener("touchstart", this.onRootSelectStart);
     document.body.removeEventListener("touchmove", this.onMove);
-    document.body.removeEventListener("touchend", this.onRootSeletEnd);
-    document.body.removeEventListener("touchcancel", this.onRootSeletEnd);
+    document.body.removeEventListener("touchend", this.onRootSelectEnd);
+    document.body.removeEventListener("touchcancel", this.onRootSelectEnd);
   }
   onRootSelectStart(e: MouseEvent | TouchEvent, force?: boolean){
+    // not left click
+    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+      return;
+    }
+
     let rootElement:HTMLElement;
     if (this.props.interactionData){
       rootElement = (this.refs.root as Droppable).getDOMComponent();
@@ -231,6 +236,11 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     }, queueJax);
   }
   onMove(e: MouseEvent | TouchEvent){
+    // not left click
+    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+      return;
+    }
+
     const pageX = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX;
     const pageY = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY;
 
@@ -270,7 +280,12 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       this.props.interactionGroup && this.props.onInteractionWith && this.detectCollisions(false);
     }
   }
-  onRootSeletEnd(e: MouseEvent | TouchEvent){
+  onRootSelectEnd(e: MouseEvent | TouchEvent){
+    // not left click
+    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+      return;
+    }
+
     if (this.props.__debugVoidStyle){
       return;
     }
