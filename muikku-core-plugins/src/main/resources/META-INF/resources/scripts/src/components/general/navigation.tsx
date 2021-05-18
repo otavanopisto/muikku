@@ -4,6 +4,7 @@ import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
 interface NavigationProps {
+  className?: string;
   classModifier?: string;
 }
 
@@ -14,11 +15,19 @@ export default class Navigation extends React.Component<
   NavigationState
 > {
   render() {
-    return (
-      <div className={`menu__extras menu__extras--${this.props.classModifier}`}>
-        {this.props.children}
-      </div>
-    );
+    const listClassNameModifier = this.props.classModifier
+      ? (this.props.className || "menu__extras") +
+        "--" +
+        this.props.classModifier
+      : "";
+
+    const listClassName = `${
+      this.props.className
+        ? `${this.props.className} ${listClassNameModifier}`
+        : `menu__extras ${listClassNameModifier}`
+    }`;
+
+    return <div className={listClassName}>{this.props.children}</div>;
   }
 }
 
@@ -39,8 +48,20 @@ export class NavigationTopic extends React.Component<
   NavigationTopicState
 > {
   render() {
+    const listClassNameModifier = this.props.classModifier
+      ? (this.props.className || "menu__items") +
+        "--" +
+        this.props.classModifier
+      : "";
+
+    const listClassName = `${
+      this.props.className
+        ? `${this.props.className} ${listClassNameModifier}`
+        : `menu__items ${listClassNameModifier}`
+    }`;
+
     return (
-      <ul className={`${this.props.className ? this.props.className + this.props.classModifier : "menu__items--" + this.props.classModifier}`}>
+      <ul className={listClassName}>
         {this.props.name ? (
           <span className="item-list__title">
             {this.props.icon ? (

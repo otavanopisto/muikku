@@ -85,8 +85,6 @@
 }
 
 .menu__extras--student-list {
-  display: inline;
-
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
