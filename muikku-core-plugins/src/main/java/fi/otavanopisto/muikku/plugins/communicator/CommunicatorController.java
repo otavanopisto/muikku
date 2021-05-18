@@ -374,6 +374,9 @@ public class CommunicatorController {
           userGroupRecipients.add(userGroup);
         }
       }
+      if (userGroupRecipients.isEmpty()) {
+        return communicatorMessageRecipientUserGroupDAO.listByMessageAndUser(communicatorMessage, loggedUser);
+      }
       return userGroupRecipients;
     }
   }
@@ -397,7 +400,11 @@ public class CommunicatorController {
           workspaceGroupRecipients.add(workspaceGroup);
         }
       }
+      if (workspaceGroupRecipients.isEmpty()) {
+        return communicatorMessageRecipientWorkspaceGroupDAO.listByMessageAndUser(communicatorMessage, loggedUser);
+      }
       return workspaceGroupRecipients;
+
     }
   }
 
