@@ -222,6 +222,10 @@ export interface SelectItem {
   label: string;
   type?: string;
   disabled?: boolean;
+  variables?: {
+    identifier?: string | number;
+    boolean?: boolean;
+  };
 }
 
 export interface workspaceStudentsQueryDataType {
@@ -1520,6 +1524,24 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       delete originalWorkspace["staffMemberSelect"];
       delete originalWorkspace["studentsSelect"];
       delete originalWorkspace["details"];
+      delete originalWorkspace["studentActivity"];
+      delete originalWorkspace["forumStatistics"];
+      delete originalWorkspace["studentAssessments"];
+      delete originalWorkspace["studentAssessmentState"];
+      delete originalWorkspace["activityStatistics"];
+      delete originalWorkspace["feeInfo"];
+      delete originalWorkspace["assessmentRequests"];
+      delete originalWorkspace["additionalInfo"];
+      delete originalWorkspace["staffMembers"];
+      delete originalWorkspace["students"];
+      delete originalWorkspace["details"];
+      delete originalWorkspace["producers"];
+      delete originalWorkspace["contentDescription"];
+      delete originalWorkspace["isCourseMember"];
+      delete originalWorkspace["journals"];
+      delete originalWorkspace["activityLogs"];
+      delete originalWorkspace["permissions"];
+      delete originalWorkspace["chatStatus"];
 
       // Delete details from update so it wont fail
 

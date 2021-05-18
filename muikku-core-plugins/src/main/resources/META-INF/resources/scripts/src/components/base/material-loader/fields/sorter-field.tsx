@@ -109,9 +109,6 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       return item;
     });
 
-    //if we got on change we call it and we remember to stringify the answer because it wants strings
-    this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(items.map(item=>item.id)));
-
     //items are update with the swapped version, and after that's done we check for rightness
     this.setState({
       items,
@@ -180,6 +177,9 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     this.setState({
       selectedItem: null
     });
+
+    //if we got on change we call it and we remember to stringify the answer because it wants strings
+    this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(this.state.items.map(item=>item.id)));
   }
   render(){
     if (!this.props.content) {
