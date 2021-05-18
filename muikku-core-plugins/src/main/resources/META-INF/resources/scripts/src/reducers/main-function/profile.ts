@@ -6,6 +6,14 @@ export enum EditableField {
   DESCRIPTION = "DESCRIPTION",
   PRICE = "PRICE",
   FACTOR = "FACTOR",
+  BILLING_NUMBER = "BILLING_NUMBER",
+}
+
+export enum WorklistBillingState {
+  ENTERED = "ENTERED",
+  PROPOSED = "PROPOSED",
+  APPROVED = "APPROVED",
+  PAID = "PAID",
 }
 
 export interface WorklistTemplate {
@@ -13,6 +21,7 @@ export interface WorklistTemplate {
   description: string;
   price: number;
   factor: number;
+  billingNumber: number;
   editableFields: Array<EditableField>;
 }
 
@@ -22,11 +31,13 @@ export interface WorklistItem {
   description: string;
   price: number;
   factor: number;
+  billingNumber: number;
 }
 
 export interface StoredWorklistItem extends WorklistItem {
   id: number;
   editableFields: Array<EditableField>;
+  state: WorklistBillingState;
   removable: boolean;
 }
 
