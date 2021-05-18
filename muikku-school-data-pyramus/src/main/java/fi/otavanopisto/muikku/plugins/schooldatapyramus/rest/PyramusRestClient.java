@@ -52,6 +52,7 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    request.header("Accept-Language", sessionController.getLocale());
     Response response = request.post(entity);
     try {
       return createResponse(response, type, path);
@@ -65,6 +66,7 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    request.header("Accept-Language", sessionController.getLocale());
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
     try {
       return (T) createResponse(response, entity.getClass(), path);
@@ -77,6 +79,7 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    request.header("Accept-Language", sessionController.getLocale());
     Response response = request.put(entity);
     try {
       return createResponse(response, type, path);
@@ -90,6 +93,7 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    request.header("Accept-Language", sessionController.getLocale());
     Response response = request.put(Entity.entity(entity, MediaType.APPLICATION_JSON));
     try {
       return (T) createResponse(response, entity.getClass(), path);
@@ -149,6 +153,7 @@ class PyramusRestClient implements Serializable {
     
     request.accept(MediaType.APPLICATION_JSON_TYPE);
     request.header("Authorization", "Bearer " + accessToken);
+    request.header("Accept-Language", sessionController.getLocale());
     Response response = request.get();
     try {
       return createResponse(response, type, path);
@@ -161,6 +166,7 @@ class PyramusRestClient implements Serializable {
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
+    request.header("Accept-Language", sessionController.getLocale());
     Response response = request.delete();
 
     try {

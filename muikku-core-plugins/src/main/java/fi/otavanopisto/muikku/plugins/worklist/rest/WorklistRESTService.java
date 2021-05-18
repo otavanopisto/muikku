@@ -25,11 +25,16 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
@@ -58,6 +63,9 @@ public class WorklistRESTService {
   private UserSchoolDataController userSchoolDataController;
 
   @Inject
+  private WorkspaceSchoolDataController workspaceSchoolDataController;
+
+  @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
@@ -65,6 +73,9 @@ public class WorklistRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private Mailer mailer;
@@ -405,4 +416,72 @@ public class WorklistRESTService {
     }
   }
   
+  @GET
+  @Path("/basePrice")
+  @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
+  public Response getWorkspaceBasePrice(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
+    Double price = null;
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      price = workspaceSchoolDataController.getWorkspaceBasePrice(workspaceEntity);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    return Response.ok(price).build();
+  }
+
+  @GET
+  @Path("/billedPrice")
+  @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
+  public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("assessmentIdentifier") String assessmentIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(assessmentIdentifier);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      BridgeResponse<WorklistItemBilledPriceRestModel> response = workspaceSchoolDataController.getWorkspaceBilledPrice(
+          workspaceEntityId, workspaceAssessmentIdentifier.getIdentifier());
+      if (response.ok()) {
+        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+      }
+      else {
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      }
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+
+  @PUT
+  @Path("/billedPrice")
+  @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
+  public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, WorklistItemBilledPriceRestModel payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      BridgeResponse<WorklistItemBilledPriceRestModel> response = workspaceSchoolDataController.updateWorkspaceBilledPrice(
+          workspaceEntity.getDataSource(), payload);
+      if (response.ok()) {
+        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+      }
+      else {
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      }
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+
 }
