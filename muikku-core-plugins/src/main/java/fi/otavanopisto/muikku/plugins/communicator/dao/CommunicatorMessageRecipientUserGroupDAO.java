@@ -40,7 +40,7 @@ public class CommunicatorMessageRecipientUserGroupDAO extends CorePluginsDAO<Com
     criteria.select(root).distinct(true);
     criteria.where(
         criteriaBuilder.and(
-            root2.get(CommunicatorMessageRecipient_.recipientGroup).in(root),
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipientGroup), root),
             criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
         )
     );
@@ -59,7 +59,7 @@ public class CommunicatorMessageRecipientUserGroupDAO extends CorePluginsDAO<Com
     criteria.select(root).distinct(true);
     criteria.where(
         criteriaBuilder.and(
-            root2.get(CommunicatorMessageRecipient_.recipientGroup).in(root),
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipientGroup), root),
             criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage),
             criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipient), userEntity.getId())
         )
