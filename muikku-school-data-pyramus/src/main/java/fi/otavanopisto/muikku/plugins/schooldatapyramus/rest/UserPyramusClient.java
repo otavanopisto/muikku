@@ -42,6 +42,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T post(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.post(client, getAccessToken(client), path, entity, type);
     }
     finally {
@@ -53,6 +54,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T post(String path, T entity) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.post(client, getAccessToken(client), path, entity);
     }
     finally {
@@ -64,6 +66,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T put(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.put(client, getAccessToken(client), path, entity, type);
     }
     finally {
@@ -75,6 +78,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T put(String path, T entity) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.put(client, getAccessToken(client), path, entity);
     }
     finally {
@@ -91,6 +95,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
         return cachedEntity.getData();
       }
 
+      restClient.setLocale(sessionController.getLocale());
       T result = restClient.get(client, getAccessToken(client), path, type);
       if (result != null) {
         entityCache.put(path, result);
@@ -107,6 +112,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public void delete(String path) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       restClient.delete(client, getAccessToken(client), path);
     }
     finally {
@@ -118,6 +124,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> BridgeResponse<T> responseGet(String path, Class<T> type) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.responseGet(client, getAccessToken(client), path, type);
     }
     finally {
@@ -129,6 +136,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> BridgeResponse<T> responsePut(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.responsePut(client, getAccessToken(client), path, entity, type);
     }
     finally {
@@ -140,6 +148,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> BridgeResponse<T> responsePost(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
+      restClient.setLocale(sessionController.getLocale());
       return restClient.responsePost(client, getAccessToken(client), path, entity, type);
     }
     finally {
