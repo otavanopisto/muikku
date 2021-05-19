@@ -152,11 +152,13 @@ class NavigationAside extends React.Component<
       );
 
     return (
-      <Navigation>
+      <Navigation classModifier="student-list">
         {!this.props.status.isStudent && (
-          <NavigationTopic className="student-list" name={this.props.i18n.text.get(
-            "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
-          )}>
+          <NavigationTopic
+            name={this.props.i18n.text.get(
+              "plugin.organization.workspaces.editWorkspace.users.tab.workspaceStudents.title"
+            )}
+          >
             {navigationElementList}
           </NavigationTopic>
         )}

@@ -84,6 +84,12 @@
   }
 }
 
+.menu__extras--student-list {
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
 .menu__header {
   background-color: $color-menu-default-header-background;
   height: $navbar-mobile-height;
@@ -140,10 +146,25 @@
   width: 100%;
 }
 
+.menu__items--aside {
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  list-style-type: none;
+  margin: 0 0 10px;
+  width: 100%;
+}
+
 .menu__item {
   display: block;
   height: 50px;
   text-transform: uppercase;
+}
+
+.menu__item--extra {
+  display: block;
+  height: auto;
+  text-transform: none;
 }
 
 .menu__item--space {
