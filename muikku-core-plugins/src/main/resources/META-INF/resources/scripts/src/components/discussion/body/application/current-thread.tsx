@@ -134,7 +134,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType) => {
           const user: DiscussionUserType = reply.creator;
           const userCategory = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator.id;
-          const canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread;
+          const canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread || this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
           const canEditMessage = this.props.userId === reply.creator.id || areaPermissions.editMessages;
 
           let avatar;
