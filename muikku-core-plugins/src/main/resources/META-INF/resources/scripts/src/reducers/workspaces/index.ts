@@ -246,8 +246,6 @@ export interface WorkspaceType {
   //Usually available if internally loaded
   access?: WorkspaceAccessType;
   //These appear in certain circumstances
-  //Usually available if externally loaded (eg. coursepicker)
-  canSignUp?:boolean;
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
   educationTypeName?: string;
