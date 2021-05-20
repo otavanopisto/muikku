@@ -45,6 +45,10 @@ enum Graph {
   MATERIAL_EXERCISEDONE = "exercises",
   WORKSPACE_VISIT = "visits",
   FORUM_NEWMESSAGE = "discussion-messages",
+  EVALUATION_REQUESTED = "evaluation-requested",
+  EVALUATION_PASSED = "evaluation-passed",
+  EVALUATION_FAILED = "evaluation-failed",
+  EVALUATION_INCOMPLETED = "evaluation-incompleted",
 }
 
 let ignoreZoomed: boolean = true;
@@ -56,7 +60,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     super(props);
     this.workspaceFilterHandler = this.workspaceFilterHandler.bind(this);
     this.completedWorkspaceFilterHandler = this.completedWorkspaceFilterHandler.bind(this);
-    this.GraphFilterHandler = this.GraphFilterHandler.bind(this);
+    this.graphFilterHandler = this.graphFilterHandler.bind(this);
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
@@ -136,7 +140,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     this.setState({ filteredCompletedWorkspaces: filteredCompletedWorkspaces });
   }
 
-  GraphFilterHandler(graph: Graph) {
+  graphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
     const index = filteredGraphs.indexOf(graph);
     if (index > -1) {
@@ -346,6 +350,82 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       });
     }
 
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_REQUESTED)) {
+      graphs.push({
+        "id": "EVALUATION_REQUESTED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-requestedLabel") + " <b>[[EVALUATION_REQUESTED]]</b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "fillAlphas": 0,
+        "lineAlpha": 0.5,
+        "lineThickness": 2,
+        "lineColor": "#009fe3",
+        "title": "EVALUATION_REQUESTED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_REQUESTED"
+      });
+    }
+
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_INCOMPLETED)) {
+      graphs.push({
+        "id": "EVALUATION_GOTINCOMPLETED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-incompletedLabel") + " <b>[[EVALUATION_GOTINCOMPLETED]]</b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "fillAlphas": 0,
+        "lineAlpha": 0.5,
+        "lineThickness": 2,
+        "lineColor": "#ea7503",
+        "title": "EVALUATION_GOTINCOMPLETED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_GOTINCOMPLETED"
+      });
+    }
+
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_PASSED)) {
+      graphs.push({
+        "id": "EVALUATION_GOTPASSED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-passedLabel") + " <b>[[EVALUATION_GOTPASSED]]</b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "fillAlphas": 0,
+        "lineAlpha": 0.5,
+        "lineThickness": 2,
+        "lineColor": "#24c118",
+        "title": "EVALUATION_GOTPASSED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_GOTPASSED"
+      });
+    }
+
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_FAILED)) {
+      graphs.push({
+        "id": "EVALUATION_GOTFAILED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-failedLabel") + " <b>[[EVALUATION_GOTFAILED]]</b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "fillAlphas": 0,
+        "lineAlpha": 0.5,
+        "lineThickness": 2,
+        "lineColor": "#de3211",
+        "title": "EVALUATION_GOTFAILED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_GOTFAILED"
+      });
+    }
+
     //TODO: set to if certain graphs not filtered
     let stacked: boolean = !this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE) || !this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)
     let valueAxes = [{
@@ -413,10 +493,20 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     };
     ignoreZoomed = true;
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs: string[] = [Graph.SESSION_LOGGEDIN, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE, Graph.WORKSPACE_VISIT, Graph.FORUM_NEWMESSAGE];
+    let showGraphs: string[] = [
+      Graph.SESSION_LOGGEDIN,
+      Graph.MATERIAL_ASSIGNMENTDONE,
+      Graph.MATERIAL_EXERCISEDONE,
+      Graph.WORKSPACE_VISIT,
+      Graph.FORUM_NEWMESSAGE,
+      Graph.EVALUATION_REQUESTED,
+      Graph.EVALUATION_PASSED,
+      Graph.EVALUATION_FAILED,
+      Graph.EVALUATION_INCOMPLETED,
+    ];
     return <div className="application-sub-panel__body">
       <div className="chart-legend">
-        <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler} />
+        <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.graphFilterHandler} />
         <WorkspaceFilter workspaces={workspaces} filteredWorkspaces={this.state.filteredWorkspaces} workspaceHandler={this.workspaceFilterHandler}
           completedWorkspaces={completedWorkspaces} filteredCompletedWorkspaces={this.state.filteredCompletedWorkspaces} completedWorkspaceHandler={this.completedWorkspaceFilterHandler} />
       </div>
