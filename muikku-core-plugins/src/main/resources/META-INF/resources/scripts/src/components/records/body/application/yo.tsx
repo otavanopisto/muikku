@@ -13,24 +13,38 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/buttons.scss';
 import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
+import MatriculationExaminationWizardDialog from '../../dialogs/matriculation-wizard'
 
 interface YOProps {
-  i18n: i18nType,
-  records: RecordsType,
-  hops: HOPSType,
-  yo: YOType,
-  eligibilitySubjects: SubjectEligibilitySubjectsType
+  i18n: i18nType;
+  records: RecordsType;
+  hops: HOPSType;
+  yo: YOType;
+  eligibilitySubjects: SubjectEligibilitySubjectsType;
 }
 
 interface YOState {
-  eligibility?: YOEligibilityType,
-  eligibilityStatus?: YOEligibilityStatusType,
-  err?: String
+  err?: String;
+  dialogOpen: boolean;
 }
 
 class YO extends React.Component<YOProps, YOState> {
   constructor(props: YOProps) {
     super(props);
+
+    this.state = {
+      dialogOpen: false
+    }
+
+  }
+
+  /**
+   * Opens sign for matriculation examination dialog
+   */
+  signUpForMatriculationExamination = () => {
+    this.setState({
+      dialogOpen: true
+    })
   }
 
   render() {
@@ -62,10 +76,15 @@ class YO extends React.Component<YOProps, YOState> {
                 </div>
               </div>
               :
-              <div key={exam.id}>
-                <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))}
-                  className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
-              </div>
+              <>
+                <div key={exam.id}>
+                  <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))}
+                    className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+                </div>
+                <MatriculationExaminationWizardDialog>
+                  <Button className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+                </MatriculationExaminationWizardDialog>
+              </>
           );
         }) : null;
 
