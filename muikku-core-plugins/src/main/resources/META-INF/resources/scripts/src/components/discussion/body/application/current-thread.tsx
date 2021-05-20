@@ -106,7 +106,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     const canRemoveThread: boolean = !student && threadOwner || areaPermissions.removeThread;
     let studentCanRemoveThread: boolean = threadOwner ? true : false;
     const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
-    const threadLocked: boolean = !student && this.props.discussion.current.locked === true;
+    const threadLocked: boolean = !student || this.props.discussion.current.locked === true;
     const replies: DiscussionThreadReplyListType = this.props.discussion.currentReplies;
 
     if (studentCanRemoveThread == true) {
