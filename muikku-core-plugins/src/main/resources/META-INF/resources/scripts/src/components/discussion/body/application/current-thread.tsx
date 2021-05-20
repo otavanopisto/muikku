@@ -106,7 +106,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     const canRemoveThread: boolean = !student && threadOwner || areaPermissions.removeThread;
     let studentCanRemoveThread: boolean = threadOwner ? true : false;
     const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
-    const threadLocked: boolean = !student || this.props.discussion.current.locked === true;
+    const threadLocked: boolean = this.props.discussion.current.locked === true;
     const replies: DiscussionThreadReplyListType = this.props.discussion.currentReplies;
 
     if (studentCanRemoveThread == true) {
@@ -130,11 +130,11 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           </span> : null}
         </DiscussionThreadBody>
         <DiscussionThreadFooter hasActions>
-          {!threadLocked ?
+          {!threadLocked || !student ?
             <ReplyThread>
               <Link className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
             </ReplyThread> : null}
-          {!threadLocked ?
+          {!threadLocked || !student ?
             <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}>
               <Link className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
             </ReplyThread> : null}
