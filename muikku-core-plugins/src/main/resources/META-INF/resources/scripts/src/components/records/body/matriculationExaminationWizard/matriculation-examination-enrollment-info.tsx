@@ -6,7 +6,7 @@ interface MatriculationExaminationEnrollmentInfoProps {}
 export const MatriculationExaminationEnrollmentInfo: React.FC<MatriculationExaminationEnrollmentInfoProps> = (
   props
 ) => (
-  <div className="matriculation-container">
+  <div className="matriculation-container matriculation-container-state matriculation-container-state--info">
     <h1 className="info-header">
       Ylioppilaskirjoituksiin ilmoittautuminen (Info)
     </h1>

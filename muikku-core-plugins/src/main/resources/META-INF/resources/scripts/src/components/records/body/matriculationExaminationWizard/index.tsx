@@ -6,41 +6,28 @@ import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matric
 import { MatriculationExaminationEnrollmentAct as Step3 } from "./matriculation-examination-enrollment-act";
 import { MatriculationExaminationEnrollmentCompleted as Step4 } from "./matriculation-examination-enrollment-completed";
 const StepZilla = require("react-stepzilla").default;
-import moment from "~/lib/moment";
 import "~/sass/elements/wizard.scss";
-import {
-  copyCurrentWorkspace,
-  CopyCurrentWorkspaceTriggerType,
-  CopyCurrentWorkspaceStepType,
-} from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
 import "~/sass/elements/matriculation.scss";
-import { SaveState } from "../../../../@types/shared";
+import { Examination, SaveState } from "../../../../@types/shared";
+import {
+  ProfileStatusType,
+  StatusType,
+} from "../../../../reducers/base/status";
 
 interface MatriculationExaminationWizardProps {
   workspace: WorkspaceType;
   i18n: i18nType;
-  copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType;
+  status: StatusType;
   onDone: () => any;
 }
 
 interface MatriculationExaminationWizardState {
   locked: boolean;
-  resultingWorkspace?: WorkspaceType;
-  step?: CopyCurrentWorkspaceStepType;
-}
-
-export interface CopyWizardStoreType {
-  description: string;
-  name: string;
-  nameExtension?: string;
-  beginDate: any;
-  endDate: any;
-  copyDiscussionAreas: boolean;
-  copyMaterials: "NO" | "CLONE" | "LINK";
-  copyBackgroundPicture: boolean;
+  examinationInformation?: Examination;
+  data: any;
+  examId: any;
 }
 
 class MatriculationExaminationWizard extends React.Component<
@@ -51,16 +38,208 @@ class MatriculationExaminationWizard extends React.Component<
     super(props);
 
     this.state = {
+      examId: undefined,
       locked: false,
+      examinationInformation: {
+        studentProfile: {
+          name: "",
+          email: "",
+          address: "",
+          zipCode: "",
+          postalDisctrict: "",
+          phoneNumber: "",
+          profileId: "",
+          descriptionInfo: "",
+        },
+        studentInfo: {
+          degreeType: "MATRICULATIONEXAMINATION",
+          registrationType: "UPPERSECONDARY",
+          superVisor: "",
+          refreshingExamination: "false",
+        },
+        attendedSubjectList: [],
+        completedSubjectList: [],
+        futureSubjectList: [],
+        attentionInformation: {
+          placeToAttend: "Mikkeli",
+          extraInfoForSupervisor: "",
+          publishPermission: "false",
+          publishedName: "",
+          date: undefined,
+        },
+      },
+      data: undefined,
     };
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    fetch(
+      `/rest/matriculation/exams/${this.state.examId}/initialData/${this.props.status.userId}`,
+      { credentials: "include" }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.setState(data);
+        this.fetchSavedEnrollment();
+      });
+  }
+
+  /**
+   * fetchSavedEnrollment
+   */
+  fetchSavedEnrollment() {
+    fetch(
+      `/rest/matriculation/exams/${this.state.examId}/savedEnrollments/${this.props.status.userId}`,
+      { credentials: "include" }
+    )
+      .then((response) => {
+        if (response.status == 404) {
+          return "{}";
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        this.setState(Object.assign(data, { initialized: true }));
+      });
+  }
+
+  /**
+   * newEnrolledAttendance
+   */
+  newEnrolledAttendance = (e: React.MouseEvent) => {
+    const enrolledAttendances =
+      this.state.examinationInformation.attendedSubjectList;
+    enrolledAttendances.push({
+      subject: "AI",
+      mandatory: "true",
+      renewal: "false",
+      status: "UNKNOWN",
+    });
+
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        attendedSubjectList: enrolledAttendances,
+      },
+    });
+  };
+
+  /**
+   * newFinishedAttendance
+   */
+  newFinishedAttendance = (e: React.MouseEvent) => {
+    const finishedAttendances =
+      this.state.examinationInformation.completedSubjectList;
+    finishedAttendances.push({
+      term: "",
+      subject: "AI",
+      mandatory: "false",
+      grade: "UNKNOWN",
+      status: "FINISHED",
+    });
+
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        completedSubjectList: finishedAttendances,
+      },
+    });
+  };
+
+  /**
+   * newPlannedAttendance
+   */
+  newPlannedAttendance = (e: React.MouseEvent) => {
+    const plannedAttendances =
+      this.state.examinationInformation.futureSubjectList;
+    plannedAttendances.push({
+      term: "",
+      subject: "AI",
+      mandatory: "true",
+      status: "PLANNED",
+    });
+
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        futureSubjectList: plannedAttendances,
+      },
+    });
+  };
+
+  /**
+   * deleteEnrolledAttendance
+   * @param i
+   */
+  deleteEnrolledAttendance = (i: number) => (e: React.MouseEvent) => {
+    const enrolledAttendances =
+      this.state.examinationInformation.attendedSubjectList;
+    enrolledAttendances.splice(i, 1);
+
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        attendedSubjectList: enrolledAttendances,
+      },
+    });
+  };
+
+  /**
+   * deleteFinishedAttendance
+   * @param i
+   */
+  deleteFinishedAttendance = (i: number) => (e: React.MouseEvent) => {
+    const finishedAttendances =
+      this.state.examinationInformation.completedSubjectList;
+    finishedAttendances.splice(i, 1);
+
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        completedSubjectList: finishedAttendances,
+      },
+    });
+  };
+
+  /**
+   * deletePlannedAttendance
+   * @param i
+   */
+  deletePlannedAttendance = (i: number) => (e: React.MouseEvent) => {
+    const plannedAttendances =
+      this.state.examinationInformation.futureSubjectList;
+    plannedAttendances.splice(i, 1);
+
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        futureSubjectList: plannedAttendances,
+      },
+    });
+  };
+
+  /**
+   * onExaminationInformationChange
+   * @param examination
+   */
+  onExaminationInformationChange = (examination: Examination) => {
+    this.setState({
+      examinationInformation: examination,
+    });
+  };
 
   /**
    * Renders steps title by state of saving
    * @param state State of saving
    * @returns title
    */
-  renderSaveStateMessageTitle = (state: SaveState) => {
+  renderSaveStateMessageTitle = (state?: SaveState) => {
     const animatedDots = (
       <>
         <span>.</span>
@@ -72,16 +251,20 @@ class MatriculationExaminationWizard extends React.Component<
     let title: JSX.Element;
     switch (state) {
       case "PENDING":
-        title = <p>Odottaa{animatedDots}</p>;
+        title = (
+          <p className="matriculation-step-title">Odottaa{animatedDots}</p>
+        );
       case "IN_PROGRESS":
-        title = <p>Ladataan{animatedDots}</p>;
+        title = (
+          <p className="matriculation-step-title">Ladataan{animatedDots}</p>
+        );
       case "SUCCESS":
-        title = <p>Valmis</p>;
+        title = <p className="matriculation-step-title">Valmis</p>;
       case "FAILED":
-        title = <p>Epäonnistui</p>;
+        title = <p className="matriculation-step-title">Epäonnistui</p>;
         break;
       default:
-        return;
+        title = <p className="matriculation-step-title">Viimeistely</p>;
     }
     return title;
   };
@@ -97,15 +280,31 @@ class MatriculationExaminationWizard extends React.Component<
       },
       {
         name: "Oppilastiedot",
-        component: <Step2 />,
+        component: (
+          <Step2
+            onChange={this.onExaminationInformationChange}
+            newEnrolledAttendance={this.newEnrolledAttendance}
+            newFinishedAttendance={this.newFinishedAttendance}
+            newPlannedAttendance={this.newPlannedAttendance}
+            deleteEnrolledAttendance={this.deleteEnrolledAttendance}
+            deleteFinishedAttendance={this.deleteFinishedAttendance}
+            deletePlannedAttendance={this.deletePlannedAttendance}
+            examination={this.state.examinationInformation}
+          />
+        ),
       },
       {
         name: "Suorituspaikka",
-        component: <Step3 />,
+        component: (
+          <Step3
+            onChange={this.onExaminationInformationChange}
+            examination={this.state.examinationInformation}
+          />
+        ),
       },
       {
-        name: this.renderSaveStateMessageTitle("SUCCESS"),
-        component: <Step4 saveState="SUCCESS" />,
+        name: this.renderSaveStateMessageTitle(),
+        component: <Step4 saveState="FAILED" />,
       },
     ];
 
@@ -144,6 +343,7 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     workspace: state.workspaces && state.workspaces.currentWorkspace,
+    status: state.status,
   };
 }
 
@@ -153,7 +353,7 @@ function mapStateToProps(state: StateType) {
  * @returns
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({ copyCurrentWorkspace }, dispatch);
+  return {};
 }
 
 export default connect(

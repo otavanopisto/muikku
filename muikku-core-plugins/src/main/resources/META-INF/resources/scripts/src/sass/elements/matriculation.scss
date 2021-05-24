@@ -19,6 +19,7 @@
 .matriculation-container {
   width: auto;
   font-family: "Open Sans", Arial, sans-serif;
+  overflow: auto;
 
   @include breakpoint($breakpoint-pad) {
     width: 600px;
@@ -30,6 +31,10 @@
   border-radius: 10px;
   color: white;
   padding: 5px;
+}
+
+.matriculation-container-state--info {
+  background-color: $color-info;
 }
 
 .matriculation-container-state--success {
@@ -53,6 +58,14 @@
   }
 }
 
+.matriculation-row--input-groups {
+  flex-flow: column wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row;
+  }
+}
+
 .matriculation__form-element-container {
   flex-basis: auto;
   flex-flow: column nowrap;
@@ -70,6 +83,7 @@
   border-style: groove;
   border-color: #f8a1ce;
   border-image: initial;
+  margin: 10px 0;
 }
 
 .matriculation-fieldset legend {
@@ -86,6 +100,29 @@
 
 .matriculation__form-element-container--checkbox {
   display: inline-block;
+}
+
+.matriculation__form-element-container--input {
+  width: 100%;
+  margin: 5px 10px 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 25%;
+  }
+}
+
+.matriculation__form-element-container--button {
+  width: auto;
+  margin: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 25%;
+    /* margin-top: 25px; */
+  }
+}
+
+.matriculation__form-element-container input:read-only {
+  background-color: $color-disabled;
 }
 
 .matriculation__form-element__input {
@@ -134,12 +171,12 @@ input[type="checkbox"] {
   }
 }
 
-.saving {
+.matriculation-step-title {
   display: flex;
   align-items: center;
 }
 
-.saving span {
+.matriculation-step-title span {
   animation-name: blink;
   animation-duration: 1.4s;
   animation-iteration-count: infinite;
@@ -149,10 +186,18 @@ input[type="checkbox"] {
   align-items: center;
 }
 
-.saving span:nth-child(2) {
+.matriculation-step-title span:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.saving span:nth-child(3) {
+.matriculation-step-title span:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+.visually-hidden {
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
 }
