@@ -26,6 +26,14 @@
   }
 }
 
+.application-panel--workspace-journal {
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
 .application-panel__container {
   @include text;
   display: flex;
@@ -118,10 +126,8 @@
     flex-grow: 0;
     flex-shrink: 0;
     justify-content: center;
-    left: 0;
-    position: relative;
-    right: 0;
-    top: 0;
+    position: sticky;
+    top: $navbar-desktop-height;
   }
 }
 
@@ -220,24 +226,36 @@
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    margin: 0;
+    height: calc(100vh - 153px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    margin: 0 0 8px;
+    overflow: auto;
     overscroll-behavior: contain;
-    padding: 12px;
+    padding: 0 12px;
+    position: sticky;
+    top: 134px; // Navbar height + application-panel__actions height
     z-index: 1;
   }
 }
 
+// Helper container's sticky position for Profile and Studies view has different height and top property values
+.application-panel__helper-container--profile,
+.application-panel__helper-container--studies {
+
+  @include breakpoint($breakpoint-pad) {
+    height: calc(100vh) - 97px; // 100 View-port height - top offset which is 77px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    top: 77px;
+  }
+}
+
 .application-panel__helper-container--main-action {
+  align-items: center;
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
   height: $navbar-desktop-height;
+  margin: 0;
 }
 
 .application-panel__helper-container--workspace-journal {
-  @include no-scrollbars;
-  display: flex;
-  flex-basis: 220px;
-  flex-grow: 0;
-  flex-shrink: 0;
+  display: none;
   height: $navbar-mobile-height;
   margin: 0;
   overscroll-behavior: contain;
@@ -245,6 +263,11 @@
   z-index: 1;
 
   @include breakpoint($breakpoint-pad) {
+    @include no-scrollbars;
+    display: flex;
+    flex-basis: 220px;
+    flex-grow: 0;
+    flex-shrink: 0;
     height: $navbar-desktop-height;
     padding: 12px;
   }

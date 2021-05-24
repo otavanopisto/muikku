@@ -13,9 +13,9 @@ import { StateType } from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import Button from "~/components/general/button";
-import { getUserImageUrl } from "~/util/modifiers";
 import moment from '~/lib/moment';
 import { StatusType } from '~/reducers/base/status';
+import Avatar from '~/components/general/avatar';
 
 interface SummaryProps {
   i18n: i18nType,
@@ -72,9 +72,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   }
                   return <div className="item-list__item item-list__item--student-councelor" key={councelor.userEntityId}>
                     <div className="item-list__profile-picture">
-                      <object data={getUserImageUrl(councelor.userEntityId)} type="image/jpeg" className="avatar-container">
-                        <div className="avatar avatar--category-3">{councelor.firstName[0]}</div>
-                      </object>
+                      <Avatar id={councelor.userEntityId} userCategory={3} firstName={councelor.firstName} hasImage={councelor.hasImage} />
                     </div>
                     <div className="item-list__text-body item-list__text-body--multiline">
                       <div className="item-list__user-name">{councelor.firstName} {councelor.lastName}</div>

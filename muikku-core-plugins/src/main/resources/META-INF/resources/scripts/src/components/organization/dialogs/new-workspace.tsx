@@ -334,7 +334,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
           return { id: student.id, label: student.firstName + " " + student.lastName, icon: "user", type: "student" }
         });
 
-        let groups: UiSelectItem[] = this.props.users.usergroups.map(group => {
+        let groups: UiSelectItem[] = this.props.users.userGroups.map(group => {
           return { id: group.id, label: group.name, icon: "users", type: "student-group" }
         });
 

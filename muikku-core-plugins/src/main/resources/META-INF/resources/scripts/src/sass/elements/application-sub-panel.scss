@@ -14,12 +14,8 @@
 }
 
 .application-sub-panel--worklist {
-  margin: 0 0 10px;
-
-  &:last-child {
-    border-bottom: 1px solid $color-subpanel-border;
-    margin: 0;
-  }
+  border: 0;
+  margin: 0 0 15px;
 }
 
 .application-sub-panel--yo-status-container {
@@ -86,6 +82,7 @@
 .application-sub-panel__header--worklist-entries {
   background: $color-subpanel-header-background;
   cursor: pointer;
+  font-size: 1rem;
   margin: 0;
   padding: 5px;
 }
@@ -434,6 +431,7 @@
 }
 
 .application-sub-panel__multiple-item-container--worklist-description {
+  align-items: center;
   flex-basis: 100%;
   margin: 2px 0;
 
@@ -540,6 +538,11 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--worklist-items-footer {
+  margin: 5px 0 5px 12px;
+  padding: 0;
 }
 
 .application-sub-panel__item--workspace-management {

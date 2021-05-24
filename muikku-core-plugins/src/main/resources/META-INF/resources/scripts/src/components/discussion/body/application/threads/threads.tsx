@@ -2,7 +2,6 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/message.scss';
 
 import * as React from 'react';
-import Pager from '~/components/general/pager';
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 
 export class DiscussionThreads extends React.Component<{}, {}> {
@@ -15,7 +14,7 @@ export class DiscussionThreads extends React.Component<{}, {}> {
 
 export class DiscussionThread extends React.Component<{
   onClick: (event: React.MouseEvent<HTMLDivElement>)=>any,
-  avatar: any
+  avatar: JSX.Element;
 }, {}> {
   render(){
     return <ApplicationListItem className="message message--discussion" onClick={this.props.onClick}>
@@ -84,6 +83,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
   isReplyOfReply?: boolean,
   isReply?: boolean,
   avatar: any
+  hidden: boolean,
 }, {}> {
   render(){
     let baseMod = this.props.isOpMessage ? "discussion-message" : (
@@ -91,7 +91,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
           "discussion-reply"
     );
 
-    return <ApplicationListItem modifiers={baseMod}>
+    return !this.props.hidden && <ApplicationListItem modifiers={baseMod}>
       <ApplicationListItemContentWrapper asideModifiers="discussion" mainModifiers="discussion" aside={this.props.avatar}>
         {this.props.children}
       </ApplicationListItemContentWrapper>

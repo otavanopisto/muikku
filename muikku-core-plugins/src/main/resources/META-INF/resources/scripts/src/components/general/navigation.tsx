@@ -46,7 +46,7 @@ interface NavigationElementProps {
   modifiers?: string | Array<string>,
   hash?: number | string,
   href?: string,
-  onClick?: () => any,
+  onClick?: (parameter?:any) => any,
   children: string,
   icon?: string,
   iconTitle?: string,
