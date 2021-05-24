@@ -1,3 +1,9 @@
+/**
+ * This is the amcharts main chart file it uses am charts v3 and the reference
+ * for those charts api can be found here
+ * https://docs.amcharts.com/3/javascriptcharts
+ */
+
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from 'react';
 import { Dispatch } from 'redux';
@@ -23,6 +29,11 @@ interface CurrentStudentStatisticsState {
   filteredGraphs: string[]
 }
 
+/**
+ * This information comes from the api endpoint and contains
+ * those properties, any changes to this data will be related
+ * to the endpoint
+ */
 interface MainChartData {
   EVALUATION_REQUESTED?: number,
   EVALUATION_GOTINCOMPLETED?: number,
@@ -39,6 +50,10 @@ interface MainChartData {
   NOTIFICATION_STUDYTIME?: number
 }
 
+/**
+ * These are the graph points note how they are not in a 1->1 relationship
+ * with the data, as they have been defined so
+ */
 enum Graph {
   SESSION_LOGGEDIN = "logins",
   MATERIAL_ASSIGNMENTDONE = "assignments",
@@ -51,6 +66,7 @@ enum Graph {
   EVALUATION_INCOMPLETED = "evaluation-incompleted",
 }
 
+// some stored global variables for this chart
 let ignoreZoomed: boolean = true;
 let zoomStartDate: Date = null;
 let zoomEndDate: Date = null;
@@ -180,6 +196,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
+
+    // here we are mapping the chart data to a map that will be used to render the chaart
     let chartDataMap = new Map<string, MainChartData>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), { SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0 });
     if (this.props.activityLogs) {
@@ -191,6 +209,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
             entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
             break;
           case "FORUM_NEWMESSAGE":
+            // note how the following two map to the same event
             entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1 || 1;
             break;
           case "FORUM_NEWTHREAD":
@@ -215,6 +234,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       });
     }
 
+    // here we are grabbing the workspace chart specific data
     let workspaces: { id: number, name: string, isEmpty: boolean }[] = [];
     if (this.props.workspaces) {
       this.props.workspaces.map((workspace) => {
@@ -408,6 +428,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
 
     if (!this.state.filteredGraphs.includes(Graph.EVALUATION_FAILED)) {
+      // documentation can be found https://docs.amcharts.com/3/javascriptcharts/AmGraph
       graphs.push({
         "id": "EVALUATION_GOTFAILED",
         "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-failedLabel") + " <b>[[EVALUATION_GOTFAILED]]</b>",
@@ -437,6 +458,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "minimum": 0
     }];
 
+    // general config about the chart
     let config = {
       "theme": "none",
       "type": "serial",
