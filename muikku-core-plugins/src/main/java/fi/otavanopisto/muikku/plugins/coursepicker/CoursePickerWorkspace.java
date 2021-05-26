@@ -20,7 +20,6 @@ public class CoursePickerWorkspace {
       Long numVisits,
       Date lastVisit,
       String educationTypeName,
-      boolean canSignup,
       boolean isCourseMember, 
       boolean hasCustomImage,
       OrganizationRESTModel organization) {
@@ -34,7 +33,6 @@ public class CoursePickerWorkspace {
     this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
-    this.canSignup = canSignup;
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
     this.hasCustomImage = hasCustomImage;
@@ -112,14 +110,6 @@ public class CoursePickerWorkspace {
   public void setPublished(Boolean published) {
     this.published = published;
   }
-
-  public Boolean getCanSignup() {
-    return canSignup;
-  }
-
-  public void setCanSignup(Boolean canSignup) {
-    this.canSignup = canSignup;
-  }
   
   public Boolean getIsCourseMember() {
     return isCourseMember;
@@ -162,7 +152,6 @@ public class CoursePickerWorkspace {
   private Long numVisits;
   private Date lastVisit;
   private Boolean published;
-  private Boolean canSignup;
   private Boolean isCourseMember;
   private String educationTypeName;
   private boolean hasCustomImage;

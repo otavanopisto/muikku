@@ -41,9 +41,12 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
@@ -142,6 +145,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private CurrentUserSession currentUserSession;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
   
   @Inject
   @Any
@@ -347,13 +353,12 @@ public class CoursePickerRESTService extends PluginRESTService {
               String identifier = id[0];
   
               SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-              
               WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
               if (workspaceEntity != null) {
+
                 String name = (String) result.get("name");
                 String nameExtension = (String) result.get("nameExtension");
                 String description = (String) result.get("description");
-                boolean canSignup = getCanSignup(workspaceEntity);
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
@@ -373,7 +378,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                 }
   
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, canSignup, isCourseMember));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, isCourseMember));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -440,8 +445,6 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
-    boolean canSignup = getCanSignup(workspaceEntity);
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     String educationTypeName = null;
     
@@ -452,7 +455,26 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, canSignup, isCourseMember)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, isCourseMember)).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{ID}/canSignup")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getCanSignup(@PathParam("ID") Long workspaceEntityId) {
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    boolean canSignup = getCanSignup(workspaceEntity);
+    
+    if (canSignup) {
+      canSignup = !getIsAlreadyEvaluated(workspaceEntity);
+    }
+    
+    return Response.ok(canSignup).build();
   }
   
   @POST
@@ -581,7 +603,25 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, boolean canSignup, boolean isCourseMember) {
+  private boolean getIsAlreadyEvaluated(WorkspaceEntity workspaceEntity) {
+    Boolean isEvaluated = false;
+    if (sessionController.isLoggedIn()) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
+      if (workspaceUserEntity != null) {
+        WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
+        WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
+        if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
+          WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+          if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
+            isEvaluated = true;
+          }
+        }  
+      }
+    }
+    return isEvaluated;
+  }
+  
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -596,15 +636,12 @@ public class CoursePickerRESTService extends PluginRESTService {
         workspaceEntity.getArchived(), 
         workspaceEntity.getPublished(), 
         name, 
-        nameExtension, 
-        description, 
-        numVisits, 
+        nameExtension,
+        description, numVisits, 
         lastVisit, 
         educationTypeName,
-        canSignup, 
         isCourseMember,
-        hasCustomImage,
-        organization);
+        hasCustomImage, organization);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
