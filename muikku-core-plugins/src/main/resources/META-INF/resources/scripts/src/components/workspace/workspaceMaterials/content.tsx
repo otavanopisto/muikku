@@ -183,12 +183,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     }
 
     const repariedNodes = repairContentNodes(newMaterialState);
-    const workspaceId = this.state.materials[parentBaseIndex].children[
-      baseIndex
-    ].workspaceMaterialId;
+    const materialParentFromState = this.state.materials[parentBaseIndex];
+    const materialFromState = materialParentFromState.children[baseIndex];
+    const workspaceId = materialFromState.workspaceMaterialId;
 
-    const materialFromState = this.state.materials[baseIndex];
-    const material = this.originalMaterials.find((cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId);
+    const materialParent = this.originalMaterials.find((cn) => cn.workspaceMaterialId === materialParentFromState.workspaceMaterialId);
+    const material = materialParent.children.find((cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId);
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
       (cn: MaterialContentNodeType) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
