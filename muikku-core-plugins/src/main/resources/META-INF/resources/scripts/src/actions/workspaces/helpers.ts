@@ -77,7 +77,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   } else if (actualFilters.baseFilter === "AS_TEACHER") {
     myWorkspaces = true;
     includeUnpublished = true;
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
+  } else if (actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
     includeUnpublished = true;
   }
 
