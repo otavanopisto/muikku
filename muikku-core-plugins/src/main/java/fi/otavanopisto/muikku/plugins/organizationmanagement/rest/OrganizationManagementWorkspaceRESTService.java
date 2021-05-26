@@ -167,12 +167,10 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
     
-    List<WorkspaceAccess> accesses = new ArrayList<>(Arrays.asList(WorkspaceAccess.ANYONE));
-    if (sessionController.isLoggedIn()) {
-      accesses.add(WorkspaceAccess.LOGGED_IN);
-      accesses.add(WorkspaceAccess.MEMBERS_ONLY);
-    }
-
+    // In tne organization workspace list it needs to list all of the workspaces,
+    // without any access filters 
+    
+    List<WorkspaceAccess> accesses = null;
     List<Sort> sorts = null;
     
     if (orderBy != null && orderBy.contains("alphabet")) {
