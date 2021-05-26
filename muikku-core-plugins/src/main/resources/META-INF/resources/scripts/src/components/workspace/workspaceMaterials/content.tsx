@@ -66,6 +66,7 @@ function isScrolledIntoView(el: HTMLElement) {
 
 class ContentComponent extends React.Component<ContentProps, ContentState> {
   private storedLastUpdateServerExecution: Function;
+  private originalMaterials: MaterialContentNodeListType;
 
   constructor(props: ContentProps) {
     super(props);
@@ -73,6 +74,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     this.state = {
       materials: props.materials,
     };
+
+    this.originalMaterials = props.materials;
 
     this.hotInsertBeforeSection = this.hotInsertBeforeSection.bind(this);
     this.hotInsertBeforeSubnode = this.hotInsertBeforeSubnode.bind(this);
@@ -118,7 +121,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     );
     const contentNodesRepaired = repairContentNodes(newMaterialState);
 
-    const material = this.state.materials[baseIndex];
+    const materialFromState = this.state.materials[baseIndex];
+    const material = this.originalMaterials.find((cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId);
     const update = contentNodesRepaired.find(
       (cn) => cn.workspaceMaterialId === material.workspaceMaterialId
     );
@@ -137,6 +141,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         },
         success: () => {
           this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
+          this.originalMaterials = contentNodesRepaired;
         },
         dontTriggerReducerActions: true,
       });
@@ -182,7 +187,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       baseIndex
     ].workspaceMaterialId;
 
-    const material = this.state.materials[parentBaseIndex].children[baseIndex];
+    const materialFromState = this.state.materials[baseIndex];
+    const material = this.originalMaterials.find((cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId);
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
       (cn: MaterialContentNodeType) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
@@ -211,6 +217,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         },
         success: () => {
           this.props.setWholeWorkspaceMaterials(repariedNodes);
+          this.originalMaterials = repariedNodes;
         },
         dontTriggerReducerActions: true,
       });
