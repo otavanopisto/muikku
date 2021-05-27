@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
@@ -28,6 +31,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseDescription;
 import fi.otavanopisto.pyramus.rest.model.CourseEducationSubtype;
@@ -559,6 +563,48 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         }
       break;
     }
+  }
+
+  @Override
+  public Double getWorkspaceBasePrice(String workspaceIdentifier) {
+    return pyramusClient.responseGet(String.format("/worklist/basePrice?course=%s", workspaceIdentifier), Double.class).getEntity();
+  }
+
+  @Override
+  public BridgeResponse<WorklistItemBilledPriceRestModel> getWorkspaceBilledPrice(String courseAssessmentIdentifier) {
+    Long courseAssessmentId = identifierMapper.getPyramusCourseAssessmentId(courseAssessmentIdentifier);
+    BridgeResponse<WorklistItemBilledPriceRestModel> response = pyramusClient.responseGet(
+        String.format("/worklist/billedPrice?courseAssessment=%d", courseAssessmentId),
+        WorklistItemBilledPriceRestModel.class);
+    if (response.getEntity() != null) {
+      response.getEntity().setAssessmentIdentifier(courseAssessmentIdentifier);
+    }
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<WorklistItemBilledPriceRestModel> updateWorkspaceBilledPrice(WorklistItemBilledPriceRestModel payload) {
+    
+    // Identifier to Pyramus id...
+    
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(payload.getAssessmentIdentifier());
+    String originalIdentifier = payload.getAssessmentIdentifier();
+    Long courseAssessmentId = identifierMapper.getPyramusCourseAssessmentId(workspaceAssessmentIdentifier.getIdentifier());
+    payload.setAssessmentIdentifier(courseAssessmentId.toString());
+    
+    // ...update...
+    
+    BridgeResponse<WorklistItemBilledPriceRestModel> response = pyramusClient.responsePut(
+        "/worklist/billedPrice",
+        Entity.entity(payload, MediaType.APPLICATION_JSON),
+        WorklistItemBilledPriceRestModel.class);
+    
+    // Pyramus id back to original identifier
+    
+    if (response.getEntity() != null) {
+      response.getEntity().setAssessmentIdentifier(originalIdentifier);
+    }
+    return response;
   }
 
 }

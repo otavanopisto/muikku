@@ -22,8 +22,9 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 
-class WorkspaceSchoolDataController { 
+public class WorkspaceSchoolDataController { 
   
   // TODO: Caching 
   // TODO: Events
@@ -372,6 +373,22 @@ class WorkspaceSchoolDataController {
     }
     
     return null;
+  }
+  
+  public Double getWorkspaceBasePrice(WorkspaceEntity workspaceEntity) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
+    return workspaceBridge.getWorkspaceBasePrice(workspaceEntity.getIdentifier());
+  }
+
+  public BridgeResponse<WorklistItemBilledPriceRestModel> getWorkspaceBilledPrice(Long workspaceEntityId, String courseAssessmentIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.findById(workspaceEntityId);
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
+    return workspaceBridge.getWorkspaceBilledPrice(courseAssessmentIdentifier);
+  }
+  
+  public BridgeResponse<WorklistItemBilledPriceRestModel> updateWorkspaceBilledPrice(SchoolDataSource dataSource, WorklistItemBilledPriceRestModel payload) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(dataSource);
+    return workspaceBridge.updateWorkspaceBilledPrice(payload);
   }
   
 }
