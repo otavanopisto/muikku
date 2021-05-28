@@ -12,15 +12,11 @@ import { getName } from "~/util/modifiers";
 import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
 import Avatar from '~/components/general/avatar';
-
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
-
 import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
-import Button from '../../../general/button';
-import { ButtonPill, IconButton } from '../../../general/button';
-import HoverButton from '../../../general/hover-button';
+
 
 interface CurrentThreadProps {
   discussion: DiscussionType,
@@ -103,11 +99,13 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
     const student: boolean = this.props.status.isStudent === true;
     const threadOwner: boolean = this.props.userId === this.props.discussion.current.creator.id
-    const canRemoveThread: boolean = !student && threadOwner || areaPermissions.removeThread;
+    const canRemoveThread: boolean = (!student && threadOwner) || areaPermissions.removeThread;
     let studentCanRemoveThread: boolean = threadOwner ? true : false;
     const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
     const threadLocked: boolean = this.props.discussion.current.locked === true;
     const replies: DiscussionThreadReplyListType = this.props.discussion.currentReplies;
+
+    // If the thread has someone elses messages, student can't remove the thread
 
     if (studentCanRemoveThread == true) {
       for (let i = 0; i < replies.length; i++) {
@@ -150,7 +148,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType) => {
           const user: DiscussionUserType = reply.creator;
-          const userCategory: number = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator.id;
+          const userCategory: number = reply.creator.id > 10 ? (reply.creator.id % 10) + 1 : reply.creator.id;
           const canRemoveMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.removeThread;
           const canEditMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.editMessages;
 
