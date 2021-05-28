@@ -90,7 +90,7 @@ export interface UserStaffType {
   firstName: string,
   lastName: string,
   properties: any,
-  userEntityId: number
+  userEntityId: number,
   hasImage: boolean
 }
 
