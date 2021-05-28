@@ -1821,7 +1821,7 @@ let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStud
     getState: () => StateType
   ) => {
     try {
-      let payload: workspaceStudentsQueryDataType = {
+      const payload: workspaceStudentsQueryDataType = {
         q: data.payload && data.payload.q ? data.payload.q : "",
       };
 
