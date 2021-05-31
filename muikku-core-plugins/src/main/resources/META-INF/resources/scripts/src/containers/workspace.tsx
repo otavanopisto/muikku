@@ -572,7 +572,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         (window as any).CKEDITOR.disableAutoInline = true;
       });
 
-      let state = this.props.store.getState(); 1
+      let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.journal.pageTitle')));
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId,
