@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import Link from "~/components/general/link";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
@@ -12,6 +11,7 @@ import MatriculationExaminationWizard from "../body/matriculationExaminationWiza
 interface MatriculationExaminationWizardDialogProps {
   i18n: i18nType;
   children?: React.ReactElement<any>;
+  examId: number;
 }
 
 interface MatriculationExaminationWizardDialogState {
@@ -26,7 +26,10 @@ class MatriculationExaminationWizardDialog extends React.Component<
   render() {
     let content = (closeDialog: () => any) => (
       <div>
-        <MatriculationExaminationWizard onDone={closeDialog} />
+        <MatriculationExaminationWizard
+          examId={this.props.examId}
+          onDone={closeDialog}
+        />
       </div>
     );
     let footer = (closeDialog: () => any) => {

@@ -3,6 +3,7 @@ import "~/sass/elements/matriculation.scss";
 import {
   Examination,
   ExaminationAttentionInformation,
+  SaveState,
 } from "../../../../@types/shared";
 
 /**
@@ -10,6 +11,8 @@ import {
  */
 interface MatriculationExaminationEnrollmentActProps {
   examination: Examination;
+  draftSaveErrorMsg?: string;
+  saveState: SaveState;
   onChange: (examination: Examination) => void;
 }
 
@@ -18,27 +21,67 @@ interface MatriculationExaminationEnrollmentActProps {
  * @param props
  * @returns
  */
-export const MatriculationExaminationEnrollmentAct: React.FC<MatriculationExaminationEnrollmentActProps> =
-  ({ examination, onChange }) => {
-    const onExaminationAttentionInfoChanges = <
-      T extends keyof ExaminationAttentionInformation
-    >(
-      key: T,
-      value: ExaminationAttentionInformation[T]
-    ) => {
-      const modifiedExamination: Examination = {
-        ...examination,
-        attentionInformation: {
-          ...examination.attentionInformation,
-          [key]: value,
-        },
-      };
+export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
+  MatriculationExaminationEnrollmentActProps,
+  {}
+> {
+  constructor(props: MatriculationExaminationEnrollmentActProps) {
+    super(props);
+  }
 
-      onChange(modifiedExamination);
+  onExaminationAttentionInfoChanges = <
+    T extends keyof ExaminationAttentionInformation
+  >(
+    key: T,
+    value: ExaminationAttentionInformation[T]
+  ) => {
+    const { examination, onChange } = this.props;
+
+    const modifiedExamination: Examination = {
+      ...examination,
+      attentionInformation: {
+        ...examination.attentionInformation,
+        [key]: value,
+      },
     };
+
+    onChange(modifiedExamination);
+  };
+
+  render() {
+    const { examination, draftSaveErrorMsg, saveState } = this.props;
+    const { attentionInformation } = examination;
+
+    /**
+     * saving draft error popper
+     */
+    const savingDraftError = draftSaveErrorMsg && (
+      <div className="matriculation__saving-draft matriculation__saving-draft--error">
+        <h3 className="matriculation__saving-draft-title">
+          Luonnoksen tallentaminen epäonnistui!
+        </h3>
+        <p>{draftSaveErrorMsg}</p>
+      </div>
+    );
+
+    /**
+     * saving draft info popper
+     */
+    const savingDraftInfo = saveState && (
+      <div className="matriculation__saving-draft matriculation__saving-draft--info">
+        <h3 className="matriculation__saving-draft-title">
+          {saveState === "SAVING_DRAFT"
+            ? "Tallennetaan luonnosta"
+            : "Luonnos tallennettu"}
+          {saveState === "SAVING_DRAFT" && this.renderAnimatedDots()}
+        </h3>
+      </div>
+    );
 
     return (
       <div className="matriculation-container">
+        {savingDraftError}
+        {savingDraftInfo}
         <fieldset className="matriculation-fieldset">
           <legend>Kokeen suorittaminen</legend>
           <div className="matriculation-row">
@@ -46,11 +89,12 @@ export const MatriculationExaminationEnrollmentAct: React.FC<MatriculationExamin
               <label>Suorituspaikka</label>
               <select
                 onChange={(e) =>
-                  onExaminationAttentionInfoChanges(
+                  this.onExaminationAttentionInfoChanges(
                     "placeToAttend",
                     e.currentTarget.value
                   )
                 }
+                value={attentionInformation.placeToAttend}
                 className="matriculation__form-element__input"
               >
                 <option>Mikkeli</option>
@@ -66,11 +110,12 @@ export const MatriculationExaminationEnrollmentAct: React.FC<MatriculationExamin
               <textarea
                 rows={5}
                 onChange={(e) =>
-                  onExaminationAttentionInfoChanges(
+                  this.onExaminationAttentionInfoChanges(
                     "extraInfoForSupervisor",
                     e.currentTarget.value
                   )
                 }
+                value={attentionInformation.extraInfoForSupervisor}
                 className="matriculation__form-element__input matriculation__form-element__input--textarea"
               />
             </div>
@@ -80,11 +125,12 @@ export const MatriculationExaminationEnrollmentAct: React.FC<MatriculationExamin
               <label>Julkaisulupa</label>
               <select
                 onChange={(e) =>
-                  onExaminationAttentionInfoChanges(
+                  this.onExaminationAttentionInfoChanges(
                     "publishPermission",
                     e.currentTarget.value
                   )
                 }
+                value={attentionInformation.publishPermission}
                 className="matriculation__form-element__input"
               >
                 <option value="true">
@@ -101,28 +147,16 @@ export const MatriculationExaminationEnrollmentAct: React.FC<MatriculationExamin
             <div className="matriculation__form-element-container">
               <label>Nimi</label>
               <input
-                onChange={(e) =>
-                  onExaminationAttentionInfoChanges(
-                    "publishedName",
-                    e.currentTarget.value
-                  )
-                }
+                value={attentionInformation.publishedName}
                 readOnly={true}
                 className="matriculation__form-element__input"
                 type="text"
               />
             </div>
-          </div>
-          <div className="matriculation-row">
             <div className="matriculation__form-element-container">
               <label>Päivämäärä</label>
               <input
-                onChange={(e) =>
-                  onExaminationAttentionInfoChanges(
-                    "date",
-                    e.currentTarget.value
-                  )
-                }
+                value={attentionInformation.date}
                 readOnly={true}
                 className="matriculation__form-element__input"
                 type="text"
@@ -132,4 +166,21 @@ export const MatriculationExaminationEnrollmentAct: React.FC<MatriculationExamin
         </fieldset>
       </div>
     );
+  }
+
+  /**
+   * renderAnimatedDots
+   * @returns
+   */
+  renderAnimatedDots = () => {
+    return (
+      <>
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+      </>
+    );
   };
+}
+
+export default MatrMatriculationExaminationEnrollmentAct;

@@ -1,5 +1,8 @@
 import * as React from "react";
-import { ExaminationFutureSubject } from "../../../../../@types/shared";
+import {
+  ExaminationFutureSubject,
+  ExaminationAttendedSubject,
+} from "../../../../../@types/shared";
 import { MatriculationExaminationFutureSubjectsGroup } from "./matriculation-examination-selector-components";
 
 /**
@@ -9,7 +12,9 @@ interface MatriculationExaminationFutureSelectsListProps {
   onChange?: (
     modifiedExaminationFutureSubjectList: ExaminationFutureSubject[]
   ) => void;
-  examinationFutureList?: ExaminationFutureSubject[];
+  enrolledAttendances: ExaminationAttendedSubject[];
+  examinationFutureList: ExaminationFutureSubject[];
+  nextOptions: JSX.Element[];
   onDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
@@ -19,7 +24,13 @@ interface MatriculationExaminationFutureSelectsListProps {
  * @returns
  */
 export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationExaminationFutureSelectsListProps> =
-  ({ onChange, examinationFutureList, onDeleteRow }) => {
+  ({
+    onChange,
+    examinationFutureList,
+    enrolledAttendances,
+    nextOptions,
+    onDeleteRow,
+  }) => {
     const onMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationFutureSubject
     >(
@@ -34,17 +45,30 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
       onChange(modifiedExaminationFutureSubjectList);
     };
 
+    const selectedSubjects = examinationFutureList.map(
+      (sSubject) => sSubject.subject
+    );
+
     return (
-      <div>
+      <>
         {examinationFutureList.map((subject, index) => (
-          <MatriculationExaminationFutureSubjectsGroup
+          <div
             key={index}
-            index={index}
-            subject={subject}
-            onSubjectGroupChange={onMatriculationExaminationSubjectGroupChange}
-            onClickDeleteRow={onDeleteRow}
-          />
+            className="matriculation-row matriculation-row--input-groups"
+          >
+            <MatriculationExaminationFutureSubjectsGroup
+              index={index}
+              subject={subject}
+              nextOptions={nextOptions}
+              selectedSubjectList={selectedSubjects}
+              enrolledAttendances={enrolledAttendances}
+              onSubjectGroupChange={
+                onMatriculationExaminationSubjectGroupChange
+              }
+              onClickDeleteRow={onDeleteRow}
+            />
+          </div>
         ))}
-      </div>
+      </>
     );
   };

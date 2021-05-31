@@ -8,7 +8,13 @@ export type PageLocation = "Home" | "Help" | "Materials";
 /**
  * Loading state type
  */
-export type SaveState = "PENDING" | "IN_PROGRESS" | "SUCCESS" | "FAILED";
+export type SaveState =
+  | "PENDING"
+  | "IN_PROGRESS"
+  | "SUCCESS"
+  | "FAILED"
+  | "SAVING_DRAFT"
+  | "DRAFT_SAVED";
 
 /**
  * AttentionPlace
@@ -48,6 +54,7 @@ export interface ExaminationBasicProfile {
   phoneNumber: string;
   profileId: string;
   descriptionInfo?: string;
+  ssn: number;
 }
 
 /**
@@ -58,6 +65,7 @@ export interface ExaminationStudentInfo {
   registrationType: string;
   degreeType: string;
   refreshingExamination: string;
+  courseCount: number | null;
 }
 
 /**
@@ -66,7 +74,7 @@ export interface ExaminationStudentInfo {
 export interface ExaminationAttendedSubject {
   subject: string;
   mandatory: string;
-  renewal: string;
+  repeat: string;
   status: attendanceStatus;
 }
 
@@ -100,4 +108,79 @@ export interface ExaminationAttentionInformation {
   publishPermission: string;
   publishedName: string;
   date: any;
+}
+
+/**
+ * Term
+ */
+export interface Term {
+  name: string;
+  value: string;
+  adessive: string;
+}
+
+export interface MatriculationStudent {
+  address: string;
+  email: string;
+  enrollmentSent: boolean;
+  guidanceCounselor: string;
+  locality: string;
+  name: string;
+  phone: string;
+  postalCode: string;
+  ssn: number;
+  studentIdentifier: string;
+}
+
+export interface MatriculationStudentExamination {
+  canPublishName: string;
+  changedContactInfo: string;
+  degreeType: string;
+  enrollAs: string;
+  enrolledAttendances: [];
+  finishedAttendances: [];
+  guider: string;
+  initialized: boolean;
+  location: string;
+  message: string;
+  numMandatoryCourses: string;
+  plannedAttendances: [];
+  restartExam: boolean;
+}
+
+export interface MatriculationExaminationDraft {
+  changedContactInfo: string;
+  guider: string;
+  enrollAs: string;
+  degreeType: string;
+  numMandatoryCourses: string;
+  restartExam: string;
+  message: string;
+  location: string;
+  canPublishName: string;
+  enrolledAttendances: ExaminationAttendedSubject[];
+  plannedAttendances: ExaminationFutureSubject[];
+  finishedAttendances: ExaminationCompletedSubject[];
+}
+
+export interface MatriculationExaminationApplication {
+  examId: string;
+  name: string;
+  ssn: number;
+  email: string;
+  phone: string;
+  address: string;
+  postalCode: string;
+  city: string;
+  guider: string;
+  enrollAs: string;
+  degreeType: string;
+  restartExam: string;
+  numMandatoryCourses: number;
+  location: string;
+  message: string;
+  studentIdentifier: string;
+  canPublishName: boolean;
+  state: string;
+  attendances: object[];
 }

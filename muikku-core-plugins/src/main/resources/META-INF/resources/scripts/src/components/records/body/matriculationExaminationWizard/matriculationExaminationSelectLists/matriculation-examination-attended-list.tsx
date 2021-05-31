@@ -10,7 +10,10 @@ interface MatriculationExaminationSubjectSelectsListProps {
   onChange?: (
     modifiedExaminationAttendedSubjectList: ExaminationAttendedSubject[]
   ) => void;
-  examinationSubjectList?: ExaminationAttendedSubject[];
+  examinationSubjectList: ExaminationAttendedSubject[];
+  isConflictingMandatory: (attendance: ExaminationAttendedSubject) => boolean;
+  conflictingAttendancesGroup: string[][];
+  isConflictingRepeat: (attendance: ExaminationAttendedSubject) => boolean;
   onDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
@@ -20,7 +23,14 @@ interface MatriculationExaminationSubjectSelectsListProps {
  * @returns
  */
 export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationExaminationSubjectSelectsListProps> =
-  ({ onChange, examinationSubjectList, onDeleteRow }) => {
+  ({
+    onChange,
+    examinationSubjectList,
+    conflictingAttendancesGroup,
+    onDeleteRow,
+    children,
+    ...validationProps
+  }) => {
     const onMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationAttendedSubject
     >(
@@ -35,17 +45,38 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
       onChange(modifiedExaminationAttendedSubjectList);
     };
 
+    const selectedSubjects = examinationSubjectList.map(
+      (sSubject) => sSubject.subject
+    );
+
     return (
-      <div>
-        {examinationSubjectList.map((subject, index) => (
-          <MatriculationExaminationSubjectInputGroup
-            key={index}
-            index={index}
-            subject={subject}
-            onSubjectGroupChange={onMatriculationExaminationSubjectGroupChange}
-            onClickDeleteRow={onDeleteRow}
-          />
-        ))}
-      </div>
+      <>
+        {examinationSubjectList.map((subject, index) => {
+          const conflictedCourse = conflictingAttendancesGroup.some(
+            (r) => r.indexOf(subject.subject) >= 0
+          );
+
+          return (
+            <div
+              key={index}
+              className={`matriculation-row matriculation-row--input-groups ${
+                conflictedCourse &&
+                "matriculation-row--input-groups--conflicted"
+              }`}
+            >
+              <MatriculationExaminationSubjectInputGroup
+                index={index}
+                subject={subject}
+                selectedSubjectList={selectedSubjects}
+                onSubjectGroupChange={
+                  onMatriculationExaminationSubjectGroupChange
+                }
+                onClickDeleteRow={onDeleteRow}
+                {...validationProps}
+              />
+            </div>
+          );
+        })}
+      </>
     );
   };

@@ -22,8 +22,9 @@
   overflow: auto;
 
   @include breakpoint($breakpoint-pad) {
-    width: 600px;
+    width: 700px;
     margin: 0 auto;
+    padding: 0 50px;
   }
 }
 
@@ -52,6 +53,7 @@
 .matriculation-row {
   display: flex;
   flex-flow: column wrap;
+  padding: 5px;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
@@ -60,9 +62,13 @@
 
 .matriculation-row--input-groups {
   flex-flow: column wrap;
+  margin: 0;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 5px;
   }
 }
 
@@ -72,22 +78,23 @@
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
-  margin: 5px;
+  margin: 5px 0px;
   @include breakpoint($breakpoint-pad) {
+    margin-left: 0;
+    margin-right: 5px;
   }
 }
 
 .matriculation-fieldset {
-  padding: 10px;
-  border-width: 2px;
-  border-style: groove;
-  border-color: #f8a1ce;
-  border-image: initial;
+  padding: 0.5rem 0px;
   margin: 10px 0;
 }
 
 .matriculation-fieldset legend {
   padding: 5px;
+  border-bottom: 1px solid #e5e5e5;
+  display: block;
+  width: 100%;
 }
 
 .matriculation__form-element-container label {
@@ -104,25 +111,64 @@
 
 .matriculation__form-element-container--input {
   width: 100%;
-  margin: 5px 10px 5px 0;
+  margin: 0px 5px 5px 0;
 
   @include breakpoint($breakpoint-pad) {
     width: 25%;
+    margin: 0px 5px 0px 0;
   }
 }
 
+.matriculation-row--input-groups--conflicted {
+  background-color: pink;
+  margin-bottom: 5px;
+}
+
+.matriculation__form-element-container--input--mandatory-conflict::before,
+.matriculation__form-element-container--input--repeat-conflict::before {
+  content: " ";
+  width: 100%;
+  height: 5px;
+  display: block;
+  bottom: 0;
+  position: absolute;
+}
+
+.matriculation__form-element-container--input--mandatory-conflict::before {
+  background: $color-warn;
+}
+
+.matriculation__form-element-container--input--repeat-conflict::before {
+  background: $color-fatal;
+}
+
 .matriculation__form-element-container--button {
-  width: auto;
-  margin: auto;
+  margin: auto 0px;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    width: 25%;
-    /* margin-top: 25px; */
+    display: block !important;
+    max-width: 40px;
   }
+}
+
+.matriculation__form-element-container--button a {
+  width: 100%;
+  margin: auto !important;
+  font-size: 1.5rem;
 }
 
 .matriculation__form-element-container input:read-only {
   background-color: $color-disabled;
+}
+
+.matriculation__form-element__button__label {
+  visibility: hidden;
+  display: none !important;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block !important;
+  }
 }
 
 .matriculation__form-element__input {
@@ -144,31 +190,24 @@
   height: 2rem;
   padding: 0 1rem;
   border: 0;
+  width: 100%;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    width: initial;
+  }
 }
 
 .matriculation__form-element-container--checkbox label {
-  display: flex;
+  display: inline-block;
   align-items: center;
 }
 .matriculation__form-element-container--checkbox input[type="radio"],
 input[type="checkbox"] {
   flex: none;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-@keyframes blink {
-  0% {
-    opacity: 0.2;
-  }
-
-  20% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0.2;
-  }
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 5px;
 }
 
 .matriculation-step-title {
@@ -200,4 +239,139 @@ input[type="checkbox"] {
   overflow: hidden;
   position: absolute;
   width: 1px;
+}
+
+.matriculation__repeat-conflicts,
+.matriculation__mandatory-conflicts {
+  margin: 2.5px 0px;
+  display: flex;
+  align-items: center;
+}
+
+.matriculation__mandatory-conflicts div,
+.matriculation__repeat-conflicts div {
+  width: 25px;
+  height: 5px;
+  display: inline-block;
+  margin: 0px 10px;
+}
+
+.matriculation__mandatory-conflicts div {
+  background-color: $color-warn;
+}
+
+.matriculation__repeat-conflicts div {
+  background-color: $color-fatal;
+}
+
+.matriculation__warning {
+  padding: 0.5rem 0.5rem;
+  margin: 10px 0;
+  background-color: pink;
+  border-radius: 15px;
+}
+
+.matriculation__warning ul {
+  list-style-type: initial;
+  padding: 5px;
+}
+
+.matriculation__warning li {
+  display: list-item;
+}
+
+.matriculation__info {
+  margin: 0.5rem 0px;
+  padding: 0.5rem;
+  background-color: $color-info;
+  color: white;
+  display: flex;
+  align-items: center;
+  border-radius: 15px;
+  flex-direction: column;
+}
+
+.matriculation__info p {
+  text-transform: uppercase;
+}
+
+.matriculation__info p,
+ul {
+  margin: 0.5rem;
+}
+
+.matriculation__info ul {
+  list-style-type: initial;
+}
+
+.matriculation__info li {
+  display: list-item;
+}
+
+.matriculation__saving-draft {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 12000;
+  padding: 1rem;
+  left: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    left: unset;
+  }
+}
+
+.matriculation__saving-draft--info {
+  color: white;
+  background-color: $color-info;
+}
+
+.matriculation__saving-draft--error {
+  background-color: $color-failed;
+}
+
+.matriculation__saving-draft-title span {
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+}
+
+.matriculation__saving-draft-title span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.matriculation__saving-draft-title span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.matriculation__saving-draft--fade-in {
+  opacity: 1;
+  transition: all 500ms linear;
+}
+
+.matriculation__saving-draft--fade-out {
+  opacity: 0;
+  transition: all 500ms linear;
+}
+
+/* Animations*/
+
+// blink
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
 }

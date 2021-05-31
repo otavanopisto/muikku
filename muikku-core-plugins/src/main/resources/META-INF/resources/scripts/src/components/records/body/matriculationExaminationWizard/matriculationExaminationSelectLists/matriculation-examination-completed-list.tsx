@@ -1,6 +1,9 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { ExaminationCompletedSubject } from "../../../../../@types/shared";
+import {
+  ExaminationCompletedSubject,
+  ExaminationAttendedSubject,
+} from "../../../../../@types/shared";
 import { MatriculationExaminationCompletedSubjectsGroup } from "./matriculation-examination-selector-components";
 
 /**
@@ -10,7 +13,9 @@ interface MatriculationExaminationCompletedSelectsListProps {
   onChange?: (
     modifiedExaminationCompletedSubjectList: ExaminationCompletedSubject[]
   ) => any;
-  examinationCompletedList?: ExaminationCompletedSubject[];
+  enrolledAttendances: ExaminationAttendedSubject[];
+  examinationCompletedList: ExaminationCompletedSubject[];
+  pastOptions: JSX.Element[];
   onDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
@@ -20,7 +25,13 @@ interface MatriculationExaminationCompletedSelectsListProps {
  * @returns
  */
 export const MatriculationExaminationCompletedSelectsList: React.FC<MatriculationExaminationCompletedSelectsListProps> =
-  ({ onChange, examinationCompletedList, onDeleteRow }) => {
+  ({
+    onChange,
+    examinationCompletedList,
+    enrolledAttendances,
+    pastOptions,
+    onDeleteRow,
+  }) => {
     const onMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationCompletedSubject
     >(
@@ -35,17 +46,30 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
       onChange(modifiedExaminationCompletedSubjectList);
     };
 
+    const selectedSubjects = examinationCompletedList.map(
+      (sSubject) => sSubject.subject
+    );
+
     return (
-      <div>
+      <>
         {examinationCompletedList.map((subject, index) => (
-          <MatriculationExaminationCompletedSubjectsGroup
+          <div
             key={index}
-            index={index}
-            subject={subject}
-            onSubjectGroupChange={onMatriculationExaminationSubjectGroupChange}
-            onClickDeleteRow={onDeleteRow}
-          />
+            className="matriculation-row matriculation-row--input-groups"
+          >
+            <MatriculationExaminationCompletedSubjectsGroup
+              index={index}
+              subject={subject}
+              pastTermOptions={pastOptions}
+              selectedSubjectList={selectedSubjects}
+              enrolledAttendances={enrolledAttendances}
+              onSubjectGroupChange={
+                onMatriculationExaminationSubjectGroupChange
+              }
+              onClickDeleteRow={onDeleteRow}
+            />
+          </div>
         ))}
-      </div>
+      </>
     );
   };
