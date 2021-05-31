@@ -54,7 +54,7 @@ public class CourseBuilder {
     return new Course(id, name, created, lastModified, description, archived, courseNumber, maxParticipantCount, beginDate,
         endDate, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
         assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, subjectId, curriculumIds, length,
-        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate);
+        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate, 1L, 1L);
   }
 
   public CourseBuilder name(String name)
