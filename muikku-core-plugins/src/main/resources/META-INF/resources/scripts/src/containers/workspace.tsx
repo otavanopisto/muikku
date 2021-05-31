@@ -97,6 +97,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       signupDialogOpen: false,
     }
   }
+
   closeEnrollmentDialog() {
     this.setState({
       enrollmentDialogOpen: false,
@@ -421,6 +422,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id) as Action);
     }
   }
+
   renderWorkspaceMaterials(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -510,11 +512,11 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         if (!state.status.permissions.WORKSPACE_SIGNUP) {
           this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "notice") as Action);
         } else {
-          this.props.store.dispatch(displayNotification(
-            state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
-            ` <a href="#signup">${state.i18n.text.get('plugin.workspace.materials.notSignedUpWarningLink')}</a>`,
-            "notice",
-          ) as Action);
+            this.props.store.dispatch(displayNotification(
+              state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
+              ` <a href="#signup">${state.i18n.text.get('plugin.workspace.materials.notSignedUpWarningLink')}</a>`,
+              "notice",
+            ) as Action);
         }
       }
 
