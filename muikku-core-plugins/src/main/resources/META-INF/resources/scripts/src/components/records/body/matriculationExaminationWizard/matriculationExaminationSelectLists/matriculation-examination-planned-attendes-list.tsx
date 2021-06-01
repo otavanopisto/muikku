@@ -65,7 +65,7 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
         {examinationFutureList.map((subject, index) => (
           <div
             key={index}
-            className="matriculation-row matriculation-row--input-groups"
+            className="matriculation-container__row matriculation-container__row--input-groups"
           >
             <MatriculationExaminationFutureSubjectsGroup
               index={index}

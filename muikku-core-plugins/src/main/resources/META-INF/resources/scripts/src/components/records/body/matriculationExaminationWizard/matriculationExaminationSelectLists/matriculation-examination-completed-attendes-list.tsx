@@ -66,7 +66,7 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
         {examinationCompletedList.map((subject, index) => (
           <div
             key={index}
-            className="matriculation-row matriculation-row--input-groups"
+            className="matriculation-container__row matriculation-container__row--input-groups"
           >
             <MatriculationExaminationCompletedSubjectsGroup
               index={index}
