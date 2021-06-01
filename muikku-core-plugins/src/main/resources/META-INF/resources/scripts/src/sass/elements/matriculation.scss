@@ -17,7 +17,7 @@
   display: flex;
   flex-flow: row nowrap;
   font-size: 1rem;
-  margin: 10px 5px;
+  margin: 10px 10px 10px 5px;
   padding: 10px;
 
   // scss-lint:disable SelectorFormat
@@ -112,7 +112,7 @@
 .matriculation-container__row {
   display: flex;
   flex-flow: column wrap;
-  padding: 5px 0;
+  padding: 5px 5px 5px 0;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
@@ -125,7 +125,7 @@
   margin: 0;
 
   @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
   }
 }
 
@@ -145,6 +145,7 @@
   flex-flow: row nowrap;
   flex-grow: 0;
   flex-shrink: 0;
+  margin: 5px 5px 5px 0;
 }
 
 .matriculation__form-element-container--single-row {
