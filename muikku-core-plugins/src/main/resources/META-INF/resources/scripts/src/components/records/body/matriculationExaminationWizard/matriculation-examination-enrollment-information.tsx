@@ -6,6 +6,7 @@ import { MatriculationExaminationFutureSelectsList } from "./matriculationExamin
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
 import Button from '~/components/general/button';
+import { REQUIRED_NUM_OF_COURSES } from "./index";
 import {
   getDefaultNextTerm,
   getDefaultPastTerm,
@@ -881,9 +882,22 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
               </select>
             </div>
           </div>
+          {enrollAs === "UPPERSECONDARY" && numMandatoryCourses === "" ? (
+            <div className="matriculation__warning">
+              Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.
+            </div>
+          ) : null}
+          {enrollAs === "UPPERSECONDARY" &&
+          numMandatoryCourses !== "" &&
+          parseInt(numMandatoryCourses) < REQUIRED_NUM_OF_COURSES ? (
+            <div className="matriculation__warning">
+              Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna.
+              Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.
+            </div>
+          ) : null}
           <div className="matriculation-container__row">
-            <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
-              <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen&nbsp;</label>
+          <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
+          <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen</label>
               <input
                 onChange={(e) =>
                   this.onExaminationInformationChange(
