@@ -162,7 +162,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     try{
       mockBuilder.addEducationType(new EducationType((long) 2, "Highschool", "HS", false)).addSubject(new Subject((long) 2, "tc_12", "Test subject", (long) 2, false));
       Course course1 = new CourseBuilder().name("testcourse 6").id((long) 105).description("test course for testing").buildCourse();
-      Course course2 = new CourseBuilder().name("testcourse 7").id((long) 106).description("wiener course for testing").subjectId((long) 2).buildCourse();
+      Course course2 = new CourseBuilder().name("testcourse 7").id((long) 106).description("wiener course for testing").subjectId((long) 2).primaryEducationSubtypeId(2L).primaryEducationTypeId(2L).buildCourse();
       Course course3 = new CourseBuilder().name("testcourse 8").id((long) 107).description("hilleri course for testing").buildCourse();
       mockBuilder
         .addStaffMember(admin)
