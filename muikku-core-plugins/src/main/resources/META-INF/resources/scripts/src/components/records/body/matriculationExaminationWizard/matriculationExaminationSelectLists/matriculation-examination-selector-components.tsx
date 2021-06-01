@@ -351,7 +351,7 @@ const SubjectSelect: React.FC<SubjectSelectProps> = ({
       aria-labelledby="matriculationSubjectSelectLabel"
       {...selectProps}
       disabled={selectProps.disabled}
-      className="matriculation__form-element__input"
+      className="matriculation__select"
     >
       {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
         const subjectName = SUBJECT_MAP[subjectCode];
@@ -390,7 +390,7 @@ const TermSelect: React.FC<TermSelectProps> = ({
       aria-labelledby="matriculationTermSelectLabel"
       {...selectProps}
       disabled={selectProps.disabled}
-      className="matriculation__form-element__input"
+      className="matriculation__select"
     >
       <option value="">Valitse...</option>
       <>{options}</>
@@ -420,7 +420,7 @@ const MandatorySelect: React.FC<MandatorySelectProps> = ({
       aria-labelledby="matriculationMandatorySelectLabel"
       {...selectProps}
       disabled={selectProps.disabled}
-      className="matriculation__form-element__input"
+      className="matriculation__select"
     >
       <option value="">Valitse...</option>
       <option value="true">Pakollinen</option>
@@ -447,7 +447,7 @@ const RepeatSelect: React.FC<RepeatSelectProps> = ({ i, ...selectProps }) => (
       aria-labelledby="matriculationRepeatSelectLabel"
       {...selectProps}
       disabled={selectProps.disabled}
-      className="matriculation__form-element__input"
+      className="matriculation__select"
     >
       <option value="">Valitse...</option>
       <option value="false">Ensimmäinen suorituskerta</option>
@@ -474,7 +474,7 @@ const GradeSelect: React.FC<GradeSelectProps> = ({ i, ...selectProps }) => (
       aria-labelledby="matriculationGradeSelectLabel"
       {...selectProps}
       disabled={selectProps.disabled}
-      className="matriculation__form-element__input"
+      className="matriculation__select"
     >
       <option value="IMPROBATUR">I (Improbatur)</option>
       <option value="APPROBATUR">A (Approbatur)</option>
