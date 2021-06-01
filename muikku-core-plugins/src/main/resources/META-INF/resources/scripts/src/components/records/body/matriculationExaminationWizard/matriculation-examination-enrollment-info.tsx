@@ -11,6 +11,10 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
     super(props);
   }
 
+  /**
+   * Render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="matriculation-container matriculation-container-state matriculation-container-state--info">

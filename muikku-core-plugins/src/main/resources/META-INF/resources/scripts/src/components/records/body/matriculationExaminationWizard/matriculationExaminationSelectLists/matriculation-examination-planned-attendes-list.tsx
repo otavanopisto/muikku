@@ -33,6 +33,12 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
     onDeleteRow,
     readOnly,
   }) => {
+    /**
+     * Handles matriculation examation planned subject group change
+     * @param key
+     * @param value
+     * @param index
+     */
     const onMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationPlannedSubject
     >(
@@ -47,6 +53,9 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
       onChange(modifiedExaminationFutureSubjectList);
     };
 
+    /**
+     * List of selected subject string keys
+     */
     const selectedSubjects = examinationFutureList.map(
       (sSubject) => sSubject.subject
     );

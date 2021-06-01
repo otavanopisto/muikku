@@ -34,6 +34,12 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
     onDeleteRow,
     readOnly,
   }) => {
+    /**
+     * Handles matriculation examation finished subject group change
+     * @param key
+     * @param value
+     * @param index
+     */
     const onMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationFinishedSubject
     >(
@@ -48,6 +54,9 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
       onChange(modifiedExaminationCompletedSubjectList);
     };
 
+    /**
+     * List of selected subject string keys
+     */
     const selectedSubjects = examinationCompletedList.map(
       (sSubject) => sSubject.subject
     );

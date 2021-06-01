@@ -3,14 +3,19 @@ import "~/sass/elements/matriculation.scss";
 import { ExaminationInformation } from "../../../../@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
-import { MatriculationExaminationCompletedSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-completed-list";
-import { MatriculationExaminationSubjectSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-attended-list";
-import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-future-list";
+import { MatriculationExaminationCompletedSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-completed-attendes-list";
+import { MatriculationExaminationSubjectSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
+import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
 
 interface MatriculationExaminationEnrollmentSummaryProps {
   examination: ExaminationInformation;
 }
 
+/**
+ * MatriculationExaminationEnrollmentSummary
+ * @param props
+ * @returns
+ */
 export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationExaminationEnrollmentSummaryProps> =
   (props) => {
     const {
@@ -36,6 +41,11 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       finishedAttendances,
     } = props.examination;
 
+    /**
+     * enrollAsToValue
+     * @param type
+     * @returns readable value of enroll as
+     */
     const enrollAsToValue = (type: string) => {
       switch (type) {
         case "UPPERSECONDARY":
@@ -52,6 +62,11 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       }
     };
 
+    /**
+     * degreeTypeToValue
+     * @param type
+     * @returns readable value of degree type
+     */
     const degreeTypeToValue = (type: string) => {
       switch (type) {
         case "MATRICULATIONEXAMINATION":
@@ -275,10 +290,10 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
 
           <div className="matriculation-row">
             <div className="matriculation__form-element-container">
-              <label>Lisätietoa ohjaajalle</label>
-              <textarea
+              <Textarea
+                label="Lisätietoa ohjaajalle"
                 rows={5}
-                value={message}
+                defaultValue={message}
                 className="matriculation__form-element__input matriculation__form-element__input--summary matriculation__form-element__input--textarea"
               />
             </div>

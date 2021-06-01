@@ -128,6 +128,10 @@ class MatriculationExaminationWizard extends React.Component<
     "finishedAttendances",
   ];
 
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: MatriculationExaminationWizardProps) {
     super(props);
     const date = new Date();
@@ -174,7 +178,7 @@ class MatriculationExaminationWizard extends React.Component<
   }
 
   /**
-   * componentDidMount
+   * Fetches student information from backend and sets those to state
    */
   componentDidMount() {
     fetch(
@@ -199,7 +203,7 @@ class MatriculationExaminationWizard extends React.Component<
   }
 
   /**
-   * fetchSavedEnrollment
+   * Fetch saved enrollment data and set those to state and set initialized status true.
    */
   fetchSavedEnrollment() {
     fetch(
@@ -334,8 +338,6 @@ class MatriculationExaminationWizard extends React.Component<
       saveState: "IN_PROGRESS",
     });
 
-    const { examId } = this.props;
-
     const {
       changedContactInfo,
       message,
@@ -453,7 +455,7 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
-   * handleErrorMsg
+   * handles possible error messages setting those to state
    * @param msg
    */
   handleErrorMsg = (msg: string) => {
@@ -464,20 +466,20 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
-   * onStepChange
+   * handles when wizard step changes and here check when last step before complete happens,
+   * kick offs form submit
    * @param steps
    * @returns
    */
   onStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
-      console.log([steps, step]);
-
       this.submit();
     }
   };
 
   /**
-   * onExaminationInformationChange
+   * Handles examination information change and start draft saving timer, clears existing timer
+   * if changes happens before existing timer happens to end
    * @param examination
    */
   onExaminationInformationChange = (examination: ExaminationInformation) => {
@@ -494,13 +496,16 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
-   * Component render
+   * Render method
    */
   render() {
     if (!this.state.initialized) {
       return <></>;
     }
 
+    /**
+     * StepZilla steps
+     */
     const steps = [
       {
         name: "Info",

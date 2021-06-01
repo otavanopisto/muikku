@@ -5,6 +5,7 @@ import {
   ExaminationAttentionInformation,
   SaveState,
 } from "../../../../@types/shared";
+import { Textarea } from "./textarea";
 
 /**
  * MatriculationExaminationEnrollmentActProps
@@ -29,7 +30,12 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
     super(props);
   }
 
-  onExaminationAttentionInfoChanges = <T extends keyof ExaminationInformation>(
+  /**
+   * Handles examination information changes and passes it to parent component
+   * @param key
+   * @param value
+   */
+  onExaminationInformationChange = <T extends keyof ExaminationInformation>(
     key: T,
     value: ExaminationInformation[T]
   ) => {
@@ -43,6 +49,9 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
     onChange(modifiedExamination);
   };
 
+  /**
+   * Render method
+   */
   render() {
     const { examination, draftSaveErrorMsg, saveState } = this.props;
     const { location, message, canPublishName, name, date } = examination;
@@ -84,7 +93,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
               <label>Suorituspaikka</label>
               <select
                 onChange={(e) =>
-                  this.onExaminationAttentionInfoChanges(
+                  this.onExaminationInformationChange(
                     "location",
                     e.currentTarget.value
                   )
@@ -101,11 +110,11 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
           <div className="pure-u-1-2"></div>
           <div className="matriculation-row">
             <div className="matriculation__form-element-container">
-              <label>Lisätietoa ohjaajalle</label>
-              <textarea
+              <Textarea
+                label="Lisätietoa ohjaajalle"
                 rows={5}
                 onChange={(e) =>
-                  this.onExaminationAttentionInfoChanges(
+                  this.onExaminationInformationChange(
                     "message",
                     e.currentTarget.value
                   )
@@ -120,7 +129,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
               <label>Julkaisulupa</label>
               <select
                 onChange={(e) =>
-                  this.onExaminationAttentionInfoChanges(
+                  this.onExaminationInformationChange(
                     "canPublishName",
                     e.currentTarget.value
                   )

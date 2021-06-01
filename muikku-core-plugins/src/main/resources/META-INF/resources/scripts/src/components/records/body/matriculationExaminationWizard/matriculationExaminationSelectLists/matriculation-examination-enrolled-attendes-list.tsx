@@ -33,6 +33,12 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
     readOnly,
     ...validationProps
   }) => {
+    /**
+     * Handles matriculation examation enrolled subject group change
+     * @param key
+     * @param value
+     * @param index
+     */
     const onMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationEnrolledSubject
     >(
@@ -47,6 +53,9 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
       onChange(modifiedExaminationAttendedSubjectList);
     };
 
+    /**
+     * List of selected subject string keys
+     */
     const selectedSubjects = examinationSubjectList.map(
       (sSubject) => sSubject.subject
     );
@@ -54,6 +63,9 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
     return (
       <>
         {examinationSubjectList.map((subject, index) => {
+          /**
+           * Checks if course conflicts
+           */
           const conflictedCourse =
             conflictingAttendancesGroup &&
             conflictingAttendancesGroup.some(
