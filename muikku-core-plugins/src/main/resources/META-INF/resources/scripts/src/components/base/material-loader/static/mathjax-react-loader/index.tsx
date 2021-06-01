@@ -6,7 +6,6 @@ const baseConfig = {
   showMathMenu: true,
   tex2jax: {
     inlineMath: [
-      ["$", "$"],
       ["\\(", "\\)"]
     ]
   },

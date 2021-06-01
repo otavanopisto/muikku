@@ -117,6 +117,86 @@
       this._gradingScales = gradingScales;
     },
     
+    // Prepares workspace billing dropdown
+    
+    _setupWorkspaceBilling: function(raisedGrade, assessmentIdentifier) {
+      // If billing hasn't been configured at all, skip everything
+      if (!$('#billingRow').length) {
+        return;
+      }
+      // Let's assume our billing row is available
+      $('#billingRow').show();
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      // Get the base billing price for the workspace being evaluated
+      mApi().worklist.basePrice.read({
+        'workspaceEntityId': workspaceEntityId})
+      .callback($.proxy(function(err, basePrice) {
+        // If the base billing price cannot be resolved, just disable billing altogether
+        if (err || basePrice <= 0) {
+          $('#billingRow').remove();
+        }
+        else {
+          // Remove any options our billing dropdown might have had previously
+          $('#workspaceGradeBilling option').remove();
+          // If giving a raised grade, the price is half of the base price
+          if (raisedGrade) {
+            basePrice = basePrice / 2;
+          }
+          // Full billing -> available for course evaluations and raised grades
+          $('#workspaceGradeBilling').append($('<option>', {
+            value: basePrice,
+            text: getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull") + ' (' + basePrice.toFixed(2) + ' €)'
+          }));
+          // Half billing -> only available for course evaluations
+          if (!raisedGrade) {
+            var halfPrice = basePrice / 2;
+            $('#workspaceGradeBilling').append($('<option>', {
+              value: halfPrice,
+              text: getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf") + ' (' + halfPrice.toFixed(2) + ' €)'
+            }));
+          }
+          // No billing -> available for course evaluations and raised grades
+          $('#workspaceGradeBilling').append($('<option>', {
+            value: 0,
+            text: getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone") + ' (0,00 €)'
+          }));
+          
+          // Load existing billed price when editing an existing evaluation
+          
+          if (assessmentIdentifier) {
+            // Let's assume the billing dropdown will be enabled
+            $('#workspaceGradeBilling').prop('disabled', false);
+            // Ask the server for the billed price of the given evaluation
+            mApi().worklist.billedPrice.read({
+              'workspaceEntityId': workspaceEntityId,
+              'assessmentIdentifier': assessmentIdentifier})
+            .callback($.proxy(function (err, billedPrice) {
+              // Only act if server returned us previous billing information
+              if (!err && billedPrice) {
+                // See which billing option we should set selected
+                var optionToSelect = $("#workspaceGradeBilling option[value='" + billedPrice.price + "']");
+                // If the price from server is not in our options...
+                if (!optionToSelect.length) {
+                  // ...then add a custom option with the current price
+                  $('#workspaceGradeBilling').append($('<option>', {
+                    value: billedPrice.price,
+                    text: getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom") + ' (' + billedPrice.price.toFixed(2) + ' €)'
+                  }));
+                }
+                // Select our price now that we're guaranteed to have it as an option
+                $('#workspaceGradeBilling').val(billedPrice.price);
+                // Disable the billing dropdown if the server says price is not editable
+                $('#workspaceGradeBilling').prop('disabled', !billedPrice.editable);
+              }
+              else {
+                $('#billingRow').hide();
+              }
+            }, this));
+          }
+        }
+      }, this));
+    },
+    
     _setupWorkspaceGradeEditor: function() {
       var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
       CKEDITOR.replace($('#workspaceGradeText')[0], $.extend({}, this.options.ckeditor, {
@@ -136,6 +216,17 @@
             assessment: assessment
           });
           $('#workspaceGradeEditor').attr('data-mode', '');
+
+          // Update billing information if billing is enabled, shown, and editable
+          
+          if ($('#billingRow').length && !$('#billingRow').is(':hidden') && !$('#workspaceGradeBilling').is(':disabled')) {
+            var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+            mApi().worklist.billedPrice.update({
+              'assessmentIdentifier': assessment.identifier,
+              'price': $('#workspaceGradeBilling').val()}, {'workspaceEntityId': workspaceEntityId}
+            );
+          }
+
           this._setupEventsContainer(); // reload events
         }, this);
         
@@ -304,6 +395,8 @@
               $('#workspaceGradeDate').val($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw'));
               CKEDITOR.instances.workspaceGradeText.setData($(eventElement).find('.eval-modal-workspace-event-content').html());
             }
+            // Setup the billing dropdown for either evaluation or raised grade
+            this._setupWorkspaceBilling(eventType == 'EVALUATION_IMPROVED', $('#workspaceGradeIdentifier').val());
             this._toggleWorkspaceGradeEditor(true, function() {
               CKEDITOR.instances.workspaceGradeText.startDrafting();
             });
@@ -367,6 +460,8 @@
             $('#workspaceGradeDate').val(new Date().getTime());
             CKEDITOR.instances.workspaceGradeText.setData('');
           }
+          // Setup the billing dropdown for either evaluation or raised grade
+          this._setupWorkspaceBilling($('.graded').length > 0);
           this._toggleWorkspaceGradeEditor(true, function() {
             CKEDITOR.instances.workspaceGradeText.startDrafting();
           });

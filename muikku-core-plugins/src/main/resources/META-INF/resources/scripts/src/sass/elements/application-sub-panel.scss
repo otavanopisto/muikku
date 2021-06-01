@@ -540,9 +540,18 @@
   }
 }
 
+.application-sub-panel__item--worklist-total {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 5px 0 5px 12px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
+}
+
 .application-sub-panel__item--worklist-items-footer {
   margin: 5px 0 5px 12px;
-  padding: 0;
+  padding: 2px 12px;
 }
 
 .application-sub-panel__item--workspace-management {
@@ -772,6 +781,21 @@
   padding: 0;
 }
 
+// Subpanel item title for worklist entries total
+.application-sub-panel__item-title--worklist-total {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 2px 10px 2px 0;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 2px 10px 2px 30px;
+  }
+}
+
 // Subpanel item inline value
 .application-sub-panel__item-inline-value {
   background-color: $color-hops-readable-inline-background;
@@ -805,6 +829,27 @@
     flex-grow: 1;
     flex-shrink: 1;
   }
+}
+
+// Subpanel item data for worklist entries total
+.application-sub-panel__item-data--worklist-total {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 2px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 60px;
+    justify-content: center;
+    margin: 2px 165px 2px 0;
+  }
+}
+
+// Subpanel item data for worklist entries submit link
+.application-sub-panel__item-data--worklist-submit-entries {
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .application-sub-panel__item-data--workspace-management {

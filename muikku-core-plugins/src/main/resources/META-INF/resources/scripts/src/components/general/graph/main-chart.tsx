@@ -1,3 +1,9 @@
+/**
+ * This is the amcharts main chart file it uses am charts v3 and the reference
+ * for those charts api can be found here
+ * https://docs.amcharts.com/3/javascriptcharts
+ */
+
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from 'react';
 import { Dispatch } from 'redux';
@@ -23,6 +29,11 @@ interface CurrentStudentStatisticsState {
   filteredGraphs: string[]
 }
 
+/**
+ * This information comes from the api endpoint and contains
+ * those properties, any changes to this data will be related
+ * to the endpoint
+ */
 interface MainChartData {
   EVALUATION_REQUESTED?: number,
   EVALUATION_GOTINCOMPLETED?: number,
@@ -39,14 +50,23 @@ interface MainChartData {
   NOTIFICATION_STUDYTIME?: number
 }
 
+/**
+ * These are the graph points note how they are not in a 1->1 relationship
+ * with the data, as they have been defined so
+ */
 enum Graph {
   SESSION_LOGGEDIN = "logins",
   MATERIAL_ASSIGNMENTDONE = "assignments",
   MATERIAL_EXERCISEDONE = "exercises",
   WORKSPACE_VISIT = "visits",
   FORUM_NEWMESSAGE = "discussion-messages",
+  EVALUATION_REQUESTED = "evaluation-requested",
+  EVALUATION_PASSED = "evaluation-passed",
+  EVALUATION_FAILED = "evaluation-failed",
+  EVALUATION_INCOMPLETED = "evaluation-incompleted",
 }
 
+// some stored global variables for this chart
 let ignoreZoomed: boolean = true;
 let zoomStartDate: Date = null;
 let zoomEndDate: Date = null;
@@ -56,7 +76,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     super(props);
     this.workspaceFilterHandler = this.workspaceFilterHandler.bind(this);
     this.completedWorkspaceFilterHandler = this.completedWorkspaceFilterHandler.bind(this);
-    this.GraphFilterHandler = this.GraphFilterHandler.bind(this);
+    this.graphFilterHandler = this.graphFilterHandler.bind(this);
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
@@ -136,7 +156,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     this.setState({ filteredCompletedWorkspaces: filteredCompletedWorkspaces });
   }
 
-  GraphFilterHandler(graph: Graph) {
+  graphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
     const index = filteredGraphs.indexOf(graph);
     if (index > -1) {
@@ -176,6 +196,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
+
+    // here we are mapping the chart data to a map that will be used to render the chaart
     let chartDataMap = new Map<string, MainChartData>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), { SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0 });
     if (this.props.activityLogs) {
@@ -187,6 +209,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
             entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
             break;
           case "FORUM_NEWMESSAGE":
+            // note how the following two map to the same event
             entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1 || 1;
             break;
           case "FORUM_NEWTHREAD":
@@ -211,6 +234,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       });
     }
 
+    // here we are grabbing the workspace chart specific data
     let workspaces: { id: number, name: string, isEmpty: boolean }[] = [];
     if (this.props.workspaces) {
       this.props.workspaces.map((workspace) => {
@@ -346,6 +370,83 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       });
     }
 
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_REQUESTED)) {
+      graphs.push({
+        "id": "EVALUATION_REQUESTED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-requestedLabel") + " <b>[[EVALUATION_REQUESTED]]</b>",
+        "bullet": "diamond",
+        "bulletSize": 12,
+        "fillAlphas": 0,
+        "lineAlpha": 0,
+        "lineThickness": 2,
+        "lineColor": "#009fe3",
+        "title": "EVALUATION_REQUESTED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_REQUESTED"
+      });
+    }
+
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_INCOMPLETED)) {
+      graphs.push({
+        "id": "EVALUATION_GOTINCOMPLETED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-incompletedLabel") + " <b>[[EVALUATION_GOTINCOMPLETED]]</b>",
+        "bullet": "square",
+        "bulletSize": 12,
+        "fillAlphas": 0,
+        "lineAlpha": 0,
+        "lineThickness": 2,
+        "lineColor": "#ea7503",
+        "title": "EVALUATION_GOTINCOMPLETED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_GOTINCOMPLETED"
+      });
+    }
+
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_PASSED)) {
+      graphs.push({
+        "id": "EVALUATION_GOTPASSED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-passedLabel") + " <b>[[EVALUATION_GOTPASSED]]</b>",
+        "bullet": "triangleUp",
+        "bulletSize": 12,
+        "fillAlphas": 0,
+        "lineAlpha": 0,
+        "lineThickness": 2,
+        "lineColor": "#24c118",
+        "title": "EVALUATION_GOTPASSED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_GOTPASSED"
+      });
+    }
+
+    if (!this.state.filteredGraphs.includes(Graph.EVALUATION_FAILED)) {
+      // documentation can be found https://docs.amcharts.com/3/javascriptcharts/AmGraph
+      graphs.push({
+        "id": "EVALUATION_GOTFAILED",
+        "balloonText": this.props.i18n.text.get("plugin.guider.evaluation-failedLabel") + " <b>[[EVALUATION_GOTFAILED]]</b>",
+        "bullet": "triangleDown",
+        "bulletSize": 12,
+        "fillAlphas": 0,
+        "lineAlpha": 0,
+        "lineThickness": 2,
+        "lineColor": "#de3211",
+        "title": "EVALUATION_GOTFAILED",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "EVALUATION_GOTFAILED"
+      });
+    }
+
     //TODO: set to if certain graphs not filtered
     let stacked: boolean = !this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE) || !this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)
     let valueAxes = [{
@@ -357,6 +458,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "minimum": 0
     }];
 
+    // general config about the chart
     let config = {
       "theme": "none",
       "type": "serial",
@@ -413,10 +515,20 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     };
     ignoreZoomed = true;
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs: string[] = [Graph.SESSION_LOGGEDIN, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE, Graph.WORKSPACE_VISIT, Graph.FORUM_NEWMESSAGE];
+    let showGraphs: string[] = [
+      Graph.SESSION_LOGGEDIN,
+      Graph.MATERIAL_ASSIGNMENTDONE,
+      Graph.MATERIAL_EXERCISEDONE,
+      Graph.WORKSPACE_VISIT,
+      Graph.FORUM_NEWMESSAGE,
+      Graph.EVALUATION_REQUESTED,
+      Graph.EVALUATION_PASSED,
+      Graph.EVALUATION_FAILED,
+      Graph.EVALUATION_INCOMPLETED,
+    ];
     return <div className="application-sub-panel__body">
       <div className="chart-legend">
-        <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler} />
+        <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.graphFilterHandler} />
         <WorkspaceFilter workspaces={workspaces} filteredWorkspaces={this.state.filteredWorkspaces} workspaceHandler={this.workspaceFilterHandler}
           completedWorkspaces={completedWorkspaces} filteredCompletedWorkspaces={this.state.filteredCompletedWorkspaces} completedWorkspaceHandler={this.completedWorkspaceFilterHandler} />
       </div>

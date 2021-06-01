@@ -242,13 +242,10 @@ export interface WorkspaceType {
   subjectIdentifier: string | number;
   urlName: string;
   chatStatus?: WorkspaceChatStatusType;
-
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccessType;
   //These appear in certain circumstances
-  //Usually available if externally loaded (eg. coursepicker)
-  canSignup?: boolean;
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
   educationTypeName?: string;

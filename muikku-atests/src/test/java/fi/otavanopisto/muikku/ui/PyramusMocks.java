@@ -7,12 +7,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,18 +21,17 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
-import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
-import fi.otavanopisto.pyramus.rest.model.Grade;
-import fi.otavanopisto.pyramus.rest.model.GradingScale;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
-import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.Grade;
+import fi.otavanopisto.pyramus.rest.model.GradingScale;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
@@ -582,7 +580,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
       (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
       (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-      null, null, 1L, false);
+      null, null, 1L, false, 1L, 1L);
   
     String courseJson = objectMapper.writeValueAsString(course);
     

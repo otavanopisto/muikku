@@ -97,6 +97,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       signupDialogOpen: false,
     }
   }
+
   closeEnrollmentDialog() {
     this.setState({
       enrollmentDialogOpen: false,
@@ -421,6 +422,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id) as Action);
     }
   }
+
   renderWorkspaceMaterials(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -576,7 +578,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace) => {
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
-            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace }) as Action);
+            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace, payload: { q: "", maxResults: 500 } }) as Action);
           }
           if (!workspace.journals) {
             if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {

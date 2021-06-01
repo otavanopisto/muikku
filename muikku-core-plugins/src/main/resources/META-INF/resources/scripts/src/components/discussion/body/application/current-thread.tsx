@@ -12,15 +12,10 @@ import { getName } from "~/util/modifiers";
 import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
 import Avatar from '~/components/general/avatar';
-
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
-
 import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
-import Button from '../../../general/button';
-import { ButtonPill, IconButton } from '../../../general/button';
-import HoverButton from '../../../general/hover-button';
 
 interface CurrentThreadProps {
   discussion: DiscussionType,
@@ -64,12 +59,12 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
    */
   onHideShowSubRepliesClick = (parentId: number) => (e: React.MouseEvent) => {
 
-    if(this.state.hiddenParentsLists.includes(parentId)){
+    if (this.state.hiddenParentsLists.includes(parentId)) {
       this.setState({
         hiddenParentsLists: this.state.hiddenParentsLists.filter(id => id !== parentId)
       })
 
-    }else{
+    } else {
       const updatedList = [...this.state.hiddenParentsLists];
 
       updatedList.push(parentId);
@@ -89,7 +84,6 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       return null;
     }
     const areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
-
     const userCreator: DiscussionUserType = this.props.discussion.current.creator;
     const userCategory = this.props.discussion.current.creator.id > 10 ? this.props.discussion.current.creator.id % 10 + 1 : this.props.discussion.current.creator.id;
     let avatar;
@@ -98,10 +92,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       avatar = <div className="avatar avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
-      avatar = <Avatar key={userCreator.id} id={userCreator.id} firstName={userCreator.firstName} hasImage={userCreator.hasImage} userCategory={userCategory} avatarAriaLabel={this.props.i18n.text.get("plugin.wcag.userAvatar.label")}/>
+      avatar = <Avatar key={userCreator.id} id={userCreator.id} firstName={userCreator.firstName} hasImage={userCreator.hasImage} userCategory={userCategory} avatarAriaLabel={this.props.i18n.text.get("plugin.wcag.userAvatar.label")} />
     }
 
-    const canRemoveThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.removeThread;
+    const canRemoveThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.removeThread || this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
     const canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessages;
     const threadLocked = this.props.discussion.current.locked === true;
     const student = this.props.status.isStudent === true;
@@ -140,7 +134,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType) => {
           const user: DiscussionUserType = reply.creator;
           const userCategory = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator.id;
-          const canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread;
+          const canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread || this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
           const canEditMessage = this.props.userId === reply.creator.id || areaPermissions.editMessages;
 
           let avatar;
@@ -149,7 +143,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <Avatar key={reply.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory}/>
+            avatar = <Avatar key={reply.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory} />
           }
 
           /**
@@ -163,7 +157,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           const parentHasHiddenSiblings = this.state.hiddenParentsLists.includes(reply.id);
 
           return (
-              <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar} hidden={isHiddenElement}>
+            <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar} hidden={isHiddenElement}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
                 <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
               </DiscussionThreadHeader>
@@ -192,14 +186,14 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                   <Link tabIndex={0} as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                 </DeleteThreadComponent> : null}
                 {reply.childReplyCount > 0 ?
-                <Link tabIndex={0} as="span" onClick={this.onHideShowSubRepliesClick(reply.id)} className="link link--application-list-item-footer">
-                  {parentHasHiddenSiblings ?
-                    this.props.i18n.text.get("plugin.discussion.reply.showAllReplies")
-                    :
-                    this.props.i18n.text.get("plugin.discussion.reply.hideAllReplies")
-                  }
-                </Link>
-                : null }
+                  <Link tabIndex={0} as="span" onClick={this.onHideShowSubRepliesClick(reply.id)} className="link link--application-list-item-footer">
+                    {parentHasHiddenSiblings ?
+                      this.props.i18n.text.get("plugin.discussion.reply.showAllReplies")
+                      :
+                      this.props.i18n.text.get("plugin.discussion.reply.hideAllReplies")
+                    }
+                  </Link>
+                  : null}
               </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>
           )
