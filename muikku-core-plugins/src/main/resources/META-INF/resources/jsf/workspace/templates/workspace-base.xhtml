@@ -28,7 +28,7 @@
 	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_DETAILS = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_DETAILS')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_SIGNUP = #{sessionBackingBean.hasWorkspacePermission('WORKSPACE_SIGNUP')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_IS_WORKSPACE_STUDENT = #{sessionBackingBean.hasWorkspacePermission('IS_WORKSPACE_STUDENT')};
-	  
+	  MUIKKU_PERMISSIONS.WORKSPACE_DELETE_FORUM_THREAD = #{sessionBackingBean.hasWorkspacePermission('FORUM_DELETE_WORKSPACE_MESSAGES')};
 	  WORKSPACE_ID = #{workspaceBackingBean.workspaceEntityId}; //With this you can get the workspace as http://dev.muikkuverkko.fi/rest/workspace/workspaces/285/
 	  WORKSPACE_NAME = '#{workspaceBackingBean.workspaceName}';
     </script>

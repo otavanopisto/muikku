@@ -134,17 +134,19 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       </div>
     </div>);
 
-    // let's get the first day of the previous month this will allow us to check each section
-    // in order to be able to realize if they match
+    // let's get the first day of the previous month
     const previousMonthsFirstDay = moment().subtract(1, 'months').startOf("month");
+
+    // let's get the first day of the current month
+    const currentMonthsFirstDay = moment().startOf("month");
 
     const sections = (
       this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
-        // check if it's open or it has data in order to see if we are going to make it visible
+        // check if section open or if it has data
         const isOpen = this.state.openedSections.includes(section.summary.beginDate);
         const hasData = !!section.items;
 
-        // and we only show if it is open and has data
+        // show section entries if it is opened and has data a.k.a entries in it
         const entries = isOpen && hasData ? (
           section.items.map((item) => {
             return (
@@ -153,11 +155,26 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           })
         ) : null;
 
-        // if at least one of them can be submitted and is previous month as the begin date specifies which is also
-        // the start of the month, as remember we can only submit the previous month and if it is within the limit
-        // of the 10 days or what it is
+        // calculate the months total value of worklist entries
+        let totalCostSummary: number = isOpen && hasData ? (
+          section.items.map(item => (item.price * item.factor)).reduce((a,b) => a+b)
+        ): null;
+
+        const sectionTotalRow = (<div className="application-sub-panel__item application-sub-panel__item--worklist-total">
+          <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">{this.props.i18n.text.get("plugin.profile.worklist.worklistEntriesTotalValueLabel")}</div>
+          <div className="application-sub-panel__item-data  application-sub-panel__item-data--worklist-total">{totalCostSummary}</div>
+        </div>);
+
+        // check if any entries are submittable based on the entry state
         const sectionHasSubmittableEntries = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTERED);
+
+        // check if section is for previous month entries
         const sectionIsPreviousMonth = moment(section.summary.beginDate).isSame(previousMonthsFirstDay);
+
+        // check if section is for current month entries
+        const sectionIsCurrentMonth = moment(section.summary.beginDate).isSame(currentMonthsFirstDay);
+
+        // check if current months date is 10th or less so user can still submit previous months etries
         const isPreviousMonthAvailable = daysInCurrentMonth <= currentMonthDayLimit;
 
         // in that case we have this button, but we are only adding it in the render according to the condition
@@ -167,8 +184,12 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           </SubmitWorklistItemsDialog>
         );
 
-        // which is this one
-        const shouldHaveButtonAvailable = isOpen && sectionHasSubmittableEntries && sectionIsPreviousMonth && isPreviousMonthAvailable;
+        // submit entries link is enabled and visible IF:
+        // * section is opened AND
+        // * has entries that can be submitted AND
+        // * section is previous month AND previous month can be subbmitted a.k.a current date is 10th or less OR
+        // * section is current month
+        const shouldHaveSubmitEntriesLinkAvailable = isOpen && sectionHasSubmittableEntries && ((isPreviousMonthAvailable && sectionIsPreviousMonth) || sectionIsCurrentMonth);
 
         return (
           <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
@@ -179,9 +200,10 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
             <div className="application-sub-panel__body">
               {isOpen && sectionLabels}
               {entries && entries.reverse()}
-              {shouldHaveButtonAvailable ?
+              {isOpen && sectionTotalRow}
+              {shouldHaveSubmitEntriesLinkAvailable ?
                 <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
-                  <div className="application-sub-panel__item-data">{submitLastMonthButton}</div>
+                  <div className="application-sub-panel__item-data application-sub-panel__item-data--worklist-submit-entries">{submitLastMonthButton}</div>
                 </div>
               : null}
             </div>

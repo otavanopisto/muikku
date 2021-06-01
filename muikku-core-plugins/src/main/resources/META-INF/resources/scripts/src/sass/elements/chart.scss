@@ -81,8 +81,6 @@
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  max-height: 3.5rem;
-  overflow-y: auto;
 }
 
 .filter-items--graph-filter {
@@ -231,6 +229,46 @@
   input[type="checkbox"]:checked {
     background-color: $color-form-element-selected;
     border-color: $color-form-element-selected;
+  }
+}
+
+.filter-item--evaluation-requested {
+  input[type="checkbox"] {
+    border-color: $color-evaluation-request;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-evaluation-request;
+  }
+}
+
+.filter-item--evaluation-passed {
+  input[type="checkbox"] {
+    border-color: $color-grade-passed;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-grade-passed;
+  }
+}
+
+.filter-item--evaluation-failed {
+  input[type="checkbox"] {
+    border-color: $color-grade-failed;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-grade-failed;
+  }
+}
+
+.filter-item--evaluation-incompleted {
+  input[type="checkbox"] {
+    border-color: $color-grade-incomplete;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-grade-incomplete;
   }
 }
 

@@ -43,6 +43,8 @@ public class CourseBuilder {
   private Set<Long> curriculumIds = null;  
   private Long organizationId = 1L;
   private boolean courseTemplate = false;
+  private Long primaryEducationTypeId = 1L;
+  private Long primaryEducationSubtypeId = 1L;
   public CourseBuilder() { 
 
   }
@@ -54,7 +56,7 @@ public class CourseBuilder {
     return new Course(id, name, created, lastModified, description, archived, courseNumber, maxParticipantCount, beginDate,
         endDate, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
         assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, subjectId, curriculumIds, length,
-        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate);
+        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate, primaryEducationTypeId, primaryEducationSubtypeId);
   }
 
   public CourseBuilder name(String name)
@@ -222,6 +224,16 @@ public class CourseBuilder {
   }
   public CourseBuilder organizationId(Long organizationId) {
     this.organizationId = organizationId;
+    return this;
+  }
+  
+  public CourseBuilder primaryEducationTypeId(Long primaryEducationTypeId) {
+    this.primaryEducationTypeId = primaryEducationTypeId;
+    return this;
+  }
+  
+  public CourseBuilder primaryEducationSubtypeId(Long primaryEducationSubtypeId) {
+    this.primaryEducationSubtypeId = primaryEducationSubtypeId;
     return this;
   }
 }
