@@ -54,6 +54,7 @@ export const REQUIRED_FINNISH_ATTENDANCES = 1;
 export const REQUIRED_MANDATORY_ATTENDANCES = 4;
 export const REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN = 2;
 export const REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN = 0;
+export const REQUIRED_NUM_OF_COURSES = 20;
 export const SUBJECT_MAP: ExaminationSubject = {
   AI: "Äidinkieli",
   S2: "Suomi toisena kielenä",
