@@ -562,7 +562,7 @@ class MatriculationExaminationWizard extends React.Component<
               "plugin.workspace.management.wizard.button.next"
             )}
             backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.last"
+              "plugin.workspace.management.wizard.button.prev"
             )}
             onStepChange={this.onStepChange(steps)}
           />

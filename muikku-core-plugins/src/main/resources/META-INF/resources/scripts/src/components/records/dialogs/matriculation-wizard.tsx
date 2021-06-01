@@ -40,7 +40,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
         disableScroll={false}
         title="Ilmottaudu ylioppilaskokeisiin"
         content={content}
-        modifier="wizard"
+        modifier={["wizard", "matriculation"]}
       >
         {this.props.children}
       </Dialog>

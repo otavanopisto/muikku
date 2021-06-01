@@ -18,12 +18,23 @@
   z-index: 9999;
 }
 
-.dialog--matriculation-wizard {
+.dialog--matriculation {
 
   .dialog__window {
-    left: auto;
-    max-width: calc(#{$breakpoint-max-usable-screen} - 40px);
-    right: auto;
+
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
   }
 }
 
@@ -75,17 +86,6 @@
     }
   }
 }
-
-
-// .dialog__window--edit-user-group {
-//   @include breakpoint($breakpoint-pad) {
-//     max-width: 815px;
-
-//     .dialog__content {
-//       height: 546px;
-//     }
-//   }
-// }
 
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {

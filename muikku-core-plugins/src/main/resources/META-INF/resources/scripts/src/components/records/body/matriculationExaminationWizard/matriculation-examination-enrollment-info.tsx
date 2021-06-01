@@ -39,7 +39,12 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
           Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen
           (riikka.turpeinen@otavia.fi).
         </p>
-        <div className="matriculation-container__state state-INFO">Ilmoittautuminen on sitova.</div>
+        <div className="matriculation-container__state state-INFO">
+          <div className="matriculation-container__state-icon icon-notification"></div>
+          <div className="matriculation-container__state-text">
+            <p>Ilmoittautuminen on sitova.</p>
+          </div>
+        </div>
       </div>
     );
   }

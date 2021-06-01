@@ -882,22 +882,31 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
               </select>
             </div>
           </div>
+
           {enrollAs === "UPPERSECONDARY" && numMandatoryCourses === "" ? (
-            <div className="matriculation__warning">
-              Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.
+            <div className="matriculation-container__state state-WARNING">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.</p>
+              </div>
             </div>
           ) : null}
+
           {enrollAs === "UPPERSECONDARY" &&
           numMandatoryCourses !== "" &&
           parseInt(numMandatoryCourses) < REQUIRED_NUM_OF_COURSES ? (
-            <div className="matriculation__warning">
-              Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna.
-              Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.
+            <div className="matriculation-container__state state-WARNING">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna.
+                Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</p>
+              </div>
             </div>
           ) : null}
+
           <div className="matriculation-container__row">
-          <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
-          <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen</label>
+            <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
+              <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen</label>
               <input
                 onChange={(e) =>
                   this.onExaminationInformationChange(
@@ -957,27 +966,29 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
               Lisää uusi rivi
             </Button>
           </div>
-        </fieldset>
 
-        {this.isConflictingAttendances().length > 0 ? (
-          <div className="matriculation__warning">
-            Olet ilmoittautumassa kokeisiin, joita ei voi valita
-            samanaikaisesti. Kysy tarvittaessa lisää ohjaajalta.
-            <h4>Aineet:</h4>
-            {this.isConflictingAttendances().map((cGroup, index) => {
-              return (
-                <div key={index}>
-                  <hr />
-                  <ul>
-                    {cGroup.map((cSubject, index) => (
-                      <li key={index}> {SUBJECT_MAP[cSubject]} </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
+          {this.isConflictingAttendances().length > 0 ? (
+            <div className="matriculation-container__state state-WARNING">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+              <p>Olet ilmoittautumassa kokeisiin, joita ei voi valita
+              samanaikaisesti. Kysy tarvittaessa lisää ohjaajalta.</p>
+              <p><b>Aineet:</b></p>
+              {this.isConflictingAttendances().map((cGroup, index) => {
+                return (
+                  <div key={index}>
+                    <ul>
+                      {cGroup.map((cSubject, index) => (
+                        <li key={index}> {SUBJECT_MAP[cSubject]} </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+              </div>
+            </div>
+          ) : null}
+        </fieldset>
 
         <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
@@ -999,32 +1010,37 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
               Lisää uusi rivi
             </Button>
           </div>
+
+          {this.isIncompleteAttendances() ? (
+            <div className="matriculation-container__state state-WARNING">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>Ole hyvä ja täytä kaikki rivit</p>
+              </div>
+            </div>
+          ) : null}
         </fieldset>
 
-        {this.isIncompleteAttendances() ? (
-          <div className="matriculation__warning">
-            Ole hyvä ja täytä kaikki rivit
-          </div>
-        ) : null}
+        <div className="matriculation-container__indicator-examples">
+          {this.hasMandatoryConflicts() ? (
+            <div className="matriculation-container__mandatory-conflicts">
+              <div className="matriculation-container__mandatory-conflicts-indicator"></div>
+              <p>
+                Ainetta uusittaessa pakollisuustiedon on oltava sama kuin
+                aiemmalla suorituskerralla
+              </p>
+            </div>
+          ) : null}
 
-        {this.hasMandatoryConflicts() ? (
-          <div className="matriculation-container__mandatory-conflicts">
-            <div className="matriculation-container__mandatory-conflicts-indicator"></div>
-            <p>
-              Ainetta uusittaessa pakollisuustiedon on oltava sama kuin
-              aiemmalla suorituskerralla
-            </p>
-          </div>
-        ) : null}
-
-        {this.hasConflictingRepeats() ? (
-          <div className="matriculation-container__repeat-conflicts">
-            <div className="matriculation-container__repeat-conflicts-indicator"></div>
-            <p>
-              Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta
-            </p>
-          </div>
-        ) : null}
+          {this.hasConflictingRepeats() ? (
+            <div className="matriculation-container__repeat-conflicts">
+              <div className="matriculation-container__repeat-conflicts-indicator"></div>
+              <p>
+                Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta
+              </p>
+            </div>
+          ) : null}
+        </div>
 
         {this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
         this.getAmountOfMandatoryAttendances() ==
@@ -1034,36 +1050,39 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         this.getAmountOfMandatoryAdvancedSubjectAttendances() >
           REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN ? null : (
           <div className="matriculation-container__state state-INFO">
-            <p>Ylioppilastutkintoon tulee sisältyä</p>
-            <ul>
-              <li>
-                äidinkieli / suomi toisena kielenä
-                {this.getAmountOfFinnishAttendances() ==
-                REQUIRED_FINNISH_ATTENDANCES
-                  ? ""
-                  : " (ei valittuna)"}
-              </li>
-              <li>
-                neljä pakollista koetta
-                {this.getAmountOfMandatoryAttendances() ==
-                REQUIRED_MANDATORY_ATTENDANCES
-                  ? ""
-                  : ` (valittuna ${this.getAmountOfMandatoryAttendances()})`}
-              </li>
-              <li>
-                vähintään yksi A-tason koe
-                {this.getAmountOfMandatoryAdvancedSubjectAttendances() > 0
-                  ? ""
-                  : ` (valittuna ${this.getAmountOfMandatoryAdvancedSubjectAttendances()})`}
-              </li>
-              <li>
-                vain yksi pakollinen reaaliaine, jos kirjoitat yhden tai
-                useamman reaaliaineen.
-                {this.getAmountOfAcademicSubjectAttendances() < 2
-                  ? ""
-                  : ` (valittuna ${this.getAmountOfAcademicSubjectAttendances()})`}
-              </li>
-            </ul>
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>Ylioppilastutkintoon tulee sisältyä</p>
+              <ul>
+                <li>
+                  äidinkieli / suomi toisena kielenä
+                  {this.getAmountOfFinnishAttendances() ==
+                  REQUIRED_FINNISH_ATTENDANCES
+                    ? ""
+                    : " (ei valittuna)"}
+                </li>
+                <li>
+                  neljä pakollista koetta
+                  {this.getAmountOfMandatoryAttendances() ==
+                  REQUIRED_MANDATORY_ATTENDANCES
+                    ? ""
+                    : ` (valittuna ${this.getAmountOfMandatoryAttendances()})`}
+                </li>
+                <li>
+                  vähintään yksi A-tason koe
+                  {this.getAmountOfMandatoryAdvancedSubjectAttendances() > 0
+                    ? ""
+                    : ` (valittuna ${this.getAmountOfMandatoryAdvancedSubjectAttendances()})`}
+                </li>
+                <li>
+                  vain yksi pakollinen reaaliaine, jos kirjoitat yhden tai
+                  useamman reaaliaineen.
+                  {this.getAmountOfAcademicSubjectAttendances() < 2
+                    ? ""
+                    : ` (valittuna ${this.getAmountOfAcademicSubjectAttendances()})`}
+                </li>
+              </ul>
+            </div>
           </div>
         )}
       </div>

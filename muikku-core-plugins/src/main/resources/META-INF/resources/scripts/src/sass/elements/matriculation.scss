@@ -7,34 +7,74 @@
   flex-basis: 100%;
   overflow: auto;
   width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 auto;
-    padding: 0 50px;
-  }
 }
 
 .matriculation-container__state {
+  align-items: flex-start;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  color: $color-default-contrast;
+  display: flex;
+  flex-flow: row nowrap;
   font-size: 1rem;
+  margin: 10px 5px;
   padding: 10px;
 
   // scss-lint:disable SelectorFormat
   &.state-INFO {
-    border-left: 4px solid $color-info;
+    border-color: $color-info;
+
+    .matriculation-container__state-icon {
+      color: $color-info;
+    }
   }
 
   &.state-SUCCESS {
-    border-left: 4px solid $color-success;
+    border-color: $color-success;
+
+    .matriculation-container__state-icon {
+      color: $color-success;
+    }
+  }
+
+  &.state-WARNING {
+    border-color: $color-error;
+
+    .matriculation-container__state-icon {
+      color: $color-error;
+    }
   }
 
   &.state-FAILED {
-    border-left: 4px solid $color-fatal;
+    border-color: $color-fatal;
+
+    .matriculation-container__state-icon {
+      color: $color-fatal;
+    }
   }
 
   &.state-LOADER {
-    border-left: 4px solid $color-tertiary;
+    border-color: $color-tertiary;
+
+    .matriculation-container__state-icon {
+      color: $color-tertiary;
+    }
   }
   // scss-lint:enable SelectorFormat
+}
+
+.matriculation-container__state-icon {
+  flex-basis: 2rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 2rem;
+}
+
+.matriculation-container__state-text {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 4px 0 0 10px;
 }
 
 .matriculation-container__header {
@@ -80,6 +120,7 @@
 }
 
 .matriculation-container__row--input-groups {
+  border-radius: 3px;
   flex-flow: column wrap;
   margin: 0;
 
@@ -94,12 +135,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
-  margin: 5px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    margin-left: 0;
-    margin-right: 5px;
-  }
+  margin: 5px;
 }
 
 .matriculation__form-element-container--button {
@@ -121,6 +157,7 @@
     flex-grow: 0;
     flex-shrink: 0;
     margin: 0 10px 0 0;
+    padding: 0;
   }
 }
 
@@ -134,6 +171,7 @@
   display: block;
   font-weight: 600;
   overflow: hidden;
+  padding: 0 0 5px;
   text-overflow: ellipsis;
 }
 
@@ -203,7 +241,7 @@
 }
 
 .matriculation-container__row--input-groups--conflicted {
-  background-color: pink;
+  background-image: linear-gradient(to right, lighten($color-error, 20%) , $color-default);
   margin-bottom: 5px;
 }
 
@@ -250,9 +288,13 @@
   animation-delay: 0.4s;
 }
 
+.matriculation-container__indicator-examples {
+  margin: 10px 0 20px;
+}
+
 .matriculation-container__repeat-conflicts,
 .matriculation-container__mandatory-conflicts {
-  margin: 2.5px 0;
+  margin: 2px 0;
   display: flex;
   align-items: center;
 }
@@ -289,27 +331,27 @@
   display: list-item;
 }
 
-.matriculation__info {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  background-color: $color-info;
-  color: white;
-  display: flex;
-  align-items: center;
-  border-radius: 15px;
-  flex-direction: column;
+.matriculation-container__state p {
+  margin: 0 0 15px;
+
+  &:last-child {
+    margin: 0 0 5px;
+  }
 }
 
-.matriculation__info p,
-ul {
-  margin: 0.5rem;
+.matriculation-container__state ul {
+  margin: 15px 30px;
+
+  &:last-child {
+    margin: 15px 30px 5px;
+  }
 }
 
-.matriculation__info ul {
+.matriculation-container__state ul {
   list-style-type: initial;
 }
 
-.matriculation__info li {
+.matriculation-container__state li {
   display: list-item;
 }
 
