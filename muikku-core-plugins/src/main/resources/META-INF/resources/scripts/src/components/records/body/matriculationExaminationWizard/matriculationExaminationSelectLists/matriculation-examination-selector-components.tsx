@@ -3,9 +3,9 @@ import { ExaminationSubject } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
 import { SUBJECT_MAP } from "../index";
 import {
-  ExaminationAttendedSubject,
-  ExaminationCompletedSubject,
-  ExaminationFutureSubject,
+  ExaminationEnrolledSubject,
+  ExaminationFinishedSubject,
+  ExaminationPlannedSubject,
 } from "../../../../../@types/shared";
 
 /**
@@ -13,13 +13,14 @@ import {
  */
 interface MatriculationExaminationSubjectInputGroupProps {
   index: number;
-  subject: ExaminationAttendedSubject;
+  subject: ExaminationEnrolledSubject;
   selectedSubjectList: string[];
-  isConflictingRepeat?: (attendance: ExaminationAttendedSubject) => boolean;
-  isConflictingMandatory?: (attendance: ExaminationAttendedSubject) => boolean;
-  onSubjectGroupChange: <T extends keyof ExaminationAttendedSubject>(
+  readOnly?: boolean;
+  isConflictingRepeat?: (attendance: ExaminationEnrolledSubject) => boolean;
+  isConflictingMandatory?: (attendance: ExaminationEnrolledSubject) => boolean;
+  onSubjectGroupChange: <T extends keyof ExaminationEnrolledSubject>(
     key: T,
-    value: ExaminationAttendedSubject[T],
+    value: ExaminationEnrolledSubject[T],
     index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
@@ -37,6 +38,7 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
     onClickDeleteRow,
     isConflictingRepeat,
     isConflictingMandatory,
+    readOnly,
   }) => {
     return (
       <>
@@ -46,6 +48,7 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
         >
           <SubjectSelect
             i={index}
+            disabled={readOnly}
             value={subject.subject}
             selectedValues={selectedSubjectList}
             onChange={(e) =>
@@ -56,13 +59,15 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
 
         <div
           className={`matriculation__form-element-container matriculation__form-element-container--input ${
-            subject.mandatory === "" || isConflictingMandatory(subject)
+            subject.mandatory === "" ||
+            (isConflictingMandatory && isConflictingMandatory(subject))
               ? "matriculation__form-element-container--input--mandatory-conflict"
               : {}
           } `}
         >
           <MandatorySelect
             i={index}
+            disabled={readOnly}
             value={subject.mandatory}
             onChange={(e) =>
               onSubjectGroupChange("mandatory", e.target.value, index)
@@ -72,13 +77,15 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
 
         <div
           className={`matriculation__form-element-container matriculation__form-element-container--input ${
-            subject.repeat === "" || isConflictingRepeat(subject)
+            subject.repeat === "" ||
+            (isConflictingMandatory && isConflictingRepeat(subject))
               ? "matriculation__form-element-container--input--repeat-conflict"
               : {}
           } `}
         >
           <RepeatSelect
             i={index}
+            disabled={readOnly}
             value={subject.repeat}
             onChange={(e) =>
               onSubjectGroupChange("repeat", e.target.value, index)
@@ -86,17 +93,19 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
           />
         </div>
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--button">
-          {index == 0 ? (
-            <label className="matriculation__form-element__button__label">
-              Poista
-            </label>
-          ) : null}
-          <a
-            className="button  button--primary-function-content button--remove-subject-row icon-trash"
-            onClick={onClickDeleteRow(index)}
-          ></a>
-        </div>
+        {!readOnly && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--button">
+            {index == 0 ? (
+              <label className="matriculation__form-element__button__label">
+                Poista
+              </label>
+            ) : null}
+            <a
+              className="button  button--primary-function-content button--remove-subject-row icon-trash"
+              onClick={onClickDeleteRow(index)}
+            ></a>
+          </div>
+        )}
       </>
     );
   };
@@ -106,13 +115,14 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
  */
 interface MatriculationExaminationCompletedSubjectsGroupProps {
   index: number;
-  enrolledAttendances: ExaminationAttendedSubject[];
-  subject: ExaminationCompletedSubject;
+  enrolledAttendances: ExaminationEnrolledSubject[];
+  subject: ExaminationFinishedSubject;
   selectedSubjectList: string[];
   pastTermOptions: JSX.Element[];
-  onSubjectGroupChange: <T extends keyof ExaminationCompletedSubject>(
+  readOnly?: boolean;
+  onSubjectGroupChange: <T extends keyof ExaminationFinishedSubject>(
     key: T,
-    value: ExaminationCompletedSubject[T],
+    value: ExaminationFinishedSubject[T],
     index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
@@ -130,12 +140,14 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
     pastTermOptions,
     onSubjectGroupChange,
     onClickDeleteRow,
+    readOnly,
   }) => {
     return (
       <>
         <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <TermSelect
             i={index}
+            disabled={readOnly}
             options={pastTermOptions}
             value={subject.term}
             onChange={(e) =>
@@ -147,6 +159,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
         <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <SubjectSelect
             i={index}
+            disabled={readOnly}
             value={subject.subject}
             selectedValues={selectedSubjectList}
             onChange={(e) =>
@@ -169,6 +182,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
         >
           <MandatorySelect
             i={index}
+            disabled={readOnly}
             value={subject.mandatory}
             onChange={(e) =>
               onSubjectGroupChange("mandatory", e.target.value, index)
@@ -179,6 +193,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
         <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <GradeSelect
             i={index}
+            disabled={readOnly}
             value={subject.grade}
             onChange={(e) =>
               onSubjectGroupChange("grade", e.target.value, index)
@@ -186,17 +201,19 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
           />
         </div>
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--button">
-          {index == 0 ? (
-            <label className="matriculation__form-element__button__label">
-              Poista
-            </label>
-          ) : null}
-          <a
-            className="button  button--primary-function-content button--remove-subject-row icon-trash"
-            onClick={onClickDeleteRow(index)}
-          ></a>
-        </div>
+        {!readOnly && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--button">
+            {index == 0 ? (
+              <label className="matriculation__form-element__button__label">
+                Poista
+              </label>
+            ) : null}
+            <a
+              className="button  button--primary-function-content button--remove-subject-row icon-trash"
+              onClick={onClickDeleteRow(index)}
+            ></a>
+          </div>
+        )}
       </>
     );
   };
@@ -206,13 +223,14 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
  */
 interface MatriculationExaminationFutureSubjectsGroupProps {
   index: number;
-  subject: ExaminationFutureSubject;
-  enrolledAttendances: ExaminationAttendedSubject[];
+  subject: ExaminationPlannedSubject;
+  enrolledAttendances: ExaminationEnrolledSubject[];
   selectedSubjectList: string[];
   nextOptions: JSX.Element[];
-  onSubjectGroupChange: <T extends keyof ExaminationFutureSubject>(
+  readOnly?: boolean;
+  onSubjectGroupChange: <T extends keyof ExaminationPlannedSubject>(
     key: T,
-    value: ExaminationFutureSubject[T],
+    value: ExaminationPlannedSubject[T],
     index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
@@ -230,12 +248,14 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
     nextOptions,
     onSubjectGroupChange,
     onClickDeleteRow,
+    readOnly,
   }) => {
     return (
       <>
         <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <TermSelect
             i={index}
+            disabled={readOnly}
             options={nextOptions}
             value={subject.term}
             onChange={(e) =>
@@ -247,6 +267,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
         <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <SubjectSelect
             i={index}
+            disabled={readOnly}
             value={subject.subject}
             selectedValues={selectedSubjectList}
             onChange={(e) =>
@@ -269,6 +290,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
         >
           <MandatorySelect
             i={index}
+            disabled={readOnly}
             value={subject.subject}
             onChange={(e) =>
               onSubjectGroupChange("mandatory", e.target.value, index)
@@ -276,17 +298,19 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
           />
         </div>
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--button">
-          {index == 0 ? (
-            <label className="matriculation__form-element__button__label">
-              Poista
-            </label>
-          ) : null}
-          <a
-            className="button  button--primary-function-content button--remove-subject-row icon-trash"
-            onClick={onClickDeleteRow(index)}
-          ></a>
-        </div>
+        {!readOnly && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--button">
+            {index == 0 ? (
+              <label className="matriculation__form-element__button__label">
+                Poista
+              </label>
+            ) : null}
+            <a
+              className="button  button--primary-function-content button--remove-subject-row icon-trash"
+              onClick={onClickDeleteRow(index)}
+            ></a>
+          </div>
+        )}
       </>
     );
   };
@@ -312,7 +336,11 @@ const SubjectSelect: React.FC<SubjectSelectProps> = ({
 }) => (
   <>
     {i == 0 ? <label>Aine</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    <select
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__form-element__input"
+    >
       {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
         const subjectName = SUBJECT_MAP[subjectCode];
         const disabled = selectedValues.indexOf(subjectCode) != -1;
@@ -346,7 +374,11 @@ const TermSelect: React.FC<TermSelectProps> = ({
 }) => (
   <>
     {i == 0 ? <label>Ajankohta</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    <select
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__form-element__input"
+    >
       <option value="">Valitse...</option>
       <>{options}</>
     </select>
@@ -361,6 +393,7 @@ interface MandatorySelectProps
   i: number;
   value: string;
 }
+
 /**
  * MandatorySelect
  */
@@ -370,7 +403,11 @@ const MandatorySelect: React.FC<MandatorySelectProps> = ({
 }) => (
   <>
     {i == 0 ? <label>Pakollisuus</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    <select
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__form-element__input"
+    >
       <option value="">Valitse...</option>
       <option value="true">Pakollinen</option>
       <option value="false">Ylimääräinen</option>
@@ -392,7 +429,11 @@ interface RepeatSelectProps
 const RepeatSelect: React.FC<RepeatSelectProps> = ({ i, ...selectProps }) => (
   <>
     {i == 0 ? <label>Uusiminen</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    <select
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__form-element__input"
+    >
       <option value="">Valitse...</option>
       <option value="false">Ensimmäinen suorituskerta</option>
       <option value="true">Uusinta</option>
@@ -414,7 +455,11 @@ interface GradeSelectProps
 const GradeSelect: React.FC<GradeSelectProps> = ({ i, ...selectProps }) => (
   <>
     {i == 0 ? <label>Arvosana</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    <select
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__form-element__input"
+    >
       <option value="IMPROBATUR">I (Improbatur)</option>
       <option value="APPROBATUR">A (Approbatur)</option>
       <option value="LUBENTER_APPROBATUR">B (Lubenter approbatur)</option>

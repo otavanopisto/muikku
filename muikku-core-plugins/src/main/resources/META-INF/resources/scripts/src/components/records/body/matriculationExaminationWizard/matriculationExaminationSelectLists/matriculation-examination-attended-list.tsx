@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ExaminationAttendedSubject } from "../../../../../@types/shared";
+import { ExaminationEnrolledSubject } from "../../../../../@types/shared";
 import "~/sass/elements/matriculation.scss";
 import { MatriculationExaminationSubjectInputGroup } from "./matriculation-examination-selector-components";
 
@@ -8,13 +8,14 @@ import { MatriculationExaminationSubjectInputGroup } from "./matriculation-exami
  */
 interface MatriculationExaminationSubjectSelectsListProps {
   onChange?: (
-    modifiedExaminationAttendedSubjectList: ExaminationAttendedSubject[]
+    modifiedExaminationAttendedSubjectList: ExaminationEnrolledSubject[]
   ) => void;
-  examinationSubjectList: ExaminationAttendedSubject[];
-  isConflictingMandatory: (attendance: ExaminationAttendedSubject) => boolean;
-  conflictingAttendancesGroup: string[][];
-  isConflictingRepeat: (attendance: ExaminationAttendedSubject) => boolean;
-  onDeleteRow: (index: number) => (e: React.MouseEvent) => void;
+  readOnly?: boolean;
+  examinationSubjectList: ExaminationEnrolledSubject[];
+  isConflictingMandatory?: (attendance: ExaminationEnrolledSubject) => boolean;
+  conflictingAttendancesGroup?: string[][];
+  isConflictingRepeat?: (attendance: ExaminationEnrolledSubject) => boolean;
+  onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
 /**
@@ -29,13 +30,14 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
     conflictingAttendancesGroup,
     onDeleteRow,
     children,
+    readOnly,
     ...validationProps
   }) => {
     const onMatriculationExaminationSubjectGroupChange = <
-      T extends keyof ExaminationAttendedSubject
+      T extends keyof ExaminationEnrolledSubject
     >(
       key: T,
-      value: ExaminationAttendedSubject[T],
+      value: ExaminationEnrolledSubject[T],
       index: number
     ) => {
       let modifiedExaminationAttendedSubjectList = examinationSubjectList;
@@ -52,9 +54,11 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
     return (
       <>
         {examinationSubjectList.map((subject, index) => {
-          const conflictedCourse = conflictingAttendancesGroup.some(
-            (r) => r.indexOf(subject.subject) >= 0
-          );
+          const conflictedCourse =
+            conflictingAttendancesGroup &&
+            conflictingAttendancesGroup.some(
+              (r) => r.indexOf(subject.subject) >= 0
+            );
 
           return (
             <div
@@ -66,6 +70,7 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
             >
               <MatriculationExaminationSubjectInputGroup
                 index={index}
+                readOnly={readOnly}
                 subject={subject}
                 selectedSubjectList={selectedSubjects}
                 onSubjectGroupChange={

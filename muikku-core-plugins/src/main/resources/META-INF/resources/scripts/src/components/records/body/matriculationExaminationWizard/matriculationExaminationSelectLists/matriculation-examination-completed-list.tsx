@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
 import {
-  ExaminationCompletedSubject,
-  ExaminationAttendedSubject,
+  ExaminationFinishedSubject,
+  ExaminationEnrolledSubject,
 } from "../../../../../@types/shared";
 import { MatriculationExaminationCompletedSubjectsGroup } from "./matriculation-examination-selector-components";
 
@@ -11,12 +11,13 @@ import { MatriculationExaminationCompletedSubjectsGroup } from "./matriculation-
  */
 interface MatriculationExaminationCompletedSelectsListProps {
   onChange?: (
-    modifiedExaminationCompletedSubjectList: ExaminationCompletedSubject[]
+    modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[]
   ) => any;
-  enrolledAttendances: ExaminationAttendedSubject[];
-  examinationCompletedList: ExaminationCompletedSubject[];
-  pastOptions: JSX.Element[];
-  onDeleteRow: (index: number) => (e: React.MouseEvent) => void;
+  readOnly?: boolean;
+  enrolledAttendances?: ExaminationEnrolledSubject[];
+  examinationCompletedList: ExaminationFinishedSubject[];
+  pastOptions?: JSX.Element[];
+  onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
 /**
@@ -31,12 +32,13 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
     enrolledAttendances,
     pastOptions,
     onDeleteRow,
+    readOnly,
   }) => {
     const onMatriculationExaminationSubjectGroupChange = <
-      T extends keyof ExaminationCompletedSubject
+      T extends keyof ExaminationFinishedSubject
     >(
       key: T,
-      value: ExaminationCompletedSubject[T],
+      value: ExaminationFinishedSubject[T],
       index: number
     ) => {
       let modifiedExaminationCompletedSubjectList = examinationCompletedList;
@@ -67,6 +69,7 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
                 onMatriculationExaminationSubjectGroupChange
               }
               onClickDeleteRow={onDeleteRow}
+              readOnly={readOnly}
             />
           </div>
         ))}

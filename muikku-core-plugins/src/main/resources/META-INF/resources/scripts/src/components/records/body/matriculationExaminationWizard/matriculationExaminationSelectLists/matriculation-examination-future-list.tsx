@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
-  ExaminationFutureSubject,
-  ExaminationAttendedSubject,
+  ExaminationPlannedSubject,
+  ExaminationEnrolledSubject,
 } from "../../../../../@types/shared";
 import { MatriculationExaminationFutureSubjectsGroup } from "./matriculation-examination-selector-components";
 
@@ -10,12 +10,13 @@ import { MatriculationExaminationFutureSubjectsGroup } from "./matriculation-exa
  */
 interface MatriculationExaminationFutureSelectsListProps {
   onChange?: (
-    modifiedExaminationFutureSubjectList: ExaminationFutureSubject[]
+    modifiedExaminationFutureSubjectList: ExaminationPlannedSubject[]
   ) => void;
-  enrolledAttendances: ExaminationAttendedSubject[];
-  examinationFutureList: ExaminationFutureSubject[];
-  nextOptions: JSX.Element[];
-  onDeleteRow: (index: number) => (e: React.MouseEvent) => void;
+  readOnly?: boolean;
+  enrolledAttendances?: ExaminationEnrolledSubject[];
+  examinationFutureList: ExaminationPlannedSubject[];
+  nextOptions?: JSX.Element[];
+  onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
 /**
@@ -30,12 +31,13 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
     enrolledAttendances,
     nextOptions,
     onDeleteRow,
+    readOnly,
   }) => {
     const onMatriculationExaminationSubjectGroupChange = <
-      T extends keyof ExaminationFutureSubject
+      T extends keyof ExaminationPlannedSubject
     >(
       key: T,
-      value: ExaminationFutureSubject[T],
+      value: ExaminationPlannedSubject[T],
       index: number
     ) => {
       let modifiedExaminationFutureSubjectList = examinationFutureList;
@@ -58,6 +60,7 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
           >
             <MatriculationExaminationFutureSubjectsGroup
               index={index}
+              readOnly={readOnly}
               subject={subject}
               nextOptions={nextOptions}
               selectedSubjectList={selectedSubjects}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
 import {
-  Examination,
+  ExaminationInformation,
   ExaminationAttentionInformation,
   SaveState,
 } from "../../../../@types/shared";
@@ -10,10 +10,10 @@ import {
  * MatriculationExaminationEnrollmentActProps
  */
 interface MatriculationExaminationEnrollmentActProps {
-  examination: Examination;
+  examination: ExaminationInformation;
   draftSaveErrorMsg?: string;
   saveState: SaveState;
-  onChange: (examination: Examination) => void;
+  onChange: (examination: ExaminationInformation) => void;
 }
 
 /**
@@ -29,20 +29,15 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
     super(props);
   }
 
-  onExaminationAttentionInfoChanges = <
-    T extends keyof ExaminationAttentionInformation
-  >(
+  onExaminationAttentionInfoChanges = <T extends keyof ExaminationInformation>(
     key: T,
-    value: ExaminationAttentionInformation[T]
+    value: ExaminationInformation[T]
   ) => {
     const { examination, onChange } = this.props;
 
-    const modifiedExamination: Examination = {
+    const modifiedExamination: ExaminationInformation = {
       ...examination,
-      attentionInformation: {
-        ...examination.attentionInformation,
-        [key]: value,
-      },
+      [key]: value,
     };
 
     onChange(modifiedExamination);
@@ -50,7 +45,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
 
   render() {
     const { examination, draftSaveErrorMsg, saveState } = this.props;
-    const { attentionInformation } = examination;
+    const { location, message, canPublishName, name, date } = examination;
 
     /**
      * saving draft error popper
@@ -90,11 +85,11 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
               <select
                 onChange={(e) =>
                   this.onExaminationAttentionInfoChanges(
-                    "placeToAttend",
+                    "location",
                     e.currentTarget.value
                   )
                 }
-                value={attentionInformation.placeToAttend}
+                value={location}
                 className="matriculation__form-element__input"
               >
                 <option>Mikkeli</option>
@@ -111,11 +106,11 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 rows={5}
                 onChange={(e) =>
                   this.onExaminationAttentionInfoChanges(
-                    "extraInfoForSupervisor",
+                    "message",
                     e.currentTarget.value
                   )
                 }
-                value={attentionInformation.extraInfoForSupervisor}
+                value={message}
                 className="matriculation__form-element__input matriculation__form-element__input--textarea"
               />
             </div>
@@ -126,11 +121,11 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
               <select
                 onChange={(e) =>
                   this.onExaminationAttentionInfoChanges(
-                    "publishPermission",
+                    "canPublishName",
                     e.currentTarget.value
                   )
                 }
-                value={attentionInformation.publishPermission}
+                value={canPublishName}
                 className="matriculation__form-element__input"
               >
                 <option value="true">
@@ -147,7 +142,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
             <div className="matriculation__form-element-container">
               <label>Nimi</label>
               <input
-                value={attentionInformation.publishedName}
+                value={name}
                 readOnly={true}
                 className="matriculation__form-element__input"
                 type="text"
@@ -156,7 +151,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
             <div className="matriculation__form-element-container">
               <label>Päivämäärä</label>
               <input
-                value={attentionInformation.date}
+                value={date}
                 readOnly={true}
                 className="matriculation__form-element__input"
                 type="text"
