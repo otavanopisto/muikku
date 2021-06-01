@@ -1,5 +1,3 @@
-import { StudentUserAddressType } from "../reducers/user-index";
-import { ProfileStatusType } from "../reducers/base/status";
 /**
  * PageLocation type
  */
@@ -33,45 +31,16 @@ export interface ExaminationSubject {
 /**
  * Examination
  */
-export interface Examination {
-  studentProfile: ExaminationBasicProfile;
-  studentInfo: ExaminationStudentInfo;
-  attendedSubjectList: ExaminationAttendedSubject[];
-  completedSubjectList: ExaminationCompletedSubject[];
-  futureSubjectList: ExaminationFutureSubject[];
-  attentionInformation: ExaminationAttentionInformation;
-}
-
-/**
- * ExaminationBasicProfile
- */
-export interface ExaminationBasicProfile {
-  name: string;
-  email: string;
-  address: string;
-  zipCode: string;
-  postalDisctrict: string;
-  phoneNumber: string;
-  profileId: string;
-  descriptionInfo?: string;
-  ssn: number;
-}
-
-/**
- * ExaminationStudentInfo
- */
-export interface ExaminationStudentInfo {
-  superVisor: string;
-  registrationType: string;
-  degreeType: string;
-  refreshingExamination: string;
-  courseCount: number | null;
+export interface ExaminationInformation
+  extends MatriculationStudent,
+    MatriculationStudentExamination {
+  date: string;
 }
 
 /**
  * ExaminationAttendedSubject
  */
-export interface ExaminationAttendedSubject {
+export interface ExaminationEnrolledSubject {
   subject: string;
   mandatory: string;
   repeat: string;
@@ -81,7 +50,7 @@ export interface ExaminationAttendedSubject {
 /**
  * export interface ExaminationCompletedSubject {
  */
-export interface ExaminationCompletedSubject {
+export interface ExaminationFinishedSubject {
   term: any;
   subject: string;
   mandatory: string;
@@ -92,7 +61,7 @@ export interface ExaminationCompletedSubject {
 /**
  * ExaminationFutureSubject
  */
-export interface ExaminationFutureSubject {
+export interface ExaminationPlannedSubject {
   term: any;
   subject: string;
   mandatory: string;
@@ -128,7 +97,7 @@ export interface MatriculationStudent {
   name: string;
   phone: string;
   postalCode: string;
-  ssn: number;
+  ssn: string;
   studentIdentifier: string;
 }
 
@@ -137,14 +106,14 @@ export interface MatriculationStudentExamination {
   changedContactInfo: string;
   degreeType: string;
   enrollAs: string;
-  enrolledAttendances: [];
-  finishedAttendances: [];
+  enrolledAttendances: ExaminationEnrolledSubject[];
+  finishedAttendances: ExaminationFinishedSubject[];
+  plannedAttendances: ExaminationPlannedSubject[];
   guider: string;
   initialized: boolean;
   location: string;
   message: string;
   numMandatoryCourses: string;
-  plannedAttendances: [];
   restartExam: boolean;
 }
 
@@ -158,15 +127,15 @@ export interface MatriculationExaminationDraft {
   message: string;
   location: string;
   canPublishName: string;
-  enrolledAttendances: ExaminationAttendedSubject[];
-  plannedAttendances: ExaminationFutureSubject[];
-  finishedAttendances: ExaminationCompletedSubject[];
+  enrolledAttendances: ExaminationEnrolledSubject[];
+  plannedAttendances: ExaminationPlannedSubject[];
+  finishedAttendances: ExaminationFinishedSubject[];
 }
 
 export interface MatriculationExaminationApplication {
   examId: string;
   name: string;
-  ssn: number;
+  ssn: string;
   email: string;
   phone: string;
   address: string;

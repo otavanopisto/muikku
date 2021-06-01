@@ -512,11 +512,11 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         if (!state.status.permissions.WORKSPACE_SIGNUP) {
           this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "notice") as Action);
         } else {
-            this.props.store.dispatch(displayNotification(
-              state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
-              ` <a href="#signup">${state.i18n.text.get('plugin.workspace.materials.notSignedUpWarningLink')}</a>`,
-              "notice",
-            ) as Action);
+          this.props.store.dispatch(displayNotification(
+            state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
+            ` <a href="#signup">${state.i18n.text.get('plugin.workspace.materials.notSignedUpWarningLink')}</a>`,
+            "notice",
+          ) as Action);
         }
       }
 
@@ -578,7 +578,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace) => {
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
-            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace }) as Action);
+            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace, payload: { q: "", maxResults: 500 } }) as Action);
           }
           if (!workspace.journals) {
             if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {

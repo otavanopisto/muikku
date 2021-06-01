@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -274,12 +273,7 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Workspace createEntity(
-      Course course,
-      SchoolDataIdentifier educationTypeIdentifier,
-      SchoolDataIdentifier educationSubtypeIdentifier,
-      Map<String, List<String>> educationTypeCodeMap
-  ) {
+  public Workspace createEntity(Course course) {
     if (course == null) {
       return null;
     }
@@ -289,22 +283,7 @@ public class PyramusSchoolDataEntityFactory {
       modified = course.getCreated();
     }
     
-    /* #5124: Courses no longer have logic related to evaluation fees, only line being studied matters 
-    boolean courseFeeApplicable = true;
-
-    for (Map.Entry<String, List<String>> typeCodeEntry : educationTypeCodeMap.entrySet()) {
-      String educationTypeCode = typeCodeEntry.getKey();
-      for (String educationSubtypeCode : typeCodeEntry.getValue()) {
-        if ((Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
-            (Objects.equals(educationTypeCode, "lukio") && Objects.equals(educationSubtypeCode, "valtakunnallinensyventava")) ||    
-            (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
-            (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "valinnainen"))) {
-          courseFeeApplicable = false;
-          break;
-        }
-      }
-    }
-    */
+    // #5124: Courses no longer have logic related to evaluation fees, only line being studied matters
     boolean courseFeeApplicable = false;
 
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
@@ -325,7 +304,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         course.getDescription(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()), 
-        educationTypeIdentifier,
+        identifierMapper.getEducationTypeIdentifier(course.getPrimaryEducationTypeId()),
         modified != null ? Date.from(modified.toInstant()) : null, 
         course.getLength(), 
         identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
@@ -335,7 +314,7 @@ public class PyramusSchoolDataEntityFactory {
         courseFeeApplicable,
         curriculumIdentifiers,
         course.getCourseNumber(),
-        educationSubtypeIdentifier,
+        identifierMapper.getEducationSubtypeIdentifier(course.getPrimaryEducationSubtypeId()),
         identifierMapper.getOrganizationIdentifier(course.getOrganizationId()),
         course.isCourseTemplate());
   }

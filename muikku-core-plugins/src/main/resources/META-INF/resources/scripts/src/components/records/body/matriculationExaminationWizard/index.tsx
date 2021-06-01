@@ -4,20 +4,24 @@ import { i18nType } from "~/reducers/base/i18n";
 import { MatriculationExaminationEnrollmentInfo as Step1 } from "./matriculation-examination-enrollment-info";
 import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matriculation-examination-enrollment-information";
 import { MatrMatriculationExaminationEnrollmentAct as Step3 } from "./matriculation-examination-enrollment-act";
-import { MatriculationExaminationEnrollmentCompleted as Step4 } from "./matriculation-examination-enrollment-completed";
+import { MatriculationExaminationEnrollmentSummary as Step4 } from "./matriculation-examination-enrollment-summary";
+import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
+
 const StepZilla = require("react-stepzilla").default;
 import "~/sass/elements/wizard.scss";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
 import {
-  Examination,
   SaveState,
   ExaminationSubject,
   MatriculationExaminationApplication,
 } from "../../../../@types/shared";
 import { StatusType } from "../../../../reducers/base/status";
-import { MatriculationExaminationDraft } from "../../../../@types/shared";
+import {
+  MatriculationExaminationDraft,
+  ExaminationInformation,
+} from "../../../../@types/shared";
 import {
   MatriculationStudent,
   MatriculationStudentExamination,
@@ -96,12 +100,12 @@ interface MatriculationExaminationWizardProps {
 
 export interface MatriculationExaminationWizardState {
   locked: boolean;
-  examinationInformation: Examination;
   initialized: boolean;
   savingDraft: boolean;
   examId: any;
   errorMsg?: string;
   saveState?: SaveState;
+  examinationInformation: ExaminationInformation;
 }
 
 class MatriculationExaminationWizard extends React.Component<
@@ -109,7 +113,25 @@ class MatriculationExaminationWizard extends React.Component<
   MatriculationExaminationWizardState
 > {
   private draftTimer?: NodeJS.Timer = undefined;
+  private draftedFields = [
+    "changedContactInfo",
+    "guider",
+    "enrollAs",
+    "degreeType",
+    "numMandatoryCourses",
+    "restartExam",
+    "message",
+    "location",
+    "canPublishName",
+    "enrolledAttendances",
+    "plannedAttendances",
+    "finishedAttendances",
+  ];
 
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: MatriculationExaminationWizardProps) {
     super(props);
     const date = new Date();
@@ -122,45 +144,41 @@ class MatriculationExaminationWizard extends React.Component<
       savingDraft: false,
       errorMsg: undefined,
       examinationInformation: {
-        studentProfile: {
-          name: "",
-          email: "",
-          address: "",
-          zipCode: "",
-          postalDisctrict: "",
-          phoneNumber: "",
-          profileId: "",
-          descriptionInfo: "",
-          ssn: null,
-        },
-        studentInfo: {
-          degreeType: "MATRICULATIONEXAMINATION",
-          registrationType: "UPPERSECONDARY",
-          superVisor: "",
-          refreshingExamination: "false",
-          courseCount: 0,
-        },
-        attendedSubjectList: [],
-        completedSubjectList: [],
-        futureSubjectList: [],
-        attentionInformation: {
-          placeToAttend: "Mikkeli",
-          extraInfoForSupervisor: "",
-          publishPermission: "false",
-          publishedName: "",
-          date:
-            date.getDate() +
-            "." +
-            (date.getMonth() + 1) +
-            "." +
-            date.getFullYear(),
-        },
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        postalCode: "",
+        locality: "",
+        changedContactInfo: "",
+        guider: "",
+        enrollAs: "UPPERSECONDARY",
+        degreeType: "MATRICULATIONEXAMINATION",
+        numMandatoryCourses: "",
+        restartExam: false,
+        location: "Mikkeli",
+        message: "",
+        studentIdentifier: "",
+        initialized: false,
+        enrolledAttendances: [],
+        plannedAttendances: [],
+        finishedAttendances: [],
+        canPublishName: "true",
+        enrollmentSent: false,
+        guidanceCounselor: "",
+        ssn: "",
+        date:
+          date.getDate() +
+          "." +
+          (date.getMonth() + 1) +
+          "." +
+          date.getFullYear(),
       },
     };
   }
 
   /**
-   * componentDidMount
+   * Fetches student information from backend and sets those to state
    */
   componentDidMount() {
     fetch(
@@ -171,31 +189,21 @@ class MatriculationExaminationWizard extends React.Component<
         return response.json();
       })
       .then((data: MatriculationStudent) => {
-        const examinationInformation: Examination = {
-          ...this.state.examinationInformation,
-          studentProfile: {
-            name: data.name,
-            email: data.email,
-            address: data.address,
-            zipCode: data.postalCode,
-            postalDisctrict: data.locality,
-            phoneNumber: data.phone,
-            profileId: data.studentIdentifier,
-            descriptionInfo: "",
-            ssn: data.ssn,
-          },
-        };
-
-        this.setState({
-          initialized: false,
-          examinationInformation,
-        });
-        this.fetchSavedEnrollment();
+        this.setState(
+          (prevState) => ({
+            initialized: false,
+            examinationInformation: {
+              ...prevState.examinationInformation,
+              ...data,
+            },
+          }),
+          () => this.fetchSavedEnrollment()
+        );
       });
   }
 
   /**
-   * fetchSavedEnrollment
+   * Fetch saved enrollment data and set those to state and set initialized status true.
    */
   fetchSavedEnrollment() {
     fetch(
@@ -210,35 +218,13 @@ class MatriculationExaminationWizard extends React.Component<
         }
       })
       .then((data: MatriculationStudentExamination) => {
-        const examinationInformation: Examination = {
-          studentProfile: {
-            ...this.state.examinationInformation.studentProfile,
-            descriptionInfo: data.changedContactInfo,
-          },
-          studentInfo: {
-            degreeType: data.degreeType,
-            registrationType: data.enrollAs,
-            superVisor: data.guider,
-            refreshingExamination: data.restartExam.toString(),
-            courseCount: parseInt(data.numMandatoryCourses),
-          },
-          attendedSubjectList: data.enrolledAttendances,
-          completedSubjectList: data.finishedAttendances,
-          futureSubjectList: data.plannedAttendances,
-          attentionInformation: {
-            placeToAttend: data.location,
-            extraInfoForSupervisor: data.message,
-            publishPermission: data.canPublishName,
-            publishedName:
-              this.state.examinationInformation.studentProfile.name,
-            date: this.state.examinationInformation.attentionInformation.date,
-          },
-        };
-
-        this.setState({
+        this.setState((prevState) => ({
           initialized: true,
-          examinationInformation,
-        });
+          examinationInformation: {
+            ...prevState.examinationInformation,
+            ...data,
+          },
+        }));
       });
   }
 
@@ -274,27 +260,33 @@ class MatriculationExaminationWizard extends React.Component<
     });
 
     const {
-      studentInfo,
-      studentProfile,
-      attentionInformation,
-      attendedSubjectList,
-      completedSubjectList,
-      futureSubjectList,
+      enrolledAttendances,
+      plannedAttendances,
+      finishedAttendances,
+      canPublishName,
+      location,
+      message,
+      restartExam,
+      numMandatoryCourses,
+      degreeType,
+      enrollAs,
+      guider,
+      changedContactInfo,
     } = this.state.examinationInformation;
 
     const matriculationForm: MatriculationExaminationDraft = {
-      changedContactInfo: studentProfile.descriptionInfo,
-      guider: studentInfo.superVisor,
-      enrollAs: studentInfo.registrationType,
-      degreeType: studentInfo.degreeType,
-      numMandatoryCourses: studentInfo.courseCount.toString(),
-      restartExam: studentInfo.refreshingExamination,
-      message: attentionInformation.extraInfoForSupervisor,
-      location: attentionInformation.placeToAttend,
-      canPublishName: attentionInformation.publishPermission,
-      enrolledAttendances: attendedSubjectList,
-      plannedAttendances: futureSubjectList,
-      finishedAttendances: completedSubjectList,
+      changedContactInfo,
+      guider,
+      enrollAs,
+      degreeType,
+      numMandatoryCourses,
+      restartExam: restartExam.toString(),
+      message,
+      location,
+      canPublishName,
+      enrolledAttendances,
+      plannedAttendances,
+      finishedAttendances,
     };
 
     const requestOptions = {
@@ -347,23 +339,40 @@ class MatriculationExaminationWizard extends React.Component<
     });
 
     const {
-      studentProfile,
-      attentionInformation,
-      studentInfo,
-      attendedSubjectList,
-      futureSubjectList,
-      completedSubjectList,
+      changedContactInfo,
+      message,
+      enrolledAttendances,
+      finishedAttendances,
+      plannedAttendances,
+      name,
+      email,
+      ssn,
+      phone,
+      address,
+      postalCode,
+      locality,
+      guider,
+      enrollAs,
+      degreeType,
+      restartExam,
+      numMandatoryCourses,
+      location,
+      studentIdentifier,
+      canPublishName,
     } = this.state.examinationInformation;
-    const { descriptionInfo } = studentProfile;
-    const { extraInfoForSupervisor } = attentionInformation;
 
-    let message = attentionInformation.extraInfoForSupervisor;
-    if (descriptionInfo) {
-      message =
-        "Yhteystiedot:\n" + descriptionInfo + "\n\n" + extraInfoForSupervisor;
+    let modifiedMessage = message;
+
+    if (changedContactInfo) {
+      modifiedMessage =
+        "Yhteystiedot:\n" + changedContactInfo + "\n\n" + message;
     }
 
-    const attendedSubjectListParsed = attendedSubjectList.map((aSubject) => ({
+    /**
+     * Parsed list of enrolled Attendances
+     * This must be done because backend takes it this form
+     */
+    const attendedSubjectListParsed = enrolledAttendances.map((aSubject) => ({
       subject: aSubject.subject,
       mandatory: aSubject.mandatory === "true",
       repeat: aSubject.repeat === "true",
@@ -372,7 +381,10 @@ class MatriculationExaminationWizard extends React.Component<
       status: aSubject.status,
     }));
 
-    const finishedSubjectListParsed = completedSubjectList.map((fsubject) => ({
+    /**
+     * Parsed list of finished Attendances
+     */
+    const finishedSubjectListParsed = finishedAttendances.map((fsubject) => ({
       subject: fsubject.subject,
       mandatory: fsubject.mandatory === "true",
       year: fsubject.term ? Number(fsubject.term.substring(6)) : null,
@@ -381,7 +393,10 @@ class MatriculationExaminationWizard extends React.Component<
       grade: fsubject.grade,
     }));
 
-    const plannedSubjectListParsed = futureSubjectList.map((pSubject) => ({
+    /**
+     * Parsed list of planned Attendances
+     */
+    const plannedSubjectListParsed = plannedAttendances.map((pSubject) => ({
       subject: pSubject.subject,
       mandatory: pSubject.mandatory === "true",
       year: pSubject.term ? Number(pSubject.term.substring(6)) : null,
@@ -390,25 +405,23 @@ class MatriculationExaminationWizard extends React.Component<
     }));
 
     const matriculationForm: MatriculationExaminationApplication = {
-      examId: this.state.examId,
-      name: studentProfile.name,
-      ssn: studentProfile.ssn,
-      email: studentProfile.email,
-      phone: studentProfile.phoneNumber,
-      address: studentProfile.address,
-      postalCode: studentProfile.zipCode,
-      city: studentProfile.postalDisctrict,
-      guider: studentInfo.superVisor,
-      enrollAs: studentInfo.registrationType,
-      degreeType: studentInfo.degreeType,
-      restartExam: studentInfo.refreshingExamination,
-      numMandatoryCourses: studentInfo.courseCount
-        ? studentInfo.courseCount
-        : null,
-      location: attentionInformation.placeToAttend,
-      message: message,
-      studentIdentifier: studentProfile.profileId,
-      canPublishName: attentionInformation.publishPermission === "true",
+      examId: this.props.examId.toString(),
+      name,
+      ssn,
+      email,
+      phone,
+      address,
+      postalCode,
+      city: locality,
+      guider,
+      enrollAs,
+      degreeType,
+      restartExam: restartExam.toString(),
+      numMandatoryCourses: parseInt(numMandatoryCourses),
+      location,
+      message: modifiedMessage,
+      studentIdentifier: studentIdentifier,
+      canPublishName: canPublishName === "true",
       state: "PENDING",
       attendances: [
         ...attendedSubjectListParsed,
@@ -418,7 +431,7 @@ class MatriculationExaminationWizard extends React.Component<
     };
 
     const requestOptions = {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
@@ -442,7 +455,7 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
-   * handleErrorMsg
+   * handles possible error messages setting those to state
    * @param msg
    */
   handleErrorMsg = (msg: string) => {
@@ -453,23 +466,23 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
-   * onStepChange
+   * handles when wizard step changes and here check when last step before complete happens,
+   * kick offs form submit
    * @param steps
    * @returns
    */
   onStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
-      console.log([steps, step]);
-
       this.submit();
     }
   };
 
   /**
-   * onExaminationInformationChange
+   * Handles examination information change and start draft saving timer, clears existing timer
+   * if changes happens before existing timer happens to end
    * @param examination
    */
-  onExaminationInformationChange = (examination: Examination) => {
+  onExaminationInformationChange = (examination: ExaminationInformation) => {
     this.setState({
       examinationInformation: examination,
     });
@@ -483,13 +496,16 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
-   * Component render
+   * Render method
    */
   render() {
     if (!this.state.initialized) {
       return <></>;
     }
 
+    /**
+     * StepZilla steps
+     */
     const steps = [
       {
         name: "Info",
@@ -518,8 +534,12 @@ class MatriculationExaminationWizard extends React.Component<
         ),
       },
       {
+        name: "Yhteenveto",
+        component: <Step4 examination={this.state.examinationInformation} />,
+      },
+      {
         name: "Viimeistely",
-        component: <Step4 saveState={this.state.saveState} />,
+        component: <Step5 saveState={this.state.saveState} />,
       },
     ];
 
