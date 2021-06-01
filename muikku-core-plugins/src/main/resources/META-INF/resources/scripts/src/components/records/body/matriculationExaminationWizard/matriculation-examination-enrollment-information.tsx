@@ -826,7 +826,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           </div>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Ilmoittautuminen</label>
+              <label className="matriculation__label">Ilmoittautuminen</label>
               <select
                 onChange={(e) =>
                   this.onExaminationInformationChange(

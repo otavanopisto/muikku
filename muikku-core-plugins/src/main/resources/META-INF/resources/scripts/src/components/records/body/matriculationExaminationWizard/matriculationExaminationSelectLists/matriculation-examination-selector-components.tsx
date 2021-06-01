@@ -53,6 +53,7 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
             disabled={readOnly}
             value={subject.subject}
             selectedValues={selectedSubjectList}
+            modifier="Enroll"
             onChange={(e) =>
               onSubjectGroupChange("subject", e.target.value, index)
             }
@@ -71,6 +72,7 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
             i={index}
             disabled={readOnly}
             value={subject.mandatory}
+            modifier="Enroll"
             onChange={(e) =>
               onSubjectGroupChange("mandatory", e.target.value, index)
             }
@@ -89,6 +91,7 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
             i={index}
             disabled={readOnly}
             value={subject.repeat}
+            modifier="Enroll"
             onChange={(e) =>
               onSubjectGroupChange("repeat", e.target.value, index)
             }
@@ -155,6 +158,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
             disabled={readOnly}
             options={pastTermOptions}
             value={subject.term}
+            modifier="Completed"
             onChange={(e) =>
               onSubjectGroupChange("term", e.target.value, index)
             }
@@ -167,6 +171,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
             disabled={readOnly}
             value={subject.subject}
             selectedValues={selectedSubjectList}
+            modifier="Completed"
             onChange={(e) =>
               onSubjectGroupChange("subject", e.target.value, index)
             }
@@ -189,6 +194,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
             i={index}
             disabled={readOnly}
             value={subject.mandatory}
+            modifier="Completed"
             onChange={(e) =>
               onSubjectGroupChange("mandatory", e.target.value, index)
             }
@@ -200,6 +206,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
             i={index}
             disabled={readOnly}
             value={subject.grade}
+            modifier="Completed"
             onChange={(e) =>
               onSubjectGroupChange("grade", e.target.value, index)
             }
@@ -266,6 +273,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
             disabled={readOnly}
             options={nextOptions}
             value={subject.term}
+            modifier="Future"
             onChange={(e) =>
               onSubjectGroupChange("term", e.target.value, index)
             }
@@ -278,6 +286,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
             disabled={readOnly}
             value={subject.subject}
             selectedValues={selectedSubjectList}
+            modifier="Future"
             onChange={(e) =>
               onSubjectGroupChange("subject", e.target.value, index)
             }
@@ -300,6 +309,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
             i={index}
             disabled={readOnly}
             value={subject.subject}
+            modifier="Future"
             onChange={(e) =>
               onSubjectGroupChange("mandatory", e.target.value, index)
             }
@@ -333,6 +343,7 @@ interface SubjectSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
   selectedValues: string[];
+  modifier: string;
 }
 
 /**
@@ -343,12 +354,13 @@ interface SubjectSelectProps
 const SubjectSelect: React.FC<SubjectSelectProps> = ({
   i,
   selectedValues,
+  modifier,
   ...selectProps
 }) => (
   <>
-    {i == 0 ? <label id="matriculationSubjectSelectLabel" className="matriculation__label">Aine</label> : null}
+    {i == 0 ? <label id={`matriculationSubjectSelectLabel${modifier}`} className="matriculation__label">Aine</label> : null}
     <select
-      aria-labelledby="matriculationSubjectSelectLabel"
+      aria-labelledby={`matriculationSubjectSelectLabel${modifier}`}
       {...selectProps}
       disabled={selectProps.disabled}
       className="matriculation__select"
@@ -374,6 +386,7 @@ interface TermSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
   options: JSX.Element[];
+  modifier: string;
 }
 
 /**
@@ -382,12 +395,13 @@ interface TermSelectProps
 const TermSelect: React.FC<TermSelectProps> = ({
   i,
   options,
+  modifier,
   ...selectProps
 }) => (
   <>
-    {i == 0 ? <label id="matriculationTermSelectLabel" className="matriculation__label">Ajankohta</label> : null}
+    {i == 0 ? <label id={`matriculationTermSelectLabel${modifier}`} className="matriculation__label">Ajankohta</label> : null}
     <select
-      aria-labelledby="matriculationTermSelectLabel"
+      aria-labelledby={`matriculationTermSelectLabel${modifier}`}
       {...selectProps}
       disabled={selectProps.disabled}
       className="matriculation__select"
@@ -405,6 +419,7 @@ interface MandatorySelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
   value: string;
+  modifier: string;
 }
 
 /**
@@ -412,12 +427,13 @@ interface MandatorySelectProps
  */
 const MandatorySelect: React.FC<MandatorySelectProps> = ({
   i,
+  modifier,
   ...selectProps
 }) => (
   <>
-    {i == 0 ? <label id="matriculationMandatorySelectLabel" className="matriculation__label">Pakollisuus</label> : null}
+    {i == 0 ? <label id={`matriculationMandatorySelectLabel${modifier}`} className="matriculation__label">Pakollisuus</label> : null}
     <select
-      aria-labelledby="matriculationMandatorySelectLabel"
+      aria-labelledby={`matriculationMandatorySelectLabel${modifier}`}
       {...selectProps}
       disabled={selectProps.disabled}
       className="matriculation__select"
@@ -435,16 +451,17 @@ const MandatorySelect: React.FC<MandatorySelectProps> = ({
 interface RepeatSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
+  modifier: string;
 }
 
 /**
  * RepeatSelect
  */
-const RepeatSelect: React.FC<RepeatSelectProps> = ({ i, ...selectProps }) => (
+const RepeatSelect: React.FC<RepeatSelectProps> = ({ i, modifier, ...selectProps }) => (
   <>
-    {i == 0 ? <label id="matriculationRepeatSelectLabel" className="matriculation__label">Uusiminen</label> : null}
+    {i == 0 ? <label id={`matriculationRepeatSelectLabel${modifier}`} className="matriculation__label">Uusiminen</label> : null}
     <select
-      aria-labelledby="matriculationRepeatSelectLabel"
+      aria-labelledby={`matriculationRepeatSelectLabel${modifier}`}
       {...selectProps}
       disabled={selectProps.disabled}
       className="matriculation__select"
@@ -462,16 +479,17 @@ const RepeatSelect: React.FC<RepeatSelectProps> = ({ i, ...selectProps }) => (
 interface GradeSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
+  modifier: string;
 }
 
 /**
  * GradeSelect
  */
-const GradeSelect: React.FC<GradeSelectProps> = ({ i, ...selectProps }) => (
+const GradeSelect: React.FC<GradeSelectProps> = ({ i, modifier, ...selectProps }) => (
   <>
-    {i == 0 ? <label id="matriculationGradeSelectLabel" className="matriculation__label">Arvosana</label> : null}
+    {i == 0 ? <label id={`matriculationGradeSelectLabel${modifier}`} className="matriculation__label">Arvosana</label> : null}
     <select
-      aria-labelledby="matriculationGradeSelectLabel"
+      aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
       {...selectProps}
       disabled={selectProps.disabled}
       className="matriculation__select"

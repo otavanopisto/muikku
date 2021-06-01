@@ -18,6 +18,7 @@ interface MatriculationExaminationCompletedSelectsListProps {
   examinationCompletedList: ExaminationFinishedSubject[];
   pastOptions?: JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
+  modifier?: string;
 }
 
 /**
@@ -33,6 +34,7 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
     pastOptions,
     onDeleteRow,
     readOnly,
+    modifier,
   }) => {
     /**
      * Handles matriculation examation finished subject group change
