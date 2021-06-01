@@ -1,6 +1,8 @@
 import * as React from "react";
 import { ExaminationSubject } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
+import "~/sass/elements/wcag.scss";
+import Button from '~/components/general/button';
 import { SUBJECT_MAP } from "../index";
 import {
   ExaminationAttendedSubject,
@@ -57,8 +59,8 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
         <div
           className={`matriculation__form-element-container matriculation__form-element-container--input ${
             subject.mandatory === "" || isConflictingMandatory(subject)
-              ? "matriculation__form-element-container--input--mandatory-conflict"
-              : {}
+              ? "matriculation__form-element-container--mandatory-conflict"
+              : ""
           } `}
         >
           <MandatorySelect
@@ -73,8 +75,8 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
         <div
           className={`matriculation__form-element-container matriculation__form-element-container--input ${
             subject.repeat === "" || isConflictingRepeat(subject)
-              ? "matriculation__form-element-container--input--repeat-conflict"
-              : {}
+              ? "matriculation__form-element-container--repeat-conflict"
+              : ""
           } `}
         >
           <RepeatSelect
@@ -88,14 +90,17 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
 
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label className="matriculation__form-element__button__label">
+            <label id="removeMatriculationRowLabel" className="visually-hidden">
               Poista
             </label>
           ) : null}
-          <a
-            className="button  button--primary-function-content button--remove-subject-row icon-trash"
+          <Button
+            aria-labelledby="removeMatriculationRowLabel"
+            className="icon-trash"
+            buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
-          ></a>
+          >
+          </Button>
         </div>
       </>
     );
@@ -163,8 +168,8 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
                 era.mandatory != subject.mandatory
               );
             }).length > 0
-              ? "matriculation__form-element-container--input--mandatory-conflict"
-              : {}
+              ? "matriculation__form-element-container--mandatory-conflict"
+              : ""
           } `}
         >
           <MandatorySelect
@@ -188,14 +193,17 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
 
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label className="matriculation__form-element__button__label">
+            <label id="removeMatriculationRowLabel" className="visually-hidden">
               Poista
             </label>
           ) : null}
-          <a
-            className="button  button--primary-function-content button--remove-subject-row icon-trash"
+          <Button
+            aria-labelledby="removeMatriculationRowLabel"
+            className="icon-trash"
+            buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
-          ></a>
+          >
+          </Button>
         </div>
       </>
     );
@@ -263,8 +271,8 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
                 era.mandatory != subject.mandatory
               );
             }).length > 0
-              ? "matriculation__form-element-container--input--mandatory-conflict"
-              : {}
+              ? "matriculation__form-element-container--mandatory-conflict"
+              : ""
           } `}
         >
           <MandatorySelect
@@ -278,14 +286,17 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
 
         <div className="matriculation__form-element-container matriculation__form-element-container--button">
           {index == 0 ? (
-            <label className="matriculation__form-element__button__label">
+            <label id="removeMatriculationRowLabel" className="visually-hidden">
               Poista
             </label>
           ) : null}
-          <a
-            className="button  button--primary-function-content button--remove-subject-row icon-trash"
+          <Button
+            aria-labelledby="removeMatriculationRowLabel"
+            className="icon-trash"
+            buttonModifiers={"remove-matriculation-row"}
             onClick={onClickDeleteRow(index)}
-          ></a>
+          >
+          </Button>
         </div>
       </>
     );
@@ -311,8 +322,8 @@ const SubjectSelect: React.FC<SubjectSelectProps> = ({
   ...selectProps
 }) => (
   <>
-    {i == 0 ? <label>Aine</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    {i == 0 ? <label id="matriculationSubjectSelectLabel" className="matriculation__label">Aine</label> : null}
+    <select aria-labelledby="matriculationSubjectSelectLabel" {...selectProps} className="matriculation__select">
       {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
         const subjectName = SUBJECT_MAP[subjectCode];
         const disabled = selectedValues.indexOf(subjectCode) != -1;
@@ -345,8 +356,8 @@ const TermSelect: React.FC<TermSelectProps> = ({
   ...selectProps
 }) => (
   <>
-    {i == 0 ? <label>Ajankohta</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    {i == 0 ? <label id="matriculationTermSelectLabel" className="matriculation__label">Ajankohta</label> : null}
+    <select aria-labelledby="matriculationTermSelectLabel" {...selectProps} className="matriculation__select">
       <option value="">Valitse...</option>
       <>{options}</>
     </select>
@@ -369,8 +380,8 @@ const MandatorySelect: React.FC<MandatorySelectProps> = ({
   ...selectProps
 }) => (
   <>
-    {i == 0 ? <label>Pakollisuus</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    {i == 0 ? <label id="matriculationMandatorySelectLabel" className="matriculation__label">Pakollisuus</label> : null}
+    <select aria-labelledby="matriculationMandatorySelectLabel" {...selectProps} className="matriculation__select">
       <option value="">Valitse...</option>
       <option value="true">Pakollinen</option>
       <option value="false">Ylimääräinen</option>
@@ -391,8 +402,8 @@ interface RepeatSelectProps
  */
 const RepeatSelect: React.FC<RepeatSelectProps> = ({ i, ...selectProps }) => (
   <>
-    {i == 0 ? <label>Uusiminen</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    {i == 0 ? <label id="matriculationRepeatSelectLabel" className="matriculation__label">Uusiminen</label> : null}
+    <select aria-labelledby="matriculationRepeatSelectLabel" {...selectProps} className="matriculation__select">
       <option value="">Valitse...</option>
       <option value="false">Ensimmäinen suorituskerta</option>
       <option value="true">Uusinta</option>
@@ -413,8 +424,8 @@ interface GradeSelectProps
  */
 const GradeSelect: React.FC<GradeSelectProps> = ({ i, ...selectProps }) => (
   <>
-    {i == 0 ? <label>Arvosana</label> : null}
-    <select {...selectProps} className="matriculation__form-element__input">
+    {i == 0 ? <label id="matriculationGradeSelectLabel" className="matriculation__label">Arvosana</label> : null}
+    <select aria-labelledby="matriculationGradeSelectLabel" {...selectProps} className="matriculation__select">
       <option value="IMPROBATUR">I (Improbatur)</option>
       <option value="APPROBATUR">A (Approbatur)</option>
       <option value="LUBENTER_APPROBATUR">B (Lubenter approbatur)</option>

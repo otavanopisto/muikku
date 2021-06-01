@@ -18,6 +18,15 @@
   z-index: 9999;
 }
 
+.dialog--matriculation-wizard {
+
+  .dialog__window {
+    left: auto;
+    max-width: calc(#{$breakpoint-max-usable-screen} - 40px);
+    right: auto;
+  }
+}
+
 .dialog--visible {
   opacity: 1;
 }

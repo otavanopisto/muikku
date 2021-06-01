@@ -84,7 +84,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
         {savingDraftInfo}
         <fieldset className="matriculation-fieldset">
           <legend>Kokeen suorittaminen</legend>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label>Suorituspaikka</label>
               <select
@@ -104,7 +104,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
           </div>
 
           <div className="pure-u-1-2"></div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label>Lisätietoa ohjaajalle</label>
               <textarea
@@ -120,7 +120,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label>Julkaisulupa</label>
               <select
@@ -143,7 +143,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
             </div>
           </div>
 
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label>Nimi</label>
               <input

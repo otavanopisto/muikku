@@ -13,31 +13,29 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
 
   render() {
     return (
-      <div className="matriculation-container matriculation-container-state matriculation-container-state--info">
-        <h1 className="info-header">
+      <div className="matriculation-container">
+        <h3 className="matriculation-container__header">
           Ylioppilaskirjoituksiin ilmoittautuminen (Info)
-        </h1>
-        <p className="info-item">
+        </h3>
+        <p className="matriculation-container__info-item">
           Ilmoittautuminen ylioppilaskirjoituksiin on nyt auki. Voit
           ilmoittautua yo-kirjoituksiin, jos täytät abistatuksen. Lue lisää
           tiedotteesta.
         </p>
-        <p className="info-item">
+        <p className="matriculation-container__info-item">
           Täytä puuttuvat tiedot huolellisesti ja tarkista lomake ennen sen
           lähettämistä.
         </p>
-        <p className="info-item">Ilmoittautuminen sulkeutuu</p>
-        <ul className="info-item">
-          <li className="info-list-item">kevään kirjoitusten osalta 20.11.</li>
-          <li className="info-list-item">syksyn kirjoitusten osalta 20.5.</li>
+        <h3 className="matriculation-container__subheader">Ilmoittautuminen sulkeutuu</h3>
+        <ul className="matriculation-container__info-list">
+          <li className="matriculation-container__info-list-item">kevään kirjoitusten osalta 20.11.</li>
+          <li className="matriculation-container__info-list-item">syksyn kirjoitusten osalta 20.5.</li>
         </ul>
-        <p className="info-item">
+        <p className="matriculation-container__info-item">
           Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen
           (riikka.turpeinen@otavia.fi).
         </p>
-        <p className="info-item">
-          <b>Ilmoittautuminen on sitova.</b>
-        </p>
+        <div className="matriculation-container__state state-INFO">Ilmoittautuminen on sitova.</div>
       </div>
     );
   }

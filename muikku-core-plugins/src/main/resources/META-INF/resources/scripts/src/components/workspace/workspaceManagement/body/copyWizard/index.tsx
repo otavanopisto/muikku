@@ -146,7 +146,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
     return (
       <div className='wizard'>
-        <div className='wizard_container'>
+        <div className='wizard__container'>
           <StepZilla
             stepsNavigation={!this.state.locked}
             showNavigation={!this.state.locked}

@@ -5,6 +5,7 @@ import { MatriculationExaminationCompletedSelectsList } from "./matriculationExa
 import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-future-list";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
+import Button from '~/components/general/button';
 import {
   getDefaultNextTerm,
   getDefaultPastTerm,
@@ -762,16 +763,16 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       <div className="matriculation-container">
         {savingDraftError}
         {savingDraftInfo}
-        <fieldset className="matriculation-fieldset">
-          <legend>Perustiedot</legend>
-          <div className="matriculation-row">
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Perustiedot</legend>
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Nimi"
                 readOnly
                 type="text"
                 value={studentProfile.name}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -780,18 +781,18 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 readOnly
                 type="text"
                 value={studentProfile.profileId}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Sähköpostiosoite"
                 readOnly
                 type="text"
                 value={studentProfile.email}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -800,18 +801,18 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 readOnly
                 type="text"
                 value={studentProfile.phoneNumber}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Osoite"
                 readOnly
                 type="text"
                 value={studentProfile.address}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -820,22 +821,22 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 readOnly
                 type="text"
                 value={studentProfile.zipCode}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Postitoimipaikka"
                 readOnly
                 type="text"
                 value={studentProfile.postalDisctrict}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <Textarea
                 onChange={(e) =>
@@ -843,14 +844,14 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 }
                 label="Jos tietosi ovat muuttuneet, ilmoita siitä tässä"
                 value={studentProfile.descriptionInfo}
-                className="matriculation__form-element__input matriculation__form-element__input--textarea"
+                className="matriculation__textarea"
               />
             </div>
           </div>
         </fieldset>
-        <fieldset className="matriculation-fieldset">
-          <legend>Opiskelijatiedot</legend>
-          <div className="matriculation-row">
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Opiskelijatiedot</legend>
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 onChange={(e) =>
@@ -858,11 +859,11 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 }
                 label="Ohjaaja"
                 value={studentInfo.superVisor}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label>Ilmoittautuminen</label>
               <select
@@ -872,7 +873,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                     e.currentTarget.value
                   )
                 }
-                className="matriculation__form-element__input"
+                className="matriculation__select"
               >
                 <option value="UPPERSECONDARY">Lukion opiskelijana</option>
                 <option value="VOCATIONAL">
@@ -892,18 +893,18 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                 }
                 label="Pakollisia kursseja suoritettuna"
                 value={studentInfo.courseCount}
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Tutkintotyyppi</label>
+              <label className="matriculation__label">Tutkintotyyppi</label>
               <select
                 onChange={(e) =>
                   this.onStudentInfoChange("degreeType", e.currentTarget.value)
                 }
-                className="matriculation__form-element__input"
+                className="matriculation__select"
               >
                 <option value="MATRICULATIONEXAMINATION">Yo-tutkinto</option>
                 <option value="MATRICULATIONEXAMINATIONSUPPLEMENT">
@@ -915,9 +916,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
               </select>
             </div>
           </div>
-          <div className="matriculation-row">
-            <div className="matriculation__form-element-container matriculation__form-element-container--checkbox">
-              <label>Aloitan tutkinnon suorittamisen uudelleen&nbsp;</label>
+          <div className="matriculation-container__row">
+            <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
+              <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen&nbsp;</label>
               <input
                 onChange={(e) =>
                   this.onStudentInfoChange(
@@ -926,14 +927,14 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                   )
                 }
                 type="checkbox"
-                className="matriculation__form-element__input"
+                className="matriculation__input"
               />
             </div>
           </div>
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
           <MatriculationExaminationCompletedSelectsList
             enrolledAttendances={attendedSubjectList}
             examinationCompletedList={completedSubjectList}
@@ -941,18 +942,19 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             onChange={this.onExaminationCompletedSubjectListCHange}
             onDeleteRow={this.deleteFinishedAttendance}
           />
-          <div className="matriculation-row matriculation-row">
-            <button
+          <div className="matriculation-container__row">
+            <Button
+              buttonModifiers={"add-matriculation-row"}
               onClick={this.newFinishedAttendance}
-              className="matriculation__form-element__button"
             >
+              <span className="icon-plus"></span>
               Lisää uusi rivi
-            </button>
+            </Button>
           </div>
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">
             {`Ilmoittaudun suorittamaan kokeen seuraavissa aineissa `}
             <b>
               {resolveCurrentTerm() ? resolveCurrentTerm().adessive : "Virhe"}
@@ -966,13 +968,14 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             onChange={this.onExaminationAttendSubjectListCHange}
             onDeleteRow={this.deleteEnrolledAttendance}
           />
-          <div className="matriculation-row matriculation-row">
-            <button
+          <div className="matriculation-container__row">
+            <Button
+              buttonModifiers={"add-matriculation-row"}
               onClick={this.newEnrolledAttendance}
-              className="matriculation__form-element__button"
             >
+              <span className="icon-plus"></span>
               Lisää uusi rivi
-            </button>
+            </Button>
           </div>
         </fieldset>
 
@@ -996,8 +999,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           </div>
         ) : null}
 
-        <fieldset className="matriculation-fieldset">
-          <legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">
             Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
           </legend>
           <MatriculationExaminationFutureSelectsList
@@ -1007,13 +1010,14 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             onChange={this.onExaminationFutureSubjectListCHange}
             onDeleteRow={this.deletePlannedAttendance}
           />
-          <div className="matriculation-row matriculation-row">
-            <button
+          <div className="matriculation-container__row">
+            <Button
+              buttonModifiers={"add-matriculation-row"}
               onClick={this.newPlannedAttendance}
-              className="matriculation__form-element__button"
             >
+              <span className="icon-plus"></span>
               Lisää uusi rivi
-            </button>
+            </Button>
           </div>
         </fieldset>
 
@@ -1024,8 +1028,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         ) : null}
 
         {this.hasMandatoryConflicts() ? (
-          <div className="matriculation__mandatory-conflicts">
-            <div></div>
+          <div className="matriculation-container__mandatory-conflicts">
+            <div className="matriculation-container__mandatory-conflicts-indicator"></div>
             <p>
               Ainetta uusittaessa pakollisuustiedon on oltava sama kuin
               aiemmalla suorituskerralla
@@ -1034,8 +1038,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         ) : null}
 
         {this.hasConflictingRepeats() ? (
-          <div className="matriculation__repeat-conflicts">
-            <div></div>
+          <div className="matriculation-container__repeat-conflicts">
+            <div className="matriculation-container__repeat-conflicts-indicator"></div>
             <p>
               Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta
             </p>
@@ -1049,7 +1053,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
         this.getAmountOfMandatoryAdvancedSubjectAttendances() >
           REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN ? null : (
-          <div className="matriculation__info">
+          <div className="matriculation-container__state state-INFO">
             <p>Ylioppilastutkintoon tulee sisältyä</p>
             <ul>
               <li>

@@ -525,7 +525,7 @@ class MatriculationExaminationWizard extends React.Component<
 
     return (
       <div className="wizard">
-        <div className="wizard_container">
+        <div className="wizard__content">
           <StepZilla
             stepsNavigation={!this.state.locked}
             showNavigation={!this.state.locked}

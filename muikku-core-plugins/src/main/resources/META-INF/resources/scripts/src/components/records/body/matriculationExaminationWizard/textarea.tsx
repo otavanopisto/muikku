@@ -12,7 +12,7 @@ export const Textarea: React.FC<TextAreaProps> = ({
   ...rest
 }) => (
   <>
-    <label aria-label={labelAria}>{label}</label>
+    <label className="matriculation__label" aria-label={labelAria}>{label}</label>
     <textarea {...rest} />
   </>
 );

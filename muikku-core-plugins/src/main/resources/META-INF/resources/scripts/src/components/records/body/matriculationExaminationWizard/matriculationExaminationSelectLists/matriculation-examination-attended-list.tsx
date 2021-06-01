@@ -59,9 +59,10 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
           return (
             <div
               key={index}
-              className={`matriculation-row matriculation-row--input-groups ${
-                conflictedCourse &&
-                "matriculation-row--input-groups--conflicted"
+              className={`matriculation-container__row matriculation-container__row--input-groups ${
+                conflictedCourse ?
+                "matriculation-container__row--input-groups--conflicted"
+                : ""
               }`}
             >
               <MatriculationExaminationSubjectInputGroup

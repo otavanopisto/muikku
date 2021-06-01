@@ -3,72 +3,88 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.info-item {
-  margin: 5px;
-}
-
-.info-header {
-  text-align: center;
-  margin: 10px;
-}
-
-.info-list-item {
-  display: block;
-}
-
 .matriculation-container {
-  width: auto;
-  font-family: "Open Sans", Arial, sans-serif;
+  flex-basis: 100%;
   overflow: auto;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    width: 700px;
     margin: 0 auto;
     padding: 0 50px;
   }
 }
 
-.matriculation-container-state {
-  border-radius: 10px;
-  color: white;
-  padding: 5px;
+.matriculation-container__state {
+  font-size: 1rem;
+  padding: 10px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-INFO {
+    border-left: 4px solid $color-info;
+  }
+
+  &.state-SUCCESS {
+    border-left: 4px solid $color-success;
+  }
+
+  &.state-FAILED {
+    border-left: 4px solid $color-fatal;
+  }
+
+  &.state-LOADER {
+    border-left: 4px solid $color-tertiary;
+  }
+  // scss-lint:enable SelectorFormat
 }
 
-.matriculation-container-state--info {
-  background-color: $color-info;
+.matriculation-container__header {
+  font-size: 1.25rem;
+  font-weight: 300;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+  }
 }
 
-.matriculation-container-state--success {
-  background-color: $color-success;
+.matriculation-container__subheader {
+  border: 0;
+  display: block;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  margin: 0 0 10px;
+  width: 100%;
 }
 
-.matriculation-container-state--failed {
-  background-color: $color-failed;
+.matriculation-container__info-item {
+  margin: 15px 0;
 }
 
-.matriculation-container-state--loader {
-  text-align: center;
+.matriculation-container__info-list {
+  list-style-type: disc;
+  margin: 10px 20px;
 }
 
-.matriculation-row {
+.matriculation-container__info-list-item {
+  display: list-item;
+}
+
+.matriculation-container__row {
   display: flex;
   flex-flow: column wrap;
-  padding: 5px;
+  padding: 5px 0;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
 }
 
-.matriculation-row--input-groups {
+.matriculation-container__row--input-groups {
   flex-flow: column wrap;
   margin: 0;
 
   @include breakpoint($breakpoint-pad) {
-    flex-flow: row;
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 5px;
+    flex-flow: row wrap;
   }
 }
 
@@ -78,136 +94,137 @@
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
-  margin: 5px 0px;
+  margin: 5px 0;
+
   @include breakpoint($breakpoint-pad) {
     margin-left: 0;
     margin-right: 5px;
   }
 }
 
-.matriculation-fieldset {
-  padding: 0.5rem 0px;
-  margin: 10px 0;
+.matriculation__form-element-container--button {
+  align-items: flex-end;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
-.matriculation-fieldset legend {
-  padding: 5px;
-  border-bottom: 1px solid #e5e5e5;
-  display: block;
-  width: 100%;
+.matriculation__form-element-container--single-row {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+
+  .matriculation__label {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 10px 0 0;
+  }
 }
 
-.matriculation__form-element-container label {
+.matriculation-container__fieldset {
+  border-bottom: 1px solid $color-default-separator-border;
+  padding: 0 0 10px;
+  margin: 0 0 15px;
+}
+
+.matriculation__label {
   display: block;
-  font-family: "Open Sans", Arial, sans-serif;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.matriculation__form-element-container--checkbox {
-  display: inline-block;
+.matriculation__input[type="checkbox"] {
+  align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: solid 2px $color-matriculation-dialog-form-element-border;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
 }
 
-.matriculation__form-element-container--input {
-  width: 100%;
-  margin: 0px 5px 5px 0;
+.matriculation__input[type="checkbox"]:checked {
+  background-color: $color-application-dialog-border-color;
+  border: solid 2px $color-application-dialog-border-color;
+}
 
-  @include breakpoint($breakpoint-pad) {
-    width: 25%;
-    margin: 0px 5px 0px 0;
+.matriculation__input[type="checkbox"]:checked::after {
+  color: $color-default;
+  content: "\e639";
+  font-family: muikku;
+  font-size: 0.875rem;
+}
+
+.matriculation__input {
+  background: $color-default;
+  border: 2px solid $color-matriculation-dialog-form-element-border;
+  border-radius: 3px;
+  height: 2.25rem;
+  padding: 4px 8px;
+  width: 100%;
+
+  &[readonly] {
+    background-color: lighten($color-disabled, 20%);
+    border: 0;
   }
 }
 
-.matriculation-row--input-groups--conflicted {
+.matriculation__select {
+  background: $color-default;
+  border: 2px solid $color-matriculation-dialog-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  height: 2.25rem;
+  padding: 4px;
+  width: 100%;
+
+  &[readonly] {
+    background-color: lighten($color-disabled, 20%);
+    border: 0;
+  }
+}
+
+.matriculation__textarea {
+  background: $color-default;
+  border: 2px solid $color-matriculation-dialog-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  height: 5rem;
+  padding: 4px 8px;
+  width: 100%;
+  resize: vertical;
+}
+
+.matriculation-container__row--input-groups--conflicted {
   background-color: pink;
   margin-bottom: 5px;
 }
 
-.matriculation__form-element-container--input--mandatory-conflict::before,
-.matriculation__form-element-container--input--repeat-conflict::before {
+.matriculation__form-element-container--mandatory-conflict::before,
+.matriculation__form-element-container--repeat-conflict::before {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
   content: " ";
   width: 100%;
   height: 5px;
   display: block;
-  bottom: 0;
+  bottom: -3px;
   position: absolute;
 }
 
-.matriculation__form-element-container--input--mandatory-conflict::before {
+.matriculation__form-element-container--mandatory-conflict::before {
   background: $color-warn;
 }
 
-.matriculation__form-element-container--input--repeat-conflict::before {
+.matriculation__form-element-container--repeat-conflict::before {
   background: $color-fatal;
-}
-
-.matriculation__form-element-container--button {
-  margin: auto 0px;
-  width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    display: block !important;
-    max-width: 40px;
-  }
-}
-
-.matriculation__form-element-container--button a {
-  width: 100%;
-  margin: auto !important;
-  font-size: 1.5rem;
-}
-
-.matriculation__form-element-container input:read-only {
-  background-color: $color-disabled;
-}
-
-.matriculation__form-element__button__label {
-  visibility: hidden;
-  display: none !important;
-
-  @include breakpoint($breakpoint-pad) {
-    display: block !important;
-  }
-}
-
-.matriculation__form-element__input {
-  border: 2px solid #f8a1ce;
-  border-radius: 3px;
-  display: inline-block;
-  height: 2.25rem;
-  padding: 4px 8px;
-  width: 100%;
-}
-
-.matriculation__form-element__input--textarea {
-  resize: vertical;
-}
-
-.matriculation__form-element__button {
-  background-color: #009fe3;
-  color: #fff;
-  height: 2rem;
-  padding: 0 1rem;
-  border: 0;
-  width: 100%;
-  text-transform: uppercase;
-
-  @include breakpoint($breakpoint-pad) {
-    width: initial;
-  }
-}
-
-.matriculation__form-element-container--checkbox label {
-  display: inline-block;
-  align-items: center;
-}
-.matriculation__form-element-container--checkbox input[type="radio"],
-input[type="checkbox"] {
-  flex: none;
-  width: 1.5rem;
-  height: 1.5rem;
-  margin: 5px;
 }
 
 .matriculation-step-title {
@@ -220,8 +237,8 @@ input[type="checkbox"] {
   animation-duration: 1.4s;
   animation-iteration-count: infinite;
   animation-fill-mode: both;
-  margin: 0 !important;
-  display: inline-flex !important;
+  margin: 0 ;
+  display: inline-flex;
   align-items: center;
 }
 
@@ -233,34 +250,26 @@ input[type="checkbox"] {
   animation-delay: 0.4s;
 }
 
-.visually-hidden {
-  height: 1px;
-  left: -10000px;
-  overflow: hidden;
-  position: absolute;
-  width: 1px;
-}
-
-.matriculation__repeat-conflicts,
-.matriculation__mandatory-conflicts {
-  margin: 2.5px 0px;
+.matriculation-container__repeat-conflicts,
+.matriculation-container__mandatory-conflicts {
+  margin: 2.5px 0;
   display: flex;
   align-items: center;
 }
 
-.matriculation__mandatory-conflicts div,
-.matriculation__repeat-conflicts div {
+.matriculation-container__mandatory-conflicts-indicator,
+.matriculation-container__repeat-conflicts-indicator {
   width: 25px;
   height: 5px;
   display: inline-block;
-  margin: 0px 10px;
+  margin: 0 10px;
 }
 
-.matriculation__mandatory-conflicts div {
+.matriculation-container__mandatory-conflicts-indicator {
   background-color: $color-warn;
 }
 
-.matriculation__repeat-conflicts div {
+.matriculation-container__repeat-conflicts-indicator {
   background-color: $color-fatal;
 }
 
@@ -281,7 +290,7 @@ input[type="checkbox"] {
 }
 
 .matriculation__info {
-  margin: 0.5rem 0px;
+  margin: 0.5rem 0;
   padding: 0.5rem;
   background-color: $color-info;
   color: white;
@@ -323,7 +332,7 @@ ul {
 }
 
 .matriculation__saving-draft--info {
-  color: white;
+  color: $color-default;
   background-color: $color-info;
 }
 
@@ -336,8 +345,8 @@ ul {
   animation-duration: 1.4s;
   animation-iteration-count: infinite;
   animation-fill-mode: both;
-  margin: 0 !important;
-  display: inline-flex !important;
+  margin: 0;
+  display: inline-flex;
   align-items: center;
 }
 
