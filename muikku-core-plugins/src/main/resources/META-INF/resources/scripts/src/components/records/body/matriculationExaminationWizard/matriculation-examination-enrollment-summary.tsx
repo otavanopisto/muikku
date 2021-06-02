@@ -297,6 +297,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <Textarea
+                readOnly={true}
                 label="Lisätietoa ohjaajalle"
                 rows={5}
                 defaultValue={message}
