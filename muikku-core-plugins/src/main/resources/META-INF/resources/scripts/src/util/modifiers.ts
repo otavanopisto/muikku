@@ -320,13 +320,35 @@ export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
   return result;
 }
 
-export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: string, props: any, children: Array<any>, element: HTMLElement)=>any, key?: number):any {
-  let defaultProcesser = processer ? processer : (a:any, b:any, c:any)=>React.createElement(a,b,c);
-  let props:any = {
-    key
-  }
+export interface HTMLToReactComponentRule {
+  shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
+  preventChildProcessing?: boolean;
+  processingFunction?: (tag: string, props: any, children: Array<any>, element: HTMLElement) => any;
+  preprocessReactProperties?: (tag: string, props: any, children: Array<any>, element: HTMLElement) => string | void;
+  preprocessElement?: (element: HTMLElement) => string | void;
+  id?: string;
+}
+
+export function HTMLtoReactComponent(element: HTMLElement, rules?: HTMLToReactComponentRule[], key?: number):any {
   if (element.nodeType === 3) {
     return element.textContent;
+  }
+
+  let tagname = element.tagName.toLowerCase();
+  const matchingRule = rules.find((r) => r.shouldProcessHTMLElement(tagname, element));
+
+  if (matchingRule && matchingRule.preprocessElement) {
+    tagname = matchingRule.preprocessElement(element) || tagname;
+  }
+
+  const defaultProcesser = (tag: string, props:any, children:Array<any>)=>React.createElement(tag,props,children);
+
+  const actualProcesser = matchingRule ?
+    (matchingRule.processingFunction || defaultProcesser) :
+    defaultProcesser;
+  
+  const props:any = {
+    key,
   }
   Array.from(element.attributes).forEach((attr:Attr)=>{
     if (translations[attr.name]){
@@ -336,20 +358,25 @@ export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: str
   if (element.style.cssText){
     props.style = CSSStyleDeclarationToObject(element.style);
   }
-  let children = Array.from(element.childNodes).map((node, index)=>{
+  const shouldProcessChildren = !matchingRule || matchingRule.preventChildProcessing;
+  let children = shouldProcessChildren ? Array.from(element.childNodes).map((node, index)=>{
     if (node instanceof HTMLElement){
-      return HTMLtoReactComponent(node, defaultProcesser, index)
+      return HTMLtoReactComponent(node, rules, index)
     }
     return node.textContent;
-  });
-  if (!children.length){
-    children = null;
+  }) : [];
+
+  if (matchingRule && matchingRule.preprocessReactProperties) {
+    tagname = matchingRule.preprocessReactProperties(tagname, props, children, element) || tagname;
   }
-  return defaultProcesser(
-      element.tagName.toLowerCase(),
-      props,
-      children,
-      element
+
+  const finalChildren = children.length === 0 ? null : children;
+
+  return actualProcesser(
+    tagname,
+    props,
+    finalChildren,
+    element
   );
 }
 
