@@ -5,7 +5,7 @@ import { MatriculationExaminationCompletedSelectsList } from "./matriculationExa
 import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
-import Button from '~/components/general/button';
+import Button from "~/components/general/button";
 import { REQUIRED_NUM_OF_COURSES } from "./index";
 import {
   getDefaultNextTerm,
@@ -134,7 +134,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       subject: this.getDefaultSubject(this.getEnrolledSubjects()),
       mandatory: "true",
       repeat: "false",
-      status: "UNKNOWN",
+      status: "ENROLLED",
     });
 
     const modifiedExamination: ExaminationInformation = {
@@ -721,7 +721,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         {savingDraftError}
         {savingDraftInfo}
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Perustiedot</legend>
+          <legend className="matriculation-container__subheader">
+            Perustiedot
+          </legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
@@ -811,7 +813,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           </div>
         </fieldset>
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Opiskelijatiedot</legend>
+          <legend className="matriculation-container__subheader">
+            Opiskelijatiedot
+          </legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
@@ -887,7 +891,10 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <div className="matriculation-container__state state-WARNING">
               <div className="matriculation-container__state-icon icon-notification"></div>
               <div className="matriculation-container__state-text">
-                <p>Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.</p>
+                <p>
+                  Ole hyvä ja täytä suoritettujen pakollisten kurssien
+                  lukumäärä.
+                </p>
               </div>
             </div>
           ) : null}
@@ -898,15 +905,19 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <div className="matriculation-container__state state-WARNING">
               <div className="matriculation-container__state-icon icon-notification"></div>
               <div className="matriculation-container__state-text">
-                <p>Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna.
-                Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</p>
+                <p>
+                  Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna.
+                  Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.
+                </p>
               </div>
             </div>
           ) : null}
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
-              <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen</label>
+              <label className="matriculation__label">
+                Aloitan tutkinnon suorittamisen uudelleen
+              </label>
               <input
                 onChange={(e) =>
                   this.onExaminationInformationChange(
@@ -923,7 +934,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         </fieldset>
 
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
+          <legend className="matriculation-container__subheader">
+            Olen jo suorittanut seuraavat ylioppilaskokeet
+          </legend>
           <MatriculationExaminationCompletedSelectsList
             enrolledAttendances={enrolledAttendances}
             examinationCompletedList={finishedAttendances}
@@ -971,20 +984,24 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <div className="matriculation-container__state state-WARNING">
               <div className="matriculation-container__state-icon icon-notification"></div>
               <div className="matriculation-container__state-text">
-              <p>Olet ilmoittautumassa kokeisiin, joita ei voi valita
-              samanaikaisesti. Kysy tarvittaessa lisää ohjaajalta.</p>
-              <p><b>Aineet:</b></p>
-              {this.isConflictingAttendances().map((cGroup, index) => {
-                return (
-                  <div key={index}>
-                    <ul>
-                      {cGroup.map((cSubject, index) => (
-                        <li key={index}> {SUBJECT_MAP[cSubject]} </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
+                <p>
+                  Olet ilmoittautumassa kokeisiin, joita ei voi valita
+                  samanaikaisesti. Kysy tarvittaessa lisää ohjaajalta.
+                </p>
+                <p>
+                  <b>Aineet:</b>
+                </p>
+                {this.isConflictingAttendances().map((cGroup, index) => {
+                  return (
+                    <div key={index}>
+                      <ul>
+                        {cGroup.map((cSubject, index) => (
+                          <li key={index}> {SUBJECT_MAP[cSubject]} </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ) : null}
@@ -1036,7 +1053,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             <div className="matriculation-container__repeat-conflicts">
               <div className="matriculation-container__repeat-conflicts-indicator"></div>
               <p>
-                Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta
+                Aine on merkittävä uusittavaksi, kun siitä on aiempi
+                suorituskerta
               </p>
             </div>
           ) : null}

@@ -19,7 +19,7 @@ export type SaveState =
  */
 export type AttentionPlace = "Mikkeli" | "Muu";
 
-export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED" | "UNKNOWN";
+export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED";
 
 /**
  * Examination subject by string code
