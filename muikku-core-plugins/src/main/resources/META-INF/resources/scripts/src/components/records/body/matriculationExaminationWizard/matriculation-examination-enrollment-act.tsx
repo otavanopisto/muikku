@@ -86,11 +86,11 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
       <div className="matriculation-container">
         {savingDraftError}
         {savingDraftInfo}
-        <fieldset className="matriculation-fieldset">
-          <legend>Kokeen suorittaminen</legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Kokeen suorittaminen</legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Suorituspaikka</label>
+              <label className="matriculation__label">Suorituspaikka</label>
               <select
                 onChange={(e) =>
                   this.onExaminationInformationChange(
@@ -99,7 +99,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                   )
                 }
                 value={location}
-                className="matriculation__form-element__input"
+                className="matriculation__select"
               >
                 <option>Mikkeli</option>
                 <option value="">Muu</option>
@@ -120,13 +120,13 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                   )
                 }
                 value={message}
-                className="matriculation__form-element__input matriculation__form-element__input--textarea"
+                className="matriculation__textarea"
               />
             </div>
           </div>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Julkaisulupa</label>
+              <label className="matriculation__label">Julkaisulupa</label>
               <select
                 onChange={(e) =>
                   this.onExaminationInformationChange(
@@ -135,7 +135,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                   )
                 }
                 value={canPublishName}
-                className="matriculation__form-element__input"
+                className="matriculation__select"
               >
                 <option value="true">
                   Haluan nimeni julkaistavan valmistujalistauksissa
@@ -149,21 +149,21 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Nimi</label>
+              <label className="matriculation__label">Nimi</label>
               <input
                 value={name}
                 readOnly={true}
-                className="matriculation__form-element__input"
                 type="text"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
-              <label>Päivämäärä</label>
+              <label className="matriculation__label">Päivämäärä</label>
               <input
                 value={date}
                 readOnly={true}
-                className="matriculation__form-element__input"
                 type="text"
+                className="matriculation__input"
               />
             </div>
           </div>
