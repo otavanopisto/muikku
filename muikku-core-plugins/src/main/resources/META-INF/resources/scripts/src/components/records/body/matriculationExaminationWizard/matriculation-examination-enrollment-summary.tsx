@@ -179,7 +179,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </div>
         </fieldset>
 
-        <fieldset className="mmatriculation-container__fieldset">
+        <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">Opiskelijatiedot</legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
@@ -231,7 +231,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </div>
         </fieldset>
 
-        <fieldset className="mmatriculation-container__fieldset">
+        <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
           {finishedAttendances.length > 0 ? (
             <MatriculationExaminationCompletedSelectsList
@@ -239,11 +239,13 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               readOnly={true}
             />
           ) : (
-            <label>Ei suoritettuja kokeita</label>
+          <div className="matriculation-container__info">
+            <p className="matriculation-container__info-item">Ei suoritettuja kokeita</p>
+          </div>
           )}
         </fieldset>
 
-        <fieldset className="mmatriculation-container__fieldset">
+        <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
             Ilmoittaudun suorittamaan kokeen seuraavissa aineissa syksyllä 2021
           </legend>
@@ -254,11 +256,13 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               readOnly
             />
           ) : (
-            <label>Ei valittuja kokeita</label>
+          <div className="matriculation-container__info">
+            <p className="matriculation-container__info-item">Ei valittuja kokeita</p>
+          </div>
           )}
         </fieldset>
 
-        <fieldset className="mmatriculation-container__fieldset">
+        <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
             Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
           </legend>
@@ -268,15 +272,17 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               readOnly
             />
           ) : (
-            <label>Ei valittuja kokeita</label>
+          <div className="matriculation-container__info">
+            <p className="matriculation-container__info-item">Ei valittuja kokeita</p>
+          </div>
           )}
         </fieldset>
 
-        <fieldset className="mmatriculation-container__fieldset">
+        <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">Kokeen suorittaminen</legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Suorituspaikka</label>
+              <label className="matriculation__label">Suorituspaikka</label>
               <select
                 disabled
                 value={location}
@@ -300,7 +306,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </div>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Julkaisulupa</label>
+              <label className="matriculation__label">Julkaisulupa</label>
               <select
                 disabled
                 value={canPublishName}
@@ -318,7 +324,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Nimi</label>
+              <label className="matriculation__label">Nimi</label>
               <input
                 value={name}
                 readOnly={true}
@@ -327,7 +333,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               />
             </div>
             <div className="matriculation__form-element-container">
-              <label>Päivämäärä</label>
+              <label className="matriculation__label">Päivämäärä</label>
               <input
                 value={date}
                 readOnly={true}

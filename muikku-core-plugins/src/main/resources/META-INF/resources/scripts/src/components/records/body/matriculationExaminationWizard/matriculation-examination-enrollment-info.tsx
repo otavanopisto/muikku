@@ -19,7 +19,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
     return (
       <div className="matriculation-container">
         <h3 className="matriculation-container__header">
-          Ylioppilaskirjoituksiin ilmoittautuminen (Info)
+          Ylioppilaskirjoituksiin ilmoittautuminen
         </h3>
         <div className="matriculation-container__info">
           <p className="matriculation-container__info-item">
