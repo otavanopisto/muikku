@@ -513,7 +513,7 @@ class MatriculationExaminationWizard extends React.Component<
         component: <Step1 />,
       },
       {
-        name: "Oppilastiedot",
+        name: "Opiskelijatiedot",
         component: (
           <Step2
             onChange={this.onExaminationInformationChange}
@@ -539,7 +539,7 @@ class MatriculationExaminationWizard extends React.Component<
         component: <Step4 examination={this.state.examinationInformation} />,
       },
       {
-        name: "Viimeistely",
+        name: "Valmis",
         component: <Step5 saveState={this.state.saveState} />,
       },
     ];

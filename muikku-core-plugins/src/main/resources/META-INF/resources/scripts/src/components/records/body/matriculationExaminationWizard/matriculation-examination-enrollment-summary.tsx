@@ -85,25 +85,25 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
 
     return (
       <div className="matriculation-container">
-        <div className="matriculation__info">
-          <h3>Tietojen oikeellisuus</h3>
-          <p>
+        <div className="matriculation-container__info">
+          <h3 className="matriculation-container__subheader">Tietojen oikeellisuus</h3>
+          <p className="matriculation-container__info-item">
             Tarkista että ilmoittautumistietosi ovat oikein ja korjaa
             mahdolliset muutokset palaamalla lomakkeessa takaisin
           </p>
         </div>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>Perustiedot</legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Perustiedot</legend>
 
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Nimi"
                 readOnly
                 type="text"
                 value={name}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -112,18 +112,18 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
                 readOnly
                 type="text"
                 value={ssn}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Sähköpostiosoite"
                 readOnly
                 type="text"
                 value={email}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -132,18 +132,18 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
                 readOnly
                 type="text"
                 value={phone}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Osoite"
                 readOnly
                 type="text"
                 value={address}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -152,54 +152,54 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
                 readOnly
                 type="text"
                 value={postalCode}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Postitoimipaikka"
                 readOnly
                 type="text"
                 value={locality}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <Textarea
                 readOnly={true}
                 label="Jos tietosi ovat muuttuneet, ilmoita siitä tässä"
                 value={changedContactInfo}
-                className="matriculation__form-element__input matriculation__form-element__input--summary matriculation__form-element__input--textarea"
+                className="matriculation__textarea"
               />
             </div>
           </div>
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>Opiskelijatiedot</legend>
-          <div className="matriculation-row">
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Opiskelijatiedot</legend>
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Ohjaaja"
                 readOnly
                 type="text"
                 value={guider}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Ilmoittautuminen"
                 readOnly
                 type="text"
                 value={enrollAsToValue(enrollAs)}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
@@ -208,43 +208,45 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
                 readOnly
                 type="text"
                 value={numMandatoryCourses}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
                 label="Tutkintotyyppi"
                 readOnly
                 type="text"
                 value={degreeTypeToValue(degreeType)}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
               />
             </div>
           </div>
-          <div className="matriculation-row">
-            <div className="matriculation__form-element-container matriculation__form-element-container--checkbox">
-              <label>Aloitan tutkinnon suorittamisen uudelleen </label>
-              <label>{restartExam ? "Kyllä" : "En"}</label>
+          <div className="matriculation-container__row">
+            <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
+              <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen </label>
+              <label className="matriculation__label">{restartExam ? "Kyllä" : "En"}</label>
             </div>
           </div>
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
           {finishedAttendances.length > 0 ? (
             <MatriculationExaminationCompletedSelectsList
               examinationCompletedList={finishedAttendances}
               readOnly={true}
             />
           ) : (
-            <label>Ei suoritettuja kokeita</label>
+          <div className="matriculation-container__info">
+            <p className="matriculation-container__info-item">Ei suoritettuja kokeita</p>
+          </div>
           )}
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">
             Ilmoittaudun suorittamaan kokeen seuraavissa aineissa syksyllä 2021
           </legend>
 
@@ -254,12 +256,14 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               readOnly
             />
           ) : (
-            <label>Ei valittuja kokeita</label>
+          <div className="matriculation-container__info">
+            <p className="matriculation-container__info-item">Ei valittuja kokeita</p>
+          </div>
           )}
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">
             Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
           </legend>
           {plannedAttendances.length > 0 ? (
@@ -268,19 +272,21 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               readOnly
             />
           ) : (
-            <label>Ei valittuja kokeita</label>
+          <div className="matriculation-container__info">
+            <p className="matriculation-container__info-item">Ei valittuja kokeita</p>
+          </div>
           )}
         </fieldset>
 
-        <fieldset className="matriculation-fieldset">
-          <legend>Kokeen suorittaminen</legend>
-          <div className="matriculation-row">
+        <fieldset className="matriculation-container__fieldset">
+          <legend className="matriculation-container__subheader">Kokeen suorittaminen</legend>
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Suorituspaikka</label>
+              <label className="matriculation__label">Suorituspaikka</label>
               <select
                 disabled
                 value={location}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__select"
               >
                 <option>Mikkeli</option>
                 <option value="">Muu</option>
@@ -288,23 +294,23 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
             </div>
           </div>
 
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <Textarea
                 label="Lisätietoa ohjaajalle"
                 rows={5}
                 defaultValue={message}
-                className="matriculation__form-element__input matriculation__form-element__input--summary matriculation__form-element__input--textarea"
+                className="matriculation__textarea"
               />
             </div>
           </div>
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Julkaisulupa</label>
+              <label className="matriculation__label">Julkaisulupa</label>
               <select
                 disabled
                 value={canPublishName}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__select"
               >
                 <option value="true">
                   Haluan nimeni julkaistavan valmistujalistauksissa
@@ -316,22 +322,22 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
             </div>
           </div>
 
-          <div className="matriculation-row">
+          <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label>Nimi</label>
+              <label className="matriculation__label">Nimi</label>
               <input
                 value={name}
                 readOnly={true}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
                 type="text"
               />
             </div>
             <div className="matriculation__form-element-container">
-              <label>Päivämäärä</label>
+              <label className="matriculation__label">Päivämäärä</label>
               <input
                 value={date}
                 readOnly={true}
-                className="matriculation__form-element__input matriculation__form-element__input--summary"
+                className="matriculation__input"
                 type="text"
               />
             </div>
