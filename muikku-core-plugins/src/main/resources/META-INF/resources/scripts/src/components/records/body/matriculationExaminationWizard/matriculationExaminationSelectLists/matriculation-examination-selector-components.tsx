@@ -61,10 +61,10 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
         </div>
 
         <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input ${
+          className={`matriculation__form-element-container matriculation__form-element-container--input${
             subject.mandatory === "" ||
             (isConflictingMandatory && isConflictingMandatory(subject))
-              ? "matriculation__form-element-container--mandatory-conflict"
+              ? " matriculation__form-element-container--mandatory-conflict"
               : ""
           } `}
         >
@@ -80,10 +80,10 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
         </div>
 
         <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input ${
+          className={`matriculation__form-element-container matriculation__form-element-container--input${
             subject.repeat === "" ||
             (isConflictingMandatory && isConflictingRepeat(subject))
-              ? "matriculation__form-element-container--repeat-conflict"
+              ? " matriculation__form-element-container--repeat-conflict"
               : ""
           } `}
         >
@@ -181,14 +181,15 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
         </div>
 
         <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input ${
+          className={`matriculation__form-element-container matriculation__form-element-container--input${
+            !readOnly &&
             enrolledAttendances.filter((era) => {
               return (
                 era.subject === subject.subject &&
                 era.mandatory != subject.mandatory
               );
             }).length > 0
-              ? "matriculation__form-element-container--mandatory-conflict"
+              ? " matriculation__form-element-container--mandatory-conflict"
               : ""
           } `}
         >
@@ -243,7 +244,6 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
 interface MatriculationExaminationFutureSubjectsGroupProps {
   index: number;
   subject: ExaminationPlannedSubject;
-  enrolledAttendances: ExaminationEnrolledSubject[];
   selectedSubjectList: string[];
   nextOptions: JSX.Element[];
   readOnly?: boolean;
@@ -263,7 +263,6 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
     index,
     subject,
     selectedSubjectList,
-    enrolledAttendances,
     nextOptions,
     onSubjectGroupChange,
     onClickDeleteRow,
@@ -297,18 +296,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
           />
         </div>
 
-        <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input ${
-            enrolledAttendances.filter((era) => {
-              return (
-                era.subject === subject.subject &&
-                era.mandatory != subject.mandatory
-              );
-            }).length > 0
-              ? "matriculation__form-element-container--mandatory-conflict"
-              : ""
-          } `}
-        >
+        <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <MandatorySelect
             i={index}
             disabled={readOnly}

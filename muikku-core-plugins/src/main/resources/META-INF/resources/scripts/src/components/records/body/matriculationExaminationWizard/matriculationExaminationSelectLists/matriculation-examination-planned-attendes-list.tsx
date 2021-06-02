@@ -73,7 +73,6 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
               subject={subject}
               nextOptions={nextOptions}
               selectedSubjectList={selectedSubjects}
-              enrolledAttendances={enrolledAttendances}
               onSubjectGroupChange={
                 onMatriculationExaminationSubjectGroupChange
               }
