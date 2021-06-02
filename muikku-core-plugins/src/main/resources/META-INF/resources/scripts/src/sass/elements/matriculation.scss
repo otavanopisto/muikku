@@ -90,10 +90,14 @@
 .matriculation-container__subheader {
   border: 0;
   display: block;
-  font-size: 1.1875rem;
+  font-size: 1rem;
   font-weight: 400;
   margin: 0 0 10px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.1875rem;
+  }
 }
 
 .matriculation-container__info-item {
@@ -224,7 +228,7 @@
   padding: 4px;
   width: 100%;
 
-  &[readonly] {
+  &[disabled] {
     background-color: lighten($color-disabled, 20%);
     border: 0;
   }
@@ -239,6 +243,11 @@
   padding: 4px 8px;
   width: 100%;
   resize: vertical;
+
+  &[readonly] {
+    background-color: lighten($color-disabled, 20%);
+    border: 0;
+  }
 }
 
 .matriculation-container__row--input-groups--conflicted {
