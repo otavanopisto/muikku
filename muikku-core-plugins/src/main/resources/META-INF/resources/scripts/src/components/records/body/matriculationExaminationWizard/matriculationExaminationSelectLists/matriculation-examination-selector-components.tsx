@@ -244,7 +244,6 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
 interface MatriculationExaminationFutureSubjectsGroupProps {
   index: number;
   subject: ExaminationPlannedSubject;
-  enrolledAttendances: ExaminationEnrolledSubject[];
   selectedSubjectList: string[];
   nextOptions: JSX.Element[];
   readOnly?: boolean;
@@ -264,7 +263,6 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
     index,
     subject,
     selectedSubjectList,
-    enrolledAttendances,
     nextOptions,
     onSubjectGroupChange,
     onClickDeleteRow,
@@ -298,19 +296,7 @@ export const MatriculationExaminationFutureSubjectsGroup: React.FC<Matriculation
           />
         </div>
 
-        <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input${
-            !readOnly &&
-            enrolledAttendances.filter((era) => {
-              return (
-                era.subject === subject.subject &&
-                era.mandatory != subject.mandatory
-              );
-            }).length > 0
-              ? " matriculation__form-element-container--mandatory-conflict"
-              : ""
-          } `}
-        >
+        <div className="matriculation__form-element-container matriculation__form-element-container--input">
           <MandatorySelect
             i={index}
             disabled={readOnly}
