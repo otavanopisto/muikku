@@ -100,7 +100,6 @@ interface MatriculationExaminationWizardProps {
 }
 
 export interface MatriculationExaminationWizardState {
-  locked: boolean;
   initialized: boolean;
   savingDraft: boolean;
   examId: any;
@@ -140,7 +139,6 @@ class MatriculationExaminationWizard extends React.Component<
     this.state = {
       saveState: undefined,
       examId: undefined,
-      locked: false,
       initialized: false,
       savingDraft: false,
       errorMsg: undefined,
@@ -224,6 +222,7 @@ class MatriculationExaminationWizard extends React.Component<
           examinationInformation: {
             ...prevState.examinationInformation,
             ...data,
+            restartExam: Boolean(data.restartExam),
           },
         }));
       });
@@ -335,7 +334,6 @@ class MatriculationExaminationWizard extends React.Component<
    */
   submit = () => {
     this.setState({
-      locked: true,
       saveState: "IN_PROGRESS",
     });
 
@@ -445,13 +443,13 @@ class MatriculationExaminationWizard extends React.Component<
     })
       .then((response) => {
         if (response.ok) {
-          this.setState({ locked: false, saveState: "SUCCESS" });
+          this.setState({ saveState: "SUCCESS" });
         } else {
           throw new Error();
         }
       })
       .catch((error) => {
-        this.setState({ locked: false, saveState: "FAILED" });
+        this.setState({ saveState: "FAILED" });
       });
   };
 
@@ -536,7 +534,13 @@ class MatriculationExaminationWizard extends React.Component<
       },
       {
         name: "Yhteenveto",
-        component: <Step4 examination={this.state.examinationInformation} />,
+        component: (
+          <Step4
+            examination={this.state.examinationInformation}
+            saveState={this.state.saveState}
+            draftSaveErrorMsg={this.state.errorMsg}
+          />
+        ),
       },
       {
         name: "Valmis",
@@ -548,8 +552,8 @@ class MatriculationExaminationWizard extends React.Component<
       <div className="wizard">
         <div className="wizard__content">
           <StepZilla
-            stepsNavigation={!this.state.locked}
-            showNavigation={!this.state.locked}
+            stepsNavigation={false}
+            showNavigation={true}
             steps={steps}
             showSteps={true}
             preventEnterSubmission={true}

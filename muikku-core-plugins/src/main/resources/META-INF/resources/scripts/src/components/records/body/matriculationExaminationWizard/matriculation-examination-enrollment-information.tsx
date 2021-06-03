@@ -925,7 +925,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                     e.target.checked
                   )
                 }
-                defaultChecked={restartExam}
+                checked={Boolean(restartExam)}
                 type="checkbox"
                 className="matriculation__input"
               />
