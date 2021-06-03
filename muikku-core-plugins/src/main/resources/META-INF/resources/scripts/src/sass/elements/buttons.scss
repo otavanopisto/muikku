@@ -35,7 +35,8 @@
     cursor: default;
   }
 
-  > [class^="icon-"], > [class*=" icon-"] {
+  > [class^="icon-"],
+  > [class*=" icon-"] {
     margin-right: 5px;
   }
 }
@@ -1630,7 +1631,6 @@
 .button--remove-matriculation-row {
   align-items: center;
   background: transparent;
-  border: 1px solid $color-default;
   border-radius: 2px;
   color: $color-fatal;
   display: flex;
