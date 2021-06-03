@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationManagerWorkspace;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationManagerWorkspaceTeacher;
+import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationOverviewWorkspaces;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationStudentsCreateResponse;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationStudentsCreateResponse.StudentStatus;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
@@ -221,7 +222,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(loggedUser)
-        .setIncludeUnpublished(includeUnpublished)
+        .setIncludeUnpublished(true)
         .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
@@ -229,7 +230,10 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .search();
     
     List<OrganizationManagerWorkspace> workspaces = new ArrayList<>();
-    
+    OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
+    int unpublishedCount = 0; 
+    int publishedCount = 0; 
+
     schoolDataBridgeSessionController.startSystemSession();
     try {
       List<Map<String, Object>> results = searchResult.getResults();
@@ -245,11 +249,18 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
             
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
+              Boolean published = (Boolean) result.get("published");
               String name = (String) result.get("name");
               String nameExtension = (String) result.get("nameExtension");
               String description = (String) result.get("description");
               String educationTypeId = (String) result.get("educationTypeIdentifier");
               String educationTypeName = null;
+              
+              if (!published) {
+                unpublishedCount++;
+                continue;
+              }
+              publishedCount++;
               
               if (StringUtils.isNotBlank(educationTypeId)) {
                 EducationType educationType = null;
@@ -264,7 +275,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
                   educationTypeName = educationType.getName();
                 }
               }
-
               if (StringUtils.isNotBlank(name)) {
                 workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName));
               } else {
@@ -279,8 +289,11 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-
-    return Response.ok(workspaces).build();
+    overviewWorkspaces.setPublishedCount(publishedCount);
+    overviewWorkspaces.setUnpublishedCount(unpublishedCount);
+    overviewWorkspaces.setWorkspaces(workspaces);
+    
+    return Response.ok(overviewWorkspaces).build();
   }
   
   @POST
