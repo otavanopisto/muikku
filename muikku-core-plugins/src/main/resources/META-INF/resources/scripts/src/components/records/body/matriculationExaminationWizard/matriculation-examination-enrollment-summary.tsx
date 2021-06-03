@@ -6,6 +6,10 @@ import { TextField } from "./textfield";
 import { MatriculationExaminationCompletedSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-completed-attendes-list";
 import { MatriculationExaminationSubjectSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
 import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
+import {
+  getNextTermOptions,
+  getPastTermOptions,
+} from "../../../../helper-functions/matriculation-functions";
 
 interface MatriculationExaminationEnrollmentSummaryProps {
   examination: ExaminationInformation;
@@ -280,6 +284,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           {finishedAttendances.length > 0 ? (
             <MatriculationExaminationCompletedSelectsList
               examinationCompletedList={finishedAttendances}
+              pastOptions={getPastTermOptions()}
               readOnly={true}
             />
           ) : (
@@ -316,6 +321,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </legend>
           {plannedAttendances.length > 0 ? (
             <MatriculationExaminationFutureSelectsList
+              nextOptions={getNextTermOptions()}
               examinationFutureList={plannedAttendances}
               readOnly
             />
@@ -345,6 +351,19 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               </select>
             </div>
           </div>
+          {location !== "Mikkeli" ? (
+            <div className="matriculation-container__row">
+              <div className="matriculation__form-element-container">
+                <TextField
+                  label="Muu paikka"
+                  type="text"
+                  value={location}
+                  readOnly={true}
+                  className="matriculation__input"
+                />
+              </div>
+            </div>
+          ) : null}
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
@@ -377,21 +396,21 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Nimi</label>
-              <input
+              <TextField
+                label="Nimi"
                 value={name}
-                readOnly={true}
-                className="matriculation__input"
                 type="text"
+                readOnly
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Päivämäärä</label>
-              <input
+              <TextField
+                label="Päivämäärä"
                 value={date}
-                readOnly={true}
-                className="matriculation__input"
                 type="text"
+                readOnly
+                className="matriculation__input"
               />
             </div>
           </div>

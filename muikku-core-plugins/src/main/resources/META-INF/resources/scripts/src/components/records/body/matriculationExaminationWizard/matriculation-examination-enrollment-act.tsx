@@ -6,6 +6,7 @@ import {
   SaveState,
 } from "../../../../@types/shared";
 import { Textarea } from "./textarea";
+import { TextField } from "./textfield";
 
 /**
  * MatriculationExaminationEnrollmentActProps
@@ -87,7 +88,9 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
         {savingDraftError}
         {savingDraftInfo}
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Kokeen suorittaminen</legend>
+          <legend className="matriculation-container__subheader">
+            Kokeen suorittaminen
+          </legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label className="matriculation__label">Suorituspaikka</label>
@@ -98,7 +101,7 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                     e.currentTarget.value
                   )
                 }
-                value={location}
+                value={location === "Mikkeli" ? "Mikkeli" : ""}
                 className="matriculation__select"
               >
                 <option>Mikkeli</option>
@@ -107,7 +110,36 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
             </div>
           </div>
 
-          <div className="pure-u-1-2"></div>
+          {location !== "Mikkeli" ? (
+            <div className="matriculation-container__row">
+              <div className="matriculation__form-element-container">
+                <TextField
+                  label="Muu paikka"
+                  value={location}
+                  type="text"
+                  placeholder="Kirjoita tähän oppilaitoksen nimi"
+                  className="matriculation__input"
+                  onChange={(e) =>
+                    this.onExaminationInformationChange(
+                      "location",
+                      e.currentTarget.value
+                    )
+                  }
+                />
+              </div>
+
+              <div className="matriculation-container__state state-WARNING">
+                <div className="matriculation-container__state-icon icon-notification"></div>
+                <div className="matriculation-container__state-text">
+                  <p>
+                    Jos haluat suorittaa kokeen muualla, siitä on sovittava
+                    ensin kyseisen oppilaitoksen kanssa.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <Textarea
@@ -149,20 +181,20 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Nimi</label>
-              <input
+              <TextField
+                label="Nimi"
                 value={name}
-                readOnly={true}
                 type="text"
+                readOnly
                 className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Päivämäärä</label>
-              <input
+              <TextField
+                label="Päivämäärä"
                 value={date}
-                readOnly={true}
                 type="text"
+                readOnly
                 className="matriculation__input"
               />
             </div>

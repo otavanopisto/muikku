@@ -15,7 +15,7 @@ interface MatriculationExaminationFutureSelectsListProps {
   readOnly?: boolean;
   enrolledAttendances?: ExaminationEnrolledSubject[];
   examinationFutureList: ExaminationPlannedSubject[];
-  nextOptions?: JSX.Element[];
+  nextOptions: JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 

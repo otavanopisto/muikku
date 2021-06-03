@@ -16,7 +16,7 @@ interface MatriculationExaminationCompletedSelectsListProps {
   readOnly?: boolean;
   enrolledAttendances?: ExaminationEnrolledSubject[];
   examinationCompletedList: ExaminationFinishedSubject[];
-  pastOptions?: JSX.Element[];
+  pastOptions: JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
   modifier?: string;
 }
