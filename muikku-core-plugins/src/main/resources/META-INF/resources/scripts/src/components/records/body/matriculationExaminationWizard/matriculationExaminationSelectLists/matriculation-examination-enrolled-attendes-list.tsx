@@ -1,17 +1,17 @@
 import * as React from "react";
 import { ExaminationEnrolledSubject } from "../../../../../@types/shared";
 import "~/sass/elements/matriculation.scss";
-import { MatriculationExaminationSubjectInputGroup } from "./matriculation-examination-selector-components";
+import { MatriculationExaminationEnrolledInputGroup } from "./matriculation-examination-selector-components";
 
 /**
  * MatriculationExaminationSubjectSelectsListProps
  */
-interface MatriculationExaminationSubjectSelectsListProps {
+interface MatriculationExaminationEnrolledAttendesListProps {
   onChange?: (
     modifiedExaminationAttendedSubjectList: ExaminationEnrolledSubject[]
   ) => void;
   readOnly?: boolean;
-  examinationSubjectList: ExaminationEnrolledSubject[];
+  examinationEnrolledList: ExaminationEnrolledSubject[];
   isConflictingMandatory?: (attendance: ExaminationEnrolledSubject) => boolean;
   conflictingAttendancesGroup?: string[][];
   isConflictingRepeat?: (attendance: ExaminationEnrolledSubject) => boolean;
@@ -23,10 +23,10 @@ interface MatriculationExaminationSubjectSelectsListProps {
  * @param props
  * @returns
  */
-export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationExaminationSubjectSelectsListProps> =
+export const MatriculationExaminationEnrolledAttendesList: React.FC<MatriculationExaminationEnrolledAttendesListProps> =
   ({
     onChange,
-    examinationSubjectList,
+    examinationEnrolledList,
     conflictingAttendancesGroup,
     onDeleteRow,
     children,
@@ -46,23 +46,23 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
       value: ExaminationEnrolledSubject[T],
       index: number
     ) => {
-      let modifiedExaminationAttendedSubjectList = examinationSubjectList;
+      let modifiedExaminationEnrolledList = examinationEnrolledList;
 
-      modifiedExaminationAttendedSubjectList[index][key] = value;
+      modifiedExaminationEnrolledList[index][key] = value;
 
-      onChange(modifiedExaminationAttendedSubjectList);
+      onChange(modifiedExaminationEnrolledList);
     };
 
     /**
      * List of selected subject string keys
      */
-    const selectedSubjects = examinationSubjectList.map(
+    const selectedSubjects = examinationEnrolledList.map(
       (sSubject) => sSubject.subject
     );
 
     return (
       <>
-        {examinationSubjectList.map((subject, index) => {
+        {examinationEnrolledList.map((subject, index) => {
           /**
            * Checks if course conflicts
            */
@@ -76,12 +76,12 @@ export const MatriculationExaminationSubjectSelectsList: React.FC<MatriculationE
             <div
               key={index}
               className={`matriculation-container__row matriculation-container__row--input-groups ${
-                conflictedCourse ?
-                "matriculation-container__row--input-groups--conflicted"
-                : ""
+                conflictedCourse
+                  ? "matriculation-container__row--input-groups--conflicted"
+                  : ""
               }`}
             >
-              <MatriculationExaminationSubjectInputGroup
+              <MatriculationExaminationEnrolledInputGroup
                 index={index}
                 readOnly={readOnly}
                 subject={subject}

@@ -13,7 +13,7 @@ import {
 /**
  * MatriculationExaminationSubjectInputGroupProps
  */
-interface MatriculationExaminationSubjectInputGroupProps {
+interface MatriculationExaminationEnrolledInputGroupProps {
   index: number;
   subject: ExaminationEnrolledSubject;
   selectedSubjectList: string[];
@@ -29,9 +29,9 @@ interface MatriculationExaminationSubjectInputGroupProps {
 }
 
 /**
- * MatriculationExaminationSubjectInputGroup
+ * MatriculationExaminationEnrolledInputGroup
  */
-export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationExaminationSubjectInputGroupProps> =
+export const MatriculationExaminationEnrolledInputGroup: React.FC<MatriculationExaminationEnrolledInputGroupProps> =
   ({
     subject,
     index,
@@ -123,7 +123,7 @@ export const MatriculationExaminationSubjectInputGroup: React.FC<MatriculationEx
 /**
  * MatriculationExaminationSubjectInputGroupProps
  */
-interface MatriculationExaminationCompletedSubjectsGroupProps {
+interface MatriculationExaminationFinishedInputGroupProps {
   index: number;
   enrolledAttendances: ExaminationEnrolledSubject[];
   subject: ExaminationFinishedSubject;
@@ -141,7 +141,7 @@ interface MatriculationExaminationCompletedSubjectsGroupProps {
 /**
  * MatriculationExaminationSubjectInputGroup
  */
-export const MatriculationExaminationCompletedSubjectsGroup: React.FC<MatriculationExaminationCompletedSubjectsGroupProps> =
+export const MatriculationExaminationFinishedInputGroup: React.FC<MatriculationExaminationFinishedInputGroupProps> =
   ({
     index,
     subject,
@@ -241,7 +241,7 @@ export const MatriculationExaminationCompletedSubjectsGroup: React.FC<Matriculat
 /**
  * MatriculationExaminationFutureSubjectsGroupProps
  */
-interface MatriculationExaminationFutureSubjectsGroupProps {
+interface MatriculationExaminationPlannedInputGroupProps {
   index: number;
   subject: ExaminationPlannedSubject;
   selectedSubjectList: string[];
@@ -258,7 +258,7 @@ interface MatriculationExaminationFutureSubjectsGroupProps {
 /**
  * MatriculationExaminationFutureSubjectsGroup
  */
-export const MatriculationExaminationFutureSubjectsGroup: React.FC<MatriculationExaminationFutureSubjectsGroupProps> =
+export const MatriculationExaminationPlannedInputGroup: React.FC<MatriculationExaminationPlannedInputGroupProps> =
   ({
     index,
     subject,

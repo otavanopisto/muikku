@@ -3,9 +3,9 @@ import "~/sass/elements/matriculation.scss";
 import { ExaminationInformation, SaveState } from "../../../../@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
-import { MatriculationExaminationCompletedSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-completed-attendes-list";
-import { MatriculationExaminationSubjectSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
-import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
+import { MatriculationExaminationFinishedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-finished-attendes-list";
+import { MatriculationExaminationEnrolledAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
+import { MatriculationExaminationPlannedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
 import {
   getNextTermOptions,
   getPastTermOptions,
@@ -282,8 +282,8 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
             Olen jo suorittanut seuraavat ylioppilaskokeet
           </legend>
           {finishedAttendances.length > 0 ? (
-            <MatriculationExaminationCompletedSelectsList
-              examinationCompletedList={finishedAttendances}
+            <MatriculationExaminationFinishedAttendesList
+              examinationFinishedList={finishedAttendances}
               pastOptions={getPastTermOptions()}
               readOnly={true}
             />
@@ -302,8 +302,8 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </legend>
 
           {enrolledAttendances.length > 0 ? (
-            <MatriculationExaminationSubjectSelectsList
-              examinationSubjectList={enrolledAttendances}
+            <MatriculationExaminationEnrolledAttendesList
+              examinationEnrolledList={enrolledAttendances}
               readOnly
             />
           ) : (
@@ -320,9 +320,9 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
             Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
           </legend>
           {plannedAttendances.length > 0 ? (
-            <MatriculationExaminationFutureSelectsList
+            <MatriculationExaminationPlannedAttendesList
               nextOptions={getNextTermOptions()}
-              examinationFutureList={plannedAttendances}
+              examinationPlannedList={plannedAttendances}
               readOnly
             />
           ) : (

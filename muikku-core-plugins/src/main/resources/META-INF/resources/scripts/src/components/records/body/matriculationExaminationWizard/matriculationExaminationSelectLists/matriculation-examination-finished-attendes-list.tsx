@@ -4,21 +4,20 @@ import {
   ExaminationFinishedSubject,
   ExaminationEnrolledSubject,
 } from "../../../../../@types/shared";
-import { MatriculationExaminationCompletedSubjectsGroup } from "./matriculation-examination-selector-components";
+import { MatriculationExaminationFinishedInputGroup } from "./matriculation-examination-selector-components";
 
 /**
  * MatriculationExaminationCompletedSelectsListProps
  */
-interface MatriculationExaminationCompletedSelectsListProps {
+interface MatriculationExaminationFinishedAttendesListProps {
   onChange?: (
     modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[]
   ) => any;
   readOnly?: boolean;
   enrolledAttendances?: ExaminationEnrolledSubject[];
-  examinationCompletedList: ExaminationFinishedSubject[];
+  examinationFinishedList: ExaminationFinishedSubject[];
   pastOptions: JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
-  modifier?: string;
 }
 
 /**
@@ -26,15 +25,14 @@ interface MatriculationExaminationCompletedSelectsListProps {
  * @param props
  * @returns
  */
-export const MatriculationExaminationCompletedSelectsList: React.FC<MatriculationExaminationCompletedSelectsListProps> =
+export const MatriculationExaminationFinishedAttendesList: React.FC<MatriculationExaminationFinishedAttendesListProps> =
   ({
     onChange,
-    examinationCompletedList,
+    examinationFinishedList,
     enrolledAttendances,
     pastOptions,
     onDeleteRow,
     readOnly,
-    modifier,
   }) => {
     /**
      * Handles matriculation examation finished subject group change
@@ -49,28 +47,28 @@ export const MatriculationExaminationCompletedSelectsList: React.FC<Matriculatio
       value: ExaminationFinishedSubject[T],
       index: number
     ) => {
-      let modifiedExaminationCompletedSubjectList = examinationCompletedList;
+      let modifiedExaminationFinishedList = examinationFinishedList;
 
-      modifiedExaminationCompletedSubjectList[index][key] = value;
+      modifiedExaminationFinishedList[index][key] = value;
 
-      onChange(modifiedExaminationCompletedSubjectList);
+      onChange(modifiedExaminationFinishedList);
     };
 
     /**
      * List of selected subject string keys
      */
-    const selectedSubjects = examinationCompletedList.map(
+    const selectedSubjects = examinationFinishedList.map(
       (sSubject) => sSubject.subject
     );
 
     return (
       <>
-        {examinationCompletedList.map((subject, index) => (
+        {examinationFinishedList.map((subject, index) => (
           <div
             key={index}
             className="matriculation-container__row matriculation-container__row--input-groups"
           >
-            <MatriculationExaminationCompletedSubjectsGroup
+            <MatriculationExaminationFinishedInputGroup
               index={index}
               subject={subject}
               pastTermOptions={pastOptions}
