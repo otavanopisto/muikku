@@ -111,21 +111,23 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
           </div>
 
           {location !== "Mikkeli" ? (
-            <div className="matriculation-container__row">
-              <div className="matriculation__form-element-container">
-                <TextField
-                  label="Muu paikka"
-                  value={location}
-                  type="text"
-                  placeholder="Kirjoita tähän oppilaitoksen nimi"
-                  className="matriculation__input"
-                  onChange={(e) =>
-                    this.onExaminationInformationChange(
-                      "location",
-                      e.currentTarget.value
-                    )
-                  }
-                />
+            <div>
+              <div className="matriculation-container__row">
+                <div className="matriculation__form-element-container">
+                  <TextField
+                    label="Muu paikka"
+                    value={location}
+                    type="text"
+                    placeholder="Kirjoita tähän oppilaitoksen nimi"
+                    className="matriculation__input"
+                    onChange={(e) =>
+                      this.onExaminationInformationChange(
+                        "location",
+                        e.currentTarget.value
+                      )
+                    }
+                  />
+                </div>
               </div>
 
               <div className="matriculation-container__state state-WARNING">
