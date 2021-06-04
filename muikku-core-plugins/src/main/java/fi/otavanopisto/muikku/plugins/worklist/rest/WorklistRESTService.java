@@ -432,7 +432,7 @@ public class WorklistRESTService {
     finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-    return Response.ok(price).build();
+    return price == null ? Response.status(Status.NOT_FOUND).build() : Response.ok(price).build();
   }
 
   @GET
