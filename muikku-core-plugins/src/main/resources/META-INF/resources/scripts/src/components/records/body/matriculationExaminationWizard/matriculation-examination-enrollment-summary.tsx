@@ -343,7 +343,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               <label className="matriculation__label">Suorituspaikka</label>
               <select
                 disabled
-                value={location}
+                value={location === "Mikkeli" ? "Mikkeli" : ""}
                 className="matriculation__select"
               >
                 <option>Mikkeli</option>
