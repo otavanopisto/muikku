@@ -5,9 +5,9 @@ public class OrganizationStudentsActivityRESTModel {
   public OrganizationStudentsActivityRESTModel() {
   }
   
-  public OrganizationStudentsActivityRESTModel(Integer activeStudents, Integer inActiveStudents) {
+  public OrganizationStudentsActivityRESTModel(Integer activeStudents, Integer inactiveStudents) {
     this.activeStudents = activeStudents;
-    this.inActiveStudents = inActiveStudents;
+    this.inactiveStudents = inactiveStudents;
   }
 
   public Integer getActiveStudents() {
@@ -18,15 +18,15 @@ public class OrganizationStudentsActivityRESTModel {
     this.activeStudents = activeStudents;
   }
 
-  public Integer getInActiveStudents() {
-    return inActiveStudents;
+  public Integer getInactiveStudents() {
+    return inactiveStudents;
   }
 
-  public void setInActiveStudents(Integer inActiveStudents) {
-    this.inActiveStudents = inActiveStudents;
+  public void setInactiveStudents(Integer inactiveStudents) {
+    this.inactiveStudents = inactiveStudents;
   }
 
   private Integer activeStudents;
-  private Integer inActiveStudents;
+  private Integer inactiveStudents;
 
 }

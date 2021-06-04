@@ -175,9 +175,7 @@ public class OrganizationUserManagementRESTService {
   @GET
   @Path("/studentsSummary")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
-  public Response studentsSummary(
-      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
-      @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
+  public Response studentsSummary() {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
@@ -203,14 +201,14 @@ public class OrganizationUserManagementRESTService {
         true,                                                 // includeInactiveStudents
         true,                                                 // includeHidden
         true,                                                 // onlyDefaultUsers
-        firstResult,
-        maxResults);
+        0,
+        Integer.MAX_VALUE);
 
     List<Map<String, Object>> results = result.getResults();
-    OrganizationStudentsActivityRESTModel studentActivityRESTModel = null;
+    OrganizationStudentsActivityRESTModel studentActivityRESTModel = new OrganizationStudentsActivityRESTModel();
     if (results != null && !results.isEmpty()) {
-      List<UserEntity> activeStudents = new ArrayList<>();
-      List<UserEntity> inActiveStudents = new ArrayList<>();
+      int activeStudentCount = 0;
+      int inactiveStudentCount = 0;
       for (Map<String, Object> o : results) {
         String studentId = (String) o.get("id");
         String[] studentIdParts = studentId.split("/", 2);
@@ -220,16 +218,16 @@ public class OrganizationUserManagementRESTService {
           logger.warning(String.format("Skipping Elastic user %s not found in database", studentId));
           continue;
         }
-        Date studyEndDate = getDateResult(o.get("studyEndDate"));
-        
-        if(studyEndDate != null) {
-          inActiveStudents.add(userEntity);
-        } else {
-          activeStudents.add(userEntity);
+        if (o.get("studyEndDate") != null) {
+          inactiveStudentCount++;
+        }
+        else {
+          activeStudentCount++;
         }
       }
       
-      studentActivityRESTModel = new OrganizationStudentsActivityRESTModel(activeStudents.size(), inActiveStudents.size());
+      studentActivityRESTModel.setActiveStudents(activeStudentCount);
+      studentActivityRESTModel.setInactiveStudents(inactiveStudentCount);
       
     }
     return Response.ok(studentActivityRESTModel).build();
