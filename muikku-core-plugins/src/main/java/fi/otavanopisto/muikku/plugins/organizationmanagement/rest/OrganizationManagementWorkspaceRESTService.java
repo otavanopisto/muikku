@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.organizationmanagement.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -222,7 +221,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(loggedUser)
-        .setIncludeUnpublished(true)
+        .setIncludeUnpublished(includeUnpublished)
         .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
@@ -230,9 +229,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .search();
     
     List<OrganizationManagerWorkspace> workspaces = new ArrayList<>();
-    OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
-    int unpublishedCount = 0; 
-    int publishedCount = 0; 
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
@@ -249,18 +245,11 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
             
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
-              Boolean published = (Boolean) result.get("published");
               String name = (String) result.get("name");
               String nameExtension = (String) result.get("nameExtension");
               String description = (String) result.get("description");
               String educationTypeId = (String) result.get("educationTypeIdentifier");
               String educationTypeName = null;
-              
-              if (!published) {
-                unpublishedCount++;
-                continue;
-              }
-              publishedCount++;
               
               if (StringUtils.isNotBlank(educationTypeId)) {
                 EducationType educationType = null;
@@ -289,12 +278,55 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-    overviewWorkspaces.setPublishedCount(publishedCount);
-    overviewWorkspaces.setUnpublishedCount(unpublishedCount);
-    overviewWorkspaces.setWorkspaces(workspaces);
-    
-    return Response.ok(overviewWorkspaces).build();
+    return Response.ok(workspaces).build();
   }
+  
+  @GET
+  @Path("/overview")
+  public Response getOverview(){
+  
+  SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+  
+  SearchProvider searchProvider = searchProviderInstance.get();
+  if (searchProvider == null) {
+    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+  }
+  
+  SearchResult searchResult = null;
+  
+
+  // Restrict search to the organizations of the user
+  List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
+  UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
+  if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
+    organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
+  }
+  
+  searchResult = searchProvider.searchWorkspaces()
+      .setOrganizationIdentifiers(organizationIdentifiers) // get this from logged in user, I guess
+      .setFirstResult(0)
+      .setMaxResults(Integer.MAX_VALUE)
+      .search();
+  
+  OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
+  int unpublishedCount = 0; 
+  int publishedCount = 0; 
+
+  
+  List<Map<String, Object>> results = searchResult.getResults();
+    for (Map<String, Object> result : results) {
+      if ((Boolean) result.get("published")) {
+        publishedCount++;
+      } else {
+        unpublishedCount++;
+      }
+    }
+  
+  overviewWorkspaces.setPublishedCount(publishedCount);
+  overviewWorkspaces.setUnpublishedCount(unpublishedCount);
+  
+  return Response.ok(overviewWorkspaces).build();
+}
   
   @POST
   @Path("/{WORKSPACEID}/students")
