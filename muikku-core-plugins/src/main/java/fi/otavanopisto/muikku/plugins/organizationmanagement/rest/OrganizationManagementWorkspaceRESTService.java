@@ -74,7 +74,7 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.security.rest.RESTPermit;
 
-@Path("/organizationmanagement/workspaces")
+@Path("/organizationWorkspaceManagement")
 @RequestScoped
 @Stateful
 @Produces ("application/json")
@@ -135,7 +135,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   private Instance<SearchProvider> searchProviderInstance;
   
   @GET
-  @Path("/")
+  @Path("/workspaces")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response listWorkspaces(
         @QueryParam("q") String searchString,
@@ -283,6 +283,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   
   @GET
   @Path("/overview")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
   public Response getOverview(){
   
   SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
@@ -294,7 +295,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   
   SearchResult searchResult = null;
   
-
   // Restrict search to the organizations of the user
   List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
   UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
@@ -304,6 +304,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   
   searchResult = searchProvider.searchWorkspaces()
       .setOrganizationIdentifiers(organizationIdentifiers) // get this from logged in user, I guess
+      .setIncludeUnpublished(true)
       .setFirstResult(0)
       .setMaxResults(Integer.MAX_VALUE)
       .search();
@@ -329,7 +330,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
 }
   
   @POST
-  @Path("/{WORKSPACEID}/students")
+  @Path("/workspaces/{WORKSPACEID}/students")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response createWorkspaceStudent(@PathParam("WORKSPACEID") Long workspaceEntityId, 
       StudentIdentifiers studentIdentifiersContainer) {
@@ -422,7 +423,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   }
 
   @POST
-  @Path("/{WORKSPACEID}/staff")
+  @Path("/workspaces/{WORKSPACEID}/staff")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response createWorkspaceStaffMembers(@PathParam("WORKSPACEID") Long workspaceEntityId, 
       StaffMemberIdentifiers staffMemberIdentifiersContainer) {
