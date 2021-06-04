@@ -358,7 +358,7 @@ export function HTMLtoReactComponent(element: HTMLElement, rules?: HTMLToReactCo
   if (element.style.cssText){
     props.style = CSSStyleDeclarationToObject(element.style);
   }
-  const shouldProcessChildren = !matchingRule || matchingRule.preventChildProcessing;
+  const shouldProcessChildren = matchingRule ? !matchingRule.preventChildProcessing : true;
   let children = shouldProcessChildren ? Array.from(element.childNodes).map((node, index)=>{
     if (node instanceof HTMLElement){
       return HTMLtoReactComponent(node, rules, index)
