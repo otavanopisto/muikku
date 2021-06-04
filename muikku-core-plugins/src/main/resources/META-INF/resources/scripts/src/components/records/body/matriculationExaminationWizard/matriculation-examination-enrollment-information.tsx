@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { MatriculationExaminationSubjectSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
-import { MatriculationExaminationCompletedSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-completed-attendes-list";
-import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
+import { MatriculationExaminationEnrolledAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
+import { MatriculationExaminationFinishedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-finished-attendes-list";
+import { MatriculationExaminationPlannedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
 import Button from "~/components/general/button";
@@ -925,7 +925,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
                     e.target.checked
                   )
                 }
-                defaultChecked={restartExam}
+                checked={Boolean(restartExam)}
                 type="checkbox"
                 className="matriculation__input"
               />
@@ -937,9 +937,9 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           <legend className="matriculation-container__subheader">
             Olen jo suorittanut seuraavat ylioppilaskokeet
           </legend>
-          <MatriculationExaminationCompletedSelectsList
+          <MatriculationExaminationFinishedAttendesList
             enrolledAttendances={enrolledAttendances}
-            examinationCompletedList={finishedAttendances}
+            examinationFinishedList={finishedAttendances}
             pastOptions={getPastTermOptions()}
             onChange={this.onExaminationFinishedSubjectListChange}
             onDeleteRow={this.deleteFinishedAttendance}
@@ -962,11 +962,11 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
               {resolveCurrentTerm() ? resolveCurrentTerm().adessive : "Virhe"}
             </b>
           </legend>
-          <MatriculationExaminationSubjectSelectsList
+          <MatriculationExaminationEnrolledAttendesList
             isConflictingMandatory={this.isConflictingMandatory}
             isConflictingRepeat={this.isConflictingRepeat}
             conflictingAttendancesGroup={this.isConflictingAttendances()}
-            examinationSubjectList={enrolledAttendances}
+            examinationEnrolledList={enrolledAttendances}
             onChange={this.onExaminationEnrolledAttendSubjectListChange}
             onDeleteRow={this.deleteEnrolledAttendance}
           />
@@ -1011,9 +1011,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
           <legend className="matriculation-container__subheader">
             Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
           </legend>
-          <MatriculationExaminationFutureSelectsList
-            enrolledAttendances={enrolledAttendances}
-            examinationFutureList={plannedAttendances}
+          <MatriculationExaminationPlannedAttendesList
+            examinationPlannedList={plannedAttendances}
             nextOptions={getNextTermOptions()}
             onChange={this.onExaminationPlannedSubjectListChange}
             onDeleteRow={this.deletePlannedAttendance}

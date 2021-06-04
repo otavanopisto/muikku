@@ -3,19 +3,18 @@ import {
   ExaminationPlannedSubject,
   ExaminationEnrolledSubject,
 } from "../../../../../@types/shared";
-import { MatriculationExaminationFutureSubjectsGroup } from "./matriculation-examination-selector-components";
+import { MatriculationExaminationPlannedInputGroup } from "./matriculation-examination-selector-components";
 
 /**
  * MatriculationExaminationFutureSelectsListProps
  */
-interface MatriculationExaminationFutureSelectsListProps {
+interface MatriculationExaminationPlannedAttendesListProps {
   onChange?: (
     modifiedExaminationFutureSubjectList: ExaminationPlannedSubject[]
   ) => void;
   readOnly?: boolean;
-  enrolledAttendances?: ExaminationEnrolledSubject[];
-  examinationFutureList: ExaminationPlannedSubject[];
-  nextOptions?: JSX.Element[];
+  examinationPlannedList: ExaminationPlannedSubject[];
+  nextOptions: JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
@@ -24,11 +23,10 @@ interface MatriculationExaminationFutureSelectsListProps {
  * @param props
  * @returns
  */
-export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationExaminationFutureSelectsListProps> =
+export const MatriculationExaminationPlannedAttendesList: React.FC<MatriculationExaminationPlannedAttendesListProps> =
   ({
     onChange,
-    examinationFutureList,
-    enrolledAttendances,
+    examinationPlannedList,
     nextOptions,
     onDeleteRow,
     readOnly,
@@ -46,33 +44,33 @@ export const MatriculationExaminationFutureSelectsList: React.FC<MatriculationEx
       value: ExaminationPlannedSubject[T],
       index: number
     ) => {
-      let modifiedExaminationFutureSubjectList = examinationFutureList;
+      let modifiedExaminationPlannedList = examinationPlannedList;
 
-      modifiedExaminationFutureSubjectList[index][key] = value;
+      modifiedExaminationPlannedList[index][key] = value;
 
-      onChange(modifiedExaminationFutureSubjectList);
+      onChange(modifiedExaminationPlannedList);
     };
 
     /**
      * List of selected subject string keys
      */
-    const selectedSubjects = examinationFutureList.map(
+    const selectedPlannedSubjects = examinationPlannedList.map(
       (sSubject) => sSubject.subject
     );
 
     return (
       <>
-        {examinationFutureList.map((subject, index) => (
+        {examinationPlannedList.map((subject, index) => (
           <div
             key={index}
             className="matriculation-container__row matriculation-container__row--input-groups"
           >
-            <MatriculationExaminationFutureSubjectsGroup
+            <MatriculationExaminationPlannedInputGroup
               index={index}
               readOnly={readOnly}
               subject={subject}
               nextOptions={nextOptions}
-              selectedSubjectList={selectedSubjects}
+              selectedSubjectList={selectedPlannedSubjects}
               onSubjectGroupChange={
                 onMatriculationExaminationSubjectGroupChange
               }

@@ -1,14 +1,20 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { ExaminationInformation } from "../../../../@types/shared";
+import { ExaminationInformation, SaveState } from "../../../../@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
-import { MatriculationExaminationCompletedSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-completed-attendes-list";
-import { MatriculationExaminationSubjectSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
-import { MatriculationExaminationFutureSelectsList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
+import { MatriculationExaminationFinishedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-finished-attendes-list";
+import { MatriculationExaminationEnrolledAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
+import { MatriculationExaminationPlannedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
+import {
+  getNextTermOptions,
+  getPastTermOptions,
+} from "../../../../helper-functions/matriculation-functions";
 
 interface MatriculationExaminationEnrollmentSummaryProps {
   examination: ExaminationInformation;
+  saveState: SaveState;
+  draftSaveErrorMsg: string;
 }
 
 /**
@@ -40,6 +46,8 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       plannedAttendances,
       finishedAttendances,
     } = props.examination;
+
+    const { saveState, draftSaveErrorMsg } = props;
 
     /**
      * enrollAsToValue
@@ -83,10 +91,40 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       }
     };
 
+    /**
+     * saving draft error popper
+     */
+    const savingDraftError = draftSaveErrorMsg && (
+      <div className="matriculation__saving-draft matriculation__saving-draft--error">
+        <h3 className="matriculation__saving-draft-title">
+          Luonnoksen tallentaminen epäonnistui!
+        </h3>
+        <p>{draftSaveErrorMsg}</p>
+      </div>
+    );
+
+    /**
+     * saving draft info popper
+     */
+    const savingDraftInfo = saveState && (
+      <div className="matriculation__saving-draft matriculation__saving-draft--info">
+        <h3 className="matriculation__saving-draft-title">
+          {saveState === "SAVING_DRAFT"
+            ? "Tallennetaan luonnosta"
+            : "Luonnos tallennettu"}
+          {saveState === "SAVING_DRAFT" && renderAnimatedDots()}
+        </h3>
+      </div>
+    );
+
     return (
       <div className="matriculation-container">
+        {savingDraftError}
+        {savingDraftInfo}
         <div className="matriculation-container__info">
-          <h3 className="matriculation-container__subheader">Tietojen oikeellisuus</h3>
+          <h3 className="matriculation-container__subheader">
+            Tietojen oikeellisuus
+          </h3>
           <p className="matriculation-container__info-item">
             Tarkista että ilmoittautumistietosi ovat oikein ja korjaa
             mahdolliset muutokset palaamalla lomakkeessa takaisin
@@ -94,7 +132,9 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
         </div>
 
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Perustiedot</legend>
+          <legend className="matriculation-container__subheader">
+            Perustiedot
+          </legend>
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
@@ -180,7 +220,9 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
         </fieldset>
 
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Opiskelijatiedot</legend>
+          <legend className="matriculation-container__subheader">
+            Opiskelijatiedot
+          </legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
@@ -225,23 +267,32 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </div>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
-              <label className="matriculation__label">Aloitan tutkinnon suorittamisen uudelleen </label>
-              <label className="matriculation__label">{restartExam ? "Kyllä" : "En"}</label>
+              <label className="matriculation__label">
+                Aloitan tutkinnon suorittamisen uudelleen{" "}
+              </label>
+              <label className="matriculation__label">
+                {restartExam ? "Kyllä" : "En"}
+              </label>
             </div>
           </div>
         </fieldset>
 
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
+          <legend className="matriculation-container__subheader">
+            Olen jo suorittanut seuraavat ylioppilaskokeet
+          </legend>
           {finishedAttendances.length > 0 ? (
-            <MatriculationExaminationCompletedSelectsList
-              examinationCompletedList={finishedAttendances}
+            <MatriculationExaminationFinishedAttendesList
+              examinationFinishedList={finishedAttendances}
+              pastOptions={getPastTermOptions()}
               readOnly={true}
             />
           ) : (
-          <div className="matriculation-container__info">
-            <p className="matriculation-container__info-item">Ei suoritettuja kokeita</p>
-          </div>
+            <div className="matriculation-container__info">
+              <p className="matriculation-container__info-item">
+                Ei suoritettuja kokeita
+              </p>
+            </div>
           )}
         </fieldset>
 
@@ -251,14 +302,16 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           </legend>
 
           {enrolledAttendances.length > 0 ? (
-            <MatriculationExaminationSubjectSelectsList
-              examinationSubjectList={enrolledAttendances}
+            <MatriculationExaminationEnrolledAttendesList
+              examinationEnrolledList={enrolledAttendances}
               readOnly
             />
           ) : (
-          <div className="matriculation-container__info">
-            <p className="matriculation-container__info-item">Ei valittuja kokeita</p>
-          </div>
+            <div className="matriculation-container__info">
+              <p className="matriculation-container__info-item">
+                Ei valittuja kokeita
+              </p>
+            </div>
           )}
         </fieldset>
 
@@ -267,19 +320,24 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
             Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
           </legend>
           {plannedAttendances.length > 0 ? (
-            <MatriculationExaminationFutureSelectsList
-              examinationFutureList={plannedAttendances}
+            <MatriculationExaminationPlannedAttendesList
+              nextOptions={getNextTermOptions()}
+              examinationPlannedList={plannedAttendances}
               readOnly
             />
           ) : (
-          <div className="matriculation-container__info">
-            <p className="matriculation-container__info-item">Ei valittuja kokeita</p>
-          </div>
+            <div className="matriculation-container__info">
+              <p className="matriculation-container__info-item">
+                Ei valittuja kokeita
+              </p>
+            </div>
           )}
         </fieldset>
 
         <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">Kokeen suorittaminen</legend>
+          <legend className="matriculation-container__subheader">
+            Kokeen suorittaminen
+          </legend>
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <label className="matriculation__label">Suorituspaikka</label>
@@ -293,6 +351,19 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
               </select>
             </div>
           </div>
+          {location !== "Mikkeli" ? (
+            <div className="matriculation-container__row">
+              <div className="matriculation__form-element-container">
+                <TextField
+                  label="Muu paikka"
+                  type="text"
+                  value={location}
+                  readOnly={true}
+                  className="matriculation__input"
+                />
+              </div>
+            </div>
+          ) : null}
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
@@ -325,21 +396,21 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
 
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Nimi</label>
-              <input
+              <TextField
+                label="Nimi"
                 value={name}
-                readOnly={true}
-                className="matriculation__input"
                 type="text"
+                readOnly
+                className="matriculation__input"
               />
             </div>
             <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Päivämäärä</label>
-              <input
+              <TextField
+                label="Päivämäärä"
                 value={date}
-                readOnly={true}
-                className="matriculation__input"
                 type="text"
+                readOnly
+                className="matriculation__input"
               />
             </div>
           </div>
@@ -347,3 +418,17 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       </div>
     );
   };
+
+/**
+ * renderAnimatedDots
+ * @returns
+ */
+const renderAnimatedDots = () => {
+  return (
+    <>
+      <span>.</span>
+      <span>.</span>
+      <span>.</span>
+    </>
+  );
+};
