@@ -3679,6 +3679,7 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           "callback"
         )()) as any).id;
       } else if (!data.makeFolder) {
+        // Creating page for section !
         const materialId = ((await promisify(
           mApi().materials.html.create({
             title: data.title,
@@ -3695,7 +3696,9 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           }),
           "callback"
         )()) as any).id;
+
       } else {
+        //Creating section
         workspaceMaterialId = ((await promisify(
           mApi().workspace.workspaces.folders.create(data.workspace.id, {
             parentId,
