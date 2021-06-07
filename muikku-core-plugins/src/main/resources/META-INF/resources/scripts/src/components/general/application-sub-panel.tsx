@@ -33,6 +33,7 @@ interface SubPanelItemProps {
 
 export const ApplicationSubPanelItem: React.FunctionComponent<SubPanelItemProps> & {
   Content?: React.FunctionComponent<SubPanelItemDataProps>,
+  SubItem?: React.FunctionComponent<{ modifier?: string }>,
 } = (props) => (
   <div className={`application-sub-panel__item ${props.modifier ? `application-sub-panel__item--${props.modifier}` : ""}`}>
     <div className={`application-sub-panel__item-title ${props.modifier ? `application-sub-panel__item-title--${props.modifier}` : ""}`}>{props.title}</div>
@@ -45,8 +46,17 @@ const ApplicationSubPanelItemData: React.FunctionComponent<SubPanelItemDataProps
     {props.label ?
       <div className={`application-sub-panel__item-data-label ${props.modifier ? `application-sub-panel__item-data-label--${props.modifier}` : ""}`}>{props.label}</div>
       : null}
-    <div className={`application-sub-panel__item-data-content ${props.modifier ? `application-sub-panel__item-data--${props.modifier}` : ""}`}>{props.children}</div>
+    <div className={`application-sub-panel__item-data-content ${props.modifier ? `application-sub-panel__item-data-content--${props.modifier}` : ""}`}>{props.children}</div>
   </div>
 )
 
+const ApplicationSubPanelSubItem: React.FunctionComponent<{ modifier?: string }> = (props) => (
+  <div className={`application-sub-panel__item-sub-item ${props.modifier ? `application-sub-panel__item-sub-item--${props.modifier}` : ""}`}>
+    {props.children}
+  </div>
+)
+
+
+
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
+ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;

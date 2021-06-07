@@ -23,15 +23,16 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         <ApplicationSubPanel
           i18n={this.props.i18n}
           modifier="organization-summary"
-          bodyModifier="workspace-staff-members"
           title={this.props.i18n.text.get('plugin.organization.summary.billing.title')}>
           <ApplicationSubPanelItem
             modifier="organization-summary"
             title={this.props.i18n.text.get('plugin.organization.summary.billing.subtitle.activeBillingPeriod')}>
-            <ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.Content
+              modifier="primary">
               DD.MM.YYYY - DD.MM.YYYY
             </ApplicationSubPanelItem.Content>
             <ApplicationSubPanelItem.Content
+              modifier="organization-summary"
               label={this.props.i18n.text.get('plugin.organization.summary.billing.detail.nextBillingSeason')} >
               DD.MM.YYYY - DD.MM.YYYY
             </ApplicationSubPanelItem.Content>
@@ -39,18 +40,40 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           <ApplicationSubPanelItem
             modifier="organization-summary"
             title={this.props.i18n.text.get('plugin.organization.summary.billing.subtitle.accumulatedBill')} >
-            <ApplicationSubPanelItem.Content>1000€</ApplicationSubPanelItem.Content>
-            <ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.Content
+              modifier="primary">1000€</ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.Content
+              modifier="organization-summary">
               {this.props.i18n.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           <ApplicationSubPanelItem
-            modifier="organization-summary"
+            modifier="organization-previous-bills"
             title={this.props.i18n.text.get('plugin.organization.summary.billing.subtitle.previousBills')} >
-            <ApplicationSubPanelItem.Content>1000€</ApplicationSubPanelItem.Content>
-            <ApplicationSubPanelItem.Content>
-              {this.props.i18n.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
-            </ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.SubItem
+              modifier="organization-previous-bills">
+              <ApplicationSubPanelItem.Content>
+                DD.MM.YYYY - DD.MM.YYYY
+              </ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content
+                modifier="primary">1000€</ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content
+                modifier="organization-summary">
+                {this.props.i18n.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+              </ApplicationSubPanelItem.Content>
+            </ApplicationSubPanelItem.SubItem>
+            <ApplicationSubPanelItem.SubItem
+              modifier="organization-previous-bills">
+              <ApplicationSubPanelItem.Content>
+                DD.MM.YYYY - DD.MM.YYYY
+              </ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content
+                modifier="primary">1000€</ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content
+                modifier="organization-summary">
+                {this.props.i18n.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
+              </ApplicationSubPanelItem.Content>
+            </ApplicationSubPanelItem.SubItem>
           </ApplicationSubPanelItem>
         </ApplicationSubPanel>
         <ApplicationSubPanel
@@ -58,24 +81,25 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           modifier="organization-summary"
           title={this.props.i18n.text.get('plugin.organization.summary.contact.title')}>
           <ApplicationSubPanelItem
-            modifier="organization-summary"
+            modifier="organization-contact-information"
             title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle')} >
-            <ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.Content modifier="organization-contact-information">
               <div>Musta kaapu</div>
               <div>2043i2340i12430</div>
               <div>qwqweqweqwe@asdas.net</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
           <ApplicationSubPanelItem
-            title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle')} >
-            <ApplicationSubPanelItem.Content>
+            title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle')}
+            modifier="organization-contact-information" >
+            <ApplicationSubPanelItem.Content modifier="organization-contact-information">
               <div>Musta kaapu</div>
               <div>2043i2340i12430</div>
               <div>qwqweqweqwe@asdas.net</div>
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         </ApplicationSubPanel>
-      </div>
+      </div >
     );
   }
 }
