@@ -32,6 +32,7 @@ import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.rest.model.OrganizationStudentsActivityRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -169,6 +170,67 @@ public class OrganizationUserManagementRESTService {
       
     SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
     return Response.ok(responseStaffMembers).build();
+  }
+  
+  @GET
+  @Path("/studentsSummary")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
+  public Response studentsSummary() {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    SearchProvider searchProvider = searchProviderInstance.get();
+    if (searchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+
+    SearchResult result = searchProvider.searchUsers(
+        Arrays.asList(organization),
+        "",
+        null,                                                 // fields
+        Arrays.asList(EnvironmentRoleArchetype.STUDENT),
+        null,                                                 // userGroupFilters
+        null,                                                 // workspaceFilters
+        null,                                                 // userIdentifiers
+        true,                                                 // includeInactiveStudents
+        true,                                                 // includeHidden
+        true,                                                 // onlyDefaultUsers
+        0,
+        Integer.MAX_VALUE);
+
+    List<Map<String, Object>> results = result.getResults();
+    OrganizationStudentsActivityRESTModel studentActivityRESTModel = new OrganizationStudentsActivityRESTModel();
+    if (results != null && !results.isEmpty()) {
+      int activeStudentCount = 0;
+      int inactiveStudentCount = 0;
+      for (Map<String, Object> o : results) {
+        String studentId = (String) o.get("id");
+        String[] studentIdParts = studentId.split("/", 2);
+        SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]);
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+        if (userEntity == null) {
+          logger.warning(String.format("Skipping Elastic user %s not found in database", studentId));
+          continue;
+        }
+        if (o.get("studyEndDate") != null) {
+          inactiveStudentCount++;
+        }
+        else {
+          activeStudentCount++;
+        }
+      }
+      
+      studentActivityRESTModel.setActiveStudents(activeStudentCount);
+      studentActivityRESTModel.setInactiveStudents(inactiveStudentCount);
+      
+    }
+    return Response.ok(studentActivityRESTModel).build();
   }
   
   @GET
