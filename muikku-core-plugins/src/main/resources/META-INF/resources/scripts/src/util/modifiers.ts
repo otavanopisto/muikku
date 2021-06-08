@@ -311,11 +311,36 @@ const translations:any = {
   "accept": "accept",
 }
 
+/**
+ * Converts a style property string into a camel case based one
+ * this is basically to convert things like text-align into textAlign
+ * for use within react
+ * @param str the string to convert
+ */
+function convertStylePropertyToCamelCase(str: string) {
+  // first we split the dashes
+  const splitted = str.split("-");
+
+  // if it's just one then we return that just one
+  if (splitted.length === 1) {
+    return splitted[0];
+  }
+
+  // otherwise we do this process of capitalization
+  return (
+    splitted[0] +
+    splitted
+      .slice(1)
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join("")
+  );
+};
+
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
   const result:any = {};
   for (let i = 0; i < declaraion.length; i++) {
     const item = declaraion.item(i);
-    result[item] = (declaraion as any)[item];
+    result[convertStylePropertyToCamelCase(item)] = (declaraion as any)[item];
   }
   return result;
 }
