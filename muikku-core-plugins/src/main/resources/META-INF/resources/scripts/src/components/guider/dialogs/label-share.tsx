@@ -138,7 +138,6 @@ class GuiderLabelShareDialog extends React.Component<
         }
       }
     });
-    console.log(this.sharesResult);
 
     this.sharesResult.forEach(async (share: any) => {
       let wasRemoved = !this.state.selectedItems.find(
@@ -148,7 +147,6 @@ class GuiderLabelShareDialog extends React.Component<
       );
       if (wasRemoved) {
         try {
-          console.log(share.id);
           await promisify(
             mApi().user.flags.shares.del(this.props.label.id, share.id),
             "callback"
