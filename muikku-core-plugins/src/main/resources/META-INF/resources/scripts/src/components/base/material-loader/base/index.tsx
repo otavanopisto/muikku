@@ -91,7 +91,7 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 function preprocessor($html: any): any{
   $html.find('img').each(function(){
     if (!$(this).parent('figure').length){
-      let elem = document.createElement('figure');
+      let elem = document.createElement('span');
       elem.className = 'image';
 
       $(this).replaceWith(elem);
@@ -427,7 +427,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         }
       },
       {
-        shouldProcessHTMLElement: (tagname, element) => tagname === "figure" && element.classList.contains("image"),
+        shouldProcessHTMLElement: (tagname, element) => (tagname === "figure" || tagname === "span") && element.classList.contains("image"),
         preventChildProcessing: true,
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);

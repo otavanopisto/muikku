@@ -81,7 +81,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
   render() {
     const newRules = this.props.processingRules.filter((r) => r.id !== "image-rule");
     newRules.push({
-      shouldProcessHTMLElement: (tag, element) => tag === "figure",
+      shouldProcessHTMLElement: (tag, element) => tag === "figure" || tag === "span",
       preprocessReactProperties: (tag, props, children, element) => {
         if (!this.props.invisible && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.license)) {
           children.push(<div className="image__details icon-copyright" key="details">
