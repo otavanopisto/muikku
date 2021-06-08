@@ -1,0 +1,26 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.guider-container__state {
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  margin: 5px;
+  padding: 5px;
+
+  &.state-INFO {
+    border-color: $color-info;
+
+    .guider-container__state-icon {
+      color: $color-info;
+    }
+  }
+}
+
+.guider-container__state-text {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 4px 0 0 10px;
+}

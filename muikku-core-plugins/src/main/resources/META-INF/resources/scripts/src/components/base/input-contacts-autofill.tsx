@@ -19,7 +19,7 @@ export interface InputContactsAutofillLoaders {
 export interface InputContactsAutofillProps {
   placeholder?: string,
   label?: string,
-  onChange: (newValue: ContactRecepientType[]) => any,
+  onChange: (newValue: ContactRecepientType[]) => void,
   modifier: string,
   selectedItems: ContactRecepientType[],
   hasGroupPermission?: boolean,
