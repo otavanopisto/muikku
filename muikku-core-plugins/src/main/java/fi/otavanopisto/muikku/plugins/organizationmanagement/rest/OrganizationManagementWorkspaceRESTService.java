@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.organizationmanagement.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +41,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationManagerWorkspace;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationManagerWorkspaceTeacher;
+import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationOverviewWorkspaces;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationStudentsCreateResponse;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.rest.model.OrganizationStudentsCreateResponse.StudentStatus;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
@@ -74,7 +74,7 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.security.rest.RESTPermit;
 
-@Path("/organizationmanagement/workspaces")
+@Path("/organizationWorkspaceManagement")
 @RequestScoped
 @Stateful
 @Produces ("application/json")
@@ -135,7 +135,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   private Instance<SearchProvider> searchProviderInstance;
   
   @GET
-  @Path("/")
+  @Path("/workspaces")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response listWorkspaces(
         @QueryParam("q") String searchString,
@@ -229,7 +229,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .search();
     
     List<OrganizationManagerWorkspace> workspaces = new ArrayList<>();
-    
+
     schoolDataBridgeSessionController.startSystemSession();
     try {
       List<Map<String, Object>> results = searchResult.getResults();
@@ -264,7 +264,6 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
                   educationTypeName = educationType.getName();
                 }
               }
-
               if (StringUtils.isNotBlank(name)) {
                 workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName));
               } else {
@@ -279,12 +278,59 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-
     return Response.ok(workspaces).build();
   }
   
+  @GET
+  @Path("/overview")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
+  public Response getOverview(){
+  
+  SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+  
+  SearchProvider searchProvider = searchProviderInstance.get();
+  if (searchProvider == null) {
+    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+  }
+  
+  SearchResult searchResult = null;
+  
+  // Restrict search to the organizations of the user
+  List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
+  UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
+  if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
+    organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
+  }
+  
+  searchResult = searchProvider.searchWorkspaces()
+      .setOrganizationIdentifiers(organizationIdentifiers) // get this from logged in user, I guess
+      .setIncludeUnpublished(true)
+      .setFirstResult(0)
+      .setMaxResults(Integer.MAX_VALUE)
+      .search();
+  
+  OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
+  int unpublishedCount = 0; 
+  int publishedCount = 0; 
+
+  
+  List<Map<String, Object>> results = searchResult.getResults();
+    for (Map<String, Object> result : results) {
+      if ((Boolean) result.get("published")) {
+        publishedCount++;
+      } else {
+        unpublishedCount++;
+      }
+    }
+  
+  overviewWorkspaces.setPublishedCount(publishedCount);
+  overviewWorkspaces.setUnpublishedCount(unpublishedCount);
+  
+  return Response.ok(overviewWorkspaces).build();
+}
+  
   @POST
-  @Path("/{WORKSPACEID}/students")
+  @Path("/workspaces/{WORKSPACEID}/students")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response createWorkspaceStudent(@PathParam("WORKSPACEID") Long workspaceEntityId, 
       StudentIdentifiers studentIdentifiersContainer) {
@@ -377,7 +423,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   }
 
   @POST
-  @Path("/{WORKSPACEID}/staff")
+  @Path("/workspaces/{WORKSPACEID}/staff")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_MANAGE_WORKSPACES)
   public Response createWorkspaceStaffMembers(@PathParam("WORKSPACEID") Long workspaceEntityId, 
       StaffMemberIdentifiers staffMemberIdentifiersContainer) {
