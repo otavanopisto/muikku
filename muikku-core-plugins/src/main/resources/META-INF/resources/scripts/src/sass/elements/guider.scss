@@ -9,13 +9,15 @@
   margin: 5px;
   padding: 5px;
 
-  &.state--INFO {
+  // scss-lint:disable SelectorFormat
+  &.state-INFO {
     border-color: $color-info;
 
     .guider-container__state-icon {
       color: $color-info;
     }
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .guider-container__state-text {

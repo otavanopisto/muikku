@@ -655,7 +655,7 @@ class GuiderLabelUpdateDialog extends React.Component<
           </div>
 
           {isOwnerOfCurrentLabel && this.state.selectedItems.length > 0 && (
-            <div className="guider-container__state state--INFO">
+            <div className="guider-container__state state-INFO">
               <div className="guider-container__state-icon icon-notification"></div>
               <div className="guider-container__state-text">
                 <p>
