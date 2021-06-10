@@ -20,10 +20,13 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
   render() {
     return (
       <div>
+        {/* Commented for later use
+
         <ApplicationSubPanel
           i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get('plugin.organization.summary.billing.title')}>
+
           <ApplicationSubPanelItem
             modifier="organization-summary"
             title={this.props.i18n.text.get('plugin.organization.summary.billing.subtitle.activeBillingPeriod')}>
@@ -74,6 +77,27 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 {this.props.i18n.text.get('plugin.organization.summary.billing.detail.accumulated', 10, 5, 3)}
               </ApplicationSubPanelItem.Content>
             </ApplicationSubPanelItem.SubItem>
+          </ApplicationSubPanelItem>
+        </ApplicationSubPanel> */}
+        <ApplicationSubPanel
+          i18n={this.props.i18n}
+          modifier="organization-summary"
+          title={this.props.i18n.text.get('plugin.organization.summary.info.title')}>
+
+          <ApplicationSubPanelItem
+            modifier="organization-summary"
+            title={this.props.i18n.text.get('plugin.organization.summary.info.subtitle.activeInactive')}
+          >
+            <ApplicationSubPanelItem.Content
+              modifier="primary"
+              label={this.props.i18n.text.get('plugin.organization.summary.info.workspaces.publishedUnpublished.label')} >
+              {this.props.i18n.text.get('plugin.organization.summary.info.workspaces.publishedUnpublished.text')}
+            </ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.Content
+              modifier="primary"
+              label={this.props.i18n.text.get('plugin.organization.summary.info.students.activeInactive.label')} >
+              {this.props.i18n.text.get('plugin.organization.summary.info.students.activeInactive.text')}
+            </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         </ApplicationSubPanel>
         <ApplicationSubPanel
