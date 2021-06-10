@@ -3,21 +3,19 @@ import { StateType } from '~/reducers';
 import { connect, Dispatch } from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import ApplicationSubPanel, { ApplicationSubPanelItem } from "~/components/general/application-sub-panel";
-
+import { OrganizationSummaryType } from "~/reducers/organization/summary"
 
 interface SummaryProps {
-  i18n: i18nType
+  i18n: i18nType,
+  summary: OrganizationSummaryType
 }
 
 interface SummaryState {
 }
 
-
-
 class Summary extends React.Component<SummaryProps, SummaryState> {
-
-
   render() {
+    const { summary } = this.props;
     return (
       <div>
         {/* Commented for later use
@@ -83,20 +81,23 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get('plugin.organization.summary.info.title')}>
-
           <ApplicationSubPanelItem
             modifier="organization-summary"
             title={this.props.i18n.text.get('plugin.organization.summary.info.subtitle.activeInactive')}
           >
             <ApplicationSubPanelItem.Content
               modifier="primary"
-              label={this.props.i18n.text.get('plugin.organization.summary.info.workspaces.publishedUnpublished.label')} >
-              {this.props.i18n.text.get('plugin.organization.summary.info.workspaces.publishedUnpublished.text')}
+            >
+              {this.props.i18n.text.get('plugin.organization.summary.info.workspaces.publishedUnpublished.text',
+                summary.workspaces && summary.workspaces.publishedCount,
+                summary.workspaces && summary.workspaces.unpublishedCount)}
             </ApplicationSubPanelItem.Content>
             <ApplicationSubPanelItem.Content
               modifier="primary"
-              label={this.props.i18n.text.get('plugin.organization.summary.info.students.activeInactive.label')} >
-              {this.props.i18n.text.get('plugin.organization.summary.info.students.activeInactive.text')}
+            >
+              {this.props.i18n.text.get('plugin.organization.summary.info.students.activeInactive.text',
+                summary.students && summary.students.activeStudents,
+                summary.students && summary.students.inactiveStudents)}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         </ApplicationSubPanel>
@@ -131,6 +132,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    summary: state.organizationSummary
   }
 };
 

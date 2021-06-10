@@ -17,6 +17,7 @@ import vops from '~/reducers/main-function/vops';
 import hops from '~/reducers/main-function/hops';
 import yo, { eligibilitySubjects } from '~/reducers/main-function/records/yo';
 import summary from '~/reducers/main-function/records/summary';
+import organizationSummary from '~/reducers/organization/summary';
 import { combineReducers } from 'redux';
 
 export default combineReducers({
@@ -41,6 +42,7 @@ export default combineReducers({
   userGroups,
   organizationWorkspaces,
   organizationUsers,
+  organizationSummary,
   discussion,
   guider,
   profile

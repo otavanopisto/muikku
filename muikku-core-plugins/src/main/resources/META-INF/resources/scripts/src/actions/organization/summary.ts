@@ -3,23 +3,17 @@ import promisify from '~/util/promisify';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
 import { StateType } from '~/reducers';
-import { SummaryWorkspaceDataType, SummaryStudentsDataType } from "~/reducers/organization/summary"
+import { OrganizationSummaryWorkspaceDataType, OrganizationSummaryStudentsDataType } from "~/reducers/organization/summary"
 
 export interface LoadSummaryTriggerType {
   (): AnyActionType
 }
 
-export interface LoadOverviewTriggerType {
-  (): AnyActionType
-}
+export type OrganizationSummaryStatusType = "IDLE" | "LOADING" | "READY" | "ERROR";
 
-export interface LoadStudentSummaryTriggerType {
-  (): AnyActionType
-}
-export type SummaryStatusType = "IDLE" | "LOADING" | "READY" | "ERROR";
-export interface LOAD_WORKSPACE_SUMMARY extends SpecificActionType<"LOAD_WORKSPACE_SUMMARY", {}> { }
-export interface LOAD_STUDENT_SUMMARY extends SpecificActionType<"LOAD_STUDENT_SUMMARY", {}> { }
-export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMARY_STATUS", SummaryStatusType> { }
+export interface LOAD_WORKSPACE_SUMMARY extends SpecificActionType<"LOAD_WORKSPACE_SUMMARY", OrganizationSummaryWorkspaceDataType> { }
+export interface LOAD_STUDENT_SUMMARY extends SpecificActionType<"LOAD_STUDENT_SUMMARY", OrganizationSummaryStudentsDataType> { }
+export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMARY_STATUS", OrganizationSummaryStatusType> { }
 
 
 // julkaistut/julkaisemattomat kurssit:
@@ -28,24 +22,24 @@ export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMAR
 // aktiiviset/epäaktiiviset opiskelijat:
 // mApi().organizationUserManagement.studentsSummary.read()
 
-let loadSummary: LoadSummaryTriggerType = function loadSummary() {
+let loadOrganizationSummary: LoadSummaryTriggerType = function loadOrganizationSummary() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       dispatch({
         type: 'UPDATE_SUMMARY_STATUS',
-        payload: <SummaryStatusType>"LOADING"
+        payload: <OrganizationSummaryStatusType>"LOADING"
       });
       dispatch({
         type: 'LOAD_WORKSPACE_SUMMARY',
-        payload: <SummaryWorkspaceDataType>(await promisify(mApi().organizationWorkspaceManagement.overview.read(), 'callback')())
+        payload: <OrganizationSummaryWorkspaceDataType>(await promisify(mApi().organizationWorkspaceManagement.overview.read(), 'callback')())
       });
       dispatch({
         type: 'LOAD_STUDENT_SUMMARY',
-        payload: <SummaryStudentsDataType>(await promisify(mApi().organizationUserManagement.studentsSummary.read(), 'callback')())
+        payload: <OrganizationSummaryStudentsDataType>(await promisify(mApi().organizationUserManagement.studentsSummary.read(), 'callback')())
       });
       dispatch({
         type: 'UPDATE_SUMMARY_STATUS',
-        payload: <SummaryStatusType>"READY"
+        payload: <OrganizationSummaryStatusType>"READY"
       });
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -54,10 +48,10 @@ let loadSummary: LoadSummaryTriggerType = function loadSummary() {
       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.vops.errormessage.vopsLoadFailed"), 'error'));
       dispatch({
         type: 'UPDATE_SUMMARY_STATUS',
-        payload: <SummaryStatusType>"ERROR"
+        payload: <OrganizationSummaryStatusType>"ERROR"
       });
     }
   }
 }
 
-export default { loadSummary };
+export default loadOrganizationSummary;

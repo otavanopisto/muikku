@@ -1,40 +1,28 @@
 import { ActionType } from "actions";
 
-export interface VOPSRowItemType {
-  courseNumber: number,
-  description?: string,
-  educationSubtype?: string,
-  grade: string,
-  mandatority: string,
-  name: string,
-  placeholder: boolean,
-  planned: boolean,
-  state: string
-}
-
-export interface SummaryWorkspaceDataType {
+export interface OrganizationSummaryWorkspaceDataType {
   unpublishedCount: number,
   publishedCount: number
 }
 
-export interface SummaryStudentsDataType {
+export interface OrganizationSummaryStudentsDataType {
   activeStudents: number,
   inactiveStudents: number
 }
 
-export type SummaryStatusType = "IDLE" | "LOADING" | "READY" | "ERROR";
+export type OrganizationSummaryStatusType = "WAITING" | "LOADING" | "READY" | "ERROR";
 
-export interface SummaryType {
-  status: SummaryStatusType,
-  students: SummaryStudentsDataType,
-  workspaces: SummaryWorkspaceDataType
+export interface OrganizationSummaryType {
+  status: OrganizationSummaryStatusType,
+  students: OrganizationSummaryStudentsDataType,
+  workspaces: OrganizationSummaryWorkspaceDataType
 }
 
-export default function vops(state: SummaryType = {
-  status: "IDLE",
+export default function organizationSummary(state: OrganizationSummaryType = {
+  status: "WAITING",
   students: null,
   workspaces: null,
-}, action: ActionType): SummaryType {
+}, action: ActionType): OrganizationSummaryType {
   if (action.type === "UPDATE_SUMMARY_STATUS") {
     return Object.assign({}, state, {
       status: action.payload
