@@ -1184,8 +1184,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(
-      Long organizationId) {
-    BridgeResponse<OrganizationContactPerson[]> response = pyramusClient.responseGet(String.format("/organizations/%d/contactPerson", organizationId), OrganizationContactPerson[].class);
+      String organizationIdentifier) {
+    
+    BridgeResponse<OrganizationContactPerson[]> response = pyramusClient.responseGet(String.format("/organizations/%d/contactPerson", identifierMapper.getPyramusOrganizationId(organizationIdentifier)), OrganizationContactPerson[].class);
     List<OrganizationContactPerson> contactPersons = null;
     if(response.getEntity() != null) {
       contactPersons = new ArrayList<>();

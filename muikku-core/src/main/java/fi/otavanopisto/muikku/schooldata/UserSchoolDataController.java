@@ -98,8 +98,8 @@ public class UserSchoolDataController {
   
   /* User */
   
-  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersons(String dataSource, Long organizationId) {
-    return getUserBridge(dataSource).listOrganizationContactPersonsByOrganization(organizationId);
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersons(String dataSource, String organizationIdentifier) {
+    return getUserBridge(dataSource).listOrganizationContactPersonsByOrganization(organizationIdentifier);
   }
 
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {

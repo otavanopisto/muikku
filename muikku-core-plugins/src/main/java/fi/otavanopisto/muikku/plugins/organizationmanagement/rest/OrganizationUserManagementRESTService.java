@@ -352,7 +352,7 @@ public class OrganizationUserManagementRESTService {
         .findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<List<OrganizationContactPerson>> response = userSchoolDataController.listOrganizationContactPersons(dataSource, organization.getId());
+    BridgeResponse<List<OrganizationContactPerson>> response = userSchoolDataController.listOrganizationContactPersons(dataSource, organization.schoolDataIdentifier().getIdentifier());
 
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();

@@ -48,7 +48,7 @@ public interface UserSchoolDataBridge {
   
   /* User */
   
-  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(Long organizationId);
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(String organizationIdentifier);
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember);
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember);
