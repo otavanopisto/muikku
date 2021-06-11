@@ -56,7 +56,5 @@ const ApplicationSubPanelSubItem: React.FunctionComponent<{ modifier?: string }>
   </div>
 )
 
-
-
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
 ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;

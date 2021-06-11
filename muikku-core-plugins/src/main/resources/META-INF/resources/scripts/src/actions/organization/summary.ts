@@ -15,7 +15,6 @@ export interface LOAD_WORKSPACE_SUMMARY extends SpecificActionType<"LOAD_WORKSPA
 export interface LOAD_STUDENT_SUMMARY extends SpecificActionType<"LOAD_STUDENT_SUMMARY", OrganizationSummaryStudentsDataType> { }
 export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMARY_STATUS", OrganizationSummaryStatusType> { }
 
-
 // julkaistut/julkaisemattomat kurssit:
 // mApi().organizationWorkspaceManagement.overview.read()
 

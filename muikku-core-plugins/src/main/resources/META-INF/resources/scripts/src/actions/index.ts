@@ -77,7 +77,6 @@ import {
   LOAD_STUDENT_SUMMARY
 } from "./organization/summary";
 
-
 import {
   UPDATE_ANNOUNCEMENTS,
   UPDATE_ANNOUNCEMENTS_STATE,
