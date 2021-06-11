@@ -16,12 +16,12 @@
 CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   /* Block Styles */
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.genericBox"), element: 'div', attributes: { 'class': 'material-basicbox material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.grammarBox"), element: 'div', attributes: { 'class': 'material-grammarbox material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.thinkingBox"), element: 'div', attributes: { 'class': 'material-thinkingbox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.journalBox"), element: 'div', attributes: { 'class': 'material-journalbox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.ponderBox"), element: 'div', attributes: { 'class': 'material-ponderbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.objectiveBox"), element: 'div', attributes: { 'class': 'material-objectivebox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.informationBox"), element: 'div', attributes: { 'class': 'material-infobox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.instructionBox"), element: 'div', attributes: { 'class': 'material-instructionbox material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.recapBox"), element: 'div', attributes: { 'class': 'material-recapbox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.assignmentBox"), element: 'div', attributes: { 'class': 'material-assignmentbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.textHighlight"), element: 'div', attributes: { 'class': 'material-text-highlight material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationBasic"), element: 'div', attributes: { 'class': 'material-citation-basic material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.longCitation"), element: 'div', attributes: { 'class': 'material-citation-long material-styles-text' } },
@@ -29,14 +29,15 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseBox"), element: 'div', attributes: { 'class': 'material-exercise material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.externalLinkBox"), element: 'div', attributes: { 'class': 'material-linkbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.audioBox"), element: 'div', attributes: { 'class': 'material-audiobox material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.fileBox"), element: 'div', attributes: { 'class': 'material-filebox material-styles-block' } }
-  
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.fileBox"), element: 'div', attributes: { 'class': 'material-filebox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.muikkuLinkBox"), element: 'div', attributes: { 'class': 'material-muikkulinkbox material-styles-block' } }
+
   /* Inline Styles */
 
-  
+
 
   /* Object Styles */
 
- 
+
 ] );
 

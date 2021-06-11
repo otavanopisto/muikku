@@ -1838,15 +1838,18 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE CUSTOM BOX STYLES
 // These classNames cannot be changed as they a part of material page html and already saved to DB
 .material-styles-block {
-  border-radius: 10px;
+  background-color: $color-default;
   box-sizing: content-box;
+  color: $color-default-contrast;
   font-size: inherit;
   margin: 20px 0;
-  min-height: 64px;
-  padding: 10px 15px 10px 85px;
+  min-height: 40px;
+  padding: 16px;
   position: relative;
 
   p:first-child,
+  h3:first-child,
+  h4:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
@@ -1854,153 +1857,195 @@ mark[data-muikku-word-definition] {
   }
 
   p:last-child,
+  h3:first-child,
+  h4:first-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
     margin-bottom: 0;
   }
 
-  &::after {
-    background-repeat: no-repeat;
+  // This represents the generic icon added to the material style boxes
+  &::before {
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-default;
     content: "";
-    height: 64px;
-    left: 10px;
+    display: flex;
+    font-family: muikku;
+    font-size: 1.5rem;
+    height: 40px;
+    justify-content: center;
+    left: 16px;
     position: absolute;
-    top: 10px;
-    width: 64px;
-    z-index: 9;
+    top: 16px;
+    width: 40px;
   }
 
   a {
+    align-items: center;
     color: $color-info;
-    text-decoration: underline;
+    display: inline-flex;
+    flex-flow: row nowrap;
+    font-weight: 400;
+    justify-content: flex-start;
+    text-decoration: none;
+
+    // Every link inside material style boxes will have automatically
+    // added icon "external-link" after the link text
+    &::after {
+      color: $color-info;
+      content: "\f08e";
+      font-family: muikku;
+      font-size: 0.8125rem;
+      padding: 0 0 0 5px;
+    }
   }
 }
 
-// BASIC BOX
-.material-basicbox {
-  background-color: $color-material-basic-box-background;
-  border-top: 2px solid $color-material-basic-box-border;
-  color: $color-default-contrast;
-  padding: 12px 20px;
-
-  &::after {
-    display: none;
-  }
-}
-
-// GRAMMAR BOX
-.material-grammarbox {
-  background-color: $color-material-grammar-box-background;
-  border-top: 2px solid $color-material-grammar-box-border;
-  color: $color-default-contrast;
-  padding: 12px 20px;
-
-  &::after {
-    display: none;
-  }
-}
-
-// PONDERING BOX
-.material-thinkingbox {
-  background-color: $color-material-thinking-box-background;
-  border-top: 2px solid $color-material-thinking-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/pondering-icon.png");
-  }
-}
-
-// OBJECTIVE BOX
-.material-objectivebox {
-  background-color: $color-material-objective-box-background;
-  border-top: 2px solid $color-material-objective-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 10px $color-default, 1px -1px 10px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/objective-icon.png");
-  }
-}
-
-// INFORMATION BOX
-.material-infobox {
-  background-color: $color-material-info-box-background;
-  border-top: 2px solid $color-material-info-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/info-icon.png");
-  }
-}
-
-// RECAP BOX
+// BASIC BOX & GRAMMAR BOX & RECAP BOX
+// GRAMMAR BOX & RECAP BOX styles are deprecated but CANNOT be removed from the css.
+// GRAMMAR BOX & RECAP BOX are removed from CKE dropdown and existing GRAMMAR BOXes & RECAP BOXes
+// inherits BASIC BOX styling
+.material-basicbox,
+.material-grammarbox,
 .material-recapbox {
-  background-color: $color-material-recap-box-background;
-  border-top: 2px solid $color-material-recap-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
+  border: 1px solid $color-material-basic-box;
+  border-left-width: 1px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/recap-icon.png");
+  &::before {
+    display: none;
+  }
+}
+
+// THINKING BOX & JOURNAL BOX
+// Thinking box is deprecated style is deprecated but CANNOT be removed from the css.
+// Thinking box was primarily used to provide journal specific information
+// so new style has been added called JOURNAL BOX. Existing THINKINGBOXes
+// inherits JOURNAL BOX styling
+.material-thinkingbox,
+.material-journalbox {
+  border: 1px solid $color-material-journal-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-journal-box;
+    content: "\f02d";
   }
 }
 
 // INSTRUCTION BOX
 .material-instructionbox {
-  background-color: $color-material-instruction-box-background;
-  border-top: 2px solid $color-material-instruction-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
+  border: 1px solid $color-material-instruction-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/instruction-icon.png");
+  &::before {
+    background: $color-material-instruction-box;
+    content: "\e635";
+  }
+}
+
+// PONDER BOX
+.material-ponderbox {
+  border: 1px solid $color-material-ponder-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-ponder-box;
+    content: "\f0eb";
+  }
+}
+
+// EVALUATION CRITERIA BOX
+.material-assignmentbox {
+  border: 1px solid $color-assignment;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-assignment;
+    content: "\f06a";
+  }
+}
+
+// OBJECTIVE / GOAL BOX
+.material-objectivebox {
+  border: 1px solid $color-material-objective-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-objective-box;
+    content: "\e92b";
+  }
+}
+
+// INFORMATION / ATTENTION BOX
+.material-infobox {
+  border: 1px solid $color-material-info-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-info-box;
+    content: "\f12a";
   }
 }
 
 // LINK BOX
 .material-linkbox {
-  background-color: $color-material-link-box-background;
-  border-top: 2px solid $color-material-link-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-link-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/link-icon.png");
+  &::before {
+    background: $color-material-link-box;
+    content: "\e9cb";
+  }
+}
+
+// MUIKKU LINK BOX
+.material-muikkulinkbox {
+  border: 1px solid $color-material-muikkulink-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-muikkulink-box;
+    content: "\e9cb";
   }
 }
 
 // AUDIO BOX
 .material-audiobox {
-  background-color: $color-material-audio-box-background;
-  border-top: 2 px solid $color-material-audio-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-audio-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/sound-icon.png");
+  &::before {
+    background: $color-material-audio-box;
+    content: "\ea27";
   }
 }
 
 // FILE BOX
 .material-filebox {
-  background-color: $color-material-file-box-background;
-  border-top: 2px solid $color-material-file-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-file-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/file-icon.png");
+  &::before {
+    background: $color-material-file-box;
+    content: "\e92c";
   }
 }
 
 // MATERIAL TEXT STYLES
 .material-styles-text {
-  background-repeat: no-repeat;
   box-sizing: content-box;
   margin: 20px auto;
   max-width: 920px;
@@ -2008,6 +2053,8 @@ mark[data-muikku-word-definition] {
   position: relative;
 
   p:first-child,
+  h3:first-child,
+  h4:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
@@ -2015,6 +2062,8 @@ mark[data-muikku-word-definition] {
   }
 
   p:last-child,
+  h3:first-child,
+  h4:first-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
