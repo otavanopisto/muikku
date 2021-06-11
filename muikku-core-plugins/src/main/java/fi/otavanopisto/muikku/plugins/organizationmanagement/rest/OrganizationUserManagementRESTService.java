@@ -341,7 +341,7 @@ public class OrganizationUserManagementRESTService {
   }
   
   @GET
-  @Path("/contactPerson")
+  @Path("/contactPersons")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
   public Response listContactPersons() {
     
