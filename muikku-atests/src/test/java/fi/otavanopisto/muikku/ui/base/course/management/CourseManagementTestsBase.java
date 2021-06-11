@@ -59,7 +59,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -85,7 +85,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null, 1L, false);
+            null, null, 1L, false, 1L, 1L);
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -136,7 +136,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -185,7 +185,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -210,7 +210,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "For Test", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null, 1L, false);
+            null, null, 1L, false, 1L, 1L);
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -261,7 +261,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -286,7 +286,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
-            null, null, 1L, false);
+            null, null, 1L, false, 1L, 1L);
         String courseJson = objectMapper.writeValueAsString(course);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -337,7 +337,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -386,7 +386,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
@@ -441,7 +441,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();

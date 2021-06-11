@@ -49,7 +49,7 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         of those usergroups and push the result to studentsGuidanceCouncelors array
       */
       if (studentsUserGroups && studentsUserGroups.length) {
-        studentsUserGroups.filter((studentsUserGroup: any) => studentsUserGroup.guidanceGroup == true).forEach(function (studentsUserGroup: any) {
+        studentsUserGroups.filter((studentsUserGroup: any) => studentsUserGroup.isGuidanceGroup == true).forEach(function (studentsUserGroup: any) {
           mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {properties: 'profile-phone,profile-vacation-start,profile-vacation-end'}).callback(function (err: any, result: any) {
             result.forEach(function (studentsStudentCouncelor: any) {
               if (!studentsStudentCouncelors.some((existingStudentCouncelor: any) => existingStudentCouncelor.userEntityId == studentsStudentCouncelor.userEntityId)) {

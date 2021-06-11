@@ -133,7 +133,7 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
           </div>
           <div className="form-element form-element--profile">
             <label htmlFor="profileNewPassword2" className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>
-            <input id="profileNewPassword2" type="password" className={`form-element__input form-element__input--profile ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-wrong" : ""}`}
+            <input id="profileNewPassword2" type="password" className={`form-element__input form-element__input--profile ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-error" : ""}`}
               value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")}/>
           </div>
         </form>

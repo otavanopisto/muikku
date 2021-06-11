@@ -62,7 +62,7 @@ class Pager extends React.Component<PagerProps, PagerState>{
           <div tabIndex={0} className="pager__item pager__item--first" onClick={this.props.onClick.bind(null, 1)} aria-label={this.props.i18n.text.get("plugin.wcag.pager.goToPage.label")}>1</div>,
           <div role="none" className="pager__item pager__item--gap">...</div>] : null}
         {Array.from(new Array(rightPage - leftPage + 1),(x,i)=> leftPage+i).map((page)=>{
-          return <div tabIndex={0} key={page} className={`pager__item ${page === this.props.current ? "pager__item--current" : ""}`}
+          return <div tabIndex={0} key={this.props.identifier ? this.props.identifier + page: page} className={`pager__item ${page === this.props.current ? "pager__item--current" : ""}`}
             onClick={this.props.onClick.bind(null, page)} arial-label={page === this.props.current ? this.props.i18n.text.get("plugin.wcag.pager.current.label") : this.props.i18n.text.get("plugin.wcag.pager.goToPage.label")}>{page}</div>
         })}
         {isPagerMoreVisible ? [<div role="none" className="pager__item pager__item--gap">...</div>,

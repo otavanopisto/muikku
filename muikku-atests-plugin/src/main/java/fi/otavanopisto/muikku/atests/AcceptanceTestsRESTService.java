@@ -1034,6 +1034,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
   
+  @GET
+  @Path("/users/id/{EMAIL}")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response getUserIdByEmail(@PathParam ("EMAIL") String email) {
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    if(userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(userEntity.getId()).build();
+  }
+  
   @POST
   @Path("/workspaces/{WORKSPACEID}/journal/{AUTHOREMAIL}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

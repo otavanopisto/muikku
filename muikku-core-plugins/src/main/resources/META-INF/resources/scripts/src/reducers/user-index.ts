@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
+import { PagingUserListType } from '~/reducers/main-function/users';
 export type ManipulateType = "UPDATE" | "CREATE";
 
 export interface CreateUserType {
@@ -19,14 +20,6 @@ export interface UpdateUserType {
   role?: string,
   studyProgrammeIdentifier?: string,
   ssn?: string
-}
-
-export interface SimpleUserType {
-  id: number,
-  firstName: string,
-  lastName?: string,
-  nickName?: string,
-  hasImage?: boolean
 }
 
 export interface UserType {
@@ -54,7 +47,9 @@ export interface UserType {
   studyStartDate?: string,
   studyTimeEnd?: string,
   userEntityId?: number
-  lastLogin?: string
+  lastLogin?: string,
+  archived?: boolean,
+  studiesEnded?: boolean,
 }
 
 export interface UserWithSchoolDataType {
@@ -88,12 +83,6 @@ export interface OrganizationType {
   name: string
 }
 
-export interface UserGroupType {
-  id: number,
-  name: string,
-  userCount: number,
-  organization?: OrganizationType
-}
 
 export interface UserStaffType {
   id: string,
@@ -101,8 +90,16 @@ export interface UserStaffType {
   firstName: string,
   lastName: string,
   properties: any,
-  userEntityId: number
+  userEntityId: number,
   hasImage: boolean
+}
+
+export interface WorkspaceStudentListType extends PagingUserListType {
+  results: Array<ShortWorkspaceUserWithActiveStatusType>
+}
+
+export interface WorkspaceStaffListType extends PagingUserListType {
+  results: Array<UserStaffType>
 }
 
 export interface ShortWorkspaceUserWithActiveStatusType {
@@ -117,7 +114,14 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   hasImage: boolean
 }
 
-export type UserGroupListType = Array<UserGroupType>;
+export interface UserGroupType {
+  id: number,
+  identifier?: string,
+  name: string,
+  userCount: number,
+  organization?: OrganizationType,
+  isGuidanceGroup?: boolean,
+}
 
 export interface UserBaseIndexType {
   [index: number]: UserType

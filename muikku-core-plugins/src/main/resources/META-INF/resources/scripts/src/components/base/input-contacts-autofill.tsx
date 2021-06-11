@@ -5,7 +5,7 @@ import promisify from '~/util/promisify';
 import { filterHighlight, getName } from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/workspaces';
-import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
+import { ContactRecepientType, WorkspaceStaffListType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
@@ -32,7 +32,7 @@ export interface InputContactsAutofillProps {
   showEmails?: boolean,
   autofocus?: boolean,
   loaders?: InputContactsAutofillLoaders,
-  wcagLabel?: string,
+  identifier: string,
 }
 
 export interface InputContactsAutofillState {
@@ -99,8 +99,8 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       this.selectedHeight = selectedHeight;
     }
   }
-  onInputBlur(e: React.FocusEvent<any>){
-    this.blurTimeout = setTimeout(()=>this.setState({isFocused: false}), 100) as any;
+  onInputBlur(e: React.FocusEvent<any>) {
+    this.blurTimeout = setTimeout(() => this.setState({ isFocused: false }), 100) as any;
   }
   onInputFocus(e: React.FocusEvent<any>) {
     clearTimeout(this.blurTimeout);
@@ -110,7 +110,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     let textInput = e.target.value;
     this.setState({ textInput, autocompleteOpened: true });
     clearTimeout(this.activeSearchTimeout);
-    if (textInput){
+    if (textInput) {
       this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100) as any;
     } else {
       this.setState({
@@ -148,10 +148,10 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     let searchResults = await Promise.all(
       [
-        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]): any[] => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
         checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
         checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
-        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) => result || []).catch((err: any): any[] => []) : [],
+        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: WorkspaceStaffListType) => result.results || []).catch((err: any): any[] => []) : [],
       ]
     );
 
@@ -262,7 +262,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
-      <TagInput wcagLabel={this.props.wcagLabel ? this.props.wcagLabel :""} ref="taginput" modifier={this.props.modifier}
+      <TagInput identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         label={this.props.label}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete} />

@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -26,6 +27,7 @@ import org.jsoup.safety.Whitelist;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -57,8 +59,11 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemp
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -119,6 +124,12 @@ public class CommunicatorController {
   
   @Inject
   private VacationNotificationsDAO vacationNotificationsDAO;
+
+  @Inject
+  private SessionController sessionController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
   
   @Inject
   @Any
@@ -312,7 +323,25 @@ public class CommunicatorController {
    * @return a list of recipients
    */
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
-    return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
+    List<CommunicatorMessageRecipient> recipients = communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
+    
+    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_STUDENT_MESSAGING)) {
+      return recipients;
+    } else {
+      Long loggedUserId = sessionController.getLoggedUserEntity().getId();
+      return recipients
+          .stream()
+          .filter(recipient -> {
+            if (recipient.getRecipient().equals(loggedUserId)) {
+              return true;
+            } else {
+              UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+              EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+              return recipientRole != null && !EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype());
+            }
+          })
+          .collect(Collectors.toList());
+    }
   }
 
   /**
@@ -326,11 +355,57 @@ public class CommunicatorController {
   }
     
   public List<CommunicatorMessageRecipientUserGroup> listCommunicatorMessageUserGroupRecipients(CommunicatorMessage communicatorMessage) {
-    return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    UserEntity sender = userEntityController.findUserEntityById(communicatorMessage.getSender());
+    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_READ_RECIPIENTS_LIST)) {
+      return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
+    } else if (loggedUser.getDefaultIdentifier().equals(sender.getDefaultIdentifier())) {
+      return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
+    } else {
+      List<CommunicatorMessageRecipientUserGroup> userGroupRecipientsList = communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
+      List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = new ArrayList<>();
+      SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier();
+  
+      for (CommunicatorMessageRecipientUserGroup userGroup : userGroupRecipientsList) {
+        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
+        Boolean isMember = userGroupEntityController.isMember(loggedUserIdentifier, userGroupEntity);
+        
+        if (isMember) {
+          userGroupRecipients.add(userGroup);
+        }
+      }
+      if (userGroupRecipients.isEmpty()) {
+        return communicatorMessageRecipientUserGroupDAO.listByMessageAndUser(communicatorMessage, loggedUser);
+      }
+      return userGroupRecipients;
+    }
   }
 
   public List<CommunicatorMessageRecipientWorkspaceGroup> listCommunicatorMessageWorkspaceGroupRecipients(CommunicatorMessage communicatorMessage) {
-    return communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    UserEntity sender = userEntityController.findUserEntityById(communicatorMessage.getSender());
+    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_READ_RECIPIENTS_LIST)) {
+      return communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
+    } else if (loggedUser.defaultSchoolDataIdentifier().equals(sender.defaultSchoolDataIdentifier())) {
+      return communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
+    } else {
+      List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipientsList = communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
+      List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = new ArrayList<>();
+
+      for (CommunicatorMessageRecipientWorkspaceGroup workspaceGroup : workspaceGroupRecipientsList) {
+        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
+        WorkspaceUserEntity workspaceUser =  workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, loggedUser.defaultSchoolDataIdentifier());
+        
+        if (workspaceUser != null) {
+          workspaceGroupRecipients.add(workspaceGroup);
+        }
+      }
+      if (workspaceGroupRecipients.isEmpty()) {
+        return communicatorMessageRecipientWorkspaceGroupDAO.listByMessageAndUser(communicatorMessage, loggedUser);
+      }
+      return workspaceGroupRecipients;
+
+    }
   }
 
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipientsByUserAndMessage(UserEntity user, CommunicatorMessageId messageId, boolean trashed) {

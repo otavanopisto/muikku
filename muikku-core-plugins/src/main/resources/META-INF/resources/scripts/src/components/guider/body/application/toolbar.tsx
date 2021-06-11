@@ -9,7 +9,7 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { GuiderType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
-import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { SearchFormElement } from '~/components/general/form-element';
 
@@ -25,7 +25,6 @@ interface GuiderToolbarState {
 }
 
 class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarState> {
-  private searchTimer: NodeJS.Timer;
   constructor(props: GuiderToolbarProps) {
     super(props);
 
@@ -37,11 +36,8 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.getBackByHash = this.getBackByHash.bind(this);
-
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
-
-    this.searchTimer = null;
   }
 
   getBackByHash(): string {
@@ -68,16 +64,12 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   }
 
   updateSearchWithQuery(query: string) {
-
-    clearTimeout(this.searchTimer);
-
     this.setState({
       searchquery: query
     });
-
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
     locationData.q = query;
-    this.searchTimer = setTimeout(window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' }), 400) as any;
+    window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
   }
 
   componentWillReceiveProps(nextProps: GuiderToolbarProps) {

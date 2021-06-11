@@ -141,6 +141,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -1044,7 +1045,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") Boolean active) {
+  public Response listWorkspaceStudents(
+		  @PathParam("WORKSPACEENTITYID") Long workspaceEntityId, 
+		  @QueryParam("q") String searchString,
+		  @QueryParam("active") Boolean active, 
+		  @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
+		  @QueryParam("maxResults") @DefaultValue("10")  Integer maxResults
+		  ) {
     
     // Workspace, access, and Elastic checks
 
@@ -1081,11 +1088,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Retrieve users via Elastic
-
+    String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
+    
     SearchResult searchResult = elasticSearchProvider.searchUsers(
         organizationEntityController.listUnarchived(),            // organizations
-        null,                                                     // search string
-        null,                                                     // fields
+        searchString,                                                     // search string
+        fields,                                                     // fields
         null,                                                     // environment role
         null,                                                     // user groups
         null,                                                     // workspace (not set because of student identifiers)
@@ -1093,8 +1101,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         true,                                                     // include inactive students
         false,                                                    // include hidden
         false,                                                    // only default users 
-        0,                                                        // first result
-        Integer.MAX_VALUE);                                       // max results
+        firstResult,                                                        // first result
+        maxResults);                                       // max results
+    
     List<Map<String, Object>> elasticUsers = searchResult.getResults();
 
     List<WorkspaceStudentRestModel> workspaceStudents = new ArrayList<WorkspaceStudentRestModel>();
@@ -1134,9 +1143,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       workspaceStudents.sort(Comparator.comparing(WorkspaceStudentRestModel::getLastName).thenComparing(WorkspaceStudentRestModel::getFirstName));
     }
-    
-    return Response.ok(workspaceStudents).build();
+
+    SearchResults<List<WorkspaceStudentRestModel>> responseStudents = new SearchResults<List<WorkspaceStudentRestModel>>(searchResult.getFirstResult(), searchResult.getLastResult(), workspaceStudents, searchResult.getTotalHitCount());
+    return Response.ok(responseStudents).build();
   }
+  
   
   /**
    * Returns staff members of workspace WORKSPACEENTITYID
@@ -2609,10 +2620,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     WorkspaceNode rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
+    WorkspaceNode parentFolder = restFolder.getParentId() == null ? rootFolder : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
+    String title = restFolder.getTitle() == null ? "Untitled" : restFolder.getTitle();
     
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(rootFolder, "Untitled");
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title);
     if (nextSibling != null) {
-        workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
+      workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }
     return Response.ok(createRestModel(workspaceFolder)).build();
   }

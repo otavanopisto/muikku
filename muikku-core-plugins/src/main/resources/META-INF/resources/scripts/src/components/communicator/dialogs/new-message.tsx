@@ -4,15 +4,13 @@ import mApi from '~/lib/mApi';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CKEditor from '~/components/general/ckeditor';
-import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import InputContactsAutofillLoaders from '~/components/base/input-contacts-autofill';
 import EnvironmentDialog from '~/components/general/environment-dialog';
 import { sendMessage, SendMessageTriggerType } from '~/actions/main-function/messages';
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
 import { MessageSignatureType } from '~/reducers/main-function/messages';
-import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, ContactRecepientType } from '~/reducers/user-index';
+import { ContactRecepientType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
@@ -47,6 +45,11 @@ interface CommunicatorNewMessageState {
   includesSignature: boolean
 }
 
+/**
+ * getStateIdentifier
+ * @param props
+ * @returns
+ */
 function getStateIdentifier(props: CommunicatorNewMessageProps) {
   if (!props.replyThreadId) {
     return;
@@ -76,6 +79,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       includesSignature: true
     }, getStateIdentifier(props));
   }
+
+  /**
+   * checkAgainstStoredState
+   */
   checkAgainstStoredState() {
     this.checkStoredAgainstThisState({
       text: this.props.initialMessage || "",
@@ -87,6 +94,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
     this.props.onOpen && this.props.onOpen();
   }
+
+  /**
+   * onCKEditorChange
+   * @param text
+   * @returns
+   */
   onCKEditorChange(text: string) {
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
       this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
@@ -94,12 +107,27 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     }
     this.setStateAndStore({ text }, getStateIdentifier(this.props));
   }
+
+  /**
+   * setSelectedItems
+   * @param selectedItems
+   */
   setSelectedItems(selectedItems: Array<ContactRecepientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
   }
+
+  /**
+   * onSubjectChange
+   * @param e
+   */
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setStateAndStore({ subject: e.target.value }, getStateIdentifier(this.props));
   }
+
+  /**
+   * sendMessage
+   * @param closeDialog
+   */
   sendMessage(closeDialog: () => any) {
     this.setState({
       locked: true
@@ -108,7 +136,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       to: this.state.selectedItems,
       subject: this.state.subject,
       text: ((this.props.signature && this.state.includesSignature) ?
-        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>'):
+        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>') :
         this.state.text),
       success: () => {
         closeDialog();
@@ -131,9 +159,17 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       replyThreadId: this.props.replyThreadId
     });
   }
+
+  /**
+   * onSignatureToggleClick
+   */
   onSignatureToggleClick() {
     this.setState({ includesSignature: !this.state.includesSignature });
   }
+
+  /**
+   * clearUp
+   */
   clearUp() {
     this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
     setTimeout(() => {
@@ -146,6 +182,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       locked: false
     }, getStateIdentifier(this.props));
   }
+
+  /**
+   * inputContactsAutofillLoaders
+   * @returns
+   */
   inputContactsAutofillLoaders() {
     return {
       studentsLoader: (searchString: string) => promisify(mApi().communicator.recipientsUsersSearch.read({
@@ -156,37 +197,42 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       }), 'callback')
     }
   }
-  render(){
+
+  /**
+   * render
+   * @returns
+   */
+  render() {
     let editorTitle = this.props.i18n.text.get('plugin.communicator.createmessage.label') + " - " + this.props.i18n.text.get('plugin.communicator.createmessage.title.content');
 
-    let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill wcagLabel="communicatorRecipients" modifier="new-message" key="1"
-          loaders={this.inputContactsAutofillLoaders()}
-          hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
-          hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
-          placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-          label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-          selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
-          showFullNames={!this.props.status.isStudent}/>),
+    let content = (closeDialog: () => any) => [
+      (<InputContactsAutofill identifier="communicatorRecipients" modifier="new-message" key="new-message-1"
+        loaders={this.inputContactsAutofillLoaders()}
+        hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+        hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+        placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+        label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
+        showFullNames={!this.props.status.isStudent} />),
       (
-       <div className="env-dialog__row" key="2">
-        <div className="env-dialog__form-element-container">
-          <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
-          <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
-          value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
+        <div className="env-dialog__row" key="new-message-2">
+          <div className="env-dialog__form-element-container">
+            <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
+            <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
+              value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems} />
+          </div>
         </div>
-      </div>
       ),
       (
-      <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
-        <div className="env-dialog__form-element-container">
-          <label className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</label>
-          <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        <div className="env-dialog__row env-dialog__row--ckeditor" key="new-message-3">
+          <div className="env-dialog__form-element-container">
+            <label className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</label>
+            <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          </div>
         </div>
-      </div>
       ),
-      (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
-        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+      (this.props.signature ? <div key="new-message-4" className="env-dialog__row env-dialog__row--communicator-signature">
+        <input id="messageSignature" className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick} />
         <label htmlFor="messageSignature" className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</label>
         <span className="env-dialog__input-description">
           <i className="mf-signature" dangerouslySetInnerHTML={{ __html: this.props.signature.signature }} />
@@ -218,6 +264,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -226,6 +277,11 @@ function mapStateToProps(state: StateType) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);
 };

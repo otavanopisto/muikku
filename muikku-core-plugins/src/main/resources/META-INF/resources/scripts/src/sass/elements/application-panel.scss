@@ -3,12 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-panel-wrapper {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
 .application-panel {
   align-items: center;
   display: flex;
@@ -17,6 +11,23 @@
   max-width: $breakpoint-max-usable-screen;
   padding: $navbar-mobile-height 0 10px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
+// This removes the unnecessary top-padding in studies and profile view as there is no toolbar present
+.application-panel--studies,
+.application-panel--profile {
+
+  .application-panel__content {
+    padding: 10px 0;
+  }
+}
+
+.application-panel--workspace-journal {
+  padding: 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
@@ -66,31 +77,38 @@
     flex-shrink: 0;
     justify-content: center;
     margin: 10px;
-    max-width: calc($breakpoint-max-usable-screen - 20px);
+    max-width: calc(#{$breakpoint-max-usable-screen} - 20px);
     position: relative;
     width: calc(100% - 20px);
   }
 }
 
 .application-panel__header-title {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 1.5rem;
-  font-weight: 300;
-  height: $panel-header-title-height-mobile;
-  line-height: 1;
-  text-transform: uppercase;
+  display: none;
 
   @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 1.5rem;
+    font-weight: 300;
     height: $panel-header-title-height-desktop;
+    line-height: 1;
+    text-transform: uppercase;
   }
 }
 
 .application-panel__header-actions {
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: $panel-header-title-height-desktop;
+  }
 }
 
 .application-panel__actions {
@@ -108,10 +126,8 @@
     flex-grow: 0;
     flex-shrink: 0;
     justify-content: center;
-    left: 0;
-    position: relative;
-    right: 0;
-    top: 0;
+    position: sticky;
+    top: $navbar-desktop-height;
   }
 }
 
@@ -191,7 +207,6 @@
   font-weight: 300;
   margin-bottom: 20px;
   margin-left: 10px;
-  text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
@@ -203,6 +218,7 @@
 
 .application-panel__helper-container {
   display: none;
+  height: auto;
 
   @include breakpoint($breakpoint-pad) {
     @include no-scrollbars;
@@ -210,24 +226,36 @@
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    margin: 0;
+    height: calc(100vh - 153px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    margin: 0 0 8px;
+    overflow: auto;
     overscroll-behavior: contain;
-    padding: 12px;
+    padding: 0 12px;
+    position: sticky;
+    top: 134px; // Navbar height + application-panel__actions height
     z-index: 1;
   }
 }
 
+// Helper container's sticky position for Profile and Studies view has different height and top property values
+.application-panel__helper-container--profile,
+.application-panel__helper-container--studies {
+
+  @include breakpoint($breakpoint-pad) {
+    height: calc(100vh) - 97px; // 100 View-port height - top offset which is 77px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    top: 77px;
+  }
+}
+
 .application-panel__helper-container--main-action {
+  align-items: center;
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
   height: $navbar-desktop-height;
+  margin: 0;
 }
 
 .application-panel__helper-container--workspace-journal {
-  @include no-scrollbars;
-  display: flex;
-  flex-basis: 220px;
-  flex-grow: 0;
-  flex-shrink: 0;
+  display: none;
   height: $navbar-mobile-height;
   margin: 0;
   overscroll-behavior: contain;
@@ -235,6 +263,11 @@
   z-index: 1;
 
   @include breakpoint($breakpoint-pad) {
+    @include no-scrollbars;
+    display: flex;
+    flex-basis: 220px;
+    flex-grow: 0;
+    flex-shrink: 0;
     height: $navbar-desktop-height;
     padding: 12px;
   }
@@ -289,32 +322,5 @@
 
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
-  }
-}
-
-
-// Profile
-.application-panel--profile {
-
-  .application-panel__helper-container {
-    display: block;
-
-    @include breakpoint($breakpoint-pad) {
-      display: flex;
-      flex-basis: 294px;
-      justify-content: center;
-    }
-  }
-
-  .application-panel__content {
-    padding: 10px 0 0;
-  }
-}
-
-// Records
-.application-panel--records {
-
-  .application-panel__content {
-    padding: 10px 0 0;
   }
 }

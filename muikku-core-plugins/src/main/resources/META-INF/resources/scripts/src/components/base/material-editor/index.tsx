@@ -26,16 +26,18 @@ import AddProducer from '~/components/general/add-producer';
 import { LicenseSelector } from '~/components/general/license-selector';
 import FileUploader from '~/components/general/file-uploader';
 import Link from '~/components/general/link';
+import { PageLocation } from '../../../@types/shared';
 
 interface MaterialEditorProps {
-  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
-  i18n: i18nType,
-  status: StatusType,
-  editorState: WorkspaceMaterialEditorType,
-  locale: LocaleListType,
-  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
-  createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType,
-  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  i18n: i18nType;
+  status: StatusType;
+  editorState: WorkspaceMaterialEditorType;
+  locale: LocaleListType;
+  locationPage: PageLocation;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType;
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
 }
 
 interface MaterialEditorState {
@@ -297,6 +299,35 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   componentWillUnMount() {
     window.removeEventListener('resize', () => this.updateHeight);
   }
+
+  /**
+   * Builds locale string depending what page component is used
+   * and if page is already view restricted
+   * @param isRestricted
+   * @returns localeString
+   */
+  buildRestrictViewLocale = (isRestricted: boolean): string => {
+
+    let localeString:string;
+    switch (this.props.locationPage) {
+      case "Help":
+        localeString = isRestricted ? this.props.i18n.text.get("plugin.workspace.helpManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.helpManagement.enableViewRestrictionPageTooltip");
+        break;
+      case "Materials":
+        localeString = isRestricted ? this.props.i18n.text.get("plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip");
+        break;
+      default:
+        localeString = ""
+        break;
+    }
+
+    return localeString;
+  }
+
+  /**
+   * render
+   * @returns
+   */
   render(){
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
@@ -349,13 +380,15 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip") :
               this.props.i18n.text.get("plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"));
 
+      const canRestrictViewLocale = this.buildRestrictViewLocale(isViewRestricted);
+
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide && (!this.props.editorState.parentNodeValue || !this.props.editorState.parentNodeValue.hidden) ?
           <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
             <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon="eye"/>
           </Dropdown> : null}
-          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={isViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip")}>
+          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={canRestrictViewLocale}>
             <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="restriction" onClick={this.toggleViewRestrictionStatus}/>
           </Dropdown> : null}
           {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip")}>

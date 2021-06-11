@@ -56,12 +56,34 @@
   }
 }
 
+.dialog__window--edit-workspace,
+.dialog__window--edit-user-group {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 546px;
+    }
+  }
+}
+
+
+// .dialog__window--edit-user-group {
+//   @include breakpoint($breakpoint-pad) {
+//     max-width: 815px;
+
+//     .dialog__content {
+//       height: 546px;
+//     }
+//   }
+// }
+
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
 
     .dialog__content {
-      height: 505px;
+      height: 420px;
     }
   }
 }
@@ -186,7 +208,6 @@
 }
 
 .dialog__header--wizard {
-
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-dialog-wizard-desktop-background;
@@ -251,6 +272,15 @@
   }
 }
 
+
+.dialog__content-row--user-search {
+  margin: 10px 0;
+}
+
+.dialog__content-row--dates {
+  display: flex;
+}
+
 .dialog__content-row--new-user {
   align-items: flex-start;
   display: flex;
@@ -276,22 +306,44 @@
   justify-content: flex-start;
 }
 
-
-.dialog__content-row-label {
+.dialog__content-row-header-title {
   font-size: $label-large-font-size;
 }
 
-.dialog__content-row-content {
-  padding: 15px 0 0;
+.dialog__content-row-header-description {
+  font-weight: 300;
+  padding: 10px;
 }
 
-.dialog__content-row-content--new-workspace {
-  margin-left: 20px;
+.dialog__content-row-content {
+  padding: 2px 0 0;
+}
+
+.dialog__content-row-content--new-workspace,
+.dialog__content-row-content--edit-workspace,
+.dialog__content-row-content--summary-dates {
+  padding-left: 20px;
 
   span {
     margin-left: 10px;
   }
+}
 
+.dialog__content-row-content--summary {
+  padding-left: 20px;
+}
+
+.dialog__content-row-content--summary-dates span {
+  margin-left: 0;
+
+  &:not(:first-child) {
+    margin-left: 5px;
+
+    &::before {
+      content: "-";
+      margin-right: 5px;
+    }
+  }
 }
 
 .dialog__footer {

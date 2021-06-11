@@ -15,6 +15,14 @@
   }
 }
 
+.application-list--dialog-users {
+  height: 234px;
+}
+
+.application-list--dialog-remove-users {
+  height: 285px;
+}
+
 .application-list__header-container {
   align-items: flex-start;
   display: flex;
@@ -40,6 +48,8 @@
 }
 
 .application-list__header--discussion {
+  align-items: center;
+  display: inline-flex;
   margin-bottom: 0;
   margin-left: 10px;
 
@@ -53,13 +63,6 @@
   margin-bottom: 0;
 }
 
-.application-list--workspace-staff-members {
-  display: flex;
-  flex-wrap: wrap;
-  height: auto;
-  padding: 0;
-}
-
 .application-list--workspace-users {
   display: flex;
   flex-direction: column;
@@ -68,8 +71,31 @@
 }
 
 .application-list--workspace-templates {
-  min-height: 260px;
+  min-height: 208px;
   overflow: hidden;
+}
+
+.application-list__content--workspace-staff-members {
+  display: block;
+  min-height: 0;
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    align-content: start;
+    display: flex;
+    flex-wrap: wrap;
+    // scss-lint:disable SelectorFormat
+    &.state-FULL {
+      min-height: 330px;
+    }
+    // scss-lint:enable SelectorFormat
+  }
+}
+
+.application-list__content--workspace-users {
+  @include breakpoint($breakpoint-pad) {
+    height: 660px;
+  }
 }
 
 .application-list__title {
@@ -263,7 +289,8 @@
   flex-flow: row nowrap;
 }
 
-.application-list__item-content-wrapper--workspace-user {
+.application-list__item-content-wrapper--workspace-user,
+.application-list__item-content-wrapper--dialog-remove-users {
   align-items: center;
 }
 
@@ -362,9 +389,15 @@
       }
     }
   }
+  // scss-lint:disable SelectorFormat
+  &.state-DISABLED {
+    background-color: $color-main-function-application-list-item-disabled-background;
+    color: $color-main-function-application-list-item-disabled-text;
+  }
+  // scss-lint:enable SelectorFormat
 }
 
-.application-list__item--notification {
+.application-list__item-- .application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 10px 10px 10px 0;
@@ -679,6 +712,8 @@
 }
 
 .application-list__item-header-main-content--discussion-message-creator {
+  align-items: center;
+  display: inline-flex;
   font-size: 0.875rem;
   font-weight: 600;
 

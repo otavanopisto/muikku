@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-import { ApplicationPanelToolbar } from '~/components/general/application-panel';
+import { ApplicationPanelToolbar } from '~/components/general/application-panel/application-panel';
 import { WorkspaceType } from '~/reducers/workspaces';
 
 interface WorkspaceJournalsToolbarProps {

@@ -1,16 +1,32 @@
 import { ActionType } from "~/actions";
-import students from "~/components/guider/body/application/students";
-import { UserWithSchoolDataType, UserGroupType, UserType } from '~/reducers/user-index';
+import { UserGroupType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserType>;
 export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
-export interface OrganizationUsersListType {
+export type UserGroupsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+
+export interface UserPayloadType {
+  q: string | null,
+  firstResult?: number | null,
+  lastResult?: number | null,
+  maxResults?: number | null,
+  userGroupIds?: number[],
+}
+
+export interface PagingUserListType {
   firstResult: number,
-  lastResult: number,
+  maxResults: number,
+  totalHitCount: number,
+}
+
+export interface PagingEnvironmentUserListType extends PagingUserListType {
   results: UsersListType,
-  totalHitCount: number
+}
+
+export interface UserGroupListType {
+  list: UserGroupType[],
 }
 
 export interface StudyprogrammeTypes {
@@ -30,8 +46,8 @@ export interface UserPanelUsersType {
 }
 
 export interface UsersType {
-  students: UserPanelUsersType,
-  staff: UserPanelUsersType,
+  students?: UserPanelUsersType,
+  staff?: UserPanelUsersType,
 }
 
 export interface UsersSelectType {
@@ -39,6 +55,39 @@ export interface UsersSelectType {
   staff: UsersListType,
   userGroups: Array<UserGroupType>,
 }
+
+export interface CurrentUserGroupType {
+  id: number | null,
+  students: PagingEnvironmentUserListType,
+  staff: PagingEnvironmentUserListType,
+}
+
+export interface UserGroupsType {
+  list: UserGroupType[],
+  currentUserGroup?: CurrentUserGroupType,
+  state: UserGroupsStateType,
+  hasMore: boolean,
+  searchString: string,
+  currentPayload: UserPayloadType,
+}
+
+export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>
+
+export interface CreateUserGroupType {
+  name: string,
+  isGuidanceGroup: boolean,
+}
+
+export interface UpdateUserGroupType extends CreateUserGroupType {
+  identifier: string,
+}
+
+export interface ModifyUserGroupUsersType {
+  groupIdentifier?: string,
+  userIdentifiers: string[],
+}
+
+export type UpdateUserGroupStateType = "update-group" | "add-users" | "remove-users" | "done";
 
 // Do not delete, this is for organization
 
@@ -60,6 +109,44 @@ export default function users(state: UsersType = {
     return Object.assign({}, state, {
       staff: action.payload
     });
+  }
+  return state;
+}
+
+export function userGroups(state: UserGroupsType = {
+  list: [],
+  currentUserGroup: null,
+  state: "LOADING",
+  hasMore: false,
+  searchString: "",
+  currentPayload: null,
+}, action: ActionType): UserGroupsType {
+  if (action.type === "UPDATE_USER_GROUPS") {
+    return Object.assign({}, state, {
+      list: action.payload
+    });
+  } else if (action.type === "LOAD_MORE_USER_GROUPS") {
+    return Object.assign({}, state, {
+      list: state.list.concat(action.payload)
+    });
+  } else if (action.type === "UPDATE_CURRENT_USER_GROUP") {
+    return Object.assign({}, state, {
+      currentUserGroup: action.payload
+    });
+  }
+  else if (action.type === "UPDATE_USER_GROUPS_STATE") {
+    return Object.assign({}, state, {
+      state: action.payload
+    });
+  } else if (action.type === "UPDATE_HAS_MORE_USERGROUPS") {
+    return Object.assign({}, state, {
+      hasMore: action.payload
+    });
+  } else if (action.type === "SET_CURRENT_PAYLOAD") {
+    return Object.assign({}, state, {
+      currentPayload: action.payload
+    });
+
   }
   return state;
 }

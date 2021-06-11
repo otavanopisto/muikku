@@ -1,6 +1,10 @@
 package fi.otavanopisto.muikku.plugins.worklist.rest;
 
+import java.text.MessageFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -15,16 +19,30 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -36,10 +54,31 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class WorklistRESTService {
   
   @Inject
+  private Logger logger;
+
+  @Inject
   private SessionController sessionController;
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
+
+  @Inject
+  private WorkspaceSchoolDataController workspaceSchoolDataController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private Mailer mailer;
 
   /**
    * GET mApi().worklist.templates
@@ -59,7 +98,8 @@ public class WorklistRESTService {
    *      "ENTRYDATE,"
    *      "DESCRIPTION",
    *      "PRICE",
-   *      "FACTOR"
+   *      "FACTOR",
+   *      "BILLING_NUMBER"
    *    ]
    *   },
    *    
@@ -91,7 +131,8 @@ public class WorklistRESTService {
    *  entryDate: 2021-02-15
    *  description: "Something something",
    *  price: 25,
-   *  factor: 2
+   *  factor: 2,
+   *  billingNumber: 123456
    * }
    *  
    * NOTE: If trying to pass along a value for a field that is not editable according
@@ -101,15 +142,18 @@ public class WorklistRESTService {
    * 
    * {id: 123,
    *  templateId: 1,
+   *  state: ENTERED|PROPOSED|APPROVED|PAID,
    *  entryDate: 2021-02-15,
    *  description: "Something something",
    *  price: 25,
    *  factor: 2,
+   *  billingNumber: 123456
    *  editableFields: [
    *    "ENTRYDATE",
    *    "DESCRIPTION",
    *    "PRICE",
-   *    "FACTOR"
+   *    "FACTOR",
+   *    "BILLING_NUMBER"
    *  ]
    * }
    */
@@ -140,7 +184,7 @@ public class WorklistRESTService {
    * Output: Updated worklist item
    * 
    * Errors:
-   * 403 if trying to update a worklist item that has editable false
+   * 403 if trying to update a worklist item that is already approved or paid
    */
   @Path("/worklistItems")
   @PUT
@@ -166,7 +210,7 @@ public class WorklistRESTService {
    * Output: 204 (no content)
    * 
    * Errors:
-   * 403 if trying to remove a worklist item that has removable false
+   * 403 if trying to remove a worklist item that is already approved or paid
    */
   @Path("/worklistItems")
   @DELETE
@@ -192,25 +236,30 @@ public class WorklistRESTService {
    * [
    *   {id: 1,
    *    templateId: 1,
+   *    state: ENTERED|PROPOSED|APPROVED|PAID,
    *    entryDate: 2021-02-15,
    *    description: "Something something",
    *    price: 25,
    *    factor: 2,
+   *    billingNumber: 123456
    *    editableFields: [
    *      "ENTRYDATE",
    *      "DESCRIPTION",
    *      "PRICE",
-   *      "FACTOR"
+   *      "FACTOR",
+   *      "BILLING_NUMBER"
    *    ],
    *    removable: true
    *   },
    *   
    *   {id: 123,
    *    templateId: 2,
+   *    state: ENTERED|PROPOSED|APPROVED|PAID,
    *    entryDate: 2021-03-01,
    *    description: "Course assessment",
    *    price: 75,
    *    factor: 1,
+   *    billingNumber: 123456,
    *    courseAssessment: {
    *      courseName: "BI1 - Ihmisen biologia",
    *      studentName: "John "Joe" Doe (Nettilukio)",
@@ -283,4 +332,156 @@ public class WorklistRESTService {
     }
   }
   
+  /**
+   * PUT mApi().worklist.updateWorklistItemsState
+   * 
+   * Updates all worklist items of the given user in the given timeframe to the given state.
+   * 
+   * Payload: State change payload item
+   * 
+   * {userIdentifier: PYRAMUS-STAFF-123,
+   *  beginDate: 2021-02-01,
+   *  endDate: 2021-02-28,
+   *  state: "PROPOSED"
+   * }
+   *  
+   * Output: All worklist items of the timeframe, with an updated state
+   */
+  @PUT
+  @Path("/updateWorklistItemsState")
+  @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
+  public Response updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
+    
+    // Do the actual update
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    userSchoolDataController.updateWorklistItemsState(dataSource, stateChange);
+    
+    // If changing state to PROPOSED, notify approvers via e-mail
+    
+    if (StringUtils.equals("PROPOSED", stateChange.getState())) {
+      List<WorklistApproverRestModel> approvers = null;
+      
+      // Ask Pyramus for users marked as worklist approvers
+      
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        BridgeResponse<List<WorklistApproverRestModel>> response = userSchoolDataController.listWorklistApprovers(dataSource);
+        if (response.ok()) {
+          approvers = response.getEntity();
+        }
+        else {
+          logger.severe(String.format("Error retrieving worklist approvers: %d (%s)", response.getStatusCode(), response.getMessage()));
+        }
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      // If we have approvers, send the notification
+      
+      if (!CollectionUtils.isEmpty(approvers)) {
+        List<String> approverEmails = approvers.stream().map(WorklistApproverRestModel::getEmail).collect(Collectors.toList());
+        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.worklist.approveMail.subject");
+        String mailContent = localeController.getText(sessionController.getLocale(), "rest.worklist.approveMail.content");
+        UserEntityName currentUserName = userEntityController.getName(sessionController.getLoggedUserEntity());
+        mailContent = MessageFormat.format(
+            mailContent,
+            // Parameters for the human readable content of the message
+            currentUserName.getDisplayName(),
+            stateChange.getBeginDate().format(DateTimeFormatter.ofPattern("d.M.yyyy")), // e.g. 1.2.2021
+            stateChange.getEndDate().format(DateTimeFormatter.ofPattern("d.M.yyyy")), // e.g. 28.2.2021
+            // Parameters for the link to Pyramus
+            // TODO Not the prettiest way of resolving current user's id in Pyramus but about the only one that can be used here :| 
+            StringUtils.substringAfterLast(stateChange.getUserIdentifier(), "-"),
+            stateChange.getBeginDate().toString(), // e.g. 2021-02-01
+            stateChange.getEndDate().toString() // e.g. 2021-02-28
+        );
+        mailer.sendMail(MailType.HTML, approverEmails, mailSubject, mailContent);
+      }
+    }
+    
+    // Fetch and return user's all worklist items in the timeframe  
+    
+    BridgeResponse<List<WorklistItemRestModel>> response = userSchoolDataController.listWorklistItemsByOwnerAndTimeframe(
+        dataSource,
+        stateChange.getUserIdentifier(),
+        stateChange.getBeginDate().toString(),
+        stateChange.getEndDate().toString());
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  @GET
+  @Path("/basePrice")
+  @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
+  public Response getWorkspaceBasePrice(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
+    Double price = null;
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      price = workspaceSchoolDataController.getWorkspaceBasePrice(workspaceEntity);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    return price == null ? Response.status(Status.NOT_FOUND).build() : Response.ok(price).build();
+  }
+
+  @GET
+  @Path("/billedPrice")
+  @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
+  public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("assessmentIdentifier") String assessmentIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(assessmentIdentifier);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      BridgeResponse<WorklistItemBilledPriceRestModel> response = workspaceSchoolDataController.getWorkspaceBilledPrice(
+          workspaceEntityId, workspaceAssessmentIdentifier.getIdentifier());
+      if (response.ok()) {
+        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+      }
+      else {
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      }
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+
+  @PUT
+  @Path("/billedPrice")
+  @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
+  public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, WorklistItemBilledPriceRestModel payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      BridgeResponse<WorklistItemBilledPriceRestModel> response = workspaceSchoolDataController.updateWorkspaceBilledPrice(
+          workspaceEntity.getDataSource(), payload);
+      if (response.ok()) {
+        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+      }
+      else {
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      }
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+
 }

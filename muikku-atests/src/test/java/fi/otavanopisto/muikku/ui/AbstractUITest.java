@@ -753,6 +753,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     selectField.selectByValue(value);
   }
   
+  protected boolean isInSelection(String selector, String compare) {
+    Select selectField = new Select(findElementByCssSelector(selector));
+    List<WebElement> options = selectField.getOptions();
+    for (WebElement option : options) {
+      if(StringUtils.equalsIgnoreCase(option.getText(), compare)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected void waitUntilCountOfElements(String selector, int count) {
+    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(selector), count));
+  }
+  
   protected void selectFinnishLocale() {
     waitForPresent("a.button-pill--current-language");
     String localeText = getElementText("a.button-pill--current-language>span");
@@ -1469,6 +1484,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .put("/test/announcements/{ANNOUNCEMENTID}/workspace/{WORKSPACEID}", String.valueOf(announcementId), String.valueOf(workspaceId))
       .then()
       .statusCode(200);
+  }
+  
+  protected long fetchUserIdByEmail(String email) throws JsonParseException, JsonMappingException, IOException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Response response = asAdmin()
+        .contentType("application/json")
+        .get("/test/users/id/{EMAIL}", email);
+      
+      response.then()
+        .statusCode(200);
+      
+      Long result = objectMapper.readValue(response.asString(), Long.class);
+      return result;
   }
   
   protected void deleteUserGroup(Long userGroupId) {

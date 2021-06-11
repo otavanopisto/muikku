@@ -13,10 +13,9 @@ import { StateType } from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import Button from "~/components/general/button";
-import { getUserImageUrl } from "~/util/modifiers";
 import moment from '~/lib/moment';
-import '~/sass/elements/application-sub-panel.scss';
 import { StatusType } from '~/reducers/base/status';
+import Avatar from '~/components/general/avatar';
 
 interface SummaryProps {
   i18n: i18nType,
@@ -44,16 +43,17 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
-              <span>{this.props.summary.data.studentsDetails.studyStartDate ?
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
+              <span className="application-sub-panel__single-entry">{this.props.summary.data.studentsDetails.studyStartDate ?
                 this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyStartDate) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span>
             </div>
           </div>
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.summary.data.studentsDetails.studyEndDate ? "plugin.records.studyEndDateLabel" :
               "plugin.records.studyTimeEndLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
-              this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
+              <span className="application-sub-panel__single-entry">{this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd ?
+                this.props.i18n.time.format(this.props.summary.data.studentsDetails.studyEndDate || this.props.summary.data.studentsDetails.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
           </div>
 
           <div className="application-sub-panel__item">
@@ -72,9 +72,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   }
                   return <div className="item-list__item item-list__item--student-councelor" key={councelor.userEntityId}>
                     <div className="item-list__profile-picture">
-                      <object data={getUserImageUrl(councelor.userEntityId)} type="image/jpeg" className="avatar-container">
-                        <div className="avatar avatar--category-3">{councelor.firstName[0]}</div>
-                      </object>
+                      <Avatar id={councelor.userEntityId} userCategory={3} firstName={councelor.firstName} hasImage={councelor.hasImage} />
                     </div>
                     <div className="item-list__text-body item-list__text-body--multiline">
                       <div className="item-list__user-name">{councelor.firstName} {councelor.lastName}</div>
@@ -120,8 +118,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>;
 
       return (
-        <div>
-          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>
+        <section>
+          <h2 className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ?
             <div className="react-container">
@@ -144,12 +142,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </div>
               </div>
               <div className="application-sub-panel">
-                <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
+                <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
                 {this.props.summary.data.graphData.activity && this.props.summary.data.graphData.workspaces ? <MainChart workspaces={this.props.summary.data.graphData.workspaces} activityLogs={this.props.summary.data.graphData.activity} /> : null}
               </div>
             </div>
             : null}
-        </div>
+        </section>
       )
     }
   }
