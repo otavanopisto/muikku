@@ -641,7 +641,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   
   @Override
   public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(
-      Long organizationId) {
+      String organizationIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
