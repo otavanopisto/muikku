@@ -2098,18 +2098,19 @@ mark[data-muikku-word-definition] {
   padding: 10px 35px;
   quotes: "\201C""\201D";
 
+  > p {
+    display: inline;
+  }
+
   &::before {
     color: $color-material-citation-quote;
     content: open-quote;
     display: inline-block;
     font-family: arial;
     font-size: 70px;
-    font-style: normal;
-    left: 0;
     line-height: 1px;
-    margin-right: 25px;
     vertical-align: -25px;
-    width: 0;
+    width: 25px;
   }
 
   &::after {
@@ -2118,13 +2119,9 @@ mark[data-muikku-word-definition] {
     display: inline-block;
     font-family: arial;
     font-size: 70px;
-    font-style: normal;
-    left: 3px;
     line-height: 1px;
-    margin-left: 5px;
-    position: relative;
     vertical-align: -25px;
-    width: 1px;
+    width: 25px;
   }
 }
 
@@ -2134,7 +2131,7 @@ mark[data-muikku-word-definition] {
   box-shadow: none;
   color: $color-default-contrast;
   font-style: normal;
-  padding: 5px 10px 5px 40px;
+  padding: 12px 12px 12px 50px;
   position: relative;
   quotes: "\201C""\201D";
   text-shadow: none;
@@ -2143,10 +2140,10 @@ mark[data-muikku-word-definition] {
     color: $color-material-citation-quote;
     content: open-quote;
     font-family: arial;
-    font-size: 55px;
-    left: 10px;
+    font-size: 60px;
+    left: 16px;
     position: absolute;
-    top: 20px;
+    top: 26px;
   }
 }
 
