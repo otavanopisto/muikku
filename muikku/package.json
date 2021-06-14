@@ -1,0 +1,14 @@
+{
+  "name": "muikku",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-sass": "node-sass ./src/main/webapp/resources/theme-muikku/sass/ -o ./target/scss_compiled/"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-sass": "^6.0.0"
+  }
+}
