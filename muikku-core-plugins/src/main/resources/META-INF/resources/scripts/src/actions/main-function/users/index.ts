@@ -129,7 +129,6 @@ let createStudent: CreateStudentTriggerType = function createStudent(data) {
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      console.log(err);
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.error", err as any as string), 'error'));
       data.fail && data.fail();
     }
