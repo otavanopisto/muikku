@@ -8,7 +8,11 @@ import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 const ProgressBarLine = require('react-progress-bar.js').Line;
 import * as uuid from "uuid";
+import { UploadingValue } from '../../@types/shared';
 
+/**
+ * FileUploaderProps
+ */
 interface FileUploaderProps {
   // Default uploading process
   onFileError?: (file: File, err:Error)=>any,
@@ -17,7 +21,7 @@ interface FileUploaderProps {
   formDataGenerator?: (file: File, formData: FormData) => any,
   uploadingTextProcesser?: (i: number) => string,
   url?: string,
-
+  uploadingValues?: UploadingValue[]
   // taking control from it
   onFileInputChange?: (e: React.ChangeEvent<HTMLInputElement>)=>any,
   modifier?: string,
@@ -43,19 +47,20 @@ interface FileUploaderProps {
   displayNotification: DisplayNotificationTriggerType,
 }
 
+/**
+ * FileUploaderState
+ */
 interface FileUploaderState {
-  uploadingValues: Array<{
-    name: string,
-    contentType: string,
-    failed?: boolean,
-    progress?: number,
-    file?: File
-  }>,
+  uploadingValues: UploadingValue[]
 }
 
 const MAX_BYTES = 10000000;
 
 class FileUploader extends React.Component<FileUploaderProps, FileUploaderState> {
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: FileUploaderProps){
     super(props);
 
@@ -67,6 +72,27 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
     this.processFileAt = this.processFileAt.bind(this);
     this.removeFailedFileAt = this.removeFailedFileAt.bind(this);
   }
+
+  componentDidMount = () => {
+    if(this.props.uploadingValues){
+      this.setState({
+        uploadingValues: this.props.uploadingValues
+      })
+    }
+  }
+
+  componentDidUpdate = (prevProps: FileUploaderProps, prevState: FileUploaderState) => {
+    if(JSON.stringify(prevProps.uploadingValues) !== JSON.stringify(this.props.uploadingValues)){
+      this.setState({
+        uploadingValues: this.props.uploadingValues
+      })
+    }
+  }
+
+  /**
+   * removeFailedFileAt
+   * @param index
+   */
   removeFailedFileAt(index: number) {
     let newValues = [...this.state.uploadingValues];
     newValues.splice(index, 1);
@@ -76,6 +102,11 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       uploadingValues: newValues
     });
   }
+
+  /**
+   * processFileAt
+   * @param index
+   */
   processFileAt(index: number) {
   //first we create a new form data
     let formData = new FormData();
@@ -89,6 +120,8 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       const successIndex = newValues.findIndex(f => f.file === file);
       newValues[successIndex] = {...this.state.uploadingValues[successIndex]}
       newValues[successIndex].failed = true;
+
+
       //and call set state
       this.setState({
         uploadingValues: newValues
@@ -99,7 +132,9 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       return;
     }
 
-    this.props.formDataGenerator(file, formData);
+    if(this.props.formDataGenerator){
+      this.props.formDataGenerator(file, formData);
+    }
 
     //we make the ajax request to the temp file upload servlet
     $.ajax({
@@ -165,6 +200,11 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       processData: false
     })
   }
+
+  /**
+   * onFileInputChange
+   * @param e
+   */
   onFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (this.props.onFileInputChange) {
       return this.props.onFileInputChange(e);
@@ -179,19 +219,27 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       }
     });
 
+
     //let's get the original size of the array that we currently got
     let originalLenght = this.state.uploadingValues.length;
-    this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)}, ()=>{
-      //we are going to loop thru those newly added values
-      newValues.forEach((value, index)=>{
-        //we get the real index
-        let realIndex = index + originalLenght;
-        //we tell this to process the file
-        this.processFileAt(realIndex);
-      })
-    });
+    this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)});
+
+    //we are going to loop thru those newly added values
+    newValues.forEach((value, index)=>{
+      //we get the real index
+      let realIndex = index + originalLenght;
+      //we tell this to process the file
+      this.processFileAt(realIndex);
+    })
   }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
   render(){
+
+
     let uniqueElementID = "file-uploader__hint-" + uuid.v4();
     if (this.props.invisible) {
       return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
@@ -252,42 +300,10 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
               {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
             </span>
           })}
-          {this.state.uploadingValues.map((uploadingFile, index) => {
-            if (uploadingFile.failed) {
-              return <span className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
-                <span className="file-uploader__item-title-container">
-                  <span className="file-uploader__item-title">
-                    {uploadingFile.name}
-                  </span>
-                </span>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
-                  onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
-              </span>
-            }
 
-            return <span className="file-uploader__item" key={index}>
-                <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
-                  strokeWidth: 1,
-                  duration: 1000,
-                  color: "#72d200",
-                  trailColor: "#f5f5f5",
-                  trailWidth: 1,
-                  svgStyle: {width: "100%", height: "4px"},
-                  text: {
-                    className: "file-uploader__item-upload-percentage",
-                    style: {
-                       right: "100%"
-                    }
-                  }
-                }}
-                strokeWidth={1} easing="easeInOut" duration={1000} color="#72d200" trailColor="#f5f5f5"
-                trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-                text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
-                 progress={uploadingFile.progress}/>
-              </span>;
-          })}
         </span>
-      } else if (this.props.emptyText && this.props.readOnly) {
+      }
+      else if (this.props.emptyText && this.props.readOnly) {
         dataNode = <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span>
       } else if (this.props.emptyText) {
         dataNode = <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span>
@@ -302,15 +318,59 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
         }
       </span>
       {dataNode}
+      {
+        this.state.uploadingValues && this.state.uploadingValues.map((uploadingFile, index) => {
+          if (uploadingFile.failed) {
+            return <span className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
+              <span className="file-uploader__item-title-container">
+                <span className="file-uploader__item-title">
+                  {uploadingFile.name}
+                </span>
+              </span>
+              <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
+                onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
+            </span>
+          }
+
+          return <span className="file-uploader__item" key={index}>
+              <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
+                strokeWidth: 1,
+                duration: 1000,
+                color: "#72d200",
+                trailColor: "#f5f5f5",
+                trailWidth: 1,
+                svgStyle: {width: "100%", height: "4px"},
+                text: {
+                  className: "file-uploader__item-upload-percentage",
+                  style: {
+                     right: "100%"
+                  }
+                }
+              }}
+              strokeWidth={1} easing="easeInOut" duration={1000} color="#72d200" trailColor="#f5f5f5"
+              trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+              text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
+               progress={uploadingFile.progress}/>
+            </span>;
+        })
+      }
     </span>
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType){
   return {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({displayNotification}, dispatch);
 };
