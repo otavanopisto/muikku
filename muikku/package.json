@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-frontend-full": "npm ci && npm run build-sass",
     "build-sass": "node-sass ./src/main/webapp/resources/theme-muikku/sass/ -o ./target/scss_compiled/"
   },
   "author": "",

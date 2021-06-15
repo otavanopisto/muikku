@@ -386,10 +386,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run build-sass</arguments>
-              <environmentVariables>
-                <jarOutputPath>${project.build.directory}/${project.build.finalName}</jarOutputPath>
-              </environmentVariables>
+              <arguments>run build-frontend-full</arguments>
             </configuration>
           </execution>
         </executions>
