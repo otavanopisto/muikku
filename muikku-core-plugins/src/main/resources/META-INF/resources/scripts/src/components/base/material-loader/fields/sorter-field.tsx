@@ -116,7 +116,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   }
   checkAnswers(){
     //if not set to actually do we cancel
-    if (!this.props.checkAnswers || this.props.content){
+    if (!this.props.checkAnswers){
       return;
     }
 
