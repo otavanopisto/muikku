@@ -31,10 +31,13 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationStudentsActivityRESTModel;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
@@ -69,6 +72,9 @@ public class OrganizationUserManagementRESTService {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private Instance<SearchProvider> searchProviderInstance;
@@ -332,6 +338,28 @@ public class OrganizationUserManagementRESTService {
     
     SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), result.getLastResult(), students, result.getTotalHitCount());
     return Response.ok(responseStudents).build();
+  }
+  
+  @GET
+  @Path("/contactPersons")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
+  public Response listContactPersons() {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<List<OrganizationContactPerson>> response = userSchoolDataController.listOrganizationContactPersons(dataSource, organization.schoolDataIdentifier().getIdentifier());
+
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
   }
 
   private Date getDateResult(Object value) {

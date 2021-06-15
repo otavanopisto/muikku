@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -636,6 +637,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
+  }
+  
+  @Override
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(
+      String organizationIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
   }
 
   @Override
