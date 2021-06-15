@@ -15,19 +15,25 @@ export type OrganizationSummaryStatusType = "WAITING" | "LOADING" | "READY" | "E
 export interface OrganizationSummaryType {
   status: OrganizationSummaryStatusType,
   students: OrganizationSummaryStudentsDataType,
-  workspaces: OrganizationSummaryWorkspaceDataType
+  workspaces: OrganizationSummaryWorkspaceDataType,
+  contacts: any
 }
 
 export default function organizationSummary(state: OrganizationSummaryType = {
   status: "WAITING",
   students: null,
   workspaces: null,
+  contacts: null,
 }, action: ActionType): OrganizationSummaryType {
   if (action.type === "UPDATE_SUMMARY_STATUS") {
     return Object.assign({}, state, {
       status: action.payload
     });
   } else if (action.type === "LOAD_WORKSPACE_SUMMARY") {
+    return Object.assign({}, state, {
+      workspaces: action.payload
+    });
+  } else if (action.type === "LOAD_ORGANIZATION_CONTACTS") {
     return Object.assign({}, state, {
       workspaces: action.payload
     });

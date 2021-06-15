@@ -13,6 +13,7 @@ export type OrganizationSummaryStatusType = "IDLE" | "LOADING" | "READY" | "ERRO
 
 export interface LOAD_WORKSPACE_SUMMARY extends SpecificActionType<"LOAD_WORKSPACE_SUMMARY", OrganizationSummaryWorkspaceDataType> { }
 export interface LOAD_STUDENT_SUMMARY extends SpecificActionType<"LOAD_STUDENT_SUMMARY", OrganizationSummaryStudentsDataType> { }
+export interface LOAD_ORGANIZATION_CONTACTS extends SpecificActionType<"LOAD_ORGANIZATION_CONTACTS", {}> { }
 export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMARY_STATUS", OrganizationSummaryStatusType> { }
 
 // julkaistut/julkaisemattomat kurssit:
@@ -20,6 +21,9 @@ export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMAR
 
 // aktiiviset/epäaktiiviset opiskelijat:
 // mApi().organizationUserManagement.studentsSummary.read()
+
+// yhteyshenkilöt
+// mApi().organizationUserManagement.contactPersons.read()
 
 let loadOrganizationSummary: LoadSummaryTriggerType = function loadOrganizationSummary() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
@@ -37,6 +41,10 @@ let loadOrganizationSummary: LoadSummaryTriggerType = function loadOrganizationS
         payload: <OrganizationSummaryStudentsDataType>(await promisify(mApi().organizationUserManagement.studentsSummary.read(), 'callback')())
       });
       dispatch({
+        type: 'LOAD_ORGANIZATION_CONTACTS',
+        payload: <any>await promisify(mApi().organizationUserManagement.contactPersons.read(), 'callback')()
+      });
+      dispatch({
         type: 'UPDATE_SUMMARY_STATUS',
         payload: <OrganizationSummaryStatusType>"READY"
       });
@@ -44,7 +52,7 @@ let loadOrganizationSummary: LoadSummaryTriggerType = function loadOrganizationS
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.vops.errormessage.vopsLoadFailed"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("todo"), 'error'));
       dispatch({
         type: 'UPDATE_SUMMARY_STATUS',
         payload: <OrganizationSummaryStatusType>"ERROR"
