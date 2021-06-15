@@ -121,7 +121,6 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       newValues[successIndex] = {...this.state.uploadingValues[successIndex]}
       newValues[successIndex].failed = true;
 
-
       //and call set state
       this.setState({
         uploadingValues: newValues
@@ -219,7 +218,6 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       }
     });
 
-
     //let's get the original size of the array that we currently got
     let originalLenght = this.state.uploadingValues.length;
     this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)});
@@ -238,8 +236,6 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
    * @returns JSX.Element
    */
   render(){
-
-
     let uniqueElementID = "file-uploader__hint-" + uuid.v4();
     if (this.props.invisible) {
       return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>

@@ -55,7 +55,7 @@ interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
   height: number;
-  uploadingValues: UploadingValue[]
+  uploadingValues: UploadingValue[];
 }
 
 const CKEditorConfig = (
@@ -520,6 +520,10 @@ class MaterialEditor extends React.Component<
     return localeString;
   };
 
+  /**
+   * updateUploadingValues
+   * @param updatedValues
+   */
   updateUploadingValues = (
     updatedValues: {
       name: string;
@@ -533,13 +537,16 @@ class MaterialEditor extends React.Component<
     });
   };
 
+  /**
+   * handleUploadingTextProcesser
+   * @param percent
+   * @returns progress string
+   */
   handleUploadingTextProcesser = (percent: number) => {
     return `
       ${this.props.i18n.text.get(
         "plugin.guider.user.details.files.uploading"
-      )} ${percent}%
-    
-    `;
+      )} ${percent}%`;
   };
 
   /**
