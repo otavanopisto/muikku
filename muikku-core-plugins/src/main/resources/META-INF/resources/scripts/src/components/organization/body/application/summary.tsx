@@ -105,24 +105,18 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           i18n={this.props.i18n}
           modifier="organization-summary"
           title={this.props.i18n.text.get('plugin.organization.summary.contact.title')}>
-          <ApplicationSubPanelItem
-            modifier="organization-contact-information"
-            title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle')} >
-            <ApplicationSubPanelItem.Content modifier="organization-contact-information">
-              <div>Musta kaapu</div>
-              <div>2043i2340i12430</div>
-              <div>qwqweqweqwe@asdas.net</div>
-            </ApplicationSubPanelItem.Content>
-          </ApplicationSubPanelItem>
-          <ApplicationSubPanelItem
-            title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle')}
-            modifier="organization-contact-information" >
-            <ApplicationSubPanelItem.Content modifier="organization-contact-information">
-              <div>Musta kaapu</div>
-              <div>2043i2340i12430</div>
-              <div>qwqweqweqwe@asdas.net</div>
-            </ApplicationSubPanelItem.Content>
-          </ApplicationSubPanelItem>
+          {this.props.summary.contacts.map((contact) => (
+            <ApplicationSubPanelItem
+              key={contact.id}
+              modifier="organization-contact-information"
+              title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle.' + contact.type)} >
+              <ApplicationSubPanelItem.Content modifier="organization-contact-information">
+                <div>{contact.name}</div>
+                <div>{contact.phone}</div>
+                <div>{contact.email}</div>
+              </ApplicationSubPanelItem.Content>
+            </ApplicationSubPanelItem>
+          ))}
         </ApplicationSubPanel>
       </div >
     );

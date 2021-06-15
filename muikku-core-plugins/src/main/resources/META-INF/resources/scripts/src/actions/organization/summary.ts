@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
 import { StateType } from '~/reducers';
-import { OrganizationSummaryWorkspaceDataType, OrganizationSummaryStudentsDataType } from "~/reducers/organization/summary"
+import { OrganizationSummaryWorkspaceDataType, OrganizationSummaryStudentsDataType, OrganizationSummaryContactDataType } from "~/reducers/organization/summary"
 
 export interface LoadSummaryTriggerType {
   (): AnyActionType
@@ -13,7 +13,7 @@ export type OrganizationSummaryStatusType = "IDLE" | "LOADING" | "READY" | "ERRO
 
 export interface LOAD_WORKSPACE_SUMMARY extends SpecificActionType<"LOAD_WORKSPACE_SUMMARY", OrganizationSummaryWorkspaceDataType> { }
 export interface LOAD_STUDENT_SUMMARY extends SpecificActionType<"LOAD_STUDENT_SUMMARY", OrganizationSummaryStudentsDataType> { }
-export interface LOAD_ORGANIZATION_CONTACTS extends SpecificActionType<"LOAD_ORGANIZATION_CONTACTS", {}> { }
+export interface LOAD_ORGANIZATION_CONTACTS extends SpecificActionType<"LOAD_ORGANIZATION_CONTACTS", OrganizationSummaryContactDataType> { }
 export interface UPDATE_SUMMARY_STATUS extends SpecificActionType<"UPDATE_SUMMARY_STATUS", OrganizationSummaryStatusType> { }
 
 // julkaistut/julkaisemattomat kurssit:
@@ -42,7 +42,7 @@ let loadOrganizationSummary: LoadSummaryTriggerType = function loadOrganizationS
       });
       dispatch({
         type: 'LOAD_ORGANIZATION_CONTACTS',
-        payload: <any>await promisify(mApi().organizationUserManagement.contactPersons.read(), 'callback')()
+        payload: <OrganizationSummaryContactDataType>await promisify(mApi().organizationUserManagement.contactPersons.read(), 'callback')()
       });
       dispatch({
         type: 'UPDATE_SUMMARY_STATUS',
