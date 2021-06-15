@@ -1901,6 +1901,7 @@ mark[data-muikku-word-definition] {
 .material-basicbox,
 .material-grammarbox,
 .material-recapbox {
+  background: $color-material-basic-box-background;
   border: 1px solid $color-material-basic-box;
   border-left-width: 1px;
 
@@ -1958,7 +1959,7 @@ mark[data-muikku-word-definition] {
 
   &::before {
     background: $color-assignment;
-    content: "\f06a";
+    content: "\e63d";
   }
 }
 
@@ -1970,7 +1971,7 @@ mark[data-muikku-word-definition] {
 
   &::before {
     background: $color-material-objective-box;
-    content: "\e92b";
+    content: "\f041";
   }
 }
 
@@ -1994,7 +1995,7 @@ mark[data-muikku-word-definition] {
 
   &::before {
     background: $color-material-link-box;
-    content: "\e9cb";
+    content: "\e92a";
   }
 
   a {
@@ -2066,11 +2067,12 @@ mark[data-muikku-word-definition] {
     border-collapse: collapse;
     border-spacing: 0;
     font-size: $text-desktop-richtext-font-size;
-    line-height: 1rem;
+    line-height: 1.35rem;
     width: 100%;
 
     caption {
-      font-weight: 600;
+      font-size: 1.125rem;
+      font-weight: 400;
       padding: 8px;
       text-align: left;
     }
@@ -2080,7 +2082,7 @@ mark[data-muikku-word-definition] {
     }
 
     th {
-      font-weight: 600;
+      font-weight: 400;
       padding: 8px;
       text-align: left;
     }
@@ -2122,11 +2124,13 @@ mark[data-muikku-word-definition] {
     border-collapse: collapse;
     border-spacing: 0;
     font-size: $text-desktop-font-size;
+    line-height: 1.35rem;
     width: 100%;
 
     caption {
-      font-weight: 600;
-      padding: 5px;
+      font-size: 1rem;
+      font-weight: 400;
+      padding: 8px;
       text-align: left;
     }
 
@@ -2135,8 +2139,8 @@ mark[data-muikku-word-definition] {
     }
 
     th {
-      font-weight: 600;
-      padding: 3px 5px;
+      font-weight: 400;
+      padding: 8px;
       text-align: left;
     }
 
@@ -2160,7 +2164,7 @@ mark[data-muikku-word-definition] {
     }
 
     td {
-      padding: 3px 5px;
+      padding: 8px;
     }
   }
 }
@@ -2231,7 +2235,7 @@ mark[data-muikku-word-definition] {
     font-size: 70px;
     line-height: 1px;
     vertical-align: -25px;
-    width: 25px;
+    width: 28px;
   }
 
   &::after {
