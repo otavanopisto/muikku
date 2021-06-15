@@ -167,7 +167,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
     
-    // In tne organization workspace list it needs to list all of the workspaces,
+    // In the organization workspace list it needs to list all of the workspaces,
     // without any access filters 
     
     List<WorkspaceAccess> accesses = null;
@@ -204,11 +204,20 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
 
-    // Restrict search to the organizations of the user
+    // Restrict search to the organizations of the user (except when searching for course templates only)
+    
     List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
-    if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
-      organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
+    if (templateRestriction != TemplateRestriction.ONLY_TEMPLATES) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
+      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
+        organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
+      }
+    }
+    
+    // If searching for course templates only, enforce the includeUnpblished rule
+    
+    if (templateRestriction == TemplateRestriction.ONLY_TEMPLATES && !includeUnpublished) {
+      includeUnpublished = true;
     }
     
     searchResult = searchProvider.searchWorkspaces()
