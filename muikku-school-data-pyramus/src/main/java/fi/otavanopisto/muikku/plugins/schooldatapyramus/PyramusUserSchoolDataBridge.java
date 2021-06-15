@@ -30,6 +30,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGrou
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
@@ -1178,6 +1179,22 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     // Student is active if above steps are not triggered
     return true;
+  }
+  
+
+  @Override
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(
+      String organizationIdentifier) {
+    
+    BridgeResponse<OrganizationContactPerson[]> response = pyramusClient.responseGet(String.format("/organizations/%d/contactPersons", identifierMapper.getPyramusOrganizationId(organizationIdentifier)), OrganizationContactPerson[].class);
+    List<OrganizationContactPerson> contactPersons = null;
+    if(response.getEntity() != null) {
+      contactPersons = new ArrayList<>();
+      for (OrganizationContactPerson contactPerson : response.getEntity()) {
+        contactPersons.add(contactPerson);
+      }
+    }
+    return new BridgeResponse<List<OrganizationContactPerson>>(response.getStatusCode(), contactPersons);
   }
   
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {
