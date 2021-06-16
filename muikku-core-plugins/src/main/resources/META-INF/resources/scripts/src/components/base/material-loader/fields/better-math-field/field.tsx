@@ -10,6 +10,7 @@ const TIMEOUT_FOR_CANCELLING_BLUR = 300;
 interface FieldProps {
   className?: string,
   formulaClassName: string,
+  imageClassName: string,
   editorClassName: string,
   toolbarClassName: string,
   value: string,
@@ -19,7 +20,8 @@ interface FieldProps {
   onFocus: () => any,
   onLatexModeOpen: () => any,
   onLatexModeClose: () => any,
-  readOnly?: boolean
+  readOnly?: boolean,
+  userId: number,
 }
 
 interface FieldState {
@@ -169,6 +171,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       return `<span class="${this.props.formulaClassName}">${latex}</span>`
     }
     const isImg = node.tagName === "IMG";
+    const isRawImg = isImg && node.classList.contains(this.props.imageClassName);
+    if (isRawImg) {
+      return node.outerHTML;
+    }
     let kids = !isImg ? Array.from(node.childNodes).map((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         return node.textContent;
@@ -325,6 +331,21 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     document.execCommand("insertHTML", false, `<img class="${this.props.formulaClassName}"/>`);
     let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt])") as HTMLImageElement;
     this.selectFormula(image);
+  }
+  async insertImage(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("name", file.name);
+    const result = await fetch("/rest/workspace/userfiles", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (result.status === 200) {
+      const fileNameAsStored = await result.text();
+      const url = `/rest/workspace/userfiles/${this.props.userId}/file/${fileNameAsStored}`;
+      document.execCommand("insertHTML", false, `<img class="${this.props.imageClassName}" src="${url}"/>`);
+    }
   }
   selectFormula(target: HTMLImageElement) {
 
