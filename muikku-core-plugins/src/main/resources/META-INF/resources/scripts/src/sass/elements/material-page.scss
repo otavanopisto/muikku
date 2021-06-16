@@ -1987,24 +1987,6 @@ mark[data-muikku-word-definition] {
     background: $color-material-link-box;
     content: "\e9cb";
   }
-
-  a {
-    align-items: center;
-    display: inline-flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    text-decoration: underline;
-
-    // Every link inside material style boxes will have automatically
-    // added icon "external-link" after the link text
-    &::after {
-      content: "\f08e";
-      font-family: muikku;
-      font-size: 0.8125rem;
-      padding: 0 0 0 5px;
-      text-decoration: none;
-    }
-  }
 }
 
 // MUIKKU LINK BOX
