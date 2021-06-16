@@ -242,13 +242,10 @@ export interface WorkspaceType {
   subjectIdentifier: string | number;
   urlName: string;
   chatStatus?: WorkspaceChatStatusType;
-
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccessType;
   //These appear in certain circumstances
-  //Usually available if externally loaded (eg. coursepicker)
-  canSignup?: boolean;
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
   educationTypeName?: string;
@@ -301,7 +298,8 @@ export interface WorkspaceEducationFilterType {
   name: string;
 }
 
-export type WorkspaceEducationFilterListType = Array<WorkspaceEducationFilterType>;
+export type WorkspaceEducationFilterListType =
+  Array<WorkspaceEducationFilterType>;
 
 export interface WorkspaceCurriculumFilterType {
   identifier: string;
@@ -318,8 +316,10 @@ export interface WorkspaceStateFilterType {
   name: string;
 }
 
-export type WorkspaceCurriculumFilterListType = Array<WorkspaceCurriculumFilterType>;
-export type WorkspaceOrganizationFilterListType = Array<WorkspaceOrganizationFilterType>;
+export type WorkspaceCurriculumFilterListType =
+  Array<WorkspaceCurriculumFilterType>;
+export type WorkspaceOrganizationFilterListType =
+  Array<WorkspaceOrganizationFilterType>;
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
 
@@ -512,7 +512,8 @@ export interface MaterialCompositeRepliesType {
   workspaceMaterialReplyId: number;
 }
 
-export type MaterialCompositeRepliesListType = Array<MaterialCompositeRepliesType>;
+export type MaterialCompositeRepliesListType =
+  Array<MaterialCompositeRepliesType>;
 
 export interface MaterialEvaluationType {
   id: number;
@@ -911,9 +912,8 @@ export default function workspaces(
           : m.children,
       };
       if (newM.childrenAttachments) {
-        newM.childrenAttachments = newM.childrenAttachments.filter(
-          filterMaterial
-        );
+        newM.childrenAttachments =
+          newM.childrenAttachments.filter(filterMaterial);
       }
       return newM;
     };
@@ -942,9 +942,8 @@ export default function workspaces(
     ) {
       newEditor = { ...newEditor };
       newEditor.currentNodeValue = { ...newEditor.currentNodeValue };
-      newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(
-        filterMaterial
-      );
+      newEditor.currentNodeValue.childrenAttachments =
+        newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
     return {
       ...state,
@@ -964,16 +963,45 @@ export default function workspaces(
     let targetArray =
       apiPath === "help" ? [...state.currentHelp] : [...state.currentMaterials];
 
+    /**
+     * Checks if its new page or section
+     */
     if (
       insertedContentNode.parentId !==
         state.currentWorkspace.details.helpFolderId &&
       insertedContentNode.parentId !==
         state.currentWorkspace.details.rootFolderId
     ) {
+      /**
+       * Finding index of section that is getting new page
+       */
       const targetIndex = targetArray.findIndex(
         (cn) => cn.workspaceMaterialId === insertedContentNode.parentId
       );
-      targetArray[targetIndex].children.push(insertedContentNode);
+
+      /**
+       * Finding index of that children that will be follewd by new pages
+       */
+      const targetChildrenIndex = targetArray[targetIndex].children.findIndex(
+        (node) => node.workspaceMaterialId === insertedContentNode.nextSiblingId
+      );
+
+      if (targetChildrenIndex !== -1) {
+        /**
+         * If target children index is found,
+         * Asserting new page to right position in children array
+         */
+        targetArray[targetIndex].children.splice(
+          targetChildrenIndex,
+          0,
+          insertedContentNode
+        );
+      } else {
+        /**
+         * Otherwise
+         */
+        targetArray[targetIndex].children.push(insertedContentNode);
+      }
     } else if (insertedContentNode.nextSiblingId) {
       const siblingIndex = targetArray.findIndex(
         (cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId

@@ -235,13 +235,18 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderCoursePickerBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      let stateFilters = [
+        {
+          identifier: "unpublished",
+          name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.unpublished.label')
+        }
+      ];
+      this.props.store.dispatch(setWorkspaceStateFilters(false, stateFilters) as Action);
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
-
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
-
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
       let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 

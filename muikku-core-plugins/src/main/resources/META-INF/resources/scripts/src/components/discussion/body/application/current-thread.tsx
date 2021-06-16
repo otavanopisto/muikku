@@ -17,7 +17,6 @@ import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
 import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
 
-
 interface CurrentThreadProps {
   discussion: DiscussionType,
   i18n: i18nType,
@@ -85,7 +84,6 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       return null;
     }
     const areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
-
     const userCreator: DiscussionUserType = this.props.discussion.current.creator;
     const userCategory = this.props.discussion.current.creator.id > 10 ? this.props.discussion.current.creator.id % 10 + 1 : this.props.discussion.current.creator.id;
     let avatar;
@@ -99,7 +97,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 
     const student: boolean = this.props.status.isStudent === true;
     const threadOwner: boolean = this.props.userId === this.props.discussion.current.creator.id
-    const canRemoveThread: boolean = (!student && threadOwner) || areaPermissions.removeThread;
+    const canRemoveThread: boolean = (!student && threadOwner) || areaPermissions.removeThread || this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
     let studentCanRemoveThread: boolean = threadOwner ? true : false;
     const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
     const threadLocked: boolean = this.props.discussion.current.locked === true;
@@ -149,7 +147,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType) => {
           const user: DiscussionUserType = reply.creator;
           const userCategory: number = reply.creator.id > 10 ? (reply.creator.id % 10) + 1 : reply.creator.id;
-          const canRemoveMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.removeThread;
+          const canRemoveMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.removeThread || this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
           const canEditMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.editMessages;
 
           let avatar;
