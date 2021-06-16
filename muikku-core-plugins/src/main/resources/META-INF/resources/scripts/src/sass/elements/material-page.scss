@@ -1882,16 +1882,6 @@ mark[data-muikku-word-definition] {
     top: 16px;
     width: 40px;
   }
-
-  a {
-    align-items: center;
-    color: $color-info;
-    display: inline-flex;
-    flex-flow: row nowrap;
-    font-weight: 400;
-    justify-content: flex-start;
-    text-decoration: none;
-  }
 }
 
 // BASIC BOX & GRAMMAR BOX & RECAP BOX
@@ -2000,21 +1990,19 @@ mark[data-muikku-word-definition] {
 
   a {
     align-items: center;
-    color: $color-info;
     display: inline-flex;
     flex-flow: row nowrap;
-    font-weight: 400;
     justify-content: flex-start;
-    text-decoration: none;
+    text-decoration: underline;
 
     // Every link inside material style boxes will have automatically
     // added icon "external-link" after the link text
     &::after {
-      color: $color-info;
       content: "\f08e";
       font-family: muikku;
       font-size: 0.8125rem;
       padding: 0 0 0 5px;
+      text-decoration: none;
     }
   }
 }
