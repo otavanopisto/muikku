@@ -107,7 +107,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           title={this.props.i18n.text.get('plugin.organization.summary.contact.title')}>
           {this.props.summary.contacts.map((contact) => (
             <ApplicationSubPanelItem
-              key={contact.id}
+              key={"contact-" + contact.id}
               modifier="organization-contact-information"
               title={this.props.i18n.text.get('plugin.organization.summary.contact.subtitle.' + contact.type)} >
               <ApplicationSubPanelItem.Content modifier="organization-contact-information">
