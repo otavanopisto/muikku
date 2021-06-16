@@ -37,6 +37,7 @@ function checkIsParentOrSelf(element: HTMLElement, comparer: HTMLElement | strin
 
 export default class MathField extends React.Component<FieldProps, FieldState> {
   value: string;
+  imgUrls: string[];
   MQInterface: any;
 
   selectedFormula: HTMLImageElement;
@@ -55,6 +56,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     super(props);
 
     this.value = props.value;
+    this.imgUrls = [];
     this.MQInterface = getMQInterface;
 
     this.onFocusField = this.onFocusField.bind(this);
@@ -69,6 +71,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.onAceEditorFocus = this.onAceEditorFocus.bind(this);
     this.onAceEditorInput = this.onAceEditorInput.bind(this);
     this.onDeleteSomethingInMathMode = this.onDeleteSomethingInMathMode.bind(this);
+    this.handleDrops = this.handleDrops.bind(this);
   }
   shouldComponentUpdate() {
     // this field is uncontrolled by react
@@ -119,6 +122,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     Array.from((this.refs.input as HTMLInputElement).querySelectorAll("." + this.props.formulaClassName)).forEach((element: HTMLElement) => {
       toSVG(element, warningImage, null, loadingImage);
     });
+
+    this.imgUrls = [];
+    Array.from((this.refs.input as HTMLInputElement).querySelectorAll("img." + this.props.imageClassName)).forEach((element: HTMLImageElement) => {
+      this.imgUrls.push(element.src);
+    });
   }
   onFocusField(e: React.FocusEvent<any>) {
 
@@ -151,7 +159,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     (this.refs.input as HTMLElement).classList.add("focused");
     this.props.onFocus();
   }
+  findLostImages(oldImgURLS: string[]) {
+    oldImgURLS.forEach((url) => {
+      const hasBeenRemoved = !this.imgUrls.includes(url);
+      if (hasBeenRemoved) {
+        this.deleteImage(url);
+      }
+    });
+  }
   calculateOutput() {
+    const oldImgUrls = this.imgUrls;
+    this.imgUrls = [];
     this.value = Array.from((this.refs.input as HTMLDivElement).childNodes).map((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         return node.textContent;
@@ -160,6 +178,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       return this.convertToText(node as HTMLElement);
     }).join("");
+    this.findLostImages(oldImgUrls);
     return this.value;
   }
   convertToText(node: HTMLElement): string {
@@ -173,6 +192,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     const isImg = node.tagName === "IMG";
     const isRawImg = isImg && node.classList.contains(this.props.imageClassName);
     if (isRawImg) {
+      this.imgUrls.push((node as HTMLImageElement).src);
       return node.outerHTML;
     }
     let kids = !isImg ? Array.from(node.childNodes).map((node) => {
@@ -332,6 +352,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt])") as HTMLImageElement;
     this.selectFormula(image);
   }
+  async deleteImage(url: string) {
+    return await fetch(url, {
+      method: "DELETE",
+    });
+  }
   async insertImage(file: File) {
     const formData = new FormData();
     formData.append("file", file);
@@ -345,6 +370,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       const fileNameAsStored = await result.text();
       const url = `/rest/workspace/userfiles/${this.props.userId}/file/${fileNameAsStored}`;
       document.execCommand("insertHTML", false, `<img class="${this.props.imageClassName}" src="${url}"/>`);
+    }
+  }
+  handleDrops(e: React.DragEvent) {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    e.stopPropagation();
+    e.preventDefault();
+    if (file.type.startsWith("image")) {
+      this.insertImage(file);
     }
   }
   selectFormula(target: HTMLImageElement) {
@@ -544,6 +577,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       contentEditable={!this.props.readOnly}
       spellCheck={false}
       onFocus={this.onFocusField}
+      onDrop={this.handleDrops}
       ref="input"
       onBlur={this.onBlurField}
       onInput={this.onChange}
