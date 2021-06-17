@@ -3,21 +3,24 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { MatriculationExaminationEnrollmentInfo as Step1 } from "./matriculation-examination-enrollment-info";
 import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matriculation-examination-enrollment-information";
+import { MatriculationExaminationEnrollmentInformationNew as Step2New } from "./matriculation-examination-enrollment-information-new";
 import { MatrMatriculationExaminationEnrollmentAct as Step3 } from "./matriculation-examination-enrollment-act";
 import { MatriculationExaminationEnrollmentSummary as Step4 } from "./matriculation-examination-enrollment-summary";
 import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
+import { connect, Dispatch } from "react-redux";
 
 const StepZilla = require("react-stepzilla").default;
 import "~/sass/elements/wizard.scss";
-import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
 import {
   SaveState,
   ExaminationSubject,
   MatriculationExaminationApplication,
+  ExaminationGrade,
 } from "../../../../@types/shared";
 import { StatusType } from "../../../../reducers/base/status";
+import { HOPSType } from "../../../../reducers/main-function/hops";
 import {
   MatriculationExaminationDraft,
   ExaminationInformation,
@@ -50,11 +53,6 @@ export const ADVANCED_SUBJECTS = [
   "VEA",
 ];
 export const FINNISH_SUBJECTS = ["AI", "S2"];
-export const REQUIRED_FINNISH_ATTENDANCES = 1;
-export const REQUIRED_MANDATORY_ATTENDANCES = 4;
-export const REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN = 2;
-export const REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN = 0;
-export const REQUIRED_NUM_OF_COURSES = 20;
 export const SUBJECT_MAP: ExaminationSubject = {
   AI: "Äidinkieli",
   S2: "Suomi toisena kielenä",
@@ -91,12 +89,24 @@ export const SUBJECT_MAP: ExaminationSubject = {
   SM_QC: "Koltansaame, C-taso",
 };
 
+export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
+  IMPROBATUR: "I (Improbatur)",
+  APPROBATUR: "A (Approbatur)",
+  LUBENTER_APPROBATUR: "B (Lubenter approbatur)",
+  CUM_LAUDE_APPROBATUR: "C (Cum laude approbatur)",
+  MAGNA_CUM_LAUDE_APPROBATUR: "M (Magna cum laude approbatur)",
+  EXIMIA_CUM_LAUDE_APPROBATUR: "E (Eximia cum laude approbatur)",
+  LAUDATUR: "L (Laudatur)",
+  UNKNOWN: "Ei vielä tiedossa",
+};
+
 interface MatriculationExaminationWizardProps {
   workspace: WorkspaceType;
   i18n: i18nType;
   status: StatusType;
   examId: number;
   onDone: () => any;
+  hops: HOPSType;
 }
 
 export interface MatriculationExaminationWizardState {
@@ -165,6 +175,7 @@ class MatriculationExaminationWizard extends React.Component<
         canPublishName: "true",
         enrollmentSent: false,
         guidanceCounselor: "",
+        usingNewSystem: false,
         ssn: "",
         date:
           date.getDate() +
@@ -272,6 +283,7 @@ class MatriculationExaminationWizard extends React.Component<
       enrollAs,
       guider,
       changedContactInfo,
+      usingNewSystem,
     } = this.state.examinationInformation;
 
     const matriculationForm: MatriculationExaminationDraft = {
@@ -287,6 +299,7 @@ class MatriculationExaminationWizard extends React.Component<
       enrolledAttendances,
       plannedAttendances,
       finishedAttendances,
+      usingNewSystem,
     };
 
     const requestOptions = {
@@ -465,6 +478,19 @@ class MatriculationExaminationWizard extends React.Component<
   };
 
   /**
+   * onUsingNewSystemChange
+   * @param usingNewSystem
+   */
+  onUsingNewSystemChange = (usingNewSystem: boolean) => {
+    this.setState({
+      examinationInformation: {
+        ...this.state.examinationInformation,
+        usingNewSystem,
+      },
+    });
+  };
+
+  /**
    * handles when wizard step changes and here check when last step before complete happens,
    * kick offs form submit
    * @param steps
@@ -508,11 +534,27 @@ class MatriculationExaminationWizard extends React.Component<
     const steps = [
       {
         name: "Info",
-        component: <Step1 />,
+        component: (
+          <Step1
+            hops={this.props.hops}
+            onChangeSystemChange={this.onUsingNewSystemChange}
+            saveState={this.state.saveState}
+            draftSaveErrorMsg={this.state.errorMsg}
+            usingNewSystem={this.state.examinationInformation.usingNewSystem}
+          />
+        ),
       },
       {
         name: "Opiskelijatiedot",
-        component: (
+        component: this.state.examinationInformation.usingNewSystem ? (
+          <Step2New
+            hops={this.props.hops}
+            onChange={this.onExaminationInformationChange}
+            examination={this.state.examinationInformation}
+            saveState={this.state.saveState}
+            draftSaveErrorMsg={this.state.errorMsg}
+          />
+        ) : (
           <Step2
             onChange={this.onExaminationInformationChange}
             examination={this.state.examinationInformation}
@@ -586,6 +628,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     workspace: state.workspaces && state.workspaces.currentWorkspace,
     status: state.status,
+    hops: state.hops,
   };
 }
 

@@ -21,6 +21,19 @@ export type AttentionPlace = "Mikkeli" | "Muu";
 
 export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED";
 
+enum ExaminationFunding {
+  "SELF_FUNDED",
+  "COMPULSORYEDUCATION_FREE",
+  "COMPULSORYEDUCATION_FREE_RETRY",
+}
+
+/**
+ * Grades by string code
+ */
+export interface ExaminationGrade {
+  [stringId: string]: string;
+}
+
 /**
  * Examination subject by string code
  */
@@ -115,6 +128,7 @@ export interface MatriculationStudentExamination {
   message: string;
   numMandatoryCourses: string;
   restartExam: boolean;
+  usingNewSystem: boolean;
 }
 
 export interface MatriculationExaminationDraft {
@@ -127,6 +141,7 @@ export interface MatriculationExaminationDraft {
   message: string;
   location: string;
   canPublishName: string;
+  usingNewSystem: boolean;
   enrolledAttendances: ExaminationEnrolledSubject[];
   plannedAttendances: ExaminationPlannedSubject[];
   finishedAttendances: ExaminationFinishedSubject[];
