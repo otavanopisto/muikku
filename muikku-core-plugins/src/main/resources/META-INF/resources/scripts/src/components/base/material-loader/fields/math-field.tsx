@@ -73,7 +73,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
         setTheoryNotation: this.props.i18n.text.get("plugin.workspace.mathField.setTheoryNotation"),
         mathFormulas: this.props.i18n.text.get("plugin.workspace.mathField.addMathFormula"),
         operators: this.props.i18n.text.get("plugin.workspace.mathField.operators"),
-        image: "IMAGE!!!!",
+        image: this.props.i18n.text.get("plugin.workspace.mathField.addImage"),
       }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly}
       dontLoadMQ={this.props.readOnly}/>
     </div>
