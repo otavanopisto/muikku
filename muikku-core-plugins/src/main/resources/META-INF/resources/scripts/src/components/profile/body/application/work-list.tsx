@@ -115,7 +115,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
   }
 
   public render() {
-    if (this.props.profile.location !== "work" || this.props.status.permissions.WORKLIST_AVAILABLE) {
+    if (this.props.profile.location !== "work" || !this.props.status.permissions.WORKLIST_AVAILABLE) {
       return null;
     }
 
