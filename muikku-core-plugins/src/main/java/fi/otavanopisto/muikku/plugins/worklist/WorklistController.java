@@ -31,7 +31,7 @@ public class WorklistController {
   public boolean isWorklistActive() {
     if (sessionController.isLoggedIn()) {
       
-      // Worklist functionality is alwasy active for admins, never for students
+      // Worklist functionality is always active for admins, never for students
       
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {

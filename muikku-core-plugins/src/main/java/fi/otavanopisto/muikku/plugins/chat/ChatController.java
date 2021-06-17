@@ -45,7 +45,7 @@ public class ChatController {
   public boolean isChatActive() {
     if (sessionController.isLoggedIn()) {
       
-      // Chat is alwasy active for admins
+      // Chat is always active for admins
       
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
