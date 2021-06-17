@@ -3,7 +3,7 @@ import { ExaminationSubject } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
-import { SUBJECT_MAP } from "../index";
+import { SUBJECT_MAP, EXAMINATION_GRADES_MAP } from "../index";
 import {
   ExaminationEnrolledSubject,
   ExaminationFinishedSubject,
@@ -17,6 +17,10 @@ interface MatriculationExaminationEnrolledInputGroupProps {
   index: number;
   subject: ExaminationEnrolledSubject;
   selectedSubjectList: string[];
+  useSubjectSelect?: boolean;
+  useMandatorySelect?: boolean;
+  useRepeatSelect?: boolean;
+  useFundingSelect?: boolean;
   readOnly?: boolean;
   isConflictingRepeat?: (attendance: ExaminationEnrolledSubject) => boolean;
   isConflictingMandatory?: (attendance: ExaminationEnrolledSubject) => boolean;
@@ -28,75 +32,101 @@ interface MatriculationExaminationEnrolledInputGroupProps {
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
+const defaultEnrolledProps = {
+  useTermSelect: true,
+  useSubjectSelect: true,
+  useMandatorySelect: true,
+  useGradeSelect: true,
+  useFundingSelect: false,
+};
+
 /**
  * MatriculationExaminationEnrolledInputGroup
  */
 export const MatriculationExaminationEnrolledInputGroup: React.FC<MatriculationExaminationEnrolledInputGroupProps> =
-  ({
-    subject,
-    index,
-    onSubjectGroupChange,
-    selectedSubjectList,
-    onClickDeleteRow,
-    isConflictingRepeat,
-    isConflictingMandatory,
-    readOnly,
-  }) => {
+  (props) => {
+    props = { ...defaultEnrolledProps, ...props };
+
+    const {
+      subject,
+      index,
+      onSubjectGroupChange,
+      selectedSubjectList,
+      onClickDeleteRow,
+      isConflictingRepeat,
+      isConflictingMandatory,
+      readOnly,
+      children,
+      ...useSelectProps
+    } = props;
+
     return (
       <>
-        <div
-          style={subject.subject === "" ? { background: "pink" } : {}}
-          className="matriculation__form-element-container matriculation__form-element-container--input"
-        >
-          <SubjectSelect
-            i={index}
-            disabled={readOnly}
-            value={subject.subject}
-            selectedValues={selectedSubjectList}
-            modifier="Enroll"
-            onChange={(e) =>
-              onSubjectGroupChange("subject", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectProps.useSubjectSelect && (
+          <div
+            style={subject.subject === "" ? { background: "pink" } : {}}
+            className="matriculation__form-element-container matriculation__form-element-container--input"
+          >
+            <SubjectSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.subject}
+              selectedValues={selectedSubjectList}
+              modifier="Enroll"
+              onChange={(e) =>
+                onSubjectGroupChange("subject", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input${
-            subject.mandatory === "" ||
-            (isConflictingMandatory && isConflictingMandatory(subject))
-              ? " matriculation__form-element-container--mandatory-conflict"
-              : ""
-          } `}
-        >
-          <MandatorySelect
-            i={index}
-            disabled={readOnly}
-            value={subject.mandatory}
-            modifier="Enroll"
-            onChange={(e) =>
-              onSubjectGroupChange("mandatory", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectProps.useMandatorySelect && (
+          <div
+            className={`matriculation__form-element-container matriculation__form-element-container--input${
+              subject.mandatory === "" ||
+              (isConflictingMandatory && isConflictingMandatory(subject))
+                ? " matriculation__form-element-container--mandatory-conflict"
+                : ""
+            } `}
+          >
+            <MandatorySelect
+              i={index}
+              disabled={readOnly}
+              value={subject.mandatory}
+              modifier="Enroll"
+              onChange={(e) =>
+                onSubjectGroupChange("mandatory", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input${
-            subject.repeat === "" ||
-            (isConflictingMandatory && isConflictingRepeat(subject))
-              ? " matriculation__form-element-container--repeat-conflict"
-              : ""
-          } `}
-        >
-          <RepeatSelect
-            i={index}
-            disabled={readOnly}
-            value={subject.repeat}
-            modifier="Enroll"
-            onChange={(e) =>
-              onSubjectGroupChange("repeat", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectProps.useRepeatSelect && (
+          <div
+            className={`matriculation__form-element-container matriculation__form-element-container--input${
+              subject.repeat === "" ||
+              (isConflictingRepeat && isConflictingRepeat(subject))
+                ? " matriculation__form-element-container--repeat-conflict"
+                : ""
+            } `}
+          >
+            <RepeatSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.repeat}
+              modifier="Enroll"
+              onChange={(e) =>
+                onSubjectGroupChange("repeat", e.target.value, index)
+              }
+            />
+          </div>
+        )}
+
+        {useSelectProps.useFundingSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <FundingSelect i={index} disabled={readOnly} modifier="Enroll" />
+          </div>
+        )}
 
         {!readOnly && (
           <div className="matriculation__form-element-container matriculation__form-element-container--button">
@@ -129,6 +159,11 @@ interface MatriculationExaminationFinishedInputGroupProps {
   subject: ExaminationFinishedSubject;
   selectedSubjectList: string[];
   pastTermOptions: JSX.Element[];
+  useTermSelect?: boolean;
+  useSubjectSelect?: boolean;
+  useMandatorySelect?: boolean;
+  useGradeSelect?: boolean;
+  useFundingSelect?: boolean;
   readOnly?: boolean;
   onSubjectGroupChange: <T extends keyof ExaminationFinishedSubject>(
     key: T,
@@ -138,83 +173,110 @@ interface MatriculationExaminationFinishedInputGroupProps {
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
+const defaultFinishedProps = {
+  useTermSelect: true,
+  useSubjectSelect: true,
+  useMandatorySelect: true,
+  useGradeSelect: true,
+};
+
 /**
  * MatriculationExaminationSubjectInputGroup
  */
 export const MatriculationExaminationFinishedInputGroup: React.FC<MatriculationExaminationFinishedInputGroupProps> =
-  ({
-    index,
-    subject,
-    selectedSubjectList,
-    enrolledAttendances,
-    pastTermOptions,
-    onSubjectGroupChange,
-    onClickDeleteRow,
-    readOnly,
-  }) => {
+  (props) => {
+    props = { ...defaultFinishedProps, ...props };
+
+    const {
+      index,
+      subject,
+      selectedSubjectList,
+      enrolledAttendances,
+      pastTermOptions,
+      onSubjectGroupChange,
+      onClickDeleteRow,
+      readOnly,
+      children,
+      ...useSelectsProps
+    } = props;
+
     return (
       <>
-        <div className="matriculation__form-element-container matriculation__form-element-container--input">
-          <TermSelect
-            i={index}
-            disabled={readOnly}
-            options={pastTermOptions}
-            value={subject.term}
-            modifier="Completed"
-            onChange={(e) =>
-              onSubjectGroupChange("term", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useTermSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <TermSelect
+              i={index}
+              disabled={readOnly}
+              options={pastTermOptions}
+              value={subject.term}
+              modifier="Completed"
+              onChange={(e) =>
+                onSubjectGroupChange("term", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--input">
-          <SubjectSelect
-            i={index}
-            disabled={readOnly}
-            value={subject.subject}
-            selectedValues={selectedSubjectList}
-            modifier="Completed"
-            onChange={(e) =>
-              onSubjectGroupChange("subject", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useSubjectSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <SubjectSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.subject}
+              selectedValues={selectedSubjectList}
+              modifier="Completed"
+              onChange={(e) =>
+                onSubjectGroupChange("subject", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div
-          className={`matriculation__form-element-container matriculation__form-element-container--input${
-            !readOnly &&
-            enrolledAttendances.filter((era) => {
-              return (
-                era.subject === subject.subject &&
-                era.mandatory != subject.mandatory
-              );
-            }).length > 0
-              ? " matriculation__form-element-container--mandatory-conflict"
-              : ""
-          } `}
-        >
-          <MandatorySelect
-            i={index}
-            disabled={readOnly}
-            value={subject.mandatory}
-            modifier="Completed"
-            onChange={(e) =>
-              onSubjectGroupChange("mandatory", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useMandatorySelect && (
+          <div
+            className={`matriculation__form-element-container matriculation__form-element-container--input${
+              !readOnly &&
+              enrolledAttendances.filter((era) => {
+                return (
+                  era.subject === subject.subject &&
+                  era.mandatory != subject.mandatory
+                );
+              }).length > 0
+                ? " matriculation__form-element-container--mandatory-conflict"
+                : ""
+            } `}
+          >
+            <MandatorySelect
+              i={index}
+              disabled={readOnly}
+              value={subject.mandatory}
+              modifier="Completed"
+              onChange={(e) =>
+                onSubjectGroupChange("mandatory", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--input">
-          <GradeSelect
-            i={index}
-            disabled={readOnly}
-            value={subject.grade}
-            modifier="Completed"
-            onChange={(e) =>
-              onSubjectGroupChange("grade", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useGradeSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <GradeSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.grade}
+              modifier="Completed"
+              onChange={(e) =>
+                onSubjectGroupChange("grade", e.target.value, index)
+              }
+            />
+          </div>
+        )}
+
+        {useSelectsProps.useFundingSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <FundingSelect i={index} disabled={readOnly} modifier="Enroll" />
+          </div>
+        )}
 
         {!readOnly && (
           <div className="matriculation__form-element-container matriculation__form-element-container--button">
@@ -246,6 +308,9 @@ interface MatriculationExaminationPlannedInputGroupProps {
   subject: ExaminationPlannedSubject;
   selectedSubjectList: string[];
   nextOptions: JSX.Element[];
+  useTermSelect?: boolean;
+  useSubjectSelect?: boolean;
+  useMandatorySelect?: boolean;
   readOnly?: boolean;
   onSubjectGroupChange: <T extends keyof ExaminationPlannedSubject>(
     key: T,
@@ -255,58 +320,76 @@ interface MatriculationExaminationPlannedInputGroupProps {
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
+const defaultPlannedProps = {
+  useTermSelect: true,
+  useSubjectSelect: true,
+  useMandatorySelect: true,
+};
+
 /**
  * MatriculationExaminationFutureSubjectsGroup
  */
 export const MatriculationExaminationPlannedInputGroup: React.FC<MatriculationExaminationPlannedInputGroupProps> =
-  ({
-    index,
-    subject,
-    selectedSubjectList,
-    nextOptions,
-    onSubjectGroupChange,
-    onClickDeleteRow,
-    readOnly,
-  }) => {
+  (props) => {
+    props = { ...defaultFinishedProps, ...props };
+
+    const {
+      index,
+      subject,
+      selectedSubjectList,
+      nextOptions,
+      onSubjectGroupChange,
+      onClickDeleteRow,
+      readOnly,
+      children,
+      ...useSelectsProps
+    } = props;
+
     return (
       <>
-        <div className="matriculation__form-element-container matriculation__form-element-container--input">
-          <TermSelect
-            i={index}
-            disabled={readOnly}
-            options={nextOptions}
-            value={subject.term}
-            modifier="Future"
-            onChange={(e) =>
-              onSubjectGroupChange("term", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useTermSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <TermSelect
+              i={index}
+              disabled={readOnly}
+              options={nextOptions}
+              value={subject.term}
+              modifier="Future"
+              onChange={(e) =>
+                onSubjectGroupChange("term", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--input">
-          <SubjectSelect
-            i={index}
-            disabled={readOnly}
-            value={subject.subject}
-            selectedValues={selectedSubjectList}
-            modifier="Future"
-            onChange={(e) =>
-              onSubjectGroupChange("subject", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useSubjectSelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <SubjectSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.subject}
+              selectedValues={selectedSubjectList}
+              modifier="Future"
+              onChange={(e) =>
+                onSubjectGroupChange("subject", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
-        <div className="matriculation__form-element-container matriculation__form-element-container--input">
-          <MandatorySelect
-            i={index}
-            disabled={readOnly}
-            value={subject.mandatory}
-            modifier="Future"
-            onChange={(e) =>
-              onSubjectGroupChange("mandatory", e.target.value, index)
-            }
-          />
-        </div>
+        {useSelectsProps.useMandatorySelect && (
+          <div className="matriculation__form-element-container matriculation__form-element-container--input">
+            <MandatorySelect
+              i={index}
+              disabled={readOnly}
+              value={subject.mandatory}
+              modifier="Future"
+              onChange={(e) =>
+                onSubjectGroupChange("mandatory", e.target.value, index)
+              }
+            />
+          </div>
+        )}
 
         {!readOnly && (
           <div className="matriculation__form-element-container matriculation__form-element-container--button">
@@ -531,18 +614,36 @@ const GradeSelect: React.FC<GradeSelectProps> = ({
       disabled={selectProps.disabled}
       className="matriculation__select"
     >
-      <option value="IMPROBATUR">I (Improbatur)</option>
-      <option value="APPROBATUR">A (Approbatur)</option>
-      <option value="LUBENTER_APPROBATUR">B (Lubenter approbatur)</option>
-      <option value="CUM_LAUDE_APPROBATUR">C (Cum laude approbatur)</option>
-      <option value="MAGNA_CUM_LAUDE_APPROBATUR">
-        M (Magna cum laude approbatur)
-      </option>
-      <option value="EXIMIA_CUM_LAUDE_APPROBATUR">
-        E (Eximia cum laude approbatur)
-      </option>
-      <option value="LAUDATUR">L (Laudatur)</option>
-      <option value="UNKNOWN">Ei vielä tiedossa</option>
+      {Object.keys(EXAMINATION_GRADES_MAP).map((subjectCode, index) => {
+        const subjectName = EXAMINATION_GRADES_MAP[subjectCode];
+
+        return (
+          <option key={index} value={subjectCode}>
+            {subjectName}
+          </option>
+        );
+      })}
+    </select>
+  </>
+);
+
+interface FundingSelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  i: number;
+  modifier: string;
+}
+
+const FundingSelect: React.FC<FundingSelectProps> = ({ i, modifier }) => (
+  <>
+    {i == 0 ? (
+      <label id={`matriculationGradeSelectLabel${modifier}`}>
+        Maksullisuus
+      </label>
+    ) : null}
+    <select>
+      <option>Itserahoitettu</option>
+      <option>Oppivelvollisuus</option>
+      <option>Oppivelvollisuus uusinta</option>
     </select>
   </>
 );

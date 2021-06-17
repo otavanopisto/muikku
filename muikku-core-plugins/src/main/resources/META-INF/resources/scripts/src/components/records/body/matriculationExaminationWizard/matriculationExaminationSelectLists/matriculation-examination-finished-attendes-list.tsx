@@ -17,8 +17,19 @@ interface MatriculationExaminationFinishedAttendesListProps {
   enrolledAttendances?: ExaminationEnrolledSubject[];
   examinationFinishedList: ExaminationFinishedSubject[];
   pastOptions: JSX.Element[];
+  useTermSelect?: boolean;
+  useSubjectSelect?: boolean;
+  useMandatorySelect?: boolean;
+  useGradeSelect?: boolean;
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
+
+const defaultUseSelectProps = {
+  useTermSelect: true,
+  useSubjectSelect: true,
+  useMandatorySelect: true,
+  useGradeSelect: true,
+};
 
 /**
  * MatriculationExaminationCompletedSelectsList
@@ -33,7 +44,11 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<Matriculatio
     pastOptions,
     onDeleteRow,
     readOnly,
+    children,
+    ...useSelectProps
   }) => {
+    useSelectProps = { ...defaultUseSelectProps, ...useSelectProps };
+
     /**
      * Handles matriculation examation finished subject group change
      * @param key
@@ -79,6 +94,7 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<Matriculatio
               }
               onClickDeleteRow={onDeleteRow}
               readOnly={readOnly}
+              {...useSelectProps}
             />
           </div>
         ))}

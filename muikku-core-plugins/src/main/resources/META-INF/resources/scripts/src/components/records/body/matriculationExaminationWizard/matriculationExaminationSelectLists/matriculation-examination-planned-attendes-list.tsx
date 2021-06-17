@@ -13,10 +13,19 @@ interface MatriculationExaminationPlannedAttendesListProps {
     modifiedExaminationFutureSubjectList: ExaminationPlannedSubject[]
   ) => void;
   readOnly?: boolean;
+  useTermSelect?: boolean;
+  useSubjectSelect?: boolean;
+  useMandatorySelect?: boolean;
   examinationPlannedList: ExaminationPlannedSubject[];
   nextOptions: JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
+
+const defaultUseSelectProps = {
+  useTermSelect: true,
+  useSubjectSelect: true,
+  useMandatorySelect: true,
+};
 
 /**
  * MatriculationExaminationFutureSelectsList
@@ -24,13 +33,19 @@ interface MatriculationExaminationPlannedAttendesListProps {
  * @returns
  */
 export const MatriculationExaminationPlannedAttendesList: React.FC<MatriculationExaminationPlannedAttendesListProps> =
-  ({
-    onChange,
-    examinationPlannedList,
-    nextOptions,
-    onDeleteRow,
-    readOnly,
-  }) => {
+  (props) => {
+    props = { ...defaultUseSelectProps, ...props };
+
+    const {
+      onChange,
+      examinationPlannedList,
+      nextOptions,
+      onDeleteRow,
+      readOnly,
+      children,
+      ...useSelectProps
+    } = props;
+
     /**
      * Handles matriculation examation planned subject group change
      * @param key
@@ -75,6 +90,7 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<Matriculation
                 onMatriculationExaminationSubjectGroupChange
               }
               onClickDeleteRow={onDeleteRow}
+              {...useSelectProps}
             />
           </div>
         ))}

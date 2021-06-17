@@ -11,6 +11,9 @@ interface MatriculationExaminationEnrolledAttendesListProps {
     modifiedExaminationAttendedSubjectList: ExaminationEnrolledSubject[]
   ) => void;
   readOnly?: boolean;
+  useSubjectSelect?: boolean;
+  useMandatorySelect?: boolean;
+  useRepeatSelect?: boolean;
   examinationEnrolledList: ExaminationEnrolledSubject[];
   isConflictingMandatory?: (attendance: ExaminationEnrolledSubject) => boolean;
   conflictingAttendancesGroup?: string[][];
@@ -18,21 +21,31 @@ interface MatriculationExaminationEnrolledAttendesListProps {
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
+const defaultUseSelectsProps = {
+  useSubjectSelect: true,
+  useMandatorySelect: true,
+  useRepeatSelect: true,
+};
+
 /**
  * MatriculationExaminationSubjectSelectsList
  * @param props
  * @returns
  */
 export const MatriculationExaminationEnrolledAttendesList: React.FC<MatriculationExaminationEnrolledAttendesListProps> =
-  ({
-    onChange,
-    examinationEnrolledList,
-    conflictingAttendancesGroup,
-    onDeleteRow,
-    children,
-    readOnly,
-    ...validationProps
-  }) => {
+  (props) => {
+    props = { ...defaultUseSelectsProps, ...props };
+
+    const {
+      onChange,
+      examinationEnrolledList,
+      conflictingAttendancesGroup,
+      onDeleteRow,
+      children,
+      readOnly,
+      ...rest
+    } = props;
+
     /**
      * Handles matriculation examation enrolled subject group change
      * @param key
@@ -90,7 +103,7 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<Matriculatio
                   onMatriculationExaminationSubjectGroupChange
                 }
                 onClickDeleteRow={onDeleteRow}
-                {...validationProps}
+                {...rest}
               />
             </div>
           );
