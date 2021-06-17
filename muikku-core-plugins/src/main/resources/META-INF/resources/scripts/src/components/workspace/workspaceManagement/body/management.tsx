@@ -91,7 +91,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceDescription: props.workspace ? props.workspace.description || "" : "",
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
       workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
-      workspaceChatStatus: props.workspace ? props.workspace.chatStatus : null,
+      workspaceChatStatus: props.workspace && props.status && props.status.permissions.CHAT_AVAILABLE ? props.workspace.chatStatus : null,
       workspacePermissions: props.workspace && props.workspace.permissions ? props.workspace.permissions : [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
@@ -364,7 +364,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     // Chat
     let workspaceChatStatus = this.state.workspaceChatStatus;
-
     let currentWorkspaceChatStatus = this.props.workspace.chatStatus;
 
     if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
@@ -579,32 +578,32 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
             </div>
             : null}
         </section>
-
-        <section className="application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceChatSectionTitle")}</h2>
-          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-chat-option">
-              <fieldset>
-                <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.status")}</legend>
-                <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                  <div className="form-element form-element--checkbox-radiobutton">
-                    <input id="chatEnabled" name="chat-enabled" type="radio"
-                      checked={this.state.workspaceChatStatus === "ENABLED"}
-                      onChange={this.setWorkspaceChatTo.bind(this, "ENABLED")} />
-                    <label htmlFor="chatEnabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatEnabled")}</label>
+        {this.props.status.permissions.CHAT_AVAILABLE ?
+          <section className="application-sub-panel application-sub-panel--workspace-settings">
+            <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceChatSectionTitle")}</h2>
+            <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+              <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-chat-option">
+                <fieldset>
+                  <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.status")}</legend>
+                  <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                    <div className="form-element form-element--checkbox-radiobutton">
+                      <input id="chatEnabled" name="chat-enabled" type="radio"
+                        checked={this.state.workspaceChatStatus === "ENABLED"}
+                        onChange={this.setWorkspaceChatTo.bind(this, "ENABLED")} />
+                      <label htmlFor="chatEnabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatEnabled")}</label>
+                    </div>
+                    <div className="form-element form-element--checkbox-radiobutton">
+                      <input id="chatDisabled" name="chat-disabled" type="radio"
+                        checked={this.state.workspaceChatStatus === "DISABLED"}
+                        onChange={this.setWorkspaceChatTo.bind(this, "DISABLED")} />
+                      <label htmlFor="chatDisabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatDisabled")}</label>
+                    </div>
                   </div>
-                  <div className="form-element form-element--checkbox-radiobutton">
-                    <input id="chatDisabled" name="chat-disabled" type="radio"
-                      checked={this.state.workspaceChatStatus === "DISABLED"}
-                      onChange={this.setWorkspaceChatTo.bind(this, "DISABLED")} />
-                    <label htmlFor="chatDisabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatDisabled")}</label>
-                  </div>
-                </div>
-              </fieldset>
+                </fieldset>
+              </div>
             </div>
-          </div>
-        </section>
-
+          </section>
+          : null}
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
           <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
