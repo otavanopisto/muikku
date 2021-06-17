@@ -7,6 +7,8 @@ import {
 } from "../../../../@types/shared";
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
+import { SavingDraftError } from "./saving-draft-error";
+import { SavingDraftInfo } from "./saving-draft-info";
 
 /**
  * MatriculationExaminationEnrollmentActProps
@@ -57,36 +59,10 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
     const { examination, draftSaveErrorMsg, saveState } = this.props;
     const { location, message, canPublishName, name, date } = examination;
 
-    /**
-     * saving draft error popper
-     */
-    const savingDraftError = draftSaveErrorMsg && (
-      <div className="matriculation__saving-draft matriculation__saving-draft--error">
-        <h3 className="matriculation__saving-draft-title">
-          Luonnoksen tallentaminen epäonnistui!
-        </h3>
-        <p>{draftSaveErrorMsg}</p>
-      </div>
-    );
-
-    /**
-     * saving draft info popper
-     */
-    const savingDraftInfo = saveState && (
-      <div className="matriculation__saving-draft matriculation__saving-draft--info">
-        <h3 className="matriculation__saving-draft-title">
-          {saveState === "SAVING_DRAFT"
-            ? "Tallennetaan luonnosta"
-            : "Luonnos tallennettu"}
-          {saveState === "SAVING_DRAFT" && this.renderAnimatedDots()}
-        </h3>
-      </div>
-    );
-
     return (
       <div className="matriculation-container">
-        {savingDraftError}
-        {savingDraftInfo}
+        <SavingDraftError draftSaveErrorMsg={draftSaveErrorMsg} />
+        <SavingDraftInfo saveState={saveState} />
         <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
             Kokeen suorittaminen
@@ -203,20 +179,6 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
       </div>
     );
   }
-
-  /**
-   * renderAnimatedDots
-   * @returns
-   */
-  renderAnimatedDots = () => {
-    return (
-      <>
-        <span>.</span>
-        <span>.</span>
-        <span>.</span>
-      </>
-    );
-  };
 }
 
 export default MatrMatriculationExaminationEnrollmentAct;

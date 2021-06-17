@@ -6,8 +6,7 @@ import { MatriculationExaminationPlannedAttendesList } from "./matriculationExam
 import { Textarea } from "./textarea";
 import { TextField } from "./textfield";
 import Button from "~/components/general/button";
-import { SavingDraftError } from "./saving-draft-error";
-import { SavingDraftInfo } from "./saving-draft-info";
+import { HOPSType } from "../../../../reducers/main-function/hops";
 import {
   getDefaultNextTerm,
   getDefaultPastTerm,
@@ -32,27 +31,31 @@ import {
   getNextTermOptions,
   getPastTermOptions,
 } from "../../../../helper-functions/matriculation-functions";
+import { SavingDraftError } from "./saving-draft-error";
+import { SavingDraftInfo } from "./saving-draft-info";
 
 /**
  * Specific rules for old form
  */
+const REQUIRED_AMOUNT_OF_ATTENDACNES = 5;
 const REQUIRED_FINNISH_ATTENDANCES = 1;
-const REQUIRED_MANDATORY_ATTENDANCES = 4;
+const REQUIRED_MANDATORY_ATTENDANCES = 5;
 const REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN = 2;
-const REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN = 0;
+const REQUIRED_SUBJECT_ATTENDANCE_MORE_THAN = 0;
 const REQUIRED_NUM_OF_COURSES = 20;
 
 /**
  * MatriculationExaminationEnrollmentInformationProps
  */
-interface MatriculationExaminationEnrollmentInformationProps {
+interface MatriculationExaminationEnrollmentInformationNewProps {
   examination: ExaminationInformation;
   saveState?: SaveState;
   draftSaveErrorMsg?: string;
+  hops: HOPSType;
   onChange: (examination: ExaminationInformation) => void;
 }
 
-interface MatriculationExaminationEnrollmentInformationState
+interface MatriculationExaminationEnrollmentInformationNewState
   extends ExaminationInformation {}
 
 /**
@@ -60,11 +63,11 @@ interface MatriculationExaminationEnrollmentInformationState
  * @param props
  * @returns
  */
-export class MatriculationExaminationEnrollmentInformation extends React.Component<
-  MatriculationExaminationEnrollmentInformationProps,
-  MatriculationExaminationEnrollmentInformationState
+export class MatriculationExaminationEnrollmentInformationNew extends React.Component<
+  MatriculationExaminationEnrollmentInformationNewProps,
+  MatriculationExaminationEnrollmentInformationNewState
 > {
-  constructor(props: MatriculationExaminationEnrollmentInformationProps) {
+  constructor(props: MatriculationExaminationEnrollmentInformationNewProps) {
     super(props);
 
     this.state = {
@@ -111,8 +114,8 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @param prevState
    */
   componentDidUpdate = (
-    prevProps: MatriculationExaminationEnrollmentInformationProps,
-    prevState: MatriculationExaminationEnrollmentInformationState
+    prevProps: MatriculationExaminationEnrollmentInformationNewProps,
+    prevState: MatriculationExaminationEnrollmentInformationNewState
   ) => {
     if (this.props !== prevProps) {
       this.setState(this.props.examination);
@@ -139,7 +142,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
 
     enrolledAttendances.push({
       subject: this.getDefaultSubject(this.getEnrolledSubjects()),
-      mandatory: "true",
+      mandatory: "false",
       repeat: "false",
       status: "ENROLLED",
     });
@@ -187,7 +190,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
     plannedAttendances.push({
       term: getDefaultNextTerm().value,
       subject: this.getDefaultSubject(this.getPlannedSubjects()),
-      mandatory: "true",
+      mandatory: "false",
       status: "PLANNED",
     });
 
@@ -311,12 +314,16 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * I.e. the array is missing the duplicates (repeated exams) which come from finished list.
    */
   getNonDuplicateAttendances() {
-    const attendances = [].concat(
-      this.state.enrolledAttendances,
-      this.state.plannedAttendances
-    );
+    const attendances = [].concat(this.state.enrolledAttendances);
+
     const attendedSubjects = attendances.map((attendance) => {
       return attendance.subject;
+    });
+
+    this.state.plannedAttendances.forEach((plannedAttandance) => {
+      if (attendedSubjects.indexOf(plannedAttandance.subject) === -1) {
+        attendances.push(plannedAttandance);
+      }
     });
 
     this.state.finishedAttendances.forEach((finishedAttendance) => {
@@ -329,9 +336,15 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   }
 
   /**
+   * getAmountOfChoosedAttendances
+   * @returns number
+   */
+  getAmountOfChoosedAttendances() {
+    return this.getNonDuplicateAttendances().length;
+  }
+
+  /**
    * Returns count of attendances in finnish courses.
-   *
-   * Attendances with grade IMPROBATUR are ignored while counting attendances
    *
    * @returns count of attendances in finnish courses
    */
@@ -342,47 +355,36 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   }
 
   /**
-   * Returns count of attendances in mandatory courses
-   *
-   * Attendances with grade IMPROBATUR are ignored while counting attendances
-   *
-   * @returns count of attendances in mandatory courses
+   * getFinnishAttendance
+   * @returns
    */
-  getAmountOfMandatoryAttendances() {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return attendance.mandatory === "true";
-    }).length;
+  getFinnishAttendance() {
+    return this.getNonDuplicateAttendances().map((attendance) => {
+      return FINNISH_SUBJECTS.find(
+        (fSubject) => fSubject === attendance.subject
+      );
+    });
   }
 
   /**
    * Returns count of attendances in academic subjects
    *
-   * Attendances with grade IMPROBATUR are ignored while counting attendances
-   *
    * @returns count of attendances in academic subjects
    */
   getAmountOfAcademicSubjectAttendances() {
     return this.getNonDuplicateAttendances().filter((attendance) => {
-      return (
-        attendance.mandatory === "true" &&
-        ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1
-      );
+      return ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
 
   /**
    * Returns whether user has valid amount of attendances in mandatory advanced subjects
    *
-   * Attendances with grade IMPROBATUR are ignored while counting attendances
-   *
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
-  getAmountOfMandatoryAdvancedSubjectAttendances() {
+  getAmountOfAdvancedSubjectAttendances() {
     return this.getNonDuplicateAttendances().filter((attendance) => {
-      return (
-        attendance.mandatory === "true" &&
-        ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
-      );
+      return ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
 
@@ -392,14 +394,18 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
    * @returns whether attendance details are valid
    */
   isValidAttendances = () => {
+    console.log([
+      this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES,
+      this.getAmountOfAdvancedSubjectAttendances() >
+        REQUIRED_SUBJECT_ATTENDANCE_MORE_THAN,
+    ]);
+
     return (
       this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
-      this.getAmountOfMandatoryAttendances() ==
-        REQUIRED_MANDATORY_ATTENDANCES &&
-      this.getAmountOfAcademicSubjectAttendances() <
+      this.getAmountOfAcademicSubjectAttendances() <=
         REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
-      this.getAmountOfMandatoryAdvancedSubjectAttendances() >
-        REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
+      this.getAmountOfAdvancedSubjectAttendances() >
+        REQUIRED_SUBJECT_ATTENDANCE_MORE_THAN
     );
   };
 
@@ -510,6 +516,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         return true;
       }
     }
+    return false;
   };
 
   /**
@@ -541,50 +548,21 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   };
 
   /**
-   * Returns true if there is a finished attendance with the same subject but different mandatory.
-   */
-  isConflictingMandatory = (attendance: ExaminationEnrolledSubject) => {
-    return (
-      this.state.finishedAttendances.filter((fin) => {
-        return (
-          fin.subject === attendance.subject &&
-          fin.mandatory != attendance.mandatory
-        );
-      }).length > 0
-    );
-  };
-
-  /**
-   * Returns true if there are any conflicting mandatories; see isConflictingMandatory.
-   */
-  hasMandatoryConflicts = () => {
-    const attendances = [].concat(
-      this.state.enrolledAttendances,
-      this.state.plannedAttendances
-    );
-    return (
-      attendances.filter((attendance) => {
-        return (
-          this.state.finishedAttendances.filter((fin) => {
-            return (
-              fin.subject === attendance.subject &&
-              fin.mandatory != attendance.mandatory
-            );
-          }).length > 0
-        );
-      }).length > 0
-    );
-  };
-
-  /**
    * Checks if form has any conflicted courses selected
    * @returns boolean
    */
   isInvalid() {
+    console.log([
+      this.hasConflictingRepeats(),
+      this.isConflictingAttendances().length > 0,
+      this.isIncompleteAttendances(),
+    ]);
+
+    console.log(this.isValidAttendances());
+
     return (
       this.isConflictingAttendances().length > 0 ||
       this.hasConflictingRepeats() ||
-      this.hasMandatoryConflicts() ||
       this.isIncompleteAttendances() ||
       !this.isValidAttendances()
     );
@@ -912,6 +890,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             pastOptions={getPastTermOptions()}
             onChange={this.onExaminationFinishedSubjectListChange}
             onDeleteRow={this.deleteFinishedAttendance}
+            useMandatorySelect={false}
           />
           <div className="matriculation-container__row">
             <Button
@@ -932,12 +911,12 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             </b>
           </legend>
           <MatriculationExaminationEnrolledAttendesList
-            isConflictingMandatory={this.isConflictingMandatory}
             isConflictingRepeat={this.isConflictingRepeat}
             conflictingAttendancesGroup={this.isConflictingAttendances()}
             examinationEnrolledList={enrolledAttendances}
             onChange={this.onExaminationEnrolledAttendSubjectListChange}
             onDeleteRow={this.deleteEnrolledAttendance}
+            useMandatorySelect={false}
           />
           <div className="matriculation-container__row">
             <Button
@@ -985,6 +964,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
             nextOptions={getNextTermOptions()}
             onChange={this.onExaminationPlannedSubjectListChange}
             onDeleteRow={this.deletePlannedAttendance}
+            useMandatorySelect={false}
           />
           <div className="matriculation-container__row">
             <Button
@@ -1007,16 +987,6 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         </fieldset>
 
         <div className="matriculation-container__indicator-examples">
-          {this.hasMandatoryConflicts() ? (
-            <div className="matriculation-container__mandatory-conflicts">
-              <div className="matriculation-container__mandatory-conflicts-indicator"></div>
-              <p>
-                Ainetta uusittaessa pakollisuustiedon on oltava sama kuin
-                aiemmalla suorituskerralla
-              </p>
-            </div>
-          ) : null}
-
           {this.hasConflictingRepeats() ? (
             <div className="matriculation-container__repeat-conflicts">
               <div className="matriculation-container__repeat-conflicts-indicator"></div>
@@ -1029,45 +999,52 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
         </div>
 
         {this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
-        this.getAmountOfMandatoryAttendances() ==
-          REQUIRED_MANDATORY_ATTENDANCES &&
-        this.getAmountOfAcademicSubjectAttendances() <
-          REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
-        this.getAmountOfMandatoryAdvancedSubjectAttendances() >
-          REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN ? null : (
+        this.getAmountOfChoosedAttendances() ==
+          REQUIRED_AMOUNT_OF_ATTENDACNES &&
+        this.getAmountOfAdvancedSubjectAttendances() >
+          REQUIRED_SUBJECT_ATTENDANCE_MORE_THAN ? null : (
           <div className="matriculation-container__state state-INFO">
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">
-              <p>Ylioppilastutkintoon tulee sisältyä</p>
+              <p>
+                Ylioppilastutkintoon tulee sisältyä vähintään viisi eri
+                kirjoitettua ainetta
+                {this.getAmountOfChoosedAttendances() ==
+                REQUIRED_AMOUNT_OF_ATTENDACNES
+                  ? ""
+                  : ` (valittuna ${this.getAmountOfChoosedAttendances()})`}
+                ,<br /> joista;
+              </p>
               <ul>
                 <li>
-                  äidinkieli / suomi toisena kielenä
+                  yhden tulee olla äidinkieli / suomi toisena kielenä.
                   {this.getAmountOfFinnishAttendances() ==
                   REQUIRED_FINNISH_ATTENDANCES
-                    ? ""
-                    : " (ei valittuna)"}
-                </li>
-                <li>
-                  neljä pakollista koetta
-                  {this.getAmountOfMandatoryAttendances() ==
-                  REQUIRED_MANDATORY_ATTENDANCES
-                    ? ""
-                    : ` (valittuna ${this.getAmountOfMandatoryAttendances()})`}
-                </li>
-                <li>
-                  vähintään yksi A-tason koe
-                  {this.getAmountOfMandatoryAdvancedSubjectAttendances() > 0
-                    ? ""
-                    : ` (valittuna ${this.getAmountOfMandatoryAdvancedSubjectAttendances()})`}
-                </li>
-                <li>
-                  vain yksi pakollinen reaaliaine, jos kirjoitat yhden tai
-                  useamman reaaliaineen.
-                  {this.getAmountOfAcademicSubjectAttendances() < 2
-                    ? ""
-                    : ` (valittuna ${this.getAmountOfAcademicSubjectAttendances()})`}
+                    ? ` (${
+                        SUBJECT_MAP[this.getFinnishAttendance()[0]]
+                      } valittu)`
+                    : null}
                 </li>
               </ul>
+              <p>neljä muuta ainetta kolmesta seuraavasta aineryhmästä:</p>
+              <ul>
+                <li>
+                  vieras kieli, toinen kotimainen kieli, matematiikka, reaali
+                </li>
+                <li style={{ fontWeight: "bold" }}>
+                  lisäksi yhden kokeen tulee olla A-tason koe
+                  {this.getAmountOfAdvancedSubjectAttendances() > 0
+                    ? ""
+                    : ` (valittuna ${this.getAmountOfAdvancedSubjectAttendances()})`}
+                </li>
+              </ul>
+              {this.getAmountOfChoosedAttendances() >
+                REQUIRED_AMOUNT_OF_ATTENDACNES && (
+                <p style={{ fontWeight: "bold" }}>
+                  mikäli suoritat enemmän kuin 5 viisi ainetta, merkitse mitkä
+                  kokeet suoritat maksuttomana
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -1076,4 +1053,4 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
   }
 }
 
-export default MatriculationExaminationEnrollmentInformation;
+export default MatriculationExaminationEnrollmentInformationNew;

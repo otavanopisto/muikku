@@ -6,6 +6,8 @@ import { TextField } from "./textfield";
 import { MatriculationExaminationFinishedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-finished-attendes-list";
 import { MatriculationExaminationEnrolledAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
 import { MatriculationExaminationPlannedAttendesList } from "./matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
+import { SavingDraftError } from "./saving-draft-error";
+import { SavingDraftInfo } from "./saving-draft-info";
 import {
   getNextTermOptions,
   getPastTermOptions,
@@ -91,36 +93,10 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       }
     };
 
-    /**
-     * saving draft error popper
-     */
-    const savingDraftError = draftSaveErrorMsg && (
-      <div className="matriculation__saving-draft matriculation__saving-draft--error">
-        <h3 className="matriculation__saving-draft-title">
-          Luonnoksen tallentaminen epäonnistui!
-        </h3>
-        <p>{draftSaveErrorMsg}</p>
-      </div>
-    );
-
-    /**
-     * saving draft info popper
-     */
-    const savingDraftInfo = saveState && (
-      <div className="matriculation__saving-draft matriculation__saving-draft--info">
-        <h3 className="matriculation__saving-draft-title">
-          {saveState === "SAVING_DRAFT"
-            ? "Tallennetaan luonnosta"
-            : "Luonnos tallennettu"}
-          {saveState === "SAVING_DRAFT" && renderAnimatedDots()}
-        </h3>
-      </div>
-    );
-
     return (
       <div className="matriculation-container">
-        {savingDraftError}
-        {savingDraftInfo}
+        <SavingDraftError draftSaveErrorMsg={draftSaveErrorMsg} />
+        <SavingDraftInfo saveState={saveState} />
         <div className="matriculation-container__info">
           <h3 className="matriculation-container__subheader">
             Tietojen oikeellisuus
@@ -418,17 +394,3 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
       </div>
     );
   };
-
-/**
- * renderAnimatedDots
- * @returns
- */
-const renderAnimatedDots = () => {
-  return (
-    <>
-      <span>.</span>
-      <span>.</span>
-      <span>.</span>
-    </>
-  );
-};
