@@ -349,7 +349,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   createNewLatex() {
     document.execCommand("insertHTML", false, `<img class="${this.props.formulaClassName}"/>`);
-    let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt])") as HTMLImageElement;
+    let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt]):not([src])") as HTMLImageElement;
     this.selectFormula(image);
   }
   async deleteImage(url: string) {
