@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.coursepicker;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +33,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
@@ -150,6 +154,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   private AssessmentRequestController assessmentRequestController;
   
   @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
@@ -219,7 +226,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
-        @Context Request request) {
+        @Context Request request) throws EducationTypeMappingNotSetException {
     
     List<CoursePickerWorkspace> workspaces = new ArrayList<>();
 
@@ -362,6 +369,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
+                String educationSubtypeName = null;
                 
                 if (StringUtils.isNotBlank(educationTypeId)) {
                   EducationType educationType = null;
@@ -375,10 +383,34 @@ public class CoursePickerRESTService extends PluginRESTService {
                   if (educationType != null) {
                     educationTypeName = educationType.getName();
                   }
+                  
+                  Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+                  SchoolDataIdentifier educationSubTypeId = workspace.getEducationSubtypeIdentifier();
+                  Mandatority mandatority = null;
+                  
+                  if (educationSubTypeId != null) {
+                    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+                    
+                    String educationTypeMappingString = pluginSettingsController.getPluginSetting("coursepicker", "educationTypeMapping");
+                    if (educationTypeMappingString != null) {
+                      try {
+                        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
+                        mandatority = educationTypeMapping.getMandatority(educationSubTypeId);
+
+                      } catch (IOException e) {
+                        throw new EducationTypeMappingNotSetException();
+                      }
+                      
+                    }
+                  }
+                  
+                  if (mandatority != null) {
+                    educationSubtypeName = mandatority.name();
+                  }
                 }
   
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, isCourseMember));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, educationSubtypeName, isCourseMember));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -427,7 +459,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}")
   @RESTPermitUnimplemented
-  public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
+  public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) throws EducationTypeMappingNotSetException {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -447,15 +479,39 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     String educationTypeName = null;
+    String educationSubtypeName = null;
+
     
     if (workspace.getWorkspaceTypeId() != null) {
       EducationType educationType = courseMetaController.findEducationType(workspace.getWorkspaceTypeId());
       if (educationType != null) {
-        educationTypeName = educationType.getName();
+        educationTypeName = educationType.getName();    
       }
     }
+    SchoolDataIdentifier educationSubTypeId = workspace.getEducationSubtypeIdentifier();
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, isCourseMember)).build();
+    if (educationSubTypeId != null) {
+      EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+      
+      String educationTypeMappingString = pluginSettingsController.getPluginSetting("coursepicker", "educationTypeMapping");
+      if (educationTypeMappingString != null) {
+
+        Mandatority mandatority = null;
+        
+        try {
+          educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
+          mandatority = educationTypeMapping.getMandatority(educationSubTypeId);
+
+        } catch (IOException e) {
+          throw new EducationTypeMappingNotSetException();
+        }
+        if (mandatority != null) {
+          educationSubtypeName = mandatority.name();
+        }
+      }
+    }  
+    
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, educationSubtypeName, isCourseMember)).build();
   }
   
   @GET
@@ -621,7 +677,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return isEvaluated;
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, String educationSubtypeName, Boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -640,6 +696,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         description, numVisits, 
         lastVisit, 
         educationTypeName,
+        educationSubtypeName,
         isCourseMember,
         hasCustomImage, organization);
   }

@@ -20,6 +20,7 @@ public class CoursePickerWorkspace {
       Long numVisits,
       Date lastVisit,
       String educationTypeName,
+      String educationSubtypeName,
       boolean isCourseMember, 
       boolean hasCustomImage,
       OrganizationRESTModel organization) {
@@ -35,6 +36,7 @@ public class CoursePickerWorkspace {
     this.lastVisit = lastVisit;
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
+    this.educationSubtypeName = educationSubtypeName;
     this.hasCustomImage = hasCustomImage;
     this.organization = organization;
   }
@@ -127,6 +129,14 @@ public class CoursePickerWorkspace {
     this.educationTypeName = educationTypeName;
   }
   
+  public String getEducationSubtypeName() {
+    return educationSubtypeName;
+  }
+  
+  public void setEducationSubtypeName(String educationSubtypeName) {
+    this.educationSubtypeName = educationSubtypeName;
+  }
+  
   public boolean getHasCustomImage() {
     return hasCustomImage;
   }
@@ -154,6 +164,7 @@ public class CoursePickerWorkspace {
   private Boolean published;
   private Boolean isCourseMember;
   private String educationTypeName;
+  private String educationSubtypeName;
   private boolean hasCustomImage;
   private OrganizationRESTModel organization;
 
