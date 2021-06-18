@@ -43,8 +43,12 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
     return;
   }
   let formula = element.textContent || (element as HTMLImageElement).alt;
+  if (!formula.startsWith("\\(")) {
+    formula = "\\(" + formula + "\\)";
+  }
+
   let container = document.createElement('div');
-  container.textContent = "\\(" + formula.replace(/\\sum/g, "\\displaystyle\\sum") + "\\)";
+  container.textContent = formula.replace(/\\sum/g, "\\displaystyle\\sum");
   container.style.visibility = "hidden";
   document.body.appendChild(container);
 

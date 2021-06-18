@@ -194,6 +194,14 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>openfire-rest-client</artifactId>
     </dependency>
+    
+    <!--  Multipart (for file uploads) -->
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Test -->
 

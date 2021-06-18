@@ -59,7 +59,7 @@
         set: $.proxy(function (answer) {
           var viewerField = this.element.find('.muikku-math-exercise-field-viewer');
           viewerField.html(answer);
-          viewerField.find("span.muikku-math-exercise-formula").each($.proxy(function (index, formula) {
+          viewerField.find("span.material-page__mathfield-formula").each($.proxy(function (index, formula) {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, formula]);
           }, this));
         }, this)
