@@ -179,13 +179,16 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       return this.convertToText(node as HTMLElement);
     }).join("");
     this.findLostImages(oldImgUrls);
-    return this.value;
+    return;
   }
   convertToText(node: HTMLElement): string {
     if (node.className === this.props.editorClassName) {
-      let latex = this.selectedMathField.latex();
+      let latex: string = this.selectedMathField.latex();
       if (latex.trim() === "") {
         return "";
+      }
+      if (!latex.startsWith("\\(")) {
+        latex = "\\(" + latex + "\\)";
       }
       return `<span class="${this.props.formulaClassName}">${latex}</span>`
     }
@@ -203,6 +206,13 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       return this.convertToText(node as HTMLElement);
     }).join("") : (node as HTMLImageElement).alt;
+
+    // add the delimiters if necessary
+    if (isImg && (node as HTMLImageElement).alt && kids) {
+      if (!kids.startsWith("\\(")) {
+        kids = "\\(" + kids + "\\)";
+      }
+    }
 
     if (isImg && !kids) {
       return "";
@@ -401,6 +411,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.changedSelected = false;
     this.selectedFormula = target;
 
+    let selectedFormulaContentUndelimited = this.selectedFormula.alt || "";
+    if (selectedFormulaContentUndelimited.startsWith("\\(")) {
+      selectedFormulaContentUndelimited = selectedFormulaContentUndelimited.substr(2);
+    }
+    if (selectedFormulaContentUndelimited.endsWith("\\)")) {
+      selectedFormulaContentUndelimited = selectedFormulaContentUndelimited.substr(0, selectedFormulaContentUndelimited.length - 2);
+    }
+
     // Now we do all this garbage of
     // creating the component by hand
     this.selectedMathFieldContainer = document.createElement('div');
@@ -408,7 +426,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.selectedMathFieldContainer.className = this.props.editorClassName;
 
     let newElement = document.createElement('span');
-    newElement.textContent = this.selectedFormula.alt || "";
+    newElement.textContent = selectedFormulaContentUndelimited;
 
     let actualContainerForTheMathField = document.createElement('div');
     actualContainerForTheMathField.className = this.props.editorClassName + "--formula-container";
@@ -423,7 +441,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     editor.style.position = "absolute";
     editor.style.width = "100%"
     editor.style.height = "100%";
-    editor.textContent = this.selectedFormula.alt || "";
+    editor.textContent = selectedFormulaContentUndelimited;
 
     editorContainer.appendChild(editor);
 
