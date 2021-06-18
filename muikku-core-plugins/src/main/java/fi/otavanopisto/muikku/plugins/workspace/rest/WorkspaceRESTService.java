@@ -3486,7 +3486,11 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private String sanitizeFilename(String filename) {
-    return StringUtils.lowerCase(StringUtils.stripEnd(StringUtils.stripStart(StringUtils.strip(filename, "\\/:*?\"<>|"), "."), "."));
+    filename = StringUtils.trim(filename);
+    if (StringUtils.isEmpty(filename)) {
+      return filename;
+    }
+    return StringUtils.lowerCase(StringUtils.strip(StringUtils.removePattern(filename, "[\\\\/:*?\"<>|]"), "."));
   }
 
   private String getString(MultipartFormDataInput multipart, String field) {
