@@ -10,3 +10,5 @@
 /.tern-project
 /.cargo/
 /target/
+/node_modules/
+/node/
