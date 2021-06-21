@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.coursepicker;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
