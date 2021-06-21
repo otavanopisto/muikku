@@ -51,7 +51,6 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
@@ -371,8 +370,8 @@ public class CoursePickerRESTService extends PluginRESTService {
                 boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = null;
-                String educationSubtypeName = null;
-                
+                Mandatority mandatority = null;
+
                 if (StringUtils.isNotBlank(educationTypeId)) {
                   EducationType educationType = null;
                   SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
@@ -387,32 +386,14 @@ public class CoursePickerRESTService extends PluginRESTService {
                   }
                   
                   Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-                  SchoolDataIdentifier educationSubTypeId = workspace.getEducationSubtypeIdentifier();
-                  Mandatority mandatority = null;
+                  SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
                   
-                  if (educationSubTypeId != null) {
-                    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
-                    
-                    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
-                    if (educationTypeMappingString != null) {
-                      try {
-                        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
-                        mandatority = educationTypeMapping.getMandatority(educationSubTypeId);
-
-                      } catch (Exception e) {
-                        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
-                      }
-                      
-                    }
-                  }
+                  mandatority = getMandatority(educationSubtypeId);
                   
-                  if (mandatority != null) {
-                    educationSubtypeName = mandatority.name();
-                  }
                 }
   
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, educationSubtypeName, isCourseMember));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, mandatority, isCourseMember));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -481,8 +462,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
     boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
     String educationTypeName = null;
-    String educationSubtypeName = null;
-
+    Mandatority mandatority = null;
     
     if (workspace.getWorkspaceTypeId() != null) {
       EducationType educationType = courseMetaController.findEducationType(workspace.getWorkspaceTypeId());
@@ -490,30 +470,13 @@ public class CoursePickerRESTService extends PluginRESTService {
         educationTypeName = educationType.getName();    
       }
     }
-    SchoolDataIdentifier educationSubTypeId = workspace.getEducationSubtypeIdentifier();
+    SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
     
-    if (educationSubTypeId != null) {
-      EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
-      
-      String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
-      if (educationTypeMappingString != null) {
-
-        Mandatority mandatority = null;
-        
-        try {
-          educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
-          mandatority = educationTypeMapping.getMandatority(educationSubTypeId);
-
-        } catch (Exception e) {
-          logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
-        }
-        if (mandatority != null) {
-          educationSubtypeName = mandatority.name();
-        }
-      }
-    }  
+    if (educationSubtypeId != null) {
+    mandatority = getMandatority(educationSubtypeId); 
+    }
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, educationSubtypeName, isCourseMember)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, mandatority, isCourseMember)).build();
   }
   
   @GET
@@ -640,6 +603,22 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
+  
+  private Mandatority getMandatority(SchoolDataIdentifier educationSubtypeId) {
+    Mandatority mandatority = null;
+    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+    
+    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
+    if (educationTypeMappingString != null) {
+      try {
+        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
+        mandatority = educationTypeMapping.getMandatority(educationSubtypeId);
+      } catch (Exception e) {
+        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
+      }
+    }
+    return mandatority;
+  }
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn()) {
@@ -679,7 +658,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return isEvaluated;
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, String educationSubtypeName, Boolean isCourseMember) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority educationSubtypeName, Boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
