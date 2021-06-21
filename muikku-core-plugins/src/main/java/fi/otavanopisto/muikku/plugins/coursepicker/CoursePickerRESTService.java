@@ -52,6 +52,9 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -226,7 +229,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
-        @Context Request request) throws EducationTypeMappingNotSetException {
+        @Context Request request){
     
     List<CoursePickerWorkspace> workspaces = new ArrayList<>();
 
@@ -391,14 +394,14 @@ public class CoursePickerRESTService extends PluginRESTService {
                   if (educationSubTypeId != null) {
                     EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
                     
-                    String educationTypeMappingString = pluginSettingsController.getPluginSetting("coursepicker", "educationTypeMapping");
+                    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
                     if (educationTypeMappingString != null) {
                       try {
                         educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
                         mandatority = educationTypeMapping.getMandatority(educationSubTypeId);
 
-                      } catch (IOException e) {
-                        throw new EducationTypeMappingNotSetException();
+                      } catch (Exception e) {
+                        logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
                       }
                       
                     }
@@ -459,7 +462,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}")
   @RESTPermitUnimplemented
-  public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) throws EducationTypeMappingNotSetException {
+  public Response getWorkspace(@PathParam("ID") Long workspaceEntityId){
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -493,7 +496,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (educationSubTypeId != null) {
       EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
       
-      String educationTypeMappingString = pluginSettingsController.getPluginSetting("coursepicker", "educationTypeMapping");
+      String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
       if (educationTypeMappingString != null) {
 
         Mandatority mandatority = null;
@@ -502,8 +505,8 @@ public class CoursePickerRESTService extends PluginRESTService {
           educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);                        
           mandatority = educationTypeMapping.getMandatority(educationSubTypeId);
 
-        } catch (IOException e) {
-          throw new EducationTypeMappingNotSetException();
+        } catch (Exception e) {
+          logger.severe(String.format("Education type mapping failed with %s", educationTypeMappingString));
         }
         if (mandatority != null) {
           educationSubtypeName = mandatority.name();
