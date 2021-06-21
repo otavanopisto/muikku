@@ -26,6 +26,7 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -76,6 +77,9 @@ public class WorklistRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private WorklistController worklistController;
 
   @Inject
   private Mailer mailer;
@@ -110,6 +114,11 @@ public class WorklistRESTService {
   @GET
   @RESTPermit(MuikkuPermissions.LIST_WORKLISTITEMTEMPLATES)
   public Response listWorklistItemTemplates() {
+    
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     BridgeResponse<List<WorklistItemTemplateRestModel>> response = userSchoolDataController.listWorklistTemplates(dataSource);
     if (response.ok()) {
@@ -161,6 +170,11 @@ public class WorklistRESTService {
   @POST
   @RESTPermit(MuikkuPermissions.CREATE_WORKLISTITEM)
   public Response createWorklistItem(WorklistItemRestModel item) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     BridgeResponse<WorklistItemRestModel> response = userSchoolDataController.createWorklistItem(dataSource, item);
     if (response.ok()) {
@@ -190,6 +204,11 @@ public class WorklistRESTService {
   @PUT
   @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
   public Response updateWorklistItem(WorklistItemRestModel item) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     BridgeResponse<WorklistItemRestModel> response = userSchoolDataController.updateWorklistItem(dataSource, item);
     if (response.ok()) {
@@ -216,6 +235,11 @@ public class WorklistRESTService {
   @DELETE
   @RESTPermit(MuikkuPermissions.DELETE_WORKLISTITEM)
   public Response removeWorklistItem(WorklistItemRestModel item) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     userSchoolDataController.removeWorklistItem(dataSource, item);
     return Response.noContent().build();
@@ -277,8 +301,13 @@ public class WorklistRESTService {
   @GET
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorklistItemsByOwnerAndTimeframe(@QueryParam("owner") String identifier, @QueryParam("beginDate") String beginDate, @QueryParam("endDate") String endDate) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKLISTITEMS)) {
-      if (!StringUtils.equals(identifier, sessionController.getLoggedUserIdentifier())) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(identifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -317,8 +346,13 @@ public class WorklistRESTService {
   @GET
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorklistItemsByOwnerAndTimeframe(@QueryParam("owner") String identifier) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKLISTITEMS)) {
-      if (!StringUtils.equals(identifier, sessionController.getLoggedUserIdentifier())) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(identifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -351,6 +385,10 @@ public class WorklistRESTService {
   @Path("/updateWorklistItemsState")
   @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
   public Response updateWorklistItemsState(WorklistItemStateChangeRestModel stateChange) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     // Do the actual update
     
@@ -420,6 +458,11 @@ public class WorklistRESTService {
   @Path("/basePrice")
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBasePrice(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
     Double price = null;
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -439,6 +482,11 @@ public class WorklistRESTService {
   @Path("/billedPrice")
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("assessmentIdentifier") String assessmentIdentifier) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -464,6 +512,11 @@ public class WorklistRESTService {
   @Path("/billedPrice")
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBilledPrice(@QueryParam("workspaceEntityId") Long workspaceEntityId, WorklistItemBilledPriceRestModel payload) {
+
+    if (!worklistController.isWorklistActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();

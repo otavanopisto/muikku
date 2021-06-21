@@ -85,6 +85,15 @@ public class FileAnswerUtils {
     }
   }
   
+  public String getFileContentType(FileAnswerType type, Long userEntityId, String fileId) throws IOException {
+    SystemSetting fileFolderSetting = systemSettingDAO.findByKey(type == FileAnswerType.FILE ? FILE_SETTING_FOLDER : AUDIO_SETTING_FOLDER);
+    if (fileFolderSetting != null) {
+      java.nio.file.Path path = Paths.get(fileFolderSetting.getValue(), userEntityId.toString(), fileId);
+      return Files.probeContentType(path);
+    }
+    return null;
+  }
+  
   public void storeFileToFileSystem(FileAnswerType type, Long userEntityId, String fileId, byte[] content) throws IOException {
     if (userEntityId == null || fileId == null || content == null) {
       logger.severe(String.format("Invalid store parameters or no file content: file %s of user %d", fileId, userEntityId));
