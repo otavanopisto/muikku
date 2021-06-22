@@ -346,6 +346,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["onAnswerChange"] = props.onAnswerChange;
 
     parameters["invisible"] = props.invisible;
+    parameters["userId"] = props.status.userId;
 
     //and we return that thing
     return <ActualElement {...parameters} key={key}/>

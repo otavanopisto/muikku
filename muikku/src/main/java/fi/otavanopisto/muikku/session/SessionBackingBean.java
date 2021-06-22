@@ -11,6 +11,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,9 +28,11 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
+import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -66,6 +70,12 @@ public class SessionBackingBean {
 
   @Inject
   private ForumController forumController;
+  
+  @Inject
+  private ChatController chatController;
+  
+  @Inject
+  private WorklistController worklistController;
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
@@ -80,6 +90,7 @@ public class SessionBackingBean {
   private CurrentUserSession currentUserSession;
 
   @PostConstruct
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void init() {
     loggedUserRoleArchetype = null;
     loggedUserName = null;
@@ -89,6 +100,8 @@ public class SessionBackingBean {
     loggedUserId = null;
     loggedUser = null;
     canAccessEnvironmentForum = forumController.isEnvironmentForumActive() && hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
+    canAccessChat = chatController.isChatActive();
+    canAccessWorklist = worklistController.isWorklistActive();
 
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -102,7 +115,7 @@ public class SessionBackingBean {
         }
 
         User user = userController.findUserByDataSourceAndIdentifier(activeSchoolDataSource, activeUserIdentifier);
-        if (user != null) {
+        if (user != null) {        	
           if (!loggedUserRoleArchetype.equals(EnvironmentRoleArchetype.STUDENT)) {
             loggedUserName = String.format("%s %s (%s)", user.getFirstName(), user.getLastName(),
                 resolveLoggedUserRoleText());
@@ -444,6 +457,14 @@ public class SessionBackingBean {
     return canAccessEnvironmentForum;
   }
 
+  public boolean isCanAccessWorklist() {
+    return canAccessWorklist;
+  }
+
+  public boolean isCanAccessChat() {
+    return canAccessChat;
+  }
+
   private String displayName;
   private String emails;
   private String addresses;
@@ -453,5 +474,7 @@ public class SessionBackingBean {
   private OffsetDateTime studyTimeEnd;
   private String studyTimeLeftStr;
   private boolean canAccessEnvironmentForum;
+  private boolean canAccessWorklist;
+  private boolean canAccessChat;
 
 }

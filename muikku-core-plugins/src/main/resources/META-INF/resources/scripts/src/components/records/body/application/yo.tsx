@@ -29,8 +29,10 @@ interface YOProps {
 }
 
 interface YOState {
-  err?: String;
   dialogOpen: boolean;
+  eligibility?: YOEligibilityType;
+  eligibilityStatus?: YOEligibilityStatusType;
+  err?: String;
 }
 
 class YO extends React.Component<YOProps, YOState> {
