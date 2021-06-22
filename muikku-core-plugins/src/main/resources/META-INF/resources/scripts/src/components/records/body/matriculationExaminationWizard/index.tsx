@@ -236,6 +236,17 @@ class MatriculationExaminationWizard extends React.Component<
   }
 
   /**
+   * resetExaminationInformationState
+   * @returns reset ExaminationInformation with default values
+   */
+  resetExaminationInformationAttendances = (): ExaminationInformation => ({
+    ...this.state.examinationInformation,
+    enrolledAttendances: [],
+    plannedAttendances: [],
+    finishedAttendances: [],
+  });
+
+  /**
    * resetDraftTimeout
    */
   resetDraftTimeout = () => {
@@ -477,13 +488,21 @@ class MatriculationExaminationWizard extends React.Component<
    * onUsingNewSystemChange
    * @param usingNewSystem
    */
-  onUsingNewSystemChange = (usingNewSystem: boolean) => {
+  handleUsingNewSystemChange = (usingNewSystem: boolean) => {
     this.setState({
       examinationInformation: {
         ...this.state.examinationInformation,
+        ...this.resetExaminationInformationAttendances(),
         usingNewSystem,
       },
     });
+
+    if (this.draftTimer) {
+      clearTimeout(this.draftTimer);
+      this.draftTimer = undefined;
+    }
+
+    this.draftTimer = setTimeout(this.saveDraft, 5000);
   };
 
   /**
@@ -492,7 +511,7 @@ class MatriculationExaminationWizard extends React.Component<
    * @param steps
    * @returns
    */
-  onStepChange = (steps: object[]) => (step: any) => {
+  handleStepChange = (steps: object[]) => (step: any) => {
     if (step === steps.length - 1) {
       this.submit();
     }
@@ -503,7 +522,9 @@ class MatriculationExaminationWizard extends React.Component<
    * if changes happens before existing timer happens to end
    * @param examination
    */
-  onExaminationInformationChange = (examination: ExaminationInformation) => {
+  handleExaminationInformationChange = (
+    examination: ExaminationInformation
+  ) => {
     this.setState({
       examinationInformation: examination,
     });
@@ -533,7 +554,7 @@ class MatriculationExaminationWizard extends React.Component<
         component: (
           <Step1
             hops={this.props.hops}
-            onChangeSystemChange={this.onUsingNewSystemChange}
+            onChangeSystemChange={this.handleUsingNewSystemChange}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
             usingNewSystem={this.state.examinationInformation.usingNewSystem}
@@ -545,14 +566,14 @@ class MatriculationExaminationWizard extends React.Component<
         component: this.state.examinationInformation.usingNewSystem ? (
           <Step2New
             hops={this.props.hops}
-            onChange={this.onExaminationInformationChange}
+            onChange={this.handleExaminationInformationChange}
             examination={this.state.examinationInformation}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
           />
         ) : (
           <Step2
-            onChange={this.onExaminationInformationChange}
+            onChange={this.handleExaminationInformationChange}
             examination={this.state.examinationInformation}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
@@ -563,7 +584,7 @@ class MatriculationExaminationWizard extends React.Component<
         name: "Suorituspaikka",
         component: (
           <Step3
-            onChange={this.onExaminationInformationChange}
+            onChange={this.handleExaminationInformationChange}
             examination={this.state.examinationInformation}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
@@ -606,7 +627,7 @@ class MatriculationExaminationWizard extends React.Component<
             backButtonText={this.props.i18n.text.get(
               "plugin.workspace.management.wizard.button.prev"
             )}
-            onStepChange={this.onStepChange(steps)}
+            onStepChange={this.handleStepChange(steps)}
           />
         </div>
       </div>
