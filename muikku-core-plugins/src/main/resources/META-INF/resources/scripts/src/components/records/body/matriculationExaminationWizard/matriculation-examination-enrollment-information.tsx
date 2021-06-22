@@ -8,6 +8,7 @@ import { TextField } from "./textfield";
 import Button from "~/components/general/button";
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
+import { ExamEnrollmentDegreeStructure } from "../../../../@types/shared";
 import {
   getDefaultNextTerm,
   getDefaultPastTerm,
@@ -92,7 +93,7 @@ export class MatriculationExaminationEnrollmentInformation extends React.Compone
       guidanceCounselor: "",
       ssn: null,
       date: "",
-      usingNewSystem: false,
+      usingNewSystem: ExamEnrollmentDegreeStructure.PRE2022,
     };
 
     this.isValidated = this.isValidated.bind(this);

@@ -19,12 +19,26 @@ export type SaveState =
  */
 export type AttentionPlace = "Mikkeli" | "Muu";
 
+/**
+ * attendanceStatus
+ */
 export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED";
 
+/**
+ * ExaminationFunding
+ */
 export enum ExaminationFunding {
   SELF_FUNDED = "SELF_FUNDED",
   COMPULSORYEDUCATION_FREE = "COMPULSORYEDUCATION_FREE",
   COMPULSORYEDUCATION_FREE_RETRY = "COMPULSORYEDUCATION_FREE_RETRY",
+}
+
+/**
+ * ExamEnrollmentDegreeStructure
+ */
+export enum ExamEnrollmentDegreeStructure {
+  PRE2022 = "PRE2022",
+  POST2022 = "POST2022",
 }
 
 /**
@@ -130,7 +144,7 @@ export interface MatriculationStudentExamination {
   message: string;
   numMandatoryCourses: string;
   restartExam: boolean | string;
-  usingNewSystem: boolean;
+  usingNewSystem: ExamEnrollmentDegreeStructure;
 }
 
 export interface MatriculationExaminationDraft {
@@ -143,7 +157,7 @@ export interface MatriculationExaminationDraft {
   message: string;
   location: string;
   canPublishName: string;
-  usingNewSystem: boolean;
+  usingNewSystem: ExamEnrollmentDegreeStructure;
   enrolledAttendances: ExaminationEnrolledSubject[];
   plannedAttendances: ExaminationPlannedSubject[];
   finishedAttendances: ExaminationFinishedSubject[];

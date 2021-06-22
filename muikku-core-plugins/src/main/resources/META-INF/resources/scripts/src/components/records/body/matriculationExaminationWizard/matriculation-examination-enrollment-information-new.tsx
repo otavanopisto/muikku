@@ -16,6 +16,7 @@ import {
   FINNISH_SUBJECTS,
   ACADEMIC_SUBJECTS,
   ADVANCED_SUBJECTS,
+  EXAMINATION_SUCCESS_GRADES_MAP,
 } from "./index";
 
 import {
@@ -34,16 +35,65 @@ import {
 } from "../../../../helper-functions/matriculation-functions";
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
-import { EXAMINATION_SUCCESS_GRADES_MAP } from "./index";
+import { ExamEnrollmentDegreeStructure } from "../../../../@types/shared";
+
+//Specific rules for old form
 
 /**
- * Specific rules for old form
+ * Required amount attendances for valid Examination (vähintään 5 suoritusta)
  */
-const REQUIRED_AMOUNT_OF_ATTENDACNES = 5;
+export const REQUIRED_AMOUNT_OF_ATTENDACNES = 5;
+
+/**
+ * Required amount finnish attendances (äidinkieli/suomi toisena kielenä)
+ */
 const REQUIRED_FINNISH_ATTENDANCES = 1;
-const REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN = 2;
-const REQUIRED_SUBJECT_ATTENDANCE_MORE_THAN = 0;
+
+/**
+ * Required amount of other attendances beside finnish (4 koetta äidinkielen lisäksi)
+ */
+const REQUIRED_AMOUNT_OTHER_ATTENDANCES = 4;
+
+/**
+ * Required amount different attendance groups (4 koetta kolmesta ryhmästä)
+ */
+const REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS = 3;
+
+/**
+ * Required amount advanced subject (A-tason koe)
+ */
+const REQUIRED_AMOUNT_ADVANCED_SUBJECT = 1;
+
+/**
+ * Required num of courses for to attend examination
+ */
 const REQUIRED_NUM_OF_COURSES = 20;
+
+const REQUIRED_GROUPS = [
+  [
+    "ENA",
+    "RAA",
+    "ESA",
+    "SAA",
+    "VEA",
+    "RUA",
+    "RUB",
+    "ENC",
+    "RAC",
+    "ESC",
+    "SAC",
+    "VEC",
+    "ITC",
+    "POC",
+    "LAC",
+    "SM_DC",
+    "SM_ICC",
+    "SM_QC",
+  ],
+  ["MAA", "RUA", "ENA", "RAA", "ESA", "SAA", "VEA"],
+  ["UE", "ET", "YO", "KE", "GE", "TT", "PS", "FI", "HI", "FY", "BI"],
+  ["MAA", "MAB"],
+];
 
 /**
  * MatriculationExaminationEnrollmentInformationProps
@@ -96,7 +146,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       guidanceCounselor: "",
       ssn: null,
       date: "",
-      usingNewSystem: false,
+      usingNewSystem: ExamEnrollmentDegreeStructure.PRE2022,
     };
 
     this.isValidated = this.isValidated.bind(this);
@@ -240,22 +290,6 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   };
 
   /**
-   * getFinishedExamsWithoutGrade
-   * @returns List of finished exams with grade "UNKNOWN"
-   */
-  getFinishedExamsWithoutGrade = () => {
-    let finishedExamsWithoutGrade: string[] = [];
-
-    this.state.finishedAttendances.forEach((item) => {
-      if (item.grade === "UNKNOWN") {
-        finishedExamsWithoutGrade.push(item.subject);
-      }
-    });
-
-    return finishedExamsWithoutGrade;
-  };
-
-  /**
    * getRenewableForFreeFinishedAttendances
    * @returns Array of failed attendaces with IMPROBATUR GRADE
    */
@@ -322,17 +356,6 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   };
 
   /**
-   * Returns count of attendances in academic subjects
-   *
-   * @returns count of attendances in academic subjects
-   */
-  getAmountOfAcademicSubjectAttendances = () => {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1;
-    }).length;
-  };
-
-  /**
    * Returns whether user has valid amount of attendances in mandatory advanced subjects
    *
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
@@ -348,19 +371,19 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @returns amount of succeed exams
    */
   getAmountOfSucceedExams = () => {
-    let amountOfFailedExams = 0;
+    let amountOfExamsWithOtherThanImprobatur = 0;
     let amountOFailedForOtherReasons = 0;
 
     this.state.finishedAttendances.map((item) => {
       if (item.grade !== "IMPROBATUR") {
-        amountOfFailedExams++;
+        amountOfExamsWithOtherThanImprobatur++;
       }
       if (item.grade === "K") {
-        amountOFailedForOtherReasons;
+        amountOFailedForOtherReasons++;
       }
     });
 
-    return amountOfFailedExams - amountOFailedForOtherReasons;
+    return amountOfExamsWithOtherThanImprobatur - amountOFailedForOtherReasons;
   };
 
   /**
@@ -409,20 +432,73 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   };
 
   /**
+   * Returns whether user has valid amount of attendances in mandatory advanced subjects
+   *
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   *
+   * @returns whether user has valid amount of attendances in mandatory advanced subjects
+   */
+  getAmountOfMandatoryAdvancedSubjectAttendances() {
+    return this.getNonDuplicateAttendances().filter((attendance) => {
+      return ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
+    }).length;
+  }
+
+  /**
+   * getAmountOfChoosedGroups
+   */
+  getAmountOfChoosedGroups = () => {
+    const nonDublicatedAttendaces = this.getNonDuplicateAttendances();
+
+    const subjectCodes: string[] = [];
+
+    /**
+     * Creates array of string from attendance subject codes
+     */
+    for (let attendance of nonDublicatedAttendaces) {
+      subjectCodes.push(attendance.subject);
+    }
+
+    let choosedGroups: string[][] = [];
+
+    for (const group of REQUIRED_GROUPS) {
+      let groupChoosed = false;
+      if (!groupChoosed) {
+        for (const sCode of subjectCodes) {
+          if (!groupChoosed) {
+            if (group.includes(sCode)) {
+              groupChoosed = true;
+              choosedGroups.push(group);
+            }
+          }
+        }
+      }
+    }
+
+    return choosedGroups.length;
+  };
+
+  /**
    * isValidExamination
    * @returns whether examination is valid, and with selection student can graduate from
    */
   isValidExamination = () => {
+    const difference =
+      this.getAmountOfSucceedExams() +
+      this.getEnrolledSubjects().length -
+      this.getAmountOfFinnishAttendances();
+
+    const sum =
+      this.getAmountOfSucceedExams() + this.getEnrolledSubjects().length;
+
     return (
       this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
-      this.getAmountOfAcademicSubjectAttendances() <=
-        REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
-      this.getAmountOfAdvancedSubjectAttendances() >
-        REQUIRED_SUBJECT_ATTENDANCE_MORE_THAN &&
-      this.getAmountOfChoosedAttendances() >= REQUIRED_AMOUNT_OF_ATTENDACNES &&
-      !this.isIncompleteAttendances() &&
-      this.getFinishedExamsWithoutGrade().length === 0 &&
-      this.getFailedExamsBySomeOtherReason().length === 0
+      sum >= REQUIRED_AMOUNT_OF_ATTENDACNES &&
+      this.getAmountOfMandatoryAdvancedSubjectAttendances() >=
+        REQUIRED_AMOUNT_ADVANCED_SUBJECT &&
+      this.getAmountOfChoosedGroups() >=
+        REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS &&
+      difference >= REQUIRED_AMOUNT_OTHER_ATTENDANCES
     );
   };
 
@@ -621,7 +697,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
     return (
       this.isConflictingAttendances().length > 0 ||
       this.hasConflictingRepeats() ||
-      this.isIncompleteAttendances()
+      this.isIncompleteAttendances() ||
+      this.state.enrolledAttendances.length <= 0
     );
   };
 
@@ -1348,7 +1425,9 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
           </div>
         ) : null}
 
-        {this.isFundingsValid() && this.isValidExamination() ? (
+        {this.isFundingsValid() &&
+        !this.isIncompleteAttendances() &&
+        this.isValidExamination() ? (
           <div className="matriculation-container__state state-SUCCESS">
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">

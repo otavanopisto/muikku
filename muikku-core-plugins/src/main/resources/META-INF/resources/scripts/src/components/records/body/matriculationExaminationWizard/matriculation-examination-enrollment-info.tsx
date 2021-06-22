@@ -12,6 +12,7 @@ interface MatriculationExaminationEnrollmentInfoProps {
   saveState?: SaveState;
   draftSaveErrorMsg?: string;
   hops: HOPSType;
+  endDate: string;
 }
 
 interface MatriculationExaminationEnrollmentInfoState {
@@ -116,16 +117,8 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
           )}
 
           <h3 className="matriculation-container__subheader">
-            Ilmoittautuminen sulkeutuu
+            Ilmoittautuminen sulkeutuu <b>{this.props.endDate}</b>
           </h3>
-          <ul className="matriculation-container__info-list">
-            <li className="matriculation-container__info-list-item">
-              kevään kirjoitusten osalta 20.11.
-            </li>
-            <li className="matriculation-container__info-list-item">
-              syksyn kirjoitusten osalta 20.5.
-            </li>
-          </ul>
           <p className="matriculation-container__info-item">
             Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen
             (riikka.turpeinen@otavia.fi).

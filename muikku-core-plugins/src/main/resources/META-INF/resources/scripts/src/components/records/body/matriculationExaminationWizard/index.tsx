@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as moment from "moment";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { MatriculationExaminationEnrollmentInfo as Step1 } from "./matriculation-examination-enrollment-info";
@@ -6,6 +7,7 @@ import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matric
 import { MatriculationExaminationEnrollmentInformationNew as Step2New } from "./matriculation-examination-enrollment-information-new";
 import { MatrMatriculationExaminationEnrollmentAct as Step3 } from "./matriculation-examination-enrollment-act";
 import { MatriculationExaminationEnrollmentSummary as Step4 } from "./matriculation-examination-enrollment-summary";
+import { MatriculationExaminationEnrollmentSummaryNew as Step4New } from "./matriculation-examination-enrollment-summary-new";
 import { MatriculationExaminationEnrollmentCompleted as Step5 } from "./matriculation-examination-enrollment-completed";
 import { connect, Dispatch } from "react-redux";
 
@@ -21,6 +23,8 @@ import {
 } from "../../../../@types/shared";
 import { StatusType } from "../../../../reducers/base/status";
 import { HOPSType } from "../../../../reducers/main-function/hops";
+import { ExamEnrollmentDegreeStructure } from "../../../../@types/shared";
+import { YOType } from "../../../../reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
   ExaminationInformation,
@@ -29,6 +33,8 @@ import {
   MatriculationStudent,
   MatriculationStudentExamination,
 } from "../../../../@types/shared";
+
+moment.locale("fi");
 
 export const ACADEMIC_SUBJECTS = [
   "UE",
@@ -52,6 +58,7 @@ export const ADVANCED_SUBJECTS = [
   "SAA",
   "VEA",
 ];
+
 export const FINNISH_SUBJECTS = ["AI", "S2"];
 export const SUBJECT_MAP: ExaminationSubject = {
   AI: "Äidinkieli",
@@ -117,6 +124,7 @@ interface MatriculationExaminationWizardProps {
   examId: number;
   onDone: () => any;
   hops: HOPSType;
+  yo: YOType;
 }
 
 export interface MatriculationExaminationWizardState {
@@ -171,7 +179,7 @@ class MatriculationExaminationWizard extends React.Component<
         canPublishName: "true",
         enrollmentSent: false,
         guidanceCounselor: "",
-        usingNewSystem: false,
+        usingNewSystem: ExamEnrollmentDegreeStructure.PRE2022,
         ssn: "",
         date:
           date.getDate() +
@@ -398,6 +406,7 @@ class MatriculationExaminationWizard extends React.Component<
       year: null,
       term: null,
       status: aSubject.status,
+      funding: aSubject.funding,
     }));
 
     /**
@@ -410,6 +419,7 @@ class MatriculationExaminationWizard extends React.Component<
       term: fsubject.term ? fsubject.term.substring(0, 6) : null,
       status: fsubject.status,
       grade: fsubject.grade,
+      funding: fsubject.funding,
     }));
 
     /**
@@ -493,7 +503,9 @@ class MatriculationExaminationWizard extends React.Component<
       examinationInformation: {
         ...this.state.examinationInformation,
         ...this.resetExaminationInformationAttendances(),
-        usingNewSystem,
+        usingNewSystem: usingNewSystem
+          ? ExamEnrollmentDegreeStructure.POST2022
+          : ExamEnrollmentDegreeStructure.PRE2022,
       },
     });
 
@@ -545,6 +557,12 @@ class MatriculationExaminationWizard extends React.Component<
       return <></>;
     }
 
+    const selectedEnrollment = this.props.yo.enrollment.find(
+      (enrollment) => enrollment.id === this.props.examId
+    );
+
+    const endDate = moment(selectedEnrollment.ends).format("LL");
+
     /**
      * StepZilla steps
      */
@@ -557,7 +575,13 @@ class MatriculationExaminationWizard extends React.Component<
             onChangeSystemChange={this.handleUsingNewSystemChange}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
-            usingNewSystem={this.state.examinationInformation.usingNewSystem}
+            usingNewSystem={
+              this.state.examinationInformation.usingNewSystem ===
+              ExamEnrollmentDegreeStructure.POST2022
+                ? true
+                : false
+            }
+            endDate={endDate}
           />
         ),
       },
@@ -593,7 +617,13 @@ class MatriculationExaminationWizard extends React.Component<
       },
       {
         name: "Yhteenveto",
-        component: (
+        component: this.state.examinationInformation.usingNewSystem ? (
+          <Step4New
+            examination={this.state.examinationInformation}
+            saveState={this.state.saveState}
+            draftSaveErrorMsg={this.state.errorMsg}
+          />
+        ) : (
           <Step4
             examination={this.state.examinationInformation}
             saveState={this.state.saveState}
@@ -646,6 +676,7 @@ function mapStateToProps(state: StateType) {
     workspace: state.workspaces && state.workspaces.currentWorkspace,
     status: state.status,
     hops: state.hops,
+    yo: state.yo,
   };
 }
 
