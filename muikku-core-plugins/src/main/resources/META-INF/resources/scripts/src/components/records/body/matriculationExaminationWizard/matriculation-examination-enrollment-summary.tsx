@@ -244,7 +244,7 @@ export const MatriculationExaminationEnrollmentSummary: React.FC<MatriculationEx
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
               <label className="matriculation__label">
-                Aloitan tutkinnon suorittamisen uudelleen{" "}
+                Aloitan tutkinnon suorittamisen uudelleen?
               </label>
               <label className="matriculation__label">
                 {restartExam ? "Kyllä" : "En"}

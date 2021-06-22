@@ -104,15 +104,17 @@ export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
                 />
               </div>
 
-              <div className="matriculation-container__state state-WARNING">
-                <div className="matriculation-container__state-icon icon-notification"></div>
-                <div className="matriculation-container__state-text">
-                  <p>
-                    Jos haluat suorittaa kokeen muualla, siitä on sovittava
-                    ensin kyseisen oppilaitoksen kanssa.
-                  </p>
+              {location === "" ? (
+                <div className="matriculation-container__state state-WARNING">
+                  <div className="matriculation-container__state-icon icon-notification"></div>
+                  <div className="matriculation-container__state-text">
+                    <p>
+                      Jos haluat suorittaa kokeen muualla, siitä on sovittava
+                      ensin kyseisen oppilaitoksen kanssa.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           ) : null}
 

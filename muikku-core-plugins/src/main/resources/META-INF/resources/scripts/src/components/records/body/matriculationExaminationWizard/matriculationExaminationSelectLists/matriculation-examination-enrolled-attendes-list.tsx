@@ -91,9 +91,11 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<Matriculatio
               (r) => r.indexOf(subject.subject) >= 0
             );
 
-          const failedBefore = failedFinishedList.includes(subject.subject);
+          const failedBefore =
+            failedFinishedList && failedFinishedList.includes(subject.subject);
 
-          const succeedBefore = succesFinishedList.includes(subject.subject);
+          const succeedBefore =
+            succesFinishedList && succesFinishedList.includes(subject.subject);
 
           return (
             <div
