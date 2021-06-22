@@ -231,6 +231,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setMessage(enrollment.getMessage());
     schoolDataEntity.setStudentId(studentId);
     schoolDataEntity.setState(enrollment.getState());
+    schoolDataEntity.setDegreeStructure(enrollment.getDegreeStructure());
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
