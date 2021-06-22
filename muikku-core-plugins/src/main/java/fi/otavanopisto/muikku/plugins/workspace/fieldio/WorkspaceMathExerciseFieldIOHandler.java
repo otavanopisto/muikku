@@ -53,11 +53,14 @@ public class WorkspaceMathExerciseFieldIOHandler implements WorkspaceFieldIOHand
   }
 
   private String clean(String html) {
-    Document doc = Jsoup.parse(html);
+    // Note: Some baseUri is needed but doesn't really matter because of preserveRelativeLinks
+    Document doc = Jsoup.parse(html, "https://otavanopisto.muikkuverkko.fi"); 
     doc = new Cleaner(Whitelist.relaxed()
         .addAttributes("div", "id", "class")
         .addAttributes("span", "id", "class")
+        .addAttributes("img", "class")
         .addProtocols("img", "src", "data")
+        .preserveRelativeLinks(true)
         .removeTags("a"))
         .clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
