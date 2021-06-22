@@ -221,6 +221,16 @@ public class PyramusMatriculationExamEnrollment
     this.examId = examId;
   }
   
+  @Override
+  public String getDegreeStructure() {
+    return degreeStructure;
+  }
+
+  @Override
+  public void setDegreeStructure(String degreeStructure) {
+    this.degreeStructure = degreeStructure;
+  }
+
   public Long id;
   public Long examId;
   public String name;
@@ -242,5 +252,5 @@ public class PyramusMatriculationExamEnrollment
   public Long studentId;
   public String state;
   public List<MatriculationExamAttendance> attendances;
-
+  private String degreeStructure;
 }
