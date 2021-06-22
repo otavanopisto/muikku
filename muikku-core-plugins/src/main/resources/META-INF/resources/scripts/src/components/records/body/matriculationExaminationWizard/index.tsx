@@ -90,6 +90,7 @@ export const SUBJECT_MAP: ExaminationSubject = {
 };
 
 export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
+  K: "K (Hylätty, muu syy)",
   IMPROBATUR: "I (Improbatur)",
   APPROBATUR: "A (Approbatur)",
   LUBENTER_APPROBATUR: "B (Lubenter approbatur)",
@@ -99,6 +100,15 @@ export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
   LAUDATUR: "L (Laudatur)",
   UNKNOWN: "Ei vielä tiedossa",
 };
+
+export const EXAMINATION_SUCCESS_GRADES_MAP = [
+  "APPROBATUR",
+  "LUBENTER_APPROBATUR",
+  "CUM_LAUDE_APPROBATUR",
+  "MAGNA_CUM_LAUDE_APPROBATUR",
+  "EXIMIA_CUM_LAUDE_APPROBATUR",
+  "LAUDATUR",
+];
 
 interface MatriculationExaminationWizardProps {
   workspace: WorkspaceType;
@@ -123,20 +133,6 @@ class MatriculationExaminationWizard extends React.Component<
   MatriculationExaminationWizardState
 > {
   private draftTimer?: NodeJS.Timer = undefined;
-  private draftedFields = [
-    "changedContactInfo",
-    "guider",
-    "enrollAs",
-    "degreeType",
-    "numMandatoryCourses",
-    "restartExam",
-    "message",
-    "location",
-    "canPublishName",
-    "enrolledAttendances",
-    "plannedAttendances",
-    "finishedAttendances",
-  ];
 
   /**
    * constructor
@@ -233,7 +229,7 @@ class MatriculationExaminationWizard extends React.Component<
           examinationInformation: {
             ...prevState.examinationInformation,
             ...data,
-            restartExam: Boolean(data.restartExam),
+            restartExam: data.restartExam === "true" ? true : false,
           },
         }));
       });

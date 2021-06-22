@@ -21,6 +21,8 @@ interface MatriculationExaminationFinishedAttendesListProps {
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
   useGradeSelect?: boolean;
+  useFundingSelect?: boolean;
+  useFailedReasonSelect?: boolean;
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
@@ -29,6 +31,7 @@ const defaultUseSelectProps = {
   useSubjectSelect: true,
   useMandatorySelect: true,
   useGradeSelect: true,
+  useFundingSelect: false,
 };
 
 /**
@@ -55,7 +58,7 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<Matriculatio
      * @param value
      * @param index
      */
-    const onMatriculationExaminationSubjectGroupChange = <
+    const handleMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationFinishedSubject
     >(
       key: T,
@@ -90,7 +93,7 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<Matriculatio
               selectedSubjectList={selectedSubjects}
               enrolledAttendances={enrolledAttendances}
               onSubjectGroupChange={
-                onMatriculationExaminationSubjectGroupChange
+                handleMatriculationExaminationSubjectGroupChange
               }
               onClickDeleteRow={onDeleteRow}
               readOnly={readOnly}

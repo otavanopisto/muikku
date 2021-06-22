@@ -4,6 +4,7 @@ import "~/sass/elements/matriculation.scss";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
 import { SUBJECT_MAP, EXAMINATION_GRADES_MAP } from "../index";
+import { ExaminationFunding } from "../../../../../@types/shared";
 import {
   ExaminationEnrolledSubject,
   ExaminationFinishedSubject,
@@ -17,6 +18,8 @@ interface MatriculationExaminationEnrolledInputGroupProps {
   index: number;
   subject: ExaminationEnrolledSubject;
   selectedSubjectList: string[];
+  isFailedBefore?: boolean;
+  isSucceedBefore?: boolean;
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
   useRepeatSelect?: boolean;
@@ -53,6 +56,8 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<MatriculationE
       onSubjectGroupChange,
       selectedSubjectList,
       onClickDeleteRow,
+      isFailedBefore,
+      isSucceedBefore,
       isConflictingRepeat,
       isConflictingMandatory,
       readOnly,
@@ -123,8 +128,26 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<MatriculationE
         )}
 
         {useSelectProps.useFundingSelect && (
-          <div className="matriculation__form-element-container matriculation__form-element-container--input">
-            <FundingSelect i={index} disabled={readOnly} modifier="Enroll" />
+          <div
+            className={`matriculation__form-element-container matriculation__form-element-container--input ${
+              isFailedBefore &&
+              subject.funding !==
+                ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY
+                ? "matriculation__form-element-container--repeatable-info"
+                : ""
+            }`}
+          >
+            <FundingSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.funding}
+              isFailedBefore={isFailedBefore}
+              isSucceedBefore={isSucceedBefore}
+              onChange={(e) =>
+                onSubjectGroupChange("funding", e.target.value, index)
+              }
+              modifier="Enroll"
+            />
           </div>
         )}
 
@@ -178,6 +201,7 @@ const defaultFinishedProps = {
   useSubjectSelect: true,
   useMandatorySelect: true,
   useGradeSelect: true,
+  useFundingSelect: false,
 };
 
 /**
@@ -614,6 +638,7 @@ const GradeSelect: React.FC<GradeSelectProps> = ({
       disabled={selectProps.disabled}
       className="matriculation__select"
     >
+      <option value="">Valitse...</option>
       {Object.keys(EXAMINATION_GRADES_MAP).map((subjectCode, index) => {
         const subjectName = EXAMINATION_GRADES_MAP[subjectCode];
 
@@ -631,19 +656,114 @@ interface FundingSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
   modifier: string;
+  isFailedBefore?: boolean;
+  isSucceedBefore?: boolean;
 }
 
-const FundingSelect: React.FC<FundingSelectProps> = ({ i, modifier }) => (
+/**
+ * FundingSelect
+ */
+const FundingSelect: React.FC<FundingSelectProps> = ({
+  i,
+  modifier,
+  isFailedBefore,
+  isSucceedBefore,
+  ...selectProps
+}) => {
+  return (
+    <>
+      {i == 0 ? (
+        <label
+          id={`matriculationGradeSelectLabel${modifier}`}
+          className="matriculation__label"
+        >
+          Rahoitus
+        </label>
+      ) : null}
+      <select
+        aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
+        {...selectProps}
+        disabled={selectProps.disabled}
+        className="matriculation__select"
+      >
+        {isSucceedBefore ? (
+          <>
+            <option value="">Valitse...</option>
+            <option value={ExaminationFunding.SELF_FUNDED}>
+              Itserahoitettu
+            </option>
+          </>
+        ) : null}
+
+        {isFailedBefore ? (
+          <>
+            <option value="">Valitse...</option>
+            <option value={ExaminationFunding.SELF_FUNDED}>
+              Itserahoitettu
+            </option>
+            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
+              Oppivelvollisuus rahoitus (uusinta)
+            </option>
+          </>
+        ) : null}
+
+        {!isFailedBefore && !isSucceedBefore ? (
+          <>
+            <option value="">Valitse...</option>
+            <option value={ExaminationFunding.SELF_FUNDED}>
+              Itserahoitettu
+            </option>
+            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE}>
+              Oppivelvollisuus rahoitus
+            </option>
+            <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
+              Oppivelvollisuus rahoitus (uusinta)
+            </option>
+          </>
+        ) : null}
+      </select>
+    </>
+  );
+};
+
+interface FailedReasonSelectProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  i: number;
+  modifier: string;
+}
+
+const FailedReasonSelect: React.FC<FailedReasonSelectProps> = ({
+  i,
+  modifier,
+  ...selectProps
+}) => (
   <>
     {i == 0 ? (
-      <label id={`matriculationGradeSelectLabel${modifier}`}>
-        Maksullisuus
+      <label
+        id={`matriculationGradeSelectLabel${modifier}`}
+        className="matriculation__label"
+      >
+        Hylkäyksen syy
       </label>
     ) : null}
-    <select>
-      <option>Itserahoitettu</option>
-      <option>Oppivelvollisuus</option>
-      <option>Oppivelvollisuus uusinta</option>
+    <select
+      aria-labelledby={`matriculationGradeSelectLabel${modifier}`}
+      {...selectProps}
+      disabled={selectProps.disabled}
+      className="matriculation__select"
+    >
+      <option>
+        Kokelaan koe on hylätty, koska kokelas on jättänyt saapumatta
+        koetilaisuuteen
+      </option>
+      <option>
+        Kokelaan koe on hylätty, koska kokelas ei ole jättänyt koesuoritusta
+        arvosteltavaksi
+      </option>
+      <option>
+        Kokelaan koe on hylätty vilpin tai koetilaisuuden järjestyksen
+        häiritsemisen vuoksi
+      </option>
     </select>
   </>
 );

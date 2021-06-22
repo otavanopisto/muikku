@@ -21,10 +21,10 @@ export type AttentionPlace = "Mikkeli" | "Muu";
 
 export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED";
 
-enum ExaminationFunding {
-  "SELF_FUNDED",
-  "COMPULSORYEDUCATION_FREE",
-  "COMPULSORYEDUCATION_FREE_RETRY",
+export enum ExaminationFunding {
+  SELF_FUNDED = "SELF_FUNDED",
+  COMPULSORYEDUCATION_FREE = "COMPULSORYEDUCATION_FREE",
+  COMPULSORYEDUCATION_FREE_RETRY = "COMPULSORYEDUCATION_FREE_RETRY",
 }
 
 /**
@@ -58,6 +58,7 @@ export interface ExaminationEnrolledSubject {
   mandatory: string;
   repeat: string;
   status: attendanceStatus;
+  funding?: ExaminationFunding | string;
 }
 
 /**
@@ -69,6 +70,7 @@ export interface ExaminationFinishedSubject {
   mandatory: string;
   grade: string;
   status: attendanceStatus;
+  funding?: ExaminationFunding | string;
 }
 
 /**
@@ -127,7 +129,7 @@ export interface MatriculationStudentExamination {
   location: string;
   message: string;
   numMandatoryCourses: string;
-  restartExam: boolean;
+  restartExam: boolean | string;
   usingNewSystem: boolean;
 }
 

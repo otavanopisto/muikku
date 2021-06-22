@@ -52,7 +52,7 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<Matriculation
      * @param value
      * @param index
      */
-    const onMatriculationExaminationSubjectGroupChange = <
+    const handleMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationPlannedSubject
     >(
       key: T,
@@ -87,7 +87,7 @@ export const MatriculationExaminationPlannedAttendesList: React.FC<Matriculation
               nextOptions={nextOptions}
               selectedSubjectList={selectedPlannedSubjects}
               onSubjectGroupChange={
-                onMatriculationExaminationSubjectGroupChange
+                handleMatriculationExaminationSubjectGroupChange
               }
               onClickDeleteRow={onDeleteRow}
               {...useSelectProps}

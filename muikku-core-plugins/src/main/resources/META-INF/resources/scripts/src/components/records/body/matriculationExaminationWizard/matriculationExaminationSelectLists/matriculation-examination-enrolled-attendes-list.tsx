@@ -14,6 +14,9 @@ interface MatriculationExaminationEnrolledAttendesListProps {
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
   useRepeatSelect?: boolean;
+  useFundingSelect?: boolean;
+  failedFinishedList?: string[];
+  succesFinishedList?: string[];
   examinationEnrolledList: ExaminationEnrolledSubject[];
   isConflictingMandatory?: (attendance: ExaminationEnrolledSubject) => boolean;
   conflictingAttendancesGroup?: string[][];
@@ -25,6 +28,7 @@ const defaultUseSelectsProps = {
   useSubjectSelect: true,
   useMandatorySelect: true,
   useRepeatSelect: true,
+  useFundingSelect: false,
 };
 
 /**
@@ -39,6 +43,8 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<Matriculatio
     const {
       onChange,
       examinationEnrolledList,
+      failedFinishedList,
+      succesFinishedList,
       conflictingAttendancesGroup,
       onDeleteRow,
       children,
@@ -52,7 +58,7 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<Matriculatio
      * @param value
      * @param index
      */
-    const onMatriculationExaminationSubjectGroupChange = <
+    const handleMatriculationExaminationSubjectGroupChange = <
       T extends keyof ExaminationEnrolledSubject
     >(
       key: T,
@@ -85,6 +91,10 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<Matriculatio
               (r) => r.indexOf(subject.subject) >= 0
             );
 
+          const failedBefore = failedFinishedList.includes(subject.subject);
+
+          const succeedBefore = succesFinishedList.includes(subject.subject);
+
           return (
             <div
               key={index}
@@ -98,9 +108,11 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<Matriculatio
                 index={index}
                 readOnly={readOnly}
                 subject={subject}
+                isFailedBefore={failedBefore}
+                isSucceedBefore={succeedBefore}
                 selectedSubjectList={selectedSubjects}
                 onSubjectGroupChange={
-                  onMatriculationExaminationSubjectGroupChange
+                  handleMatriculationExaminationSubjectGroupChange
                 }
                 onClickDeleteRow={onDeleteRow}
                 {...rest}
