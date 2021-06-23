@@ -55,8 +55,9 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
   };
 
   handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (this.props.onChangeSystemChange)
+    if (this.props.onChangeSystemChange) {
       this.props.onChangeSystemChange(e.target.checked);
+    }
   };
 
   /**
