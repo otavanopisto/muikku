@@ -164,6 +164,14 @@ public class MatriculationExamEnrollment {
     this.examId = examId;
   }
 
+  public String getDegreeStructure() {
+    return degreeStructure;
+  }
+
+  public void setDegreeStructure(String degreeStructure) {
+    this.degreeStructure = degreeStructure;
+  }
+
   private Long examId;
   private String name;
   private String ssn;
@@ -184,4 +192,5 @@ public class MatriculationExamEnrollment {
   private String studentIdentifier;
   private String state;
   private List<MatriculationExamAttendance> attendances;
+  private String degreeStructure;
 }

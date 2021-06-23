@@ -10,7 +10,6 @@
 }
 
 @mixin step-title {
-  width: 20px;
   margin-bottom: 14px;
 }
 
@@ -124,7 +123,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    padding: 20px;
+    padding: 20px 20px 0;
   }
 }
 
