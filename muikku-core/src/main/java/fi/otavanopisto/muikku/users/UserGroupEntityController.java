@@ -156,6 +156,10 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
   }
   
+  public List<UserGroupEntity> listAllUserGroupEntities() {
+    return userGroupEntityDAO.listAll();
+  }
+  
   public List<UserGroupEntity> listUserGroupEntities() {
     List<UserGroupEntity> userGroups = userGroupEntityDAO.listByArchived(Boolean.FALSE);
     if (!organizationEntityController.canCurrentUserAccessAllOrganizations()) {
