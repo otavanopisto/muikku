@@ -385,8 +385,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                     educationTypeName = educationType.getName();
                   }
                   
-                  Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-                  SchoolDataIdentifier educationSubtypeId = workspace.getEducationSubtypeIdentifier();
+                  SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
                   
                   if (educationSubtypeId != null) {
                     mandatority = getMandatority(educationSubtypeId); 
