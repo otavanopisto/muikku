@@ -111,10 +111,10 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
   //first we create a new form data
     let formData = new FormData();
     //get the file from that index
-    let file:File = this.state.uploadingValues[index].file;
+    let file = this.state.uploadingValues[index] && this.state.uploadingValues[index].file && this.state.uploadingValues[index].file;
     //we append it in the way the server expects
 
-    if (file.size >= MAX_BYTES) {
+    if (file && file.size >= MAX_BYTES) {
       //on error we do similarly that on success
       let newValues = [...this.state.uploadingValues];
       const successIndex = newValues.findIndex(f => f.file === file);
@@ -131,11 +131,12 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       return;
     }
 
-    if(this.props.formDataGenerator){
+    if(file && this.props.formDataGenerator){
       this.props.formDataGenerator(file, formData);
     }
 
-    //we make the ajax request to the temp file upload servlet
+    if(file){
+      //we make the ajax request to the temp file upload servlet
     $.ajax({
       url: this.props.url,
       type: 'POST',
@@ -198,6 +199,8 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       contentType: false,
       processData: false
     })
+    }
+    
   }
 
   /**
@@ -206,29 +209,29 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
    */
   onFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (this.props.onFileInputChange) {
-      return this.props.onFileInputChange(e);
+      this.props.onFileInputChange(e);
+    }else {
+      let newValues = Array.from(e.target.files).map((file)=>{
+        return {
+          name: file.name,
+          contentType: file.type,
+          progress: 0,
+          file
+        }
+      });
+  
+      //let's get the original size of the array that we currently got
+      let originalLenght = this.state.uploadingValues.length;
+      this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)});
+  
+      //we are going to loop thru those newly added values
+      newValues.forEach((value, index)=>{
+        //we get the real index
+        let realIndex = index + originalLenght;
+        //we tell this to process the file
+        this.processFileAt(realIndex);
+      })
     }
-
-    let newValues = Array.from(e.target.files).map((file)=>{
-      return {
-        name: file.name,
-        contentType: file.type,
-        progress: 0,
-        file
-      }
-    });
-
-    //let's get the original size of the array that we currently got
-    let originalLenght = this.state.uploadingValues.length;
-    this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)});
-
-    //we are going to loop thru those newly added values
-    newValues.forEach((value, index)=>{
-      //we get the real index
-      let realIndex = index + originalLenght;
-      //we tell this to process the file
-      this.processFileAt(realIndex);
-    })
   }
 
   /**
