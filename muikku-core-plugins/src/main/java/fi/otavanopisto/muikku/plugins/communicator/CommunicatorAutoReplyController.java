@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
@@ -57,7 +59,7 @@ public class CommunicatorAutoReplyController {
     }
     if (!Objects.equals(sender.getId(), recipient.getId())) {
 
-      if (autoReply.getValue().equals("ENABLED")) {
+      if (StringUtils.equals(autoReply.getValue(), "ENABLED")) {
         UserEntityProperty startProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-start");
         UserEntityProperty endProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-end");
     
@@ -65,7 +67,7 @@ public class CommunicatorAutoReplyController {
         LocalDate end = null;
         
         if (startProperty == null || endProperty == null) {
-          logger.log(Level.SEVERE, String.format("Communicator couldn't send automatic reply as user entity property 'vacation-start' or 'vacation-end' was not found"));
+          // #5629: Simply don't send message if start/end properties aren't present
           return;
         }
         
@@ -74,7 +76,7 @@ public class CommunicatorAutoReplyController {
         end = LocalDate.parse(endProperty.getValue(), formatter);
         
         if (start == null || end == null) {
-          logger.log(Level.SEVERE, String.format("Communicator couldn't send automatic reply as some of vacation dates was not found"));
+          // #5629: Simply don't send message if start/end dates cannot be parsed
           return;
         }
         
@@ -92,12 +94,14 @@ public class CommunicatorAutoReplyController {
           
           if (autoReplyMsg != null) {
             replyMessage = autoReplyMsg.getValue();
-          } else {
+          }
+          else {
             replyMessage = localeController.getText(sessionController.getLocale(), "plugin.communicator.autoreply", new String[] { startDate,endDate});
           }
           if (autoReplySubject != null) {
             replySubject = autoReplySubject.getValue();
-          } else {
+          }
+          else {
             replySubject = localeController.getText(sessionController.getLocale(), "plugin.communicator.autoreply", new String[] { startDate,endDate});
           }
           List<UserEntity> recipientsList = new ArrayList<UserEntity>();

@@ -126,6 +126,11 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/prebind")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response fetchPrebindIdentifiers() {
+    
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     PrivateKey privateKey = getPrivateKey();
     if (privateKey == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Private key not set").build();
@@ -178,6 +183,11 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/credentials")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response fetchCredentials() {
+
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     PrivateKey privateKey = getPrivateKey();
     if (privateKey == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Private key not set").build();
@@ -250,6 +260,11 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE)
   public Response getUserChatSettings() {
+
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     ChatSettingsRESTModel result = new ChatSettingsRESTModel();
     UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
     if (userChatSettings != null) {
@@ -266,6 +281,10 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/publicRoom")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createPublicChatRoom(ChatRoomRESTModel payload) {
+
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     if (isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
@@ -298,6 +317,10 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updatePublicChatRoom(ChatRoomRESTModel payload) {
 
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -328,6 +351,10 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deletePublicChatRoom(ChatRoomRESTModel payload) {
 
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -350,6 +377,10 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateUserChatSettings(ChatSettingsRESTModel payload) {
     
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     // Payload validation
     
     String nick = StringUtils.trim(payload.getNick());
@@ -419,6 +450,10 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getUserInfo(@PathParam("userIdentifier") String identifierString) {
     
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     // Payload validation 
     
     if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "muikku-")) {
@@ -465,6 +500,10 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getNick(@PathParam("userIdentifier") String identifierString) {
 
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     // Payload validation 
     
     if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "user-")) {
@@ -487,6 +526,11 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/workspaceChatSettings/{workspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
   public Response getWorkspaceChatSettings(@PathParam("workspaceEntityId") Long workspaceEntityId) {
+
+    if (!chatController.isChatActive()) {
+      return Response.ok(WorkspaceChatStatus.DISABLED).build();
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity != null) {
       WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
@@ -502,6 +546,10 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRESTModel workspaceChatSettings) {
     
+    if (!chatController.isChatActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
   
     if (!workspaceEntityId.equals(workspaceChatSettings.getWorkspaceEntityId())) {
