@@ -330,6 +330,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_USER_WORKSPACE_ACTIVITY = "LIST_USER_WORKSPACE_ACTIVITY";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
+  public static final String ACCESS_STUDENT_FILES = "ACCESS_STUDENT_FILES";
   
   /* USERGROUPS */
 
@@ -358,7 +362,6 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT })
   public static final String REQUEST_WORKSPACE_ASSESSMENT = "REQUEST_WORKSPACE_ASSESSMENT";
-  
 
   @Override
   public List<String> listPermissions() {

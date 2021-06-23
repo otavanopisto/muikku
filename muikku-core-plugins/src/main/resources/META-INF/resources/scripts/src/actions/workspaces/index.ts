@@ -260,7 +260,7 @@ let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadT
         type: "UPDATE_ORGANIZATION_TEMPLATES",
         payload: <WorkspaceListType>(
           ((await promisify(
-            mApi().organizationmanagement.workspaces.read(data),
+            mApi().organizationWorkspaceManagement.workspaces.read(data),
             "callback"
           )()) || 0)
         ),

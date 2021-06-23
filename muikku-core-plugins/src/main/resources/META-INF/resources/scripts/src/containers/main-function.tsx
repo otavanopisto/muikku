@@ -108,6 +108,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
   }
 
+  loadChatSettings = (): void => {
+    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
+    }
+  }
+
   updateFirstTime() {
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
@@ -288,8 +294,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
       }
-
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <CousePickerBody />
@@ -305,7 +310,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <IndexBody />
@@ -366,7 +371,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, lastResult: 10 } }) as Action);
       this.props.store.dispatch(loadUserGroups({ payload: { q: "", firstResult: 0, maxResults: 25 } }) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <OrganizationAdministrationBody />
   }
@@ -398,7 +403,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         }
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <CommunicatorBody />
@@ -423,7 +428,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadDiscussionData(currentLocation);
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <DiscussionBody />
   }
@@ -436,7 +441,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadAnnouncementsAsAClient({ hideWorkspaceAnnouncements: "false" }, (announcements: AnnouncementListType) => { announcements }) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <AnnouncementsBody />
   }
@@ -458,7 +463,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadAnnouncerData(window.location.hash.replace("#", "").split("/"));
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <AnnouncerBody />
@@ -475,7 +480,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
       this.loadGuiderData();
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <GuiderBody />
   }
@@ -495,7 +500,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.props.store.dispatch(loadProfileAddress() as Action);
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
 
       if (!window.location.hash) {
         window.location.hash = "#general";
@@ -519,7 +524,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <RecordsBody />
