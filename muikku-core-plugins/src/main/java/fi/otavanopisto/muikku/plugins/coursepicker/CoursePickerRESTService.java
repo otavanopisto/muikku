@@ -547,7 +547,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
-    caption = MessageFormat.format(caption, workspaceName);
+    caption = MessageFormat.format(caption, user.getDisplayName(), workspaceName);
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
     
