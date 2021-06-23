@@ -221,7 +221,6 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       //let's get the original size of the array that we currently got
       let originalLenght = this.state.uploadingValues.length;
       this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)});
-      
       //we are going to loop thru those newly added values
       newValues.forEach((value, index)=>{
         //we get the real index
