@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect, Dispatch, Store } from "react-redux";
+import { bindActionCreators, Action } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
@@ -19,20 +19,23 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/buttons.scss";
 import MatriculationEligibilityRow from "./matriculation-eligibility-row/matriculation-eligibility-row";
 import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
+import { updateYO } from "~/actions/main-function/records/yo";
+import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
 
 interface YOProps {
   i18n: i18nType;
   records: RecordsType;
   hops: HOPSType;
   yo: YOType;
+  updateYO: updateYOTriggerType;
   eligibilitySubjects: SubjectEligibilitySubjectsType;
 }
 
 interface YOState {
-  dialogOpen: boolean;
   eligibility?: YOEligibilityType;
   eligibilityStatus?: YOEligibilityStatusType;
   err?: String;
+  succesfulEnrollments: number[];
 }
 
 class YO extends React.Component<YOProps, YOState> {
@@ -40,19 +43,25 @@ class YO extends React.Component<YOProps, YOState> {
     super(props);
 
     this.state = {
-      dialogOpen: false,
+      succesfulEnrollments: [],
     };
   }
 
   /**
-   * Opens sign for matriculation examination dialog
+   * updateEnrollemnts HACK SOLUTION...
    */
-  signUpForMatriculationExamination = () => {
-    this.setState({
-      dialogOpen: true,
-    });
+  updateEnrollemnts = (examId: number) => {
+    const updatedSuccesfullEnrollments = [...this.state.succesfulEnrollments];
+
+    updatedSuccesfullEnrollments.push(examId);
+
+    this.setState({ succesfulEnrollments: updatedSuccesfullEnrollments });
   };
 
+  /**
+   * Render method
+   * @returns JSX.Element
+   */
   render() {
     let i18n = this.props.i18n;
 
@@ -96,7 +105,8 @@ class YO extends React.Component<YOProps, YOState> {
           ? this.props.yo.enrollment
               .filter((exam) => exam.eligible == true)
               .map((exam) => {
-                return exam.enrolled ? (
+                return this.state.succesfulEnrollments.includes(exam.id) ||
+                  exam.enrolled ? (
                   <div key={exam.id}>
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
@@ -106,21 +116,27 @@ class YO extends React.Component<YOProps, YOState> {
                       </span>
                     </div>
                     <div className="application-sub-panel__notification-content">
-                      <span className="application-sub-panel__notification-content-label">
-                        {i18n.text.get(
-                          "plugin.records.matriculation.enrollmentDate"
-                        )}
-                      </span>
-                      <span className="application-sub-panel__notification-content-data">
-                        {new Date(exam.enrollmentDate).toLocaleDateString(
-                          "fi-Fi"
-                        )}
-                      </span>
+                      {!this.state.succesfulEnrollments.includes(exam.id) ? (
+                        <>
+                          <span className="application-sub-panel__notification-content-label">
+                            {i18n.text.get(
+                              "plugin.records.matriculation.enrollmentDate"
+                            )}
+                          </span>
+
+                          <span className="application-sub-panel__notification-content-data">
+                            {new Date(exam.enrollmentDate).toLocaleDateString(
+                              "fi-Fi"
+                            )}
+                          </span>
+                        </>
+                      ) : null}
                     </div>
                   </div>
                 ) : (
                   <div key={exam.id}>
                     <MatriculationExaminationWizardDialog
+                      updateEnrollemnts={this.updateEnrollemnts}
                       examId={exam.id}
                       key={exam.id}
                     >
@@ -217,7 +233,7 @@ function mapStateToProps(state: StateType) {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ updateYO }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(YO);

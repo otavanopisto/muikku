@@ -12,6 +12,7 @@ interface MatriculationExaminationWizardDialogProps {
   i18n: i18nType;
   children?: React.ReactElement<any>;
   examId: number;
+  updateEnrollemnts: (examId: number) => void;
 }
 
 interface MatriculationExaminationWizardDialogState {
@@ -29,6 +30,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
         <MatriculationExaminationWizard
           examId={this.props.examId}
           onDone={closeDialog}
+          updateEnrollemnts={this.props.updateEnrollemnts}
         />
       </div>
     );

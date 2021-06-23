@@ -123,6 +123,7 @@ interface MatriculationExaminationWizardProps {
   status: StatusType;
   examId: number;
   onDone: () => any;
+  updateEnrollemnts: (examId: number) => void;
   hops: HOPSType;
   yo: YOType;
 }
@@ -639,7 +640,14 @@ class MatriculationExaminationWizard extends React.Component<
       },
       {
         name: "Valmis",
-        component: <Step5 saveState={this.state.saveState} />,
+        component: (
+          <Step5
+            saveState={this.state.saveState}
+            examId={this.props.examId}
+            onDone={this.props.onDone}
+            updateEnrollemnts={this.props.updateEnrollemnts}
+          />
+        ),
       },
     ];
 
