@@ -27,7 +27,11 @@ public class UserGroupIndexer {
   private SearchIndexer indexer;
   
   public void indexUserGroup(UserGroupEntity userGroupEntity) {
-    indexUserGroup(userGroupEntity.schoolDataIdentifier());
+    if (!userGroupEntity.getArchived()) {
+      indexUserGroup(userGroupEntity.schoolDataIdentifier());
+    } else {
+      removeUserGroup(userGroupEntity.schoolDataIdentifier());
+    }
   }
   
   public void indexUserGroup(SchoolDataIdentifier userGroupIdentifier) {
@@ -37,7 +41,7 @@ public class UserGroupIndexer {
       if (userGroup != null) {
         indexer.index(UserGroup.class.getSimpleName(), userGroup);
       } else {
-        logger.info(String.format("Removing user group %s from index", userGroupIdentifier.getIdentifier(), userGroupIdentifier.getDataSource()));
+        logger.info(String.format("Removing user group %s from index (not found from school data source)", userGroupIdentifier));
         removeUserGroup(userGroupIdentifier);
       }
     } catch (Exception ex) {
