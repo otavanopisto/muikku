@@ -146,7 +146,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       guidanceCounselor: "",
       ssn: null,
       date: "",
-      usingNewSystem: ExamEnrollmentDegreeStructure.PRE2022,
+      degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
     };
 
     this.isValidated = this.isValidated.bind(this);

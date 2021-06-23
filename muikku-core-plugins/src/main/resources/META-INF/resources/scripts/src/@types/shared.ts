@@ -144,7 +144,7 @@ export interface MatriculationStudentExamination {
   message: string;
   numMandatoryCourses: string;
   restartExam: boolean | string;
-  usingNewSystem: ExamEnrollmentDegreeStructure;
+  degreeStructure: ExamEnrollmentDegreeStructure;
 }
 
 export interface MatriculationExaminationDraft {
@@ -157,7 +157,7 @@ export interface MatriculationExaminationDraft {
   message: string;
   location: string;
   canPublishName: string;
-  usingNewSystem: ExamEnrollmentDegreeStructure;
+  degreeStructure: ExamEnrollmentDegreeStructure;
   enrolledAttendances: ExaminationEnrolledSubject[];
   plannedAttendances: ExaminationPlannedSubject[];
   finishedAttendances: ExaminationFinishedSubject[];
@@ -179,6 +179,7 @@ export interface MatriculationExaminationApplication {
   numMandatoryCourses: number;
   location: string;
   message: string;
+  degreeStructure: ExamEnrollmentDegreeStructure;
   studentIdentifier: string;
   canPublishName: boolean;
   state: string;

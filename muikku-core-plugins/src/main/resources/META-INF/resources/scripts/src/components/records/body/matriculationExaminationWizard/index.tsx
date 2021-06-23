@@ -179,7 +179,7 @@ class MatriculationExaminationWizard extends React.Component<
         canPublishName: "true",
         enrollmentSent: false,
         guidanceCounselor: "",
-        usingNewSystem: ExamEnrollmentDegreeStructure.PRE2022,
+        degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
         ssn: "",
         date:
           date.getDate() +
@@ -298,7 +298,7 @@ class MatriculationExaminationWizard extends React.Component<
       enrollAs,
       guider,
       changedContactInfo,
-      usingNewSystem,
+      degreeStructure,
     } = this.state.examinationInformation;
 
     const matriculationForm: MatriculationExaminationDraft = {
@@ -314,7 +314,7 @@ class MatriculationExaminationWizard extends React.Component<
       enrolledAttendances,
       plannedAttendances,
       finishedAttendances,
-      usingNewSystem,
+      degreeStructure,
     };
 
     const requestOptions = {
@@ -386,6 +386,7 @@ class MatriculationExaminationWizard extends React.Component<
       location,
       studentIdentifier,
       canPublishName,
+      degreeStructure,
     } = this.state.examinationInformation;
 
     let modifiedMessage = message;
@@ -452,6 +453,7 @@ class MatriculationExaminationWizard extends React.Component<
       studentIdentifier: studentIdentifier,
       canPublishName: canPublishName === "true",
       state: "PENDING",
+      degreeStructure,
       attendances: [
         ...attendedSubjectListParsed,
         ...finishedSubjectListParsed,
@@ -503,7 +505,7 @@ class MatriculationExaminationWizard extends React.Component<
       examinationInformation: {
         ...this.state.examinationInformation,
         ...this.resetExaminationInformationAttendances(),
-        usingNewSystem: usingNewSystem
+        degreeStructure: usingNewSystem
           ? ExamEnrollmentDegreeStructure.POST2022
           : ExamEnrollmentDegreeStructure.PRE2022,
       },
@@ -576,7 +578,7 @@ class MatriculationExaminationWizard extends React.Component<
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
             usingNewSystem={
-              this.state.examinationInformation.usingNewSystem ===
+              this.state.examinationInformation.degreeStructure ===
               ExamEnrollmentDegreeStructure.POST2022
                 ? true
                 : false
@@ -587,22 +589,24 @@ class MatriculationExaminationWizard extends React.Component<
       },
       {
         name: "Opiskelijatiedot",
-        component: this.state.examinationInformation.usingNewSystem ? (
-          <Step2New
-            hops={this.props.hops}
-            onChange={this.handleExaminationInformationChange}
-            examination={this.state.examinationInformation}
-            saveState={this.state.saveState}
-            draftSaveErrorMsg={this.state.errorMsg}
-          />
-        ) : (
-          <Step2
-            onChange={this.handleExaminationInformationChange}
-            examination={this.state.examinationInformation}
-            saveState={this.state.saveState}
-            draftSaveErrorMsg={this.state.errorMsg}
-          />
-        ),
+        component:
+          this.state.examinationInformation.degreeStructure ===
+          ExamEnrollmentDegreeStructure.POST2022 ? (
+            <Step2New
+              hops={this.props.hops}
+              onChange={this.handleExaminationInformationChange}
+              examination={this.state.examinationInformation}
+              saveState={this.state.saveState}
+              draftSaveErrorMsg={this.state.errorMsg}
+            />
+          ) : (
+            <Step2
+              onChange={this.handleExaminationInformationChange}
+              examination={this.state.examinationInformation}
+              saveState={this.state.saveState}
+              draftSaveErrorMsg={this.state.errorMsg}
+            />
+          ),
       },
       {
         name: "Suorituspaikka",
@@ -617,19 +621,21 @@ class MatriculationExaminationWizard extends React.Component<
       },
       {
         name: "Yhteenveto",
-        component: this.state.examinationInformation.usingNewSystem ? (
-          <Step4New
-            examination={this.state.examinationInformation}
-            saveState={this.state.saveState}
-            draftSaveErrorMsg={this.state.errorMsg}
-          />
-        ) : (
-          <Step4
-            examination={this.state.examinationInformation}
-            saveState={this.state.saveState}
-            draftSaveErrorMsg={this.state.errorMsg}
-          />
-        ),
+        component:
+          this.state.examinationInformation.degreeStructure ===
+          ExamEnrollmentDegreeStructure.POST2022 ? (
+            <Step4New
+              examination={this.state.examinationInformation}
+              saveState={this.state.saveState}
+              draftSaveErrorMsg={this.state.errorMsg}
+            />
+          ) : (
+            <Step4
+              examination={this.state.examinationInformation}
+              saveState={this.state.saveState}
+              draftSaveErrorMsg={this.state.errorMsg}
+            />
+          ),
       },
       {
         name: "Valmis",
