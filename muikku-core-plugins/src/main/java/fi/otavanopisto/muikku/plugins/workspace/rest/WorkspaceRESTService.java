@@ -1144,7 +1144,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceStudents.sort(Comparator.comparing(WorkspaceStudentRestModel::getLastName).thenComparing(WorkspaceStudentRestModel::getFirstName));
     }
 
-    SearchResults<List<WorkspaceStudentRestModel>> responseStudents = new SearchResults<List<WorkspaceStudentRestModel>>(searchResult.getFirstResult(), searchResult.getLastResult(), workspaceStudents, searchResult.getTotalHitCount());
+    SearchResults<List<WorkspaceStudentRestModel>> responseStudents = new SearchResults<List<WorkspaceStudentRestModel>>(searchResult.getFirstResult(), workspaceStudents, searchResult.getTotalHitCount());
     return Response.ok(responseStudents).build();
   }
   

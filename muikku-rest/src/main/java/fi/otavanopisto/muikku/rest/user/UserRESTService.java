@@ -1758,7 +1758,7 @@ public class UserRESTService extends AbstractRESTService {
         }
       }
 
-    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), staffMembers, result.getTotalHitCount());
     return Response.ok(responseStaffMembers).build();
   }
   
