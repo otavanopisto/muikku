@@ -1,0 +1,225 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.hops__step-container {
+  flex-basis: 100%;
+  overflow: auto;
+  width: 100%;
+}
+
+.hops__step-container__fieldset {
+  border-bottom: 1px solid $color-default-separator-border;
+  margin: 0 0 15px;
+  padding: 0 0 10px;
+
+  /*  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  } */
+}
+
+.hops__step-container__subheader {
+  border: 0;
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0 0 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.1875rem;
+  }
+}
+
+/* .hops__step-sub__container {
+  flex-grow: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 4;
+  }
+} */
+
+.hops__step-list {
+  padding-inline-start: 20px;
+  list-style-type: disc;
+}
+
+.hops__step-list li {
+  display: list-item;
+}
+
+.hops__step-sub__container--updates {
+  flex-grow: 2;
+  border: 1px solid cornflowerblue;
+  border-left: 3px solid cornflowerblue;
+}
+
+.hops__step-container__row {
+  display: flex;
+  flex-flow: column wrap;
+  padding: 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.hops__step-form__element-container {
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px;
+  position: relative;
+}
+
+.hops__step-form__element-container--single-row {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+
+  .hops__step__label {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 10px 0 0;
+    padding: 0;
+  }
+}
+
+.hops__step__label {
+  display: block;
+  font-weight: 600;
+  overflow: hidden;
+  padding: 0 0 5px;
+  text-overflow: ellipsis;
+}
+
+.hops__step__input {
+  background: $color-default;
+  border: 2px solid pink;
+  border-radius: 3px;
+  height: 2.25rem;
+  padding: 4px 8px;
+  width: 100%;
+
+  &[readonly] {
+    background-color: lighten($color-disabled, 20%);
+    border: 0;
+  }
+}
+
+.hops__step__select {
+  background: $color-default;
+  border: 2px solid pink;
+  border-radius: 3px;
+  display: inline-block;
+  height: 2.25rem;
+  padding: 4px;
+  width: 100%;
+
+  &[disabled] {
+    background-color: lighten($color-disabled, 20%);
+    border: 0;
+  }
+}
+
+.hops__step__input[type="checkbox"] {
+  align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: solid 2px pink;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.hops__step__input[type="checkbox"]:checked {
+  background-color: $color-application-dialog-border-color;
+  border: solid 2px $color-application-dialog-border-color;
+}
+
+.hops__step__input[type="checkbox"]:checked::after {
+  color: $color-default;
+  content: "\e639";
+  font-family: muikku;
+  font-size: 0.875rem;
+}
+
+.hops__table-container {
+  width: 100%;
+}
+
+.hops__step-button__container {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hops__step-container__row--list {
+  display: block;
+}
+
+.form-element__textarea--resize__vertically {
+  resize: vertical;
+  min-height: 50px;
+  margin-top: 5px;
+}
+
+.hops__step-container__indicator-examples {
+  margin: 10px 0 20px;
+  display: flex;
+}
+
+.hops__step-container__course-inprogress,
+.hops__step-container__course-approval,
+.hops__step-container__course-completed {
+  align-items: center;
+  display: flex;
+  margin: 2px 0;
+}
+
+.hops__step-container__course-inprogress-indicator,
+.hops__step-container__course-approval-indicator,
+.hops__step-container__course-completed-indicator {
+  display: inline-block;
+  height: 25px;
+  margin: 0 10px;
+  width: 25px;
+}
+
+.hops__step-container__course-inprogress-indicator {
+  background-color: orange;
+}
+
+.hops__step-container__course-approval-indicator {
+  background-color: palegreen;
+}
+
+.hops__step-container__course-completed-indicator {
+  background-color: green;
+}
+
+.hops__step-form__element-container-study__counter {
+  background-color: aliceblue;
+  padding: 5px;
+}
+
+.hops__step-form__element-container-study__counter div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hops__result-title {
+  margin: 0 5px;
+}
+
+.hops__calculated__hours-divider {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,49 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.checkbox__group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.checkbox__group__item {
+  padding: 5px 10px;
+  border: 1px solid skyblue;
+  flex-grow: 1;
+  margin: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  background-color: aliceblue;
+}
+
+.checkbox__group-item__label {
+  margin: 5px;
+}
+
+.checkbox__group-input[type="checkbox"] {
+  align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: solid 2px pink;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+}
+
+.checkbox__group-input[type="checkbox"]:checked {
+  background-color: $color-application-dialog-border-color;
+  border: solid 2px $color-application-dialog-border-color;
+}
+
+.checkbox__group-input[type="checkbox"]:checked::after {
+  color: $color-default;
+  content: "\e639";
+  font-family: muikku;
+  font-size: 0.875rem;
+}

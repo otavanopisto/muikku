@@ -15,7 +15,6 @@
 }
 
 .wizard {
-
   .cke {
     border: 2px solid $color-form-element-border;
   }
@@ -40,7 +39,7 @@
         @include step-title;
         display: none;
         padding: 0;
-
+        width: auto;
         @include breakpoint($breakpoint-mobile-xl) {
           display: flex;
         }

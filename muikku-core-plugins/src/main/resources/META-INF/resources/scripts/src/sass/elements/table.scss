@@ -1,0 +1,57 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table__data,
+.table__head {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table__row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* .table__row:hover {
+  background-color: #ddd;
+} */
+
+/* .table__row--course:hover {
+  background-color: none;
+} */
+
+.table__head {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: aliceblue;
+  color: black;
+}
+
+.table__head--centered,
+.table__data--centered {
+  text-align: center;
+}
+
+.table__data--COMPLETED {
+  background-color: green;
+}
+
+.table__data--INPROGRESS {
+  background-color: orange;
+}
+
+.table__data--APPROVAL {
+  background-color: palegreen;
+}
+
+.table__data--NOSTATUS {
+  background-color: unset;
+}
