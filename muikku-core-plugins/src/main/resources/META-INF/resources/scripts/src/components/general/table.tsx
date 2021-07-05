@@ -78,8 +78,8 @@ export const Tr: React.FC<TableRowProps> = ({
 }) => {
   return (
     <tr
-      className={`table__row ${
-        modifiers ? modifiers.map((m) => `table__row--${m}`).join(" ") : ""
+      className={`table-row ${
+        modifiers ? modifiers.map((m) => `table-row--${m}`).join(" ") : ""
       }`}
       {...rest}
     >
@@ -106,8 +106,8 @@ export const Th: React.FC<TableHeadProps> = ({
 }) => {
   return (
     <th
-      className={`table__head ${
-        modifiers ? modifiers.map((m) => `table__head--${m}`).join(" ") : ""
+      className={`table-head ${
+        modifiers ? modifiers.map((m) => `table-head--${m}`).join(" ") : ""
       }`}
       {...rest}
     >
@@ -134,8 +134,8 @@ export const Td: React.FC<TableDataProps> = ({
 }) => {
   return (
     <td
-      className={`table__data ${
-        modifiers ? modifiers.map((m) => `table__data--${m}`).join(" ") : ""
+      className={`table-data ${
+        modifiers ? modifiers.map((m) => `table-data--${m}`).join(" ") : ""
       }`}
       {...rest}
     >
