@@ -14,9 +14,9 @@
   margin: 0 0 15px;
   padding: 0 0 10px;
 
-  /*  @include breakpoint($breakpoint-pad) {
-    display: flex;
-  } */
+  // @include breakpoint($breakpoint-pad) {
+  //    display: flex;
+  //  }
 }
 
 .hops-container__subheader {
@@ -32,17 +32,17 @@
   }
 }
 
-/* .hops-sub__container {
-  flex-grow: 1;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-grow: 4;
-  }
-} */
+//.hops-sub__container {
+//  flex-grow: 1;
+//
+//  @include breakpoint($breakpoint-pad) {
+//    flex-grow: 4;
+//  }
+//} */
 
 .hops-updates__list {
-  padding-inline-start: 20px;
   list-style-type: disc;
+  padding-inline-start: 20px;
 }
 
 .hops-updates__list li {
@@ -50,9 +50,9 @@
 }
 
 .hops-sub__container--updates {
-  flex-grow: 2;
   border: 1px solid cornflowerblue;
   border-left: 3px solid cornflowerblue;
+  flex-grow: 2;
 }
 
 .hops-container__row {
@@ -166,14 +166,14 @@
 }
 
 .form-element__textarea--resize__vertically {
-  resize: vertical;
-  min-height: 50px;
   margin-top: 5px;
+  min-height: 50px;
+  resize: vertical;
 }
 
 .hops-container__indicator-examples {
-  margin: 10px 0 20px;
   display: flex;
+  margin: 10px 0 20px;
 }
 
 .hops-container__course-inprogress,
