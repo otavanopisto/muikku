@@ -104,36 +104,34 @@ class MotivationAndStudySkills extends React.Component<
     } = this.props.motivationAndStudy;
 
     return (
-      <div className="hops__step-container">
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
-            Miten opin?
-          </legend>
+      <div className="hops-container">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">Miten opin?</legend>
 
-          <div className="hops__step-container__row hops__step-container__row--list">
+          <div className="hops-container__row hops-container__row--list">
             <CheckboxGroup>
               <CheckboxGroupItem
                 label="Lukemalla"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byReading}
                 onChange={this.handleCheckboxItemChange("byReading")}
               />
               <CheckboxGroupItem
                 label="Kuuntelemalla"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byListening}
                 onChange={this.handleCheckboxItemChange("byListening")}
               />
               <CheckboxGroupItem
                 label="Tekemällä"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byDoing}
                 onChange={this.handleCheckboxItemChange("byDoing")}
               />
             </CheckboxGroup>
           </div>
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Muu?"
@@ -144,53 +142,53 @@ class MotivationAndStudySkills extends React.Component<
           </div>
         </fieldset>
 
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">
             Millaisia tapoja olen aiemmin käyttänyt?
           </legend>
 
-          <div className="hops__step-container__row hops__step-container__row--list">
+          <div className="hops-container__row hops-container__row--list">
             <CheckboxGroup>
               <CheckboxGroupItem
                 label="Opettelen asioita ulkoa"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byMemorizing}
                 onChange={this.handleCheckboxItemChange("byMemorizing")}
               />
               <CheckboxGroupItem
                 label="Kirjoitan muistiinpanoja"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byTakingNotes}
                 onChange={this.handleCheckboxItemChange("byTakingNotes")}
               />
               <CheckboxGroupItem
                 label="Piirrän kuvioita"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byDrawing}
                 onChange={this.handleCheckboxItemChange("byDrawing")}
               />
               <CheckboxGroupItem
                 label="Kuuntelen opettaja"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byListeningTeacher}
                 onChange={this.handleCheckboxItemChange("byListeningTeacher")}
               />
               <CheckboxGroupItem
                 label="Katson videoita"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byWatchingVideos}
                 onChange={this.handleCheckboxItemChange("byWatchingVideos")}
               />
               <CheckboxGroupItem
                 label="Seuraan toisen tekemistä"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={byFollowingOthers}
                 onChange={this.handleCheckboxItemChange("byFollowingOthers")}
               />
             </CheckboxGroup>
           </div>
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Muu?"
@@ -201,47 +199,47 @@ class MotivationAndStudySkills extends React.Component<
           </div>
         </fieldset>
 
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">
             Keneltä saan tukea opiskeluun?
           </legend>
 
-          <div className="hops__step-container__row hops__step-container__row--list">
+          <div className="hops-container__row hops-container__row--list">
             <CheckboxGroup>
               <CheckboxGroupItem
                 label="En saa tukea"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={noSupport}
                 onChange={this.handleCheckboxItemChange("noSupport")}
               />
               <CheckboxGroupItem
                 label="Perheenjäseneltä"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={family}
                 onChange={this.handleCheckboxItemChange("family")}
               />
               <CheckboxGroupItem
                 label="Ystävältä"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={friend}
                 onChange={this.handleCheckboxItemChange("friend")}
               />
               <CheckboxGroupItem
                 label="Tukihenkilöltä"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={supportPerson}
                 onChange={this.handleCheckboxItemChange("supportPerson")}
               />
               <CheckboxGroupItem
                 label="Opettajalta"
-                className="checkbox__group__item"
+                className="group__item"
                 checked={teacher}
                 onChange={this.handleCheckboxItemChange("teacher")}
               />
             </CheckboxGroup>
           </div>
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Muu?"
@@ -252,11 +250,11 @@ class MotivationAndStudySkills extends React.Component<
           </div>
         </fieldset>
 
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">Muuta?</legend>
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">Muuta?</legend>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Mikä sinusta on opiskelussa helpointa/vaikeinta?"
@@ -266,8 +264,8 @@ class MotivationAndStudySkills extends React.Component<
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Mitkä ovat vahvuuksiasi/heikkouksiasi?"
@@ -277,8 +275,8 @@ class MotivationAndStudySkills extends React.Component<
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Mikä sinua tällä hetkellä kiinnostaa eniten?"
@@ -288,8 +286,8 @@ class MotivationAndStudySkills extends React.Component<
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <Textarea
                 className="form-element__textarea form-element__textarea--resize__vertically"
                 label="Missä haluaisit erityisesti kehittyä?"
@@ -300,20 +298,16 @@ class MotivationAndStudySkills extends React.Component<
           </div>
         </fieldset>
 
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
-            Tavoitteet
-          </legend>
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">Tavoitteet</legend>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
-              <label className="hops__step__label">
-                Valmistumisaikatavoite:
-              </label>
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
+              <label className="hops-label">Valmistumisaikatavoite:</label>
               <select
                 value={graduationGoal}
                 onChange={this.handleGoalsSelectsChange("graduationGoal")}
-                className="hops__step__select"
+                className="hops-select"
               >
                 <option value="">Valitse...</option>
                 <option value="6kk">6kk</option>
@@ -324,13 +318,13 @@ class MotivationAndStudySkills extends React.Component<
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
-              <label className="hops__step__label">Jatkotavoitteet:</label>
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
+              <label className="hops-label">Jatkotavoitteet:</label>
               <select
                 value={followUpGoal}
                 onChange={this.handleGoalsSelectsChange("followUpGoal")}
-                className="hops__step__select"
+                className="hops-select"
               >
                 <option value="">Valitse...</option>
                 <option value={FollowUpGoal.POSTGRADUATE_STUDIES}>
@@ -345,13 +339,13 @@ class MotivationAndStudySkills extends React.Component<
           </div>
 
           {followUpGoal === FollowUpGoal.POSTGRADUATE_STUDIES ? (
-            <div className="hops__step-container__row">
-              <div className="hops__step-form__element-container">
-                <label className="hops__step__label">Jatko-opinnot:</label>
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <label className="hops-label">Jatko-opinnot:</label>
                 <select
                   value={followUpStudies}
                   onChange={this.handleGoalsSelectsChange("followUpStudies")}
-                  className="hops__step__select"
+                  className="hops-select"
                 >
                   <option value="">Valitse...</option>
                   <option value={FollowUpStudies.APPRENTICESHIP_TRAINING}>
@@ -369,12 +363,12 @@ class MotivationAndStudySkills extends React.Component<
                 </select>
               </div>
 
-              <div className="hops__step-form__element-container">
-                <label className="hops__step__label">Koulutusala:</label>
+              <div className="hops__form-element-container">
+                <label className="hops-label">Koulutusala:</label>
                 <select
                   value={studySector}
                   onChange={this.handleGoalsSelectsChange("studySector")}
-                  className="hops__step__select"
+                  className="hops-select"
                 >
                   <option value="">Valitse...</option>
                   <option value={StudySector.SOCIAL_HEALT_SECTOR}>

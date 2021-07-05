@@ -29,12 +29,8 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = ({
 }) => {
   return (
     <div className={className}>
-      <input
-        className="checkbox__group-input"
-        {...inputProps}
-        type="checkbox"
-      ></input>
-      <label className="checkbox__group-item__label"> {label} </label>
+      <input className="item__input" {...inputProps} type="checkbox"></input>
+      <label className="item__label"> {label} </label>
     </div>
   );
 };

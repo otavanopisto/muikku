@@ -126,17 +126,17 @@ class StartingLevel extends React.Component<
    */
   render() {
     return (
-      <div className="hops__step-container">
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
+      <div className="hops-container">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">
             Aikaisemmat opinnot ja työkokemus
           </legend>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
-              <label className="hops__step__label">Aiempi koulutus</label>
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
+              <label className="hops-label">Aiempi koulutus</label>
               <select
-                className="hops__step__select"
+                className="hops-select"
                 value={this.props.studentStartingLevel.previousEducation}
                 onChange={this.handleSelectsChange("previousEducation")}
               >
@@ -151,21 +151,21 @@ class StartingLevel extends React.Component<
 
             {this.props.studentStartingLevel.previousEducation ===
             Education.SOMETHING_ELSE ? (
-              <div className="hops__step-form__element-container">
+              <div className="hops__form-element-container">
                 <TextField
                   label="Mikä?"
-                  className="hops__step__input"
+                  className="hops-input"
                   onChange={this.handleTextAreaChange("previousEducationElse")}
                 />
               </div>
             ) : null}
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <TextField
                 label="Opintoihin käytetyt vuodet?"
-                className="hops__step__input"
+                className="hops-input"
                 onChange={this.handleTextAreaChange(
                   "previousYearsUsedInStudies"
                 )}
@@ -173,11 +173,11 @@ class StartingLevel extends React.Component<
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
-              <label className="hops__step__label">Työkokemus:</label>
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
+              <label className="hops-label">Työkokemus:</label>
               <select
-                className="hops__step__select"
+                className="hops-select"
                 value={this.props.studentStartingLevel.previousWorkExperience}
                 onChange={this.handleSelectsChange("previousWorkExperience")}
               >
@@ -189,18 +189,18 @@ class StartingLevel extends React.Component<
             </div>
           </div>
         </fieldset>
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">
             Kielivalinta ja osaaminen
           </legend>
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container hops__step-form__element-container--single-row">
-              <label className="hops__step__label">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container hops__form-element-container--single-row">
+              <label className="hops-label">
                 suomi äidinkielenä/suomi toisena kielenä
               </label>
               <input
                 type="checkbox"
-                className="hops__step__input"
+                className="hops-input"
                 checked={
                   this.props.studentStartingLevel.finnishAsMainOrSecondaryLng
                 }
@@ -208,11 +208,9 @@ class StartingLevel extends React.Component<
               ></input>
             </div>
           </div>
-          <legend className="hops__step-container__subheader">
-            Muu kielitaito
-          </legend>
-          <div className="hops__step-container__row">
-            <div className="hops__table-container">
+          <legend className="hops-container__subheader">Muu kielitaito</legend>
+          <div className="hops-container__row">
+            <div className="hops-table__container">
               <LanguageGradeTable>
                 {this.props.studentStartingLevel.previousLanguageExperience.map(
                   (lngG, index) => (
@@ -226,7 +224,7 @@ class StartingLevel extends React.Component<
                   )
                 )}
               </LanguageGradeTable>
-              <div className="hops__step-button__container">
+              <div className="hops-button__container">
                 <Button onClick={this.handleAddNewCustomLngClick}>Muu?</Button>
               </div>
             </div>

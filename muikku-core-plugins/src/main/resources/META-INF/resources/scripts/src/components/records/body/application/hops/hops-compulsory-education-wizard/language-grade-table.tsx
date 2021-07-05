@@ -79,14 +79,14 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
     <Tr>
       <Td style={{ maxWidth: "80px" }}>
         {lng.hardCoded ? (
-          <label className="hops__step__label">{lng.name}</label>
+          <label className="hops-label">{lng.name}</label>
         ) : (
           <input
             type="text"
             value={lng.name}
             onChange={handleOtherLngChange}
             placeholder="Kieli"
-            className="hops__step__input"
+            className="hops-input"
           ></input>
         )}
       </Td>
@@ -95,7 +95,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           type="radio"
           checked={lng.grade == 1}
           onChange={handleRadioInputChange(1)}
-          className="hops__step__input"
+          className="hops-input"
         ></input>
       </Td>
       <Td>
@@ -103,7 +103,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           type="radio"
           checked={lng.grade == 2}
           onChange={handleRadioInputChange(2)}
-          className="hops__step__input"
+          className="hops-input"
         ></input>
       </Td>
       <Td>
@@ -111,7 +111,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           type="radio"
           checked={lng.grade == 3}
           onChange={handleRadioInputChange(3)}
-          className="hops__step__input"
+          className="hops-input"
         ></input>
       </Td>
       <Td>
@@ -119,7 +119,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           type="radio"
           checked={lng.grade == 4}
           onChange={handleRadioInputChange(4)}
-          className="hops__step__input"
+          className="hops-input"
         ></input>
       </Td>
       <Td>
@@ -127,7 +127,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           type="radio"
           checked={lng.grade == 5}
           onChange={handleRadioInputChange(5)}
-          className="hops__step__input"
+          className="hops-input"
         ></input>
       </Td>
       <Td modifiers={["centered"]} style={{ maxWidth: "50px" }}>

@@ -259,33 +259,31 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
     );
 
     return (
-      <div className="hops__step-container">
-        <fieldset className="hops__step-container__fieldset">
-          <legend className="hops__step-container__subheader">
-            Kurssivalinnat
-          </legend>
+      <div className="hops-container">
+        <fieldset className="hops-container__fieldset">
+          <legend className="hops-container__subheader">Kurssivalinnat</legend>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container hops__step-form__element-container--single-row">
-              <label className="hops__step__label">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container hops__form-element-container--single-row">
+              <label className="hops-label">
                 Suoritan äidinkielen sijaan Suomen toisena kielenä?
               </label>
               <input
                 type="checkbox"
-                className="hops__step__input"
+                className="hops-input"
                 checked={this.props.studies.finnishAsSecondLanguage}
                 onChange={this.handleFinnishAsSecondLanguage}
               ></input>
             </div>
           </div>
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container hops__step-form__element-container--single-row">
-              <label className="hops__step__label">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container hops__form-element-container--single-row">
+              <label className="hops-label">
                 Suoritan uskonnon elämänkatsomustietona?
               </label>
               <input
                 type="checkbox"
-                className="hops__step__input"
+                className="hops-input"
                 checked={this.props.studies.ethics}
                 onChange={this.handleEthicsChange}
               ></input>
@@ -296,19 +294,19 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
           <legend className="hops__step-container__subheader">
             Opintolaskuri
           </legend>
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <TextField
                 label="Paljonko tunteja käytettävissä viikossa"
                 onChange={this.handleUsedHoursPerWeekChange}
                 value={this.props.studies.usedHoursPerWeek}
-                className="hops__step__input"
+                className="hops-input"
               />
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container hops__step-form__element-container-study__counter">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container hops__form-element-container-study__counter">
               <div>
                 <h1>Tunteja viikossa:</h1>
                 <h1 className="hops__result-title">
@@ -339,8 +337,8 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <CourseTable
                 selectedSubjects={this.props.studies.selectedSubjects}
                 onChange={this.handleSelectedSubjectsChange}
@@ -352,23 +350,23 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
             </div>
           </div>
 
-          <div className="hops__step-container__indicator-examples">
-            <div className="hops__step-container__course-completed">
-              <div className="hops__step-container__course-completed-indicator"></div>
+          <div className="hops-container__indicator-examples">
+            <div className="hops-container__course-completed">
+              <div className="hops-container__course-completed-indicator"></div>
               <p>Suoritettu</p>
             </div>
-            <div className="hops__step-container__course-inprogress">
-              <div className="hops__step-container__course-inprogress-indicator"></div>
+            <div className="hops-container__course-inprogress">
+              <div className="hops-container__course-inprogress-indicator"></div>
               <p>Kesken</p>
             </div>
-            <div className="hops__step-container__course-approval">
-              <div className="hops__step-container__course-approval-indicator"></div>
+            <div className="hops-container__course-approval">
+              <div className="hops-container__course-approval-indicator"></div>
               <p>Hyväksiluettu</p>
             </div>
           </div>
 
-          <div className="hops__step-container__row">
-            <div className="hops__step-form__element-container">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
               <p>*-merkityt ovat valinnaisia kursseja</p>
             </div>
           </div>
