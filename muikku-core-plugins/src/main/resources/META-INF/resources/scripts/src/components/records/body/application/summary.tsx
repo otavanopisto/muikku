@@ -89,18 +89,21 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
 
-            <div className="application-sub-panel__item">
-              <div className="application-sub-panel__item-title">
-                Opintosuunnitelma
+            {this.props.hops.eligibility
+              .upperSecondarySchoolCurriculum ? null : (
+              <div className="application-sub-panel__item">
+                <div className="application-sub-panel__item-title">
+                  Opintosuunnitelma
+                </div>
+                <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
+                  <HopsCompulsoryEducationWizardDialog>
+                    <Button className="button button--yo-signup">
+                      Opintosuunnitelma
+                    </Button>
+                  </HopsCompulsoryEducationWizardDialog>
+                </div>
               </div>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
-                <HopsCompulsoryEducationWizardDialog>
-                  <Button className="button button--yo-signup">
-                    Opintosuunnitelma
-                  </Button>
-                </HopsCompulsoryEducationWizardDialog>
-              </div>
-            </div>
+            )}
 
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">

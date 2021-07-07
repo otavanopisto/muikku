@@ -17,6 +17,10 @@
   display: flex;
   align-items: center;
   background-color: aliceblue;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    width: calc(50% - 10px);
+  }
 }
 
 .item__label {
