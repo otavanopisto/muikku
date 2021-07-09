@@ -109,8 +109,6 @@ let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(
 let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId, workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    let navigation:AnnouncerNavigationItemListType = state.announcements.navigation;
-    let announcements:AnnouncementsType = state.announcements;
 
     let announcement:AnnouncementType = state.announcements.announcements.find((a:AnnouncementType)=>a.id === announcementId);
     try {
@@ -122,6 +120,10 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
 
         //this is where notOverrideCurrent plays a role when loading all the other announcements after itself
         dispatch(loadAnnouncements(location, workspaceId, true, false));
+      } else {
+        // load the user group entities if not loaded for that announcement
+        // this doe not reload if it's found
+        announcement.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id)));
       }
 
       dispatch({
@@ -278,16 +280,21 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
   }
 }
 
-let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function loadAnnouncementsFromServer(options={hideWorkspaceAnnouncements: "false"}, callback){
+let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function loadAnnouncementsFromServer(options={hideWorkspaceAnnouncements: "false", loadUserGroups: true}, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_STATE",
         payload: <AnnouncementsStateType>"LOADING"
       });
+
+      const loadUserGroups = options.loadUserGroups;
+      delete options.loadUserGroups;
       
       let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
-      announcements.forEach(a=>a.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id))));
+      if (loadUserGroups) {
+        announcements.forEach(a=>a.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id))));
+      }
       
       let payload:AnnouncementsPatchType = {
         state: "READY",
