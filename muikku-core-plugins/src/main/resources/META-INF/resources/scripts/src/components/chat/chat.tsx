@@ -253,8 +253,17 @@ class Chat extends React.Component<IChatProps, IChatState> {
   }
 
   public joinPrivateChat(jid: string, initStanza?: Element) {
-    // already joined
-    if (this.state.openChatsJIDS.find((r) => r.type === "user" && r.jid === jid)) {
+    // already joined or self
+    const userBaseJID = this.state.connection.jid.split("/")[0];
+    const baseJID = jid.split("/")[0];
+    const controlBaseJID = this.state.connection.jid.split("@")[0];
+    const controlJID = jid.split("@")[0];
+    if (
+      this.state.connection.jid === jid ||
+      userBaseJID === baseJID ||
+      controlBaseJID === controlJID ||
+      this.state.openChatsJIDS.find((r) => r.type === "user" && r.jid === jid)
+    ) {
       return;
     }
 
