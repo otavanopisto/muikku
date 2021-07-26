@@ -257,6 +257,8 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
         payload: <CurrentStudentUserAndWorkspaceStatusType>"LOADING"
       });
 
+      console.log({userEntityId, userId, workspaceId});
+
       let userData: AllStudentUsersDataType = getState().records.userData;
 
       let [workspace, journals, materials] = await Promise.all([

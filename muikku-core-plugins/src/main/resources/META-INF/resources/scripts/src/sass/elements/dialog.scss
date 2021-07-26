@@ -67,7 +67,6 @@
   }
 }
 
-
 // .dialog__window--edit-user-group {
 //   @include breakpoint($breakpoint-pad) {
 //     max-width: 815px;
@@ -272,7 +271,6 @@
   }
 }
 
-
 .dialog__content-row--user-search {
   margin: 10px 0;
 }
@@ -377,6 +375,37 @@
       margin: 0 10px 0 0;
     }
   }
+}
+
+.dialog--evaluation {
+  width: 100%;
+
+  .dialog__header--evaluation {
+    display: none;
+  }
+
+  .dialog__content {
+    padding: 0;
+    height: calc(100vh - 100px);
+  }
+
+  .dialog__window--evaluation {
+    overflow: auto;
+
+    @include breakpoint($breakpoint-pad) {
+      margin: 0;
+      max-width: unset;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+}
+
+.dialog__window.dialog__window--evaluation {
+  overflow: auto;
 }
 
 .dialog--enrollment {

@@ -1,0 +1,1118 @@
+import { SpecificActionType, AnyActionType } from "../../index";
+import {
+  EvaluationStateType,
+  EvaluationGradeSystem,
+} from "../../../@types/evaluation";
+import { StateType } from "../../../reducers/index";
+import mApi from "~/lib/mApi";
+import promisify from "../../../util/promisify";
+import { MApiError } from "../../../lib/mApi";
+import notificationActions from "~/actions/base/notifications";
+import { CurrentRecordType } from "../../../reducers/main-function/records/index";
+import {
+  AllStudentUsersDataType,
+  RecordGroupType,
+} from "../../../reducers/main-function/records/index";
+import {
+  WorkspaceType,
+  WorkspaceStudentAssessmentStateType,
+  WorkspaceStudentActivityType,
+  WorkspaceJournalListType,
+  MaterialAssignmentType,
+  MaterialContentNodeType,
+  MaterialEvaluationType,
+} from "../../../reducers/workspaces/index";
+import {
+  EvaluationAssignment,
+  EvaluationStudyDiaryEvent,
+} from "../../../@types/evaluation";
+import {
+  UpdateImportanceObject,
+  EvaluationEvent,
+} from "../../../@types/evaluation";
+import {
+  EvaluationFilters,
+  EvaluationImportance,
+} from "../../../@types/evaluation";
+import {
+  EvaluationWorkspace,
+  EvaluationSort,
+} from "../../../@types/evaluation";
+import {
+  AssessmentRequest,
+  EvaluationStatus,
+} from "../../../@types/evaluation";
+
+export interface SET_IMPORTANT_ASSESSMENTS
+  extends SpecificActionType<"SET_IMPORTANT_ASSESSMENTS", EvaluationStatus> {}
+
+export interface SET_UNIMPORTANT_ASSESSMENTS
+  extends SpecificActionType<"SET_UNIMPORTANT_ASSESSMENTS", EvaluationStatus> {}
+
+export interface SET_EVALUATION_ASESSESSMENTS
+  extends SpecificActionType<
+    "SET_EVALUATION_ASESSESSMENTS",
+    AssessmentRequest[]
+  > {}
+
+///
+
+export interface SET_EVALUATION_WORKSPACES
+  extends SpecificActionType<
+    "SET_EVALUATION_WORKSPACES",
+    EvaluationWorkspace[]
+  > {}
+
+export interface SET_EVALUATION_GRADE_SYSTEM
+  extends SpecificActionType<
+    "SET_EVALUATION_GRADE_SYSTEM",
+    EvaluationGradeSystem[]
+  > {}
+
+export interface SET_EVALUATION_SELECTED_WORKSPACE
+  extends SpecificActionType<
+    "SET_EVALUATION_SELECTED_WORKSPACE",
+    number | undefined
+  > {}
+
+export interface SET_EVALUATION_SORT_FUNCTION
+  extends SpecificActionType<"SET_EVALUATION_SORT_FUNCTION", EvaluationSort> {}
+
+export interface SET_EVALUATION_FILTERS
+  extends SpecificActionType<"SET_EVALUATION_FILTERS", EvaluationFilters> {}
+
+export interface UPDATE_EVALUATION_STATE
+  extends SpecificActionType<"UPDATE_EVALUATION_STATE", EvaluationStateType> {}
+
+export interface UPDATE_EVALUATION_SEARCH
+  extends SpecificActionType<"UPDATE_EVALUATION_SEARCH", string> {}
+
+export interface UPDATE_EVALUATION_IMPORTANCE
+  extends SpecificActionType<
+    "UPDATE_EVALUATION_IMPORTANCE",
+    {
+      importantAssessments: EvaluationImportance;
+      unimportantAssessments: EvaluationImportance;
+    }
+  > {}
+
+export interface UPDATE_EVALUATION_SELECTED_ASSESSMENT
+  extends SpecificActionType<
+    "UPDATE_EVALUATION_SELECTED_ASSESSMENT",
+    AssessmentRequest
+  > {}
+
+export interface SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS
+  extends SpecificActionType<
+    "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS",
+    EvaluationEvent[]
+  > {}
+
+export interface SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS
+  extends SpecificActionType<
+    "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
+    EvaluationAssignment[]
+  > {}
+
+export interface SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS
+  extends SpecificActionType<
+    "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS",
+    EvaluationStudyDiaryEvent[]
+  > {}
+
+export type UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT = SpecificActionType<
+  "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
+  CurrentRecordType
+>;
+
+// Interfaces
+
+// Server events
+export interface LoadEvaluationSystem {
+  (): AnyActionType;
+}
+
+export interface LoadEvaluationAssessmentRequest {
+  (): AnyActionType;
+}
+
+export interface LoadEvaluationWorkspaces {
+  (): AnyActionType;
+}
+
+export interface LoadEvaluationImportantAssessment {
+  (): AnyActionType;
+}
+
+export interface LoadEvaluationUnimportantAssessment {
+  (): AnyActionType;
+}
+
+export interface LoadEvaluationSortFunction {
+  (): AnyActionType;
+}
+
+export interface SetCurrentStudentEvaluationData {
+  (data: {
+    userEntityId: number;
+    userId: string;
+    workspaceId: number;
+  }): AnyActionType;
+}
+
+export interface LoadEvaluationAssessmentEvent {
+  (data: { assessment: AssessmentRequest }): AnyActionType;
+}
+
+export interface LoadEvaluationAssignment {
+  (data: { assessment: AssessmentRequest }): AnyActionType;
+}
+
+export interface LoadEvaluationStudyDiaryEvent {
+  (data: { assessment: AssessmentRequest }): AnyActionType;
+}
+
+// Other
+export interface SaveEvaluationSortFunction {
+  (data: { sortFunction: EvaluationSort }): AnyActionType;
+}
+
+export interface SetEvaluationSelectedWorkspace {
+  (data: { workspaceId?: number }): AnyActionType;
+}
+
+export interface SetEvaluationSortFunction {
+  (data: { sortFunction: string }): AnyActionType;
+}
+
+export interface SetEvaluationFilters {
+  (data: { evaluationFilters: EvaluationFilters }): AnyActionType;
+}
+
+export interface UpdateEvaluationSearch {
+  (data: { searchString: string }): AnyActionType;
+}
+
+export interface UpdateEvaluationSelectedAssessment {
+  (data: { assessment: AssessmentRequest }): AnyActionType;
+}
+
+export interface UpdateImportance {
+  (data: {
+    importantAssessments: EvaluationImportance;
+    unimportantAssessments: EvaluationImportance;
+  }): AnyActionType;
+}
+
+// Actions
+
+/**
+ * loadEvaluationGradingSystemFromServer
+ * @returns
+ */
+let loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
+  function loadEvaluationGradingSystemFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let GradingSystems: EvaluationGradeSystem[] = [];
+
+      try {
+        GradingSystems = (await promisify(
+          mApi().evaluation.compositeGradingScales.read(),
+          "callback"
+        )()) as EvaluationGradeSystem[];
+
+        dispatch({
+          type: "SET_EVALUATION_GRADE_SYSTEM",
+          payload: GradingSystems,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadEvaluationAssessmentRequestsFromServer
+ * @returns
+ */
+let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest =
+  function loadEvaluationAssessmentRequestsFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationAssessmentRequests: AssessmentRequest[] = [];
+
+      try {
+        if (state.evaluations.selectedWorkspaceId) {
+          evaluationAssessmentRequests = (await promisify(
+            mApi().evaluation.compositeAssessmentRequests.read({
+              workspaceEntityId: state.evaluations.selectedWorkspaceId,
+            }),
+            "callback"
+          )()) as AssessmentRequest[];
+        } else {
+          evaluationAssessmentRequests = (await promisify(
+            mApi().evaluation.compositeAssessmentRequests.read({}),
+            "callback"
+          )()) as AssessmentRequest[];
+        }
+
+        dispatch({
+          type: "SET_EVALUATION_ASESSESSMENTS",
+          payload: evaluationAssessmentRequests,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadEvaluationWorkspacesFromServer
+ * @returns
+ */
+let loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
+  function loadEvaluationWorkspacesFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationWorkspaces: EvaluationWorkspace[] = [];
+
+      try {
+        evaluationWorkspaces = (await promisify(
+          mApi().workspace.workspaces.read({
+            userId: state.status.userId,
+          }),
+          "callback"
+        )()) as EvaluationWorkspace[];
+
+        dispatch({
+          type: "SET_EVALUATION_WORKSPACES",
+          payload: evaluationWorkspaces,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadListOfImportantAssessmentIdsFromServer
+ * @returns
+ */
+let loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessment =
+  function loadListOfImportantAssessmentIdsFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationImportantAssessmentRequests: EvaluationStatus;
+
+      try {
+        evaluationImportantAssessmentRequests = (await promisify(
+          mApi().user.property.read("important-evaluation-requests"),
+          "callback"
+        )()) as EvaluationStatus;
+
+        dispatch({
+          type: "SET_IMPORTANT_ASSESSMENTS",
+          payload: evaluationImportantAssessmentRequests,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadListOfImportantAssessmentIdsFromServer
+ * @returns
+ */
+let loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAssessment =
+  function loadListOfUnimportantAssessmentIdsFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationUnimportantAssessmentRequests: EvaluationStatus;
+
+      try {
+        evaluationUnimportantAssessmentRequests = (await promisify(
+          mApi().user.property.read("unimportant-evaluation-requests"),
+          "callback"
+        )()) as EvaluationStatus;
+
+        dispatch({
+          type: "SET_UNIMPORTANT_ASSESSMENTS",
+          payload: evaluationUnimportantAssessmentRequests,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadEvaluationSortFunctionFromServer
+ */
+let loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
+  function loadEvaluationSortFunction() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationSortFunction: EvaluationSort;
+
+      try {
+        let sortFunction = "evaluation-default-sort";
+
+        if (state.evaluations.selectedWorkspaceId) {
+          sortFunction = "evaluation-workspace-sort";
+        }
+
+        evaluationSortFunction = (await promisify(
+          mApi().user.property.read(sortFunction),
+          "callback"
+        )()) as EvaluationSort;
+
+        dispatch({
+          type: "SET_EVALUATION_SORT_FUNCTION",
+          payload: evaluationSortFunction,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadEvaluationAssessmentEventsFromServer
+ */
+let loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
+  function loadEvaluationAssessmentEventsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationAssessmentEvents: EvaluationEvent[] = [];
+
+      try {
+        evaluationAssessmentEvents = (await promisify(
+          mApi().evaluation.workspaceuser.events.read(
+            data.assessment.workspaceUserEntityId
+          ),
+          "callback"
+        )()) as EvaluationEvent[];
+
+        dispatch({
+          type: "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS",
+          payload: evaluationAssessmentEvents,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            "Erroria pukkaa loadEvaluationAssessmentEventsFromServer",
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadEvaluationSelectedAssessmentAssignmentsFromServer
+ */
+let loadEvaluationSelectedAssessmentAssignmentsFromServer: LoadEvaluationAssignment =
+  function loadEvaluationSelectedAssessmentAssignmentsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let EvaluationAssignment: EvaluationAssignment[] = [];
+
+      try {
+        EvaluationAssignment = (await promisify(
+          mApi().evaluation.workspace.assignments.read(
+            data.assessment.workspaceEntityId,
+            { userEntityId: data.assessment.userEntityId }
+          ),
+          "callback"
+        )()) as EvaluationAssignment[];
+
+        dispatch({
+          type: "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
+          payload: EvaluationAssignment,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            "Erroria pukkaa loadEvaluationSelectedAssessmentAssignmentsFromServer",
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer
+ */
+let loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent =
+  function loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let studyDiaryEvents: EvaluationStudyDiaryEvent[] = [];
+
+      try {
+        studyDiaryEvents = (await promisify(
+          mApi().workspace.workspaces.journal.read(
+            data.assessment.workspaceEntityId,
+            {
+              userEntityId: data.assessment.userEntityId,
+              firstResult: 0,
+              maxResults: 512,
+            }
+          ),
+          "callback"
+        )()) as EvaluationStudyDiaryEvent[];
+
+        dispatch({
+          type: "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS",
+          payload: studyDiaryEvents,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            "Erroria pukkaa loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer",
+            "error"
+          )
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * saveEvaluationSortFunctionToServer
+ * @returns
+ */
+let saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
+  function saveEvaluationSortFunctionToServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
+      let evaluationSortFunction: EvaluationSort;
+
+      try {
+        evaluationSortFunction = (await promisify(
+          mApi().user.property.create(data.sortFunction),
+          "callback"
+        )()) as EvaluationSort;
+
+        dispatch({
+          type: "SET_EVALUATION_SORT_FUNCTION",
+          payload: evaluationSortFunction,
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ *setCurrentStudentEvaluationData
+ * @param userEntityId
+ * @param userId
+ * @param workspaceId
+ */
+let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
+  function setCurrentStudentEvaluationData({
+    userEntityId,
+    userId,
+    workspaceId,
+  }) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      let state = getState();
+
+      try {
+        if (state.evaluations.status !== "LOADING") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"LOADING",
+          });
+        }
+
+        let userData: AllStudentUsersDataType = getState().records.userData;
+
+        let [workspace, journals, materials] = await Promise.all([
+          (async () => {
+            let workspace: WorkspaceType;
+            let wasFoundInMemory = userData.find((dataPoint) => {
+              return !!dataPoint.records.find((record: RecordGroupType) => {
+                return !!record.workspaces.find(
+                  (workspaceSearch: WorkspaceType) => {
+                    if (workspaceSearch.id === workspaceId) {
+                      workspace = workspaceSearch;
+                      return true;
+                    }
+                    return false;
+                  }
+                );
+              });
+            });
+
+            if (!wasFoundInMemory) {
+              workspace = <WorkspaceType>(
+                await promisify(
+                  mApi().workspace.workspaces.read(workspaceId),
+                  "callback"
+                )()
+              );
+              workspace.studentAssessmentState = <
+                WorkspaceStudentAssessmentStateType
+              >await promisify(
+                mApi().workspace.workspaces.students.assessmentstate.read(
+                  workspace.id,
+                  userId
+                ),
+                "callback"
+              )();
+              workspace.studentActivity = <WorkspaceStudentActivityType>(
+                await promisify(
+                  mApi().guider.workspaces.activity.read(workspace.id),
+                  "callback"
+                )()
+              );
+            }
+
+            return workspace;
+          })(),
+
+          (async () => {
+            let journals = <WorkspaceJournalListType>await promisify(
+              mApi().workspace.workspaces.journal.read(workspaceId, {
+                userEntityId,
+                firstResult: 0,
+                maxResults: 512,
+              }),
+              "callback"
+            )();
+            return journals;
+          })(),
+
+          (async () => {
+            let assignmentsExcercise =
+              <Array<MaterialAssignmentType>>await promisify(
+                mApi().workspace.workspaces.materials.read(workspaceId, {
+                  assignmentType: "EXERCISE",
+                }),
+                "callback"
+              )() || [];
+
+            let assignmentsEvaluated =
+              <Array<MaterialAssignmentType>>await promisify(
+                mApi().workspace.workspaces.materials.read(workspaceId, {
+                  assignmentType: "EVALUATED",
+                }),
+                "callback"
+              )() || [];
+
+            let assignments = [
+              ...assignmentsEvaluated,
+              ...assignmentsExcercise,
+            ];
+
+            let materials: Array<MaterialContentNodeType>;
+            let evaluations: Array<MaterialEvaluationType>;
+            [materials, evaluations] = <any>await Promise.all([
+              Promise.all(
+                assignments.map((assignment) => {
+                  return promisify(
+                    mApi().materials.html.read(assignment.materialId),
+                    "callback"
+                  )();
+                })
+              ),
+              Promise.all(
+                assignments.map((assignment) => {
+                  return promisify(
+                    mApi().workspace.workspaces.materials.evaluations.read(
+                      workspaceId,
+                      assignment.id,
+                      {
+                        userEntityId,
+                      }
+                    ),
+                    "callback"
+                  )().then((evaluations: Array<MaterialEvaluationType>) => {
+                    return evaluations[0];
+                  });
+                })
+              ),
+            ]);
+
+            return materials.map((material, index) => {
+              return <MaterialContentNodeType>Object.assign(material, {
+                evaluation: evaluations[index],
+                assignment: assignments[index],
+              });
+            });
+          })(),
+        ]);
+
+        dispatch({
+          type: "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
+          payload: {
+            workspace,
+            journals,
+            materials,
+          },
+        });
+
+        if (state.evaluations.status !== "READY") {
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"READY",
+          });
+        }
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+      }
+    };
+  };
+
+/**
+ * setSelectedWorkspaceId
+ * @param data
+ */
+let setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
+  function setSelectedWorkspaceId(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "SET_EVALUATION_SELECTED_WORKSPACE",
+        payload: data.workspaceId,
+      });
+
+      dispatch(loadEvaluationSortFunctionFromServer());
+
+      dispatch(loadEvaluationAssessmentRequestsFromServer());
+    };
+  };
+
+/**
+ * setEvaluationFilters
+ * @param data
+ */
+let setEvaluationFilters: SetEvaluationFilters = function setEvaluationFilters(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    dispatch({
+      type: "SET_EVALUATION_FILTERS",
+      payload: data.evaluationFilters,
+    });
+  };
+};
+
+/**
+ * setSelectedAssessmentId
+ * @param data
+ */
+let updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
+  function updateSelectedAssessment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_EVALUATION_SELECTED_ASSESSMENT",
+        payload: data.assessment,
+      });
+
+      dispatch(
+        loadEvaluationAssessmentEventsFromServer({
+          assessment: data.assessment,
+        })
+      );
+    };
+  };
+
+/**
+ * updateEvaluationSearch
+ * @param data
+ */
+let updateEvaluationSearch: UpdateEvaluationSearch =
+  function updateEvaluationSearch(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_EVALUATION_SEARCH",
+        payload: data.searchString,
+      });
+    };
+  };
+
+/**
+ * updateImportance
+ * @param date
+ */
+let updateImportance: UpdateImportance = function updateImportance(data) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    let updateImportanceObject: UpdateImportanceObject;
+
+    let state = getState();
+
+    if (state.evaluations.status !== "LOADING") {
+      dispatch({
+        type: "UPDATE_EVALUATION_STATE",
+        payload: <EvaluationStateType>"LOADING",
+      });
+    }
+
+    try {
+      const importance = (await promisify(
+        mApi().user.property.create({
+          key: data.importantAssessments.key,
+          value: data.importantAssessments.value,
+        }),
+        "callback"
+      )()) as EvaluationImportance;
+
+      const unimportance = (await promisify(
+        mApi().user.property.create({
+          key: data.unimportantAssessments.key,
+          value: data.unimportantAssessments.value,
+        }),
+        "callback"
+      )()) as EvaluationImportance;
+
+      updateImportanceObject = {
+        importantAssessments: importance,
+        unimportantAssessments: unimportance,
+      };
+
+      dispatch({
+        type: "UPDATE_EVALUATION_IMPORTANCE",
+        payload: updateImportanceObject,
+      });
+
+      if (state.evaluations.status !== "READY") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"READY",
+        });
+      }
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+
+      dispatch(
+        notificationActions.displayNotification("Erroria pukkaa", "error")
+      );
+      dispatch({
+        type: "UPDATE_EVALUATION_STATE",
+        payload: <EvaluationStateType>"ERROR",
+      });
+    }
+  };
+};
+
+export {
+  loadEvaluationAssessmentRequestsFromServer,
+  loadEvaluationWorkspacesFromServer,
+  loadListOfImportantAssessmentIdsFromServer,
+  loadListOfUnimportantAssessmentIdsFromServer,
+  loadEvaluationGradingSystemFromServer,
+  loadEvaluationSortFunctionFromServer,
+  saveEvaluationSortFunctionToServer,
+  setSelectedWorkspaceId,
+  setEvaluationFilters,
+  setCurrentStudentEvaluationData,
+  updateEvaluationSearch,
+  updateImportance,
+  updateSelectedAssessment,
+  loadEvaluationSelectedAssessmentAssignmentsFromServer,
+  loadEvaluationAssessmentEventsFromServer,
+  loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+};
