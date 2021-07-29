@@ -8,6 +8,9 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
 import SlideDrawer from "./slide-drawer";
 import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
+import WorkspaceEditor from "./workspace-editor";
+import SupplementationEditor from "./supplementation-editor";
+
 /**
  * EvaluationEventContentCardProps
  */
@@ -26,7 +29,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   type,
   date,
   author,
-  gradeSystem,
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -114,11 +116,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
       case EvaluationEnum.EVALUATION_REQUEST:
         return (
           <div className="eval-modal-workspace-event-details">
-            <p>
-              <span className="author">{author}</span>
-              <span>jätti</span>
-              <span className="eval eval--REQUEST">arviointipyynnön</span>
-            </p>
+            <span className="author">{author}</span> jätti{" "}
+            <span className="eval eval--REQUEST">arviointipyynnön</span>
           </div>
         );
 
@@ -126,11 +125,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <p>
-                <span className="author">{author}</span>{" "}
-                <span>arvioi kurssisuorituksen</span>
-                <span className="eval eval--PASSED">hyväksytyksi</span>
-              </p>
+              <span className="author">{author}</span> arvioi kurssisuorituksen{" "}
+              <span className="eval eval--PASSED">hyväksytyksi</span>
             </div>
             {grade !== null ? (
               <div className="eval-modal-workspace-event-grade eval-modal-workspace-event-grade--PASSED">
@@ -144,11 +140,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <p>
-                <span className="author">{author}</span>
-                <span>arvioi kurssisuorituksen</span>
-                <span className="eval eval--FAIL">hylätyksi</span>
-              </p>
+              <span className="author">{author}</span> arvioi kurssisuorituksen{" "}
+              <span className="eval eval--FAIL">hylätyksi</span>
             </div>
             {grade !== null ? (
               <div className="eval-modal-workspace-event-grade eval-modal-workspace-event-grade--FAIL">
@@ -162,11 +155,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <p>
-                <span className="author">{author}</span>{" "}
-                <span>arvioi kurssisuorituksen</span>{" "}
-                <span className="eval eval--IMPROVED">korotetuksi</span>
-              </p>
+              <span className="author">{author}</span> arvioi kurssisuorituksen{" "}
+              <span className="eval eval--IMPROVED">korotetuksi</span>
             </div>
             {grade !== null ? (
               <div className="eval-modal-workspace-event-grade eval-modal-workspace-event-grade--IMPROVED">
@@ -180,11 +170,8 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <p>
-                <span className="author">{author}</span>
-                <span>pyysi</span>
-                <span className="eval eval--SUPPLEMENTATION">täydennystä</span>
-              </p>
+              <span className="author">{author}</span> pyysi{" "}
+              <span className="eval eval--SUPPLEMENTATION">täydennystä</span>
             </div>
             {grade !== null ||
             type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
@@ -200,6 +187,20 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   };
 
   /**
+   * renderEditor
+   * @returns JSX.Element
+   */
+  const renderEditor = () => {
+    if (isEvaluated(type)) {
+      return <WorkspaceEditor type="edit" onClose={handleDrawerCloseClick} />;
+    }
+
+    return (
+      <SupplementationEditor type="edit" onClose={handleDrawerCloseClick} />
+    );
+  };
+
+  /**
    * renderDrawer
    */
   const renderDrawer = (
@@ -209,15 +210,12 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           ? "Työtilan kokonaisarviointi"
           : "Työtilan täydennyspyyntö"
       }
-      drawerType={isEvaluated(type) ? "evaluation" : "supplementation"}
       modifiers={[isEvaluated(type) ? "workspace" : "supplementation"]}
-      editorLabel={
-        isEvaluated(type) ? "Opintojakson sanallinen arviointi" : undefined
-      }
-      gradeSystem={gradeSystem}
       show={drawerOpen}
       onClose={handleDrawerCloseClick}
-    />
+    >
+      {renderEditor()}
+    </SlideDrawer>
   );
 
   const parsedDate = moment(date).format("l");

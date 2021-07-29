@@ -1,57 +1,88 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import Link from "~/components/general/link";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import Button from "~/components/general/button";
-
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import {
-  removeFileFromCurrentStudent,
-  RemoveFileFromCurrentStudentTriggerType,
-} from "~/actions/main-function/guider";
-import { UserFileType } from "~/reducers/user-index";
-
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
+import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import {
+  RemoveWorkspaceEvent,
+  removeWorkspaceEventFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import { EvaluationEnum } from "~/@types/evaluation";
 
 const KEYCODES = {
   ENTER: 13,
 };
 
+/**
+ * DeleteDialogProps
+ */
 interface DeleteDialogProps {
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => any;
-  i18n: i18nType;
-  removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType;
+  evaluations: EvaluationState;
+  removeWorkspaceEventFromServer: RemoveWorkspaceEvent;
 }
 
+/**
+ * DeleteDialogState
+ */
 interface DeleteDialogState {}
 
+/**
+ * DeleteDialog
+ */
 class DeleteDialog extends React.Component<
   DeleteDialogProps,
   DeleteDialogState
 > {
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: DeleteDialogProps) {
     super(props);
 
-    this.deleteFile = this.deleteFile.bind(this);
+    this.handleDeleteEventClick = this.handleDeleteEventClick.bind(this);
   }
 
-  deleteFile(closeDialog: () => any) {
-    closeDialog();
+  /**
+   * handleDeleteEventClick
+   */
+  handleDeleteEventClick(closeDialog: () => any) {
+    const { evaluationAssessmentEvents } = this.props.evaluations;
+    const latestIndex = evaluationAssessmentEvents.length - 1;
+
+    this.props.removeWorkspaceEventFromServer({
+      identifier: evaluationAssessmentEvents[latestIndex].identifier,
+      eventType: evaluationAssessmentEvents[latestIndex].type,
+      onSuccess: () => {
+        const eventId = evaluationAssessmentEvents[latestIndex].identifier;
+
+        cleanWorkspaceAndSupplementationDrafts(eventId);
+
+        closeDialog();
+      },
+      onFail: () => closeDialog(),
+    });
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let footer = (closeDialog: () => any) => {
       return (
         <div className="dialog__button-set">
           <Button
             buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteFile.bind(this, closeDialog)}
+            onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
           >
             Kyllä
           </Button>
@@ -86,14 +117,68 @@ class DeleteDialog extends React.Component<
   }
 }
 
+/**
+ * cleanWorkspaceAndSupplementationDrafts
+ * @param eventId
+ */
+export const cleanWorkspaceAndSupplementationDrafts = (eventId: string) => {
+  if (
+    localStorage.getItem(
+      `supplementation-editor-edit.${eventId}.literalEvaluation`
+    )
+  ) {
+    localStorage.removeItem(
+      `supplementation-editor-edit.${eventId}.literalEvaluation`
+    );
+  }
+  if (
+    localStorage.getItem(
+      `supplementation-editor-new.${eventId}.literalEvaluation`
+    )
+  ) {
+    localStorage.removeItem(
+      `supplementation-editor-new.${eventId}.literalEvaluation`
+    );
+  }
+
+  if (
+    localStorage.getItem(
+      `workspace-editor-edit.${eventId}.literalEvaluation`
+    ) ||
+    localStorage.getItem(`workspace-editor-edit.${eventId}.grade`)
+  ) {
+    localStorage.removeItem(
+      `workspace-editor-edit.${eventId}.literalEvaluation`
+    );
+    localStorage.removeItem(`workspace-editor-edit.${eventId}.grade`);
+  }
+  if (
+    localStorage.getItem(`workspace-editor-new.${eventId}.literalEvaluation`) ||
+    localStorage.getItem(`workspace-editor-new.${eventId}.grade`)
+  ) {
+    localStorage.removeItem(
+      `workspace-editor-new.${eventId}.literalEvaluation`
+    );
+    localStorage.removeItem(`workspace-editor-new.${eventId}.grade`);
+  }
+};
+
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
+    evaluations: state.evaluations,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ removeFileFromCurrentStudent }, dispatch);
+  return bindActionCreators({ removeWorkspaceEventFromServer }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteDialog);

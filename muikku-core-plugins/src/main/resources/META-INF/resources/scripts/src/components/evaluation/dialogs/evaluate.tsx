@@ -19,10 +19,6 @@ import {
   updateSelectedAssessment,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 
-const KEYCODES = {
-  ENTER: 13,
-};
-
 /**
  * EvaluateDialogProps
  */
@@ -50,6 +46,9 @@ class EvaluateDialog extends React.Component<
   EvaluateDialogProps,
   EvaluateDialogState
 > {
+  /**
+   * constructor
+   */
   constructor(props: EvaluateDialogProps) {
     super(props);
   }

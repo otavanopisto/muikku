@@ -2,8 +2,6 @@ import * as React from "react";
 import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import {
   ApplicationListItem,
   ApplicationListItemHeader,
@@ -23,6 +21,7 @@ import {
   MaterialCompositeRepliesType,
   MaterialEvaluationType,
 } from "../../../../../reducers/workspaces/index";
+import AssignmentEditor from "./assignment-editor";
 
 /**
  * EvaluationMaterialProps
@@ -300,15 +299,17 @@ export class EvaluationMaterial extends React.Component<
 
                     <SlideDrawer
                       title={this.props.material.assignment.title}
-                      editorLabel="Tehtävän sanallinen arviointi"
                       modifiers={["literal"]}
-                      drawerType="literal"
-                      gradeSystem={
-                        this.props.evaluation.evaluationGradeSystem[0]
-                      }
                       show={this.state.openDrawer}
                       onClose={this.handleCloseSlideDrawer}
-                    />
+                    >
+                      <AssignmentEditor
+                        gradeSystem={
+                          this.props.evaluation.evaluationGradeSystem[0]
+                        }
+                        onClose={this.handleCloseSlideDrawer}
+                      />
+                    </SlideDrawer>
                   </ApplicationListItemHeader>
 
                   <AnimateHeight duration={800} height={this.state.height}>

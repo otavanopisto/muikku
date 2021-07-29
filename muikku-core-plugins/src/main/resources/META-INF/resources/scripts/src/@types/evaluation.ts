@@ -206,3 +206,18 @@ export type EvaluationImportantStatus =
  * EvaluationStateType
  */
 export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
+
+export interface WorkspaceEvaluationSaveRequest {
+  identifier?: string;
+  assessorIdentifier: string;
+  gradingScaleIdentifier: string;
+  gradeIdentifier: string;
+  verbalAssessment: string;
+  assessmentDate: string;
+}
+
+export interface WorkspaceSupplementationSaveRequest {
+  id?: string;
+  requestDate: string;
+  requestText: string;
+}

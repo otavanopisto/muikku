@@ -9,6 +9,11 @@ import promisify from "../../../util/promisify";
 import { MApiError } from "../../../lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import { CurrentRecordType } from "../../../reducers/main-function/records/index";
+import { EvaluationEnum } from "../../../@types/evaluation";
+import {
+  WorkspaceEvaluationSaveRequest,
+  WorkspaceSupplementationSaveRequest,
+} from "../../../@types/evaluation";
 import {
   AllStudentUsersDataType,
   RecordGroupType,
@@ -175,6 +180,33 @@ export interface LoadEvaluationStudyDiaryEvent {
 // Other
 export interface SaveEvaluationSortFunction {
   (data: { sortFunction: EvaluationSort }): AnyActionType;
+}
+
+export interface UpdateWorkspaceEvaluation {
+  (data: {
+    type: "new" | "edit";
+    workspaceEvaluation: WorkspaceEvaluationSaveRequest;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+export interface UpdateWorkspaceSupplementation {
+  (data: {
+    type: "new" | "edit";
+    workspaceSupplementation: WorkspaceSupplementationSaveRequest;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+export interface RemoveWorkspaceEvent {
+  (data: {
+    identifier: string;
+    eventType: EvaluationEnum;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 export interface SetEvaluationSelectedWorkspace {
@@ -694,7 +726,7 @@ let loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationSt
             }
           ),
           "callback"
-        )()) as EvaluationStudyDiaryEvent[];
+        )()) as EvaluationStudyDiaryEvent[] | [];
 
         dispatch({
           type: "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS",
@@ -780,6 +812,228 @@ let saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
     };
   };
 
+let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
+  function updateWorkspaceEvaluationToServer({
+    workspaceEvaluation,
+    type,
+    onSuccess,
+    onFail,
+  }) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      if (type === "new") {
+        try {
+          await promisify(
+            mApi().evaluation.workspaceuser.assessment.create(
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+              {
+                ...workspaceEvaluation,
+              }
+            ),
+            "callback"
+          )().then(() => {
+            dispatch(
+              loadEvaluationAssessmentEventsFromServer({
+                assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            onSuccess();
+          });
+        } catch (err) {
+          dispatch(
+            notificationActions.displayNotification("Erroria pukkaa", "error")
+          );
+
+          onFail();
+        }
+      } else {
+        try {
+          await promisify(
+            mApi().evaluation.workspaceuser.assessment.update(
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+
+              {
+                ...workspaceEvaluation,
+              }
+            ),
+            "callback"
+          )().then(() => {
+            dispatch(
+              loadEvaluationAssessmentEventsFromServer({
+                assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            onSuccess();
+          });
+        } catch (err) {
+          dispatch(
+            notificationActions.displayNotification("Erroria pukkaa", "error")
+          );
+
+          onFail();
+        }
+      }
+    };
+  };
+
+/**
+ * updateWorkspaceSupplementation
+ * @param param0
+ */
+let updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
+  function updateWorkspaceSupplementationToServer({
+    type,
+    workspaceSupplementation,
+    onSuccess,
+    onFail,
+  }) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      if (type === "new") {
+        try {
+          await promisify(
+            mApi().evaluation.workspaceuser.supplementationrequest.create(
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+              {
+                ...workspaceSupplementation,
+              }
+            ),
+            "callback"
+          )().then(() => {
+            dispatch(
+              loadEvaluationAssessmentEventsFromServer({
+                assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            onSuccess();
+          });
+        } catch (error) {
+          dispatch(
+            notificationActions.displayNotification("Erroria pukkaa", "error")
+          );
+
+          onFail();
+        }
+      } else {
+        try {
+          await promisify(
+            mApi().evaluation.workspaceuser.supplementationrequest.create(
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+              {
+                ...workspaceSupplementation,
+              }
+            ),
+            "callback"
+          )().then(() => {
+            dispatch(
+              loadEvaluationAssessmentEventsFromServer({
+                assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            onSuccess();
+          });
+        } catch (error) {
+          dispatch(
+            notificationActions.displayNotification("Erroria pukkaa", "error")
+          );
+
+          onFail();
+        }
+      }
+    };
+  };
+
+/**
+ * removeWorkspaceEventFromServer
+ * @param param0
+ */
+let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
+  function removeWorkspaceEventFromServer({
+    identifier,
+    eventType,
+    onSuccess,
+    onFail,
+  }) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      if (
+        eventType === EvaluationEnum.EVALUATION_PASS ||
+        eventType === EvaluationEnum.EVALUATION_IMPROVED ||
+        eventType === EvaluationEnum.EVALUATION_FAIL
+      ) {
+        try {
+          await promisify(
+            mApi().evaluation.workspaceuser.workspaceassessment.del(
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+              identifier
+            ),
+            "callback"
+          )().then(() => {
+            dispatch(
+              loadEvaluationAssessmentEventsFromServer({
+                assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            onSuccess();
+          });
+        } catch (error) {
+          dispatch(
+            notificationActions.displayNotification("Erroria pukkaa", "error")
+          );
+
+          onFail();
+        }
+      } else if (eventType === EvaluationEnum.SUPPLEMENTATION_REQUEST) {
+        try {
+          await promisify(
+            mApi().evaluation.workspaceuser.supplementationrequest.del(
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+              identifier
+            ),
+            "callback"
+          )().then(() => {
+            dispatch(
+              loadEvaluationAssessmentEventsFromServer({
+                assessment: state.evaluations.evaluationSelectedAssessmentId,
+              })
+            );
+
+            onSuccess();
+          });
+        } catch (error) {
+          dispatch(
+            notificationActions.displayNotification("Erroria pukkaa", "error")
+          );
+
+          onFail();
+        }
+      }
+    };
+  };
+
 /**
  *setCurrentStudentEvaluationData
  * @param userEntityId
@@ -853,14 +1107,14 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
           })(),
 
           (async () => {
-            let journals = <WorkspaceJournalListType>await promisify(
-              mApi().workspace.workspaces.journal.read(workspaceId, {
-                userEntityId,
-                firstResult: 0,
-                maxResults: 512,
-              }),
-              "callback"
-            )();
+            let journals = <WorkspaceJournalListType | []>await promisify(
+                mApi().workspace.workspaces.journal.read(workspaceId, {
+                  userEntityId,
+                  firstResult: 0,
+                  maxResults: 512,
+                }),
+                "callback"
+              )() || [];
             return journals;
           })(),
 
@@ -1106,6 +1360,9 @@ export {
   loadEvaluationGradingSystemFromServer,
   loadEvaluationSortFunctionFromServer,
   saveEvaluationSortFunctionToServer,
+  updateWorkspaceEvaluationToServer,
+  updateWorkspaceSupplementationToServer,
+  removeWorkspaceEventFromServer,
   setSelectedWorkspaceId,
   setEvaluationFilters,
   setCurrentStudentEvaluationData,

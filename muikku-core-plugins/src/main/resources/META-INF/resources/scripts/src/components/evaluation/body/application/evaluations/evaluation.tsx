@@ -6,12 +6,15 @@ import { AnyActionType } from "../../../../../actions/index";
 import { StateType } from "../../../../../reducers/index";
 import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
 import "~/sass/elements/evaluation.scss";
-import * as moment from "moment";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import { AssessmentRequest } from "../../../../../@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
+import WorkspaceEditor from "./workspace-editor";
+import SupplementationEditor from "./supplementation-editor";
+import { StatusType } from "../../../../../reducers/base/status";
 
 interface EvaluationDrawerProps {
+  status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
   selectedAssessment: AssessmentRequest;
@@ -91,17 +94,14 @@ export class Evaluation extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const {
-      evaluationAssessmentEvents,
-      evaluationSelectedAssessmentStudyDiaryEvents,
-    } = this.props.evaluation;
+    const { evaluationAssessmentEvents } = this.props.evaluation;
 
     const evaluationDiaryEvents =
       this.props.evaluation.evaluationCurrentSelectedRecords &&
       this.props.evaluation.evaluationCurrentSelectedRecords.journals.length >
         0 ? (
         this.props.evaluation.evaluationCurrentSelectedRecords.journals.map(
-          (item) => <EvaluationDiaryEvent {...item} />
+          (item) => <EvaluationDiaryEvent key={item.id} {...item} />
         )
       ) : (
         <div className="journal-entry-title-wrapper">
@@ -111,6 +111,11 @@ export class Evaluation extends React.Component<
         </div>
       );
 
+    let isEvaluated = false;
+
+    /**
+     * evaluationEventContentCards
+     */
     const evaluationEventContentCards =
       evaluationAssessmentEvents.length > 0 ? (
         evaluationAssessmentEvents.map((eItem, index) => {
@@ -118,6 +123,9 @@ export class Evaluation extends React.Component<
 
           if (evaluationAssessmentEvents.length - 1 === index) {
             latest = true;
+          }
+          if (eItem.grade !== null) {
+            isEvaluated = true;
           }
 
           return (
@@ -133,6 +141,9 @@ export class Evaluation extends React.Component<
         <h2 style={{ fontStyle: "italic" }}>Arviointihistoria tyhjä</h2>
       );
 
+    /**
+     * renderEvaluationAssessmentAssignments
+     */
     const renderEvaluationAssessmentAssignments =
       this.props.evaluation.evaluationCurrentSelectedRecords &&
       this.props.evaluation.evaluationCurrentSelectedRecords.materials.map(
@@ -194,24 +205,29 @@ export class Evaluation extends React.Component<
 
                 <SlideDrawer
                   title="Työtilan kokonaisarviointi"
-                  editorLabel="Opintojakson sanallinen arviointi"
-                  drawerType="evaluation"
-                  gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
                   modifiers={["workspace"]}
                   show={this.state.showWorkspaceEvaluationDrawer}
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                />
+                >
+                  <WorkspaceEditor
+                    onClose={this.handleWorkspaceEvaluationCloseDrawer}
+                  />
+                </SlideDrawer>
 
                 <SlideDrawer
                   title="Työtilan täydennyspyyntö"
-                  drawerType="supplementation"
-                  gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
                   modifiers={["supplementation"]}
                   show={this.state.showWorkspaceSupplemenationDrawer}
                   onClose={
                     this.handleWorkspaceSupplementationEvaluationCloseDrawer
                   }
-                />
+                >
+                  <SupplementationEditor
+                    onClose={
+                      this.handleWorkspaceSupplementationEvaluationCloseDrawer
+                    }
+                  />
+                </SlideDrawer>
               </div>
 
               <div className="eval-modal-evaluate-buttonset">
@@ -219,9 +235,7 @@ export class Evaluation extends React.Component<
                   onClick={this.handleOpenWorkspaceEvaluationDrawer}
                   className="eval-modal-evaluate-button button-start-evaluation"
                 >
-                  {this.props.evaluation.evaluationAssessmentEvents.length === 0
-                    ? "Anna kurssiarvio"
-                    : "Anna korotus"}
+                  {isEvaluated ? "Anna korotus" : "Anna kurssiarvio"}
                 </div>
                 <div
                   onClick={
@@ -246,6 +260,7 @@ export class Evaluation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
+    status: state.status,
     evaluation: state.evaluations,
   };
 }

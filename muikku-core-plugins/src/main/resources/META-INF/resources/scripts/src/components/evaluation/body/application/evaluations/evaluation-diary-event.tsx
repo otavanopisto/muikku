@@ -1,13 +1,6 @@
 import * as React from "react";
-import {
-  EvaluationEvent,
-  EvaluationEnum,
-} from "../../../../../@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
-import DeleteDialog from "../../../dialogs/delete";
-import SlideDrawer from "./slide-drawer";
-import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
 import { WorkspaceJournalType } from "../../../../../reducers/workspaces/index";
 /**
  * EvaluationEventContentCardProps
