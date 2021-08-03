@@ -59,12 +59,9 @@ class EvaluateDialog extends React.Component<
   handleUpdateSelectAssessmentOnDialogOpen = (
     assessment: AssessmentRequest
   ): any => {
-    const userId = `PYRAMUS-STUDENT-${assessment.userEntityId}`;
-
     this.props.updateSelectedAssessment({ assessment });
     this.props.setCurrentStudentEvaluationData({
       userEntityId: this.props.assessment.userEntityId,
-      userId: userId,
       workspaceId: this.props.assessment.workspaceEntityId,
     });
   };

@@ -162,11 +162,7 @@ export interface LoadEvaluationSortFunction {
 }
 
 export interface SetCurrentStudentEvaluationData {
-  (data: {
-    userEntityId: number;
-    userId: string;
-    workspaceId: number;
-  }): AnyActionType;
+  (data: { userEntityId: number; workspaceId: number }): AnyActionType;
 }
 
 export interface LoadEvaluationAssessmentEvent {
@@ -1002,6 +998,13 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
     ) => {
       const state = getState();
 
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
       if (
         eventType === EvaluationEnum.EVALUATION_PASS ||
         eventType === EvaluationEnum.EVALUATION_IMPROVED ||
@@ -1022,12 +1025,22 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               })
             );
 
+            dispatch({
+              type: "UPDATE_EVALUATION_STATE",
+              payload: <EvaluationStateType>"READY",
+            });
+
             onSuccess();
           });
         } catch (error) {
           dispatch(
             notificationActions.displayNotification("Erroria pukkaa", "error")
           );
+
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"ERROR",
+          });
 
           onFail();
         }
@@ -1046,6 +1059,11 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
               })
             );
+
+            dispatch({
+              type: "UPDATE_EVALUATION_STATE",
+              payload: <EvaluationStateType>"READY",
+            });
 
             onSuccess();
           });
@@ -1072,11 +1090,7 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
  * @param workspaceId
  */
 let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
-  function setCurrentStudentEvaluationData({
-    userEntityId,
-    userId,
-    workspaceId,
-  }) {
+  function setCurrentStudentEvaluationData({ userEntityId, workspaceId }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -1117,15 +1131,7 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
                   "callback"
                 )()
               );
-              workspace.studentAssessmentState = <
-                WorkspaceStudentAssessmentStateType
-              >await promisify(
-                mApi().workspace.workspaces.students.assessmentstate.read(
-                  workspace.id,
-                  userId
-                ),
-                "callback"
-              )();
+
               workspace.studentActivity = <WorkspaceStudentActivityType>(
                 await promisify(
                   mApi().guider.workspaces.activity.read(workspace.id),
