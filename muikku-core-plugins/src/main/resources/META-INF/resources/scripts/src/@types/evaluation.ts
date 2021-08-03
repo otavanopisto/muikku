@@ -197,6 +197,9 @@ export interface EvaluationFilters {
   supplementationRequest: boolean;
 }
 
+/**
+ * EvaluationImportantStatus
+ */
 export type EvaluationImportantStatus =
   | "important"
   | "unimportant"
@@ -207,6 +210,9 @@ export type EvaluationImportantStatus =
  */
 export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
 
+/**
+ * WorkspaceEvaluationSaveRequest
+ */
 export interface WorkspaceEvaluationSaveRequest {
   identifier?: string;
   assessorIdentifier: string;
@@ -216,8 +222,20 @@ export interface WorkspaceEvaluationSaveRequest {
   assessmentDate: string;
 }
 
+/**
+ * WorkspaceSupplementationSaveRequest
+ */
 export interface WorkspaceSupplementationSaveRequest {
   id?: string;
   requestDate: string;
   requestText: string;
+}
+
+/**
+ * BilledPrice
+ */
+export interface BilledPrice {
+  assessmentIdentifier: string;
+  editable: boolean;
+  price: number;
 }

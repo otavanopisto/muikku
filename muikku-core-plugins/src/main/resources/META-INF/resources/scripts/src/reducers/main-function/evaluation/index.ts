@@ -1,20 +1,13 @@
 import { EvaluationFilters } from "./../../../@types/evaluation";
 import { ActionType } from "../../../actions/index";
 import { CurrentRecordType } from "../records/index";
-import {
-  EvaluationStudyDiaryEvent,
-  EvaluationEvent,
-} from "../../../@types/evaluation";
-import {
-  EvaluationSort,
-  EvaluationAssignment,
-} from "../../../@types/evaluation";
+import { EvaluationEvent } from "../../../@types/evaluation";
+import { EvaluationSort } from "../../../@types/evaluation";
 import {
   EvaluationWorkspace,
   EvaluationStateType,
 } from "../../../@types/evaluation";
 import {
-  EvaluationStatus,
   EvaluationGradeSystem,
   AssessmentRequest,
 } from "../../../@types/evaluation";
@@ -35,9 +28,9 @@ export interface EvaluationState {
   evaluationFilters: EvaluationFilters;
   evaluationSelectedAssessmentId?: AssessmentRequest;
   evaluationAssessmentEvents: EvaluationEvent[];
-  evaluationSelectedAssessmentAssignments: EvaluationAssignment[];
-  evaluationSelectedAssessmentStudyDiaryEvents: EvaluationStudyDiaryEvent[];
   evaluationCurrentSelectedRecords?: CurrentRecordType;
+  openedAssignmentEvaluationId?: number;
+  evaluationBilledPrice?: number;
 }
 
 /**
@@ -61,9 +54,9 @@ export const initialState: EvaluationState = {
   },
   evaluationAssessmentEvents: [],
   evaluationSelectedAssessmentId: undefined,
-  evaluationSelectedAssessmentAssignments: [],
-  evaluationSelectedAssessmentStudyDiaryEvents: [],
   evaluationCurrentSelectedRecords: undefined,
+  openedAssignmentEvaluationId: undefined,
+  evaluationBilledPrice: undefined,
 };
 
 /**
@@ -138,16 +131,6 @@ export default function evaluations(state = initialState, action: ActionType) {
     return Object.assign({}, state, {
       evaluationSelectedAssessmentId: action.payload,
     });
-  } else if (action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS") {
-    return Object.assign({}, state, {
-      evaluationSelectedAssessmentAssignments: action.payload,
-    });
-  } else if (
-    action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS"
-  ) {
-    return Object.assign({}, state, {
-      evaluationSelectedAssessmentStudyDiaryEvents: action.payload,
-    });
   } else if (action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS") {
     return Object.assign({}, state, {
       evaluationAssessmentEvents: action.payload,
@@ -155,6 +138,14 @@ export default function evaluations(state = initialState, action: ActionType) {
   } else if (action.type === "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT") {
     return Object.assign({}, state, {
       evaluationCurrentSelectedRecords: action.payload,
+    });
+  } else if (action.type === "UPDATE_OPENED_ASSIGNMENTS_EVALUATION") {
+    return Object.assign({}, state, {
+      openedAssignmentEvaluationId: action.payload,
+    });
+  } else if (action.type === "SET_EVALUATION_BILLED_PRICE") {
+    return Object.assign({}, state, {
+      openedAssignmentEvaluationId: action.payload,
     });
   }
   return state;

@@ -76,6 +76,10 @@ class EvaluateDialog extends React.Component<
     this.handleUpdateSelectAssessmentOnDialogOpen(this.props.assessment);
   };
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let content = (closeDialog: () => any) => {
       return (

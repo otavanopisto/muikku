@@ -22,6 +22,11 @@ import {
   MaterialEvaluationType,
 } from "../../../../../reducers/workspaces/index";
 import AssignmentEditor from "./assignment-editor";
+import { bindActionCreators } from "redux";
+import {
+  UpdateOpenedAssignmentEvaluationId,
+  updateOpenedAssignmentEvaluation,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationMaterialProps
@@ -30,6 +35,7 @@ export interface EvaluationMaterialProps {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
   evaluation: EvaluationState;
+  updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
 }
 
 /**
@@ -37,6 +43,7 @@ export interface EvaluationMaterialProps {
  */
 interface EvaluationMaterialState {
   height: number | string;
+  openContent: boolean;
   openDrawer: boolean;
 }
 
@@ -47,6 +54,8 @@ export class EvaluationMaterial extends React.Component<
   EvaluationMaterialProps,
   EvaluationMaterialState
 > {
+  private myRef: HTMLDivElement = undefined;
+
   /**
    * constructor
    * @param props
@@ -54,11 +63,10 @@ export class EvaluationMaterial extends React.Component<
   constructor(props: EvaluationMaterialProps) {
     super(props);
 
-    this.toggleOpened = this.toggleOpened.bind(this);
-
     this.state = {
       height: 0,
       openDrawer: false,
+      openContent: false,
     };
   }
 
@@ -79,16 +87,18 @@ export class EvaluationMaterial extends React.Component<
   /**
    * toggleOpened
    */
-  toggleOpened() {
-    const { height } = this.state;
+  handleOpenMaterialContent = () => {
+    const { openContent } = this.state;
 
-    this.setState({ height: height === 0 ? "auto" : 0 });
-  }
+    this.setState({ openContent: !openContent });
+  };
 
   /**
    * handleCloseSlideDrawer
    */
   handleCloseSlideDrawer = () => {
+    this.props.updateOpenedAssignmentEvaluation({ assignmentId: undefined });
+
     this.setState({
       openDrawer: false,
     });
@@ -98,11 +108,18 @@ export class EvaluationMaterial extends React.Component<
    * handleOpenSlideDrawer
    */
   handleOpenSlideDrawer =
-    (materialId: number) =>
+    (assignmentId: number) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      this.setState({
-        openDrawer: true,
-      });
+      if (this.props.evaluation.openedAssignmentEvaluationId !== assignmentId) {
+        this.props.updateOpenedAssignmentEvaluation({ assignmentId });
+      }
+
+      this.setState(
+        {
+          openDrawer: true,
+        },
+        () => this.handleExecuteScrollToElement()
+      );
     };
 
   /**
@@ -213,6 +230,13 @@ export class EvaluationMaterial extends React.Component<
   };
 
   /**
+   * handleExecuteScrollToElement
+   */
+  handleExecuteScrollToElement = () => {
+    this.myRef.scrollIntoView({ behavior: "smooth" });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -241,6 +265,9 @@ export class EvaluationMaterial extends React.Component<
           >
             {(props, state, stateConfiguration) => {
               let evaluatedFunctionClassMod = "";
+              let evaluationTitleClassMod = "";
+
+              let contentOpen: string | number = 0;
 
               if (
                 this.props.material.evaluation ||
@@ -256,15 +283,37 @@ export class EvaluationMaterial extends React.Component<
                 }
               }
 
+              if (
+                this.state.openDrawer &&
+                this.props.evaluation.openedAssignmentEvaluationId ===
+                  props.material.assignment.id
+              ) {
+                evaluationTitleClassMod = "active-dialog";
+              }
+
+              if (
+                this.state.openContent ||
+                (this.state.openDrawer &&
+                  this.props.evaluation.openedAssignmentEvaluationId ===
+                    props.material.assignment.id)
+              ) {
+                contentOpen = "auto";
+              }
+
               return (
                 <div>
                   <ApplicationListItemHeader modifiers="evaluation-assignment">
-                    <div className="assignment-title-content">
+                    <div
+                      ref={(ref) => (this.myRef = ref)}
+                      className="assignment-title-content"
+                    >
                       <div
                         className={`assignment-title-wrapper ${wrapperClassMod}`}
-                        onClick={this.toggleOpened}
+                        onClick={this.handleOpenMaterialContent}
                       >
-                        <div className="assignment-status-title">
+                        <div
+                          className={`assignment-status-title ${evaluationTitleClassMod}`}
+                        >
                           <span className="application-list__header-primary assignment-title">
                             {this.props.material.assignment.title}
                           </span>
@@ -277,10 +326,11 @@ export class EvaluationMaterial extends React.Component<
                       </div>
                       <div className="assignment-functions">
                         {props.material.assignment.assignmentType ===
-                        "EVALUATED" ? (
+                          "EVALUATED" &&
+                        state.compositeRepliesInState.submitted ? (
                           <div
                             onClick={this.handleOpenSlideDrawer(
-                              props.material.id
+                              props.material.assignment.id
                             )}
                             className={`assignment-evaluate-button icon-evaluate ${evaluatedFunctionClassMod}`}
                             title="Arvioi tehtävä"
@@ -300,19 +350,23 @@ export class EvaluationMaterial extends React.Component<
                     <SlideDrawer
                       title={this.props.material.assignment.title}
                       modifiers={["literal"]}
-                      show={this.state.openDrawer}
+                      show={
+                        this.state.openDrawer &&
+                        this.props.evaluation.openedAssignmentEvaluationId ===
+                          props.material.assignment.id
+                      }
                       onClose={this.handleCloseSlideDrawer}
                     >
                       <AssignmentEditor
-                        gradeSystem={
-                          this.props.evaluation.evaluationGradeSystem[0]
-                        }
+                        materialEvaluation={props.material.evaluation}
+                        materialAssignment={props.material.assignment}
+                        compositeReplies={state.compositeRepliesInState}
                         onClose={this.handleCloseSlideDrawer}
                       />
                     </SlideDrawer>
                   </ApplicationListItemHeader>
 
-                  <AnimateHeight duration={800} height={this.state.height}>
+                  <AnimateHeight duration={400} height={contentOpen}>
                     {props.material.evaluation &&
                       props.material.evaluation.verbalAssessment && (
                         <div className="assignment-literal-evaluation-wrapper">
@@ -362,7 +416,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EvaluationMaterial);

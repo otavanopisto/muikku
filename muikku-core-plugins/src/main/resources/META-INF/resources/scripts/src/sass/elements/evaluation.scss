@@ -655,6 +655,10 @@
   background: #7391a7;
 }
 
+.eval-modal-evaluate-button.button-delete-draft {
+  background: #c9c74e;
+}
+
 .evaluation__label {
   display: block;
   font-weight: 600;
@@ -755,7 +759,16 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  margin: 0 10px 0 0;
+  font-weight: 100;
+  margin: 10px 10px 10px 0;
+}
+
+.eval-modal-workspace-event-details .eval {
+  font-weight: normal;
+}
+
+.eval-modal-workspace-event-details .author {
+  font-weight: 600;
 }
 
 .eval-modal-workspace-event-date {
@@ -771,12 +784,7 @@
 }
 
 .eval-modal-workspace-event-details .author {
-  font-weight: 400;
-  margin: 0 5px;
-}
-
-.eval-modal-workspace-event-details .eval {
-  margin: 0 5px;
+  font-weight: 600;
 }
 
 .eval-modal-workspace-event[data-type="EVALUATION_FAIL"] .eval,
@@ -950,6 +958,10 @@ h6 {
   cursor: pointer;
 }
 
+.journal-entry-title-wrapper.no-journals {
+  cursor: unset;
+}
+
 .journal-entry-title {
   font-size: 20px;
   padding: 0 0 4px;
@@ -1032,6 +1044,10 @@ h6 {
   padding: 0 35px 0 0;
 }
 
+.assignment-status-title.active-dialog {
+  color: #ce01bd;
+}
+
 .assignment-done,
 .assignment-not-done,
 .assignment-evaluated,
@@ -1110,12 +1126,17 @@ h6 {
   align-items: center;
 }
 
+.assignment-title-wrapper {
+  cursor: unset;
+  padding: 2px 8px;
+  justify-content: space-between;
+  border-left: 3px solid black;
+}
+
 .assignment-title-wrapper.exercise,
 .assignment-title-wrapper.evaluated {
   box-sizing: border-box;
   cursor: pointer;
-  justify-content: space-between;
-  padding: 2px 8px;
 }
 
 .assignment-title-wrapper.evaluated {

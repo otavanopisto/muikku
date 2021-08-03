@@ -12,11 +12,17 @@ import {
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { cleanWorkspaceAndSupplementationDrafts } from "../../../dialogs/delete";
+import Button from "~/components/general/button";
+import promisify from "../../../../../util/promisify";
+import mApi from "~/lib/mApi";
+import { BilledPrice, EvaluationEnum } from "../../../../../@types/evaluation";
+import { i18nType } from "../../../../../reducers/base/i18n";
 
 /**
  * WorkspaceEditorProps
  */
 interface WorkspaceEditorProps {
+  i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
   type?: "new" | "edit";
@@ -32,6 +38,9 @@ interface WorkspaceEditorState {
   literalEvaluation: string;
   grade: string;
   eventId: string;
+  basePrice?: number;
+  selectedPriceOption?: number | string;
+  existingBilledPriceObject?: BilledPrice;
 }
 
 /**
@@ -55,15 +64,21 @@ class WorkspaceEditor extends SessionStateComponent<
 
     const { evaluationAssessmentEvents } = props.evaluations;
 
-    const latestIndex = evaluationAssessmentEvents.length - 1;
+    const latestEvent =
+      evaluationAssessmentEvents[evaluationAssessmentEvents.length - 1];
 
-    const eventId = evaluationAssessmentEvents[latestIndex].identifier;
+    const eventId =
+      evaluationAssessmentEvents.length > 0 && latestEvent.identifier
+        ? latestEvent.identifier
+        : "empty";
 
     this.state = this.getRecoverStoredState(
       {
         literalEvaluation: "",
-        grade: "notselected",
         eventId,
+        basePrice: undefined,
+        selectedPriceOption: undefined,
+        existingBilledPriceObject: undefined,
       },
       eventId
     );
@@ -72,17 +87,32 @@ class WorkspaceEditor extends SessionStateComponent<
   /**
    * componentDidMount
    */
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
       this.props.evaluations;
-    const latestIndex = evaluationAssessmentEvents.length - 1;
+
+    const latestEvent =
+      evaluationAssessmentEvents[evaluationAssessmentEvents.length - 1];
+
+    const basePrice = await this.loadBaseBilledPrice();
 
     if (this.props.type === "edit") {
+      const existingBilledPriceObject = await this.loadExistingBilledPrice(
+        latestEvent.identifier
+      );
+
       this.setState(
         this.getRecoverStoredState(
           {
-            literalEvaluation: evaluationAssessmentEvents[latestIndex].text,
-            grade: `${evaluationGradeSystem[0].dataSource}-${evaluationAssessmentEvents[latestIndex].grade}`,
+            literalEvaluation: latestEvent.text,
+            grade:
+              `${evaluationGradeSystem[0].dataSource}-${latestEvent.gradeIdentifier}`.split(
+                "@"
+              )[1],
+
+            basePrice,
+            existingBilledPriceObject,
+            selectedPriceOption: existingBilledPriceObject.price,
           },
           this.state.eventId
         )
@@ -92,12 +122,64 @@ class WorkspaceEditor extends SessionStateComponent<
         this.getRecoverStoredState(
           {
             literalEvaluation: "",
-            grade: "notselected",
+            basePrice,
           },
           this.state.eventId
         )
       );
     }
+  };
+
+  /**
+   * loadBaseBilledPrice
+   * @param raisedGrade
+   * @param assessmentIdentifier
+   * @returns Promise of list of prices
+   */
+  loadBaseBilledPrice = async (): Promise<number | undefined> => {
+    const { selectedWorkspaceId } = this.props.evaluations;
+
+    let basePrice: number = null;
+
+    try {
+      basePrice = (await promisify(
+        mApi().worklist.basePrice.read({
+          workspaceEntityId: selectedWorkspaceId,
+        }),
+        "callback"
+      )()) as number;
+    } catch (error) {
+      basePrice = null;
+    }
+
+    return basePrice;
+  };
+
+  /**
+   * loadExistingBilledPrice
+   * @returns
+   */
+  loadExistingBilledPrice = async (assessmentIdentifier: string) => {
+    const { selectedWorkspaceId } = this.props.evaluations;
+
+    let existingBilledPriceObject;
+    try {
+      existingBilledPriceObject = (await promisify(
+        mApi().worklist.billedPrice.read({
+          workspaceEntityId: selectedWorkspaceId,
+          assessmentIdentifier,
+        }),
+        "callback"
+      )()) as BilledPrice;
+    } catch (error) {
+      existingBilledPriceObject = undefined;
+    }
+
+    this.setStateAndStore({
+      existingBilledPriceObject,
+    });
+
+    return existingBilledPriceObject;
   };
 
   /**
@@ -117,10 +199,23 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
+   * handleSelectGradeChange
+   * @param e
+   */
+  handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setStateAndStore(
+      { selectedPriceOption: e.target.value },
+      this.state.eventId
+    );
+  };
+
+  /**
    * handleEvaluationSave
    * @param e
    */
-  handleEvaluationSave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleEvaluationSave = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
     const { evaluations, type = "new", status, onClose } = this.props;
     const { evaluationGradeSystem, evaluationAssessmentEvents } = evaluations;
     const { literalEvaluation, grade } = this.state;
@@ -140,7 +235,6 @@ class WorkspaceEditor extends SessionStateComponent<
           this.setStateAndClear(
             {
               literalEvaluation: "",
-              grade: "notselected",
             },
             this.state.eventId
           );
@@ -170,7 +264,6 @@ class WorkspaceEditor extends SessionStateComponent<
           this.setStateAndClear(
             {
               literalEvaluation: "",
-              grade: "notselected",
             },
             this.state.eventId
           );
@@ -188,24 +281,158 @@ class WorkspaceEditor extends SessionStateComponent<
     if (this.props.type === "edit") {
       const { evaluationAssessmentEvents, evaluationGradeSystem } =
         this.props.evaluations;
-      const latestIndex = evaluationAssessmentEvents.length - 1;
+
+      const latestEvent =
+        evaluationAssessmentEvents[evaluationAssessmentEvents.length - 1];
 
       this.setStateAndClear({
-        literalEvaluation: evaluationAssessmentEvents[latestIndex].text,
-        grade: `${evaluationGradeSystem[0].dataSource}-${evaluationAssessmentEvents[latestIndex].grade}`,
+        literalEvaluation: latestEvent.text,
+        grade: `${evaluationGradeSystem[0].dataSource}-${latestEvent.grade}`,
       });
     } else {
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          grade: "notselected",
         },
         this.state.eventId
       );
     }
   };
 
+  /**
+   * isGraded
+   * @param type
+   * @returns boolean if graded
+   */
+  isGraded = (type: EvaluationEnum) => {
+    return (
+      type === EvaluationEnum.EVALUATION_PASS ||
+      type === EvaluationEnum.EVALUATION_FAIL ||
+      type === EvaluationEnum.EVALUATION_IMPROVED
+    );
+  };
+
+  /**
+   * renderSelectOptions
+   * @returns List of options
+   */
+  renderSelectOptions = () => {
+    const { i18n, type } = this.props;
+    const { evaluationAssessmentEvents } = this.props.evaluations;
+    let { basePrice } = this.state;
+
+    /**
+     * We want to get latest event data
+     */
+    const latestEvent =
+      evaluationAssessmentEvents[evaluationAssessmentEvents.length - 1];
+
+    /**
+     * Check if raising grade or giving new one
+     */
+    const isRaised =
+      (type === "new" && this.isGraded(latestEvent.type)) ||
+      (type === "edit" &&
+        latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
+
+    /**
+     * Default options
+     */
+    let options: JSX.Element[] = [];
+
+    /**
+     * Check if base price is loaded
+     */
+    if (basePrice) {
+      /**
+       * If giving a raised grade, the price is half of the base price
+       */
+      if (isRaised) {
+        console.log(isRaised);
+
+        basePrice = basePrice / 2;
+      }
+
+      /**
+       * Full billing -> available for course evaluations and raised grades
+       */
+      options.push(
+        <option key={basePrice} value={basePrice}>
+          {`${i18n.text.get(
+            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
+          )} ${basePrice.toFixed(2)} €`}
+        </option>
+      );
+
+      /**
+       * Half billing -> only available for course evaluations
+       */
+      if (!isRaised) {
+        options.push(
+          <option key={basePrice / 2} value={basePrice / 2}>
+            {`${i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
+            )} ${basePrice.toFixed(2)} €`}
+          </option>
+        );
+      }
+
+      /**
+       * No billing -> available for course evaluations and raised grades
+       */
+      options.push(
+        <option key={0} value={0}>
+          {`${i18n.text.get(
+            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
+          )} 0,00 €`}
+        </option>
+      );
+
+      /**
+       * If editing, check if existing price data is loaded
+       */
+      if (type === "edit" && this.state.existingBilledPriceObject) {
+        /**
+         * If the price from server is not in our options...
+         */
+        if (
+          this.state.basePrice !== this.state.existingBilledPriceObject.price &&
+          this.state.basePrice / 2 !==
+            this.state.existingBilledPriceObject.price &&
+          this.state.existingBilledPriceObject.price > 0
+        ) {
+          /**
+           * ...then add a custom option with the current price
+           */
+          options.push(
+            <option
+              key={this.state.existingBilledPriceObject.price}
+              value={this.state.existingBilledPriceObject.price}
+            >
+              {`${i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
+              )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`}
+            </option>
+          );
+        }
+      }
+    }
+
+    return options;
+  };
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
+    const { existingBilledPriceObject } = this.state;
+
+    const options = this.renderSelectOptions();
+
+    const billingPriceDisabled =
+      existingBilledPriceObject && !existingBilledPriceObject.editable;
+
     return (
       <>
         <div className="editor">
@@ -225,7 +452,6 @@ class WorkspaceEditor extends SessionStateComponent<
             onChange={this.handleSelectGradeChange}
             value={this.state.grade}
           >
-            <option value="notselected">Ei valittu</option>
             <optgroup
               label={this.props.evaluations.evaluationGradeSystem[0].name}
             >
@@ -243,26 +469,38 @@ class WorkspaceEditor extends SessionStateComponent<
           </select>
         </div>
 
+        <div className="evaluation-modal-evaluate-form-row--grade">
+          <label className="evaluation__label">Laskutus</label>
+          <select
+            className="evaluation__select--grade"
+            onChange={this.handleSelectPriceChange}
+            value={this.state.selectedPriceOption}
+            disabled={billingPriceDisabled}
+          >
+            {options}
+          </select>
+        </div>
+
         <div className="evaluation-modal-evaluate-form-row--buttons">
-          <div
+          <Button
             className={`eval-modal-evaluate-button eval-modal-evaluate-button--workspace`}
             onClick={this.handleEvaluationSave}
           >
             Tallenna
-          </div>
-          <div
+          </Button>
+          <Button
             onClick={this.props.onClose}
             className="eval-modal-evaluate-button button-cancel"
           >
             Peruuta
-          </div>
+          </Button>
           {this.recovered && (
-            <div
+            <Button
               className="eval-modal-evaluate-button button-delete-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               Poista luonnos
-            </div>
+            </Button>
           )}
         </div>
       </>
@@ -276,6 +514,7 @@ class WorkspaceEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
   };

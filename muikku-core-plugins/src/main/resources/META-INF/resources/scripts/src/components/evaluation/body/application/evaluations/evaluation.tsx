@@ -104,7 +104,7 @@ export class Evaluation extends React.Component<
           (item) => <EvaluationDiaryEvent key={item.id} {...item} />
         )
       ) : (
-        <div className="journal-entry-title-wrapper">
+        <div className="journal-entry-title-wrapper no-journals">
           <div className="journal-entry-title journal-entry-title--empty">
             Ei päiväkirjamerkintöjä!
           </div>
@@ -146,17 +146,39 @@ export class Evaluation extends React.Component<
      */
     const renderEvaluationAssessmentAssignments =
       this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.materials.map(
-        (item, i) => (
-          <EvaluationAssessmentAssignment
-            key={i}
-            workspace={
-              this.props.evaluation.evaluationCurrentSelectedRecords.workspace
-            }
-            material={item}
-            gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
-          />
+      this.props.evaluation.evaluationCurrentSelectedRecords.materials.length >
+        0 ? (
+        this.props.evaluation.evaluationCurrentSelectedRecords.materials.map(
+          (item, i) => (
+            <EvaluationAssessmentAssignment
+              key={i}
+              workspace={
+                this.props.evaluation.evaluationCurrentSelectedRecords.workspace
+              }
+              material={item}
+              gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
+            />
+          )
         )
+      ) : (
+        <div className="assignment-wrapper material-container">
+          <div className="assignment-content">
+            <div className="page-content">
+              <div className="assignment-title-content">
+                <div className="assignment-title-wrapper">
+                  <div className="assignment-status-title">
+                    <span
+                      className="application-list__header-primary assignment-title"
+                      style={{ fontStyle: "italic" }}
+                    >
+                      Ei tehtäviä
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       );
 
     return (
@@ -167,6 +189,7 @@ export class Evaluation extends React.Component<
             <div className="after"></div>
           </div>
         </div>
+
         <section className="eval-modal-student-container">
           <header className="eval-modal-student-header flex-row flex-align-items-center">
             <div className="eval-modal-student-name">{`${this.props.selectedAssessment.lastName}, ${this.props.selectedAssessment.firstName} (${this.props.selectedAssessment.studyProgramme})`}</div>
@@ -175,15 +198,21 @@ export class Evaluation extends React.Component<
           <div className="eval-modal-material-journal-container">
             <div className="eval-modal-materials-content">
               <div className="eval-modal-assignments-title">Tehtävät</div>
-              <div className="loader-empty">
-                {renderEvaluationAssessmentAssignments}
-              </div>
+              {this.props.evaluation.status === "READY" ? (
+                renderEvaluationAssessmentAssignments
+              ) : (
+                <div className="loader-empty" />
+              )}
             </div>
             <div className="eval-modal-materials-content">
               <div className="eval-modal-assignments-title">
                 Oppimispäiväkirjamerkinnät
               </div>
-              <div className="loader-empty">{evaluationDiaryEvents}</div>
+              {this.props.evaluation.status === "READY" ? (
+                evaluationDiaryEvents
+              ) : (
+                <div className="loader-empty" />
+              )}
             </div>
           </div>
         </section>
@@ -199,9 +228,11 @@ export class Evaluation extends React.Component<
                 Työtilan arviointihistoria
               </div>
               <div className="workspace-events-container">
-                <div className="loader-empty">
-                  {evaluationEventContentCards}
-                </div>
+                {this.props.evaluation.status === "READY" ? (
+                  evaluationEventContentCards
+                ) : (
+                  <div className="loader-empty" />
+                )}
 
                 <SlideDrawer
                   title="Työtilan kokonaisarviointi"
@@ -211,6 +242,7 @@ export class Evaluation extends React.Component<
                 >
                   <WorkspaceEditor
                     onClose={this.handleWorkspaceEvaluationCloseDrawer}
+                    type="new"
                   />
                 </SlideDrawer>
 

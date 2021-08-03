@@ -57,7 +57,11 @@ class SupplementationEditor extends SessionStateComponent<
 
     const latestIndex = evaluationAssessmentEvents.length - 1;
 
-    const eventId = evaluationAssessmentEvents[latestIndex].identifier;
+    const eventId =
+      evaluationAssessmentEvents.length > 0 &&
+      evaluationAssessmentEvents[latestIndex].identifier
+        ? evaluationAssessmentEvents[latestIndex].identifier
+        : "empty";
 
     this.state = this.getRecoverStoredState(
       {
@@ -109,7 +113,7 @@ class SupplementationEditor extends SessionStateComponent<
    * handleEvaluationSupplementationSave
    */
   handleEvaluationSupplementationSave = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     const { evaluations, type = "new", onClose } = this.props;
     const { evaluationAssessmentEvents } = evaluations;
@@ -173,12 +177,21 @@ class SupplementationEditor extends SessionStateComponent<
    * handleDeleteEditorDraft
    */
   handleDeleteEditorDraft = () => {
-    this.setStateAndClear(
-      {
-        literalEvaluation: "",
-      },
-      this.state.eventId
-    );
+    if (this.props.type === "edit") {
+      const { evaluationAssessmentEvents } = this.props.evaluations;
+      const latestIndex = evaluationAssessmentEvents.length - 1;
+
+      this.setStateAndClear({
+        literalEvaluation: evaluationAssessmentEvents[latestIndex].text,
+      });
+    } else {
+      this.setStateAndClear(
+        {
+          literalEvaluation: "",
+        },
+        this.state.eventId
+      );
+    }
   };
 
   /**
@@ -199,25 +212,25 @@ class SupplementationEditor extends SessionStateComponent<
         </div>
 
         <div className="evaluation-modal-evaluate-form-row--buttons">
-          <div
+          <Button
             className={`eval-modal-evaluate-button eval-modal-evaluate-button--supplementation`}
             onClick={this.handleEvaluationSupplementationSave}
           >
             Tallenna
-          </div>
-          <div
+          </Button>
+          <Button
             onClick={this.props.onClose}
             className="eval-modal-evaluate-button button-cancel"
           >
             Peruuta
-          </div>
+          </Button>
           {this.recovered && (
-            <div
+            <Button
               className="eval-modal-evaluate-button button-delete-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               Poista luonnos
-            </div>
+            </Button>
           )}
         </div>
       </>

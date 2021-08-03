@@ -74,6 +74,9 @@ export interface SET_EVALUATION_GRADE_SYSTEM
     EvaluationGradeSystem[]
   > {}
 
+export interface SET_EVALUATION_BILLED_PRICE
+  extends SpecificActionType<"SET_EVALUATION_BILLED_PRICE", number> {}
+
 export interface SET_EVALUATION_SELECTED_WORKSPACE
   extends SpecificActionType<
     "SET_EVALUATION_SELECTED_WORKSPACE",
@@ -130,7 +133,8 @@ export type UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT = SpecificActionType<
   CurrentRecordType
 >;
 
-// Interfaces
+export interface UPDATE_OPENED_ASSIGNMENTS_EVALUATION
+  extends SpecificActionType<"UPDATE_OPENED_ASSIGNMENTS_EVALUATION", number> {}
 
 // Server events
 export interface LoadEvaluationSystem {
@@ -175,6 +179,10 @@ export interface LoadEvaluationAssignment {
 
 export interface LoadEvaluationStudyDiaryEvent {
   (data: { assessment: AssessmentRequest }): AnyActionType;
+}
+
+export interface LoadBilledPrice {
+  (data: { workspaceEntityId: number }): AnyActionType;
 }
 
 // Other
@@ -234,6 +242,10 @@ export interface UpdateImportance {
     importantAssessments: EvaluationImportance;
     unimportantAssessments: EvaluationImportance;
   }): AnyActionType;
+}
+
+export interface UpdateOpenedAssignmentEvaluationId {
+  (data: { assignmentId?: number }): AnyActionType;
 }
 
 // Actions
@@ -637,65 +649,6 @@ let loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
   };
 
 /**
- * loadEvaluationSelectedAssessmentAssignmentsFromServer
- */
-let loadEvaluationSelectedAssessmentAssignmentsFromServer: LoadEvaluationAssignment =
-  function loadEvaluationSelectedAssessmentAssignmentsFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      let state = getState();
-
-      if (state.evaluations.status !== "LOADING") {
-        dispatch({
-          type: "UPDATE_EVALUATION_STATE",
-          payload: <EvaluationStateType>"LOADING",
-        });
-      }
-
-      let EvaluationAssignment: EvaluationAssignment[] = [];
-
-      try {
-        EvaluationAssignment = (await promisify(
-          mApi().evaluation.workspace.assignments.read(
-            data.assessment.workspaceEntityId,
-            { userEntityId: data.assessment.userEntityId }
-          ),
-          "callback"
-        )()) as EvaluationAssignment[];
-
-        dispatch({
-          type: "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
-          payload: EvaluationAssignment,
-        });
-
-        if (state.evaluations.status !== "READY") {
-          dispatch({
-            type: "UPDATE_EVALUATION_STATE",
-            payload: <EvaluationStateType>"READY",
-          });
-        }
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        }
-
-        dispatch(
-          notificationActions.displayNotification(
-            "Erroria pukkaa loadEvaluationSelectedAssessmentAssignmentsFromServer",
-            "error"
-          )
-        );
-        dispatch({
-          type: "UPDATE_EVALUATION_STATE",
-          payload: <EvaluationStateType>"ERROR",
-        });
-      }
-    };
-  };
-
-/**
  * loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer
  */
 let loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent =
@@ -750,6 +703,52 @@ let loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationSt
             "error"
           )
         );
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * LoadBilledPriceFromServer
+ * @param data
+ */
+let LoadBilledPriceFromServer: LoadBilledPrice =
+  function LoadBilledPriceFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_EVALUATION_STATE",
+        payload: <EvaluationStateType>"LOADING",
+      });
+
+      try {
+        const basePrice = (await promisify(
+          mApi().worklist.basePrice.read({
+            workspaceEntityId: data.workspaceEntityId,
+          }),
+          "callback"
+        )()) as number;
+
+        dispatch({
+          type: "SET_EVALUATION_BILLED_PRICE",
+          payload: basePrice > 0 ? basePrice : undefined,
+        });
+
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"READY",
+        });
+      } catch (error) {
+        dispatch({
+          type: "SET_EVALUATION_BILLED_PRICE",
+          payload: undefined,
+        });
+
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
           payload: <EvaluationStateType>"ERROR",
@@ -825,6 +824,13 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
     ) => {
       const state = getState();
 
+      if (state.evaluations.status !== "LOADING") {
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"LOADING",
+        });
+      }
+
       if (type === "new") {
         try {
           await promisify(
@@ -843,12 +849,22 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
               })
             );
 
+            dispatch({
+              type: "UPDATE_EVALUATION_STATE",
+              payload: <EvaluationStateType>"READY",
+            });
+
             onSuccess();
           });
         } catch (err) {
           dispatch(
             notificationActions.displayNotification("Erroria pukkaa", "error")
           );
+
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"ERROR",
+          });
 
           onFail();
         }
@@ -877,6 +893,11 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
           dispatch(
             notificationActions.displayNotification("Erroria pukkaa", "error")
           );
+
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"ERROR",
+          });
 
           onFail();
         }
@@ -953,6 +974,11 @@ let updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
             notificationActions.displayNotification("Erroria pukkaa", "error")
           );
 
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"ERROR",
+          });
+
           onFail();
         }
       }
@@ -1027,6 +1053,11 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
           dispatch(
             notificationActions.displayNotification("Erroria pukkaa", "error")
           );
+
+          dispatch({
+            type: "UPDATE_EVALUATION_STATE",
+            payload: <EvaluationStateType>"ERROR",
+          });
 
           onFail();
         }
@@ -1107,14 +1138,14 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
           })(),
 
           (async () => {
-            let journals = <WorkspaceJournalListType | []>await promisify(
-                mApi().workspace.workspaces.journal.read(workspaceId, {
-                  userEntityId,
-                  firstResult: 0,
-                  maxResults: 512,
-                }),
-                "callback"
-              )() || [];
+            let journals = <WorkspaceJournalListType>await promisify(
+              mApi().workspace.workspaces.journal.read(workspaceId, {
+                userEntityId,
+                firstResult: 0,
+                maxResults: 512,
+              }),
+              "callback"
+            )();
             return journals;
           })(),
 
@@ -1200,6 +1231,11 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
         dispatch(
           notificationActions.displayNotification("Erroria pukkaa", "error")
         );
+
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"ERROR",
+        });
       }
     };
   };
@@ -1352,6 +1388,23 @@ let updateImportance: UpdateImportance = function updateImportance(data) {
   };
 };
 
+/**
+ * updateOpenedAssignmentEvaluation
+ * @param data
+ */
+let updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
+  function updateOpenedAssignmentEvaluation(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_OPENED_ASSIGNMENTS_EVALUATION",
+        payload: data.assignmentId,
+      });
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -1359,6 +1412,7 @@ export {
   loadListOfUnimportantAssessmentIdsFromServer,
   loadEvaluationGradingSystemFromServer,
   loadEvaluationSortFunctionFromServer,
+  LoadBilledPriceFromServer,
   saveEvaluationSortFunctionToServer,
   updateWorkspaceEvaluationToServer,
   updateWorkspaceSupplementationToServer,
@@ -1369,7 +1423,7 @@ export {
   updateEvaluationSearch,
   updateImportance,
   updateSelectedAssessment,
-  loadEvaluationSelectedAssessmentAssignmentsFromServer,
+  updateOpenedAssignmentEvaluation,
   loadEvaluationAssessmentEventsFromServer,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
 };

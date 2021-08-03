@@ -248,7 +248,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           </div>
 
           <div className="evaluation-card-button-block">
-            {rest.evaluationDate !== null ? (
+            {rest.evaluationDate !== null && rest.graded ? (
               <ArchiveDialog>
                 <div
                   className="evaluation-card-button archive-button icon-archive"
