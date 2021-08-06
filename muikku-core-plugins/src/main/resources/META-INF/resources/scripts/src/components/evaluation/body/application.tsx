@@ -4,7 +4,7 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { i18nType } from "reducers/base/i18n";
 import { StateType } from "~/reducers";
 import EvaluationToolbar from "./application/toolbar";
-import EvaluationList from "./application/evaluations/evaluations-list";
+import EvaluationList from "./application/evaluation-list/evaluations-list";
 import { StatusType } from "../../../reducers/base/status";
 import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
 import {
@@ -12,7 +12,11 @@ import {
   setSelectedWorkspaceId,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
+import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 
+/**
+ * EvaluationApplicationProps
+ */
 interface EvaluationApplicationProps {
   i18n: i18nType;
   status: StatusType;
@@ -20,6 +24,9 @@ interface EvaluationApplicationProps {
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
 }
 
+/**
+ * EvaluationApplicationState
+ */
 interface EvaluationApplicationState {}
 
 /**
@@ -100,10 +107,8 @@ class EvaluationApplication extends React.Component<
           primaryOption={primaryOption}
           toolbar={toolBar}
         >
-          <EvaluationList
-            assessmentRequest={this.props.evaluations.evaluationRequests}
-            selectedWorkspaceId={this.props.evaluations.selectedWorkspaceId}
-          />
+          <EvaluationSorters />
+          <EvaluationList />
         </ApplicationPanel>
       </div>
     );

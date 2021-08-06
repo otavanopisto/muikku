@@ -85,6 +85,12 @@ export interface UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE
     EvaluationStateType
   > {}
 
+export interface UPDATE_EVALUATION_REQUESTS_STATE
+  extends SpecificActionType<
+    "UPDATE_EVALUATION_REQUESTS_STATE",
+    EvaluationStateType
+  > {}
+
 ///////
 export interface SET_IMPORTANT_ASSESSMENTS
   extends SpecificActionType<"SET_IMPORTANT_ASSESSMENTS", EvaluationStatus> {}
@@ -388,12 +394,10 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
     ) => {
       let state = getState();
 
-      if (state.evaluations.status !== "LOADING") {
-        dispatch({
-          type: "UPDATE_EVALUATION_STATE",
-          payload: <EvaluationStateType>"LOADING",
-        });
-      }
+      dispatch({
+        type: "UPDATE_EVALUATION_REQUESTS_STATE",
+        payload: <EvaluationStateType>"LOADING",
+      });
 
       let evaluationAssessmentRequests: AssessmentRequest[] = [];
 
@@ -417,12 +421,10 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
           payload: evaluationAssessmentRequests,
         });
 
-        if (state.evaluations.status !== "READY") {
-          dispatch({
-            type: "UPDATE_EVALUATION_STATE",
-            payload: <EvaluationStateType>"READY",
-          });
-        }
+        dispatch({
+          type: "UPDATE_EVALUATION_REQUESTS_STATE",
+          payload: <EvaluationStateType>"READY",
+        });
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -432,7 +434,7 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
           notificationActions.displayNotification("Erroria pukkaa", "error")
         );
         dispatch({
-          type: "UPDATE_EVALUATION_STATE",
+          type: "UPDATE_EVALUATION_REQUESTS_STATE",
           payload: <EvaluationStateType>"ERROR",
         });
       }

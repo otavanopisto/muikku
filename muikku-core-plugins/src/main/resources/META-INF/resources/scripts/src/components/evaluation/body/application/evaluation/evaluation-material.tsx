@@ -24,7 +24,7 @@ import {
   MaterialCompositeRepliesType,
   MaterialEvaluationType,
 } from "../../../../../reducers/workspaces/index";
-import AssignmentEditor from "./assignment-editor";
+import AssignmentEditor from "./editors/assignment-editor";
 import { bindActionCreators } from "redux";
 import {
   UpdateOpenedAssignmentEvaluationId,

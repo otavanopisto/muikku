@@ -8,8 +8,8 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
 import SlideDrawer from "./slide-drawer";
 import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
-import WorkspaceEditor from "./workspace-editor";
-import SupplementationEditor from "./supplementation-editor";
+import WorkspaceEditor from "./editors/workspace-editor";
+import SupplementationEditor from "./editors/supplementation-editor";
 
 /**
  * EvaluationEventContentCardProps

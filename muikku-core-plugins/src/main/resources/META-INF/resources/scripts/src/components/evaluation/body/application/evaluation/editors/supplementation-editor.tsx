@@ -2,17 +2,17 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import CKEditor from "~/components/general/ckeditor";
 import { bindActionCreators } from "redux";
-import { StateType } from "../../../../../reducers/index";
-import { AnyActionType } from "../../../../../actions/index";
-import { StatusType } from "../../../../../reducers/base/status";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
-import SessionStateComponent from "../../../../general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../dialogs/delete";
+import { StateType } from "../../../../../../reducers/index";
+import { AnyActionType } from "../../../../../../actions/index";
+import { StatusType } from "../../../../../../reducers/base/status";
+import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
+import SessionStateComponent from "../../../../../general/session-state-component";
+import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import {
   UpdateWorkspaceSupplementation,
   updateWorkspaceSupplementationToServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "../../../../../../actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
 
 /**

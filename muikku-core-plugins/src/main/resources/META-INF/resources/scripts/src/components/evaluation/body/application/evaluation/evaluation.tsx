@@ -9,8 +9,8 @@ import "~/sass/elements/evaluation.scss";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import { AssessmentRequest } from "../../../../../@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
-import WorkspaceEditor from "./workspace-editor";
-import SupplementationEditor from "./supplementation-editor";
+import WorkspaceEditor from "./editors/workspace-editor";
+import SupplementationEditor from "./editors/supplementation-editor";
 import { StatusType } from "../../../../../reducers/base/status";
 
 interface EvaluationDrawerProps {

@@ -1,27 +1,27 @@
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/evaluation.scss";
-import SessionStateComponent from "../../../../general/session-state-component";
+import SessionStateComponent from "../../../../../general/session-state-component";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "../../../../../reducers/index";
-import { AnyActionType } from "../../../../../actions/index";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import { StateType } from "../../../../../../reducers/index";
+import { AnyActionType } from "../../../../../../actions/index";
+import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
 import {
   MaterialAssignmentType,
   MaterialEvaluationType,
-} from "../../../../../reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "../../../../../reducers/workspaces/index";
+} from "../../../../../../reducers/workspaces/index";
+import { MaterialCompositeRepliesType } from "../../../../../../reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import {
   SaveEvaluationAssignmentSupplementation,
   saveAssignmentEvaluationSupplementationToServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "../../../../../../actions/main-function/evaluation/evaluationActions";
 import {
   SaveEvaluationAssignmentGradeEvaluation,
   saveAssignmentEvaluationGradeToServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "../../../../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * AssignmentEditorProps
@@ -118,6 +118,7 @@ class AssignmentEditor extends SessionStateComponent<
 
     if (this.state.assignmentEvaluationType === "GRADED") {
       const gradingScaleIdentifier = `${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${this.props.evaluations.evaluationGradeSystem[0].id}`;
+      this.props.onClose();
 
       this.props.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
@@ -146,6 +147,8 @@ class AssignmentEditor extends SessionStateComponent<
         onFail: () => this.props.onClose(),
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
+      this.props.onClose();
+
       this.props.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
         userEntityId:
@@ -168,8 +171,6 @@ class AssignmentEditor extends SessionStateComponent<
             },
             this.state.assignmentId
           );
-
-          this.props.onClose();
         },
         onFail: () => this.props.onClose(),
       });

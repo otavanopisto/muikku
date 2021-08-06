@@ -30,7 +30,7 @@ export interface EvaluationState {
   importantRequests: number[];
   unimportantRequests: number[];
   evaluationGradeSystem: EvaluationGradeSystem[];
-  evaluationRequests: AssessmentRequest[];
+  evaluationRequests: EvaluationStateAndData<AssessmentRequest[]>;
   evaluationWorkspaces: EvaluationWorkspace[];
   selectedWorkspaceId?: number;
   evaluationSearch: string;
@@ -55,7 +55,10 @@ export const initialState: EvaluationState = {
   importantRequests: [],
   unimportantRequests: [],
   evaluationGradeSystem: [],
-  evaluationRequests: [],
+  evaluationRequests: {
+    state: "LOADING",
+    data: undefined,
+  },
   evaluationWorkspaces: [],
   selectedWorkspaceId: undefined,
   evaluationSearch: "",
@@ -103,10 +106,6 @@ export default function evaluations(state = initialState, action: ActionType) {
       unimportantRequests: action.payload.value
         ? action.payload.value.split(",").map((item) => parseInt(item))
         : [],
-    });
-  } else if (action.type === "SET_EVALUATION_ASESSESSMENTS") {
-    return Object.assign({}, state, {
-      evaluationRequests: action.payload,
     });
   } else if (action.type === "SET_EVALUATION_WORKSPACES") {
     return Object.assign({}, state, {
@@ -219,6 +218,20 @@ export default function evaluations(state = initialState, action: ActionType) {
       evaluationDiaryEntries: {
         state: action.payload,
         data: state.evaluationDiaryEntries.data,
+      },
+    });
+  } else if (action.type === "SET_EVALUATION_ASESSESSMENTS") {
+    return Object.assign({}, state, {
+      evaluationRequests: {
+        state: state.evaluationRequests.state,
+        data: action.payload,
+      },
+    });
+  } else if (action.type === "UPDATE_EVALUATION_REQUESTS_STATE") {
+    return Object.assign({}, state, {
+      evaluationRequests: {
+        state: action.payload,
+        data: state.evaluationRequests.data,
       },
     });
   }

@@ -7,7 +7,7 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import Evaluation from "../body/application/evaluations/evaluation";
+import Evaluation from "../body/application/evaluation/evaluation";
 import { AssessmentRequest } from "../../../@types/evaluation";
 import { StatusType } from "../../../reducers/base/status";
 import {

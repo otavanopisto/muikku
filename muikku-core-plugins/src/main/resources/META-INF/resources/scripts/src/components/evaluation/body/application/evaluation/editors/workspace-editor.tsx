@@ -1,26 +1,26 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import CKEditor from "~/components/general/ckeditor";
-import { StateType } from "../../../../../reducers/index";
-import { AnyActionType } from "../../../../../actions/index";
-import { StatusType } from "../../../../../reducers/base/status";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import { StateType } from "../../../../../../reducers/index";
+import { AnyActionType } from "../../../../../../actions/index";
+import { StatusType } from "../../../../../../reducers/base/status";
+import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
 import { bindActionCreators } from "redux";
 import {
   UpdateWorkspaceEvaluation,
   updateWorkspaceEvaluationToServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "../../../../../../actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { cleanWorkspaceAndSupplementationDrafts } from "../../../dialogs/delete";
+import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
-import promisify from "../../../../../util/promisify";
+import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import {
   BilledPrice,
   EvaluationEnum,
   BilledPriceRequest,
-} from "../../../../../@types/evaluation";
-import { i18nType } from "../../../../../reducers/base/i18n";
+} from "../../../../../../@types/evaluation";
+import { i18nType } from "../../../../../../reducers/base/i18n";
 
 /**
  * WorkspaceEditorProps
@@ -523,7 +523,7 @@ class WorkspaceEditor extends SessionStateComponent<
             <option key={basePrice / 2} value={basePrice / 2}>
               {`${i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
-              )} ${basePrice.toFixed(2)} €`}
+              )} ${(basePrice / 2).toFixed(2)} €`}
             </option>
           );
         }

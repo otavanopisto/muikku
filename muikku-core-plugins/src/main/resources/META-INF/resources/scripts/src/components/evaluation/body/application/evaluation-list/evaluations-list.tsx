@@ -26,8 +26,6 @@ import { UpdateImportanceObject } from "../../../../../@types/evaluation";
  * EvaluationListProps
  */
 interface EvaluationListProps {
-  assessmentRequest: AssessmentRequest[];
-  selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   evaluations: EvaluationState;
   saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction;
@@ -95,24 +93,26 @@ export class EvaluationList extends React.Component<
    * search string, evaluation sort function, sort selection aka checkboks and by importance which
    * also returns sorted list
    */
-  filterAndSortAssessments = (assessments: AssessmentRequest[]) => {
+  filterAndSortAssessments = (assessments?: AssessmentRequest[]) => {
     const {
       evaluated,
       notEvaluated,
       assessmentRequest,
       supplementationRequest,
     } = this.props.evaluations.evaluationFilters;
-    const { importantRequests, unimportantRequests } = this.props.evaluations;
+    const {
+      importantRequests,
+      unimportantRequests,
+      evaluationSearch,
+      evaluationSort,
+    } = this.props.evaluations;
 
     let filteredAssessment = assessments;
 
     /**
      * By search string if  given
      */
-    if (
-      this.props.evaluations.evaluationSearch !== "" &&
-      this.props.evaluations.evaluationSearch.length > 0
-    ) {
+    if (evaluationSearch !== "" && evaluationSearch.length > 0) {
       filteredAssessment =
         this.filterAssessmentsBySearchString(filteredAssessment);
     }
@@ -120,10 +120,10 @@ export class EvaluationList extends React.Component<
     /**
      * By sort function if given
      */
-    if (this.props.evaluations.evaluationSort !== undefined) {
+    if (evaluationSort !== undefined) {
       filteredAssessment = this.sortAssessmentsBySortBy(
         filteredAssessment,
-        this.props.evaluations.evaluationSort.value
+        evaluationSort.value
       );
     }
 
@@ -155,24 +155,26 @@ export class EvaluationList extends React.Component<
    * @param assessments
    */
   filterAssessmentsBySelections = (assessments: AssessmentRequest[]) => {
+    const { evaluationFilters } = this.props.evaluations;
+
     let filteredAssessments = assessments;
 
-    if (this.props.evaluations.evaluationFilters.evaluated) {
+    if (evaluationFilters.evaluated) {
       filteredAssessments = filteredAssessments.filter(
         (aItem) => aItem.evaluationDate !== null
       );
     }
-    if (this.props.evaluations.evaluationFilters.assessmentRequest) {
+    if (evaluationFilters.assessmentRequest) {
       filteredAssessments = filteredAssessments.filter(
         (aItem) => aItem.assessmentRequestDate !== null
       );
     }
-    if (this.props.evaluations.evaluationFilters.supplementationRequest) {
+    if (evaluationFilters.supplementationRequest) {
       filteredAssessments = filteredAssessments.filter(
         (aItem) => aItem.evaluationDate && !aItem.graded
       );
     }
-    if (this.props.evaluations.evaluationFilters.notEvaluated) {
+    if (evaluationFilters.notEvaluated) {
       filteredAssessments = filteredAssessments.filter(
         (aItem) => aItem.evaluationDate === null
       );
@@ -295,7 +297,8 @@ export class EvaluationList extends React.Component<
    * @param assessments listo of assessments
    */
   sortByImportance = (assessments: AssessmentRequest[]) => {
-    const { importantRequests, unimportantRequests } = this.props.evaluations;
+    const { importantRequests, unimportantRequests, evaluationSort } =
+      this.props.evaluations;
 
     /**
      * Filtering assessments that are marked as important
@@ -323,18 +326,18 @@ export class EvaluationList extends React.Component<
     /**
      * Here sorting these arrays by any active sort method
      */
-    if (this.props.evaluations.evaluationSort !== undefined) {
+    if (evaluationSort !== undefined) {
       importantAssessmentSelected = this.sortAssessmentsBySortBy(
         importantAssessmentSelected,
-        this.props.evaluations.evaluationSort.value
+        evaluationSort.value
       );
       unimportantAssessmentSelected = this.sortAssessmentsBySortBy(
         unimportantAssessmentSelected,
-        this.props.evaluations.evaluationSort.value
+        evaluationSort.value
       );
       notImportantNorUnimportant = this.sortAssessmentsBySortBy(
         notImportantNorUnimportant,
-        this.props.evaluations.evaluationSort.value
+        evaluationSort.value
       );
     }
 
@@ -366,10 +369,9 @@ export class EvaluationList extends React.Component<
    * @returns builded class string
    */
   buildSorterClass = (sortBy: SortBy) => {
-    if (
-      this.props.evaluations.evaluationSort &&
-      this.props.evaluations.evaluationSort.value === sortBy
-    ) {
+    const { evaluationSort } = this.props.evaluations;
+
+    if (evaluationSort && evaluationSort.value === sortBy) {
       return "sorter__item--selected";
     }
     return "";
@@ -380,123 +382,86 @@ export class EvaluationList extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const filteredAssessment = this.filterAndSortAssessments(
-      this.props.assessmentRequest
-    );
-
-    const importantAssessments = this.props.evaluations.importantRequests;
-    const unimportantAssessments = this.props.evaluations.unimportantRequests;
+    const { evaluationRequests, importantRequests, unimportantRequests } =
+      this.props.evaluations;
 
     /**
-     * renderEvaluationCards
+     * If assessmentsRequests are not yet passed or are still loading
+     * show loader
      */
-    const renderEvaluationCards = filteredAssessment.map((aItem, i) => {
-      let important: EvaluationImportantStatus = "nostatus";
+    if (
+      evaluationRequests.data === undefined ||
+      evaluationRequests.state === "LOADING"
+    ) {
+      return <div className="loader-empty" />;
+    } else {
+      /**
+       * Otherwise filter, parse, etc -> show data
+       * with corresponding messages
+       */
+      const filteredAssessment = this.filterAndSortAssessments(
+        evaluationRequests.data
+      );
 
-      if (importantAssessments.includes(aItem.workspaceUserEntityId)) {
-        important = "important";
-      } else if (unimportantAssessments.includes(aItem.workspaceUserEntityId)) {
-        important = "unimportant";
+      /**
+       * renderEvaluationCards
+       */
+      const renderEvaluationCards = filteredAssessment.map((aItem, i) => {
+        let important: EvaluationImportantStatus = "nostatus";
+
+        if (importantRequests.includes(aItem.workspaceUserEntityId)) {
+          important = "important";
+        } else if (unimportantRequests.includes(aItem.workspaceUserEntityId)) {
+          important = "unimportant";
+        }
+
+        return (
+          <EvaluationCard
+            key={i}
+            {...aItem}
+            selectedWorkspaceId={this.props.evaluations.selectedWorkspaceId}
+            setSelectedWorkspaceId={this.props.setSelectedWorkspaceId}
+            updateEvaluationImportance={this.handleUpdateImportance}
+            important={important}
+            importantAssessments={importantRequests}
+            unimportantAssessments={unimportantRequests}
+          />
+        );
+      });
+
+      /**
+       * renders card list
+       */
+      let renderEvaluationCardList = (
+        <div className="card-list-container">{renderEvaluationCards}</div>
+      );
+
+      /**
+       * If there is no assessments, let give message about that
+       */
+      if (evaluationRequests.data.length <= 0) {
+        renderEvaluationCardList = (
+          <div className="card-list-container">
+            <div className="evaluation-message-container">
+              Mahtavaa! Kaikki arviointipyynnöt on käsitelty!
+            </div>
+          </div>
+        );
+      } else if (evaluationRequests.data.length <= 0) {
+        /**
+         * Otherwise check if filtered list is empty and give message about that
+         */
+        renderEvaluationCardList = (
+          <div className="card-list-container">
+            <div className="evaluation-message-container">
+              Suodatuksella ei löytynyt osumia!
+            </div>
+          </div>
+        );
       }
 
-      return (
-        <EvaluationCard
-          key={i}
-          {...aItem}
-          selectedWorkspaceId={this.props.selectedWorkspaceId}
-          setSelectedWorkspaceId={this.props.setSelectedWorkspaceId}
-          updateEvaluationImportance={this.handleUpdateImportance}
-          important={important}
-          importantAssessments={importantAssessments}
-          unimportantAssessments={unimportantAssessments}
-        />
-      );
-    });
-
-    /**
-     * renders card list
-     */
-    let renderEvaluationCardList = (
-      <div className="card-list-container">{renderEvaluationCards}</div>
-    );
-
-    /**
-     * If there is no assessments, let give message about that
-     */
-    if (this.props.assessmentRequest.length <= 0) {
-      renderEvaluationCardList = (
-        <div className="card-list-container">
-          <div className="evaluation-message-container">
-            Mahtavaa! Kaikki arviointipyynnöt on käsitelty!
-          </div>
-        </div>
-      );
-    } else if (filteredAssessment.length <= 0) {
-      /**
-       * Otherwise check if filtered list is empty and give message about that
-       */
-      renderEvaluationCardList = (
-        <div className="card-list-container">
-          <div className="evaluation-message-container">
-            Suodatuksella ei löytynyt osumia!
-          </div>
-        </div>
-      );
+      return <>{renderEvaluationCardList}</>;
     }
-
-    return (
-      <>
-        <div className="sorter__container">
-          <div
-            onClick={this.handleClickSorter("sort-amount-asc")}
-            className={`sorter__item ${this.buildSorterClass(
-              "sort-amount-asc"
-            )} sorter__item-amount--asc`}
-            title="Lajittele arviointipyyntöpäivämäärän mukaan nousevasti"
-          />
-          <div
-            onClick={this.handleClickSorter("sort-amount-desc")}
-            className={`sorter__item ${this.buildSorterClass(
-              "sort-amount-desc"
-            )} sorter__item-amount--desc`}
-            title="Lajittele arviointipyyntöpäivämäärän mukaan laskevasti"
-          />
-          <div
-            onClick={this.handleClickSorter("sort-alpha-asc")}
-            className={`sorter__item ${this.buildSorterClass(
-              "sort-alpha-asc"
-            )} sorter__item-alpha--asc`}
-            title="Lajittele sukunimen mukaan nousevasti"
-          />
-          <div
-            onClick={this.handleClickSorter("sort-alpha-desc")}
-            className={`sorter__item ${this.buildSorterClass(
-              "sort-alpha-desc"
-            )} sorter__item-alpha--desc`}
-            title="Lajittele sukunimen mukaan laskevasti"
-          />
-          {this.props.evaluations.selectedWorkspaceId ? null : (
-            <>
-              <div
-                onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
-                className={`sorter__item ${this.buildSorterClass(
-                  "sort-workspace-alpha-asc"
-                )} sorter__item-workspace--asc`}
-                title="Lajittele työtilan mukaan nousevasti"
-              />
-              <div
-                onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
-                className={`sorter__item ${this.buildSorterClass(
-                  "sort-workspace-alpha-desc"
-                )} sorter__item-workspace--desc`}
-                title="Lajittele työtilan mukaan laskevasti"
-              />
-            </>
-          )}
-        </div>
-        {renderEvaluationCardList}
-      </>
-    );
   }
 }
 
