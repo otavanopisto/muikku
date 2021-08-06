@@ -1,6 +1,5 @@
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
-import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
 import "~/sass/elements/evaluation.scss";
 import SessionStateComponent from "../../../../general/session-state-component";
 import { bindActionCreators } from "redux";
@@ -14,6 +13,15 @@ import {
 } from "../../../../../reducers/workspaces/index";
 import { MaterialCompositeRepliesType } from "../../../../../reducers/workspaces/index";
 import Button from "~/components/general/button";
+import { StatusType } from "~/reducers/base/status";
+import {
+  SaveEvaluationAssignmentSupplementation,
+  saveAssignmentEvaluationSupplementationToServer,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
+import {
+  SaveEvaluationAssignmentGradeEvaluation,
+  saveAssignmentEvaluationGradeToServer,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * AssignmentEditorProps
@@ -23,8 +31,11 @@ interface AssignmentEditorProps {
   materialAssignment: MaterialAssignmentType;
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
+  status: StatusType;
   editorLabel?: string;
   modifiers?: string[];
+  saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
+  saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation;
   onClose?: () => void;
 }
 
@@ -56,7 +67,7 @@ class AssignmentEditor extends SessionStateComponent<
       {
         literalEvaluation: "",
         assignmentEvaluationType: "GRADED",
-        grade: "notselected",
+        grade: "",
         assignmentId: props.materialAssignment.id,
       },
       props.materialAssignment.id
@@ -68,30 +79,133 @@ class AssignmentEditor extends SessionStateComponent<
    */
   componentDidMount = () => {
     const { materialEvaluation, compositeReplies } = this.props;
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
     const grade = materialEvaluation
       ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
-      : "";
+      : compositeReplies.state === "INCOMPLETE"
+      ? ""
+      : defaultGrade;
 
     this.setState(
       this.getRecoverStoredState(
         {
-          literalEvaluation: materialEvaluation
-            ? materialEvaluation.verbalAssessment
-            : "",
+          literalEvaluation:
+            compositeReplies && compositeReplies.evaluationInfo
+              ? compositeReplies.evaluationInfo.text
+              : "",
           assignmentEvaluationType:
             compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
-          grade,
+          grade: grade,
         },
         this.state.assignmentId
       )
     );
   };
 
+  /**
+   * handleSaveAssignment
+   * @param e
+   */
   handleSaveAssignment = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    this.props.onClose();
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+
+    if (this.state.assignmentEvaluationType === "GRADED") {
+      const gradingScaleIdentifier = `${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${this.props.evaluations.evaluationGradeSystem[0].id}`;
+
+      this.props.saveAssignmentEvaluationGradeToServer({
+        workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
+        userEntityId:
+          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceMaterialId: this.props.materialAssignment.id,
+        dataToSave: {
+          assessorIdentifier: this.props.status.userSchoolDataIdentifier,
+          gradingScaleIdentifier,
+          gradeIdentifier: this.state.grade,
+          verbalAssessment: this.state.literalEvaluation,
+          assessmentDate: new Date().getTime(),
+        },
+        onSuccess: () => {
+          this.setStateAndClear(
+            {
+              literalEvaluation: "",
+              grade: defaultGrade,
+              assignmentEvaluationType: "GRADED",
+            },
+            this.state.assignmentId
+          );
+
+          this.props.onClose();
+        },
+        onFail: () => this.props.onClose(),
+      });
+    } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
+      this.props.saveAssignmentEvaluationSupplementationToServer({
+        workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
+        userEntityId:
+          this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+        workspaceMaterialId: this.props.materialAssignment.id,
+        dataToSave: {
+          userEntityId: this.props.status.userId,
+          studentEntityId:
+            this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
+          workspaceMaterialId: this.props.materialAssignment.id.toString(),
+          requestDate: new Date().getTime(),
+          requestText: this.state.literalEvaluation,
+        },
+        onSuccess: () => {
+          this.setStateAndClear(
+            {
+              literalEvaluation: "",
+              grade: defaultGrade,
+              assignmentEvaluationType: "INCOMPLETE",
+            },
+            this.state.assignmentId
+          );
+
+          this.props.onClose();
+        },
+        onFail: () => this.props.onClose(),
+      });
+    }
+  };
+
+  /**
+   * handleDeleteEditorDraft
+   */
+  handleDeleteEditorDraft = () => {
+    const { compositeReplies, materialEvaluation } = this.props;
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    if (compositeReplies.evaluationInfo.date) {
+      this.setStateAndClear(
+        {
+          literalEvaluation: compositeReplies.evaluationInfo.text,
+          grade:
+            compositeReplies.state === "INCOMPLETE"
+              ? `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
+              : `${materialEvaluation.gradingScaleSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
+          assignmentEvaluationType:
+            compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
+        },
+        this.state.assignmentId
+      );
+    } else {
+      this.setStateAndClear(
+        {
+          literalEvaluation: "",
+          grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          assignmentEvaluationType: "GRADED",
+        },
+        this.state.assignmentId
+      );
+    }
   };
 
   /**
@@ -114,18 +228,14 @@ class AssignmentEditor extends SessionStateComponent<
   handleAssignmentEvaluationChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (e.target.value === "INCOMPLETE") {
-      this.setStateAndStore(
-        {
-          grade: "notselected",
-        },
-        this.state.assignmentId
-      );
-    }
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
     this.setStateAndStore(
       {
         assignmentEvaluationType: e.target.value,
+        grade: defaultGrade,
       },
       this.state.assignmentId
     );
@@ -194,13 +304,15 @@ class AssignmentEditor extends SessionStateComponent<
             onChange={this.handleSelectGradeChange}
             disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}
           >
-            <option value="notselected">Ei valittu</option>
             <optgroup
               label={this.props.evaluations.evaluationGradeSystem[0].name}
             >
               {this.props.evaluations.evaluationGradeSystem[0].grades.map(
                 (item) => (
-                  <option key={item.id} value={item.name}>
+                  <option
+                    key={item.id}
+                    value={`${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${item.id}`}
+                  >
                     {item.name}
                   </option>
                 )
@@ -222,6 +334,14 @@ class AssignmentEditor extends SessionStateComponent<
           >
             Peruuta
           </Button>
+          {this.recovered && (
+            <Button
+              className="eval-modal-evaluate-button button-delete-draft"
+              onClick={this.handleDeleteEditorDraft}
+            >
+              Poista luonnos
+            </Button>
+          )}
         </div>
       </>
     );
@@ -234,6 +354,7 @@ class AssignmentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
+    status: state.status,
     evaluations: state.evaluations,
   };
 }
@@ -243,7 +364,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      saveAssignmentEvaluationGradeToServer,
+      saveAssignmentEvaluationSupplementationToServer,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssignmentEditor);

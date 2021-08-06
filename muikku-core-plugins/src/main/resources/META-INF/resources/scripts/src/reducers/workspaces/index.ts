@@ -494,12 +494,7 @@ export interface MaterialCompositeRepliesType {
   state: MaterialCompositeRepliesStateType;
 
   //Available sometimes
-  evaluationInfo?: {
-    type: MaterialCompositeRepliesStateType;
-    text: string;
-    grade: string;
-    date: string;
-  };
+  evaluationInfo?: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
   created: string;
@@ -510,6 +505,13 @@ export interface MaterialCompositeRepliesType {
   //Available when loaded generically (eg. via workspace material)
   workspaceMaterialId: number;
   workspaceMaterialReplyId: number;
+}
+
+export interface MaterialEvaluationInfo {
+  type: MaterialCompositeRepliesStateType;
+  text: string;
+  grade: string;
+  date: string;
 }
 
 export type MaterialCompositeRepliesListType =

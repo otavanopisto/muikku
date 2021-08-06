@@ -56,20 +56,24 @@ class DeleteDialog extends React.Component<
    */
   handleDeleteEventClick(closeDialog: () => any) {
     const { evaluationAssessmentEvents } = this.props.evaluations;
-    const latestIndex = evaluationAssessmentEvents.length - 1;
 
-    this.props.removeWorkspaceEventFromServer({
-      identifier: evaluationAssessmentEvents[latestIndex].identifier,
-      eventType: evaluationAssessmentEvents[latestIndex].type,
-      onSuccess: () => {
-        const eventId = evaluationAssessmentEvents[latestIndex].identifier;
+    if (evaluationAssessmentEvents.data) {
+      const latestIndex = evaluationAssessmentEvents.data.length - 1;
 
-        cleanWorkspaceAndSupplementationDrafts(eventId);
+      this.props.removeWorkspaceEventFromServer({
+        identifier: evaluationAssessmentEvents.data[latestIndex].identifier,
+        eventType: evaluationAssessmentEvents.data[latestIndex].type,
+        onSuccess: () => {
+          const eventId =
+            evaluationAssessmentEvents.data[latestIndex].identifier;
 
-        closeDialog();
-      },
-      onFail: () => closeDialog(),
-    });
+          cleanWorkspaceAndSupplementationDrafts(eventId);
+
+          closeDialog();
+        },
+        onFail: () => closeDialog(),
+      });
+    }
   }
 
   /**
@@ -145,24 +149,55 @@ export const cleanWorkspaceAndSupplementationDrafts = (eventId: string) => {
     localStorage.getItem(
       `workspace-editor-edit.${eventId}.literalEvaluation`
     ) ||
-    localStorage.getItem(`workspace-editor-edit.${eventId}.grade`)
+    localStorage.getItem(`workspace-editor-edit.${eventId}.grade`) ||
+    localStorage.getItem(
+      `workspace-editor-edit.${eventId}.selectedPriceOption`
+    ) ||
+    localStorage.getItem(`workspace-editor-edit.${eventId}.basePrice`) ||
+    localStorage.getItem(
+      `workspace-editor-edit.${eventId}.existingBilledPriceObject`
+    )
   ) {
     localStorage.removeItem(
       `workspace-editor-edit.${eventId}.literalEvaluation`
     );
     localStorage.removeItem(`workspace-editor-edit.${eventId}.grade`);
+    localStorage.removeItem(
+      `workspace-editor-edit.${eventId}.selectedPriceOption`
+    );
+    localStorage.removeItem(`workspace-editor-edit.${eventId}.basePrice`);
+    localStorage.removeItem(
+      `workspace-editor-edit.${eventId}.existingBilledPriceObject`
+    );
   }
+
   if (
     localStorage.getItem(`workspace-editor-new.${eventId}.literalEvaluation`) ||
-    localStorage.getItem(`workspace-editor-new.${eventId}.grade`)
+    localStorage.getItem(`workspace-editor-new.${eventId}.grade`) ||
+    localStorage.getItem(
+      `workspace-editor-new.${eventId}.selectedPriceOption`
+    ) ||
+    localStorage.getItem(`workspace-editor-new.${eventId}.basePrice`) ||
+    localStorage.getItem(
+      `workspace-editor-new.${eventId}.existingBilledPriceObject`
+    )
   ) {
     localStorage.removeItem(
       `workspace-editor-new.${eventId}.literalEvaluation`
     );
     localStorage.removeItem(`workspace-editor-new.${eventId}.grade`);
+    localStorage.removeItem(
+      `workspace-editor-new.${eventId}.selectedPriceOption`
+    );
+    localStorage.removeItem(`workspace-editor-new.${eventId}.basePrice`);
+    localStorage.removeItem(
+      `workspace-editor-new.${eventId}.existingBilledPriceObject`
+    );
   }
 };
 
+/* localStorage.getItem(`workspace-editor-edit.${eventId}.`)
+ */
 /**
  * mapStateToProps
  * @param state

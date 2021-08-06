@@ -97,12 +97,11 @@ export class Evaluation extends React.Component<
     const { evaluationAssessmentEvents } = this.props.evaluation;
 
     const evaluationDiaryEvents =
-      this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.journals.length >
-        0 ? (
-        this.props.evaluation.evaluationCurrentSelectedRecords.journals.map(
-          (item) => <EvaluationDiaryEvent key={item.id} {...item} />
-        )
+      this.props.evaluation.evaluationDiaryEntries.data &&
+      this.props.evaluation.evaluationDiaryEntries.data.length > 0 ? (
+        this.props.evaluation.evaluationDiaryEntries.data.map((item) => (
+          <EvaluationDiaryEvent key={item.id} {...item} />
+        ))
       ) : (
         <div className="journal-entry-title-wrapper no-journals">
           <div className="journal-entry-title journal-entry-title--empty">
@@ -117,11 +116,12 @@ export class Evaluation extends React.Component<
      * evaluationEventContentCards
      */
     const evaluationEventContentCards =
-      evaluationAssessmentEvents.length > 0 ? (
-        evaluationAssessmentEvents.map((eItem, index) => {
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length > 0 ? (
+        evaluationAssessmentEvents.data.map((eItem, index) => {
           let latest = false;
 
-          if (evaluationAssessmentEvents.length - 1 === index) {
+          if (evaluationAssessmentEvents.data.length - 1 === index) {
             latest = true;
           }
           if (eItem.grade !== null) {
@@ -145,15 +145,16 @@ export class Evaluation extends React.Component<
      * renderEvaluationAssessmentAssignments
      */
     const renderEvaluationAssessmentAssignments =
-      this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.materials.length >
-        0 ? (
-        this.props.evaluation.evaluationCurrentSelectedRecords.materials.map(
+      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
+      this.props.evaluation.evaluationCurrentSelectedRecords.data.materials
+        .length > 0 ? (
+        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
           (item, i) => (
             <EvaluationAssessmentAssignment
               key={i}
               workspace={
-                this.props.evaluation.evaluationCurrentSelectedRecords.workspace
+                this.props.evaluation.evaluationCurrentSelectedRecords.data
+                  .workspace
               }
               material={item}
               gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
@@ -198,7 +199,10 @@ export class Evaluation extends React.Component<
           <div className="eval-modal-material-journal-container">
             <div className="eval-modal-materials-content">
               <div className="eval-modal-assignments-title">Tehtävät</div>
-              {this.props.evaluation.status === "READY" ? (
+              {this.props.evaluation.evaluationCurrentSelectedRecords.state ===
+                "READY" &&
+              this.props.evaluation.evaluationCompositeReplies.state ===
+                "READY" ? (
                 renderEvaluationAssessmentAssignments
               ) : (
                 <div className="loader-empty" />
@@ -208,7 +212,8 @@ export class Evaluation extends React.Component<
               <div className="eval-modal-assignments-title">
                 Oppimispäiväkirjamerkinnät
               </div>
-              {this.props.evaluation.status === "READY" ? (
+              {this.props.evaluation.evaluationDiaryEntries.state ===
+              "READY" ? (
                 evaluationDiaryEvents
               ) : (
                 <div className="loader-empty" />
@@ -228,7 +233,8 @@ export class Evaluation extends React.Component<
                 Työtilan arviointihistoria
               </div>
               <div className="workspace-events-container">
-                {this.props.evaluation.status === "READY" ? (
+                {this.props.evaluation.evaluationAssessmentEvents.state ===
+                "READY" ? (
                   evaluationEventContentCards
                 ) : (
                   <div className="loader-empty" />

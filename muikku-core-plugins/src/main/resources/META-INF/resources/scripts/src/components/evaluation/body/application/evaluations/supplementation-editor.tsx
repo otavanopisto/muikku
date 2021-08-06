@@ -55,12 +55,15 @@ class SupplementationEditor extends SessionStateComponent<
 
     const { evaluationAssessmentEvents } = props.evaluations;
 
-    const latestIndex = evaluationAssessmentEvents.length - 1;
+    const latestIndex =
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length - 1;
 
     const eventId =
-      evaluationAssessmentEvents.length > 0 &&
-      evaluationAssessmentEvents[latestIndex].identifier
-        ? evaluationAssessmentEvents[latestIndex].identifier
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length > 0 &&
+      evaluationAssessmentEvents.data[latestIndex].identifier
+        ? evaluationAssessmentEvents.data[latestIndex].identifier
         : "empty";
 
     this.state = this.getRecoverStoredState(
@@ -78,13 +81,17 @@ class SupplementationEditor extends SessionStateComponent<
   componentDidMount = () => {
     const { evaluationAssessmentEvents } = this.props.evaluations;
 
-    const latestIndex = evaluationAssessmentEvents.length - 1;
+    const latestIndex =
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length - 1;
 
     if (this.props.type === "edit") {
       this.setState(
         this.getRecoverStoredState(
           {
-            literalEvaluation: evaluationAssessmentEvents[latestIndex].text,
+            literalEvaluation:
+              evaluationAssessmentEvents.data &&
+              evaluationAssessmentEvents.data[latestIndex].text,
           },
           this.state.eventId
         )
@@ -145,12 +152,16 @@ class SupplementationEditor extends SessionStateComponent<
       /**
        * Latest assessments event index whom identifier we want to get
        */
-      const latestIndex = evaluationAssessmentEvents.length - 1;
+      const latestIndex =
+        evaluationAssessmentEvents.data &&
+        evaluationAssessmentEvents.data.length - 1;
 
       this.props.updateWorkspaceSupplementationToServer({
         type: "edit",
         workspaceSupplementation: {
-          id: evaluationAssessmentEvents[latestIndex].identifier,
+          id:
+            evaluationAssessmentEvents.data &&
+            evaluationAssessmentEvents.data[latestIndex].identifier,
           requestDate: new Date().getTime().toString(),
           requestText: this.state.literalEvaluation,
         },
@@ -179,12 +190,25 @@ class SupplementationEditor extends SessionStateComponent<
   handleDeleteEditorDraft = () => {
     if (this.props.type === "edit") {
       const { evaluationAssessmentEvents } = this.props.evaluations;
-      const latestIndex = evaluationAssessmentEvents.length - 1;
+      const latestIndex =
+        evaluationAssessmentEvents.data &&
+        evaluationAssessmentEvents.data.length - 1;
 
-      this.setStateAndClear({
-        literalEvaluation: evaluationAssessmentEvents[latestIndex].text,
-      });
+      /**
+       * If editing delete draft, and set back to default values from event data
+       */
+      this.setStateAndClear(
+        {
+          literalEvaluation:
+            evaluationAssessmentEvents.data &&
+            evaluationAssessmentEvents.data[latestIndex].text,
+        },
+        this.state.eventId
+      );
     } else {
+      /**
+       * If making new, delete draft and set back to default values
+       */
       this.setStateAndClear(
         {
           literalEvaluation: "",

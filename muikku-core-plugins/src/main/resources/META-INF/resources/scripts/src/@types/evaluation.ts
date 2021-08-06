@@ -1,3 +1,9 @@
+import {
+  WorkspaceType,
+  WorkspaceJournalListType,
+  MaterialContentNodeListType,
+  MaterialCompositeRepliesType,
+} from "../reducers/workspaces/index";
 /**
  * EvaluationEnum
  */
@@ -223,6 +229,19 @@ export interface WorkspaceEvaluationSaveRequest {
 }
 
 /**
+ * WorkspaceEvaluationSaveReturn
+ */
+export interface WorkspaceEvaluationSaveReturn {
+  identifier: string;
+  assessorIdentifier: string;
+  gradingScaleIdentifier: string;
+  gradeIdentifier: string;
+  verbalAssessment: string;
+  assessmentDate: string;
+  passing: boolean;
+}
+
+/**
  * WorkspaceSupplementationSaveRequest
  */
 export interface WorkspaceSupplementationSaveRequest {
@@ -238,4 +257,42 @@ export interface BilledPrice {
   assessmentIdentifier: string;
   editable: boolean;
   price: number;
+}
+
+/**
+ * AssignmentEvaluationGradeRequest
+ */
+export interface AssignmentEvaluationGradeRequest {
+  assessorIdentifier: string;
+  gradingScaleIdentifier: string;
+  gradeIdentifier: string;
+  verbalAssessment: string;
+  assessmentDate: number;
+}
+
+/**
+ * AssignmentEvaluationSupplementationRequest
+ */
+export interface AssignmentEvaluationSupplementationRequest {
+  userEntityId: number;
+  studentEntityId: number;
+  workspaceMaterialId: string;
+  requestDate: number;
+  requestText: string;
+}
+
+/**
+ * EvaluationData
+ */
+export interface EvaluationData {
+  workspace: WorkspaceType;
+  materials: MaterialContentNodeListType;
+}
+
+/**
+ * BilledPriceRequest
+ */
+export interface BilledPriceRequest {
+  assessmentIdentifier: string;
+  price: string;
 }

@@ -1,8 +1,13 @@
 import { EvaluationFilters } from "./../../../@types/evaluation";
 import { ActionType } from "../../../actions/index";
 import { CurrentRecordType } from "../records/index";
-import { EvaluationEvent } from "../../../@types/evaluation";
+import {
+  EvaluationEvent,
+  EvaluationData,
+  EvaluationStudyDiaryEvent,
+} from "../../../@types/evaluation";
 import { EvaluationSort } from "../../../@types/evaluation";
+import { MaterialCompositeRepliesType } from "../../workspaces/index";
 import {
   EvaluationWorkspace,
   EvaluationStateType,
@@ -11,6 +16,11 @@ import {
   EvaluationGradeSystem,
   AssessmentRequest,
 } from "../../../@types/evaluation";
+
+interface EvaluationStateAndData<T> {
+  state: EvaluationStateType;
+  data?: T;
+}
 
 /**
  * Interface for evaluation redux state
@@ -27,8 +37,12 @@ export interface EvaluationState {
   evaluationSort?: EvaluationSort;
   evaluationFilters: EvaluationFilters;
   evaluationSelectedAssessmentId?: AssessmentRequest;
-  evaluationAssessmentEvents: EvaluationEvent[];
-  evaluationCurrentSelectedRecords?: CurrentRecordType;
+  evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
+  evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationCurrentSelectedRecords?: EvaluationStateAndData<EvaluationData>;
+  evaluationCompositeReplies?: EvaluationStateAndData<
+    MaterialCompositeRepliesType[]
+  >;
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
 }
@@ -52,11 +66,19 @@ export const initialState: EvaluationState = {
     assessmentRequest: false,
     supplementationRequest: false,
   },
-  evaluationAssessmentEvents: [],
+  evaluationAssessmentEvents: {
+    state: "LOADING",
+    data: undefined,
+  },
   evaluationSelectedAssessmentId: undefined,
-  evaluationCurrentSelectedRecords: undefined,
+  evaluationCurrentSelectedRecords: { state: "LOADING", data: undefined },
   openedAssignmentEvaluationId: undefined,
   evaluationBilledPrice: undefined,
+  evaluationDiaryEntries: {
+    state: "LOADING",
+    data: undefined,
+  },
+  evaluationCompositeReplies: { state: "LOADING", data: undefined },
 };
 
 /**
@@ -131,14 +153,6 @@ export default function evaluations(state = initialState, action: ActionType) {
     return Object.assign({}, state, {
       evaluationSelectedAssessmentId: action.payload,
     });
-  } else if (action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS") {
-    return Object.assign({}, state, {
-      evaluationAssessmentEvents: action.payload,
-    });
-  } else if (action.type === "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT") {
-    return Object.assign({}, state, {
-      evaluationCurrentSelectedRecords: action.payload,
-    });
   } else if (action.type === "UPDATE_OPENED_ASSIGNMENTS_EVALUATION") {
     return Object.assign({}, state, {
       openedAssignmentEvaluationId: action.payload,
@@ -146,6 +160,66 @@ export default function evaluations(state = initialState, action: ActionType) {
   } else if (action.type === "SET_EVALUATION_BILLED_PRICE") {
     return Object.assign({}, state, {
       openedAssignmentEvaluationId: action.payload,
+    });
+  } else if (action.type === "SET_EVALUATION_COMPOSITE_REPLIES") {
+    return Object.assign({}, state, {
+      evaluationCompositeReplies: {
+        state: state.evaluationCompositeReplies.state,
+        data: action.payload,
+      },
+    });
+  } else if (action.type === "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE") {
+    return Object.assign({}, state, {
+      evaluationCompositeReplies: {
+        state: action.payload,
+        data: state.evaluationCompositeReplies.data,
+      },
+    });
+  } else if (action.type === "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT") {
+    return Object.assign({}, state, {
+      evaluationCurrentSelectedRecords: {
+        state: state.evaluationCurrentSelectedRecords.state,
+        data: action.payload,
+      },
+    });
+  } else if (action.type === "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE") {
+    return Object.assign({}, state, {
+      evaluationCurrentSelectedRecords: {
+        state: action.payload,
+        data: state.evaluationCurrentSelectedRecords.data,
+      },
+    });
+  } else if (action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS") {
+    return Object.assign({}, state, {
+      evaluationAssessmentEvents: {
+        state: state.evaluationAssessmentEvents.state,
+        data: action.payload,
+      },
+    });
+  } else if (action.type === "UPDATE_EVALUATION_CURRENT_EVENTS_STATE") {
+    return Object.assign({}, state, {
+      evaluationAssessmentEvents: {
+        state: action.payload,
+        data: state.evaluationAssessmentEvents.data,
+      },
+    });
+  } else if (
+    action.type === "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS"
+  ) {
+    return Object.assign({}, state, {
+      evaluationDiaryEntries: {
+        state: state.evaluationDiaryEntries.state,
+        data: action.payload,
+      },
+    });
+  } else if (
+    action.type === "UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE"
+  ) {
+    return Object.assign({}, state, {
+      evaluationDiaryEntries: {
+        state: action.payload,
+        data: state.evaluationDiaryEntries.data,
+      },
     });
   }
   return state;

@@ -11,6 +11,14 @@ import Evaluation from "../body/application/evaluations/evaluation";
 import { AssessmentRequest } from "../../../@types/evaluation";
 import { StatusType } from "../../../reducers/base/status";
 import {
+  LoadEvaluationStudyDiaryEvent,
+  loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import {
+  LoadEvaluationCompositeReplies,
+  loadEvaluationCompositeRepliesFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import {
   SetCurrentStudentEvaluationData,
   setCurrentStudentEvaluationData,
 } from "../../../actions/main-function/evaluation/evaluationActions";
@@ -32,6 +40,8 @@ interface EvaluateDialogProps {
   assessment: AssessmentRequest;
   updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
   setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData;
+  loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
+  loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent;
 }
 
 /**
@@ -60,6 +70,12 @@ class EvaluateDialog extends React.Component<
     assessment: AssessmentRequest
   ): any => {
     this.props.updateSelectedAssessment({ assessment });
+    this.props.loadEvaluationCompositeRepliesFromServer({
+      userEntityId: this.props.assessment.userEntityId,
+    });
+    this.props.loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer({
+      assessment,
+    });
     this.props.setCurrentStudentEvaluationData({
       userEntityId: this.props.assessment.userEntityId,
       workspaceId: this.props.assessment.workspaceEntityId,
@@ -119,7 +135,12 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { updateSelectedAssessment, setCurrentStudentEvaluationData },
+    {
+      updateSelectedAssessment,
+      setCurrentStudentEvaluationData,
+      loadEvaluationCompositeRepliesFromServer,
+      loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+    },
     dispatch
   );
 }

@@ -11,7 +11,10 @@ import AnimateHeight from "react-animate-height";
 import "~/sass/elements/evaluation.scss";
 import { MaterialLoaderCorrectAnswerCounter } from "../../../../base/material-loader/correct-answer-counter";
 import * as moment from "moment";
-import { MaterialCompositeRepliesStateType } from "../../../../../reducers/workspaces/index";
+import {
+  MaterialCompositeRepliesStateType,
+  MaterialEvaluationInfo,
+} from "../../../../../reducers/workspaces/index";
 import { StateType } from "../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "../../../../../actions/index";
@@ -152,7 +155,7 @@ export class EvaluationMaterial extends React.Component<
    */
   renderAssignmentStatus = (
     compositeReplies: MaterialCompositeRepliesType,
-    evaluation?: MaterialEvaluationType
+    evaluationInfo: MaterialEvaluationInfo
   ) => {
     /**
      * Checking if assigments is submitted at all.
@@ -163,7 +166,7 @@ export class EvaluationMaterial extends React.Component<
     /**
      * Checking if its evaluated with grade
      */
-    const evaluatedWithGrade = evaluation && evaluation.grade;
+    const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
 
     /**
      * Needs supplementation
@@ -173,9 +176,7 @@ export class EvaluationMaterial extends React.Component<
     /**
      * Evaluation date if evaluated
      */
-    const evaluationDate =
-      this.props.material.evaluation &&
-      this.props.material.evaluation.evaluated;
+    const evaluationDate = evaluationInfo && evaluationInfo.date;
 
     /**
      * Grade class mod
@@ -215,7 +216,7 @@ export class EvaluationMaterial extends React.Component<
           <div className={`assignment-grade ${evaluatedGradeClassMod}`}>
             <span className="assignment-grade-label">Arvosana</span>
             <span className="assignment-grade-data">
-              {this.props.material.evaluation.grade}
+              {evaluationInfo.grade}
             </span>
           </div>
         )}
@@ -242,6 +243,11 @@ export class EvaluationMaterial extends React.Component<
    */
   render() {
     const wrapperClassMod = this.assignmentTypeClass();
+    const compositeReply =
+      this.props.evaluation.evaluationCompositeReplies.data &&
+      this.props.evaluation.evaluationCompositeReplies.data.find(
+        (item) => item.workspaceMaterialId === this.props.material.assignment.id
+      );
 
     return (
       <>
@@ -259,6 +265,7 @@ export class EvaluationMaterial extends React.Component<
             answersVisible
             modifiers="studies-material-page"
             usedAs={"evaluationTool"}
+            compositeReplies={compositeReply}
             userEntityId={
               this.props.evaluation.evaluationSelectedAssessmentId.userEntityId
             }
@@ -269,14 +276,17 @@ export class EvaluationMaterial extends React.Component<
 
               let contentOpen: string | number = 0;
 
+              /**
+               * Evaluation function class mod
+               */
               if (
-                this.props.material.evaluation ||
-                state.compositeRepliesInState.state === "INCOMPLETE"
+                props.compositeReplies &&
+                props.compositeReplies.evaluationInfo &&
+                props.compositeReplies.evaluationInfo.date &&
+                (this.props.material.evaluation ||
+                  state.compositeRepliesInState.state === "INCOMPLETE")
               ) {
-                if (
-                  this.props.material.evaluation &&
-                  this.props.material.evaluation.evaluated
-                ) {
+                if (props.compositeReplies.evaluationInfo.grade) {
                   evaluatedFunctionClassMod = "evaluated-graded";
                 } else {
                   evaluatedFunctionClassMod = "evaluated";
@@ -288,6 +298,9 @@ export class EvaluationMaterial extends React.Component<
                 this.props.evaluation.openedAssignmentEvaluationId ===
                   props.material.assignment.id
               ) {
+                /**
+                 * Assigning class mod to evaluation material title if corresponding dialog is open
+                 */
                 evaluationTitleClassMod = "active-dialog";
               }
 
@@ -297,6 +310,10 @@ export class EvaluationMaterial extends React.Component<
                   this.props.evaluation.openedAssignmentEvaluationId ===
                     props.material.assignment.id)
               ) {
+                /**
+                 * Open invidual material content or if hitting evaluation button then that corresponding
+                 * content and dialog together
+                 */
                 contentOpen = "auto";
               }
 
@@ -321,20 +338,24 @@ export class EvaluationMaterial extends React.Component<
 
                         {this.renderAssignmentStatus(
                           state.compositeRepliesInState,
-                          props.material.evaluation
+                          props.compositeReplies.evaluationInfo
                         )}
                       </div>
                       <div className="assignment-functions">
                         {props.material.assignment.assignmentType ===
-                          "EVALUATED" &&
-                        state.compositeRepliesInState.submitted ? (
-                          <div
-                            onClick={this.handleOpenSlideDrawer(
-                              props.material.assignment.id
-                            )}
-                            className={`assignment-evaluate-button icon-evaluate ${evaluatedFunctionClassMod}`}
-                            title="Arvioi tehtävä"
-                          />
+                        "EVALUATED" ? (
+                          state.compositeRepliesInState.state !==
+                            "UNANSWERED" &&
+                          state.compositeRepliesInState.state !== "WITHDRAWN" &&
+                          state.compositeRepliesInState.submitted ? (
+                            <div
+                              onClick={this.handleOpenSlideDrawer(
+                                props.material.assignment.id
+                              )}
+                              className={`assignment-evaluate-button icon-evaluate ${evaluatedFunctionClassMod}`}
+                              title="Arvioi tehtävä"
+                            />
+                          ) : null
                         ) : (
                           state.compositeRepliesInState &&
                           state.compositeRepliesInState.submitted && (
@@ -360,21 +381,22 @@ export class EvaluationMaterial extends React.Component<
                       <AssignmentEditor
                         materialEvaluation={props.material.evaluation}
                         materialAssignment={props.material.assignment}
-                        compositeReplies={state.compositeRepliesInState}
+                        compositeReplies={props.compositeReplies}
                         onClose={this.handleCloseSlideDrawer}
                       />
                     </SlideDrawer>
                   </ApplicationListItemHeader>
 
                   <AnimateHeight duration={400} height={contentOpen}>
-                    {props.material.evaluation &&
-                      props.material.evaluation.verbalAssessment && (
+                    {props.compositeReplies &&
+                      props.compositeReplies.evaluationInfo &&
+                      props.compositeReplies.evaluationInfo.text && (
                         <div className="assignment-literal-evaluation-wrapper">
                           <div className="assignment-literal-evaluation-label">
                             Sanallinen arviointi
                           </div>
                           <div className="assignment-literal-evaluation">
-                            {props.material.evaluation.verbalAssessment}
+                            {props.compositeReplies.evaluationInfo.text}
                           </div>
                         </div>
                       )}
