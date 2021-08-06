@@ -24,22 +24,26 @@ public class FlagTestsBase extends AbstractUITest {
   public void createNewFlagTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").organizationId(1l).buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").organizationId(1l).buildCourse();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
     mockBuilder
-      .addStaffMember(admin)
-      .addStudent(student)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .addCourse(course2)
-      .build();
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
-    Workspace workspace = createWorkspace(course1, true);
-    Workspace workspace2 = createWorkspace(course2, true);
-    MockCourseStudent mcs = new MockCourseStudent(3l, course1.getId(), student.getId());
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
     mockBuilder.
-      addCourseStudent(course1.getId(), mcs).
+      addCourseStudent(workspace.getId(), mcs).
+      addCourseStudent(workspace.getId(), mcs2).
       build();
     try {
       navigate("/guider", false);
@@ -94,8 +98,8 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
     
       waitUntilElementCount(".user--guider", 2);
-      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
-      click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
+      waitForVisible(".application-panel__helper-container.application-panel__helper-container--coursepicker .item-list__item--aside-navigation-guider");
+      click(".application-panel__helper-container.application-panel__helper-container--coursepicker .item-list__item--aside-navigation-guider");
       
       waitUntilElementCount(".user--guider", 1);
       assertTextIgnoreCase(".user--guider .application-list__header-primary span", "Second User");
