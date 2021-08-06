@@ -809,14 +809,6 @@
   background: #d31111;
 }
 
-.eval-modal-workspace-event-content {
-  background-color: #f8f8f8;
-  border-radius: 3px;
-  font-size: 13px;
-  margin: 5px 0 0;
-  padding: 5px 10px;
-}
-
 .eval-container p,
 h1,
 h2,
@@ -830,6 +822,18 @@ h6 {
 .eval-container p {
   font-weight: 300;
   margin: 15px 0;
+}
+
+.eval-modal-workspace-event-content {
+  background-color: #f8f8f8;
+  border-radius: 3px;
+  font-size: 13px;
+  margin: 5px 0 0;
+  padding: 5px 10px;
+}
+
+.eval-modal-workspace-event-content p {
+  margin: 0;
 }
 
 .eval-close {
@@ -1164,7 +1168,11 @@ h6 {
   background: #e2ffe2;
   border-radius: 3px;
   margin: 5px 0 10px;
-  padding: 10px;
+  padding: 5px;
+}
+
+.assignment-literal-evaluation p {
+  margin: 5px 0;
 }
 
 .material-container .correct-answers-count-container {

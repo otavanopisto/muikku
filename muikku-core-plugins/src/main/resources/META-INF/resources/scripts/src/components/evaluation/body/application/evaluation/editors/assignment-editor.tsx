@@ -263,9 +263,11 @@ class AssignmentEditor extends SessionStateComponent<
     return (
       <>
         <div className="editor">
-          <label className="drawer-editor-label">
-            Opintojakson sanallinen arviointi
-          </label>
+          {this.props.editorLabel && (
+            <label className="drawer-editor-label">
+              {this.props.editorLabel}
+            </label>
+          )}
 
           <CKEditor onChange={this.handleCKEditorChange}>
             {this.state.literalEvaluation}

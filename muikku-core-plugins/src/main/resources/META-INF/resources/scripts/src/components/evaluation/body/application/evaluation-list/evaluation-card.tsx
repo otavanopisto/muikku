@@ -164,10 +164,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     ) : null;
 
   /**
-   * renderTask
+   * Renders tasks done part of the card with corresponding
+   * status color
    * @returns
    */
-  const renderTask = (
+  const renderTasksDone = (
     <span
       className={`evaluation-card-data-text assignments-status ${
         rest.assignmentsDone === rest.assignmentsTotal ? "all-done" : "not-done"
@@ -233,7 +234,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         </div>
         <div className="evaluation-card-data-row">
           <span className="evaluation-card-data-label">Tehtäviä tehty</span>
-          {renderTask}
+          {renderTasksDone}
         </div>
         <div className="evaluation-card-button-row">
           <div className="evaluation-card-button-block">

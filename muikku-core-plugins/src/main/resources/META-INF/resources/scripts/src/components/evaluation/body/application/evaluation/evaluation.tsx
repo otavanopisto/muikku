@@ -247,6 +247,7 @@ export class Evaluation extends React.Component<
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
                 >
                   <WorkspaceEditor
+                    editorLabel="Opintojakson sanallinen arviointi"
                     onClose={this.handleWorkspaceEvaluationCloseDrawer}
                     type="new"
                   />

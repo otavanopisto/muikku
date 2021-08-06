@@ -81,6 +81,16 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   };
 
   /**
+   * createHtmlMarkup
+   * @param htmlString
+   */
+  const createHtmlMarkup = (htmlString: string) => {
+    return {
+      __html: htmlString,
+    };
+  };
+
+  /**
    * handleDrawerOpenClick
    */
   const handleDrawerOpenClick = () => {
@@ -233,7 +243,10 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
       </div>
 
       <AnimateHeight duration={500} height={height}>
-        <div className="eval-modal-workspace-event-content">{text}</div>
+        <div
+          className="eval-modal-workspace-event-content"
+          dangerouslySetInnerHTML={createHtmlMarkup(text)}
+        />
       </AnimateHeight>
 
       {latest && type !== EvaluationEnum.EVALUATION_REQUEST ? (

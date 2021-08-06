@@ -88,6 +88,16 @@ export class EvaluationMaterial extends React.Component<
   }
 
   /**
+   * createHtmlMarkup
+   * @param htmlString
+   */
+  createHtmlMarkup = (htmlString: string) => {
+    return {
+      __html: htmlString,
+    };
+  };
+
+  /**
    * toggleOpened
    */
   handleOpenMaterialContent = () => {
@@ -124,6 +134,13 @@ export class EvaluationMaterial extends React.Component<
         () => this.handleExecuteScrollToElement()
       );
     };
+
+  /**
+   * handleExecuteScrollToElement
+   */
+  handleExecuteScrollToElement = () => {
+    this.myRef.scrollIntoView({ behavior: "smooth" });
+  };
 
   /**
    * assignmentTypeClass
@@ -228,13 +245,6 @@ export class EvaluationMaterial extends React.Component<
         )}
       </div>
     );
-  };
-
-  /**
-   * handleExecuteScrollToElement
-   */
-  handleExecuteScrollToElement = () => {
-    this.myRef.scrollIntoView({ behavior: "smooth" });
   };
 
   /**
@@ -379,6 +389,7 @@ export class EvaluationMaterial extends React.Component<
                       onClose={this.handleCloseSlideDrawer}
                     >
                       <AssignmentEditor
+                        editorLabel="TEHTÄVÄN SANALLINEN ARVIOINTI"
                         materialEvaluation={props.material.evaluation}
                         materialAssignment={props.material.assignment}
                         compositeReplies={props.compositeReplies}
@@ -395,9 +406,12 @@ export class EvaluationMaterial extends React.Component<
                           <div className="assignment-literal-evaluation-label">
                             Sanallinen arviointi
                           </div>
-                          <div className="assignment-literal-evaluation">
-                            {props.compositeReplies.evaluationInfo.text}
-                          </div>
+                          <div
+                            className="assignment-literal-evaluation"
+                            dangerouslySetInnerHTML={this.createHtmlMarkup(
+                              props.compositeReplies.evaluationInfo.text
+                            )}
+                          />
                         </div>
                       )}
                     <ApplicationListItemBody modifiers="evaluation-assignment">
