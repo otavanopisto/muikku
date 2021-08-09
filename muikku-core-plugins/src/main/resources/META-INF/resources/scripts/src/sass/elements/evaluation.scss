@@ -1062,7 +1062,8 @@ h6 {
 }
 
 .assignment-grade.grade--evaluated .assignment-grade-data,
-.assignment-grade.grade--incomplete .assignment-grade-data {
+.assignment-grade.grade--incomplete .assignment-grade-data,
+.assignment-grade.grade--supplemented .assignment-grade-data {
   border-radius: 3px;
   font-size: 15px;
   margin: 0 0 0 5px;
@@ -1078,6 +1079,12 @@ h6 {
 
 .assignment-grade.grade--incomplete .assignment-grade-data {
   background: #ea7503;
+  color: white;
+  margin: 0;
+}
+
+.assignment-grade.grade--supplemented .assignment-grade-data {
+  background: #009fe3;
   color: white;
   margin: 0;
 }
@@ -1119,6 +1126,11 @@ h6 {
 
 .assignment-evaluate-button.evaluated {
   background: #ea7503;
+}
+
+.assignment-evaluate-button.supplemented {
+  background-color: #009fe3;
+  color: white;
 }
 
 .assignment-evaluate-button.evaluated-graded {
