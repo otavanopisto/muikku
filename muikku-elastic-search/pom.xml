@@ -15,7 +15,7 @@
 	<description>Muikku Elasic Search plugin</description>
 
 	<properties>
-		<elasticsearch.version>2.1.2</elasticsearch.version>
+		<elasticsearch.version>6.8.17</elasticsearch.version>
 	</properties>
   
   <dependencies>
