@@ -191,7 +191,7 @@ class AssignmentEditor extends SessionStateComponent<
         {
           literalEvaluation: compositeReplies.evaluationInfo.text,
           grade:
-            compositeReplies.state === "INCOMPLETE"
+            compositeReplies.evaluationInfo.type === "INCOMPLETE"
               ? `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
               : `${materialEvaluation.gradingScaleSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
           assignmentEvaluationType:
