@@ -65,12 +65,26 @@ class AssignmentEditor extends SessionStateComponent<
   constructor(props: AssignmentEditorProps) {
     super(props, `assignment-editor`);
 
+    const { materialEvaluation, compositeReplies } = props;
+    const { evaluationGradeSystem } = props.evaluations;
+
+    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+
+    const grade = materialEvaluation
+      ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
+      : compositeReplies.state === "INCOMPLETE"
+      ? ""
+      : defaultGrade;
+
     this.state = this.getRecoverStoredState(
       {
-        literalEvaluation: "",
-        assignmentEvaluationType: "GRADED",
-        grade: "",
-        assignmentId: props.materialAssignment.id,
+        literalEvaluation:
+          compositeReplies && compositeReplies.evaluationInfo
+            ? compositeReplies.evaluationInfo.text
+            : "",
+        assignmentEvaluationType:
+          compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
+        grade: grade,
       },
       props.materialAssignment.id
     );

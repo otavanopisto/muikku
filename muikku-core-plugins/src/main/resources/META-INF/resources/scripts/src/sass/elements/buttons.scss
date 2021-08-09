@@ -1614,3 +1614,30 @@
     margin-left: 10px;
   }
 }
+
+.eval-modal-evaluate-button {
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  padding: 8px 12px;
+  margin: 0 10px;
+}
+
+.eval-modal-evaluate-button--literal {
+  background-color: #ce01bd;
+}
+
+.eval-modal-evaluate-button--supplementation {
+  background: #ea7503;
+}
+
+.eval-modal-evaluate-button--literal {
+  background-color: #ce01bd;
+}
+
+.eval-modal-evaluate-button--workspace {
+  background: #2ed31c;
+}
+

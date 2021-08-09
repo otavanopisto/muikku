@@ -68,7 +68,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
     const { evaluationAssessmentEvents } = props.evaluations;
 
-    if (evaluationAssessmentEvents.data) {
+    if (evaluationAssessmentEvents.data && props.type === "edit") {
       const latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
@@ -81,7 +81,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
       this.state = this.getRecoverStoredState(
         {
-          literalEvaluation: "",
+          literalEvaluation: latestEvent.text,
           eventId,
           basePrice: undefined,
           selectedPriceOption: undefined,
@@ -463,6 +463,26 @@ class WorkspaceEditor extends SessionStateComponent<
   };
 
   /**
+   * hasGradedEvaluations
+   * @returns boolean if there is previously graded evaluations
+   */
+  hasGradedEvaluations = () => {
+    const { evaluationAssessmentEvents } = this.props.evaluations;
+
+    if (evaluationAssessmentEvents.data) {
+      for (const event of evaluationAssessmentEvents.data) {
+        if (this.isGraded(event.type)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return false;
+  };
+
+  /**
    * renderSelectOptions
    * @returns List of options
    */
@@ -484,7 +504,7 @@ class WorkspaceEditor extends SessionStateComponent<
        * Check if raising grade or giving new one
        */
       const isRaised =
-        (type === "new" && this.isGraded(latestEvent.type)) ||
+        (type === "new" && this.hasGradedEvaluations()) ||
         (type === "edit" &&
           latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
 

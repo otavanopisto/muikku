@@ -57,24 +57,29 @@ class SupplementationEditor extends SessionStateComponent<
 
     const { evaluationAssessmentEvents } = props.evaluations;
 
-    const latestIndex =
-      evaluationAssessmentEvents.data &&
-      evaluationAssessmentEvents.data.length - 1;
+    if (evaluationAssessmentEvents.data && props.type === "edit") {
+      const latestEvent =
+        evaluationAssessmentEvents.data[
+          evaluationAssessmentEvents.data.length - 1
+        ];
 
-    const eventId =
-      evaluationAssessmentEvents.data &&
-      evaluationAssessmentEvents.data.length > 0 &&
-      evaluationAssessmentEvents.data[latestIndex].identifier
-        ? evaluationAssessmentEvents.data[latestIndex].identifier
-        : "empty";
+      const eventId =
+        evaluationAssessmentEvents.data.length > 0 && latestEvent.identifier
+          ? latestEvent.identifier
+          : "empty";
 
-    this.state = this.getRecoverStoredState(
-      {
+      this.state = this.getRecoverStoredState(
+        {
+          literalEvaluation: latestEvent.text,
+          eventId,
+        },
+        eventId
+      );
+    } else {
+      this.state = this.getRecoverStoredState({
         literalEvaluation: "",
-        eventId,
-      },
-      eventId
-    );
+      });
+    }
   }
 
   /**
