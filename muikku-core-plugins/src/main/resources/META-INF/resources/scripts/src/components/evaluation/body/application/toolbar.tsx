@@ -130,6 +130,9 @@ class EvaluationToolbar extends React.Component<
                   style={{ margin: "0 10px" }}
                   className="search__input__filters"
                   icon="cog"
+                  title={this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationRequestsTitle"
+                  )}
                 />
               </Dropdown>
             ) : null}

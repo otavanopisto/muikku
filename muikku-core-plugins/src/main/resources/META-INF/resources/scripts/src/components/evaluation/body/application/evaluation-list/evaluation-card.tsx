@@ -8,11 +8,17 @@ import {
 } from "../../../../../@types/evaluation";
 import * as moment from "moment";
 import { SetEvaluationSelectedWorkspace } from "../../../../../actions/main-function/evaluation/evaluationActions";
+import { bindActionCreators } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "../../../../../actions/index";
+import { StateType } from "../../../../../reducers/index";
+import { i18nType } from "../../../../../reducers/base/i18n";
 
 /**
  * EvaluationCardProps
  */
 interface EvaluationCardProps extends AssessmentRequest {
+  i18n: i18nType;
   selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   updateEvaluationImportance: (object: UpdateImportanceObject) => void;
@@ -32,6 +38,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
   importantAssessments,
   unimportantAssessments,
   updateEvaluationImportance,
+  i18n,
   ...rest
 }) => {
   /**
@@ -208,7 +215,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         {renderFilterByWorkspaceLink}
         <div className="evaluation-card-data-row enrollment-row">
           <span className="evaluation-card-data-label">
-            Ilmoittautunut työtilaan
+            {i18n.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
           </span>
           <span className="evaluation-card-data-text">{enrollmentDate}</span>
         </div>
@@ -218,7 +225,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           }`}
         >
           <span className="evaluation-card-data-label">
-            Arviointipyyntö jätetty
+            {i18n.text.get("plugin.evaluation.card.evaluationRequestedLabel")}
           </span>
           <span className="evaluation-card-data-text">
             {assessmentRequestDate}
@@ -229,20 +236,30 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
             rest.evaluationDate !== null ? "highlight" : ""
           }`}
         >
-          <span className="evaluation-card-data-label">Arvioitu</span>
+          <span className="evaluation-card-data-label">
+            {i18n.text.get("plugin.evaluation.card.evaluatedLabel")}
+          </span>
           <span className="evaluation-card-data-text">{evaluationDate}</span>
         </div>
         <div className="evaluation-card-data-row">
-          <span className="evaluation-card-data-label">Tehtäviä tehty</span>
+          <span className="evaluation-card-data-label">
+            {i18n.text.get("plugin.evaluation.card.assignmentsDoneLabel")}
+          </span>
           {renderTasksDone}
         </div>
         <div className="evaluation-card-button-row">
           <div className="evaluation-card-button-block">
             <div
+              title={i18n.text.get(
+                "plugin.evaluation.card.button.markImportantButtonLabel"
+              )}
               onClick={handleImportanceClick("important")}
               className={`evaluation-important-button ${evaluationImportantClassesMod} icon-star`}
             />
             <div
+              title={i18n.text.get(
+                "plugin.evaluation.card.button.markNonImportantButtonLabel"
+              )}
               onClick={handleImportanceClick("unimportant")}
               className={`evaluation-unimportant-button ${evaluationUnimportantClassesMod} icon-star-empty`}
             />
@@ -253,7 +270,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
               <ArchiveDialog>
                 <div
                   className="evaluation-card-button archive-button icon-archive"
-                  title="Arkistoi opiskelija"
+                  title={i18n.text.get(
+                    "plugin.evaluation.card.button.archiveButtonLabel"
+                  )}
                 />
               </ArchiveDialog>
             ) : null}
@@ -261,7 +280,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
             <EvaluateDialog assessment={rest}>
               <div
                 className="evaluation-card-button evaluate-button icon-evaluate"
-                title="Arvioi opiskelija"
+                title={i18n.text.get(
+                  "plugin.evaluation.card.button.evaluateButtonLabel"
+                )}
               />
             </EvaluateDialog>
           </div>
@@ -271,4 +292,22 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
   );
 };
 
-export default EvaluationCard;
+/**
+ * mapStateToProps
+ * @param state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EvaluationCard);

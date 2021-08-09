@@ -1,5 +1,4 @@
 import * as React from "react";
-import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
@@ -18,6 +17,7 @@ import {
  * EvaluationSortersProps
  */
 interface EvaluationSortersProps {
+  i18n: i18nType;
   evaluations: EvaluationState;
   saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction;
 }
@@ -105,28 +105,36 @@ class EvaluationSorters extends React.Component<
           className={`sorter__item ${this.buildSorterClass(
             "sort-amount-asc"
           )} sorter__item-amount--asc`}
-          title="Lajittele arviointipyyntöpäivämäärän mukaan nousevasti"
+          title={this.props.i18n.text.get(
+            "plugin.evaluation.sorter.byDate.ascending"
+          )}
         />
         <div
           onClick={this.handleClickSorter("sort-amount-desc")}
           className={`sorter__item ${this.buildSorterClass(
             "sort-amount-desc"
           )} sorter__item-amount--desc`}
-          title="Lajittele arviointipyyntöpäivämäärän mukaan laskevasti"
+          title={this.props.i18n.text.get(
+            "plugin.evaluation.sorter.byDate.descending"
+          )}
         />
         <div
           onClick={this.handleClickSorter("sort-alpha-asc")}
           className={`sorter__item ${this.buildSorterClass(
             "sort-alpha-asc"
           )} sorter__item-alpha--asc`}
-          title="Lajittele sukunimen mukaan nousevasti"
+          title={this.props.i18n.text.get(
+            "plugin.evaluation.sorter.byLastname.ascending"
+          )}
         />
         <div
           onClick={this.handleClickSorter("sort-alpha-desc")}
           className={`sorter__item ${this.buildSorterClass(
             "sort-alpha-desc"
           )} sorter__item-alpha--desc`}
-          title="Lajittele sukunimen mukaan laskevasti"
+          title={this.props.i18n.text.get(
+            "plugin.evaluation.sorter.byLastname.descending"
+          )}
         />
         {this.props.evaluations.selectedWorkspaceId ? null : (
           <>
@@ -135,14 +143,18 @@ class EvaluationSorters extends React.Component<
               className={`sorter__item ${this.buildSorterClass(
                 "sort-workspace-alpha-asc"
               )} sorter__item-workspace--asc`}
-              title="Lajittele työtilan mukaan nousevasti"
+              title={this.props.i18n.text.get(
+                "plugin.evaluation.sorter.byWorkspace.ascending"
+              )}
             />
             <div
               onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
               className={`sorter__item ${this.buildSorterClass(
                 "sort-workspace-alpha-desc"
               )} sorter__item-workspace--desc`}
-              title="Lajittele työtilan mukaan laskevasti"
+              title={this.props.i18n.text.get(
+                "plugin.evaluation.sorter.byWorkspace.descending"
+              )}
             />
           </>
         )}
@@ -157,6 +169,7 @@ class EvaluationSorters extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     evaluations: state.evaluations,
   };
 }

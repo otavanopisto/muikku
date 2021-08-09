@@ -14,6 +14,7 @@ import {
 import { MaterialCompositeRepliesType } from "../../../../../../reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
+import { i18nType } from "../../../../../../reducers/base/i18n";
 import {
   SaveEvaluationAssignmentSupplementation,
   saveAssignmentEvaluationSupplementationToServer,
@@ -27,6 +28,7 @@ import {
  * AssignmentEditorProps
  */
 interface AssignmentEditorProps {
+  i18n: i18nType;
   materialEvaluation?: MaterialEvaluationType;
   materialAssignment: MaterialAssignmentType;
   compositeReplies: MaterialCompositeRepliesType;
@@ -275,7 +277,11 @@ class AssignmentEditor extends SessionStateComponent<
         </div>
 
         <div className="evaluation-modal-evaluate-form-row--radios">
-          <label className="evaluation__label">Arviointi</label>
+          <label className="evaluation__label">
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
+            )}
+          </label>
           <div className="evaluation-input-radio-row">
             <div className="evaluation-input-radio">
               <input
@@ -285,7 +291,11 @@ class AssignmentEditor extends SessionStateComponent<
                 checked={this.state.assignmentEvaluationType === "GRADED"}
                 onChange={this.handleAssignmentEvaluationChange}
               />
-              <span>Arvosana</span>
+              <span>
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+                )}
+              </span>
             </div>
             <div className="evaluation-input-radio">
               <input
@@ -295,12 +305,20 @@ class AssignmentEditor extends SessionStateComponent<
                 checked={this.state.assignmentEvaluationType === "INCOMPLETE"}
                 onChange={this.handleAssignmentEvaluationChange}
               />
-              <span>Täydennettävä</span>
+              <span>
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
+                )}
+              </span>
             </div>
           </div>
         </div>
         <div className="evaluation-modal-evaluate-form-row--grade">
-          <label className="evaluation__label">Arvosana</label>
+          <label className="evaluation__label">
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+            )}
+          </label>
           <select
             className="evaluation__select--grade"
             value={this.state.grade}
@@ -329,20 +347,26 @@ class AssignmentEditor extends SessionStateComponent<
             className={`eval-modal-evaluate-button eval-modal-evaluate-button--literal`}
             onClick={this.handleSaveAssignment}
           >
-            Tallenna
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+            )}
           </Button>
           <Button
             onClick={this.props.onClose}
             className="eval-modal-evaluate-button button-cancel"
           >
-            Peruuta
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+            )}
           </Button>
           {this.recovered && (
             <Button
               className="eval-modal-evaluate-button button-delete-draft"
               onClick={this.handleDeleteEditorDraft}
             >
-              Poista luonnos
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+              )}
             </Button>
           )}
         </div>
@@ -357,6 +381,7 @@ class AssignmentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
   };

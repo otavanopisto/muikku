@@ -18,6 +18,17 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
   /**
+   * createHtmlMarkup
+   * This should sanitize html
+   * @param htmlString string that contains html
+   */
+  const createHtmlMarkup = (htmlString: string) => {
+    return {
+      __html: htmlString,
+    };
+  };
+
+  /**
    * handleOpenContentClick
    */
   const handleOpenContentClick = () => {
@@ -41,9 +52,10 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
         </div>
       </div>
       <AnimateHeight duration={500} height={height}>
-        <div className="journal-entry-content">
-          <p>{content}</p>
-        </div>
+        <div
+          className="journal-entry-content"
+          dangerouslySetInnerHTML={createHtmlMarkup(content)}
+        />
       </AnimateHeight>
     </div>
   );

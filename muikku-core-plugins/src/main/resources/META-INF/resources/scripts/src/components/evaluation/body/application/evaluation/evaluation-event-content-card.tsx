@@ -10,11 +10,17 @@ import SlideDrawer from "./slide-drawer";
 import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
+import { StateType } from "../../../../../reducers/index";
+import { Dispatch, bindActionCreators } from "redux";
+import { AnyActionType } from "../../../../../actions/index";
+import { connect } from "react-redux";
+import { i18nType } from "../../../../../reducers/base/i18n";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
+  i18n: i18nType;
   latest: boolean;
   gradeSystem: EvaluationGradeSystem;
 }
@@ -29,6 +35,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   type,
   date,
   author,
+  i18n,
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -126,8 +133,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
       case EvaluationEnum.EVALUATION_REQUEST:
         return (
           <div className="eval-modal-workspace-event-details">
-            <span className="author">{author}</span> jätti{" "}
-            <span className="eval eval--REQUEST">arviointipyynnön</span>
+            <span className="author">{author}</span>{" "}
+            {i18n.text.get(
+              "plugin.evaluation.evaluationModal.events.evaluationRequest.1"
+            )}{" "}
+            <span className="eval eval--REQUEST">
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.evaluationRequest.2"
+              )}
+            </span>
           </div>
         );
 
@@ -135,8 +149,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <span className="author">{author}</span> arvioi kurssisuorituksen{" "}
-              <span className="eval eval--PASSED">hyväksytyksi</span>
+              <span className="author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.gradePass.1"
+              )}{" "}
+              <span className="eval eval--PASSED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.gradePass.2"
+                )}
+              </span>
             </div>
             {grade !== null ? (
               <div className="eval-modal-workspace-event-grade eval-modal-workspace-event-grade--PASSED">
@@ -150,8 +171,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <span className="author">{author}</span> arvioi kurssisuorituksen{" "}
-              <span className="eval eval--FAIL">hylätyksi</span>
+              <span className="author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.gradeFail.1"
+              )}{" "}
+              <span className="eval eval--FAIL">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.gradeFail.2"
+                )}
+              </span>
             </div>
             {grade !== null ? (
               <div className="eval-modal-workspace-event-grade eval-modal-workspace-event-grade--FAIL">
@@ -165,8 +193,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <span className="author">{author}</span> arvioi kurssisuorituksen{" "}
-              <span className="eval eval--IMPROVED">korotetuksi</span>
+              <span className="author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.gradeImproved.1"
+              )}{" "}
+              <span className="eval eval--IMPROVED">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.gradeImproved.2"
+                )}
+              </span>
             </div>
             {grade !== null ? (
               <div className="eval-modal-workspace-event-grade eval-modal-workspace-event-grade--IMPROVED">
@@ -180,8 +215,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
         return (
           <>
             <div className="eval-modal-workspace-event-details">
-              <span className="author">{author}</span> pyysi{" "}
-              <span className="eval eval--SUPPLEMENTATION">täydennystä</span>
+              <span className="author">{author}</span>{" "}
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.supplementationRequest.1"
+              )}{" "}
+              <span className="eval eval--SUPPLEMENTATION">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.supplementationRequest.2"
+                )}
+              </span>
             </div>
             {grade !== null ||
             type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
@@ -255,11 +297,15 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
             onClick={handleDrawerOpenClick}
             className="eval-modal-workspace-event-button button-edit-event"
           >
-            Muokkaa
+            {i18n.text.get(
+              "plugin.evaluation.evaluationModal.events.editButton"
+            )}
           </div>
           <DeleteDialog>
             <div className="eval-modal-workspace-event-button button-remove-event">
-              Poista
+              {i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.deleteButton"
+              )}
             </div>
           </DeleteDialog>
         </div>
@@ -269,4 +315,25 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   );
 };
 
-export default EvaluationEventContentCard;
+/**
+ * mapStateToProps
+ * @param state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EvaluationEventContentCard);

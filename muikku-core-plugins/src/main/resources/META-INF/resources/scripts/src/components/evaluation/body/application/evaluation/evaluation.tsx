@@ -12,8 +12,10 @@ import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
 import { StatusType } from "../../../../../reducers/base/status";
+import { i18nType } from "../../../../../reducers/base/i18n";
 
 interface EvaluationDrawerProps {
+  i18n: i18nType;
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
@@ -105,7 +107,10 @@ export class Evaluation extends React.Component<
       ) : (
         <div className="journal-entry-title-wrapper no-journals">
           <div className="journal-entry-title journal-entry-title--empty">
-            Ei päiväkirjamerkintöjä!
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.noJournals"
+            )}
+            !
           </div>
         </div>
       );
@@ -138,7 +143,11 @@ export class Evaluation extends React.Component<
           );
         })
       ) : (
-        <h2 style={{ fontStyle: "italic" }}>Arviointihistoria tyhjä</h2>
+        <h2 style={{ fontStyle: "italic" }}>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.noEvents"
+          )}
+        </h2>
       );
 
     /**
@@ -172,7 +181,10 @@ export class Evaluation extends React.Component<
                       className="application-list__header-primary assignment-title"
                       style={{ fontStyle: "italic" }}
                     >
-                      Ei tehtäviä
+                      {this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.noAssignmentsTitle"
+                      )}
+                      !
                     </span>
                   </div>
                 </div>
@@ -198,7 +210,11 @@ export class Evaluation extends React.Component<
 
           <div className="eval-modal-material-journal-container">
             <div className="eval-modal-materials-content">
-              <div className="eval-modal-assignments-title">Tehtävät</div>
+              <div className="eval-modal-assignments-title">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentsTitle"
+                )}
+              </div>
               {this.props.evaluation.evaluationCurrentSelectedRecords.state ===
                 "READY" &&
               this.props.evaluation.evaluationCompositeReplies.state ===
@@ -210,7 +226,9 @@ export class Evaluation extends React.Component<
             </div>
             <div className="eval-modal-materials-content">
               <div className="eval-modal-assignments-title">
-                Oppimispäiväkirjamerkinnät
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.journalTitle"
+                )}
               </div>
               {this.props.evaluation.evaluationDiaryEntries.state ===
               "READY" ? (
@@ -230,7 +248,9 @@ export class Evaluation extends React.Component<
           <div className="eval-modal-material-journal-container">
             <div className="eval-modal-events-content">
               <div className="eval-modal-events-title">
-                Työtilan arviointihistoria
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.title"
+                )}
               </div>
               <div className="workspace-events-container">
                 {this.props.evaluation.evaluationAssessmentEvents.state ===
@@ -241,20 +261,26 @@ export class Evaluation extends React.Component<
                 )}
 
                 <SlideDrawer
-                  title="Työtilan kokonaisarviointi"
+                  title={this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+                  )}
                   modifiers={["workspace"]}
                   show={this.state.showWorkspaceEvaluationDrawer}
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
                 >
                   <WorkspaceEditor
-                    editorLabel="Opintojakson sanallinen arviointi"
+                    editorLabel={this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                    )}
                     onClose={this.handleWorkspaceEvaluationCloseDrawer}
                     type="new"
                   />
                 </SlideDrawer>
 
                 <SlideDrawer
-                  title="Työtilan täydennyspyyntö"
+                  title={this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
+                  )}
                   modifiers={["supplementation"]}
                   show={this.state.showWorkspaceSupplemenationDrawer}
                   onClose={
@@ -274,7 +300,13 @@ export class Evaluation extends React.Component<
                   onClick={this.handleOpenWorkspaceEvaluationDrawer}
                   className="eval-modal-evaluate-button button-start-evaluation"
                 >
-                  {isEvaluated ? "Anna korotus" : "Anna kurssiarvio"}
+                  {isEvaluated
+                    ? this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.events.improvedGradeButton"
+                      )
+                    : this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.events.gradeButton"
+                      )}
                 </div>
                 <div
                   onClick={
@@ -282,7 +314,9 @@ export class Evaluation extends React.Component<
                   }
                   className="eval-modal-evaluate-button button-supplementation-request"
                 >
-                  Pyydä täydennystä
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.events.supplementationButton"
+                  )}
                 </div>
               </div>
             </div>
@@ -299,6 +333,7 @@ export class Evaluation extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     status: state.status,
     evaluation: state.evaluations,
   };

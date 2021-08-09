@@ -47,13 +47,6 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
           </div>
-
-          <div
-            className="evaluation-container"
-            data-loaded="false"
-            data-open="false"
-          ></div>
-          <div className="clear"></div>
         </div>
       </div>
     );

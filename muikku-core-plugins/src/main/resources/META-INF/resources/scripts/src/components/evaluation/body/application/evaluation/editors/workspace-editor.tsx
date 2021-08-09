@@ -600,7 +600,11 @@ class WorkspaceEditor extends SessionStateComponent<
         </div>
 
         <div className="evaluation-modal-evaluate-form-row--grade">
-          <label className="evaluation__label">Arvosana</label>
+          <label className="evaluation__label">
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+            )}
+          </label>
           <select
             className="evaluation__select--grade"
             onChange={this.handleSelectGradeChange}
@@ -624,7 +628,11 @@ class WorkspaceEditor extends SessionStateComponent<
         </div>
 
         <div className="evaluation-modal-evaluate-form-row--grade">
-          <label className="evaluation__label">Laskutus</label>
+          <label className="evaluation__label">
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
+            )}
+          </label>
           <select
             className="evaluation__select--grade"
             onChange={this.handleSelectPriceChange}
@@ -640,20 +648,26 @@ class WorkspaceEditor extends SessionStateComponent<
             className={`eval-modal-evaluate-button eval-modal-evaluate-button--workspace`}
             onClick={this.handleEvaluationSave}
           >
-            Tallenna
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+            )}
           </Button>
           <Button
             onClick={this.props.onClose}
             className="eval-modal-evaluate-button button-cancel"
           >
-            Peruuta
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+            )}
           </Button>
           {this.recovered && (
             <Button
               className="eval-modal-evaluate-button button-delete-draft"
               onClick={this.handleDeleteEditorDraft}
             >
-              Poista luonnos
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+              )}
             </Button>
           )}
         </div>

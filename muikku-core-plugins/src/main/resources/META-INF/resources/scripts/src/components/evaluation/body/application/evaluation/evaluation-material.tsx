@@ -26,6 +26,7 @@ import {
 } from "../../../../../reducers/workspaces/index";
 import AssignmentEditor from "./editors/assignment-editor";
 import { bindActionCreators } from "redux";
+import { i18nType } from "../../../../../reducers/base/i18n";
 import {
   UpdateOpenedAssignmentEvaluationId,
   updateOpenedAssignmentEvaluation,
@@ -35,6 +36,7 @@ import {
  * EvaluationMaterialProps
  */
 export interface EvaluationMaterialProps {
+  i18n: i18nType;
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
   evaluation: EvaluationState;
@@ -89,7 +91,8 @@ export class EvaluationMaterial extends React.Component<
 
   /**
    * createHtmlMarkup
-   * @param htmlString
+   * This should sanitize html
+   * @param htmlString string that contains html
    */
   createHtmlMarkup = (htmlString: string) => {
     return {
@@ -158,12 +161,23 @@ export class EvaluationMaterial extends React.Component<
    * @param state
    * @returns classMod
    */
-  assigmentGradeClass = (state: MaterialCompositeRepliesStateType) => {
-    if (state !== "INCOMPLETE") {
-      return "grade--evaluated";
-    }
+  assigmentGradeClass = (
+    compositeRepliesFromProps?: MaterialCompositeRepliesType
+  ) => {
+    if (compositeRepliesFromProps) {
+      const { evaluationInfo } = compositeRepliesFromProps;
 
-    return "grade--incomplete";
+      if (evaluationInfo && evaluationInfo.type !== "INCOMPLETE") {
+        return "grade--evaluated";
+      } else if (
+        compositeRepliesFromProps.state === "SUBMITTED" &&
+        evaluationInfo &&
+        evaluationInfo.type === "INCOMPLETE"
+      ) {
+        return "grade--supplemented";
+      }
+      return "grade--incomplete";
+    }
   };
 
   /**
@@ -171,80 +185,124 @@ export class EvaluationMaterial extends React.Component<
    * @returns JSX.Element
    */
   renderAssignmentStatus = (
-    compositeReplies: MaterialCompositeRepliesType,
-    evaluationInfo: MaterialEvaluationInfo
+    compositeRepliesInState?: MaterialCompositeRepliesType,
+    compositeRepliesFromProps?: MaterialCompositeRepliesType
   ) => {
-    /**
-     * Checking if assigments is submitted at all.
-     * Its date string
-     */
-    const hasSubmitted = compositeReplies && compositeReplies.submitted;
+    if (compositeRepliesInState && compositeRepliesFromProps) {
+      const { evaluationInfo } = compositeRepliesFromProps;
 
-    /**
-     * Checking if its evaluated with grade
-     */
-    const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
+      /**
+       * Checking if assigments is submitted at all.
+       * Its date string
+       */
+      const hasSubmitted =
+        compositeRepliesInState && compositeRepliesInState.submitted;
 
-    /**
-     * Needs supplementation
-     */
-    const needsSupplementation = compositeReplies.state === "INCOMPLETE";
+      /**
+       * Checking if its evaluated with grade
+       */
+      const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
 
-    /**
-     * Evaluation date if evaluated
-     */
-    const evaluationDate = evaluationInfo && evaluationInfo.date;
+      /**
+       * Needs supplementation
+       */
+      const needsSupplementation =
+        evaluationInfo && evaluationInfo.type === "INCOMPLETE";
 
-    /**
-     * Grade class mod
-     */
-    const evaluatedGradeClassMod = this.assigmentGradeClass(
-      compositeReplies.state
-    );
+      /**
+       * If evaluation is given as supplementation request and student
+       * cancels and makes changes to answers and submits again
+       */
+      const supplementationDone =
+        compositeRepliesFromProps.state === "SUBMITTED" && needsSupplementation;
 
-    return (
-      <div className="assignment-status">
-        {hasSubmitted === null ||
-        (hasSubmitted !== null && compositeReplies.state === "WITHDRAWN") ? (
-          <div className="assignment-not-done">
-            <span className="assignment-not-done-label">Ei tehty</span>
-          </div>
-        ) : (
-          hasSubmitted && (
-            <div className="assignment-done">
-              <span className="assignment-done-label">Tehty</span>
-              <span className="assignment-done-data">
-                {moment(hasSubmitted).format("l")}
+      /**
+       * Evaluation date if evaluated
+       */
+      const evaluationDate = evaluationInfo && evaluationInfo.date;
+
+      /**
+       * Grade class mod
+       */
+      const evaluatedGradeClassMod = this.assigmentGradeClass(
+        compositeRepliesFromProps
+      );
+
+      return (
+        <div className="assignment-status">
+          {hasSubmitted === null ||
+          (hasSubmitted !== null &&
+            compositeRepliesInState.state === "WITHDRAWN") ? (
+            <div className="assignment-not-done">
+              <span className="assignment-not-done-label">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
+                )}
               </span>
             </div>
-          )
-        )}
+          ) : (
+            hasSubmitted && (
+              <div className="assignment-done">
+                <span className="assignment-done-label">
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentDoneLabel"
+                  )}
+                </span>
+                <span className="assignment-done-data">
+                  {moment(hasSubmitted).format("l")}
+                </span>
+              </div>
+            )
+          )}
 
-        {evaluationDate && (
-          <div className="assignment-evaluated">
-            <span className="assignment-evaluated-label">Arvioitu</span>
-            <span className="assignment-evaluated-data">
-              {moment(evaluationDate).format("l")}
-            </span>
-          </div>
-        )}
+          {evaluationDate && (
+            <div className="assignment-evaluated">
+              <span className="assignment-evaluated-label">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
+                )}
+              </span>
+              <span className="assignment-evaluated-data">
+                {moment(evaluationDate).format("l")}
+              </span>
+            </div>
+          )}
 
-        {evaluatedWithGrade && (
-          <div className={`assignment-grade ${evaluatedGradeClassMod}`}>
-            <span className="assignment-grade-label">Arvosana</span>
-            <span className="assignment-grade-data">
-              {evaluationInfo.grade}
-            </span>
-          </div>
-        )}
+          {evaluatedWithGrade && (
+            <div className={`assignment-grade ${evaluatedGradeClassMod}`}>
+              <span className="assignment-grade-label">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
+                )}
+              </span>
+              <span className="assignment-grade-data">
+                {evaluationInfo.grade}
+              </span>
+            </div>
+          )}
 
-        {needsSupplementation && (
-          <div className={`assignment-grade ${evaluatedGradeClassMod}`}>
-            <span className="assignment-grade-data">Täydennettävä</span>
-          </div>
-        )}
-      </div>
-    );
+          {needsSupplementation && !supplementationDone && (
+            <div className={`assignment-grade ${evaluatedGradeClassMod}`}>
+              <span className="assignment-grade-data">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
+                )}
+              </span>
+            </div>
+          )}
+
+          {supplementationDone && (
+            <div className={`assignment-grade ${evaluatedGradeClassMod}`}>
+              <span className="assignment-grade-data">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
+                )}
+              </span>
+            </div>
+          )}
+        </div>
+      );
+    }
   };
 
   /**
@@ -294,10 +352,20 @@ export class EvaluationMaterial extends React.Component<
                 props.compositeReplies.evaluationInfo &&
                 props.compositeReplies.evaluationInfo.date &&
                 (this.props.material.evaluation ||
-                  state.compositeRepliesInState.state === "INCOMPLETE")
+                  (props.compositeReplies.evaluationInfo &&
+                    props.compositeReplies.evaluationInfo.type ===
+                      "INCOMPLETE"))
               ) {
-                if (props.compositeReplies.evaluationInfo.grade) {
+                if (
+                  props.compositeReplies.evaluationInfo &&
+                  props.compositeReplies.evaluationInfo.grade
+                ) {
                   evaluatedFunctionClassMod = "evaluated-graded";
+                } else if (
+                  props.compositeReplies.state === "SUBMITTED" &&
+                  props.compositeReplies.evaluationInfo.type === "INCOMPLETE"
+                ) {
+                  evaluatedFunctionClassMod = "supplemented";
                 } else {
                   evaluatedFunctionClassMod = "evaluated";
                 }
@@ -348,7 +416,7 @@ export class EvaluationMaterial extends React.Component<
 
                         {this.renderAssignmentStatus(
                           state.compositeRepliesInState,
-                          props.compositeReplies.evaluationInfo
+                          props.compositeReplies
                         )}
                       </div>
                       <div className="assignment-functions">
@@ -363,7 +431,9 @@ export class EvaluationMaterial extends React.Component<
                                 props.material.assignment.id
                               )}
                               className={`assignment-evaluate-button icon-evaluate ${evaluatedFunctionClassMod}`}
-                              title="Arvioi tehtävä"
+                              title={this.props.i18n.text.get(
+                                "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
+                              )}
                             />
                           ) : null
                         ) : (
@@ -371,7 +441,9 @@ export class EvaluationMaterial extends React.Component<
                           state.compositeRepliesInState.submitted && (
                             <div
                               className="exercise-done-indicator icon-checkmark"
-                              title="Harjoitustehtävä tehty"
+                              title={this.props.i18n.text.get(
+                                "plugin.evaluation.evaluationModal.exerciseDoneIndicatorTitle"
+                              )}
                             ></div>
                           )
                         )}
@@ -389,7 +461,9 @@ export class EvaluationMaterial extends React.Component<
                       onClose={this.handleCloseSlideDrawer}
                     >
                       <AssignmentEditor
-                        editorLabel="TEHTÄVÄN SANALLINEN ARVIOINTI"
+                        editorLabel={this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                        )}
                         materialEvaluation={props.material.evaluation}
                         materialAssignment={props.material.assignment}
                         compositeReplies={props.compositeReplies}
@@ -404,7 +478,9 @@ export class EvaluationMaterial extends React.Component<
                       props.compositeReplies.evaluationInfo.text && (
                         <div className="assignment-literal-evaluation-wrapper">
                           <div className="assignment-literal-evaluation-label">
-                            Sanallinen arviointi
+                            {this.props.i18n.text.get(
+                              "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
+                            )}
                           </div>
                           <div
                             className="assignment-literal-evaluation"
@@ -443,6 +519,7 @@ export class EvaluationMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     evaluation: state.evaluations,
   };
 }

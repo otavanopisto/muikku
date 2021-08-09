@@ -14,11 +14,13 @@ import {
   updateWorkspaceSupplementationToServer,
 } from "../../../../../../actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
+import { i18nType } from "../../../../../../reducers/base/i18n";
 
 /**
  * SupplementationEditorProps
  */
 interface SupplementationEditorProps {
+  i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
   type?: "new" | "edit";
@@ -242,20 +244,26 @@ class SupplementationEditor extends SessionStateComponent<
             className={`eval-modal-evaluate-button eval-modal-evaluate-button--supplementation`}
             onClick={this.handleEvaluationSupplementationSave}
           >
-            Tallenna
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
+            )}
           </Button>
           <Button
             onClick={this.props.onClose}
             className="eval-modal-evaluate-button button-cancel"
           >
-            Peruuta
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+            )}
           </Button>
           {this.recovered && (
             <Button
               className="eval-modal-evaluate-button button-delete-draft"
               onClick={this.handleDeleteEditorDraft}
             >
-              Poista luonnos
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
+              )}
             </Button>
           )}
         </div>
@@ -270,6 +278,7 @@ class SupplementationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
   };
