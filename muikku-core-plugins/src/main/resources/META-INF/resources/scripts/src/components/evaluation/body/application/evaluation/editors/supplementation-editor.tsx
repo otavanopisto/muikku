@@ -35,7 +35,7 @@ interface SupplementationEditorProps {
  */
 interface SupplementationEditorState {
   literalEvaluation: string;
-  eventId: string;
+  draftId: string;
 }
 
 /**
@@ -55,7 +55,8 @@ class SupplementationEditor extends SessionStateComponent<
      */
     super(props, `supplementation-editor-${props.type ? props.type : "new"}`);
 
-    const { evaluationAssessmentEvents } = props.evaluations;
+    const { evaluationAssessmentEvents, evaluationSelectedAssessmentId } =
+      props.evaluations;
 
     if (evaluationAssessmentEvents.data && props.type === "edit") {
       const latestEvent =
@@ -68,12 +69,14 @@ class SupplementationEditor extends SessionStateComponent<
           ? latestEvent.identifier
           : "empty";
 
+      let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${eventId}`;
+
       this.state = this.getRecoverStoredState(
         {
           literalEvaluation: latestEvent.text,
-          eventId,
+          draftId,
         },
-        eventId
+        draftId
       );
     } else {
       this.state = this.getRecoverStoredState({
@@ -100,7 +103,7 @@ class SupplementationEditor extends SessionStateComponent<
               evaluationAssessmentEvents.data &&
               evaluationAssessmentEvents.data[latestIndex].text,
           },
-          this.state.eventId
+          this.state.draftId
         )
       );
     } else {
@@ -109,7 +112,7 @@ class SupplementationEditor extends SessionStateComponent<
           {
             literalEvaluation: "",
           },
-          this.state.eventId
+          this.state.draftId
         )
       );
     }
@@ -120,7 +123,7 @@ class SupplementationEditor extends SessionStateComponent<
    * @param e
    */
   handleCKEditorChange = (e: string) => {
-    this.setStateAndStore({ literalEvaluation: e }, this.state.eventId);
+    this.setStateAndStore({ literalEvaluation: e }, this.state.draftId);
   };
 
   /**
@@ -140,7 +143,7 @@ class SupplementationEditor extends SessionStateComponent<
           requestText: this.state.literalEvaluation,
         },
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.eventId);
+          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
           /**
            * Removes "new" items from localstorage
@@ -149,7 +152,7 @@ class SupplementationEditor extends SessionStateComponent<
             {
               literalEvaluation: "",
             },
-            this.state.eventId
+            this.state.draftId
           );
           onClose();
         },
@@ -173,7 +176,7 @@ class SupplementationEditor extends SessionStateComponent<
           requestText: this.state.literalEvaluation,
         },
         onSuccess: () => {
-          cleanWorkspaceAndSupplementationDrafts(this.state.eventId);
+          cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
           /**
            * Removes "edit" items from localstorage
@@ -182,7 +185,7 @@ class SupplementationEditor extends SessionStateComponent<
             {
               literalEvaluation: "",
             },
-            this.state.eventId
+            this.state.draftId
           );
           onClose();
         },
@@ -210,7 +213,7 @@ class SupplementationEditor extends SessionStateComponent<
             evaluationAssessmentEvents.data &&
             evaluationAssessmentEvents.data[latestIndex].text,
         },
-        this.state.eventId
+        this.state.draftId
       );
     } else {
       /**
@@ -220,7 +223,7 @@ class SupplementationEditor extends SessionStateComponent<
         {
           literalEvaluation: "",
         },
-        this.state.eventId
+        this.state.draftId
       );
     }
   };

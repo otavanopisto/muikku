@@ -41,7 +41,7 @@ interface WorkspaceEditorProps {
 interface WorkspaceEditorState {
   literalEvaluation: string;
   grade: string;
-  eventId: string;
+  draftId: string;
   basePrice?: number;
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
@@ -66,7 +66,8 @@ class WorkspaceEditor extends SessionStateComponent<
      */
     super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
-    const { evaluationAssessmentEvents } = props.evaluations;
+    const { evaluationAssessmentEvents, evaluationSelectedAssessmentId } =
+      props.evaluations;
 
     if (evaluationAssessmentEvents.data && props.type === "edit") {
       const latestEvent =
@@ -79,15 +80,17 @@ class WorkspaceEditor extends SessionStateComponent<
           ? latestEvent.identifier
           : "empty";
 
+      let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${eventId}`;
+
       this.state = this.getRecoverStoredState(
         {
           literalEvaluation: latestEvent.text,
-          eventId,
+          draftId,
           basePrice: undefined,
           selectedPriceOption: undefined,
           existingBilledPriceObject: undefined,
         },
-        eventId
+        draftId
       );
     } else {
       this.state = this.getRecoverStoredState({
@@ -141,7 +144,7 @@ class WorkspaceEditor extends SessionStateComponent<
               existingBilledPriceObject,
               selectedPriceOption: existingBilledPriceObject.price.toString(),
             },
-            this.state.eventId
+            this.state.draftId
           )
         );
       } else {
@@ -152,7 +155,7 @@ class WorkspaceEditor extends SessionStateComponent<
               basePrice,
               grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
             },
-            this.state.eventId
+            this.state.draftId
           )
         );
       }
@@ -216,9 +219,12 @@ class WorkspaceEditor extends SessionStateComponent<
       existingBilledPriceObject = undefined;
     }
 
-    this.setStateAndStore({
-      existingBilledPriceObject,
-    });
+    this.setStateAndStore(
+      {
+        existingBilledPriceObject,
+      },
+      this.state.draftId
+    );
 
     return existingBilledPriceObject;
   };
@@ -228,7 +234,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param e
    */
   handleCKEditorChange = (e: string) => {
-    this.setStateAndStore({ literalEvaluation: e }, this.state.eventId);
+    this.setStateAndStore({ literalEvaluation: e }, this.state.draftId);
   };
 
   /**
@@ -236,7 +242,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param e
    */
   handleSelectGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setStateAndStore({ grade: e.target.value }, this.state.eventId);
+    this.setStateAndStore({ grade: e.target.value }, this.state.draftId);
   };
 
   /**
@@ -246,7 +252,7 @@ class WorkspaceEditor extends SessionStateComponent<
   handleSelectPriceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
       { selectedPriceOption: e.target.value },
-      this.state.eventId
+      this.state.draftId
     );
   };
 
@@ -315,12 +321,12 @@ class WorkspaceEditor extends SessionStateComponent<
             assessmentDate: new Date().getTime().toString(),
           },
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.eventId);
+            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
             this.setStateAndClear(
               {
                 literalEvaluation: "",
               },
-              this.state.eventId
+              this.state.draftId
             );
             onClose();
           },
@@ -361,13 +367,13 @@ class WorkspaceEditor extends SessionStateComponent<
             assessmentDate: new Date().getTime().toString(),
           },
           onSuccess: () => {
-            cleanWorkspaceAndSupplementationDrafts(this.state.eventId);
+            cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
 
             this.setStateAndClear(
               {
                 literalEvaluation: "",
               },
-              this.state.eventId
+              this.state.draftId
             );
             onClose();
           },
@@ -406,7 +412,7 @@ class WorkspaceEditor extends SessionStateComponent<
             selectedPriceOption:
               this.state.existingBilledPriceObject.price.toString(),
           },
-          this.state.eventId
+          this.state.draftId
         );
       } else {
         /**
@@ -443,7 +449,7 @@ class WorkspaceEditor extends SessionStateComponent<
             grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
             selectedPriceOption: billingPrice,
           },
-          this.state.eventId
+          this.state.draftId
         );
       }
     }

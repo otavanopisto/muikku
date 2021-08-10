@@ -48,7 +48,7 @@ interface AssignmentEditorState {
   literalEvaluation: string;
   assignmentEvaluationType: string;
   grade: string;
-  assignmentId: number;
+  draftId: string;
 }
 
 /**
@@ -66,7 +66,8 @@ class AssignmentEditor extends SessionStateComponent<
     super(props, `assignment-editor`);
 
     const { materialEvaluation, compositeReplies } = props;
-    const { evaluationGradeSystem } = props.evaluations;
+    const { evaluationGradeSystem, evaluationSelectedAssessmentId } =
+      props.evaluations;
 
     const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
@@ -76,6 +77,8 @@ class AssignmentEditor extends SessionStateComponent<
       ? ""
       : defaultGrade;
 
+    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
+
     this.state = this.getRecoverStoredState(
       {
         literalEvaluation:
@@ -83,10 +86,15 @@ class AssignmentEditor extends SessionStateComponent<
             ? compositeReplies.evaluationInfo.text
             : "",
         assignmentEvaluationType:
-          compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
+          compositeReplies &&
+          compositeReplies.evaluationInfo &&
+          compositeReplies.evaluationInfo.type === "INCOMPLETE"
+            ? "INCOMPLETE"
+            : "GRADED",
         grade: grade,
+        draftId,
       },
-      props.materialAssignment.id
+      draftId
     );
   }
 
@@ -113,10 +121,14 @@ class AssignmentEditor extends SessionStateComponent<
               ? compositeReplies.evaluationInfo.text
               : "",
           assignmentEvaluationType:
-            compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
+            compositeReplies &&
+            compositeReplies.evaluationInfo &&
+            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+              ? "INCOMPLETE"
+              : "GRADED",
           grade: grade,
         },
-        this.state.assignmentId
+        this.state.draftId
       )
     );
   };
@@ -155,7 +167,7 @@ class AssignmentEditor extends SessionStateComponent<
               grade: defaultGrade,
               assignmentEvaluationType: "GRADED",
             },
-            this.state.assignmentId
+            this.state.draftId
           );
 
           this.props.onClose();
@@ -185,7 +197,7 @@ class AssignmentEditor extends SessionStateComponent<
               grade: defaultGrade,
               assignmentEvaluationType: "INCOMPLETE",
             },
-            this.state.assignmentId
+            this.state.draftId
           );
         },
         onFail: () => this.props.onClose(),
@@ -211,7 +223,7 @@ class AssignmentEditor extends SessionStateComponent<
           assignmentEvaluationType:
             compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
         },
-        this.state.assignmentId
+        this.state.draftId
       );
     } else {
       this.setStateAndClear(
@@ -220,7 +232,7 @@ class AssignmentEditor extends SessionStateComponent<
           grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           assignmentEvaluationType: "GRADED",
         },
-        this.state.assignmentId
+        this.state.draftId
       );
     }
   };
@@ -234,7 +246,7 @@ class AssignmentEditor extends SessionStateComponent<
       {
         literalEvaluation: e,
       },
-      this.state.assignmentId
+      this.state.draftId
     );
   };
 
@@ -254,7 +266,7 @@ class AssignmentEditor extends SessionStateComponent<
         assignmentEvaluationType: e.target.value,
         grade: defaultGrade,
       },
-      this.state.assignmentId
+      this.state.draftId
     );
   };
 
@@ -267,7 +279,7 @@ class AssignmentEditor extends SessionStateComponent<
       {
         grade: e.currentTarget.value,
       },
-      this.state.assignmentId
+      this.state.draftId
     );
   };
 
