@@ -371,7 +371,7 @@ export function HTMLtoReactComponent(element: HTMLElement, rules?: HTMLToReactCo
   const actualProcesser = matchingRule ?
     (matchingRule.processingFunction || defaultProcesser) :
     defaultProcesser;
-  
+
   const props:any = {
     key,
   }
