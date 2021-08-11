@@ -298,7 +298,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
         <span id={uniqueElementID} className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
-          (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
+          (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange} value=''/>)
         }
       </span>
       {dataNode}

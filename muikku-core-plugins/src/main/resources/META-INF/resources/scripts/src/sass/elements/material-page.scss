@@ -1838,15 +1838,18 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE CUSTOM BOX STYLES
 // These classNames cannot be changed as they a part of material page html and already saved to DB
 .material-styles-block {
-  border-radius: 10px;
+  background-color: $color-default;
   box-sizing: content-box;
+  color: $color-default-contrast;
   font-size: inherit;
   margin: 20px 0;
-  min-height: 64px;
-  padding: 10px 15px 10px 85px;
+  min-height: 40px;
+  padding: 16px;
   position: relative;
 
   p:first-child,
+  h3:first-child,
+  h4:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
@@ -1854,153 +1857,294 @@ mark[data-muikku-word-definition] {
   }
 
   p:last-child,
+  h3:first-child,
+  h4:first-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
     margin-bottom: 0;
   }
 
-  &::after {
-    background-repeat: no-repeat;
+  // This represents the generic icon added to the material style boxes
+  &::before {
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-default;
     content: "";
-    height: 64px;
-    left: 10px;
+    display: flex;
+    font-family: muikku;
+    font-size: 1.5rem;
+    height: 40px;
+    justify-content: center;
+    left: 16px;
     position: absolute;
-    top: 10px;
-    width: 64px;
-    z-index: 9;
-  }
-
-  a {
-    color: $color-info;
-    text-decoration: underline;
+    top: 16px;
+    width: 40px;
   }
 }
 
-// BASIC BOX
-.material-basicbox {
-  background-color: $color-material-basic-box-background;
-  border-top: 2px solid $color-material-basic-box-border;
-  color: $color-default-contrast;
-  padding: 12px 20px;
-
-  &::after {
-    display: none;
-  }
-}
-
-// GRAMMAR BOX
-.material-grammarbox {
-  background-color: $color-material-grammar-box-background;
-  border-top: 2px solid $color-material-grammar-box-border;
-  color: $color-default-contrast;
-  padding: 12px 20px;
-
-  &::after {
-    display: none;
-  }
-}
-
-// PONDERING BOX
-.material-thinkingbox {
-  background-color: $color-material-thinking-box-background;
-  border-top: 2px solid $color-material-thinking-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/pondering-icon.png");
-  }
-}
-
-// OBJECTIVE BOX
-.material-objectivebox {
-  background-color: $color-material-objective-box-background;
-  border-top: 2px solid $color-material-objective-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 10px $color-default, 1px -1px 10px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/objective-icon.png");
-  }
-}
-
-// INFORMATION BOX
-.material-infobox {
-  background-color: $color-material-info-box-background;
-  border-top: 2px solid $color-material-info-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/info-icon.png");
-  }
-}
-
-// RECAP BOX
+// BASIC BOX & GRAMMAR BOX & RECAP BOX
+// GRAMMAR BOX & RECAP BOX styles are deprecated but CANNOT be removed from the css.
+// GRAMMAR BOX & RECAP BOX are removed from CKE dropdown and existing GRAMMAR BOXes & RECAP BOXes
+// inherits BASIC BOX styling
+.material-basicbox,
+.material-grammarbox,
 .material-recapbox {
-  background-color: $color-material-recap-box-background;
-  border-top: 2px solid $color-material-recap-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
+  background: $color-material-basic-box-background;
+  border: 1px solid $color-material-basic-box;
+  border-left-width: 1px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/recap-icon.png");
+  &::before {
+    display: none;
+  }
+}
+
+// THINKING BOX & JOURNAL BOX
+// Thinking box is deprecated style is deprecated but CANNOT be removed from the css.
+// Thinking box was primarily used to provide journal specific information
+// so new style has been added called JOURNAL BOX. Existing THINKINGBOXes
+// inherits JOURNAL BOX styling
+.material-thinkingbox,
+.material-journalbox {
+  border: 1px solid $color-material-journal-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-journal-box;
+    content: "\f02d";
   }
 }
 
 // INSTRUCTION BOX
 .material-instructionbox {
-  background-color: $color-material-instruction-box-background;
-  border-top: 2px solid $color-material-instruction-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
+  border: 1px solid $color-material-instruction-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/instruction-icon.png");
+  &::before {
+    background: $color-material-instruction-box;
+    content: "\e635";
+  }
+}
+
+// PONDER BOX
+.material-ponderbox {
+  border: 1px solid $color-material-ponder-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-ponder-box;
+    content: "\f0eb";
+  }
+}
+
+// EVALUATION CRITERIA BOX
+.material-assignmentbox {
+  border: 1px solid $color-assignment;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-assignment;
+    content: "\e63d";
+  }
+}
+
+// OBJECTIVE / GOAL BOX
+.material-objectivebox {
+  border: 1px solid $color-material-objective-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-objective-box;
+    content: "\f041";
+  }
+}
+
+// INFORMATION / ATTENTION BOX
+.material-infobox {
+  border: 1px solid $color-material-info-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-info-box;
+    content: "\f12a";
   }
 }
 
 // LINK BOX
 .material-linkbox {
-  background-color: $color-material-link-box-background;
-  border-top: 2px solid $color-material-link-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-link-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/link-icon.png");
+  &::before {
+    background: $color-material-link-box;
+    content: "\e9cb";
+  }
+}
+
+// MUIKKU LINK BOX
+.material-muikkulinkbox {
+  border: 1px solid $color-material-muikkulink-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-muikkulink-box;
+    content: "\e92a";
   }
 }
 
 // AUDIO BOX
 .material-audiobox {
-  background-color: $color-material-audio-box-background;
-  border-top: 2 px solid $color-material-audio-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-audio-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-
-  &::after {
-    background-image: url("/gfx/icons/64x64/sound-icon.png");
+  &::before {
+    background: $color-material-audio-box;
+    content: "\ea27";
   }
 }
 
 // FILE BOX
 .material-filebox {
-  background-color: $color-material-file-box-background;
-  border-top: 2px solid $color-material-file-box-border;
-  color: $color-default-contrast;
-  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+  border: 1px solid $color-material-file-box;
+  border-left-width: 3px;
+  padding-left: 72px;
 
-  &::after {
-    background-image: url("/gfx/icons/64x64/file-icon.png");
+  &::before {
+    background: $color-material-file-box;
+    content: "\e92c";
   }
+}
+
+// TABLE BOX - This style has preset visuals for table and it's elements
+.material-tablebox {
+  border: 0;
+  padding: 0;
+
+  // scss-lint:disable SelectorDepth, NestingDepth
+  table,
+  table[cellpadding],
+  table[cellspacing] {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: $text-desktop-richtext-font-size;
+    line-height: 1.35rem;
+    width: 100%;
+
+    caption {
+      font-size: 1.0625rem;
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    thead {
+      border-bottom: 1px solid $color-material-table-header-boder;
+    }
+
+    th {
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tbody {
+
+      th[scope="row"] {
+        border-right: 1px solid $color-material-table-header-boder;
+      }
+    }
+
+
+    tr {
+
+      &:nth-child(even) {
+        background: $color-material-table-box-row-background;
+      }
+
+      &:nth-child(odd) {
+        background: $color-default;
+      }
+    }
+
+    td {
+      padding: 8px;
+    }
+  }
+  // scss-lint:enable SelectorDepth, NestingDepth
+}
+
+// TABLE BOX - This style has preset visuals for table and it's elements
+.material-tablebox-small {
+  border: 0;
+  padding: 0;
+
+  // scss-lint:disable SelectorDepth, NestingDepth
+  table,
+  table[cellpadding],
+  table[cellspacing] {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: $text-desktop-font-size;
+    line-height: 1.35rem;
+    width: 100%;
+
+    caption {
+      font-size: 1rem;
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    thead {
+      border-bottom: 1px solid $color-material-table-header-boder;
+    }
+
+    th {
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tbody {
+
+      th[scope="row"] {
+        border-right: 1px solid $color-material-table-header-boder;
+      }
+    }
+
+
+    tr {
+
+      &:nth-child(even) {
+        background: $color-material-table-box-row-background;
+      }
+
+      &:nth-child(odd) {
+        background: $color-default;
+      }
+    }
+
+    td {
+      padding: 8px;
+    }
+  }
+  // scss-lint:enable SelectorDepth, NestingDepth
 }
 
 // MATERIAL TEXT STYLES
 .material-styles-text {
-  background-repeat: no-repeat;
   box-sizing: content-box;
   margin: 20px auto;
   max-width: 920px;
@@ -2008,6 +2152,8 @@ mark[data-muikku-word-definition] {
   position: relative;
 
   p:first-child,
+  h3:first-child,
+  h4:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
@@ -2015,6 +2161,8 @@ mark[data-muikku-word-definition] {
   }
 
   p:last-child,
+  h3:first-child,
+  h4:first-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
@@ -2049,18 +2197,19 @@ mark[data-muikku-word-definition] {
   padding: 10px 35px;
   quotes: "\201C""\201D";
 
+  > p {
+    display: inline;
+  }
+
   &::before {
     color: $color-material-citation-quote;
     content: open-quote;
     display: inline-block;
     font-family: arial;
     font-size: 70px;
-    font-style: normal;
-    left: 0;
     line-height: 1px;
-    margin-right: 25px;
     vertical-align: -25px;
-    width: 0;
+    width: 28px;
   }
 
   &::after {
@@ -2069,13 +2218,9 @@ mark[data-muikku-word-definition] {
     display: inline-block;
     font-family: arial;
     font-size: 70px;
-    font-style: normal;
-    left: 3px;
     line-height: 1px;
-    margin-left: 5px;
-    position: relative;
     vertical-align: -25px;
-    width: 1px;
+    width: 25px;
   }
 }
 
@@ -2085,7 +2230,7 @@ mark[data-muikku-word-definition] {
   box-shadow: none;
   color: $color-default-contrast;
   font-style: normal;
-  padding: 5px 10px 5px 40px;
+  padding: 12px 12px 12px 50px;
   position: relative;
   quotes: "\201C""\201D";
   text-shadow: none;
@@ -2094,10 +2239,10 @@ mark[data-muikku-word-definition] {
     color: $color-material-citation-quote;
     content: open-quote;
     font-family: arial;
-    font-size: 55px;
-    left: 10px;
+    font-size: 60px;
+    left: 16px;
     position: absolute;
-    top: 20px;
+    top: 26px;
   }
 }
 
@@ -2119,4 +2264,9 @@ mark[data-muikku-word-definition] {
   color: $color-default-contrast;
   padding: 0 10px 4px 15px;
   text-shadow: none;
+}
+
+// Generic AUDIO tag styling
+audio {
+  border-radius: 3px;
 }

@@ -19,11 +19,13 @@ interface MathFieldToolbarProps {
     geometryAndVectors: string,
     setTheoryNotation: string,
     mathFormulas: string,
-    operators: string
+    operators: string,
+    image: string,
   },
   onCommand: (command: MathFieldCommandType)=>any,
   onToolbarAction: ()=>any,
   onRequestToOpenMathMode: ()=>any,
+  onRequestImage: () => any,
   isMathExpanded: boolean
 }
 
@@ -92,6 +94,8 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
       <div className={this.props.className + "-math " +  (this.props.isMathExpanded ? this.props.className + "-math--expanded" : "")}>
         {!this.props.isMathExpanded &&
           <button className={this.props.className + "-more-math-button"} onClick={this.props.onRequestToOpenMathMode}>Σ {this.props.i18n.mathFormulas}</button>}
+        {!this.props.isMathExpanded &&
+          <button className={this.props.className + "-add-image-button"} onClick={this.props.onRequestImage}>{this.props.i18n.image}</button>}
         {this.props.isMathExpanded && <div className={this.props.className + "-math-formula-group"}>
           <div className={this.props.className + "-math-label"}>
             {this.props.i18n.operators}
