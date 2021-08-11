@@ -524,7 +524,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
   /**
    * renderAnnouncerBody
-   * @returns 
+   * @returns
    */
   renderAnnouncerBody() {
     this.updateFirstTime();

@@ -1445,22 +1445,21 @@ let updateBillingToServer: UpdateEvaluationEvent =
     ) => {
       const state = getState();
 
-      await promisify(
-        mApi().worklist.billedPrice.update(
-          {
-            ...data,
-          },
-          { workspaceEntityId: state.evaluations.selectedWorkspaceId }
-        ),
-        "callback"
-      )();
-
-      dispatch({
-        type: "UPDATE_EVALUATION_STATE",
-        payload: <EvaluationStateType>"READY",
-      });
-
       try {
+        await promisify(
+          mApi().worklist.billedPrice.update(
+            {
+              ...data,
+            },
+            { workspaceEntityId: state.evaluations.selectedWorkspaceId }
+          ),
+          "callback"
+        )();
+
+        dispatch({
+          type: "UPDATE_EVALUATION_STATE",
+          payload: <EvaluationStateType>"READY",
+        });
       } catch (error) {
         dispatch(
           notificationActions.displayNotification("Erroria pukkaa", "error")
