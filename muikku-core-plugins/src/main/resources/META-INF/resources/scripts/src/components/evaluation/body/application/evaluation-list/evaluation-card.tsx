@@ -1,13 +1,18 @@
 import * as React from "react";
 import ArchiveDialog from "../../../dialogs/archive";
 import EvaluateDialog from "../../../dialogs/evaluate";
+import DeleteRequestDialog from "../../../dialogs/delete-request";
 import {
   AssessmentRequest,
   EvaluationImportantStatus,
   UpdateImportanceObject,
 } from "../../../../../@types/evaluation";
 import * as moment from "moment";
-import { SetEvaluationSelectedWorkspace } from "../../../../../actions/main-function/evaluation/evaluationActions";
+import {
+  SetEvaluationSelectedWorkspace,
+  LoadEvaluationAssessmentRequest,
+  loadEvaluationAssessmentRequestsFromServer,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "../../../../../actions/index";
@@ -25,6 +30,8 @@ interface EvaluationCardProps extends AssessmentRequest {
   important: EvaluationImportantStatus;
   importantAssessments: number[];
   unimportantAssessments: number[];
+  loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
+  needsReloadRequests: boolean;
 }
 
 /**
@@ -39,6 +46,8 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
   unimportantAssessments,
   updateEvaluationImportance,
   i18n,
+  needsReloadRequests,
+  loadEvaluationAssessmentRequestsFromServer,
   ...rest
 }) => {
   /**
@@ -118,6 +127,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
       updateEvaluationImportance(updateImportances);
     };
+
+  const handleDialogClose = () => {
+    if (needsReloadRequests) {
+      loadEvaluationAssessmentRequestsFromServer();
+    }
+  };
 
   /**
    * Handles workspacename click. It "filters" every assessments by that workspace
@@ -205,6 +220,31 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       : "evaluated-incomplete";
   }
 
+  const renderArchiveOrDeleteDialogButton =
+    rest.assessmentRequestDate &&
+    rest.evaluationDate === null &&
+    rest.workspaceEntityId !== selectedWorkspaceId ? (
+      <DeleteRequestDialog {...rest}>
+        <div
+          className="evaluation-card-button archive-button icon-archive"
+          title={i18n.text.get(
+            "plugin.evaluation.card.button.deleteRequest.title"
+          )}
+        />
+      </DeleteRequestDialog>
+    ) : (rest.evaluationDate && rest.graded) ||
+      (rest.assessmentRequestDate &&
+        selectedWorkspaceId === rest.workspaceEntityId) ? (
+      <ArchiveDialog place="card" {...rest}>
+        <div
+          className="evaluation-card-button archive-button icon-archive"
+          title={i18n.text.get(
+            "plugin.evaluation.card.button.archiveButtonLabel"
+          )}
+        />
+      </ArchiveDialog>
+    ) : null;
+
   return (
     <div className={`evaluation-card ${cardStateClass}`}>
       <div className="evaluation-card-title">
@@ -266,18 +306,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           </div>
 
           <div className="evaluation-card-button-block">
-            {rest.evaluationDate !== null && rest.graded ? (
-              <ArchiveDialog>
-                <div
-                  className="evaluation-card-button archive-button icon-archive"
-                  title={i18n.text.get(
-                    "plugin.evaluation.card.button.archiveButtonLabel"
-                  )}
-                />
-              </ArchiveDialog>
-            ) : null}
+            {renderArchiveOrDeleteDialogButton}
 
-            <EvaluateDialog assessment={rest}>
+            <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
               <div
                 className="evaluation-card-button evaluate-button icon-evaluate"
                 title={i18n.text.get(
@@ -307,7 +338,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    { loadEvaluationAssessmentRequestsFromServer },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EvaluationCard);

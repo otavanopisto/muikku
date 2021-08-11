@@ -1,95 +1,197 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import Link from "~/components/general/link";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import Button from "~/components/general/button";
-
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import {
-  removeFileFromCurrentStudent,
-  RemoveFileFromCurrentStudentTriggerType,
-} from "~/actions/main-function/guider";
-import { UserFileType } from "~/reducers/user-index";
-
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
+import { AssessmentRequest } from "../../../@types/evaluation";
+import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import {
+  UpdateNeedsReloadEvaluationRequests,
+  updateNeedsReloadEvaluationRequests,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import {
+  LoadEvaluationAssessmentRequest,
+  loadEvaluationAssessmentRequestsFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import {
+  LoadEvaluationAssessmentEvent,
+  loadEvaluationAssessmentEventsFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import {
+  ArchiveStudent,
+  archiveStudent,
+} from "../../../actions/main-function/evaluation/evaluationActions";
 
-const KEYCODES = {
-  ENTER: 13,
-};
-
-interface ArchiveDialogProps {
-  children: React.ReactElement<any>;
+/**
+ * ArchiveDialogProps
+ */
+interface ArchiveDialogProps extends AssessmentRequest {
+  children?: React.ReactElement<any>;
+  place: "card" | "modal";
   isOpen?: boolean;
   onClose?: () => any;
   i18n: i18nType;
-  removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType;
+  archiveStudent: ArchiveStudent;
+  evaluations: EvaluationState;
+  loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
+  loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
+  updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests;
 }
 
+/**
+ * ArchiveDialogState
+ */
 interface ArchiveDialogState {}
 
+/**
+ * ArchiveDialog
+ */
 class ArchiveDialog extends React.Component<
   ArchiveDialogProps,
   ArchiveDialogState
 > {
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: ArchiveDialogProps) {
     super(props);
 
-    this.deleteFile = this.deleteFile.bind(this);
+    this.archiveStudent = this.archiveStudent.bind(this);
   }
 
-  deleteFile(closeDialog: () => any) {
-    closeDialog();
+  /**
+   * createHtmlMarkup
+   * This should sanitize html
+   * @param htmlString string that contains html
+   */
+  createHtmlMarkup = (htmlString: string) => {
+    return {
+      __html: htmlString,
+    };
+  };
+
+  /**
+   * deleteRequest
+   * @param closeDialog
+   */
+  archiveStudent(closeDialog: () => any) {
+    const { workspaceUserEntityId, workspaceEntityId, onClose } = this.props;
+
+    this.props.archiveStudent({
+      workspaceEntityId,
+      workspaceUserEntityId,
+      onSuccess: () => {
+        if (this.props.place === "card") {
+          this.props.loadEvaluationAssessmentRequestsFromServer();
+        } else {
+          this.props.updateNeedsReloadEvaluationRequests({ value: true });
+          this.props.loadEvaluationAssessmentEventsFromServer({
+            assessment: this.props.evaluations.evaluationSelectedAssessmentId,
+          });
+        }
+
+        onClose && onClose();
+      },
+    });
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
+    const { firstName, lastName } = this.props;
+
+    const studentNameString = `${lastName}, ${firstName}`;
+
+    /**
+     * footer
+     * @param closeDialog
+     */
     let footer = (closeDialog: () => any) => {
       return (
         <div className="dialog__button-set">
           <Button
             buttonModifiers={["fatal", "standard-ok"]}
-            onClick={this.deleteFile.bind(this, closeDialog)}
+            onClick={this.archiveStudent.bind(this, closeDialog)}
           >
-            Kyllä
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonArchiveLabel"
+            )}
           </Button>
           <Button
             buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={closeDialog}
+            onClick={this.props.onClose ? this.props.onClose : closeDialog}
           >
-            Peruuta
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
+            )}
           </Button>
         </div>
       );
     };
-    let content = (closeDialog: () => any) => {
-      return <div>Haluatko arkistoida opiskelijan (student) työtilasta?</div>;
+
+    /**
+     * content
+     * @param closeDialog
+     */
+    let content = () => {
+      return (
+        <div
+          dangerouslySetInnerHTML={this.createHtmlMarkup(
+            this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.description",
+              studentNameString
+            )
+          )}
+        />
+      );
     };
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        onClose={this.props.onClose}
         modifier="guider-delete-file"
         title="Opiskelijan arkistointi"
         content={content}
         footer={footer}
       >
-        {this.props.children}
+        {this.props.children && this.props.children}
       </Dialog>
     );
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    evaluations: state.evaluations,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ removeFileFromCurrentStudent }, dispatch);
+  return bindActionCreators(
+    {
+      archiveStudent,
+      loadEvaluationAssessmentEventsFromServer,
+      loadEvaluationAssessmentRequestsFromServer,
+      updateNeedsReloadEvaluationRequests,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArchiveDialog);

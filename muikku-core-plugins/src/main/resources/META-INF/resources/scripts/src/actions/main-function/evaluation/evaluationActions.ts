@@ -18,6 +18,7 @@ import {
   EvaluationData,
 } from "../../../@types/evaluation";
 import { MaterialCompositeRepliesType } from "../../../reducers/workspaces/index";
+import { WorkspaceUserEntity } from "../../../@types/evaluation";
 import {
   WorkspaceEvaluationSaveRequest,
   WorkspaceSupplementationSaveRequest,
@@ -91,7 +92,6 @@ export interface UPDATE_EVALUATION_REQUESTS_STATE
     EvaluationStateType
   > {}
 
-///////
 export interface SET_IMPORTANT_ASSESSMENTS
   extends SpecificActionType<"SET_IMPORTANT_ASSESSMENTS", EvaluationStatus> {}
 
@@ -103,8 +103,6 @@ export interface SET_EVALUATION_ASESSESSMENTS
     "SET_EVALUATION_ASESSESSMENTS",
     AssessmentRequest[]
   > {}
-
-///
 
 export interface SET_EVALUATION_WORKSPACES
   extends SpecificActionType<
@@ -183,6 +181,12 @@ export type UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT = SpecificActionType<
 export interface UPDATE_OPENED_ASSIGNMENTS_EVALUATION
   extends SpecificActionType<"UPDATE_OPENED_ASSIGNMENTS_EVALUATION", number> {}
 
+export interface UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS
+  extends SpecificActionType<
+    "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS",
+    boolean
+  > {}
+
 // Server events
 export interface LoadEvaluationSystem {
   (): AnyActionType;
@@ -213,7 +217,11 @@ export interface SetCurrentStudentEvaluationData {
 }
 
 export interface LoadEvaluationAssessmentEvent {
-  (data: { assessment: AssessmentRequest }): AnyActionType;
+  (data: {
+    assessment: AssessmentRequest;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 export interface LoadEvaluationAssignment {
@@ -295,6 +303,23 @@ export interface SaveEvaluationAssignmentSupplementation {
   }): AnyActionType;
 }
 
+export interface DeleteAssessmentRequest {
+  (data: {
+    workspaceUserEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+export interface ArchiveStudent {
+  (data: {
+    workspaceEntityId: number;
+    workspaceUserEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
 export interface SetEvaluationSelectedWorkspace {
   (data: { workspaceId?: number }): AnyActionType;
 }
@@ -324,6 +349,10 @@ export interface UpdateImportance {
 
 export interface UpdateOpenedAssignmentEvaluationId {
   (data: { assignmentId?: number }): AnyActionType;
+}
+
+export interface UpdateNeedsReloadEvaluationRequests {
+  (data: { value: boolean }): AnyActionType;
 }
 
 // Actions
@@ -400,6 +429,8 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
       });
 
       let evaluationAssessmentRequests: AssessmentRequest[] = [];
+
+      await mApi().evaluation.compositeAssessmentRequests.cacheClear();
 
       try {
         if (state.evaluations.selectedWorkspaceId) {
@@ -699,6 +730,8 @@ let loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
           type: "UPDATE_EVALUATION_CURRENT_EVENTS_STATE",
           payload: <EvaluationStateType>"READY",
         });
+
+        data.onSuccess && data.onSuccess();
       } catch (err) {
         if (!(err instanceof MApiError)) {
           throw err;
@@ -963,6 +996,8 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
             ),
             "callback"
           )().then((data: WorkspaceEvaluationSaveReturn) => {
+            onSuccess();
+
             dispatch(
               updateBillingToServer({
                 assessmentIdentifier: data.identifier,
@@ -970,18 +1005,11 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
               })
             );
 
-            dispatch(
+            /* dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
               })
-            );
-
-            /* dispatch({
-              type: "UPDATE_EVALUATION_STATE",
-              payload: <EvaluationStateType>"READY",
-            }); */
-
-            onSuccess();
+            ); */
           });
         } catch (err) {
           dispatch(
@@ -1008,6 +1036,8 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
             ),
             "callback"
           )().then((data: WorkspaceEvaluationSaveReturn) => {
+            onSuccess();
+
             dispatch(
               updateBillingToServer({
                 assessmentIdentifier: data.identifier,
@@ -1015,18 +1045,11 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
               })
             );
 
-            dispatch(
+            /* dispatch(
               loadEvaluationAssessmentEventsFromServer({
                 assessment: state.evaluations.evaluationSelectedAssessmentId,
               })
-            );
-
-            /* dispatch({
-              type: "UPDATE_EVALUATION_STATE",
-              payload: <EvaluationStateType>"READY",
-            }); */
-
-            onSuccess();
+            ); */
           });
         } catch (err) {
           dispatch(
@@ -1688,6 +1711,88 @@ let saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSup
     };
   };
 
+/**
+ * deleteAssessmentRequest
+ * @param data
+ */
+let deleteAssessmentRequest: DeleteAssessmentRequest =
+  function deleteAssessmentRequest({ workspaceUserEntityId }) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      try {
+        await promisify(
+          mApi().evaluation.workspaceuser.evaluationrequestarchive.update(
+            workspaceUserEntityId
+          ),
+          "callback"
+        )().then(() => {
+          dispatch(loadEvaluationAssessmentRequestsFromServer());
+        });
+      } catch (error) {
+        dispatch(
+          notificationActions.displayNotification("Erroria pukkaa", "error")
+        );
+      }
+    };
+  };
+
+/**
+ * archiveStudent
+ * @param data
+ */
+let archiveStudent: ArchiveStudent = function archiveStudent({
+  workspaceEntityId,
+  workspaceUserEntityId,
+  onSuccess,
+}) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    try {
+      await promisify(
+        mApi().workspace.workspaces.students.read(
+          workspaceEntityId,
+          workspaceUserEntityId
+        ),
+        "callback"
+      )().then(async (workspaceUserEntity: WorkspaceUserEntity) => {
+        workspaceUserEntity.active = false;
+
+        await promisify(
+          mApi().workspace.workspaces.students.update(
+            workspaceEntityId,
+            workspaceUserEntityId,
+            workspaceUserEntity
+          ),
+          "callback"
+        )().then(() => {
+          onSuccess && onSuccess();
+        });
+      });
+    } catch (error) {
+      dispatch(
+        notificationActions.displayNotification("Erroria pukkaa", "error")
+      );
+    }
+  };
+};
+
+let updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
+  function updateNeedsReloadEvaluationRequests({ value }) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS",
+        payload: value,
+      });
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -1708,9 +1813,12 @@ export {
   setEvaluationFilters,
   setCurrentStudentEvaluationData,
   updateEvaluationSearch,
+  updateNeedsReloadEvaluationRequests,
   updateImportance,
   updateSelectedAssessment,
   updateOpenedAssignmentEvaluation,
   loadEvaluationAssessmentEventsFromServer,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+  archiveStudent,
+  deleteAssessmentRequest,
 };

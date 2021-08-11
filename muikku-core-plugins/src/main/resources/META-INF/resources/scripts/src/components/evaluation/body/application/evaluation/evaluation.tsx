@@ -13,6 +13,14 @@ import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
 import { StatusType } from "../../../../../reducers/base/status";
 import { i18nType } from "../../../../../reducers/base/i18n";
+import ArchiveDialog from "../../../dialogs/archive";
+import { bindActionCreators } from "redux";
+import {
+  LoadEvaluationAssessmentRequest,
+  LoadEvaluationAssessmentEvent,
+  loadEvaluationAssessmentRequestsFromServer,
+  loadEvaluationAssessmentEventsFromServer,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
@@ -20,11 +28,15 @@ interface EvaluationDrawerProps {
   onClose?: () => void;
   evaluation: EvaluationState;
   selectedAssessment: AssessmentRequest;
+  loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
+  loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
 }
 
 interface EvaluationDrawerState {
+  archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
   showWorkspaceSupplemenationDrawer: boolean;
+  edit?: boolean;
   showContent: boolean;
 }
 
@@ -40,6 +52,7 @@ export class Evaluation extends React.Component<
     super(props);
 
     this.state = {
+      archiveStudentDialog: false,
       showWorkspaceEvaluationDrawer: false,
       showWorkspaceSupplemenationDrawer: false,
       showContent: false,
@@ -59,9 +72,16 @@ export class Evaluation extends React.Component<
    * handleCloseDrawer
    */
   handleWorkspaceEvaluationCloseDrawer = () => {
-    this.setState({
-      showWorkspaceEvaluationDrawer: false,
-    });
+    if (this.state.edit) {
+      this.setState({
+        edit: false,
+        showWorkspaceEvaluationDrawer: false,
+      });
+    } else {
+      this.setState({
+        showWorkspaceEvaluationDrawer: false,
+      });
+    }
   };
 
   /**
@@ -77,9 +97,16 @@ export class Evaluation extends React.Component<
    * handleCloseDrawer
    */
   handleWorkspaceSupplementationEvaluationCloseDrawer = () => {
-    this.setState({
-      showWorkspaceSupplemenationDrawer: false,
-    });
+    if (this.state.edit) {
+      this.setState({
+        edit: false,
+        showWorkspaceSupplemenationDrawer: false,
+      });
+    } else {
+      this.setState({
+        showWorkspaceSupplemenationDrawer: false,
+      });
+    }
   };
 
   /**
@@ -90,6 +117,47 @@ export class Evaluation extends React.Component<
       showContent: !this.state.showContent,
     });
   };
+
+  /**
+   * handleOpenArchiveStudentDialog
+   */
+  handleOpenArchiveStudentDialog = () => {
+    this.setState({
+      archiveStudentDialog: true,
+    });
+  };
+
+  /**
+   * handleCloseArchiveStudentDialog
+   */
+  handleCloseArchiveStudentDialog = () => {
+    this.setState({
+      archiveStudentDialog: false,
+    });
+    this.props.loadEvaluationAssessmentEventsFromServer({
+      assessment: this.props.evaluation.evaluationSelectedAssessmentId,
+    });
+  };
+
+  /**
+   * handleClickEdit
+   * @param supplementation
+   */
+  handleClickEdit =
+    (supplementation?: boolean) =>
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (supplementation) {
+        this.setState({
+          edit: true,
+          showWorkspaceSupplemenationDrawer: true,
+        });
+      } else {
+        this.setState({
+          edit: true,
+          showWorkspaceEvaluationDrawer: true,
+        });
+      }
+    };
 
   /**
    * Component render method
@@ -135,6 +203,7 @@ export class Evaluation extends React.Component<
 
           return (
             <EvaluationEventContentCard
+              onClickEdit={this.handleClickEdit}
               key={index}
               {...eItem}
               latest={latest}
@@ -273,7 +342,8 @@ export class Evaluation extends React.Component<
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                     )}
                     onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                    type="new"
+                    type={this.state.edit ? "edit" : "new"}
+                    onSuccesfulSave={this.handleOpenArchiveStudentDialog}
                   />
                 </SlideDrawer>
 
@@ -291,6 +361,7 @@ export class Evaluation extends React.Component<
                     onClose={
                       this.handleWorkspaceSupplementationEvaluationCloseDrawer
                     }
+                    type={this.state.edit ? "edit" : "new"}
                   />
                 </SlideDrawer>
               </div>
@@ -322,6 +393,12 @@ export class Evaluation extends React.Component<
             </div>
           </div>
         </section>
+        <ArchiveDialog
+          isOpen={this.state.archiveStudentDialog}
+          onClose={this.handleCloseArchiveStudentDialog}
+          place="modal"
+          {...this.props.evaluation.evaluationSelectedAssessmentId}
+        />
       </div>
     );
   }
@@ -344,7 +421,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators(
+    {
+      loadEvaluationAssessmentRequestsFromServer,
+      loadEvaluationAssessmentEventsFromServer,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Evaluation);

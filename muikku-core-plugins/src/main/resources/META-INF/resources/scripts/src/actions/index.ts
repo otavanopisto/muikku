@@ -195,6 +195,7 @@ import {
 } from "./main-function/hops";
 import { LOAD_CREDENTIALS, CREDENTIALS_STATE } from "./base/credentials";
 import { UPDATE_ERROR } from "./base/error";
+import { UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS } from "./main-function/evaluation/evaluationActions";
 import {
   UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE,
   UPDATE_EVALUATION_REQUESTS_STATE,
@@ -437,6 +438,7 @@ export type ActionType =
   | UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE
   | UPDATE_EVALUATION_CURRENT_EVENTS_STATE
   | UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE
-  | UPDATE_EVALUATION_REQUESTS_STATE;
+  | UPDATE_EVALUATION_REQUESTS_STATE
+  | UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

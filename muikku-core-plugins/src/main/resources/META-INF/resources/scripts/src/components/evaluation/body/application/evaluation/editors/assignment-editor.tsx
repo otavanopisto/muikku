@@ -169,8 +169,6 @@ class AssignmentEditor extends SessionStateComponent<
             },
             this.state.draftId
           );
-
-          this.props.onClose();
         },
         onFail: () => this.props.onClose(),
       });
@@ -212,7 +210,10 @@ class AssignmentEditor extends SessionStateComponent<
     const { compositeReplies, materialEvaluation } = this.props;
     const { evaluationGradeSystem } = this.props.evaluations;
 
-    if (compositeReplies.evaluationInfo.date) {
+    if (
+      compositeReplies.evaluationInfo &&
+      compositeReplies.evaluationInfo.date
+    ) {
       this.setStateAndClear(
         {
           literalEvaluation: compositeReplies.evaluationInfo.text,
@@ -221,7 +222,9 @@ class AssignmentEditor extends SessionStateComponent<
               ? `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
               : `${materialEvaluation.gradingScaleSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
           assignmentEvaluationType:
-            compositeReplies.state === "INCOMPLETE" ? "INCOMPLETE" : "GRADED",
+            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+              ? "INCOMPLETE"
+              : "GRADED",
         },
         this.state.draftId
       );

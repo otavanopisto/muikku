@@ -425,6 +425,9 @@ export class EvaluationList extends React.Component<
             important={important}
             importantAssessments={importantRequests}
             unimportantAssessments={unimportantRequests}
+            needsReloadRequests={
+              this.props.evaluations.needsReloadEvaluationRequests
+            }
           />
         );
       });

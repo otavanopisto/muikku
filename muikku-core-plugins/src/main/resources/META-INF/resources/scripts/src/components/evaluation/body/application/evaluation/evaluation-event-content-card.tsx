@@ -15,6 +15,14 @@ import { Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "../../../../../actions/index";
 import { connect } from "react-redux";
 import { i18nType } from "../../../../../reducers/base/i18n";
+import ArchiveDialog from "../../../dialogs/archive";
+import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import {
+  LoadEvaluationAssessmentRequest,
+  loadEvaluationAssessmentRequestsFromServer,
+  LoadEvaluationAssessmentEvent,
+  loadEvaluationAssessmentEventsFromServer,
+} from "../../../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationEventContentCardProps
@@ -23,6 +31,12 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
   latest: boolean;
   gradeSystem: EvaluationGradeSystem;
+  evaluations: EvaluationState;
+  onClickEdit: (
+    supplementation?: boolean
+  ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
+  loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
 }
 
 /**
@@ -36,9 +50,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
   date,
   author,
   i18n,
+  onClickEdit,
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   /**
    * isEvaluated
@@ -95,20 +109,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
     return {
       __html: htmlString,
     };
-  };
-
-  /**
-   * handleDrawerOpenClick
-   */
-  const handleDrawerOpenClick = () => {
-    setDrawerOpen(true);
-  };
-
-  /**
-   * handleDrawerCloseClick
-   */
-  const handleDrawerCloseClick = () => {
-    setDrawerOpen(false);
   };
 
   /**
@@ -238,80 +238,51 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
     }
   };
 
-  /**
-   * renderEditor
-   * @returns JSX.Element
-   */
-  const renderEditor = () => {
-    if (isEvaluated(type)) {
-      return <WorkspaceEditor type="edit" onClose={handleDrawerCloseClick} />;
-    }
-
-    return (
-      <SupplementationEditor type="edit" onClose={handleDrawerCloseClick} />
-    );
-  };
-
-  /**
-   * renderDrawer
-   */
-  const renderDrawer = (
-    <SlideDrawer
-      title={
-        isEvaluated(type)
-          ? "Työtilan kokonaisarviointi"
-          : "Työtilan täydennyspyyntö"
-      }
-      modifiers={[isEvaluated(type) ? "workspace" : "supplementation"]}
-      show={drawerOpen}
-      onClose={handleDrawerCloseClick}
-    >
-      {renderEditor()}
-    </SlideDrawer>
-  );
-
   const parsedDate = moment(date).format("l");
 
   return (
-    <div className="eval-modal-workspace-event">
-      <div
-        onClick={handleOpenContentClick}
-        className="eval-modal-workspace-event-header"
-      >
-        <div className={arrowClasses} />
-        <div className="eval-modal-workspace-event-date">{parsedDate}</div>
-
-        {renderTypeMessage(type, grade)}
-      </div>
-
-      <AnimateHeight duration={500} height={height}>
+    <>
+      <div className="eval-modal-workspace-event">
         <div
-          className="eval-modal-workspace-event-content"
-          dangerouslySetInnerHTML={createHtmlMarkup(text)}
-        />
-      </AnimateHeight>
+          onClick={handleOpenContentClick}
+          className="eval-modal-workspace-event-header"
+        >
+          <div className={arrowClasses} />
+          <div className="eval-modal-workspace-event-date">{parsedDate}</div>
 
-      {latest && type !== EvaluationEnum.EVALUATION_REQUEST ? (
-        <div className="eval-modal-workspace-event-buttonset">
+          {renderTypeMessage(type, grade)}
+        </div>
+
+        <AnimateHeight duration={500} height={height}>
           <div
-            onClick={handleDrawerOpenClick}
-            className="eval-modal-workspace-event-button button-edit-event"
-          >
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.events.editButton"
-            )}
-          </div>
-          <DeleteDialog>
-            <div className="eval-modal-workspace-event-button button-remove-event">
+            className="eval-modal-workspace-event-content"
+            dangerouslySetInnerHTML={createHtmlMarkup(text)}
+          />
+        </AnimateHeight>
+
+        {latest && type !== EvaluationEnum.EVALUATION_REQUEST ? (
+          <div className="eval-modal-workspace-event-buttonset">
+            <div
+              onClick={onClickEdit(
+                type === EvaluationEnum.SUPPLEMENTATION_REQUEST
+              )}
+              className="eval-modal-workspace-event-button button-edit-event"
+            >
               {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.deleteButton"
+                "plugin.evaluation.evaluationModal.events.editButton"
               )}
             </div>
-          </DeleteDialog>
-        </div>
-      ) : null}
-      {renderDrawer}
-    </div>
+            <DeleteDialog>
+              <div className="eval-modal-workspace-event-button button-remove-event">
+                {i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.deleteButton"
+                )}
+              </div>
+            </DeleteDialog>
+          </div>
+        ) : null}
+      </div>
+    </>
   );
 };
 
@@ -322,6 +293,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    evaluations: state.evaluations,
   };
 }
 
@@ -330,7 +302,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      loadEvaluationAssessmentRequestsFromServer,
+      loadEvaluationAssessmentEventsFromServer,
+    },
+    dispatch
+  );
 }
 
 export default connect(

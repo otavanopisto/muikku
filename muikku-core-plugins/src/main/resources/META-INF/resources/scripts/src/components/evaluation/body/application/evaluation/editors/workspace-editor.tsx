@@ -31,6 +31,7 @@ interface WorkspaceEditorProps {
   evaluations: EvaluationState;
   type?: "new" | "edit";
   editorLabel?: string;
+  onSuccesfulSave?: () => void;
   onClose?: () => void;
   updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation;
 }
@@ -263,7 +264,13 @@ class WorkspaceEditor extends SessionStateComponent<
   handleEvaluationSave = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    const { evaluations, type = "new", status, onClose } = this.props;
+    const {
+      evaluations,
+      type = "new",
+      status,
+      onClose,
+      onSuccesfulSave,
+    } = this.props;
     const { evaluationGradeSystem, evaluationAssessmentEvents } = evaluations;
     const { literalEvaluation, grade } = this.state;
     let billingPrice = undefined;
@@ -282,10 +289,17 @@ class WorkspaceEditor extends SessionStateComponent<
               evaluationAssessmentEvents.data.length - 1
             ];
 
+          let isRaised = false;
           /**
-           * Check if raising grade or giving new one
+           * There is change that no previous events exists
            */
-          const isRaised = type === "new" && this.isGraded(latestEvent.type);
+          if (latestEvent) {
+            /**
+             * Check if raising grade or giving new one
+             * By default it is false
+             */
+            isRaised = type === "new" && this.isGraded(latestEvent.type);
+          }
 
           /**
            * setting base price if enabled
@@ -328,7 +342,9 @@ class WorkspaceEditor extends SessionStateComponent<
               },
               this.state.draftId
             );
-            onClose();
+            onSuccesfulSave && onSuccesfulSave();
+
+            onClose && onClose();
           },
           onFail: () => onClose(),
         });
@@ -375,7 +391,9 @@ class WorkspaceEditor extends SessionStateComponent<
               },
               this.state.draftId
             );
-            onClose();
+            onSuccesfulSave && onSuccesfulSave();
+
+            onClose && onClose();
           },
           onFail: () => onClose(),
         });
@@ -421,10 +439,14 @@ class WorkspaceEditor extends SessionStateComponent<
          */
         let billingPrice: string = undefined;
 
-        /**
-         * check if raising grade or giving new one
-         */
-        const isRaised = type === "new" && this.isGraded(latestEvent.type);
+        let isRaised = false;
+
+        if (latestEvent) {
+          /**
+           * check if raising grade or giving new one
+           */
+          isRaised = type === "new" && this.isGraded(latestEvent.type);
+        }
 
         /**
          * By default selected price should be base price from api

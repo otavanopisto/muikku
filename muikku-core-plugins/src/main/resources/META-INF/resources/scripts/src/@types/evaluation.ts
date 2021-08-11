@@ -296,3 +296,15 @@ export interface BilledPriceRequest {
   assessmentIdentifier: string;
   price: string;
 }
+
+export interface WorkspaceUserEntity {
+  active: boolean;
+  firstName: string;
+  hasImage: boolean;
+  lastName: string;
+  nickname: string;
+  studyProgrammeName: string;
+  userEntityId: number;
+  userIdentifier: string;
+  workspaceUserEntityId: number;
+}

@@ -12,16 +12,13 @@ import {
   RemoveWorkspaceEvent,
   removeWorkspaceEventFromServer,
 } from "../../../actions/main-function/evaluation/evaluationActions";
-import { EvaluationEnum } from "~/@types/evaluation";
-
-const KEYCODES = {
-  ENTER: 13,
-};
+import { i18nType } from "../../../reducers/base/i18n";
 
 /**
  * DeleteDialogProps
  */
 interface DeleteDialogProps {
+  i18n: i18nType;
   children: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => any;
@@ -81,6 +78,10 @@ class DeleteDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { evaluationSelectedAssessmentId } = this.props.evaluations;
+
+    const studentNameString = `${evaluationSelectedAssessmentId.lastName}, ${evaluationSelectedAssessmentId.firstName}`;
+
     let footer = (closeDialog: () => any) => {
       return (
         <div className="dialog__button-set">
@@ -88,13 +89,18 @@ class DeleteDialog extends React.Component<
             buttonModifiers={["fatal", "standard-ok"]}
             onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
           >
-            Kyllä
+            {this.props.i18n.text.get(
+              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton",
+              studentNameString
+            )}
           </Button>
           <Button
             buttonModifiers={["cancel", "standard-cancel"]}
             onClick={closeDialog}
           >
-            Peruuta
+            {this.props.i18n.text.get(
+              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton"
+            )}
           </Button>
         </div>
       );
@@ -102,7 +108,10 @@ class DeleteDialog extends React.Component<
     let content = (closeDialog: () => any) => {
       return (
         <div>
-          Oletko varma, että haluat poistaa merkinnän opiskelijalta "(Student)"?
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
+            studentNameString
+          )}
         </div>
       );
     };
@@ -204,6 +213,7 @@ export const cleanWorkspaceAndSupplementationDrafts = (eventId: string) => {
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     evaluations: state.evaluations,
   };
 }
