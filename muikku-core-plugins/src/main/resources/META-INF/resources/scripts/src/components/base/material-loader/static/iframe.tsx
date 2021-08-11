@@ -52,9 +52,9 @@ export default class Iframe extends React.Component<IframeProps, {}>{
           if (this.props.invisible) {
             const isYoutube = elementProps.src.includes("//www.youtube.com");
             if (isYoutube) {
-              return <div style={{ height: elementProps.height + "px" || "160px", width: "100%", paddingTop: "56.25%", position: "relative" }} />
+              return <span style={{ height: elementProps.height + "px" || "160px", width: "100%", paddingTop: "56.25%", position: "relative", display: "block" }} />
             } else {
-              return <div style={{ height: elementProps.height + "px" || "160px" }} />
+              return <span style={{ height: elementProps.height + "px" || "160px", display: "block" }} />
             }
           }
 
@@ -97,9 +97,9 @@ export default class Iframe extends React.Component<IframeProps, {}>{
               width: !iframeProps.width ? "100%" : null,
             }
           }
-          return <div className="material-page__iframe-wrapper" style={containerStyle}>
+          return <span className="material-page__iframe-wrapper" style={containerStyle}>
             <Tag {...iframeProps}>{children}</Tag>
-          </div>
+          </span>
         }
       }
     ]
