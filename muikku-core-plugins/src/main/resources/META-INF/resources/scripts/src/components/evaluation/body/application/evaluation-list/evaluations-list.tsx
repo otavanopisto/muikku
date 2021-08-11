@@ -21,11 +21,13 @@ import {
   saveEvaluationSortFunctionToServer,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "../../../../../@types/evaluation";
+import { i18nType } from "../../../../../reducers/base/i18n";
 
 /**
  * EvaluationListProps
  */
 interface EvaluationListProps {
+  i18n: i18nType;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   evaluations: EvaluationState;
   saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction;
@@ -446,7 +448,9 @@ export class EvaluationList extends React.Component<
         renderEvaluationCardList = (
           <div className="card-list-container">
             <div className="evaluation-message-container">
-              Mahtavaa! Kaikki arviointipyynnöt on käsitelty!
+              {this.props.i18n.text.get(
+                "plugin.evaluation.cardlist.allrequesthandled"
+              )}
             </div>
           </div>
         );
@@ -457,7 +461,9 @@ export class EvaluationList extends React.Component<
         renderEvaluationCardList = (
           <div className="card-list-container">
             <div className="evaluation-message-container">
-              Suodatuksella ei löytynyt osumia!
+              {this.props.i18n.text.get(
+                "plugin.evaluation.cardlist.noRequestWithFilters"
+              )}
             </div>
           </div>
         );
@@ -503,6 +509,7 @@ const byDate = (ascending: boolean) => {
  */
 function mapStateToProps(state: StateType) {
   return {
+    i18n: state.i18n,
     evaluations: state.evaluations,
   };
 }

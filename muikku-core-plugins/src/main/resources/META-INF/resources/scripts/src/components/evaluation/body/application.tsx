@@ -63,7 +63,9 @@ class EvaluationApplication extends React.Component<
    */
   render() {
     const title = (
-      <h1 className="application-panel__header-title">Evaluations</h1>
+      <h1 className="application-panel__header-title">
+        {this.props.i18n.text.get("plugin.evaluation.title")}
+      </h1>
     );
 
     /**
@@ -91,8 +93,14 @@ class EvaluationApplication extends React.Component<
           value={this.props.evaluations.selectedWorkspaceId || undefined}
           className="form-element__select form-element__select--main-action"
         >
-          <option value="">Kaikki arviointipyynnöt</option>
-          <optgroup label="Työtilat">{workspaceOptions}</optgroup>
+          <option value="">
+            {this.props.i18n.text.get("plugin.evaluation.allRequests")}
+          </option>
+          <optgroup
+            label={this.props.i18n.text.get("plugin.evaluation.workspaces")}
+          >
+            {workspaceOptions}
+          </optgroup>
         </select>
       </div>
     );
