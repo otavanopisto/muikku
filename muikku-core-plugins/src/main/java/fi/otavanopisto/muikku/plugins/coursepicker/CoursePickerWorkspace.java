@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.coursepicker;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 
 public class CoursePickerWorkspace {
@@ -20,6 +21,7 @@ public class CoursePickerWorkspace {
       Long numVisits,
       Date lastVisit,
       String educationTypeName,
+      Mandatority mandatority,
       boolean isCourseMember, 
       boolean hasCustomImage,
       OrganizationRESTModel organization) {
@@ -35,6 +37,7 @@ public class CoursePickerWorkspace {
     this.lastVisit = lastVisit;
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
+    this.mandatority = mandatority;
     this.hasCustomImage = hasCustomImage;
     this.organization = organization;
   }
@@ -127,6 +130,14 @@ public class CoursePickerWorkspace {
     this.educationTypeName = educationTypeName;
   }
   
+  public Mandatority getMandatority() {
+    return mandatority;
+  }
+  
+  public void setMandatority(Mandatority mandatority) {
+    this.mandatority = mandatority;
+  }
+  
   public boolean getHasCustomImage() {
     return hasCustomImage;
   }
@@ -154,6 +165,7 @@ public class CoursePickerWorkspace {
   private Boolean published;
   private Boolean isCourseMember;
   private String educationTypeName;
+  private Mandatority mandatority;
   private boolean hasCustomImage;
   private OrganizationRESTModel organization;
 
