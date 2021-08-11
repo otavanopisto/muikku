@@ -84,8 +84,8 @@ export default class Image extends React.Component<ImageProps, ImageState>{
       shouldProcessHTMLElement: (tag, element) => tag === "figure" || tag === "span",
       preprocessReactProperties: (tag, props, children, element) => {
         if (!this.props.invisible && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.license)) {
-          children.push(<div className="image__details icon-copyright" key="details">
-            <div className="image__details-container">
+          children.push(<span className="image__details icon-copyright" key="details">
+            <span className="image__details-container">
               <span className="image__details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
               {this.props.dataset.source || this.props.dataset.sourceUrl
                 ? (this.props.dataset.sourceUrl ?
@@ -106,8 +106,8 @@ export default class Image extends React.Component<ImageProps, ImageState>{
                   <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.license || this.props.dataset.licenseUrl}</a> :
                   <span>{this.props.dataset.license}</span>
               ) : null}
-            </div>
-          </div>);
+            </span>
+          </span>);
         }
 
         const img = this.props.element.querySelector("img");
@@ -138,7 +138,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
       preprocessReactProperties: (tag, props) => {
         if (this.predictedAspectRatio && this.props.invisible) {
           delete props.src;
-          return "div";
+          return "span";
         }
 
         props.style = props.style || {};
