@@ -129,9 +129,13 @@ class ArchiveDialog extends React.Component<
             buttonModifiers={["cancel", "standard-cancel"]}
             onClick={this.props.onClose ? this.props.onClose : closeDialog}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
-            )}
+            {this.props.place === "card"
+              ? this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.buttonNoLabel"
+                )
+              : this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.noLabel"
+                )}
           </Button>
         </div>
       );
