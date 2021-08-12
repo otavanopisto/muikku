@@ -61,10 +61,10 @@ class DeleteDialog extends React.Component<
         identifier: evaluationAssessmentEvents.data[latestIndex].identifier,
         eventType: evaluationAssessmentEvents.data[latestIndex].type,
         onSuccess: () => {
-          const eventId =
+          const draftId =
             evaluationAssessmentEvents.data[latestIndex].identifier;
 
-          cleanWorkspaceAndSupplementationDrafts(eventId);
+          cleanWorkspaceAndSupplementationDrafts(draftId);
 
           closeDialog();
         },
@@ -132,80 +132,80 @@ class DeleteDialog extends React.Component<
 
 /**
  * cleanWorkspaceAndSupplementationDrafts
- * @param eventId
+ * @param draftId
  */
-export const cleanWorkspaceAndSupplementationDrafts = (eventId: string) => {
+export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
   if (
     localStorage.getItem(
-      `supplementation-editor-edit.${eventId}.literalEvaluation`
+      `supplementation-editor-edit.${draftId}.literalEvaluation`
     )
   ) {
     localStorage.removeItem(
-      `supplementation-editor-edit.${eventId}.literalEvaluation`
+      `supplementation-editor-edit.${draftId}.literalEvaluation`
     );
   }
   if (
     localStorage.getItem(
-      `supplementation-editor-new.${eventId}.literalEvaluation`
+      `supplementation-editor-new.${draftId}.literalEvaluation`
     )
   ) {
     localStorage.removeItem(
-      `supplementation-editor-new.${eventId}.literalEvaluation`
-    );
-  }
-
-  if (
-    localStorage.getItem(
-      `workspace-editor-edit.${eventId}.literalEvaluation`
-    ) ||
-    localStorage.getItem(`workspace-editor-edit.${eventId}.grade`) ||
-    localStorage.getItem(
-      `workspace-editor-edit.${eventId}.selectedPriceOption`
-    ) ||
-    localStorage.getItem(`workspace-editor-edit.${eventId}.basePrice`) ||
-    localStorage.getItem(
-      `workspace-editor-edit.${eventId}.existingBilledPriceObject`
-    )
-  ) {
-    localStorage.removeItem(
-      `workspace-editor-edit.${eventId}.literalEvaluation`
-    );
-    localStorage.removeItem(`workspace-editor-edit.${eventId}.grade`);
-    localStorage.removeItem(
-      `workspace-editor-edit.${eventId}.selectedPriceOption`
-    );
-    localStorage.removeItem(`workspace-editor-edit.${eventId}.basePrice`);
-    localStorage.removeItem(
-      `workspace-editor-edit.${eventId}.existingBilledPriceObject`
+      `supplementation-editor-new.${draftId}.literalEvaluation`
     );
   }
 
   if (
-    localStorage.getItem(`workspace-editor-new.${eventId}.literalEvaluation`) ||
-    localStorage.getItem(`workspace-editor-new.${eventId}.grade`) ||
     localStorage.getItem(
-      `workspace-editor-new.${eventId}.selectedPriceOption`
+      `workspace-editor-edit.${draftId}.literalEvaluation`
     ) ||
-    localStorage.getItem(`workspace-editor-new.${eventId}.basePrice`) ||
+    localStorage.getItem(`workspace-editor-edit.${draftId}.grade`) ||
     localStorage.getItem(
-      `workspace-editor-new.${eventId}.existingBilledPriceObject`
+      `workspace-editor-edit.${draftId}.selectedPriceOption`
+    ) ||
+    localStorage.getItem(`workspace-editor-edit.${draftId}.basePrice`) ||
+    localStorage.getItem(
+      `workspace-editor-edit.${draftId}.existingBilledPriceObject`
     )
   ) {
     localStorage.removeItem(
-      `workspace-editor-new.${eventId}.literalEvaluation`
+      `workspace-editor-edit.${draftId}.literalEvaluation`
     );
-    localStorage.removeItem(`workspace-editor-new.${eventId}.grade`);
+    localStorage.removeItem(`workspace-editor-edit.${draftId}.grade`);
     localStorage.removeItem(
-      `workspace-editor-new.${eventId}.selectedPriceOption`
+      `workspace-editor-edit.${draftId}.selectedPriceOption`
     );
-    localStorage.removeItem(`workspace-editor-new.${eventId}.basePrice`);
+    localStorage.removeItem(`workspace-editor-edit.${draftId}.basePrice`);
     localStorage.removeItem(
-      `workspace-editor-new.${eventId}.existingBilledPriceObject`
+      `workspace-editor-edit.${draftId}.existingBilledPriceObject`
+    );
+  }
+
+  if (
+    localStorage.getItem(`workspace-editor-new.${draftId}.literalEvaluation`) ||
+    localStorage.getItem(`workspace-editor-new.${draftId}.grade`) ||
+    localStorage.getItem(
+      `workspace-editor-new.${draftId}.selectedPriceOption`
+    ) ||
+    localStorage.getItem(`workspace-editor-new.${draftId}.basePrice`) ||
+    localStorage.getItem(
+      `workspace-editor-new.${draftId}.existingBilledPriceObject`
+    )
+  ) {
+    localStorage.removeItem(
+      `workspace-editor-new.${draftId}.literalEvaluation`
+    );
+    localStorage.removeItem(`workspace-editor-new.${draftId}.grade`);
+    localStorage.removeItem(
+      `workspace-editor-new.${draftId}.selectedPriceOption`
+    );
+    localStorage.removeItem(`workspace-editor-new.${draftId}.basePrice`);
+    localStorage.removeItem(
+      `workspace-editor-new.${draftId}.existingBilledPriceObject`
     );
   }
 };
 
-/* localStorage.getItem(`workspace-editor-edit.${eventId}.`)
+/* localStorage.getItem(`workspace-editor-edit.${draftId}.`)
  */
 /**
  * mapStateToProps

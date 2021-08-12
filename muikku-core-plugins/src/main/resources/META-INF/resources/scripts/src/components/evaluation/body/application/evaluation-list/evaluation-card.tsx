@@ -180,7 +180,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     selectedWorkspaceId !== rest.workspaceEntityId ? (
       <div className="evaluation-card-data-row">
         <div className="eval-workspace-name">
-          <a onClick={handleWorkspaceNameClick}>{rest.workspaceName}</a>
+          <a onClick={handleWorkspaceNameClick}>
+            {`${rest.workspaceName} ${
+              rest.workspaceNameExtension !== null
+                ? `(${rest.workspaceNameExtension})`
+                : ""
+            } `}
+          </a>
         </div>
       </div>
     ) : null;
@@ -249,7 +255,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     <div className={`evaluation-card ${cardStateClass}`}>
       <div className="evaluation-card-title">
         <div className="evaluation-card-student">{studentName}</div>
-        <div className="evaluation-card-study-programme">Nettiperuskoulu</div>
+        <div className="evaluation-card-study-programme">
+          {rest.studyProgramme}
+        </div>
       </div>
       <div className="evaluation-card-data">
         {renderFilterByWorkspaceLink}

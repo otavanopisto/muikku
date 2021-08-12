@@ -239,6 +239,7 @@ export interface LoadBilledPrice {
 export interface LoadEvaluationCompositeReplies {
   (data: {
     userEntityId: number;
+    workspaceId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -861,6 +862,7 @@ let loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
   function loadEvaluationCompositeRepliesFromServer({
     userEntityId,
     onSuccess,
+    workspaceId,
   }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -877,10 +879,9 @@ let loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
 
       try {
         evaluationCompositeReplies = (await promisify(
-          mApi().workspace.workspaces.compositeReplies.read(
-            state.evaluations.selectedWorkspaceId,
-            { userEntityId }
-          ),
+          mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
+            userEntityId,
+          }),
           "callback"
         )()) as MaterialCompositeRepliesType[];
 
@@ -1645,6 +1646,7 @@ let saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluati
             loadEvaluationCompositeRepliesFromServer({
               userEntityId,
               onSuccess,
+              workspaceId: workspaceEntityId,
             })
           );
         });
@@ -1695,6 +1697,7 @@ let saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSup
             loadEvaluationCompositeRepliesFromServer({
               userEntityId,
               onSuccess,
+              workspaceId: workspaceEntityId,
             })
           );
         });

@@ -74,7 +74,9 @@ class EvaluationApplication extends React.Component<
     const workspaceOptions = this.props.evaluations.evaluationWorkspaces.map(
       (wItem, i) => (
         <option key={i} value={wItem.id}>
-          {wItem.name}
+          {`${wItem.name} ${
+            wItem.nameExtension !== null ? `(${wItem.nameExtension})` : ""
+          } `}
         </option>
       )
     );

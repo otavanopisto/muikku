@@ -80,7 +80,11 @@ class EvaluationToolbar extends React.Component<
           type="checkbox"
           className="evaluation__input"
         />
-        <label>Arvioidut</label>
+        <label>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspace.filter.checkbox.evaluated"
+          )}
+        </label>
       </div>,
       <div className="checkbox__item">
         <input
@@ -89,7 +93,11 @@ class EvaluationToolbar extends React.Component<
           type="checkbox"
           className="evaluation__input"
         />
-        <label>Arvioinnin pyytäneet</label>
+        <label>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspace.filter.checkbox.requestEvaluation"
+          )}
+        </label>
       </div>,
       <div className="checkbox__item">
         <input
@@ -100,7 +108,11 @@ class EvaluationToolbar extends React.Component<
           type="checkbox"
           className="evaluation__input"
         />
-        <label>Täydennyspyynnön saaneet</label>
+        <label>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest"
+          )}
+        </label>
       </div>,
       <div className="checkbox__item">
         <input
@@ -109,7 +121,11 @@ class EvaluationToolbar extends React.Component<
           type="checkbox"
           className="evaluation__input"
         />
-        <label>Arvioimattomat</label>
+        <label>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspace.filter.checkbox.noevaluation"
+          )}
+        </label>
       </div>,
     ];
 
@@ -121,7 +137,9 @@ class EvaluationToolbar extends React.Component<
               updateField={this.handleSearchFormElementChange}
               name="guider-search"
               id="searchUsers"
-              placeholder="Vapaa haku"
+              placeholder={this.props.i18n.text.get(
+                "plugin.evaluation.freeSearch"
+              )}
               value={this.props.evaluations.evaluationSearch}
             />
             {this.props.evaluations.selectedWorkspaceId ? (

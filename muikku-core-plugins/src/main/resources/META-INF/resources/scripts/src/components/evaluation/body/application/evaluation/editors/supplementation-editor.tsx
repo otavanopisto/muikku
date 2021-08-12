@@ -15,6 +15,10 @@ import {
 } from "../../../../../../actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
 import { i18nType } from "../../../../../../reducers/base/i18n";
+import {
+  UpdateNeedsReloadEvaluationRequests,
+  updateNeedsReloadEvaluationRequests,
+} from "../../../../../../actions/main-function/evaluation/evaluationActions";
 
 /**
  * SupplementationEditorProps
@@ -28,6 +32,7 @@ interface SupplementationEditorProps {
   modifiers?: string[];
   onClose?: () => void;
   updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation;
+  updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests;
 }
 
 /**
@@ -58,7 +63,17 @@ class SupplementationEditor extends SessionStateComponent<
     const { evaluationAssessmentEvents, evaluationSelectedAssessmentId } =
       props.evaluations;
 
-    if (evaluationAssessmentEvents.data && props.type === "edit") {
+    /**
+     * When there is not existing event data we use only user id and workspace id as
+     * draft id. There must be at least user id and workspace id, so if making changes to multiple workspace
+     * that have same user evaluations, so draft won't class together
+     */
+    let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}`;
+
+    if (
+      evaluationAssessmentEvents.data.length > 0 ||
+      (evaluationAssessmentEvents.data.length > 0 && props.type === "edit")
+    ) {
       const latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
@@ -69,7 +84,10 @@ class SupplementationEditor extends SessionStateComponent<
           ? latestEvent.identifier
           : "empty";
 
-      let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${eventId}`;
+      /**
+       * As default but + latest event id
+       */
+      draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
 
       this.state = this.getRecoverStoredState(
         {
@@ -79,9 +97,13 @@ class SupplementationEditor extends SessionStateComponent<
         draftId
       );
     } else {
-      this.state = this.getRecoverStoredState({
-        literalEvaluation: "",
-      });
+      this.state = this.getRecoverStoredState(
+        {
+          literalEvaluation: "",
+          draftId,
+        },
+        draftId
+      );
     }
   }
 
@@ -154,7 +176,10 @@ class SupplementationEditor extends SessionStateComponent<
             },
             this.state.draftId
           );
-          onClose();
+
+          this.props.updateNeedsReloadEvaluationRequests({ value: true });
+
+          onClose && onClose();
         },
         onFail: () => onClose(),
       });
@@ -187,7 +212,9 @@ class SupplementationEditor extends SessionStateComponent<
             },
             this.state.draftId
           );
-          onClose();
+          this.props.updateNeedsReloadEvaluationRequests({ value: true });
+
+          onClose && onClose();
         },
         onFail: () => onClose(),
       });
@@ -298,7 +325,10 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { updateWorkspaceSupplementationToServer },
+    {
+      updateWorkspaceSupplementationToServer,
+      updateNeedsReloadEvaluationRequests,
+    },
     dispatch
   );
 }

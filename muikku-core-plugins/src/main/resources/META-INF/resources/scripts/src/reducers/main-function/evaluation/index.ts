@@ -231,6 +231,7 @@ export default function evaluations(state = initialState, action: ActionType) {
     });
   } else if (action.type === "UPDATE_EVALUATION_REQUESTS_STATE") {
     return Object.assign({}, state, {
+      needsReloadEvaluationRequests: false,
       evaluationRequests: {
         state: action.payload,
         data: state.evaluationRequests.data,

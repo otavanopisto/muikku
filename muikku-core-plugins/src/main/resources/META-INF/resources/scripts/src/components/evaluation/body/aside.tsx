@@ -67,7 +67,9 @@ class NavigationAside extends React.Component<
           onClick={this.handleNavigationWorkspaceClick(wItem.id)}
           isActive={wItem.id === this.props.evaluations.selectedWorkspaceId}
         >
-          {wItem.name}
+          {`${wItem.name} ${
+            wItem.nameExtension !== null ? `(${wItem.nameExtension})` : ""
+          } `}
         </NavigationElement>
       ));
 

@@ -72,6 +72,7 @@ class EvaluateDialog extends React.Component<
     this.props.updateSelectedAssessment({ assessment });
     this.props.loadEvaluationCompositeRepliesFromServer({
       userEntityId: this.props.assessment.userEntityId,
+      workspaceId: assessment.workspaceEntityId,
     });
     this.props.loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer({
       assessment,
