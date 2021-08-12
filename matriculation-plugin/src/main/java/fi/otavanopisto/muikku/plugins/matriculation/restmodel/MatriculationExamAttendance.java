@@ -57,6 +57,14 @@ public class MatriculationExamAttendance {
     this.grade = grade;
   }
 
+  public String getFunding() {
+    return funding;
+  }
+
+  public void setFunding(String funding) {
+    this.funding = funding;
+  }
+
   private String subject;
   private Boolean mandatory;
   private Boolean repeat;
@@ -64,6 +72,7 @@ public class MatriculationExamAttendance {
   private String term;
   private String status;
   private String grade;
+  private String funding;
 
 }
 
