@@ -55,6 +55,14 @@
   }
 }
 
+.application-sub-panel--organization-users {
+
+  &:first-child {
+    padding-bottom: 12px;
+  }
+}
+
+
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
@@ -545,10 +553,8 @@
   }
 }
 
-.application-sub-panel__item--organization-summary,
 .application-sub-panel__item--organization-previous-bills,
-.application-sub-panel__item--organization-contact-information
- {
+.application-sub-panel__item--organization-contact-information {
   align-items: flex-start;
 }
 
@@ -926,9 +932,9 @@
 .application-sub-panel__item-data-content--primary {
   background-color: $color-hops-readable-inline-background;
   border-radius: 3px;
-  font-size: 1.05rem;
-  font-weight: 300;
-  padding: 5px;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
 }
 
 // item-data label

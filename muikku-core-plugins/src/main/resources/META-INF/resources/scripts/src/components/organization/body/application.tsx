@@ -99,7 +99,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
     let usersToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
-        <SearchFormElement value={this.state.userSearchFieldValue} id="organizationUserSearch" placeholder={this.props.i18n.text.get('plugin.organization.userGroups.search.placeholder')} name="organization-user-search" updateField={this.doUserSearch} ></SearchFormElement>
+        <SearchFormElement value={this.state.userSearchFieldValue} id="organizationUserSearch" placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="organization-user-search" updateField={this.doUserSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
