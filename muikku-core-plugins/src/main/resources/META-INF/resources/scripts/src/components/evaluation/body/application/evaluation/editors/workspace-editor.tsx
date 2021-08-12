@@ -146,12 +146,19 @@ class WorkspaceEditor extends SessionStateComponent<
       const basePrice = await this.loadBaseBilledPrice();
 
       if (this.props.type === "edit") {
+        let existingBilledPriceObject: BilledPrice | undefined = undefined;
+
         /**
-         * If editing we need load existing billed price, if pricing is enabled
+         * If pricing enabled...
          */
-        const existingBilledPriceObject = await this.loadExistingBilledPrice(
-          latestEvent.identifier
-        );
+        if (basePrice) {
+          /**
+           * and editing we need load existing billed price...
+           */
+          existingBilledPriceObject = await this.loadExistingBilledPrice(
+            latestEvent.identifier
+          );
+        }
 
         this.setState(
           this.getRecoverStoredState(
@@ -163,7 +170,9 @@ class WorkspaceEditor extends SessionStateComponent<
                 )[1],
               basePrice,
               existingBilledPriceObject,
-              selectedPriceOption: existingBilledPriceObject.price.toString(),
+              selectedPriceOption: existingBilledPriceObject
+                ? existingBilledPriceObject.price.toString()
+                : undefined,
             },
             this.state.draftId
           )
