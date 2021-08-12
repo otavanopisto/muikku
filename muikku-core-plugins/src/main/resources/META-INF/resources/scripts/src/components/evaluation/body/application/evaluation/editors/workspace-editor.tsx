@@ -88,7 +88,7 @@ class WorkspaceEditor extends SessionStateComponent<
      * existing price object that must be also deleted when saving
      */
     if (
-      evaluationAssessmentEvents.data.length > 0 ||
+      (evaluationAssessmentEvents.data.length > 0 && props.type !== "new") ||
       (evaluationAssessmentEvents.data.length > 0 && props.type === "edit")
     ) {
       const latestEvent =
@@ -131,7 +131,7 @@ class WorkspaceEditor extends SessionStateComponent<
     const { evaluationAssessmentEvents, evaluationGradeSystem } =
       this.props.evaluations;
 
-    if (evaluationAssessmentEvents.data) {
+    if (evaluationAssessmentEvents.data.length > 0) {
       /**
        * Latest event data
        */
@@ -161,7 +161,6 @@ class WorkspaceEditor extends SessionStateComponent<
                 `${evaluationGradeSystem[0].dataSource}-${latestEvent.gradeIdentifier}`.split(
                   "@"
                 )[1],
-
               basePrice,
               existingBilledPriceObject,
               selectedPriceOption: existingBilledPriceObject.price.toString(),
@@ -193,23 +192,24 @@ class WorkspaceEditor extends SessionStateComponent<
   loadBaseBilledPrice = async (): Promise<number | undefined> => {
     const { selectedWorkspaceId } = this.props.evaluations;
 
-    let basePrice: number = null;
+    let basePrice: number | undefined = undefined;
 
     try {
       /**
        * Lets see if pricing is enabled and returned
        */
-      basePrice = (await promisify(
-        mApi().worklist.basePrice.read({
-          workspaceEntityId: selectedWorkspaceId,
-        }),
-        "callback"
-      )()) as number;
+      basePrice =
+        ((await promisify(
+          mApi().worklist.basePrice.read({
+            workspaceEntityId: selectedWorkspaceId,
+          }),
+          "callback"
+        )()) as number) || undefined;
     } catch (error) {
       /**
        * Yea, pretty lazy way to handle errors and whether pricing exist...
        */
-      basePrice = null;
+      basePrice = undefined;
     }
 
     return basePrice;
@@ -373,16 +373,19 @@ class WorkspaceEditor extends SessionStateComponent<
           onFail: () => onClose(),
         });
       } else {
-        /**
-         * If we have exixting price object
-         */
-        if (this.state.existingBilledPriceObject.price) {
-          billingPrice = this.state.existingBilledPriceObject.price.toString();
+        if (this.state.basePrice) {
           /**
-           * Selected price over anything else
+           * If we have exixting price object
            */
-          if (this.state.selectedPriceOption) {
-            billingPrice = this.state.selectedPriceOption.toString();
+          if (this.state.existingBilledPriceObject.price) {
+            billingPrice =
+              this.state.existingBilledPriceObject.price.toString();
+            /**
+             * Selected price over anything else
+             */
+            if (this.state.selectedPriceOption) {
+              billingPrice = this.state.selectedPriceOption.toString();
+            }
           }
         }
 
@@ -435,7 +438,7 @@ class WorkspaceEditor extends SessionStateComponent<
       this.props.evaluations;
     const { type } = this.props;
 
-    if (evaluationAssessmentEvents.data) {
+    if (evaluationAssessmentEvents.data.length > 0) {
       /**
        * Latest event data
        */
@@ -453,8 +456,9 @@ class WorkspaceEditor extends SessionStateComponent<
           {
             literalEvaluation: latestEvent.text,
             grade: latestEvent.gradeIdentifier.split("@")[1],
-            selectedPriceOption:
-              this.state.existingBilledPriceObject.price.toString(),
+            selectedPriceOption: this.state.existingBilledPriceObject
+              ? this.state.existingBilledPriceObject.price.toString()
+              : undefined,
           },
           this.state.draftId
         );
@@ -463,7 +467,7 @@ class WorkspaceEditor extends SessionStateComponent<
          * Clearing drafts, we don't cleary know what is the base price selected so
          * because of that we need to...
          */
-        let billingPrice: string = undefined;
+        let billingPrice: string = null;
 
         let isRaised = false;
 
@@ -474,16 +478,18 @@ class WorkspaceEditor extends SessionStateComponent<
           isRaised = type === "new" && this.isGraded(latestEvent.type);
         }
 
-        /**
-         * By default selected price should be base price from api
-         */
-        billingPrice = this.state.basePrice.toString();
+        if (this.state.basePrice) {
+          /**
+           * By default selected price should be base price from api
+           */
+          billingPrice = this.state.basePrice.toString();
 
-        /**
-         * If its raised, then default selected price is half of base
-         */
-        if (isRaised) {
-          billingPrice = (this.state.basePrice / 2).toString();
+          /**
+           * If its raised, then default selected price is half of base
+           */
+          if (isRaised) {
+            billingPrice = (this.state.basePrice / 2).toString();
+          }
         }
 
         /**
@@ -545,7 +551,11 @@ class WorkspaceEditor extends SessionStateComponent<
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePrice } = this.state;
 
-    if (evaluationAssessmentEvents.data) {
+    if (basePrice === undefined) {
+      return undefined;
+    }
+
+    if (evaluationAssessmentEvents.data.length > 0) {
       /**
        * We want to get latest event data
        */
@@ -700,22 +710,23 @@ class WorkspaceEditor extends SessionStateComponent<
             </optgroup>
           </select>
         </div>
-
-        <div className="evaluation-modal-evaluate-form-row--grade">
-          <label className="evaluation__label">
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
-            )}
-          </label>
-          <select
-            className="evaluation__select--grade"
-            onChange={this.handleSelectPriceChange}
-            value={this.state.selectedPriceOption}
-            disabled={billingPriceDisabled}
-          >
-            {options}
-          </select>
-        </div>
+        {this.state.basePrice && (
+          <div className="evaluation-modal-evaluate-form-row--grade">
+            <label className="evaluation__label">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
+              )}
+            </label>
+            <select
+              className="evaluation__select--grade"
+              onChange={this.handleSelectPriceChange}
+              value={this.state.selectedPriceOption}
+              disabled={billingPriceDisabled}
+            >
+              {options}
+            </select>
+          </div>
+        )}
 
         <div className="evaluation-modal-evaluate-form-row--buttons">
           <Button

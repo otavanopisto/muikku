@@ -71,7 +71,7 @@ class SupplementationEditor extends SessionStateComponent<
     let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}`;
 
     if (
-      evaluationAssessmentEvents.data.length > 0 ||
+      (evaluationAssessmentEvents.data.length > 0 && props.type !== "new") ||
       (evaluationAssessmentEvents.data.length > 0 && props.type === "edit")
     ) {
       const latestEvent =

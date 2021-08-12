@@ -402,7 +402,12 @@ let loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.gradesystem.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -463,7 +468,12 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.evaluationRequest.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_REQUESTS_STATE",
@@ -519,7 +529,12 @@ let loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.workspaces.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -573,7 +588,12 @@ let loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessmen
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.important.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -627,7 +647,12 @@ let loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAsses
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.unimportant.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -686,7 +711,10 @@ let loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get("plugin.evaluation.notifications.sort.error"),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -740,7 +768,7 @@ let loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 
         dispatch(
           notificationActions.displayNotification(
-            "Erroria pukkaa loadEvaluationAssessmentEventsFromServer",
+            state.i18n.text.get("plugin.evaluation.notifications.events.error"),
             "error"
           )
         );
@@ -798,7 +826,12 @@ let loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationSt
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.diaryEvents.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE",
@@ -899,7 +932,9 @@ let loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            "Erroria pukkaa " + err,
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.assignmentdata.error"
+            ),
             "error"
           )
         );
@@ -954,7 +989,12 @@ let saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
         }
 
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.saveSort.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -964,6 +1004,10 @@ let saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
     };
   };
 
+/**
+ * updateWorkspaceEvaluationToServer
+ * @param param0
+ */
 let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
   function updateWorkspaceEvaluationToServer({
     workspaceEvaluation,
@@ -999,22 +1043,23 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
           )().then((data: WorkspaceEvaluationSaveReturn) => {
             onSuccess();
 
-            dispatch(
-              updateBillingToServer({
-                assessmentIdentifier: data.identifier,
-                price: billingPrice.toString(),
-              })
-            );
-
-            /* dispatch(
-              loadEvaluationAssessmentEventsFromServer({
-                assessment: state.evaluations.evaluationSelectedAssessmentId,
-              })
-            ); */
+            if (billingPrice) {
+              dispatch(
+                updateBillingToServer({
+                  assessmentIdentifier: data.identifier,
+                  price: billingPrice.toString(),
+                })
+              );
+            }
           });
         } catch (err) {
           dispatch(
-            notificationActions.displayNotification("Erroria pukkaa", "error")
+            notificationActions.displayNotification(
+              state.i18n.text.get(
+                "plugin.evaluation.notifications.createEvaluation.error"
+              ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1045,16 +1090,15 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
                 price: billingPrice,
               })
             );
-
-            /* dispatch(
-              loadEvaluationAssessmentEventsFromServer({
-                assessment: state.evaluations.evaluationSelectedAssessmentId,
-              })
-            ); */
           });
         } catch (err) {
           dispatch(
-            notificationActions.displayNotification("Erroria pukkaa", "error")
+            notificationActions.displayNotification(
+              state.i18n.text.get(
+                "plugin.evaluation.notifications.updateEvaluation.error"
+              ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1107,7 +1151,12 @@ let updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
           });
         } catch (error) {
           dispatch(
-            notificationActions.displayNotification("Erroria pukkaa", "error")
+            notificationActions.displayNotification(
+              state.i18n.text.get(
+                "plugin.evaluation.notifications.updateSupplementation.error"
+              ),
+              "error"
+            )
           );
 
           onFail();
@@ -1134,7 +1183,12 @@ let updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
           });
         } catch (error) {
           dispatch(
-            notificationActions.displayNotification("Erroria pukkaa", "error")
+            notificationActions.displayNotification(
+              state.i18n.text.get(
+                "plugin.evaluation.notifications.updateSupplementation.error"
+              ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1201,7 +1255,12 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
           });
         } catch (error) {
           dispatch(
-            notificationActions.displayNotification("Erroria pukkaa", "error")
+            notificationActions.displayNotification(
+              state.i18n.text.get(
+                "plugin.evaluation.notifications.removeEvent.error"
+              ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1236,7 +1295,12 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
           });
         } catch (error) {
           dispatch(
-            notificationActions.displayNotification("Erroria pukkaa", "error")
+            notificationActions.displayNotification(
+              state.i18n.text.get(
+                "plugin.evaluation.notifications.removeEvent.error"
+              ),
+              "error"
+            )
           );
 
           dispatch({
@@ -1385,7 +1449,12 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
           throw err;
         }
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.assignmentdata.error"
+            ),
+            "error"
+          )
         );
 
         dispatch({
@@ -1463,7 +1532,12 @@ let updateBillingToServer: UpdateEvaluationEvent =
         });
       } catch (error) {
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.updatepricing.error"
+            ),
+            "error"
+          )
         );
 
         dispatch({
@@ -1573,7 +1647,12 @@ let updateImportance: UpdateImportance = function updateImportance(data) {
       }
 
       dispatch(
-        notificationActions.displayNotification("Erroria pukkaa", "error")
+        notificationActions.displayNotification(
+          state.i18n.text.get(
+            "plugin.evaluation.notifications.saveImportance.error"
+          ),
+          "error"
+        )
       );
       dispatch({
         type: "UPDATE_EVALUATION_STATE",
@@ -1600,6 +1679,9 @@ let updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
     };
   };
 
+/**
+ * saveAssignmentEvaluationGradeToServer
+ */
 let saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation =
   function saveAssignmentEvaluationGradeToServer({
     workspaceEntityId,
@@ -1652,7 +1734,12 @@ let saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluati
         });
       } catch (error) {
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.saveAssigmentGrade.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -1674,6 +1761,8 @@ let saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSup
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const state = getState();
+
       dispatch({
         type: "UPDATE_EVALUATION_STATE",
         payload: <EvaluationStateType>"ERROR",
@@ -1703,7 +1792,12 @@ let saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSup
         });
       } catch (error) {
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.saveAssigmentSupplementation.error"
+            ),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_EVALUATION_STATE",
@@ -1723,6 +1817,8 @@ let deleteAssessmentRequest: DeleteAssessmentRequest =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const state = getState();
+
       try {
         await promisify(
           mApi().evaluation.workspaceuser.evaluationrequestarchive.update(
@@ -1734,7 +1830,12 @@ let deleteAssessmentRequest: DeleteAssessmentRequest =
         });
       } catch (error) {
         dispatch(
-          notificationActions.displayNotification("Erroria pukkaa", "error")
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.deleteRequest.error"
+            ),
+            "error"
+          )
         );
       }
     };
@@ -1753,6 +1854,8 @@ let archiveStudent: ArchiveStudent = function archiveStudent({
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
+    const state = getState();
+
     try {
       await promisify(
         mApi().workspace.workspaces.students.read(
@@ -1776,7 +1879,12 @@ let archiveStudent: ArchiveStudent = function archiveStudent({
       });
     } catch (error) {
       dispatch(
-        notificationActions.displayNotification("Erroria pukkaa", "error")
+        notificationActions.displayNotification(
+          state.i18n.text.get(
+            "plugin.evaluation.notifications.archiveStudent.error"
+          ),
+          "error"
+        )
       );
     }
   };
