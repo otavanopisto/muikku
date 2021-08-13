@@ -15,6 +15,7 @@ import { StatusType } from "../../../../../reducers/base/status";
 import { i18nType } from "../../../../../reducers/base/i18n";
 import ArchiveDialog from "../../../dialogs/archive";
 import { bindActionCreators } from "redux";
+import Button from "../../../../general/button";
 import {
   LoadEvaluationAssessmentRequest,
   LoadEvaluationAssessmentEvent,
@@ -367,9 +368,14 @@ export class Evaluation extends React.Component<
               </div>
 
               <div className="eval-modal-evaluate-buttonset">
-                <div
+                <Button
                   onClick={this.handleOpenWorkspaceEvaluationDrawer}
-                  className="eval-modal-evaluate-button button-start-evaluation"
+                  className="eval-modal-evaluate-button eval-modal-evaluate-button--new-workspace"
+                  disabled={
+                    this.props.evaluation.evaluationAssessmentEvents.state ===
+                      "LOADING" ||
+                    this.props.evaluation.basePrice.state === "LOADING"
+                  }
                 >
                   {isEvaluated
                     ? this.props.i18n.text.get(
@@ -378,17 +384,22 @@ export class Evaluation extends React.Component<
                     : this.props.i18n.text.get(
                         "plugin.evaluation.evaluationModal.events.gradeButton"
                       )}
-                </div>
-                <div
+                </Button>
+                <Button
                   onClick={
                     this.handleOpenWorkspaceSupplementationEvaluationDrawer
                   }
-                  className="eval-modal-evaluate-button button-supplementation-request"
+                  className="eval-modal-evaluate-button eval-modal-evaluate-button--supplementation"
+                  disabled={
+                    this.props.evaluation.evaluationAssessmentEvents.state ===
+                      "LOADING" ||
+                    this.props.evaluation.basePrice.state === "LOADING"
+                  }
                 >
                   {this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.events.supplementationButton"
                   )}
-                </div>
+                </Button>
               </div>
             </div>
           </div>
