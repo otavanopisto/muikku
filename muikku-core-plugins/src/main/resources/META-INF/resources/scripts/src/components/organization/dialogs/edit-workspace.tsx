@@ -1040,7 +1040,7 @@ class OrganizationEditWorkspace extends React.Component<
         <div
           className={`dialog__executer ${
             this.state.workspaceUpdated === true
-              ? "dialog__executer state-DONE"
+              ? "state-DONE"
               : ""
           }`}
         >
@@ -1051,18 +1051,18 @@ class OrganizationEditWorkspace extends React.Component<
         <div
           className={`dialog__executer ${
             this.state.detailsAdded === true
-              ? "dialog__executer state-DONE"
+              ? "state-DONE"
               : ""
           }`}
         >
           {this.props.i18n.text.get(
-            "plugin.organization.workspaces.editWorkspace.summary.execute.detailsAdded"
+            "plugin.organization.workspaces.editWorkspace.summary.execute.addDetails"
           )}
         </div>
         <div
           className={`dialog__executer ${
             this.state.studentsAdded === true
-              ? "dialog__executer state-DONE"
+              ? "state-DONE"
               : ""
           }`}
         >
@@ -1072,7 +1072,9 @@ class OrganizationEditWorkspace extends React.Component<
         </div>
         <div
           className={`dialog__executer ${
-            this.state.staffAdded === true ? "dialog__executer state-DONE" : ""
+            this.state.staffAdded === true
+              ? "state-DONE"
+              : ""
           }`}
         >
           {this.props.i18n.text.get(
@@ -1082,7 +1084,7 @@ class OrganizationEditWorkspace extends React.Component<
         <div
           className={`dialog__executer ${
             this.state.studentsRemoved === true
-              ? "dialog__executer state-DONE"
+              ? "state-DONE"
               : ""
           }`}
         >
@@ -1093,7 +1095,7 @@ class OrganizationEditWorkspace extends React.Component<
         <div
           className={`dialog__executer ${
             this.state.staffRemoved === true
-              ? "dialog__executer state-DONE"
+              ? "state-DONE"
               : ""
           }`}
         >

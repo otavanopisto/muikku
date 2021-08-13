@@ -1580,7 +1580,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         });
 
         await promisify(
-          mApi().organizationmanagement.workspaces.students.create(
+          mApi().organizationWorkspaceManagement.workspaces.students.create(
             data.workspace.id,
             {
               studentIdentifiers: studentIdentifiers,
@@ -1597,7 +1597,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         );
 
         await promisify(
-          mApi().organizationmanagement.workspaces.staff.create(
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(
             data.workspace.id,
             {
               staffMemberIdentifiers: staffMemberIdentifiers,
@@ -1610,7 +1610,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       // if (data.removeStudents.length > 0) {
       //   let studentIdentifiers = data.removeStudents.map(student => student.id);
 
-      // await promisify(mApi().organizationmanagement.workspaces.students
+      // await promisify(mApi().organizationWorkspaceManagement.workspaces.students
       //   .del(data.workspace.id, {
       //     studentIdentifiers: studentIdentifiers
       //   }
@@ -1622,7 +1622,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       // if (data.removeTeachers.length > 0) {
       //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
 
-      // await promisify(mApi().organizationmanagement.workspaces.staff
+      // await promisify(mApi().organizationWorkspaceManagement.workspaces.staff
       //   .del(data.workspace.id, {
       //     staffMemberIdentifiers: staffMemberIdentifiers
       //   }
@@ -2852,7 +2852,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         });
 
         await promisify(
-          mApi().organizationmanagement.workspaces.students.create(
+          mApi().organizationWorkspaceManagement.workspaces.students.create(
             workspace.id,
             {
               studentIdentifiers: studentIdentifiers,
@@ -2867,7 +2867,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
         await promisify(
-          mApi().organizationmanagement.workspaces.staff.create(workspace.id, {
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(workspace.id, {
             staffMemberIdentifiers: staffMemberIdentifiers,
           }),
           "callback"
