@@ -46,6 +46,7 @@ export interface EvaluationState {
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
+  basePrice: EvaluationStateAndData<number>;
 }
 
 /**
@@ -84,6 +85,10 @@ export const initialState: EvaluationState = {
   },
   evaluationCompositeReplies: { state: "LOADING", data: undefined },
   needsReloadEvaluationRequests: false,
+  basePrice: {
+    state: "LOADING",
+    data: undefined,
+  },
 };
 
 /**
@@ -240,6 +245,14 @@ export default function evaluations(state = initialState, action: ActionType) {
   } else if (action.type === "UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS") {
     return Object.assign({}, state, {
       needsReloadEvaluationRequests: action.payload,
+    });
+  } else if (action.type === "SET_BASE_PRICE") {
+    return Object.assign({}, state, {
+      basePrice: { state: state.basePrice.state, data: action.payload },
+    });
+  } else if (action.type === "UPDATE_BASE_PRICE_STATE") {
+    return Object.assign({}, state, {
+      basePrice: { state: action.payload, data: state.basePrice.data },
     });
   }
   return state;

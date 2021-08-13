@@ -11,6 +11,10 @@ import Evaluation from "../body/application/evaluation/evaluation";
 import { AssessmentRequest } from "../../../@types/evaluation";
 import { StatusType } from "../../../reducers/base/status";
 import {
+  LoadBasePrice,
+  loadBasePriceFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import {
   LoadEvaluationStudyDiaryEvent,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
 } from "../../../actions/main-function/evaluation/evaluationActions";
@@ -42,6 +46,7 @@ interface EvaluateDialogProps {
   setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent;
+  loadBasePriceFromServer: LoadBasePrice;
 }
 
 /**
@@ -81,6 +86,7 @@ class EvaluateDialog extends React.Component<
       userEntityId: this.props.assessment.userEntityId,
       workspaceId: this.props.assessment.workspaceEntityId,
     });
+    this.props.loadBasePriceFromServer();
   };
 
   /**
@@ -141,6 +147,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
       setCurrentStudentEvaluationData,
       loadEvaluationCompositeRepliesFromServer,
       loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+      loadBasePriceFromServer,
     },
     dispatch
   );

@@ -58,6 +58,8 @@ import {
 } from "../../../@types/evaluation";
 
 //////State update interfaces
+export interface UPDATE_BASE_PRICE_STATE
+  extends SpecificActionType<"UPDATE_BASE_PRICE_STATE", EvaluationStateType> {}
 
 export interface UPDATE_EVALUATION_STATE
   extends SpecificActionType<"UPDATE_EVALUATION_STATE", EvaluationStateType> {}
@@ -91,6 +93,9 @@ export interface UPDATE_EVALUATION_REQUESTS_STATE
     "UPDATE_EVALUATION_REQUESTS_STATE",
     EvaluationStateType
   > {}
+
+export interface SET_BASE_PRICE
+  extends SpecificActionType<"SET_BASE_PRICE", number> {}
 
 export interface SET_IMPORTANT_ASSESSMENTS
   extends SpecificActionType<"SET_IMPORTANT_ASSESSMENTS", EvaluationStatus> {}
@@ -243,6 +248,10 @@ export interface LoadEvaluationCompositeReplies {
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
+}
+
+export interface LoadBasePrice {
+  (): AnyActionType;
 }
 
 // Other
@@ -404,7 +413,8 @@ let loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.gradesystem.error"
+              "plugin.evaluation.notifications.gradesystem.error",
+              err.message
             ),
             "error"
           )
@@ -470,7 +480,8 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.evaluationRequest.error"
+              "plugin.evaluation.notifications.evaluationRequest.error",
+              err.message
             ),
             "error"
           )
@@ -531,7 +542,8 @@ let loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.workspaces.error"
+              "plugin.evaluation.notifications.workspaces.error",
+              err.message
             ),
             "error"
           )
@@ -590,7 +602,8 @@ let loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessmen
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.important.error"
+              "plugin.evaluation.notifications.important.error",
+              err.message
             ),
             "error"
           )
@@ -649,7 +662,8 @@ let loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAsses
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.unimportant.error"
+              "plugin.evaluation.notifications.unimportant.error",
+              err.message
             ),
             "error"
           )
@@ -712,7 +726,10 @@ let loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get("plugin.evaluation.notifications.sort.error"),
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.sort.error",
+              err.message
+            ),
             "error"
           )
         );
@@ -768,7 +785,10 @@ let loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 
         dispatch(
           notificationActions.displayNotification(
-            state.i18n.text.get("plugin.evaluation.notifications.events.error"),
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.events.error",
+              err.message
+            ),
             "error"
           )
         );
@@ -828,7 +848,8 @@ let loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationSt
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.diaryEvents.error"
+              "plugin.evaluation.notifications.diaryEvents.error",
+              err.message
             ),
             "error"
           )
@@ -933,7 +954,8 @@ let loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.assignmentdata.error"
+              "plugin.evaluation.notifications.assignmentdata.error",
+              err.message
             ),
             "error"
           )
@@ -991,7 +1013,8 @@ let saveEvaluationSortFunctionToServer: SaveEvaluationSortFunction =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.saveSort.error"
+              "plugin.evaluation.notifications.saveSort.error",
+              err.message
             ),
             "error"
           )
@@ -1030,6 +1053,8 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
       }
 
       if (type === "new") {
+        console.log("new");
+
         try {
           await promisify(
             mApi().evaluation.workspaceuser.assessment.create(
@@ -1056,7 +1081,8 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
           dispatch(
             notificationActions.displayNotification(
               state.i18n.text.get(
-                "plugin.evaluation.notifications.createEvaluation.error"
+                "plugin.evaluation.notifications.createEvaluation.error",
+                err.message
               ),
               "error"
             )
@@ -1070,6 +1096,8 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
           onFail();
         }
       } else {
+        console.log("edit");
+
         try {
           await promisify(
             mApi().evaluation.workspaceuser.assessment.update(
@@ -1084,18 +1112,21 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
           )().then((data: WorkspaceEvaluationSaveReturn) => {
             onSuccess();
 
-            dispatch(
-              updateBillingToServer({
-                assessmentIdentifier: data.identifier,
-                price: billingPrice,
-              })
-            );
+            if (billingPrice) {
+              dispatch(
+                updateBillingToServer({
+                  assessmentIdentifier: data.identifier,
+                  price: billingPrice,
+                })
+              );
+            }
           });
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
               state.i18n.text.get(
-                "plugin.evaluation.notifications.updateEvaluation.error"
+                "plugin.evaluation.notifications.updateEvaluation.error",
+                err.message
               ),
               "error"
             )
@@ -1153,7 +1184,8 @@ let updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
           dispatch(
             notificationActions.displayNotification(
               state.i18n.text.get(
-                "plugin.evaluation.notifications.updateSupplementation.error"
+                "plugin.evaluation.notifications.updateSupplementation.error",
+                error.message
               ),
               "error"
             )
@@ -1185,7 +1217,8 @@ let updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
           dispatch(
             notificationActions.displayNotification(
               state.i18n.text.get(
-                "plugin.evaluation.notifications.updateSupplementation.error"
+                "plugin.evaluation.notifications.updateSupplementation.error",
+                error.message
               ),
               "error"
             )
@@ -1257,7 +1290,8 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
           dispatch(
             notificationActions.displayNotification(
               state.i18n.text.get(
-                "plugin.evaluation.notifications.removeEvent.error"
+                "plugin.evaluation.notifications.removeEvent.error",
+                error.message
               ),
               "error"
             )
@@ -1297,7 +1331,8 @@ let removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
           dispatch(
             notificationActions.displayNotification(
               state.i18n.text.get(
-                "plugin.evaluation.notifications.removeEvent.error"
+                "plugin.evaluation.notifications.removeEvent.error",
+                error.message
               ),
               "error"
             )
@@ -1451,7 +1486,8 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.assignmentdata.error"
+              "plugin.evaluation.notifications.assignmentdata.error",
+              err.message
             ),
             "error"
           )
@@ -1534,7 +1570,8 @@ let updateBillingToServer: UpdateEvaluationEvent =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.updatepricing.error"
+              "plugin.evaluation.notifications.updatepricing.error",
+              error.message
             ),
             "error"
           )
@@ -1649,7 +1686,8 @@ let updateImportance: UpdateImportance = function updateImportance(data) {
       dispatch(
         notificationActions.displayNotification(
           state.i18n.text.get(
-            "plugin.evaluation.notifications.saveImportance.error"
+            "plugin.evaluation.notifications.saveImportance.error",
+            err.message
           ),
           "error"
         )
@@ -1736,7 +1774,8 @@ let saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluati
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.saveAssigmentGrade.error"
+              "plugin.evaluation.notifications.saveAssigmentGrade.error",
+              error.message
             ),
             "error"
           )
@@ -1794,7 +1833,8 @@ let saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSup
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.saveAssigmentSupplementation.error"
+              "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
+              error.message
             ),
             "error"
           )
@@ -1832,7 +1872,8 @@ let deleteAssessmentRequest: DeleteAssessmentRequest =
         dispatch(
           notificationActions.displayNotification(
             state.i18n.text.get(
-              "plugin.evaluation.notifications.deleteRequest.error"
+              "plugin.evaluation.notifications.deleteRequest.error",
+              error.message
             ),
             "error"
           )
@@ -1881,7 +1922,8 @@ let archiveStudent: ArchiveStudent = function archiveStudent({
       dispatch(
         notificationActions.displayNotification(
           state.i18n.text.get(
-            "plugin.evaluation.notifications.archiveStudent.error"
+            "plugin.evaluation.notifications.archiveStudent.error",
+            error.message
           ),
           "error"
         )
@@ -1889,6 +1931,47 @@ let archiveStudent: ArchiveStudent = function archiveStudent({
     }
   };
 };
+
+let loadBasePriceFromServer: LoadBasePrice =
+  function loadBasePriceFromServer() {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      let basePrice: number | undefined = undefined;
+
+      dispatch({
+        type: "UPDATE_BASE_PRICE_STATE",
+        payload: <EvaluationStateType>"LOADING",
+      });
+
+      await promisify(
+        mApi().worklist.basePrice.read({
+          workspaceEntityId: state.evaluations.selectedWorkspaceId,
+        }),
+        "callback"
+      )().then(
+        (data) => {
+          basePrice = data as number;
+        },
+        (reject) => {
+          basePrice = undefined;
+        }
+      );
+
+      dispatch({
+        type: "SET_BASE_PRICE",
+        payload: basePrice,
+      });
+
+      dispatch({
+        type: "UPDATE_BASE_PRICE_STATE",
+        payload: <EvaluationStateType>"READY",
+      });
+    };
+  };
 
 let updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
   function updateNeedsReloadEvaluationRequests({ value }) {
@@ -1929,6 +2012,7 @@ export {
   updateOpenedAssignmentEvaluation,
   loadEvaluationAssessmentEventsFromServer,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
+  loadBasePriceFromServer,
   archiveStudent,
   deleteAssessmentRequest,
 };
