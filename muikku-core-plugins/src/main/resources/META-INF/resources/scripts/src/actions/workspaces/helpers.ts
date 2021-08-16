@@ -99,7 +99,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
 
   try {
 
-    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces ? <WorkspaceListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')() : <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces ? <WorkspaceListType>await promisify(mApi().organizationWorkspaceManagement.workspaces.cacheClear().read(params), 'callback')() : <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
