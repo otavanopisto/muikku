@@ -1631,7 +1631,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       //   );
       // }
 
-      //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
+      //  await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 
       data.progress && data.progress("done");
       data.success && data.success();
