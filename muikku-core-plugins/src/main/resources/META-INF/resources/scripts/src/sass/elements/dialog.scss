@@ -410,3 +410,25 @@
   }
   // scss-lint:enable SelectorFormat
 }
+
+.dialog__state {
+  align-items: center;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  display: flex;
+  margin: 20px 0 5px;
+  padding: 5px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-INFO {
+    border-color: $color-info;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.dialog__state-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
+}

@@ -28,7 +28,6 @@ import { StaffRecepientType } from "../../../reducers/user-index";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
-import "~/sass/elements/guider.scss";
 
 const KEYCODES = {
   ENTER: 13,
@@ -655,13 +654,9 @@ class GuiderLabelUpdateDialog extends React.Component<
           </div>
 
           {isOwnerOfCurrentLabel && this.state.selectedItems.length > 0 && (
-            <div className="guider-container__state state-INFO">
-              <div className="guider-container__state-icon icon-notification"></div>
-              <div className="guider-container__state-text">
-                <p>
-                  Poistaaksesi lipun, sillä ei saa olla jakoja. <br /> Poista
-                  jaot poistaaksesi lipun.
-                </p>
+            <div className="dialog__state state-INFO">
+              <div className="dialog__state-text">
+                {this.props.i18n.text.get("plugin.guider.flags.unableToDeleteFlag.description")}
               </div>
             </div>
           )}
