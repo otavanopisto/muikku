@@ -104,15 +104,6 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       modifier: "evaluation",
       trail: "evaluation",
       text: 'plugin.evaluation.evaluation',
-      href: "/evaluation2",
-      icon: "evaluate",
-      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
-      openInNewTab: "_blank",
-    },{
-      //Evaluation is also an external
-      modifier: "evaluation",
-      trail: "evaluation",
-      text: 'plugin.evaluation.evaluation',
       href: "/evaluation",
       icon: "evaluate",
       to: true,

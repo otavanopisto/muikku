@@ -223,10 +223,10 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "evaluation",
       trail: "evaluation",
       text: 'plugin.evaluation.evaluation',
-      href: (this.props.currentWorkspace ? ("/evaluation2?workspaceEntityId=" + this.props.currentWorkspace.id) : null),
+      href: (this.props.currentWorkspace ? ("/evaluation?workspaceEntityId=" + this.props.currentWorkspace.id) : null),
       icon: "evaluate",
-      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
-      openInNewTab: "_blank"
+      to: true,
+      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX
     }];
 
   let assessmentRequestItem = this.props.currentWorkspace &&
