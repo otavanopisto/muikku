@@ -248,18 +248,7 @@ class WorkspaceNavbar extends React.Component<
         to: true,
         condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
       },
-      {
-        //Evaluation is also an external
-        modifier: "evaluation",
-        trail: "evaluation",
-        text: "plugin.evaluation.evaluation",
-        href: this.props.currentWorkspace
-          ? "/evaluation2?workspaceEntityId=" + this.props.currentWorkspace.id
-          : null,
-        icon: "evaluate",
-        condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
-        openInNewTab: "_blank",
-      },
+
       {
         //Second "newer" version of evaluation
         modifier: "evaluation",
