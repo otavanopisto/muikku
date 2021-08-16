@@ -24,7 +24,7 @@ import Table from '~/components/base/material-loader/static/table';
 import MathJAX from '~/components/base/material-loader/static/mathjax';
 
 //These are all our supported objects as for now
-const objects: {[key: string]: any} = {
+const objects: { [key: string]: any } = {
   "application/vnd.muikku.field.text": TextField,
   "application/vnd.muikku.field.select": SelectField,
   "application/vnd.muikku.field.multiselect": MultiSelectField,
@@ -37,7 +37,7 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.mathexercise": MathField
 }
 
-const parentObjects: {[key: string]: any} = {
+const parentObjects: { [key: string]: any } = {
   "application/vnd.muikku.field.text": "span",
   "application/vnd.muikku.field.select": "span",
   "application/vnd.muikku.field.multiselect": "span",
@@ -51,19 +51,19 @@ const parentObjects: {[key: string]: any} = {
 }
 
 // Wheteher the object can check or not for an answer
-const answerCheckables: {[key: string]: (params:any)=>boolean} = {
-  "application/vnd.muikku.field.text": (params: any)=>{
-    return params.content && params.content.rightAnswers.filter((option:any)=>option.correct).lenght;
+const answerCheckables: { [key: string]: (params: any) => boolean } = {
+  "application/vnd.muikku.field.text": (params: any) => {
+    return params.content && params.content.rightAnswers.filter((option: any) => option.correct).lenght;
   },
-  "application/vnd.muikku.field.select": (params: any)=>{
-    return params.content && params.content.options.filter((option:any)=>option.correct).lenght;
+  "application/vnd.muikku.field.select": (params: any) => {
+    return params.content && params.content.options.filter((option: any) => option.correct).lenght;
   },
-  "application/vnd.muikku.field.multiselect": (params: any)=>{
-    return params.content && params.content.options.filter((option:any)=>option.correct).lenght;
+  "application/vnd.muikku.field.multiselect": (params: any) => {
+    return params.content && params.content.options.filter((option: any) => option.correct).lenght;
   },
-  "application/vnd.muikku.field.connect": ()=>true,
-  "application/vnd.muikku.field.organizer": ()=>true,
-  "application/vnd.muikku.field.sorter": ()=>true
+  "application/vnd.muikku.field.connect": () => true,
+  "application/vnd.muikku.field.organizer": () => true,
+  "application/vnd.muikku.field.sorter": () => true
 }
 
 interface BaseProps {
@@ -77,12 +77,12 @@ interface BaseProps {
   compositeReplies?: MaterialCompositeRepliesType,
   readOnly?: boolean,
 
-  onConfirmedAndSyncedModification?: ()=>any,
-  onModification?: ()=>any,
+  onConfirmedAndSyncedModification?: () => any,
+  onModification?: () => any,
   displayCorrectAnswers: boolean,
   checkAnswers: boolean,
-  onAnswerChange: (name:string, status:boolean)=>any,
-  onAnswerCheckableChange: (status: boolean)=>any,
+  onAnswerChange: (name: string, status: boolean) => any,
+  onAnswerCheckableChange: (status: boolean) => any,
 
   invisible: boolean,
 }
@@ -101,9 +101,9 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 //Fixes the html inconsitencies because
 //there are some of them which shouldn't
 //but hey that's the case
-function preprocessor($html: any): any{
-  $html.find('img').each(function(){
-    if (!$(this).parent('figure').length){
+function preprocessor($html: any): any {
+  $html.find('img').each(function () {
+    if (!$(this).parent('figure').length) {
       let elem = document.createElement('figure');
       elem.className = 'image';
 
@@ -124,13 +124,26 @@ function preprocessor($html: any): any{
     }
   });
 
-  $html.find("a figure").each(function(){
+  $html.find('source').each(function () {
+
+    //This is done because there will be a bunch of 404's if the src is left untouched - the original url for the audio file src is faulty
+
+    const src = this.getAttribute("src");
+
+    if (src) {
+      this.dataset.original = src;
+      this.src = "";
+    }
+  }
+  );
+
+  $html.find("a figure").each(function () {
     // removing old style images wrapped in a link
     // they get processed as link and thus don't work
     $(this).parent("a").replaceWith(this);
   });
 
-  const $newHTML = $html.map(function() {
+  const $newHTML = $html.map(function () {
     if (this.tagName === "TABLE") {
       let elem = document.createElement("div");
       elem.className = "material-page__table-wrapper";
@@ -140,7 +153,7 @@ function preprocessor($html: any): any{
     return this;
   });
 
-  $newHTML.find("table").each(function(){
+  $newHTML.find("table").each(function () {
     if ($(this).parent().attr("class") === "material-page__table-wrapper") {
       return;
     }
@@ -156,7 +169,7 @@ function preprocessor($html: any): any{
 }
 
 export default class Base extends React.Component<BaseProps, BaseState> {
-  private answerCheckable:boolean;
+  private answerCheckable: boolean;
 
   //whenever a field changes we save it as timeout not to send every keystroke to the server
   //every keystroke cancels the previous timeout given by the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
@@ -177,7 +190,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     [name: string]: React.Component<any, any>
   }
 
-  constructor(props: BaseProps){
+  constructor(props: BaseProps) {
     super(props);
 
     //We preprocess the html
@@ -197,13 +210,13 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
 
   //When it mounts we setup everything
-  componentDidMount(){
+  componentDidMount() {
     this.setupEverything(this.props, this.state.elements);
   }
 
   //To update everything if we get a brand new html we unmount and remount
-  componentWillReceiveProps(nextProps: BaseProps){
-    if (nextProps.material.html !== this.props.material.html){
+  componentWillReceiveProps(nextProps: BaseProps) {
+    if (nextProps.material.html !== this.props.material.html) {
       const elements = preprocessor($(nextProps.material.html)).toArray() as Array<HTMLElement>;
       this.setState({
         elements,
@@ -213,90 +226,90 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
   }
 
-  setupEverything(props: BaseProps = this.props, elements: Array<HTMLElement>){
+  setupEverything(props: BaseProps = this.props, elements: Array<HTMLElement>) {
     let originalAnswerCheckable = this.answerCheckable;
     this.answerCheckable = false;
 
     //First we find all the interactive
-    $(elements).find("object").addBack("object").each((index: number, element: HTMLElement)=>{
+    $(elements).find("object").addBack("object").each((index: number, element: HTMLElement) => {
       //We get the object element as in, the react component that it will be replaced with
-      const rElement:React.ReactElement<any> = this.getObjectElement(element, props);
+      const rElement: React.ReactElement<any> = this.getObjectElement(element, props);
 
       const newAnswerCheckableState = answerCheckables[element.getAttribute("type")] &&
         answerCheckables[element.getAttribute("type")](rElement.props);
-      if (newAnswerCheckableState && !this.answerCheckable){
+      if (newAnswerCheckableState && !this.answerCheckable) {
         this.answerCheckable = true;
       }
     });
 
-    if (this.props.onAnswerCheckableChange && originalAnswerCheckable !== this.answerCheckable){
+    if (this.props.onAnswerCheckableChange && originalAnswerCheckable !== this.answerCheckable) {
       this.props.onAnswerCheckableChange(this.answerCheckable);
     }
   }
   //When we mount we need to register the websocket event for the answer saved
-  componentWillMount(){
+  componentWillMount() {
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
       this.props.websocketState.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
     }
   }
   //and we unregister that on unmount and of course unmount all the will be orphaned react components in the dom
-  componentWillUnmount(){
+  componentWillUnmount() {
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
       this.props.websocketState.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
     }
   }
   //when an answer is saved from the server, as in the websocket calls this
-  onAnswerSavedAtServer(data: any){
+  onAnswerSavedAtServer(data: any) {
     //For some reason the data comes as string
     let actualData = JSON.parse(data);
     //we check the data for a match for this specific page, given that a lot of callbacks will be registered
     //and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     //registering this event on all the field-answer-saved events
     if (actualData.materialId === this.props.material.materialId && actualData.workspaceMaterialId === this.props.material.workspaceMaterialId &&
-        actualData.workspaceEntityId === this.props.workspace.id){
+      actualData.workspaceEntityId === this.props.workspace.id) {
       //We clear the timeout that would mark the field as unsynced given the time had passed
       clearTimeout(this.timeoutConnectionFailedRegistry[actualData.fieldName]);
       delete this.timeoutConnectionFailedRegistry[actualData.fieldName];
 
       //if we have an error
-      if (actualData.error){
+      if (actualData.error) {
         console.error && console.error(actualData.error);
         //we get the context and check whether it's synced
-        this.nameContextRegistry[actualData.fieldName].setState({synced: false, syncError: actualData.error});
+        this.nameContextRegistry[actualData.fieldName].setState({ synced: false, syncError: actualData.error });
         return;
       }
 
       //The answer has been modified so we bubble this event
       this.props.onConfirmedAndSyncedModification();
 
-      if (this.nameContextRegistry[actualData.fieldName]) {
+      if (this.nameContextRegistry[actualData.fieldName]) {
         //we check the name context registry to see if it had been synced, said if you lost connection to the server
         //the field got unsynced, regained the connection and the answer got saved, so the thing above did nothing
         //as the field had been unsynced already
         if (
           !this.nameContextRegistry[actualData.fieldName].state.synced ||
           this.nameContextRegistry[actualData.fieldName].state.syncError
-        ){
+        ) {
           //we make it synced then and the user is happy can keep typing
-          this.nameContextRegistry[actualData.fieldName].setState({synced: true, syncError: null});
+          this.nameContextRegistry[actualData.fieldName].setState({ synced: true, syncError: null });
         }
       }
     }
   }
   //This takes the raw element and checks what react component it will give
-  getObjectElement(element: HTMLElement, props: BaseProps = this.props, key?: number){
+  getObjectElement(element: HTMLElement, props: BaseProps = this.props, key?: number) {
     //So we check from our objects we have on top, to see what class we are getting
     let ActualElement = objects[element.getAttribute("type")];
 
     //This is here in case we get some brand new stuff, it should never come here
-    if (!ActualElement){
+    if (!ActualElement) {
       return <span>Invalid Element {element.getAttribute("type")} {element.innerHTML}</span>;
     }
 
     //So now we get the parameters of that thing, due to all the updates we gotta unify here
-    let parameters: {[key: string]: any} = {};
+    let parameters: { [key: string]: any } = {};
     //basically we need to get all the params
     element.querySelectorAll("param").forEach((node) => {
       //and add the value to a list of parameters
@@ -304,12 +317,12 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     });
 
     //if the type of json
-    if (parameters["type"] === "application/json"){
+    if (parameters["type"] === "application/json") {
       try {
         //Then we try to parse the content if there's a content, hmmm
         //some fields come differently but hey this works out
         parameters["content"] = parameters["content"] && JSON.parse(parameters["content"]);
-      } catch (e){}
+      } catch (e) { }
     }
 
     if (!parameters["type"]) {
@@ -328,7 +341,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //We set the value if we have one in composite replies
     parameters["initialValue"] = null;
     if (props.compositeReplies && props.compositeReplies.answers) {
-      parameters["initialValue"] = props.compositeReplies.answers.find((answer)=>{
+      parameters["initialValue"] = props.compositeReplies.answers.find((answer) => {
         return answer.fieldName === (parameters.content && parameters.content.name);
       });
     }
@@ -349,11 +362,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["userId"] = props.status.userId;
 
     //and we return that thing
-    return <ActualElement {...parameters} key={key}/>
+    return <ActualElement {...parameters} key={key} />
   }
 
   //Ok so this is what the element calls every time that changes
-  onValueChange(context: React.Component<any, any>, name: string, newValue: any){
+  onValueChange(context: React.Component<any, any>, name: string, newValue: any) {
     if (!this.props.websocketState.websocket) {
       // can't do anything if no websocket
       return;
@@ -362,14 +375,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //the context is basically the react component, the name the fieldName, and the newValue the value we use
 
     //so we check if it's not modified and if it is, we mark it as modified
-    if (!context.state.modified){
-      context.setState({modified: true});
+    if (!context.state.modified) {
+      context.setState({ modified: true });
     }
     if (!this.props.answerable) {
-      context.setState({synced: true});
+      context.setState({ synced: true });
       return;
     }
-    context.setState({synced: false});
+    context.setState({ synced: false });
 
     this.props.onModification && this.props.onModification();
 
@@ -380,7 +393,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     clearTimeout(this.timeoutChangeRegistry[name]);
 
     //and set a new timeout to change given the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
-    this.timeoutChangeRegistry[name] = setTimeout(()=>{
+    this.timeoutChangeRegistry[name] = setTimeout(() => {
 
       //Tell the server thru the websocket to save
       let messageData = JSON.stringify({
@@ -406,18 +419,18 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
       //And we wait the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY
       //for considering the answer unsynced if the server does not reply
-      this.timeoutConnectionFailedRegistry[name] = setTimeout(()=>{
+      this.timeoutConnectionFailedRegistry[name] = setTimeout(() => {
         // Takes too long so we queue the message again
         this.props.websocketState.websocket.queueMessage("workspace:field-answer-save", messageData, null, stackId);
-        context.setState({syncError: "server does not reply"});
+        context.setState({ syncError: "server does not reply" });
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE) as any;
   }
-  render(){
-    const processingFunction = (dontProcessTag: string, reprocessFunction: any, Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
+  render() {
+    const processingFunction = (dontProcessTag: string, reprocessFunction: any, Tag: string, elementProps: any, children: Array<any>, element: HTMLElement) => {
       if (Tag !== dontProcessTag) {
         if (Tag === "object") {
-          const rElement:React.ReactElement<any> = this.getObjectElement(element, this.props, elementProps.key);
+          const rElement: React.ReactElement<any> = this.getObjectElement(element, this.props, elementProps.key);
           return rElement;
         } else if (
           Tag === "iframe" ||
@@ -432,25 +445,26 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           const i18n = this.props.i18n;
           const dataset = extractDataSet(element);
           if (Tag === "iframe") {
-            return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>
+            return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} />
           } else if (Tag === "table") {
-            return <Table key={elementProps.key} element={element} props={elementProps} children={children}/>
+            return <Table key={elementProps.key} element={element} props={elementProps} children={children} />
           } else if (Tag === "mark") {
             return <WordDefinition key={elementProps.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>
           } else if (Tag === "figure") {
-            return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)}/>
+            return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)} />
           } else if (Tag === "span") {
-            return <MathJAX key={elementProps.key} invisible={invisible} children={children}/>
+            return <MathJAX key={elementProps.key} invisible={invisible} children={children} />
           } else {
-            return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n}/>
+            return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n} />
           }
-        } else if (
+        }
+        else if (
           Tag === "source"
         ) {
-          const src = elementProps.src;
+          const src = extractDataSet(element).original;
           const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
-          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
-          if (!isAbsolute){
+            (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+          if (!isAbsolute) {
             const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
             elementProps.src = path + "/" + src;
           }

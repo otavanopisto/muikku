@@ -15,21 +15,7 @@
   <description>Plugin that provides Google OAuth login support </description>
 
   <dependencies>
-  
-    <!-- Jackson -->
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
+      
     <!-- CDI -->
 
     <dependency>
