@@ -1053,8 +1053,6 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
       }
 
       if (type === "new") {
-        console.log("new");
-
         try {
           await promisify(
             mApi().evaluation.workspaceuser.assessment.create(
@@ -1096,8 +1094,6 @@ let updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
           onFail();
         }
       } else {
-        console.log("edit");
-
         try {
           await promisify(
             mApi().evaluation.workspaceuser.assessment.update(
@@ -1932,6 +1928,9 @@ let archiveStudent: ArchiveStudent = function archiveStudent({
   };
 };
 
+/**
+ * loadBasePriceFromServer
+ */
 let loadBasePriceFromServer: LoadBasePrice =
   function loadBasePriceFromServer() {
     return async (
@@ -1973,6 +1972,9 @@ let loadBasePriceFromServer: LoadBasePrice =
     };
   };
 
+/**
+ * updateNeedsReloadEvaluationRequests
+ */
 let updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
   function updateNeedsReloadEvaluationRequests({ value }) {
     return async (
