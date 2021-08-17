@@ -20,7 +20,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/evaluation", to = "/jsf/evaluation/index.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/evaluation", to = "/jsf/workspace/evaluation.jsf")
 @LoggedIn
 public class WorkspaceEvaluationBackingBean extends AbstractWorkspaceBackingBean {
 
