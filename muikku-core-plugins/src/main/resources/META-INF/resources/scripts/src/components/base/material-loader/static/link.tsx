@@ -13,12 +13,12 @@ interface LinkProps {
 }
 
 export default class Link extends React.Component<LinkProps, {}>{
-  constructor(props: LinkProps){
+  constructor(props: LinkProps) {
     super(props);
   }
-  render (){
-    return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-      if (Tag === "a" && elementProps.href && elementProps.href[0] !== "#"){
+  render() {
+    return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement) => {
+      if (Tag === "a" && elementProps.href && elementProps.href[0] !== "#") {
         const isAbsolute = (elementProps.href.indexOf('/') == 0) || (elementProps.href.indexOf('mailto:') == 0) ||
           (elementProps.href.indexOf('data:') == 0) || (elementProps.href.match("^(?:[a-zA-Z]+:)?\/\/"));
         if (!isAbsolute) {
