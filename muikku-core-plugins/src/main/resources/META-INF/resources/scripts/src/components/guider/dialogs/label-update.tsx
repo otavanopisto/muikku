@@ -579,7 +579,6 @@ class GuiderLabelUpdateDialog extends React.Component<
                   hasUserPermission={false}
                   hasWorkspacePermission={false}
                   hasStaffPermission
-                  autofocus
                   showEmails={false}
                   showFullNames
                 />
