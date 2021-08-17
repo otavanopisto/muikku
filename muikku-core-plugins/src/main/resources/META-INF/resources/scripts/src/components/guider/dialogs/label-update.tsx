@@ -655,6 +655,7 @@ class GuiderLabelUpdateDialog extends React.Component<
 
           {isOwnerOfCurrentLabel && this.state.selectedItems.length > 0 && (
             <div className="dialog__state state-INFO">
+              <div className="dialog__state-icon icon-notification"></div>
               <div className="dialog__state-text">
                 {this.props.i18n.text.get("plugin.guider.flags.unableToDeleteFlag.description")}
               </div>
