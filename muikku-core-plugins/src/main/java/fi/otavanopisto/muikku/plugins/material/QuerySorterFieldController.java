@@ -6,7 +6,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySorterFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
