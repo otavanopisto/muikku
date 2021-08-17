@@ -1196,8 +1196,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
               <div className="matriculation-container__state-icon icon-notification"></div>
               <div className="matriculation-container__state-text">
                 <p>
-                  Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna.
-                  Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.
+                  Sinulla ei ole tarpeeksi pakollisia opintoja suoritettuna.
                 </p>
               </div>
             </div>
