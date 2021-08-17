@@ -134,23 +134,7 @@ export interface EvaluationGrade {
 /**
  * Interface for workspace used in evaluation
  */
-export interface EvaluationWorkspace {
-  access: string;
-  archived: boolean;
-  curriculumIdentifiers: string[];
-  description: string;
-  hasCustomImage: boolean;
-  id: number;
-  lastVisit: string;
-  materialDefaultLicense: string;
-  name: string;
-  nameExtension: string | null;
-  numVisits: number;
-  organizationEntityId: number;
-  published: boolean;
-  subjectIdentifier: string;
-  urlName: string;
-}
+export interface EvaluationWorkspace extends WorkspaceType {}
 
 /**
  * EvaluationStatus
@@ -285,7 +269,6 @@ export interface AssignmentEvaluationSupplementationRequest {
  * EvaluationData
  */
 export interface EvaluationData {
-  workspace: WorkspaceType;
   materials: MaterialContentNodeListType;
 }
 

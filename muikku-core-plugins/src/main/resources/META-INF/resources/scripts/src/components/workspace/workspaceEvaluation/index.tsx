@@ -1,6 +1,4 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-import ScreenContainer from "~/components/general/screen-container";
-
 import * as React from "react";
 import Application from "~/components/evaluation/body/application";
 
@@ -29,15 +27,6 @@ export default class WorkspaceEvaluationBody extends React.Component<
    */
   constructor(props: WorkspaceEvaluationBodyProps) {
     super(props);
-
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
-  }
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    (this.refs.content as any).getWrappedInstance().refresh();
   }
 
   /**

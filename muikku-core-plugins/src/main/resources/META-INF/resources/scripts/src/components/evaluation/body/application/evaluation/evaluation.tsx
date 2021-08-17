@@ -22,6 +22,7 @@ import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationAssessmentEventsFromServer,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
+import "~/sass/elements/assignment.scss";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
@@ -232,8 +233,9 @@ export class Evaluation extends React.Component<
             <EvaluationAssessmentAssignment
               key={i}
               workspace={
-                this.props.evaluation.evaluationCurrentSelectedRecords.data
-                  .workspace
+                this.props.evaluation.evaluationWorkspaces[
+                  this.props.evaluation.selectedWorkspaceId
+                ]
               }
               material={item}
               gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}

@@ -198,7 +198,7 @@ export interface LoadEvaluationSystem {
 }
 
 export interface LoadEvaluationAssessmentRequest {
-  (): AnyActionType;
+  (useFromWorkspace?: boolean): AnyActionType;
 }
 
 export interface LoadEvaluationWorkspaces {
@@ -432,7 +432,7 @@ let loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
  * @returns
  */
 let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest =
-  function loadEvaluationAssessmentRequestsFromServer() {
+  function loadEvaluationAssessmentRequestsFromServer(useFromWorkspace) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
@@ -453,6 +453,13 @@ let loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest 
           evaluationAssessmentRequests = (await promisify(
             mApi().evaluation.compositeAssessmentRequests.read({
               workspaceEntityId: state.evaluations.selectedWorkspaceId,
+            }),
+            "callback"
+          )()) as AssessmentRequest[];
+        } else if (useFromWorkspace && state.workspaces.currentWorkspace.id) {
+          evaluationAssessmentRequests = (await promisify(
+            mApi().evaluation.compositeAssessmentRequests.read({
+              workspaceEntityId: state.workspaces.currentWorkspace.id,
             }),
             "callback"
           )()) as AssessmentRequest[];
@@ -1365,44 +1372,7 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
           payload: <EvaluationStateType>"LOADING",
         });
 
-        let userData: AllStudentUsersDataType = getState().records.userData;
-
-        let [workspace, materials] = await Promise.all([
-          (async () => {
-            let workspace: WorkspaceType;
-            let wasFoundInMemory = userData.find((dataPoint) => {
-              return !!dataPoint.records.find((record: RecordGroupType) => {
-                return !!record.workspaces.find(
-                  (workspaceSearch: WorkspaceType) => {
-                    if (workspaceSearch.id === workspaceId) {
-                      workspace = workspaceSearch;
-                      return true;
-                    }
-                    return false;
-                  }
-                );
-              });
-            });
-
-            if (!wasFoundInMemory) {
-              workspace = <WorkspaceType>(
-                await promisify(
-                  mApi().workspace.workspaces.read(workspaceId),
-                  "callback"
-                )()
-              );
-
-              workspace.studentActivity = <WorkspaceStudentActivityType>(
-                await promisify(
-                  mApi().guider.workspaces.activity.read(workspace.id),
-                  "callback"
-                )()
-              );
-            }
-
-            return workspace;
-          })(),
-
+        let [materials] = await Promise.all([
           (async () => {
             let assignmentsExcercise =
               <Array<MaterialAssignmentType>>await promisify(
@@ -1466,7 +1436,6 @@ let setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
         dispatch({
           type: "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
           payload: {
-            workspace,
             materials,
           },
         });

@@ -56,6 +56,7 @@ import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
 import { loadProfileChatSettings } from "~/actions/main-function/profile";
 import WorkspaceEvaluationBody from "../components/workspace/workspaceEvaluation/index";
+import * as moment from "moment";
 import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationGradingSystemFromServer,
@@ -63,7 +64,10 @@ import {
   loadEvaluationWorkspacesFromServer,
   loadListOfImportantAssessmentIdsFromServer,
   loadListOfUnimportantAssessmentIdsFromServer,
+  setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
+
+moment.locale("fi");
 
 /**
  * WorkspaceProps
@@ -1118,6 +1122,8 @@ export default class Workspace extends React.Component<
   renderWorkspaceEvaluation(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      let state = this.props.store.getState();
+
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
@@ -1135,7 +1141,7 @@ export default class Workspace extends React.Component<
         )
       );
       this.props.store.dispatch(
-        loadEvaluationAssessmentRequestsFromServer() as Action
+        loadEvaluationAssessmentRequestsFromServer(true) as Action
       );
       this.props.store.dispatch(loadEvaluationWorkspacesFromServer() as Action);
       this.props.store.dispatch(
@@ -1150,6 +1156,13 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         loadEvaluationSortFunctionFromServer() as Action
       );
+
+      this.props.store.dispatch(
+        setSelectedWorkspaceId({
+          workspaceId: state.workspaces.currentWorkspace.id,
+        }) as Action
+      );
+
       this.loadChatSettings();
     }
 
