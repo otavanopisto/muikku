@@ -1141,25 +1141,38 @@ export default class Workspace extends React.Component<
         )
       );
       this.props.store.dispatch(
-        loadEvaluationAssessmentRequestsFromServer(true) as Action
-      );
-      this.props.store.dispatch(loadEvaluationWorkspacesFromServer() as Action);
-      this.props.store.dispatch(
-        loadListOfImportantAssessmentIdsFromServer() as Action
-      );
-      this.props.store.dispatch(
-        loadListOfUnimportantAssessmentIdsFromServer() as Action
-      );
-      this.props.store.dispatch(
-        loadEvaluationGradingSystemFromServer() as Action
-      );
-      this.props.store.dispatch(
-        loadEvaluationSortFunctionFromServer() as Action
-      );
+        setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          success: (workspace) => {
+            this.props.store.dispatch(
+              loadCurrentWorkspaceUserGroupPermissions() as Action
+            );
 
-      this.props.store.dispatch(
-        setSelectedWorkspaceId({
-          workspaceId: state.workspaces.currentWorkspace.id,
+            this.props.store.dispatch(
+              loadEvaluationAssessmentRequestsFromServer(true) as Action
+            );
+            this.props.store.dispatch(
+              loadEvaluationWorkspacesFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadListOfImportantAssessmentIdsFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadListOfUnimportantAssessmentIdsFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadEvaluationGradingSystemFromServer() as Action
+            );
+            this.props.store.dispatch(
+              loadEvaluationSortFunctionFromServer() as Action
+            );
+
+            this.props.store.dispatch(
+              setSelectedWorkspaceId({
+                workspaceId: workspace.id,
+              }) as Action
+            );
+          },
         }) as Action
       );
 
