@@ -50,7 +50,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           return <NavigationElement modifiers="aside-navigation" key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
         })}
       </NavigationTopic>
-      {!this.props.status.isStudent ?
+      {!this.props.status.isStudent && this.props.status.loggedIn ?
         <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
           {this.props.workspaces.availableFilters.stateFilters.map((stateFilter) => {
             let isActive = this.props.workspaces.activeFilters.stateFilters && this.props.workspaces.activeFilters.stateFilters.includes(stateFilter.identifier);
