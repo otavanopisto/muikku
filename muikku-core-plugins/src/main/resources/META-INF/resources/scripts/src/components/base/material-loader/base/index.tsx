@@ -14,7 +14,7 @@ import { StatusType } from '~/reducers/base/status';
 import Image from '../static/image';
 import WordDefinition from '../static/word-definition';
 import IFrame from '../static/iframe';
-import { extractDataSet, guidGenerator } from '~/util/modifiers';
+import { extractDataSet, HTMLToReactComponentRule } from '~/util/modifiers';
 import MathField from '../fields/math-field';
 import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
 import { WebsocketStateType } from '~/reducers/util/websocket';
@@ -35,19 +35,6 @@ const objects: { [key: string]: any } = {
   "application/vnd.muikku.field.audio": AudioField,
   "application/vnd.muikku.field.sorter": SorterField,
   "application/vnd.muikku.field.mathexercise": MathField
-}
-
-const parentObjects: { [key: string]: any } = {
-  "application/vnd.muikku.field.text": "span",
-  "application/vnd.muikku.field.select": "span",
-  "application/vnd.muikku.field.multiselect": "span",
-  "application/vnd.muikku.field.memo": "div",
-  "application/vnd.muikku.field.file": "div",
-  "application/vnd.muikku.field.connect": "div",
-  "application/vnd.muikku.field.organizer": "div",
-  "application/vnd.muikku.field.audio": "div",
-  "application/vnd.muikku.field.sorter": "div",
-  "application/vnd.muikku.field.mathexercise": "div"
 }
 
 // Wheteher the object can check or not for an answer
@@ -101,10 +88,10 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 //Fixes the html inconsitencies because
 //there are some of them which shouldn't
 //but hey that's the case
-function preprocessor($html: any): any {
-  $html.find('img').each(function () {
-    if (!$(this).parent('figure').length) {
-      let elem = document.createElement('figure');
+function preprocessor($html: any): any{
+  $html.find('img').each(function(){
+    if (!$(this).parent('figure').length){
+      let elem = document.createElement('span');
       elem.className = 'image';
 
       $(this).replaceWith(elem);
@@ -426,62 +413,92 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE) as any;
   }
-  render() {
-    const processingFunction = (dontProcessTag: string, reprocessFunction: any, Tag: string, elementProps: any, children: Array<any>, element: HTMLElement) => {
-      if (Tag !== dontProcessTag) {
-        if (Tag === "object") {
-          const rElement: React.ReactElement<any> = this.getObjectElement(element, this.props, elementProps.key);
-          return rElement;
-        } else if (
-          Tag === "iframe" ||
-          (Tag === "mark" && element.dataset.muikkuWordDefinition) ||
-          (Tag === "figure" && element.classList.contains("image")) ||
-          (Tag === "span" && element.classList.contains("math-tex")) ||
-          (Tag === "a" && (element as HTMLAnchorElement).href) ||
-          Tag === "table"
-        ) {
-          const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
-          const invisible = this.props.invisible;
-          const i18n = this.props.i18n;
-          const dataset = extractDataSet(element);
-          if (Tag === "iframe") {
-            return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} />
-          } else if (Tag === "table") {
-            return <Table key={elementProps.key} element={element} props={elementProps} children={children} />
-          } else if (Tag === "mark") {
-            return <WordDefinition key={elementProps.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>
-          } else if (Tag === "figure") {
-            return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)} />
-          } else if (Tag === "span") {
-            return <MathJAX key={elementProps.key} invisible={invisible} children={children} />
-          } else {
-            return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n} />
-          }
+  render(){
+    const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+    const invisible = this.props.invisible;
+    const i18n = this.props.i18n;
+
+    const processingRules: HTMLToReactComponentRule[] = [
+      {
+        shouldProcessHTMLElement: (tagname, element) => tagname === "object" && objects[element.getAttribute("type")],
+        processingFunction: (tag, props, children, element) => {
+          return this.getObjectElement(element, this.props, props.key);
         }
-        else if (
-          Tag === "source"
-        ) {
-          const src = extractDataSet(element).original;
+      },
+      {
+        shouldProcessHTMLElement: (tagname) => tagname === "iframe",
+        preventChildProcessing: true,
+        processingFunction: (tag, props, children, element) => {
+          const dataset = extractDataSet(element);
+          return (<IFrame key={props.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>);
+        }
+      },
+      {
+        shouldProcessHTMLElement: (tagname, element) => !!(tagname === "mark" && element.dataset.muikkuWordDefinition),
+        processingFunction: (tag, props, children, element) => {
+          const dataset = extractDataSet(element);
+          return (<WordDefinition key={props.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>);
+        }
+      },
+      {
+        shouldProcessHTMLElement: (tagname, element) => (tagname === "figure" || tagname === "span") && element.classList.contains("image"),
+        preventChildProcessing: true,
+        processingFunction: (tag, props, children, element) => {
+          const dataset = extractDataSet(element);
+          return (
+            <Image
+              key={props.key}
+              element={element}
+              path={path}
+              invisible={invisible}
+              dataset={dataset}
+              i18n={i18n}
+              processingRules={processingRules}
+            />
+          );
+        },
+        id: "image-rule",
+      },
+      {
+        shouldProcessHTMLElement: (tagname, element) => tagname === "span" && element.classList.contains("math-tex"),
+        processingFunction: (tag, props, children, element) => {
+          return <MathJAX key={props.key} invisible={invisible} children={children}/>;
+        },
+      },
+      {
+        shouldProcessHTMLElement: (tagname, element) => !!(tagname === "a" && (element as HTMLAnchorElement).href),
+        id: "link-rule",
+        preventChildProcessing: true,
+        processingFunction: (tag, props, children, element) => {
+          const dataset = extractDataSet(element);
+          return <Link key={props.key} element={element} path={path} dataset={dataset} i18n={i18n} processingRules={processingRules}/>;
+        },
+      },
+      {
+        shouldProcessHTMLElement: (tagname) => tagname === "table",
+        processingFunction: (tagname, props, children, element) => {
+          return <Table key={props.key} element={element} props={props} children={children}/>;
+        },
+      },
+      {
+        shouldProcessHTMLElement: (tagname) => tagname === "source",
+        preprocessReactProperties: (tag, props, children, element) => {
+          const src = props.src;
           const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
             (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
           if (!isAbsolute) {
             const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
-            elementProps.src = path + "/" + src;
+            props.src = path + "/" + src;
           }
         }
       }
+    ];
 
-      if (reprocessFunction) {
-        return reprocessFunction(Tag, elementProps, children, element);
-      }
-
-      return <Tag {...elementProps}>{children}</Tag>
-    };
     //This is all there is we just glue the HTML in there
     //and pick out the content from there
     return <div className="material-page__content rich-text">
       {this.state.elements.map((rootElement, index) => {
-        return HTMLtoReactComponent(rootElement, processingFunction.bind(this, null, null), index);
+        return HTMLtoReactComponent(rootElement, processingRules, index);
       })}
     </div>;
   }

@@ -37,20 +37,20 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState>{
     let zoomComponent: React.ReactNode = null;
     if (this.state.zoomed) {
       const img = <img className="zoom__zoomed-item" src={this.props.imgsrc}/>
-      zoomComponent = <div className="zoom__zoomed-item-overlay">
-        <div className="zoom__zoomed-item-container">
+      zoomComponent = <span className="zoom__zoomed-item-overlay">
+        <span className="zoom__zoomed-item-container">
           {img}
-          <div className="zoom__zoomed-item-close icon-cross"/>
-        </div>
-      </div>
+          <span className="zoom__zoomed-item-close icon-cross"/>
+        </span>
+      </span>
     }
     return(
-      <div onClick={this.toggleZoom} className="zoom">
-        <div className="zoom__clickable-item">
+      <span onClick={this.toggleZoom} className="zoom">
+        <span className="zoom__clickable-item">
           {this.props.children}
-        </div>
+        </span>
         {zoomComponent}
-      </div>
+      </span>
     )
   }
 }
