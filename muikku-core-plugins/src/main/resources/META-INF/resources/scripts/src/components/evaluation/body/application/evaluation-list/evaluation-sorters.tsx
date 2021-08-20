@@ -107,6 +107,7 @@ class EvaluationSorters extends React.Component<
       <div className="items-sorter">
         <Dropdown openByHover key="amount-asc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byDate.ascending")}>
           <ButtonPill
+            aria-label={this.props.i18n.text.get("plugin.evaluation.sorter.byDate.ascending")}
             onClick={this.handleClickSorter("sort-amount-asc")}
             buttonModifiers={["sorter", this.buildSorterClass("sort-amount-asc")]}
             icon="sort-amount-asc"
@@ -115,6 +116,7 @@ class EvaluationSorters extends React.Component<
 
         <Dropdown openByHover key="amount-desc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byDate.descending")}>
           <ButtonPill
+            aria-label={this.props.i18n.text.get("plugin.evaluation.sorter.byDate.descending")}
             onClick={this.handleClickSorter("sort-amount-desc")}
             buttonModifiers={["sorter", this.buildSorterClass("sort-amount-desc")]}
             icon="sort-amount-desc"
@@ -123,6 +125,7 @@ class EvaluationSorters extends React.Component<
 
         <Dropdown openByHover key="alpha-asc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byLastname.ascending")}>
           <ButtonPill
+            aria-label={this.props.i18n.text.get("plugin.evaluation.sorter.byLastname.ascending")}
             onClick={this.handleClickSorter("sort-alpha-asc")}
             buttonModifiers={["sorter", this.buildSorterClass("sort-alpha-asc")]}
             icon="sort-alpha-asc"
@@ -131,6 +134,7 @@ class EvaluationSorters extends React.Component<
 
         <Dropdown openByHover key="alpha-desc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byLastname.descending")}>
           <ButtonPill
+            aria-label={this.props.i18n.text.get("plugin.evaluation.sorter.byLastname.descending")}
             onClick={this.handleClickSorter("sort-alpha-desc")}
             buttonModifiers={["sorter", this.buildSorterClass("sort-alpha-desc")]}
             icon="sort-alpha-desc"
@@ -141,6 +145,7 @@ class EvaluationSorters extends React.Component<
           <>
           <Dropdown openByHover key="workspace-alpha-asc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byWorkspace.ascending")}>
             <ButtonPill
+              aria-label={this.props.i18n.text.get("plugin.evaluation.sorter.byWorkspace.ascending")}
               onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
               buttonModifiers={["sorter", this.buildSorterClass("sort-workspace-alpha-asc")]}
               icon="sort-asc"
@@ -149,6 +154,7 @@ class EvaluationSorters extends React.Component<
 
           <Dropdown openByHover key="workspace-alpha-desc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byWorkspace.descending")}>
             <ButtonPill
+              aria-label={this.props.i18n.text.get("plugin.evaluation.sorter.byWorkspace.descending")}
               onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
               buttonModifiers={["sorter", this.buildSorterClass("sort-workspace-alpha-desc")]}
               icon="sort-desc"
