@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
-import { WorkspaceJournalType } from "../../../../../reducers/workspaces/index";
+import { WorkspaceJournalType } from "~/reducers/workspaces/index";
 /**
  * EvaluationEventContentCardProps
  */

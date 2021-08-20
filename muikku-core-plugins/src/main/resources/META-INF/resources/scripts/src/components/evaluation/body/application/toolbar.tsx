@@ -9,19 +9,19 @@ import {
   ApplicationPanelToolbar,
   ApplicationPanelToolbarActionsMain,
   ApplicationPanelToolsContainer,
-} from "../../../general/application-panel/application-panel";
-import { SearchFormElement } from "../../../general/form-element";
+} from "~/components/general/application-panel/application-panel";
+import { SearchFormElement } from "~/components/general/form-element";
 import { bindActionCreators } from "redux";
-import { EvaluationState } from "../../../../reducers/main-function/evaluation/index";
-import { EvaluationFilters } from "../../../../@types/evaluation";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
+import { EvaluationFilters } from "~/@types/evaluation";
 import {
   SetEvaluationFilters,
   setEvaluationFilters,
-} from "../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   UpdateEvaluationSearch,
   updateEvaluationSearch,
-} from "../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 interface EvaluationToolbarProps {
   i18n: i18nType;
@@ -73,55 +73,55 @@ class EvaluationToolbar extends React.Component<
    */
   render() {
     const checkboxes = [
-      <div className="checkbox__item">
+      <div className="filter-item">
         <input
           onChange={this.handleCheckboxClick("evaluated")}
           checked={this.props.evaluations.evaluationFilters.evaluated}
           type="checkbox"
-          className="evaluation__input"
+          id="filterEvaluated"
         />
-        <label>
+        <label htmlFor="filterEvaluated">
           {this.props.i18n.text.get(
             "plugin.evaluation.workspace.filter.checkbox.evaluated"
           )}
         </label>
       </div>,
-      <div className="checkbox__item">
+      <div className="filter-item">
         <input
           onChange={this.handleCheckboxClick("assessmentRequest")}
           checked={this.props.evaluations.evaluationFilters.assessmentRequest}
           type="checkbox"
-          className="evaluation__input"
+          id="filterAssessmentRequest"
         />
-        <label>
+        <label htmlFor="filterAssessmentRequest">
           {this.props.i18n.text.get(
             "plugin.evaluation.workspace.filter.checkbox.requestEvaluation"
           )}
         </label>
       </div>,
-      <div className="checkbox__item">
+      <div className="filter-item">
         <input
           onChange={this.handleCheckboxClick("supplementationRequest")}
           checked={
             this.props.evaluations.evaluationFilters.supplementationRequest
           }
           type="checkbox"
-          className="evaluation__input"
+          id="filterSupplementationRequest"
         />
-        <label>
+        <label htmlFor="filterSupplementationRequest">
           {this.props.i18n.text.get(
             "plugin.evaluation.workspace.filter.checkbox.hasSupplementationRequest"
           )}
         </label>
       </div>,
-      <div className="checkbox__item">
+      <div className="filter-item">
         <input
           onChange={this.handleCheckboxClick("notEvaluated")}
           checked={this.props.evaluations.evaluationFilters.notEvaluated}
           type="checkbox"
-          className="evaluation__input"
+          id="filterNotEvaluated"
         />
-        <label>
+        <label htmlFor="filterNotEvaluated">
           {this.props.i18n.text.get(
             "plugin.evaluation.workspace.filter.checkbox.noevaluation"
           )}
@@ -133,6 +133,14 @@ class EvaluationToolbar extends React.Component<
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolsContainer>
+            {this.props.evaluations.selectedWorkspaceId ? (
+              <Dropdown items={checkboxes}>
+                <ButtonPill
+                  buttonModifiers="filter"
+                  icon="filter"
+                />
+              </Dropdown>
+            ) : null}
             <SearchFormElement
               updateField={this.handleSearchFormElementChange}
               name="guider-search"
@@ -142,18 +150,6 @@ class EvaluationToolbar extends React.Component<
               )}
               value={this.props.evaluations.evaluationSearch}
             />
-            {this.props.evaluations.selectedWorkspaceId ? (
-              <Dropdown items={checkboxes}>
-                <ButtonPill
-                  style={{ margin: "0 10px" }}
-                  className="search__input__filters"
-                  icon="cog"
-                  title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationRequestsTitle"
-                  )}
-                />
-              </Dropdown>
-            ) : null}
           </ApplicationPanelToolsContainer>
         </ApplicationPanelToolbarActionsMain>
       </ApplicationPanelToolbar>

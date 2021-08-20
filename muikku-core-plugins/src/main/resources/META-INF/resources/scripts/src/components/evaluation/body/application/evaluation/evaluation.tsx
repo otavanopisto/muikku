@@ -2,26 +2,26 @@ import * as React from "react";
 import SlideDrawer from "./slide-drawer";
 import EvaluationEventContentCard from "./evaluation-event-content-card";
 import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "../../../../../actions/index";
-import { StateType } from "../../../../../reducers/index";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import { AnyActionType } from "~/actions/index";
+import { StateType } from "~/reducers/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/evaluation.scss";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
-import { AssessmentRequest } from "../../../../../@types/evaluation";
+import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
-import { StatusType } from "../../../../../reducers/base/status";
-import { i18nType } from "../../../../../reducers/base/i18n";
+import { StatusType } from "~/reducers/base/status";
+import { i18nType } from "~/reducers/base/i18n";
 import ArchiveDialog from "../../../dialogs/archive";
 import { bindActionCreators } from "redux";
-import Button from "../../../../general/button";
+import Button from "~/components/general/button";
 import {
   LoadEvaluationAssessmentRequest,
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationAssessmentEventsFromServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 
 interface EvaluationDrawerProps {

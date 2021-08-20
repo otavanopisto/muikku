@@ -9,28 +9,28 @@ import {
 } from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/evaluation.scss";
-import { MaterialLoaderCorrectAnswerCounter } from "../../../../base/material-loader/correct-answer-counter";
+import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
 import * as moment from "moment";
 import {
   MaterialCompositeRepliesStateType,
   MaterialEvaluationInfo,
-} from "../../../../../reducers/workspaces/index";
-import { StateType } from "../../../../../reducers/index";
+} from "~/reducers/workspaces/index";
+import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "../../../../../actions/index";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import { AnyActionType } from "~/actions/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import SlideDrawer from "./slide-drawer";
 import {
   MaterialCompositeRepliesType,
   MaterialEvaluationType,
-} from "../../../../../reducers/workspaces/index";
+} from "~/reducers/workspaces/index";
 import AssignmentEditor from "./editors/assignment-editor";
 import { bindActionCreators } from "redux";
-import { i18nType } from "../../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateOpenedAssignmentEvaluationId,
   updateOpenedAssignmentEvaluation,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationMaterialProps

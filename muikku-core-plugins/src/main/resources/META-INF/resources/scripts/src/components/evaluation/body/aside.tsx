@@ -7,11 +7,11 @@ import NavigationMenu, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 
 /**

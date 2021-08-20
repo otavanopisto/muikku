@@ -779,7 +779,8 @@
 .button-pill--delete,
 .button-pill--toggle,
 .button-pill--restore,
-.button-pill--edit {
+.button-pill--edit,
+.button-pill--filter {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -1067,7 +1068,6 @@
 }
 
 // Environment dialog
-
 .button--workspace-management {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;

@@ -6,18 +6,18 @@ import {
   AssessmentRequest,
   EvaluationImportantStatus,
   UpdateImportanceObject,
-} from "../../../../../@types/evaluation";
+} from "~/@types/evaluation";
 import * as moment from "moment";
 import {
   SetEvaluationSelectedWorkspace,
   LoadEvaluationAssessmentRequest,
   loadEvaluationAssessmentRequestsFromServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "../../../../../actions/index";
-import { StateType } from "../../../../../reducers/index";
-import { i18nType } from "../../../../../reducers/base/i18n";
+import { AnyActionType } from "~/actions/index";
+import { StateType } from "~/reducers/index";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * EvaluationCardProps

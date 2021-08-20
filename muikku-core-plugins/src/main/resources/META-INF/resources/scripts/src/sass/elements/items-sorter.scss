@@ -1,0 +1,35 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.items-sorter {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0 0 10px;
+}
+
+.items-sorter__item {
+  background: lighten($color-default-helper, 20%);
+  border-radius: 3px;
+  box-sizing: unset;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "muikku";
+  font-size: 18px;
+  height: 18px;
+  line-height: 1;
+  margin: 0 10px 0 0;
+  padding: 6px;
+  width: 18px;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.items-sorter__item--selected {
+  background: $color-info;
+  color: $color-default;
+}

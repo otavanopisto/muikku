@@ -5,12 +5,12 @@ import { i18nType } from "reducers/base/i18n";
 import { StateType } from "~/reducers";
 import EvaluationToolbar from "./application/toolbar";
 import EvaluationList from "./application/evaluation-list/evaluations-list";
-import { StatusType } from "../../../reducers/base/status";
-import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import { StatusType } from "~/reducers/base/status";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 

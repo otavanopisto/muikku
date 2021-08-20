@@ -3,34 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.filter__bar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.search__label {
-  display: none;
-  font-weight: 600;
-  overflow: hidden;
-  padding: 0 0 5px;
-  text-overflow: ellipsis;
-}
-
-.title__container {
-  align-items: center;
-  display: flex;
-}
-
-.filtering__options {
-  display: flex;
-  margin: 10px;
-}
-
-.checkbox__item {
-  align-items: center;
-  display: flex;
-}
-
 .evaluation__input[type="checkbox"] {
   align-items: center;
   appearance: none;
@@ -55,77 +27,6 @@
   content: "\e639";
   font-family: muikku;
   font-size: 0.875rem;
-}
-
-.sorter__container {
-  background-color: white;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10px;
-  position: sticky;
-  top: 112px;
-  z-index: 150;
-
-  @include breakpoint($breakpoint-pad) {
-    position: inherit;
-    top: unset;
-    z-index: unset;
-  }
-}
-
-.sorter__item {
-  background: #eeeeee;
-  border-radius: 3px;
-  box-sizing: unset;
-  color: black;
-  cursor: pointer;
-  display: inline-block;
-  font-family: "muikku";
-  font-size: 14px;
-  height: 14px;
-  line-height: 1;
-  margin: 0 5px;
-  padding: 4px;
-  width: 14px;
-}
-
-.sorter__item--selected {
-  background: #009fe3;
-  color: white;
-}
-
-.sorter__item-amount--asc::before {
-  content: "\e91d";
-}
-
-.sorter__item-amount--desc::before {
-  content: "\e91b";
-}
-
-.sorter__item-alpha--asc::before {
-  content: "\e912";
-}
-
-.sorter__item-alpha--desc::before {
-  content: "\e911";
-}
-
-.sorter__item-workspace--asc::before {
-  content: "\e90e";
-}
-
-.sorter__item-workspace--desc::before {
-  content: "\e90d";
-}
-
-.sorter__item-amount--asc.selected,
-.sorter__item-amount--desc.selected,
-.sorter__item-alpha--asc.selected,
-.sorter__item-alpha--desc.selected,
-.sorter__item-workspace--asc.selected,
-.sorter__item-workspace--desc.selected {
-  background: #009fe3;
-  color: white;
 }
 
 .search__container {
@@ -163,11 +64,9 @@
   }
 }
 
-.card-list-container .evaluation-message-container {
-  color: #4c4c4c;
-  font-size: 20px;
-  font-style: italic;
-  line-height: 1.4em;
+.evaluation-message-container {
+  font-size: 1.2rem;
+  font-weight: 300;
   padding: 50px 10px;
   text-align: center;
 }

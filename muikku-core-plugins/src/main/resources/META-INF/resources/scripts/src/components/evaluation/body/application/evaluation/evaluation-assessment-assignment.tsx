@@ -1,11 +1,11 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
 import SlideDrawer from "./slide-drawer";
-import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
+import { EvaluationGradeSystem } from "~/@types/evaluation";
 import {
   WorkspaceType,
   MaterialContentNodeType,
-} from "../../../../../reducers/workspaces/index";
+} from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 
 /**

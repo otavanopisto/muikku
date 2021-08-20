@@ -6,12 +6,14 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import { SortBy, EvaluationSort } from "../../../../../@types/evaluation";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import "~/sass/elements/items-sorter.scss";
+import "~/sass/elements/filter.scss";
+import { SortBy, EvaluationSort } from "~/@types/evaluation";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SaveEvaluationSortFunction,
   saveEvaluationSortFunctionToServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationSortersProps
@@ -88,7 +90,7 @@ class EvaluationSorters extends React.Component<
       this.props.evaluations.evaluationSort &&
       this.props.evaluations.evaluationSort.value === sortBy
     ) {
-      return "sorter__item--selected";
+      return "items-sorter__item--selected";
     }
     return "";
   };
@@ -99,39 +101,39 @@ class EvaluationSorters extends React.Component<
    */
   render() {
     return (
-      <div className="sorter__container">
+      <div className="items-sorter">
         <div
           onClick={this.handleClickSorter("sort-amount-asc")}
-          className={`sorter__item ${this.buildSorterClass(
+          className={`items-sorter__item ${this.buildSorterClass(
             "sort-amount-asc"
-          )} sorter__item-amount--asc`}
+          )} icon-sort-amount-asc`}
           title={this.props.i18n.text.get(
             "plugin.evaluation.sorter.byDate.ascending"
           )}
         />
         <div
           onClick={this.handleClickSorter("sort-amount-desc")}
-          className={`sorter__item ${this.buildSorterClass(
+          className={`items-sorter__item ${this.buildSorterClass(
             "sort-amount-desc"
-          )} sorter__item-amount--desc`}
+          )} icon-sort-amount-desc`}
           title={this.props.i18n.text.get(
             "plugin.evaluation.sorter.byDate.descending"
           )}
         />
         <div
           onClick={this.handleClickSorter("sort-alpha-asc")}
-          className={`sorter__item ${this.buildSorterClass(
+          className={`items-sorter__item ${this.buildSorterClass(
             "sort-alpha-asc"
-          )} sorter__item-alpha--asc`}
+          )} icon-sort-alpha-asc`}
           title={this.props.i18n.text.get(
             "plugin.evaluation.sorter.byLastname.ascending"
           )}
         />
         <div
           onClick={this.handleClickSorter("sort-alpha-desc")}
-          className={`sorter__item ${this.buildSorterClass(
+          className={`items-sorter__item ${this.buildSorterClass(
             "sort-alpha-desc"
-          )} sorter__item-alpha--desc`}
+          )} icon-sort-alpha-desc`}
           title={this.props.i18n.text.get(
             "plugin.evaluation.sorter.byLastname.descending"
           )}
@@ -140,18 +142,18 @@ class EvaluationSorters extends React.Component<
           <>
             <div
               onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
-              className={`sorter__item ${this.buildSorterClass(
+              className={`items-sorter__item ${this.buildSorterClass(
                 "sort-workspace-alpha-asc"
-              )} sorter__item-workspace--asc`}
+              )} icon-sort-asc`}
               title={this.props.i18n.text.get(
                 "plugin.evaluation.sorter.byWorkspace.ascending"
               )}
             />
             <div
               onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
-              className={`sorter__item ${this.buildSorterClass(
+              className={`items-sorter__item ${this.buildSorterClass(
                 "sort-workspace-alpha-desc"
-              )} sorter__item-workspace--desc`}
+              )} icon-sort-desc`}
               title={this.props.i18n.text.get(
                 "plugin.evaluation.sorter.byWorkspace.descending"
               )}

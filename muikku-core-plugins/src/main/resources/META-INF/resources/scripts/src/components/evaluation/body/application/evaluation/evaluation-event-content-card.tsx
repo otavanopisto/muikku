@@ -2,27 +2,27 @@ import * as React from "react";
 import {
   EvaluationEvent,
   EvaluationEnum,
-} from "../../../../../@types/evaluation";
+} from "~/@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
 import SlideDrawer from "./slide-drawer";
-import { EvaluationGradeSystem } from "../../../../../@types/evaluation";
+import { EvaluationGradeSystem } from "~/@types/evaluation";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
-import { StateType } from "../../../../../reducers/index";
+import { StateType } from "~/reducers/index";
 import { Dispatch, bindActionCreators } from "redux";
-import { AnyActionType } from "../../../../../actions/index";
+import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
-import { i18nType } from "../../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import ArchiveDialog from "../../../dialogs/archive";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   LoadEvaluationAssessmentRequest,
   loadEvaluationAssessmentRequestsFromServer,
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentEventsFromServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationEventContentCardProps

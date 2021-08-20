@@ -3,15 +3,15 @@ import EvaluationCard from "./evaluation-card";
 import {
   AssessmentRequest,
   EvaluationSort,
-} from "../../../../../@types/evaluation";
+} from "~/@types/evaluation";
 import { bindActionCreators } from "redux";
-import { StateType } from "../../../../../reducers/index";
+import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
-import { EvaluationState } from "../../../../../reducers/main-function/evaluation/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   SortBy,
   EvaluationImportantStatus,
-} from "../../../../../@types/evaluation";
+} from "~/@types/evaluation";
 import {
   updateImportance,
   UpdateImportance,
@@ -19,9 +19,10 @@ import {
   setSelectedWorkspaceId,
   SaveEvaluationSortFunction,
   saveEvaluationSortFunctionToServer,
-} from "../../../../../actions/main-function/evaluation/evaluationActions";
-import { UpdateImportanceObject } from "../../../../../@types/evaluation";
-import { i18nType } from "../../../../../reducers/base/i18n";
+} from "~/actions/main-function/evaluation/evaluationActions";
+import { UpdateImportanceObject } from "~/@types/evaluation";
+import { i18nType } from "~/reducers/base/i18n";
+import "~/sass/elements/empty.scss";
 
 /**
  * EvaluationListProps
@@ -437,21 +438,19 @@ export class EvaluationList extends React.Component<
       /**
        * renders card list
        */
-      let renderEvaluationCardList = (
-        <div className="card-list-container">{renderEvaluationCards}</div>
-      );
+      let renderEvaluationCardList = <>{renderEvaluationCards}</>;
 
       /**
-       * If there is no assessments, let give message about that
+       * If there are no assessments, lets give message about that
        */
       if (evaluationRequests.data.length <= 0) {
         renderEvaluationCardList = (
-          <div className="card-list-container">
-            <div className="evaluation-message-container">
+          <div className="empty">
+            <span>
               {this.props.i18n.text.get(
                 "plugin.evaluation.cardlist.allrequesthandled"
               )}
-            </div>
+            </span>
           </div>
         );
       } else if (evaluationRequests.data.length <= 0) {
@@ -459,12 +458,12 @@ export class EvaluationList extends React.Component<
          * Otherwise check if filtered list is empty and give message about that
          */
         renderEvaluationCardList = (
-          <div className="card-list-container">
-            <div className="evaluation-message-container">
+          <div className="empty">
+            <span>
               {this.props.i18n.text.get(
                 "plugin.evaluation.cardlist.noRequestWithFilters"
               )}
-            </div>
+            </span>
           </div>
         );
       }
