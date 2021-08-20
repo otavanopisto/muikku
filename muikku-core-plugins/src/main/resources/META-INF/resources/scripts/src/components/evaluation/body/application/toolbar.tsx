@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { i18nType } from "reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/evaluation.scss";
-import { ButtonPill } from "../../../general/button";
+import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import {
   ApplicationPanelToolbar,

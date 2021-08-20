@@ -18,6 +18,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
 import { i18nType } from "~/reducers/base/i18n";
+import "~/sass/elements/evaluation-card.scss";
 
 /**
  * EvaluationCardProps
@@ -217,13 +218,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       rest.assessmentRequestDate > rest.evaluationDate) ||
     (rest.assessmentRequestDate && !rest.evaluationDate)
   ) {
-    cardStateClass = "evaluated-requested";
+    cardStateClass = "state-REQUESTED";
   } else if (rest.evaluationDate) {
     cardStateClass = rest.graded
       ? rest.passing
-        ? "evaluated-passed"
-        : "evaluated-failed"
-      : "evaluated-incomplete";
+        ? "state-PASSED"
+        : "state-FAILED"
+      : "state-INCOMPLETE";
   }
 
   const renderArchiveOrDeleteDialogButton =

@@ -7,6 +7,7 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/items-sorter.scss";
+import "~/sass/elements/buttons.scss";
 import "~/sass/elements/filter.scss";
 import { SortBy, EvaluationSort } from "~/@types/evaluation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
@@ -14,6 +15,8 @@ import {
   SaveEvaluationSortFunction,
   saveEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import Dropdown from "~/components/general/dropdown";
+import { ButtonPill } from "~/components/general/button";
 
 /**
  * EvaluationSortersProps
@@ -48,7 +51,7 @@ class EvaluationSorters extends React.Component<
    * @param sortBy
    */
   handleClickSorter =
-    (sortBy: SortBy) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (sortBy: SortBy) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       /**
        * Checking whether sorting workspace or all values
        */
@@ -90,7 +93,7 @@ class EvaluationSorters extends React.Component<
       this.props.evaluations.evaluationSort &&
       this.props.evaluations.evaluationSort.value === sortBy
     ) {
-      return "items-sorter__item--selected";
+      return "sorter-selected";
     }
     return "";
   };
@@ -102,62 +105,55 @@ class EvaluationSorters extends React.Component<
   render() {
     return (
       <div className="items-sorter">
-        <div
-          onClick={this.handleClickSorter("sort-amount-asc")}
-          className={`items-sorter__item ${this.buildSorterClass(
-            "sort-amount-asc"
-          )} icon-sort-amount-asc`}
-          title={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byDate.ascending"
-          )}
-        />
-        <div
-          onClick={this.handleClickSorter("sort-amount-desc")}
-          className={`items-sorter__item ${this.buildSorterClass(
-            "sort-amount-desc"
-          )} icon-sort-amount-desc`}
-          title={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byDate.descending"
-          )}
-        />
-        <div
-          onClick={this.handleClickSorter("sort-alpha-asc")}
-          className={`items-sorter__item ${this.buildSorterClass(
-            "sort-alpha-asc"
-          )} icon-sort-alpha-asc`}
-          title={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byLastname.ascending"
-          )}
-        />
-        <div
-          onClick={this.handleClickSorter("sort-alpha-desc")}
-          className={`items-sorter__item ${this.buildSorterClass(
-            "sort-alpha-desc"
-          )} icon-sort-alpha-desc`}
-          title={this.props.i18n.text.get(
-            "plugin.evaluation.sorter.byLastname.descending"
-          )}
-        />
+        <Dropdown openByHover key="amount-asc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byDate.ascending")}>
+          <ButtonPill
+            onClick={this.handleClickSorter("sort-amount-asc")}
+            buttonModifiers={["sorter", this.buildSorterClass("sort-amount-asc")]}
+            icon="sort-amount-asc"
+          />
+        </Dropdown>
+
+        <Dropdown openByHover key="amount-desc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byDate.descending")}>
+          <ButtonPill
+            onClick={this.handleClickSorter("sort-amount-desc")}
+            buttonModifiers={["sorter", this.buildSorterClass("sort-amount-desc")]}
+            icon="sort-amount-desc"
+          />
+        </Dropdown>
+
+        <Dropdown openByHover key="alpha-asc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byLastname.ascending")}>
+          <ButtonPill
+            onClick={this.handleClickSorter("sort-alpha-asc")}
+            buttonModifiers={["sorter", this.buildSorterClass("sort-alpha-asc")]}
+            icon="sort-alpha-asc"
+          />
+        </Dropdown>
+
+        <Dropdown openByHover key="alpha-desc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byLastname.descending")}>
+          <ButtonPill
+            onClick={this.handleClickSorter("sort-alpha-desc")}
+            buttonModifiers={["sorter", this.buildSorterClass("sort-alpha-desc")]}
+            icon="sort-alpha-desc"
+          />
+        </Dropdown>
+
         {this.props.evaluations.selectedWorkspaceId ? null : (
           <>
-            <div
+          <Dropdown openByHover key="workspace-alpha-asc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byWorkspace.ascending")}>
+            <ButtonPill
               onClick={this.handleClickSorter("sort-workspace-alpha-asc")}
-              className={`items-sorter__item ${this.buildSorterClass(
-                "sort-workspace-alpha-asc"
-              )} icon-sort-asc`}
-              title={this.props.i18n.text.get(
-                "plugin.evaluation.sorter.byWorkspace.ascending"
-              )}
+              buttonModifiers={["sorter", this.buildSorterClass("sort-workspace-alpha-asc")]}
+              icon="sort-asc"
             />
-            <div
+          </Dropdown>
+
+          <Dropdown openByHover key="workspace-alpha-desc" content={this.props.i18n.text.get("plugin.evaluation.sorter.byWorkspace.descending")}>
+            <ButtonPill
               onClick={this.handleClickSorter("sort-workspace-alpha-desc")}
-              className={`items-sorter__item ${this.buildSorterClass(
-                "sort-workspace-alpha-desc"
-              )} icon-sort-desc`}
-              title={this.props.i18n.text.get(
-                "plugin.evaluation.sorter.byWorkspace.descending"
-              )}
+              buttonModifiers={["sorter", this.buildSorterClass("sort-workspace-alpha-desc")]}
+              icon="sort-desc"
             />
+          </Dropdown>
           </>
         )}
       </div>

@@ -626,7 +626,6 @@
   &:hover,
   &.hover {
     background-color: darken($color-button-pill-background, 10%);
-
   }
 
   &:active,
@@ -1227,6 +1226,37 @@
 
 .button--muikku-update-assignment {
   background: $color-assignment;
+}
+
+// Evaluation related
+.button-pill--sorter {
+  background: lighten($color-default-helper, 20%);
+  border-radius: 3px;
+  box-sizing: unset;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "muikku";
+  font-size: 1.125rem;
+  height: 1.125rem;
+  line-height: 1.125rem;
+  margin: 0 10px 0 0;
+  padding: 6px;
+  width: 1.125rem;
+
+  &:hover {
+    background: $color-info;
+    color: $color-default;
+  }
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button-pill--sorter-selected {
+  background: $color-info;
+  color: $color-default;
 }
 
 // Material master management related

@@ -1,0 +1,117 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.evaluation-card {
+  background: white;
+  border: 1px solid #d7edfb;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 10px;
+  vertical-align: top;
+  width: calc(100% - 20px);
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    width: calc(50% - 20px);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    width: calc(33.33333% - 20px);
+  }
+
+  // scss-lint:disable SelectorFormat
+  &.state-REQUESTED {
+    border: 1px solid #009fe3;
+    box-shadow: 0 0 2px #009fe385;
+  }
+
+  &.state-FAILED {
+    border: 1px solid red;
+    box-shadow: 0 0 2px rgba(255, 0, 0, 0.473);
+  }
+
+  &.state-PASSED {
+    border: 1px solid #3bd41d;
+    box-shadow: 0 0 2px #3cd41d7a;
+  }
+
+  &.state-INCOMPLETE {
+    border: 1px solid #ea7503;
+    box-shadow: 0 0 2px #ea770383;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.evaluation-card.evaluated-passed .evaluation-card-button.evaluate-button {
+  background: #2ed31c;
+}
+
+.evaluation-card-title {
+  background: #ebfbfe;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 6px;
+
+  .evaluation-card-student {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .evaluation-card-study-programme {
+    font-size: 13px;
+    font-style: italic;
+  }
+}
+
+.evaluation-card-data {
+  font-size: 13px;
+  padding: 4px 6px;
+  position: relative;
+}
+
+.evaluation-card-data-text {
+  padding: 2px 5px;
+  font-size: initial;
+}
+
+.evaluation-card-data-text.all-done {
+  background-color: #63da57;
+  color: white;
+}
+
+.evaluation-card-data-text.not-done {
+  background-color: #da5760;
+  color: white;
+}
+
+.evaluation-card-data-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 1px 0;
+  position: relative;
+}
+
+.evaluation-card-data-row.highlight {
+  font-weight: 600;
+}
+
+.evaluation-card-button-row {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  margin: 5px 0;
+  right: 0;
+  text-align: right;
+}
+
+.evaluation-card-button-block {
+  display: flex;
+  left: 5px;
+  top: 5px;
+}
