@@ -1229,11 +1229,13 @@
 }
 
 // Evaluation related
-.button-pill--sorter {
-  background: lighten($color-default-helper, 20%);
+.button-pill--sorter,
+.button-pill--archive,
+.button-pill--evaluate,
+.button-icon--important,
+.button-icon--unimportant {
   border-radius: 3px;
   box-sizing: unset;
-  color: black;
   cursor: pointer;
   display: inline-block;
   font-family: "muikku";
@@ -1244,19 +1246,44 @@
   padding: 6px;
   width: 1.125rem;
 
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button-pill--sorter {
+  background: lighten($color-default-helper, 20%);
+  color: $color-default-contrast;
+
   &:hover {
     background: $color-info;
     color: $color-default;
-  }
-
-  &:last-child {
-    margin: 0;
   }
 }
 
 .button-pill--sorter-selected {
   background: $color-info;
   color: $color-default;
+}
+
+.button-pill--archive {
+  background: $color-default-contrast;
+  color: $color-default;
+}
+
+.button-pill--evaluate {
+  background: $color-execute;
+  color: $color-default;
+}
+
+.button-icon--important {
+  background: transparent;
+  color: $color-info;
+}
+
+.button-icon--unimportant {
+  background: transparent;
+  color: $color-info;
 }
 
 // Material master management related

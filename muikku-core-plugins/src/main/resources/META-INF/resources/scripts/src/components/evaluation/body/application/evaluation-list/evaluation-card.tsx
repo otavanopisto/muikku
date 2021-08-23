@@ -18,7 +18,9 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
 import { i18nType } from "~/reducers/base/i18n";
+import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";
+import "~/sass/elements/buttons.scss";
 
 /**
  * EvaluationCardProps
@@ -57,7 +59,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
    */
   const handleImportanceClick =
     (status: "important" | "unimportant") =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       let updatedImportAssessmentList: number[] = [...importantAssessments];
       let updatedUnimportAssessmentList: number[] = [...unimportantAssessments];
 
@@ -232,22 +234,20 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     rest.evaluationDate === null &&
     rest.workspaceEntityId !== selectedWorkspaceId ? (
       <DeleteRequestDialog {...rest}>
-        <div
-          className="evaluation-card-button archive-button icon-archive"
-          title={i18n.text.get(
-            "plugin.evaluation.card.button.deleteRequest.title"
-          )}
+        <ButtonPill
+          aria-label={i18n.text.get("plugin.evaluation.card.button.deleteRequest.title")}
+          buttonModifiers="archive"
+          icon="archive"
         />
       </DeleteRequestDialog>
     ) : (rest.evaluationDate && rest.graded) ||
       (rest.assessmentRequestDate &&
         selectedWorkspaceId === rest.workspaceEntityId) ? (
       <ArchiveDialog place="card" {...rest}>
-        <div
-          className="evaluation-card-button archive-button icon-archive"
-          title={i18n.text.get(
-            "plugin.evaluation.card.button.archiveButtonLabel"
-          )}
+        <ButtonPill
+          aria-label={i18n.text.get("plugin.evaluation.card.button.archiveButtonLabel")}
+          buttonModifiers="archive"
+          icon="archive"
         />
       </ArchiveDialog>
     ) : null;
@@ -298,19 +298,17 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         </div>
         <div className="evaluation-card-button-row">
           <div className="evaluation-card-button-block">
-            <div
-              title={i18n.text.get(
-                "plugin.evaluation.card.button.markImportantButtonLabel"
-              )}
+            <IconButton
+              aria-label={i18n.text.get("plugin.evaluation.card.button.markImportantButtonLabel")}
               onClick={handleImportanceClick("important")}
-              className={`evaluation-important-button ${evaluationImportantClassesMod} icon-star`}
+              buttonModifiers="important"
+              icon="star"
             />
-            <div
-              title={i18n.text.get(
-                "plugin.evaluation.card.button.markNonImportantButtonLabel"
-              )}
+            <IconButton
+              aria-label={i18n.text.get("plugin.evaluation.card.button.markNonImportantButtonLabel")}
               onClick={handleImportanceClick("unimportant")}
-              className={`evaluation-unimportant-button ${evaluationUnimportantClassesMod} icon-star-empty`}
+              buttonModifiers="unimportant"
+              icon="star-empty"
             />
           </div>
 
@@ -318,11 +316,10 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
             {renderArchiveOrDeleteDialogButton}
 
             <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
-              <div
-                className="evaluation-card-button evaluate-button icon-evaluate"
-                title={i18n.text.get(
-                  "plugin.evaluation.card.button.evaluateButtonLabel"
-                )}
+              <ButtonPill
+                aria-label={i18n.text.get("plugin.evaluation.card.button.evaluateButtonLabel")}
+                buttonModifiers="evaluate"
+                icon="evaluate"
               />
             </EvaluateDialog>
           </div>
