@@ -363,7 +363,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, lastResult: 10 } }) as Action);
+      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, maxResults: 10 } }) as Action);
       this.props.store.dispatch(loadUserGroups({ payload: { q: "", firstResult: 0, maxResults: 25 } }) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.props.store.dispatch(loadProfileChatSettings() as Action);
