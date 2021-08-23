@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>insert into PluginSettingKey(name, plugin) select 'enabledOrganizations', 'chat' from PluginSettingKey where plugin = 'chat' and name = 'enabledOrganizations' having count(*) = 0;</sql>
+  <sql>insert into PluginSetting (value, key_id) select 'PYRAMUS-1', (select id from PluginSettingKey where plugin = 'chat' and name = 'enabledOrganizations') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'chat' and name = 'enabledOrganizations') having count(*) = 0;</sql>
+
+  <sql>insert into PluginSettingKey(name, plugin) select 'enabledOrganizations', 'worklist' from PluginSettingKey where plugin = 'worklist' and name = 'enabledOrganizations' having count(*) = 0;</sql>
+  <sql>insert into PluginSetting (value, key_id) select 'PYRAMUS-1', (select id from PluginSettingKey where plugin = 'worklist' and name = 'enabledOrganizations') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'worklist' and name = 'enabledOrganizations') having count(*) = 0;</sql>
+
+</update>
