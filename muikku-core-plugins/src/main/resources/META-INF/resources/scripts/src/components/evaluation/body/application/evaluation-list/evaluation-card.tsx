@@ -201,11 +201,11 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
    */
   const renderTasksDone = (
     <span
-      className={`evaluation-card-data-text assignments-status ${
-        rest.assignmentsDone === rest.assignmentsTotal ? "all-done" : "not-done"
+      className={`evaluation-card__content-data ${
+        rest.assignmentsDone === rest.assignmentsTotal ? "evaluation-card__content-data--all-done" : "evaluation-card__content-data--not-done"
       }`}
     >
-      {`${rest.assignmentsDone}/${rest.assignmentsTotal}`}
+      {`${rest.assignmentsDone} / ${rest.assignmentsTotal}`}
     </span>
   );
 
@@ -254,75 +254,75 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
   return (
     <div className={`evaluation-card ${cardStateClass}`}>
-      <div className="evaluation-card-title">
-        <div className="evaluation-card-student">{studentName}</div>
-        <div className="evaluation-card-study-programme">
+      <div className="evaluation-card__header">
+        <div className="evaluation-card__header-title">{studentName}</div>
+        <div className="evaluation-card__heder-description">
           {rest.studyProgramme}
         </div>
       </div>
-      <div className="evaluation-card-data">
+      <div className="evaluation-card__content">
         {renderFilterByWorkspaceLink}
-        <div className="evaluation-card-data-row enrollment-row">
-          <span className="evaluation-card-data-label">
+        <div className="evaluation-card__content-row">
+          <span className="evaluation-card__content-label">
             {i18n.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
           </span>
-          <span className="evaluation-card-data-text">{enrollmentDate}</span>
+          <span className="evaluation-card__content-data">{enrollmentDate}</span>
         </div>
         <div
-          className={`evaluation-card-data-row request-row ${
-            rest.evaluationDate === null ? "highlight" : ""
+          className={`evaluation-card__content-row ${
+            rest.evaluationDate === null ? "evaluation-card__content-row--highlight" : ""
           }`}
         >
-          <span className="evaluation-card-data-label">
+          <span className="evaluation-card__content-label">
             {i18n.text.get("plugin.evaluation.card.evaluationRequestedLabel")}
           </span>
-          <span className="evaluation-card-data-text">
+          <span className="evaluation-card__content-data">
             {assessmentRequestDate}
           </span>
         </div>
         <div
-          className={`evaluation-card-data-row evaluation-row ${
-            rest.evaluationDate !== null ? "highlight" : ""
+          className={`evaluation-card__content-row ${
+            rest.evaluationDate !== null ? "evaluation-card__content-row--highlight" : ""
           }`}
         >
-          <span className="evaluation-card-data-label">
+          <span className="evaluation-card__content-label">
             {i18n.text.get("plugin.evaluation.card.evaluatedLabel")}
           </span>
-          <span className="evaluation-card-data-text">{evaluationDate}</span>
+          <span className="evaluation-card__content-data">{evaluationDate}</span>
         </div>
-        <div className="evaluation-card-data-row">
-          <span className="evaluation-card-data-label">
+        <div className="evaluation-card__content-row">
+          <span className="evaluation-card__content-label">
             {i18n.text.get("plugin.evaluation.card.assignmentsDoneLabel")}
           </span>
           {renderTasksDone}
         </div>
-        <div className="evaluation-card-button-row">
-          <div className="evaluation-card-button-block">
-            <IconButton
-              aria-label={i18n.text.get("plugin.evaluation.card.button.markImportantButtonLabel")}
-              onClick={handleImportanceClick("important")}
-              buttonModifiers="important"
-              icon="star"
-            />
-            <IconButton
-              aria-label={i18n.text.get("plugin.evaluation.card.button.markNonImportantButtonLabel")}
-              onClick={handleImportanceClick("unimportant")}
-              buttonModifiers="unimportant"
-              icon="star-empty"
-            />
-          </div>
+      </div>
+      <div className="evaluation-card__footer">
+        <div className="evaluation-card__button-set">
+          <IconButton
+            aria-label={i18n.text.get("plugin.evaluation.card.button.markImportantButtonLabel")}
+            onClick={handleImportanceClick("important")}
+            buttonModifiers="important"
+            icon="star"
+          />
+          <IconButton
+            aria-label={i18n.text.get("plugin.evaluation.card.button.markNonImportantButtonLabel")}
+            onClick={handleImportanceClick("unimportant")}
+            buttonModifiers="unimportant"
+            icon="star-empty"
+          />
+        </div>
 
-          <div className="evaluation-card-button-block">
-            {renderArchiveOrDeleteDialogButton}
+        <div className="evaluation-card__button-set">
+          {renderArchiveOrDeleteDialogButton}
 
-            <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
-              <ButtonPill
-                aria-label={i18n.text.get("plugin.evaluation.card.button.evaluateButtonLabel")}
-                buttonModifiers="evaluate"
-                icon="evaluate"
-              />
-            </EvaluateDialog>
-          </div>
+          <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
+            <ButtonPill
+              aria-label={i18n.text.get("plugin.evaluation.card.button.evaluateButtonLabel")}
+              buttonModifiers="evaluate"
+              icon="evaluate"
+            />
+          </EvaluateDialog>
         </div>
       </div>
     </div>

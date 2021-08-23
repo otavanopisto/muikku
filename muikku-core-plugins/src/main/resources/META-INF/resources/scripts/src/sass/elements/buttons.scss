@@ -1234,7 +1234,7 @@
 .button-pill--evaluate,
 .button-icon--important,
 .button-icon--unimportant {
-  border-radius: 3px;
+  border-radius: 2px;
   box-sizing: unset;
   cursor: pointer;
   display: inline-block;
@@ -1269,11 +1269,19 @@
 .button-pill--archive {
   background: $color-default-contrast;
   color: $color-default;
+
+  &:hover {
+    background: darken($color-default-contrast, 10%);
+  }
 }
 
 .button-pill--evaluate {
-  background: $color-execute;
+  background: $color-info;
   color: $color-default;
+
+  &:hover {
+    background: darken($color-info, 10%);
+  }
 }
 
 .button-icon--important {
