@@ -131,27 +131,23 @@ class EvaluationToolbar extends React.Component<
 
     return (
       <ApplicationPanelToolbar>
-        <ApplicationPanelToolbarActionsMain>
-          <ApplicationPanelToolsContainer>
-            {this.props.evaluations.selectedWorkspaceId ? (
-              <Dropdown items={checkboxes}>
-                <ButtonPill
-                  buttonModifiers="filter"
-                  icon="filter"
-                />
-              </Dropdown>
-            ) : null}
-            <SearchFormElement
-              updateField={this.handleSearchFormElementChange}
-              name="guider-search"
-              id="searchUsers"
-              placeholder={this.props.i18n.text.get(
-                "plugin.evaluation.freeSearch"
-              )}
-              value={this.props.evaluations.evaluationSearch}
+        <SearchFormElement
+          updateField={this.handleSearchFormElementChange}
+          name="guider-search"
+          id="searchUsers"
+          placeholder={this.props.i18n.text.get(
+            "plugin.evaluation.freeSearch"
+          )}
+          value={this.props.evaluations.evaluationSearch}
+        />
+        {this.props.evaluations.selectedWorkspaceId ? (
+          <Dropdown items={checkboxes}>
+            <ButtonPill
+              buttonModifiers="filter"
+              icon="filter"
             />
-          </ApplicationPanelToolsContainer>
-        </ApplicationPanelToolbarActionsMain>
+          </Dropdown>
+        ) : null}
       </ApplicationPanelToolbar>
     );
   }

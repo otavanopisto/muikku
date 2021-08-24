@@ -3,6 +3,14 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.evaluation-cards-wrapper {
+  margin: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 -5px -5px;
+  }
+}
+
 .evaluation-card {
   background: $color-default;
   border: 1px solid darken($color-evaluation-card-border, 10%);
@@ -18,7 +26,11 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    width: calc(33.33333% - 10px);
+    width: calc(50% - 10px);
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: calc(33.333% - 10px);
   }
 
   // scss-lint:disable SelectorFormat

@@ -118,7 +118,9 @@ class EvaluationApplication extends React.Component<
           toolbar={toolBar}
         >
           <EvaluationSorters />
-          <EvaluationList />
+          <div className="evaluation-cards-wrapper">
+            <EvaluationList />
+         </div>
         </ApplicationPanel>
       </div>
     );

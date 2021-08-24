@@ -6,5 +6,9 @@
 .items-sorter {
   display: flex;
   flex-flow: row wrap;
-  padding: 0 0 10px;
+  margin: 10px 10px 5px;
+
+  @include breakpoint($breakpoint-pad) {
+   margin: 0 0 10px;
+  }
 }

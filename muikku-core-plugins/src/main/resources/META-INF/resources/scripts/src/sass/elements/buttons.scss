@@ -808,6 +808,31 @@
     margin: 0 10px 0 0;
   }
 }
+.button-pill--filter  {
+  background-color: $color-main-function-button-pill-delete-background;
+  color: $color-main-function-button-pill-delete-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+}
 
 .button-pill--discussion-toolbar {
   background-color: $color-main-function-button-pill-edit-background;
