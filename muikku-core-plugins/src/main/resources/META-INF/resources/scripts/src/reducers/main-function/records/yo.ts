@@ -27,6 +27,7 @@ export interface YOEnrollmentType{
  eligible: boolean,
  starts: string,
  ends: string,
+ compulsoryEducationEligible: boolean
 }
 
 export interface YOEligibilityType {
