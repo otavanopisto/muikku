@@ -46,6 +46,13 @@
   }
 }
 
+
+.dialog__window--guider-reservation {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+  }
+}
+
 .dialog__window--new-user {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;

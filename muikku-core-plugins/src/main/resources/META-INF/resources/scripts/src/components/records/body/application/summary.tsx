@@ -12,6 +12,7 @@ import { HOPSType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
+import GuiderReservationDialog from '../../dialogs/guider-reservation';
 import Button from "~/components/general/button";
 import moment from '~/lib/moment';
 import { StatusType } from '~/reducers/base/status';
@@ -85,7 +86,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       {displayVacationPeriod ?
                         <div className="item-list__user-vacation-period">
                           {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
-                        {this.props.i18n.time.format(councelor.properties['profile-vacation-start'])}
+                          {this.props.i18n.time.format(councelor.properties['profile-vacation-start'])}
                           {councelor.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(councelor.properties['profile-vacation-end']) : null}
                         </div> : null}
                       <CommunicatorNewMessage extraNamespace="guidance-councelor" initialSelectedItems={[{
@@ -94,6 +95,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       }]}><Button buttonModifiers={["info", "contact-student-councelor"]}>
                           {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
                         </Button></CommunicatorNewMessage>
+                      <GuiderReservationDialog ><Button buttonModifiers={["info", "contact-student-councelor"]}>
+                        {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
+                      </Button></GuiderReservationDialog>
                     </div>
                   </div>
                 })}
