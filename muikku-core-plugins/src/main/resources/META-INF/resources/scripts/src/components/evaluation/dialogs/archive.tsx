@@ -160,8 +160,10 @@ class ArchiveDialog extends React.Component<
     return (
       <Dialog
         isOpen={this.props.isOpen}
-        modifier="guider-delete-file"
-        title="Opiskelijan arkistointi"
+        modifier="evaluation-archive-student"
+        title={this.props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.archiveStudent.confirmationDialog.title"
+        )}
         content={content}
         footer={footer}
       >

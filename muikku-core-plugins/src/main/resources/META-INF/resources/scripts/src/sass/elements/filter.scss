@@ -4,17 +4,17 @@
 @import "../base/breakpoints";
 
 .filter {
-margin-left: 10px;
+  margin-left: 10px;
 }
 
 .filter-items {
-display: flex;
-flex-flow: row;
-flex-wrap: wrap;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
 }
 
 .filter-items--graph-filter {
-display: none;
+  display: none;
 
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;

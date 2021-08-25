@@ -133,8 +133,10 @@ class DeleteRequestDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        modifier="guider-delete-file"
-        title="Opiskelijan arkistointi"
+        modifier="evaluation-archive-request"
+        title={this.props.i18n.text.get(
+          "plugin.evaluation.evaluationModal.archiveRequest.confirmationDialog.title"
+        )}
         content={content}
         footer={footer}
       >

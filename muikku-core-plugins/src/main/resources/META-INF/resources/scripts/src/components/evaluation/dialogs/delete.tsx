@@ -119,8 +119,10 @@ class DeleteDialog extends React.Component<
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        modifier="guider-delete-file"
-        title="Merkinnän poisto"
+        modifier="evaluation-remove-assessment"
+        title={this.props.i18n.text.get(
+          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.title"
+        )}
         content={content}
         footer={footer}
       >

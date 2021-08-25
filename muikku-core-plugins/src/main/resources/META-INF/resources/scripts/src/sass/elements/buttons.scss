@@ -1309,14 +1309,22 @@
   }
 }
 
-.button-icon--important {
-  background: transparent;
-  color: $color-info;
-}
-
+.button-icon--important,
 .button-icon--unimportant {
   background: transparent;
+  border-radius: 100%;
   color: $color-info;
+
+  &:hover {
+    background: $color-default-contrast;
+    color: $color-default;
+  }
+}
+
+.button-icon--important-selected,
+.button-icon--unimportant-selected {
+  background: $color-default-contrast;
+  color: $color-default;
 }
 
 // Material master management related

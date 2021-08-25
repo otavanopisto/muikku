@@ -153,12 +153,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
    * Whether important or unimportant is selected, renders it background differently
    */
   if (important === "important") {
-    evaluationImportantClassesMod = "evaluation-important-button--selected";
+    evaluationImportantClassesMod = "important-selected";
     evaluationUnimportantClassesMod = "";
   }
   if (important === "unimportant") {
     evaluationImportantClassesMod = "";
-    evaluationUnimportantClassesMod = "evaluation-unimportant-button--selected";
+    evaluationUnimportantClassesMod = "unimportant-selected";
   }
 
   const studentName = `${rest.lastName} ${rest.firstName}`;
@@ -302,13 +302,13 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           <IconButton
             aria-label={i18n.text.get("plugin.evaluation.card.button.markImportantButtonLabel")}
             onClick={handleImportanceClick("important")}
-            buttonModifiers="important"
-            icon="star"
+            buttonModifiers={["important", evaluationImportantClassesMod]}
+            icon="star-full"
           />
           <IconButton
             aria-label={i18n.text.get("plugin.evaluation.card.button.markNonImportantButtonLabel")}
             onClick={handleImportanceClick("unimportant")}
-            buttonModifiers="unimportant"
+            buttonModifiers={["unimportant", evaluationUnimportantClassesMod]}
             icon="star-empty"
           />
         </div>
