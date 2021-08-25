@@ -83,7 +83,6 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       to: true,
       condition: this.props.status.permissions.GUIDER_VIEW,
     }, {
-      // Transcript of records is way too heavy and crazy to be its own thing, let it be here until it is refactored
       modifier: "records",
       trail: "records",
       text: 'plugin.records.records',
@@ -100,7 +99,6 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       to: true,
       condition: this.props.status.permissions.ANNOUNCER_TOOL,
     },{
-      //Evaluation is also an external
       modifier: "evaluation",
       trail: "evaluation",
       text: 'plugin.evaluation.evaluation',
@@ -108,6 +106,14 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       icon: "evaluate",
       condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
       openInNewTab: "_blank",
+    },{
+      modifier: "organization",
+      trail: "organization",
+      text: 'plugin.organization.organization',
+      href: "/organization",
+      icon: "board",
+      to: true,
+      condition: this.props.status.permissions.ORGANIZATION_VIEW,
     }];
 
     return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={true}
