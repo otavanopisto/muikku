@@ -3,164 +3,39 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.evaluation__input[type="checkbox"] {
-  align-items: center;
-  appearance: none;
-  border: solid 2px pink;
-  border-radius: 3px;
-  display: flex;
-  height: 1.5rem;
-  justify-content: center;
-  margin: 5px;
-  width: 1.5rem;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-}
-
-.evaluation__input[type="checkbox"]:checked {
-  background-color: $color-application-dialog-border-color;
-  border: solid 2px $color-application-dialog-border-color;
-}
-
-.evaluation__input[type="checkbox"]:checked::after {
-  color: $color-default;
-  content: "\e639";
-  font-family: muikku;
-  font-size: 0.875rem;
-}
-
-.search__container {
-  align-items: center;
-  display: flex;
-  width: 300px;
-}
-
-.search__input {
-  background: $color-default;
-  border: 2px solid pink;
-  border-radius: 3px;
-  height: 2.25rem;
-  padding: 4px 8px;
-  width: 100%;
-
-  &[readonly] {
-    background-color: lighten($color-disabled, 20%);
-    border: 0;
-  }
-}
-
-.evaluation__select {
-  background: $color-default;
-  border: 2px solid pink;
-  border-radius: 3px;
-  display: inline-block;
-  height: 2.25rem;
-  padding: 4px;
-  width: 100%;
-
-  &[disabled] {
-    background-color: lighten($color-disabled, 20%);
-    border: 0;
-  }
-}
-
-.evaluation-message-container {
-  font-size: 1.2rem;
-  font-weight: 300;
-  padding: 50px 10px;
-  text-align: center;
-}
-
-
-
-.archive-button,
-.evaluate-button {
-  color: white;
-  padding: 5px;
-}
-
-.archive-button {
-  background-color: black;
-  margin-right: 5px;
-}
-
-.evaluate-button {
-  background-color: rgb(0, 174, 255);
-  margin-left: 5px;
-}
-
-.evaluation-card-button {
-  font-size: x-large;
-}
-
-.evaluation-important-button,
-.evaluation-unimportant-button {
-  font-size: x-large;
-}
-
-.evaluation-important-button,
-.evaluation-unimportant-button,
-.evaluation-card-button {
-  cursor: pointer;
-}
-
-.evaluation-important-button {
-  margin-right: 2.5px;
-}
-
-.evaluation-unimportant-button {
-  margin-left: 2.5px;
-}
-
-.evaluation-important-button--selected {
-  background-color: red;
-  border-radius: 25px;
-}
-
-.evaluation-unimportant-button--selected {
-  background-color: black;
-  border-radius: 25px;
-}
-
-.evaluation-unimportant-button--selected.icon-star:before {
-  content: "\e62b";
-  color: white;
-}
-
-.evaluation-important-button--selected.icon-star-empty:before {
-  content: "\e62c";
-  color: white;
-}
-
-.eval-container {
+.evaluation-modal {
   display: flex;
   flex-direction: column;
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-direction: row;
   }
 }
 
-.eval-modal-student-container,
-.eval-modal-student-events-container {
+.evaluation-modal__close {
+  border: $color-default;
+  border-radius: 100%;
+  color: $color-default;
+  cursor: pointer;
+  font-size: 22px;
+  height: 55px;
+  padding: 16px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 55px;
+  z-index: 99;
+}
+
+.evaluation-modal__container {
   width: 100%;
 
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-pad) {
     width: 50%;
   }
 }
 
-.eval-modal-material-journal-container {
-  overflow: unset;
-  height: unset;
-
-  @include breakpoint($breakpoint-mobile-xl) {
-    overflow: auto;
-    height: calc(100vh - 54px);
-  }
-}
-
-.eval-modal-student-header,
-.eval-modal-events-header {
+.evaluation-modal__header {
   background: #3786bf;
   min-height: 30px;
   padding: 10px 0;
@@ -169,14 +44,9 @@
   width: 100%;
   white-space: nowrap;
   z-index: 60;
-
-  /* @include breakpoint($breakpoint-pad) {
-    top: 0;
-  } */
 }
 
-.eval-modal-student-name,
-.eval-modal-workspace-name {
+.evaluation-modal__header-title {
   box-sizing: border-box;
   color: white;
   display: inline-block;
@@ -189,73 +59,26 @@
   white-space: nowrap;
 }
 
-.eval-modal-journals-content,
-.eval-modal-materials-content,
-.eval-modal-events-content {
-  bottom: 0;
-  left: 0;
-  overflow: auto;
+.evaluation-modal__content {
+  overflow: unset;
   padding: 10px;
-  right: 0;
-  top: 50px;
-}
+  height: unset;
 
-.workspace-events-container {
-  margin-bottom: 58px;
-}
-
-.eval-modal-events-title {
-  font-size: 22px;
-  font-weight: 400;
-  padding: 10px 0;
-}
-
-.eval-modal-assignments-title {
-  font-size: 22px;
-  font-weight: 400;
-  padding: 10px 0;
-}
-
-.eval-modal-evaluate-buttonset {
-  background-color: white;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  text-align: center;
-  text-transform: uppercase;
-  position: fixed;
-  padding: 5px;
-  width: 100%;
-  z-index: 70;
-
-  @include breakpoint($breakpoint-pad) {
-    left: unset;
-    margin-top: 10px;
-    padding: 0;
-    position: relative;
+  @include breakpoint($breakpoint-mobile-xl) {
+    overflow: auto;
+    height: calc(100vh - 55px);
   }
 }
 
-.button-start-evaluation {
-  background: #009fe3;
+.evaluation-modal__content-title {
+  font-size: 1.375rem;
 }
 
-.button-supplementation-request {
-  background: #ea7503;
+.evaluation-modal__content-buttonset {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
-
-.eval-modal-evaluate-button {
-  color: white;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 16px;
-  line-height: 1;
-  padding: 8px 12px;
-  margin: 0 10px;
-}
-
-/////
 
 .drawer-editor-label {
   text-transform: unset;
@@ -311,15 +134,6 @@
   text-overflow: ellipsis;
   width: 100%;
   white-space: nowrap;
-}
-
-.eval-modal-close {
-  cursor: pointer;
-  font-size: 16px;
-  height: 16px;
-  margin: 12px;
-  padding: 4px;
-  width: 16px;
 }
 
 .eval-modal-editor-header {

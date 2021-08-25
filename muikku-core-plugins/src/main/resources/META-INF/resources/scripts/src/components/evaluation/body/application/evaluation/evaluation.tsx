@@ -23,6 +23,7 @@ import {
   loadEvaluationAssessmentEventsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
+import "~/sass/elements/empty.scss";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
@@ -175,13 +176,11 @@ export class Evaluation extends React.Component<
           <EvaluationDiaryEvent key={item.id} {...item} />
         ))
       ) : (
-        <div className="journal-entry-title-wrapper no-journals">
-          <div className="journal-entry-title journal-entry-title--empty">
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.noJournals"
-            )}
-            !
-          </div>
+        <div className="empty">
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.noJournals"
+          )}
+          !
         </div>
       );
 
@@ -214,11 +213,11 @@ export class Evaluation extends React.Component<
           );
         })
       ) : (
-        <h2 style={{ fontStyle: "italic" }}>
+        <div className="empty">
           {this.props.i18n.text.get(
             "plugin.evaluation.evaluationModal.noEvents"
           )}
-        </h2>
+        </div>
       );
 
     /**
@@ -267,26 +266,22 @@ export class Evaluation extends React.Component<
       );
 
     return (
-      <div className="eval-container" style={{ display: "flex" }}>
-        <div onClick={this.props.onClose} className="eval-close">
-          <div className="circle">
-            <div className="before"></div>
-            <div className="after"></div>
-          </div>
+      <div className="evaluation-modal">
+        <div onClick={this.props.onClose} className="evaluation-modal__close icon-cross">
         </div>
 
-        <section className="eval-modal-student-container">
-          <header className="eval-modal-student-header flex-row flex-align-items-center">
-            <div className="eval-modal-student-name">{`${this.props.selectedAssessment.lastName}, ${this.props.selectedAssessment.firstName} (${this.props.selectedAssessment.studyProgramme})`}</div>
+        <section className="evaluation-modal__container">
+          <header className="evaluation-modal__header">
+            <div className="evaluation-modal__header-title">{`${this.props.selectedAssessment.lastName}, ${this.props.selectedAssessment.firstName} (${this.props.selectedAssessment.studyProgramme})`}</div>
           </header>
 
-          <div className="eval-modal-material-journal-container">
-            <div className="eval-modal-materials-content">
-              <div className="eval-modal-assignments-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentsTitle"
-                )}
-              </div>
+          <div className="evaluation-modal__content">
+            <div className="evaluation-modal__content-title">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.assignmentsTitle"
+              )}
+            </div>
+            <div className="evaluation-modal__content-body">
               {this.props.evaluation.evaluationCurrentSelectedRecords.state ===
                 "READY" &&
               this.props.evaluation.evaluationCompositeReplies.state ===
@@ -296,12 +291,14 @@ export class Evaluation extends React.Component<
                 <div className="loader-empty" />
               )}
             </div>
-            <div className="eval-modal-materials-content">
-              <div className="eval-modal-assignments-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalTitle"
-                )}
-              </div>
+          </div>
+          <div className="evaluation-modal__content">
+            <div className="evaluation-modal__content-title">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.journalTitle"
+              )}
+            </div>
+            <div className="evaluation-modal__content-body">
               {this.props.evaluation.evaluationDiaryEntries.state ===
               "READY" ? (
                 evaluationDiaryEvents
@@ -311,98 +308,96 @@ export class Evaluation extends React.Component<
             </div>
           </div>
         </section>
-        <section className="eval-modal-student-events-container">
-          <header className="eval-modal-events-header flex-row flex-align-items-center">
-            <div className="eval-modal-workspace-name">
+        <section className="evaluation-modal__container">
+          <header className="evaluation-modal__header">
+            <div className="evaluation-modal__header-title">
               {this.props.selectedAssessment.workspaceName}
             </div>
           </header>
-          <div className="eval-modal-material-journal-container">
-            <div className="eval-modal-events-content">
-              <div className="eval-modal-events-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.title"
-                )}
-              </div>
-              <div className="workspace-events-container">
-                {this.props.evaluation.evaluationAssessmentEvents.state ===
-                "READY" ? (
-                  evaluationEventContentCards
-                ) : (
-                  <div className="loader-empty" />
-                )}
+          <div className="evaluation-modal__content">
+            <div className="evaluation-modal__content-title">
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.events.title"
+              )}
+            </div>
+            <div className="evaluation-modal__content-body">
+              {this.props.evaluation.evaluationAssessmentEvents.state ===
+              "READY" ? (
+                evaluationEventContentCards
+              ) : (
+                <div className="loader-empty" />
+              )}
 
-                <SlideDrawer
-                  title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+              <SlideDrawer
+                title={this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"
+                )}
+                modifiers={["workspace"]}
+                show={this.state.showWorkspaceEvaluationDrawer}
+                onClose={this.handleWorkspaceEvaluationCloseDrawer}
+              >
+                <WorkspaceEditor
+                  editorLabel={this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                   )}
-                  modifiers={["workspace"]}
-                  show={this.state.showWorkspaceEvaluationDrawer}
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                >
-                  <WorkspaceEditor
-                    editorLabel={this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
-                    )}
-                    onClose={this.handleWorkspaceEvaluationCloseDrawer}
-                    type={this.state.edit ? "edit" : "new"}
-                    onSuccesfulSave={this.handleOpenArchiveStudentDialog}
-                  />
-                </SlideDrawer>
+                  type={this.state.edit ? "edit" : "new"}
+                  onSuccesfulSave={this.handleOpenArchiveStudentDialog}
+                />
+              </SlideDrawer>
 
-                <SlideDrawer
-                  title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
-                  )}
-                  modifiers={["supplementation"]}
-                  show={this.state.showWorkspaceSupplemenationDrawer}
+              <SlideDrawer
+                title={this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"
+                )}
+                modifiers={["supplementation"]}
+                show={this.state.showWorkspaceSupplemenationDrawer}
+                onClose={
+                  this.handleWorkspaceSupplementationEvaluationCloseDrawer
+                }
+              >
+                <SupplementationEditor
                   onClose={
                     this.handleWorkspaceSupplementationEvaluationCloseDrawer
                   }
-                >
-                  <SupplementationEditor
-                    onClose={
-                      this.handleWorkspaceSupplementationEvaluationCloseDrawer
-                    }
-                    type={this.state.edit ? "edit" : "new"}
-                  />
-                </SlideDrawer>
-              </div>
+                  type={this.state.edit ? "edit" : "new"}
+                />
+              </SlideDrawer>
+            </div>
 
-              <div className="eval-modal-evaluate-buttonset">
-                <Button
-                  onClick={this.handleOpenWorkspaceEvaluationDrawer}
-                  className="eval-modal-evaluate-button eval-modal-evaluate-button--new-workspace"
-                  disabled={
-                    this.props.evaluation.evaluationAssessmentEvents.state ===
-                      "LOADING" ||
-                    this.props.evaluation.basePrice.state === "LOADING"
-                  }
-                >
-                  {isEvaluated
-                    ? this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.events.improvedGradeButton"
-                      )
-                    : this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.events.gradeButton"
-                      )}
-                </Button>
-                <Button
-                  onClick={
-                    this.handleOpenWorkspaceSupplementationEvaluationDrawer
-                  }
-                  className="eval-modal-evaluate-button eval-modal-evaluate-button--supplementation"
-                  disabled={
-                    this.props.evaluation.evaluationAssessmentEvents.state ===
-                      "LOADING" ||
-                    this.props.evaluation.basePrice.state === "LOADING"
-                  }
-                >
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.events.supplementationButton"
-                  )}
-                </Button>
-              </div>
+            <div className="evaluation-modal__content-buttonset">
+              <Button
+                onClick={this.handleOpenWorkspaceEvaluationDrawer}
+                buttonModifiers={["evaluation-add-assessment"]}
+                disabled={
+                  this.props.evaluation.evaluationAssessmentEvents.state ===
+                    "LOADING" ||
+                  this.props.evaluation.basePrice.state === "LOADING"
+                }
+              >
+                {isEvaluated
+                  ? this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.events.improvedGradeButton"
+                    )
+                  : this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.events.gradeButton"
+                    )}
+              </Button>
+              <Button
+                onClick={
+                  this.handleOpenWorkspaceSupplementationEvaluationDrawer
+                }
+                buttonModifiers={["evaluation-add-supplementation"]}
+                disabled={
+                  this.props.evaluation.evaluationAssessmentEvents.state ===
+                    "LOADING" ||
+                  this.props.evaluation.basePrice.state === "LOADING"
+                }
+              >
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.events.supplementationButton"
+                )}
+              </Button>
             </div>
           </div>
         </section>

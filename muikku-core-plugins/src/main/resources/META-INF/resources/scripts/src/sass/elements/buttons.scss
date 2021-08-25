@@ -1254,6 +1254,18 @@
 }
 
 // Evaluation related
+.button--evaluation-add-assessment {
+  background-color: $color-info;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-add-supplementation {
+  background-color: $color-grade-incomplete;
+  color: $color-default;
+  margin: 5px;
+}
+
 .button-pill--sorter,
 .button-pill--archive,
 .button-pill--evaluate,
