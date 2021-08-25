@@ -10,7 +10,7 @@ import Users from './application/users';
 import Usergroups from './application/usergroups';
 import OrganizationWorkspaces from './application/workspaces';
 import WorkspacesAside from './application/workspaces/aside';
-import Reports from './application/reports';
+// import Reports from './application/reports';
 import { i18nType } from '~/reducers/base/i18n';
 import { ButtonPill } from '~/components/general/button';
 import WorkspaceDialog from '../dialogs/new-workspace';
@@ -33,7 +33,7 @@ interface OrganizationManagementApplicationProps {
 }
 
 interface OrganizationManagementApplicationState {
-  activeTab: "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES" | "REPORTS",
+  activeTab: "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES",
   workspaceSearchFieldValue: string,
   userSearchFieldValue: string,
   userGroupSearchFieldValue: string,
@@ -54,7 +54,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.doUserGroupSearch = this.doUserGroupSearch.bind(this);
   }
 
-  onTabChange(id: "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES" | "REPORTS") {
+  onTabChange(id: "SUMMARY" | "USERS" | "USERGROUPS" | "COURSES") {
     this.setState({
       activeTab: id
     });
@@ -73,10 +73,10 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   doWorkspaceSearch(value: string) {
 
     let filters: WorkspacesActiveFiltersType = {
-      educationFilters: this.props.activeFilters.educationFilters? this.props.activeFilters.educationFilters : [],
-      curriculumFilters: this.props.activeFilters.curriculumFilters? this.props.activeFilters.curriculumFilters : [],
-      organizationFilters: this.props.activeFilters.organizationFilters? this.props.activeFilters.organizationFilters : [],
-      stateFilters: this.props.activeFilters.stateFilters? this.props.activeFilters.stateFilters: [],
+      educationFilters: this.props.activeFilters.educationFilters ? this.props.activeFilters.educationFilters : [],
+      curriculumFilters: this.props.activeFilters.curriculumFilters ? this.props.activeFilters.curriculumFilters : [],
+      organizationFilters: this.props.activeFilters.organizationFilters ? this.props.activeFilters.organizationFilters : [],
+      stateFilters: this.props.activeFilters.stateFilters ? this.props.activeFilters.stateFilters : [],
       templates: "ONLY_WORKSPACES",
       query: value,
       baseFilter: "ALL_COURSES"
@@ -99,7 +99,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
     let usersToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
-        <SearchFormElement value={this.state.userSearchFieldValue} id="organizationUserSearch" placeholder={this.props.i18n.text.get('plugin.organization.userGroups.search.placeholder')} name="organization-user-search" updateField={this.doUserSearch} ></SearchFormElement>
+        <SearchFormElement value={this.state.userSearchFieldValue} id="organizationUserSearch" placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} name="organization-user-search" updateField={this.doUserSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;
 
@@ -132,13 +132,16 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
           component: () => { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />} /> }
         },
-        {
-          id: "REPORTS",
-          name: this.props.i18n.text.get('plugin.organization.tab.title.reports'),
-          component: () => { return <ApplicationPanelBody modifier="tabs" children={<Reports />} /> }
-        }
+
       ]} />
     );
+
+    // Removed for the time being
+    // {
+    //   id: "REPORTS",
+    //   name: this.props.i18n.text.get('plugin.organization.tab.title.reports'),
+    //   component: () => { return <ApplicationPanelBody modifier="tabs" children={<Reports />} /> }
+    // }
   }
 }
 

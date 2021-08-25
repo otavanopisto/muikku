@@ -19,7 +19,7 @@ export interface InputContactsAutofillLoaders {
 export interface InputContactsAutofillProps {
   placeholder?: string,
   label?: string,
-  onChange: (newValue: ContactRecepientType[]) => any,
+  onChange: (newValue: ContactRecepientType[]) => void,
   modifier: string,
   selectedItems: ContactRecepientType[],
   hasGroupPermission?: boolean,
@@ -265,7 +265,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       <TagInput identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         label={this.props.label}
-        tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete} />
+        tags={selectedItems} placeholder={this.props.placeholder} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete} />
     </Autocomplete>
   }
 }
