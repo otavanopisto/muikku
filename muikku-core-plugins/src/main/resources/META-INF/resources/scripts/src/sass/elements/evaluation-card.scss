@@ -40,6 +40,10 @@
 
   &.state-FAILED {
     border: 1px solid $color-grade-failed;
+
+    .button-pill--evaluate {
+      background: $color-grade-failed;
+    }
   }
 
   &.state-PASSED {
@@ -52,6 +56,10 @@
 
   &.state-INCOMPLETE {
     border: 1px solid $color-grade-incomplete;
+
+    .button-pill--evaluate {
+      background: $color-grade-incomplete;
+    }
   }
   // scss-lint:enable SelectorFormat
 }
