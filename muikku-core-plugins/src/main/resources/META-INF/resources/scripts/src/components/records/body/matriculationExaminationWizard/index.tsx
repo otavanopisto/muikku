@@ -23,7 +23,10 @@ import {
 } from "../../../../@types/shared";
 import { StatusType } from "../../../../reducers/base/status";
 import { HOPSType } from "../../../../reducers/main-function/hops";
-import { ExamEnrollmentDegreeStructure } from "../../../../@types/shared";
+import {
+  ExamEnrollmentDegreeStructure,
+  ExaminationFunding,
+} from "../../../../@types/shared";
 import { YOType } from "../../../../reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
@@ -122,6 +125,7 @@ interface MatriculationExaminationWizardProps {
   i18n: i18nType;
   status: StatusType;
   examId: number;
+  compulsoryEducationEligible: boolean;
   onDone: () => any;
   updateEnrollemnts: (examId: number) => void;
   hops: HOPSType;
@@ -574,7 +578,7 @@ class MatriculationExaminationWizard extends React.Component<
         name: "Info",
         component: (
           <Step1
-            hops={this.props.hops}
+            compulsoryEducationEligible={this.props.compulsoryEducationEligible}
             onChangeSystemChange={this.handleUsingNewSystemChange}
             saveState={this.state.saveState}
             draftSaveErrorMsg={this.state.errorMsg}
@@ -594,7 +598,9 @@ class MatriculationExaminationWizard extends React.Component<
           this.state.examinationInformation.degreeStructure ===
           ExamEnrollmentDegreeStructure.POST2022 ? (
             <Step2New
-              hops={this.props.hops}
+              compulsoryEducationEligible={
+                this.props.compulsoryEducationEligible
+              }
               onChange={this.handleExaminationInformationChange}
               examination={this.state.examinationInformation}
               saveState={this.state.saveState}

@@ -11,8 +11,8 @@ interface MatriculationExaminationEnrollmentInfoProps {
   usingNewSystem?: boolean;
   saveState?: SaveState;
   draftSaveErrorMsg?: string;
-  hops: HOPSType;
   endDate: string;
+  compulsoryEducationEligible: boolean;
 }
 
 interface MatriculationExaminationEnrollmentInfoState {
@@ -102,7 +102,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
               <h3 className="matriculation-container__subheader">
                 Oppivelvollisuus
               </h3>
-              {this.props.hops.eligibility.compulsoryEducation ? (
+              {this.props.compulsoryEducationEligible ? (
                 <p className="matriculation-container__info-item">
                   Teidän oppivelvollisuus on voimassa. Valituista kokeista viisi
                   on maksuttomia. Mikäli valittuja kokeita on enemmän kuin

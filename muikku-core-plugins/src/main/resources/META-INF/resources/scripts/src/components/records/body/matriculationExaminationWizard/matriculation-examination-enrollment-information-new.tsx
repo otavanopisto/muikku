@@ -102,7 +102,7 @@ interface MatriculationExaminationEnrollmentInformationNewProps {
   examination: ExaminationInformation;
   saveState?: SaveState;
   draftSaveErrorMsg?: string;
-  hops: HOPSType;
+  compulsoryEducationEligible: boolean;
   onChange: (examination: ExaminationInformation) => void;
 }
 
@@ -224,6 +224,15 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   };
 
   /**
+   * getPlannedNonDublicatedSubjects
+   */
+  getPlannedNonDublicatedSubjects = () => {
+    return this.state.plannedAttendances.map((attendance) => {
+      return attendance.subject;
+    });
+  };
+
+  /**
    * Returns list of finished subjects from finished attendances lists
    *
    * @returns list of finished subjects from finished attendances lists
@@ -253,6 +262,59 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
         attendances.push(finishedAttendance);
       }
     });
+
+    return attendances;
+  };
+
+  /**
+   * getNonDuplicateAttendanceEnrolledAndPlanned
+   */
+  getNonDuplicateAttendanceEnrolledAndPlanned = () => {
+    const attendances = [].concat(
+      this.state.enrolledAttendances,
+      this.state.plannedAttendances
+    );
+
+    const attendedSubjects = attendances.map((attendance) => {
+      return attendance.subject;
+    });
+
+    this.state.finishedAttendances.forEach((finishedAttendance) => {
+      if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
+        attendances.push(finishedAttendance);
+      }
+    });
+
+    return attendances;
+  };
+
+  /**
+   * getNonDuplicateAttendanceEnrolledAndPlanned
+   */
+  getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed = () => {
+    const attendances = [
+      ...this.state.enrolledAttendances,
+      ...this.state.plannedAttendances,
+    ];
+
+    const succesfullyFinishedExams = this.getSuccesfulFinishedExams();
+
+    const attendedSubjects = attendances
+      .map((attendance) => {
+        return attendance.subject;
+      })
+      .filter((subject) => succesfullyFinishedExams.indexOf(subject) !== -1);
+
+    this.state.finishedAttendances
+      .filter(
+        (fAttendance) =>
+          succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
+      )
+      .forEach((finishedAttendance) => {
+        if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
+          attendances.push(finishedAttendance);
+        }
+      });
 
     return attendances;
   };
@@ -321,7 +383,14 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @returns number of choosed attendance including enrolled and finished excluding dublicated attendances
    */
   getAmountOfChoosedAttendances = () => {
-    return this.getNonDuplicateAttendances().length;
+    return this.getNonDuplicateAttendanceEnrolledAndPlanned().length;
+  };
+
+  /**
+   *getAmountOfChoosedAttendancesEnrolledAndPlanned
+   */
+  getAmountOfChoosedAttendancesEnrolledAndPlanned = () => {
+    return this.getNonDuplicateAttendanceEnrolledAndPlanned().length;
   };
 
   /**
@@ -330,9 +399,11 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @returns count of attendances in finnish courses
    */
   getAmountOfFinnishAttendances = () => {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
-    }).length;
+    return this.getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+      (attendance) => {
+        return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
+      }
+    ).length;
   };
 
   /**
@@ -342,7 +413,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   getFinnishAttendance = () => {
     const array: string[] = [];
 
-    this.getNonDuplicateAttendances().map((attendance) => {
+    this.getNonDuplicateAttendanceEnrolledAndPlanned().map((attendance) => {
       if (FINNISH_SUBJECTS.includes(attendance.subject)) {
         const index = FINNISH_SUBJECTS.findIndex(
           (item) => item === attendance.subject
@@ -361,9 +432,25 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
   getAmountOfAdvancedSubjectAttendances = () => {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
-    }).length;
+    return this.getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+      (attendance) => {
+        return ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
+      }
+    ).length;
+  };
+
+  /**
+   * getSucceedExams
+   * @returns amount of succeed exams
+   */
+  getSucceedExams = () => {
+    return this.state.finishedAttendances.length > 0
+      ? this.state.finishedAttendances.map((item) => {
+          if (item.grade !== "IMPROBATUR" && item.grade !== "K") {
+            return item.subject;
+          }
+        })
+      : [];
   };
 
   /**
@@ -393,7 +480,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   getAmountOfFreeAttendances = () => {
     const nonDublicatedAttendance:
       | ExaminationEnrolledSubject[]
-      | ExaminationFinishedSubject[] = this.getNonDuplicateAttendances();
+      | ExaminationFinishedSubject[] =
+      this.getNonDuplicateAttendanceEnrolledAndPlanned();
 
     let amountOfFreeAttendances = 0;
 
@@ -413,7 +501,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   getAmountOfFreeRepeats = () => {
     const nonDublicatedAttendance:
       | ExaminationEnrolledSubject[]
-      | ExaminationFinishedSubject[] = this.getNonDuplicateAttendances();
+      | ExaminationFinishedSubject[] =
+      this.getNonDuplicateAttendanceEnrolledAndPlanned();
 
     let amountOfFreeRepeats = 0;
 
@@ -439,16 +528,19 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
   getAmountOfMandatoryAdvancedSubjectAttendances() {
-    return this.getNonDuplicateAttendances().filter((attendance) => {
-      return ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
-    }).length;
+    return this.getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+      (attendance) => {
+        return ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
+      }
+    ).length;
   }
 
   /**
    * getAmountOfChoosedGroups
    */
   getAmountOfChoosedGroups = () => {
-    const nonDublicatedAttendaces = this.getNonDuplicateAttendances();
+    const nonDublicatedAttendaces =
+      this.getNonDuplicateAttendanceEnrolledAndPlanned();
 
     const subjectCodes: string[] = [];
 
@@ -483,13 +575,22 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * @returns whether examination is valid, and with selection student can graduate from
    */
   isValidExamination = () => {
+    /**
+     * Difference when finnish language or finnish as secondary language
+     * is subracted from enrolled and succesfully finished exams and
+     * planned exams
+     */
     const difference =
-      this.getAmountOfSucceedExams() +
-      this.getEnrolledSubjects().length -
+      this.getSuccesfulFinishedExams().length +
+      this.getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
+        .length -
       this.getAmountOfFinnishAttendances();
 
     const sum =
-      this.getAmountOfSucceedExams() + this.getEnrolledSubjects().length;
+      this.getAmountOfSucceedExams() +
+      (this.getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
+        .length -
+        this.getAmountOfSucceedExams());
 
     return (
       this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
@@ -668,20 +769,13 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * isFundingsValid
    */
   isFundingsValid = () => {
-    const { hops } = this.props;
+    const { compulsoryEducationEligible } = this.props;
 
-    if (
-      hops.eligibility.compulsoryEducation &&
-      this.getAmountOfChoosedAttendances() > REQUIRED_AMOUNT_OF_ATTENDACNES
-    ) {
+    if (compulsoryEducationEligible) {
       const amountOfFreeAttendances = this.getAmountOfFreeAttendances();
       const amountOfFreeRepeats = this.getAmountOfFreeRepeats();
-      const amountOfSucceedExams = this.getAmountOfSucceedExams();
 
-      if (
-        amountOfFreeAttendances + amountOfFreeRepeats + amountOfSucceedExams >
-        5
-      ) {
+      if (amountOfFreeAttendances + amountOfFreeRepeats > 5) {
         return false;
       }
     }
@@ -703,60 +797,21 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   };
 
   /**
-   * checkAndParseExaminationFundings
-   * @param modifiedExamination
-   * @returns modifiedExamination with corrected fundings
-   */
-  checkAndParseExaminationFundings = (
-    modifiedExamination: ExaminationInformation
-  ) => {
-    const { hops } = this.props;
-
-    if (
-      hops.eligibility.compulsoryEducation &&
-      modifiedExamination.enrolledAttendances.length <
-        REQUIRED_AMOUNT_OF_ATTENDACNES
-    ) {
-      const renewableForFreeExams =
-        this.getRenewableForFreeFinishedAttendances();
-
-      const nonRenewableForFreeExams =
-        this.getNonRenewableForFreeFinishedAttendances();
-
-      modifiedExamination.enrolledAttendances =
-        modifiedExamination.enrolledAttendances.map((item) => ({
-          ...item,
-          funding: renewableForFreeExams.includes(item.subject)
-            ? ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY
-            : nonRenewableForFreeExams.includes(item.subject)
-            ? ExaminationFunding.SELF_FUNDED
-            : ExaminationFunding.COMPULSORYEDUCATION_FREE,
-        }));
-    } else if (!hops.eligibility.compulsoryEducation) {
-      modifiedExamination.enrolledAttendances =
-        modifiedExamination.enrolledAttendances.map((item) => ({
-          ...item,
-          funding: ExaminationFunding.SELF_FUNDED,
-        }));
-    }
-
-    return modifiedExamination;
-  };
-
-  /**
    * handles adding new enrolled attendes to list and passed modfied examination information to parent
    */
   handleNewEnrolledAttendanceClick = (e: React.MouseEvent) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange, compulsoryEducationEligible } = this.props;
+    const { degreeType } = this.state;
 
     const enrolledAttendances = this.state.enrolledAttendances;
 
-    const funding = hops.eligibility.compulsoryEducation
-      ? hops.eligibility.compulsoryEducation &&
-        this.getAmountOfChoosedAttendances() >= REQUIRED_AMOUNT_OF_ATTENDACNES
-        ? ExaminationFunding.SELF_FUNDED
-        : ExaminationFunding.COMPULSORYEDUCATION_FREE
-      : ExaminationFunding.SELF_FUNDED;
+    const funding =
+      compulsoryEducationEligible &&
+      degreeType !== "MATRICULATIONEXAMINATIONSUPPLEMENT"
+        ? this.getAmountOfChoosedAttendances() > REQUIRED_AMOUNT_OF_ATTENDACNES
+          ? ""
+          : ""
+        : ExaminationFunding.SELF_FUNDED;
 
     enrolledAttendances.push({
       subject: this.getDefaultSubject(this.getEnrolledSubjects()),
@@ -771,10 +826,10 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       enrolledAttendances,
     };
 
-    modifiedExamination = {
+    /* modifiedExamination = {
       ...examination,
       ...this.checkAndParseExaminationFundings(modifiedExamination),
-    };
+    }; */
 
     onChange(modifiedExamination);
   };
@@ -783,9 +838,18 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * handles adding new finished attendes to list and passed modfied examination information to parent
    */
   handleNewFinishedAttendanceClick = (e: React.MouseEvent) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange, compulsoryEducationEligible } = this.props;
+    const { degreeType } = this.state;
 
     const finishedAttendances = this.state.finishedAttendances;
+
+    const funding =
+      compulsoryEducationEligible &&
+      degreeType !== "MATRICULATIONEXAMINATIONSUPPLEMENT"
+        ? this.getAmountOfChoosedAttendances() > REQUIRED_AMOUNT_OF_ATTENDACNES
+          ? ""
+          : ""
+        : ExaminationFunding.SELF_FUNDED;
 
     finishedAttendances.push({
       term: getDefaultPastTerm().value,
@@ -793,6 +857,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       mandatory: "false",
       grade: "",
       status: "FINISHED",
+      funding,
     });
 
     let modifiedExamination: ExaminationInformation = {
@@ -800,10 +865,10 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       finishedAttendances,
     };
 
-    modifiedExamination = {
+    /* modifiedExamination = {
       ...examination,
       ...this.checkAndParseExaminationFundings(modifiedExamination),
-    };
+    }; */
 
     onChange(modifiedExamination);
   };
@@ -812,7 +877,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * handles adding new planned attendes to list and passed modfied examination information to parent
    */
   handleNewPlannedAttendanceClick = (e: React.MouseEvent) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange } = this.props;
 
     const plannedAttendances = this.state.plannedAttendances;
 
@@ -835,7 +900,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * handles delete enrolled attendance and passes modified examination information to parent
    */
   handleDeleteEnrolledAttendanceRow = (i: number) => (e: React.MouseEvent) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange } = this.props;
 
     const enrolledAttendances = this.state.enrolledAttendances;
 
@@ -846,10 +911,10 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       enrolledAttendances,
     };
 
-    modifiedExamination = {
+    /* modifiedExamination = {
       ...examination,
       ...this.checkAndParseExaminationFundings(modifiedExamination),
-    };
+    }; */
 
     onChange(modifiedExamination);
   };
@@ -858,7 +923,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * handles delete finished attendance and passes modified examination information to parent
    */
   handleDeleteFinishedAttendanceRow = (i: number) => (e: React.MouseEvent) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange } = this.props;
 
     const finishedAttendances = this.state.finishedAttendances;
 
@@ -869,10 +934,10 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       finishedAttendances,
     };
 
-    modifiedExamination = {
+    /* modifiedExamination = {
       ...examination,
       ...this.checkAndParseExaminationFundings(modifiedExamination),
-    };
+    }; */
 
     onChange(modifiedExamination);
   };
@@ -904,6 +969,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
     value: ExaminationInformation[T]
   ) => {
     const { examination, onChange } = this.props;
+    const { degreeType } = this.state;
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
@@ -917,6 +983,47 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       modifiedExamination.finishedAttendances = [];
     }
 
+    if (
+      modifiedExamination.degreeType !== degreeType &&
+      modifiedExamination.degreeType === "MATRICULATIONEXAMINATIONSUPPLEMENT"
+    ) {
+      modifiedExamination = {
+        ...modifiedExamination,
+        finishedAttendances: modifiedExamination.finishedAttendances.map(
+          (fSubject) => ({
+            ...fSubject,
+            funding: ExaminationFunding.SELF_FUNDED,
+          })
+        ),
+        enrolledAttendances: modifiedExamination.enrolledAttendances.map(
+          (eSubject) => ({
+            ...eSubject,
+            funding: ExaminationFunding.SELF_FUNDED,
+          })
+        ),
+      };
+    }
+    if (
+      modifiedExamination.degreeType !== degreeType &&
+      modifiedExamination.degreeType === "MATRICULATIONEXAMINATION"
+    ) {
+      modifiedExamination = {
+        ...modifiedExamination,
+        finishedAttendances: modifiedExamination.finishedAttendances.map(
+          (fSubject) => ({
+            ...fSubject,
+            funding: "",
+          })
+        ),
+        enrolledAttendances: modifiedExamination.enrolledAttendances.map(
+          (eSubject) => ({
+            ...eSubject,
+            funding: "",
+          })
+        ),
+      };
+    }
+
     onChange(modifiedExamination);
   };
 
@@ -927,17 +1034,17 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   handleExaminationEnrolledAttendSubjectListChange = (
     examinationSubjectList: ExaminationEnrolledSubject[]
   ) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange } = this.props;
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
       enrolledAttendances: examinationSubjectList,
     };
 
-    modifiedExamination = {
+    /* modifiedExamination = {
       ...examination,
       ...this.checkAndParseExaminationFundings(modifiedExamination),
-    };
+    }; */
 
     onChange(modifiedExamination);
   };
@@ -949,18 +1056,18 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
   handleExaminationFinishedSubjectListChange = (
     examinationSubjectList: ExaminationFinishedSubject[]
   ) => {
-    const { examination, onChange, hops } = this.props;
+    const { examination, onChange } = this.props;
 
     let modifiedExamination: ExaminationInformation = {
       ...examination,
       finishedAttendances: examinationSubjectList,
     };
 
-    modifiedExamination = {
+    /* modifiedExamination = {
       ...examination,
       ...this.checkAndParseExaminationFundings(modifiedExamination),
     };
-
+ */
     onChange(modifiedExamination);
   };
 
@@ -985,7 +1092,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
    * Render method
    */
   render() {
-    const { saveState, draftSaveErrorMsg, hops } = this.props;
+    const { saveState, draftSaveErrorMsg, compulsoryEducationEligible } =
+      this.props;
 
     const {
       name,
@@ -1008,8 +1116,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
     return (
       <div className="matriculation-container">
-        <SavingDraftError draftSaveErrorMsg={draftSaveErrorMsg} />
-        <SavingDraftInfo saveState={saveState} />
+        {/* <SavingDraftError draftSaveErrorMsg={draftSaveErrorMsg} />
+        <SavingDraftInfo saveState={saveState} /> */}
         <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
             Perustiedot
@@ -1234,6 +1342,10 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
               onChange={this.handleExaminationFinishedSubjectListChange}
               onDeleteRow={this.handleDeleteFinishedAttendanceRow}
               useMandatorySelect={false}
+              useFundingSelect={
+                degreeType !== "MATRICULATIONEXAMINATIONSUPPLEMENT" &&
+                compulsoryEducationEligible
+              }
             />
             <div className="matriculation-container__row">
               <Button
@@ -1264,9 +1376,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
             onDeleteRow={this.handleDeleteEnrolledAttendanceRow}
             useMandatorySelect={false}
             useFundingSelect={
-              hops.eligibility.compulsoryEducation &&
-              this.getAmountOfChoosedAttendances() >
-                REQUIRED_AMOUNT_OF_ATTENDACNES
+              degreeType !== "MATRICULATIONEXAMINATIONSUPPLEMENT" &&
+              compulsoryEducationEligible
             }
           />
           <div className="matriculation-container__row">
@@ -1305,8 +1416,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
             </div>
           ) : null}
 
-          {this.getAmountOfChoosedAttendances() >
-            REQUIRED_AMOUNT_OF_ATTENDACNES && !this.isFundingsValid() ? (
+          {!this.isFundingsValid() ? (
             <div className="matriculation-container__state state-WARNING">
               <div className="matriculation-container__state-icon icon-notification"></div>
               <div className="matriculation-container__state-text">
@@ -1373,7 +1483,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
         {!this.isValidExamination() ||
         this.isInvalid() ||
-        this.getAmountOfChoosedAttendances() >=
+        this.getAmountOfChoosedAttendancesEnrolledAndPlanned() >=
           REQUIRED_AMOUNT_OF_ATTENDACNES ? (
           <div className="matriculation-container__state state-INFO">
             <div className="matriculation-container__state-icon icon-notification"></div>
@@ -1382,7 +1492,10 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 Ylioppilastutkintoon tulee sisältyä vähintään viisi eri
                 kirjoitettua ainetta. Halutessasi voit hajauttaa kirjoitukset
                 useammalle kirjoituskerralle.
-                {` (Valittuna ${this.getAmountOfChoosedAttendances()})`}
+                {` (Valittuna ${
+                  this.getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
+                    .length
+                })`}
               </p>
               <ul>
                 <li>
@@ -1411,15 +1524,13 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
                 </li>
               </ul>
 
-              {hops.eligibility.compulsoryEducation &&
-                this.getAmountOfChoosedAttendances() >
-                  REQUIRED_AMOUNT_OF_ATTENDACNES && (
-                  <p className="matriculation__hightlighted">
-                    Mikäli suoritat enemmän kuin 5 viisi ainetta, merkitse mitkä
-                    viisi koetta suoritat maksuttomana (oppivelvollisuus
-                    rahoitus) ja mitkä itserahoituksella.
-                  </p>
-                )}
+              {compulsoryEducationEligible && (
+                <p className="matriculation__hightlighted">
+                  Merkitse mitkä viisi koetta suoritat/olet suorittanut
+                  maksuttomana (oppivelvollisuus rahoitus) ja mitkä
+                  itserahoituksella.
+                </p>
+              )}
             </div>
           </div>
         ) : null}

@@ -95,6 +95,7 @@ export interface ExaminationPlannedSubject {
   subject: string;
   mandatory: string;
   status: attendanceStatus;
+  funding?: ExaminationFunding | string;
 }
 
 /**

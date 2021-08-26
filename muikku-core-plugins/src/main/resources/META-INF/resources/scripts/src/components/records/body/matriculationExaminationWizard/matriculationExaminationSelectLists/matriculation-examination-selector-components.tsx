@@ -35,21 +35,11 @@ interface MatriculationExaminationEnrolledInputGroupProps {
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
-const defaultEnrolledProps = {
-  useTermSelect: true,
-  useSubjectSelect: true,
-  useMandatorySelect: true,
-  useGradeSelect: true,
-  useFundingSelect: false,
-};
-
 /**
  * MatriculationExaminationEnrolledInputGroup
  */
 export const MatriculationExaminationEnrolledInputGroup: React.FC<MatriculationExaminationEnrolledInputGroupProps> =
   (props) => {
-    props = { ...defaultEnrolledProps, ...props };
-
     const {
       subject,
       index,
@@ -196,21 +186,11 @@ interface MatriculationExaminationFinishedInputGroupProps {
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
-const defaultFinishedProps = {
-  useTermSelect: true,
-  useSubjectSelect: true,
-  useMandatorySelect: true,
-  useGradeSelect: true,
-  useFundingSelect: false,
-};
-
 /**
  * MatriculationExaminationSubjectInputGroup
  */
 export const MatriculationExaminationFinishedInputGroup: React.FC<MatriculationExaminationFinishedInputGroupProps> =
   (props) => {
-    props = { ...defaultFinishedProps, ...props };
-
     const {
       index,
       subject,
@@ -298,7 +278,15 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<MatriculationE
 
         {useSelectsProps.useFundingSelect && (
           <div className="matriculation__form-element-container matriculation__form-element-container--input">
-            <FundingSelect i={index} disabled={readOnly} modifier="Enroll" />
+            <FundingSelect
+              i={index}
+              disabled={readOnly}
+              value={subject.funding}
+              onChange={(e) =>
+                onSubjectGroupChange("funding", e.target.value, index)
+              }
+              modifier="Enroll"
+            />
           </div>
         )}
 
@@ -344,19 +332,11 @@ interface MatriculationExaminationPlannedInputGroupProps {
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
 }
 
-const defaultPlannedProps = {
-  useTermSelect: true,
-  useSubjectSelect: true,
-  useMandatorySelect: true,
-};
-
 /**
  * MatriculationExaminationFutureSubjectsGroup
  */
 export const MatriculationExaminationPlannedInputGroup: React.FC<MatriculationExaminationPlannedInputGroupProps> =
   (props) => {
-    props = { ...defaultFinishedProps, ...props };
-
     const {
       index,
       subject,

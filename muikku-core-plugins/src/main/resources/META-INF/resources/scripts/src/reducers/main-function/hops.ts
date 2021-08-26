@@ -27,8 +27,6 @@ export interface HOPSDataType {
 
 export interface HOPSEligibilityType {
   upperSecondarySchoolCurriculum: boolean;
-  // TODO: compulsoryEducation not present anymore
-  compulsoryEducation: boolean;
 }
 
 export interface HOPSType {

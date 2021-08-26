@@ -18,9 +18,9 @@ import "~/sass/elements/course.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/buttons.scss";
 import MatriculationEligibilityRow from "./matriculation-eligibility-row/matriculation-eligibility-row";
-import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
 import { updateYO } from "~/actions/main-function/records/yo";
 import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
+import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
 
 interface YOProps {
   i18n: i18nType;
@@ -139,6 +139,9 @@ class YO extends React.Component<YOProps, YOState> {
                       updateEnrollemnts={this.updateEnrollemnts}
                       examId={exam.id}
                       key={exam.id}
+                      compulsoryEducationEligible={
+                        exam.compulsoryEducationEligible
+                      }
                     >
                       <Button className="button button--yo-signup">
                         {this.props.i18n.text.get(
