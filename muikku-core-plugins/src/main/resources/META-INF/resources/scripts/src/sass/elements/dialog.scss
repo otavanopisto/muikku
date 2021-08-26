@@ -312,7 +312,7 @@
 
 .dialog__content-row-header-description {
   font-weight: 300;
-  padding: 10px;
+  padding: 10px 0;
 }
 
 .dialog__content-row-content {
@@ -409,4 +409,38 @@
     color: $color-success;
   }
   // scss-lint:enable SelectorFormat
+}
+
+.dialog__state {
+  align-items: center;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  display: flex;
+  margin: 20px 0 5px;
+  padding: 7px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-INFO {
+    border-color: $color-info;
+
+    .dialog__state-icon {
+      color: $color-info;
+    }
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.dialog__state-icon {
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 35px;
+  margin: 0 7px 0 0;
+}
+
+.dialog__state-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
 }

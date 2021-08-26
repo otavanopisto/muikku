@@ -11,6 +11,7 @@ import { ButtonPill } from '~/components/general/button';
 import moment from "~/lib/moment";
 import Link from '~/components/general/link';
 import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
+import { StatusType } from "~/reducers/base/status";
 
 // we use these
 const today = moment();
@@ -21,7 +22,8 @@ const currentMonthDayLimit: Number = 10;
 
 interface IWorkListProps {
   i18n: i18nType,
-  profile: ProfileType;
+  profile: ProfileType,
+  status: StatusType,
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;
 }
@@ -113,7 +115,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
   }
 
   public render() {
-    if (this.props.profile.location !== "work") {
+    if (this.props.profile.location !== "work" || !this.props.status.permissions.WORKLIST_AVAILABLE) {
       return null;
     }
 
@@ -150,15 +152,15 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
         const entries = isOpen && hasData ? (
           section.items.map((item) => {
             return (
-              <WorkListRow key={item.id} item={item} currentMonthDayLimit={currentMonthDayLimit}/>
+              <WorkListRow key={item.id} item={item} currentMonthDayLimit={currentMonthDayLimit} />
             );
           })
         ) : null;
 
         // calculate the months total value of worklist entries
         let totalCostSummary: number = isOpen && hasData ? (
-          section.items.map(item => (item.price * item.factor)).reduce((a,b) => a+b)
-        ): null;
+          section.items.map(item => (item.price * item.factor)).reduce((a, b) => a + b)
+        ) : null;
 
         const sectionTotalRow = (<div className="application-sub-panel__item application-sub-panel__item--worklist-total">
           <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">{this.props.i18n.text.get("plugin.profile.worklist.worklistEntriesTotalValueLabel")}</div>
@@ -205,7 +207,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
                 <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
                   <div className="application-sub-panel__item-data application-sub-panel__item-data--worklist-submit-entries">{submitLastMonthButton}</div>
                 </div>
-              : null}
+                : null}
             </div>
           </div>
         );
@@ -252,11 +254,12 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     profile: state.profile,
+    status: state.status,
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({insertProfileWorklistItem, loadProfileWorklistSection}, dispatch);
+  return bindActionCreators({ insertProfileWorklistItem, loadProfileWorklistSection }, dispatch);
 };
 
 export default connect(

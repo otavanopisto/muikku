@@ -7,6 +7,7 @@ interface MathFieldProps {
   formulaClassName: string,
   toolbarClassName: string,
   editorClassName: string,
+  imageClassName: string,
   value: string,
   onChange: (value: string)=>any,
   i18n: {
@@ -15,12 +16,14 @@ interface MathFieldProps {
     geometryAndVectors: string,
     setTheoryNotation: string,
     mathFormulas: string,
-    operators: string
+    operators: string,
+    image: string,
   },
   toolbarAlwaysVisible?: boolean,
   dontLoadACE?: boolean,
   dontLoadMQ?: boolean,
   readOnly?: boolean
+  userId: number,
 }
 
 interface MathFieldState {
@@ -53,6 +56,8 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     this.closeMathExpanded = this.closeMathExpanded.bind(this);
     this.createNewLatex = this.createNewLatex.bind(this);
     this.checkLoadingOfAceAndMQ = this.checkLoadingOfAceAndMQ.bind(this);
+    this.requestImage = this.requestImage.bind(this);
+    this.onImageRequested = this.onImageRequested.bind(this);
 
     this.checkLoadingOfAceAndMQ(props);
   }
@@ -130,6 +135,14 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     //this will trigger the onLatexModeOpen from the Field so the toolbar will react after all
     (this.refs.input as Field).createNewLatex();
   }
+  requestImage() {
+    (this.refs.imginput as HTMLInputElement).click();
+  }
+  onImageRequested(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files[0];
+    e.target.value = null;
+    (this.refs.input as Field).insertImage(file);
+  }
   getBase():HTMLElement {
     return this.refs["base"] as HTMLElement;
   }
@@ -137,12 +150,14 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     return <div ref="base">
      <Toolbar isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused} onToolbarAction={this.cancelBlur}
       className={this.props.toolbarClassName} i18n={this.props.i18n} onCommand={this.onCommand}
-      onRequestToOpenMathMode={this.createNewLatex} isMathExpanded={this.state.expandMath}/>
+      onRequestToOpenMathMode={this.createNewLatex} isMathExpanded={this.state.expandMath} onRequestImage={this.requestImage}/>
      <Field className={this.props.className} onFocus={this.onFocusField} onBlur={this.onBlurField}
        onChange={this.props.onChange} value={this.props.value} formulaClassName={this.props.formulaClassName}
        editorClassName={this.props.editorClassName} toolbarClassName={this.props.toolbarClassName}
        onLatexModeOpen={this.openMathExpanded} onLatexModeClose={this.closeMathExpanded}
-       ref="input" latexPlaceholderText="LaTeX" readOnly={this.props.readOnly}/>
+       ref="input" latexPlaceholderText="LaTeX" readOnly={this.props.readOnly}
+       imageClassName={this.props.imageClassName} userId={this.props.userId}/>
+      <input type="file" onChange={this.onImageRequested} style={{display: "none"}} ref="imginput" accept="image/*"/>
     </div>
   }
 }

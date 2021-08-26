@@ -277,7 +277,7 @@ $color-label-inverse: $color-default;
 // Text
 $color-text-default: $color-inverse;
 $color-text-secondary: #cecece;
-$color-text-link: $color-primary;
+$color-text-link: #0670b7;
 $color-text-link-selected: $color-default;
 $color-text-secondary: #b3b2b2;
 
@@ -293,7 +293,7 @@ $color-separator-background: $color-inverse;
 // Links
 $color-link-frontpage-text: $color-inverse;
 $color-link-highlight-text: #00af00;
-$color-link-default-text: $color-primary;
+$color-link-default-text: #0670b7;
 $color-link-inverse-text: $color-default;
 $color-link-default-background: rgba(0, 0, 0, 0);
 $color-link-highlight-background: rgba(0, 0, 0, 0);
@@ -467,37 +467,25 @@ $color-material-citation-background: #f8f8f8;
 $color-material-citation-quote: #bbb;
 
 $color-material-highlight-text-background: #f8f8f8;
-$color-material-highlight-text-border: #12cbcb;
+$color-material-highlight-text-border: #00e3cb;
 
-$color-material-file-box-background: #c8e9ff;
-$color-material-file-box-border: #9dccec;
+$color-material-file-box: #07d2ff;
+$color-material-audio-box: #07d2ff;
+$color-material-link-box: #07d2ff;
+$color-material-muikkulink-box: #07d2ff;
 
-$color-material-audio-box-background: #c8e9ff;
-$color-material-audio-box-border: #9dccec;
+$color-material-info-box: #06d98d;
+$color-material-objective-box: #06d98d;
 
-$color-material-link-box-background: #c8e9ff;
-$color-material-link-box-border: #9dccec;
+$color-material-instruction-box: #ff7ddb;
+$color-material-journal-box: #ff7ddb;
+$color-material-ponder-box: #ff7ddb;
 
-$color-material-instruction-box-background: #bcfbc2;
-$color-material-instruction-box-border: #8ce994;
+$color-material-basic-box: #00e3c8;
+$color-material-basic-box-background: #fafefe;
 
-$color-material-recap-box-background: #fff6ae;
-$color-material-recap-box-border: #eadf87;
-
-$color-material-info-box-background: #bae3ff;
-$color-material-info-box-border: #9dccec;
-
-$color-material-objective-box-background: #c1f9e6;
-$color-material-objective-box-border: #72ddb9;
-
-$color-material-thinking-box-background: #fff089;
-$color-material-thinking-box-border: #e9d650;
-
-$color-material-grammar-box-background: #fff7e0;
-$color-material-grammar-box-border: #cab883;
-
-$color-material-basic-box-background: #b8f1f6;
-$color-material-basic-box-border: #76ccd4;
+$color-material-table-box-row-background: #f2fdfc;
+$color-material-table-header-boder: #00e3c8;
 
 $color-material-word-definition-color: #007925;
 $color-material-word-definition-border-color: #8ed2a3;

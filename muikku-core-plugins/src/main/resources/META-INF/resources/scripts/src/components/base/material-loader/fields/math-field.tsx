@@ -11,6 +11,7 @@ interface MathFieldProps {
     name: string
   },
   i18n: i18nType,
+  userId: number,
 
   readOnly?: boolean,
   initialValue?: string,
@@ -60,9 +61,11 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     return <div>
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <MathField ref="base" className="material-page__mathfield"
+      userId={this.props.userId}
       value={this.state.value} onChange={this.setValue}
       formulaClassName="material-page__mathfield-formula"
       editorClassName="material-page__mathfield-editor"
+      imageClassName="material-page__mathfield-image"
       toolbarClassName="material-page__mathfield-toolbar" i18n={{
         symbols: this.props.i18n.text.get("plugin.workspace.mathField.symbols"),
         relations: this.props.i18n.text.get("plugin.workspace.mathField.relations"),
@@ -70,6 +73,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
         setTheoryNotation: this.props.i18n.text.get("plugin.workspace.mathField.setTheoryNotation"),
         mathFormulas: this.props.i18n.text.get("plugin.workspace.mathField.addMathFormula"),
         operators: this.props.i18n.text.get("plugin.workspace.mathField.operators"),
+        image: this.props.i18n.text.get("plugin.workspace.mathField.addImage"),
       }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly}
       dontLoadMQ={this.props.readOnly}/>
     </div>
