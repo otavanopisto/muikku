@@ -38,10 +38,10 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 public class NeverLoggedInNotificationStrategy extends AbstractTimedNotificationStrategy {
 
   private static final int FIRST_RESULT = 0;
-  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.maxresults", "20"));
-  private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.daysuntilfirstnotification", "60"));
-  private static final int NOTIFICATION_THRESHOLD_DAYS_LEFT = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.notificationthreshold", "30"));
-  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.studytime.checkfreq", "1800000"));
+  private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.maxresults", "20"));
+  private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.daysuntilfirstnotification", "60"));
+  private static final int NOTIFICATION_THRESHOLD_DAYS_LEFT = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.notificationthreshold", "30"));
+  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.neverloggedin.checkfreq", "30000"));
   
   @Inject
   private NeverLoggedInNotificationController neverLoggedInNotificationController;
@@ -141,10 +141,10 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   }
   
   private Collection<Long> getGroups(){
-    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "study-time-notification.groups");
+    String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "never-logged-in-notification.groups");
     if (StringUtils.isBlank(groupsString)) {
       this.active = false;
-      logger.log(Level.WARNING, "Disabling timed studytime notifications because no groups were configured as targets");
+      logger.log(Level.WARNING, "Disabling timed never logged in notifications because no groups were configured as targets");
       return Collections.emptyList();
     }
     
