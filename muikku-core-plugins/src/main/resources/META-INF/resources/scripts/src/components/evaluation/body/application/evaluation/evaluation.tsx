@@ -148,7 +148,7 @@ export class Evaluation extends React.Component<
    */
   handleClickEdit =
     (supplementation?: boolean) =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (supplementation) {
         this.setState({
           edit: true,
@@ -242,26 +242,10 @@ export class Evaluation extends React.Component<
           )
         )
       ) : (
-        <div className="assignment-wrapper material-container">
-          <div className="assignment-content">
-            <div className="page-content">
-              <div className="assignment-title-content">
-                <div className="assignment-title-wrapper">
-                  <div className="assignment-status-title">
-                    <span
-                      className="application-list__header-primary assignment-title"
-                      style={{ fontStyle: "italic" }}
-                    >
-                      {this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.noAssignmentsTitle"
-                      )}
-                      !
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="empty">
+          {this.props.i18n.text.get(
+            "plugin.evaluation.evaluationModal.noAssignmentsTitle"
+          )}
         </div>
       );
 

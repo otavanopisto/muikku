@@ -34,6 +34,16 @@
   }
 }
 
+// Evaluation View exeptions
+.material-page--evaluation-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
 .material-page__de-floater {
   clear: both;
 }

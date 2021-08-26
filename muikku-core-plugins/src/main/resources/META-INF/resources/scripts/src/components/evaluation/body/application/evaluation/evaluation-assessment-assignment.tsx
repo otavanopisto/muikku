@@ -1,6 +1,5 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
-import SlideDrawer from "./slide-drawer";
 import { EvaluationGradeSystem } from "~/@types/evaluation";
 import {
   WorkspaceType,
@@ -37,18 +36,12 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   render() {
     return (
-      <div className="assignment-wrapper material-container">
-        <div className="assignment-content">
-          <div className="page-content">
-            {this.props.material && this.props.workspace && (
-              <EvaluationMaterial
-                workspace={this.props.workspace}
-                material={this.props.material}
-              />
-            )}
-          </div>
-        </div>
-      </div>
+      this.props.material && this.props.workspace && (
+        <EvaluationMaterial
+          workspace={this.props.workspace}
+          material={this.props.material}
+        />
+      )
     );
   }
 }

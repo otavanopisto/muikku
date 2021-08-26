@@ -80,10 +80,255 @@
   justify-content: center;
 }
 
-.drawer-editor-label {
-  text-transform: unset;
+// Evaluation assessment events
+.evaluation-modal__event {
+  border-bottom: 1px solid $color-evaluation-item-border;
+  display: flex;
+  flex-flow: column wrap;
+  margin: 0 0;
+  padding: 0 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 5px 0;
+    padding: 10px 0 15px;
+  }
 }
 
+.evaluation-modal__event-header {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.825rem;
+}
+
+.evaluation-modal__event-arrow {
+  border-radius: 0;
+  display: inline-block;
+  margin: 5px;
+  padding: 3px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-REQUESTED {
+    color: $color-evaluation-request;
+  }
+
+  &.state-FAILED {
+    color: $color-grade-failed;
+  }
+
+  &.state-PASSED {
+    color: $color-grade-passed;
+  }
+
+  &.state-IMPROVED {
+    color: $color-grade-passed;
+  }
+
+  &.state-INCOMPLETE {
+    color: $color-grade-incomplete;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.evaluation-modal__event-arrow--right {
+  transform: rotate(0deg);
+  transition: transform 300ms ease-out;
+}
+
+.evaluation-modal__event-arrow--down {
+  transform: rotate(90deg);
+  transition: transform 300ms ease-in;
+}
+
+.evaluation-modal__event-date {
+  background: $color-evaluation-event-background;
+  border-radius: 2px;
+  color: $color-default-contrast;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 3px 6px;
+}
+
+.evaluation-modal__event-meta {
+  padding: 5px;
+}
+
+.evaluation-modal__event-author {
+  font-weight: 600;
+}
+
+.evaluation-modal__event-type {
+
+  // scss-lint:disable SelectorFormat
+  &.state-REQUESTED {
+    color: $color-evaluation-request;
+  }
+
+  &.state-FAILED {
+    color: $color-grade-failed;
+  }
+
+  &.state-PASSED {
+    color: $color-grade-passed;
+  }
+
+  &.state-IMPROVED {
+    color: $color-grade-passed;
+  }
+
+  &.state-INCOMPLETE {
+    color: $color-grade-incomplete;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.evaluation-modal__event-grade {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1;
+  margin: 0 0 0 5px;
+  min-height: 1.375rem;
+  min-width: 1.375rem;
+  padding: 4px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-REQUESTED {
+    background: $color-evaluation-request;
+  }
+
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
+
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+
+  &.state-IMPROVED {
+    background: $color-grade-passed;
+  }
+
+  &.state-INCOMPLETE {
+    background: $color-grade-incomplete;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.evaluation-modal__event-literal-assessment {
+  background-color: $color-evaluation-event-background;
+  border-radius: 2px;
+  font-size: 13px;
+  margin: 5px 0 0;
+  padding: 5px 10px;
+}
+
+.evaluation-modal__event-buttonset {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+// Evaluation material listing
+.evaluation-modal__material {
+  border-bottom: 1px solid $color-evaluation-item-border;
+}
+
+.evaluation-modal__material-header {
+  padding: 10px 0;
+}
+
+.evaluation-modal__material-header-title {
+  border-left: 3px solid transparent;
+  font-size: 1.125rem;
+  font-weight: 400;
+  padding: 5px 10px;
+}
+
+.evaluation-modal__material-header-title--assignment {
+  border-left-color: $color-assignment;
+}
+
+.evaluation-modal__material-header-title--exercise {
+  border-left-color: $color-exercise;
+}
+
+.evaluation-modal__material-header-title--active-dialog {
+  color: $color-assignment;
+}
+
+.evaluation-modal__material-meta {
+  align-items: center;
+  color: $color-default-contrast;
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 0.825rem;
+}
+
+.evaluation-modal__material-meta-item {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 15px 0 0;
+}
+
+.evaluation-modal__material-meta-item-label {
+  font-weight: 600;
+  margin: 0 5px 0 0;
+  padding: 4px 0;
+}
+
+.evaluation-modal__material-meta-item-data {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.evaluation-modal__material-meta-item-data--grade {
+  font-weight: 600;
+  line-height: 1px;
+  min-height: 1.375rem;
+  min-width: 1.375rem;
+  padding: 4px;
+
+  // scss-lint:disable SelectorFormat
+  &.state-EVALUATED {
+    background: $color-grade-passed;
+    border-radius: 2px;
+    color: $color-default;
+    font-size: 0.875rem;
+    min-height: 1.375rem;
+    min-width: 1.375rem;
+    padding: 4px;
+  }
+
+  &.state-SUPPLEMENTED {
+    background: transparent;
+  }
+
+  &.state-INCOMPLETE {
+    background: $color-grade-incomplete;
+    border-radius: 2px;
+    color: $color-default;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+// Evaluation assessment drawer
 .side-drawer {
   background: white;
   height: 100%;
@@ -99,6 +344,10 @@
   @include breakpoint($breakpoint-pad) {
     width: 50%;
   }
+}
+
+.drawer-editor-label {
+  text-transform: unset;
 }
 
 .side-drawer--literal {
@@ -170,53 +419,6 @@
   border-color: #009fe3;
 }
 
-.eval-modal-workspace-event-arrow {
-  margin: 5px;
-}
-
-.arrow {
-  border: solid black;
-  border-radius: 0;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-}
-
-.arrow--fail {
-  border-color: #d31111;
-}
-
-.arrow--request {
-  border-color: #009fe3;
-}
-
-.arrow--supplementation {
-  border-color: #ea7503;
-}
-
-.arrow--passed {
-  border-color: #2ed31c;
-}
-
-.arrow--improved {
-  border-color: #2ed31c;
-}
-
-.right {
-  transform: rotate(-45deg);
-  transition: transform 400ms ease-out;
-}
-
-.left {
-  transform: rotate(135deg);
-  transition: transform 400ms ease-out;
-}
-
-.down {
-  transform: rotate(45deg);
-  transition: transform 400ms ease-in;
-}
-
 .eval-modal-grade-close.icon-arrow-right-thin {
   border: 1px solid #ce01bd;
   border-radius: 100%;
@@ -264,7 +466,7 @@
 .evaluation__select--grade {
   background: $color-default;
   border: 2px solid pink;
-  border-radius: 3px;
+  border-radius: 2px;
   display: inline-block;
   flex-grow: 1;
   height: 2.25rem;
@@ -328,81 +530,6 @@
   display: grid;
 }
 
-.eval-modal-workspace-event {
-  border-bottom: 1px solid #f8f8f8;
-  display: flex;
-  flex-flow: column wrap;
-  margin: 0 0;
-  padding: 0 0 0;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 5px 0;
-    padding: 10px 0 15px;
-  }
-}
-
-.eval-modal-workspace-event-header {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-flow: row nowrap;
-  font-size: 13px;
-}
-
-.eval-modal-workspace-event-details {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-weight: 100;
-  margin: 10px 10px 10px 0;
-}
-
-.eval-modal-workspace-event-details .eval {
-  font-weight: normal;
-}
-
-.eval-modal-workspace-event-details .author {
-  font-weight: 600;
-}
-
-.eval-modal-workspace-event-date {
-  background: #eeeeee;
-  border-radius: 2px;
-  color: #2c2c2c;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  line-height: 1;
-  margin: 0 5px;
-  padding: 3px 6px;
-}
-
-.eval-modal-workspace-event-details .author {
-  font-weight: 600;
-}
-
-.eval-modal-workspace-event[data-type="EVALUATION_FAIL"] .eval,
-.eval-modal-workspace-event[data-type="EVALUATION_FAIL"]
-  .eval-modal-workspace-event-arrow {
-  color: #d31111;
-  font-weight: bold;
-}
-
-.eval-modal-workspace-event[data-type="EVALUATION_PASS"] .eval,
-.eval-modal-workspace-event[data-type="EVALUATION_PASS"]
-  .eval-modal-workspace-event-arrow,
-.eval-modal-workspace-event[data-type="EVALUATION_IMPROVED"] .eval,
-.eval-modal-workspace-event[data-type="EVALUATION_IMPROVED"]
-  .eval-modal-workspace-event-arrow {
-  color: #2ed31c;
-  font-weight: bold;
-}
-
-.eval-modal-workspace-event[data-type="EVALUATION_FAIL"]
-  .eval-modal-workspace-event-grade {
-  background: #d31111;
-}
-
 .eval-container p,
 h1,
 h2,
@@ -420,7 +547,7 @@ h6 {
 
 .eval-modal-workspace-event-content {
   background-color: #f8f8f8;
-  border-radius: 3px;
+  border-radius: 2px;
   font-size: 13px;
   margin: 5px 0 0;
   padding: 5px 10px;
@@ -470,78 +597,6 @@ h6 {
 .eval-close .circle .after {
   right: 7px;
   transform: rotate(-90deg);
-}
-
-.eval-modal-workspace-event-grade {
-  align-items: center;
-  border-radius: 3px;
-  color: white;
-  display: flex;
-  flex-basis: 20px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: 14px;
-  font-weight: bold;
-  justify-content: center;
-  line-height: 1;
-  margin: 0 0 0 5px;
-  min-height: 20px;
-  min-width: 20px;
-  padding: 2px;
-  text-align: center;
-}
-
-.eval--REQUEST {
-  color: #009fe3;
-}
-
-.eval--FAIL {
-  color: #d31111;
-}
-
-.eval--PASSED,
-.eval--IMPROVED {
-  color: #2ed31c;
-}
-
-.eval--SUPPLEMENTATION {
-  color: #ea7503;
-}
-
-.eval-modal-workspace-event-grade.eval-modal-workspace-event-grade--FAIL {
-  background: #d31111;
-}
-
-.eval-modal-workspace-event-grade.eval-modal-workspace-event-grade--PASSED,
-.eval-modal-workspace-event-grade.eval-modal-workspace-event-grade--IMPROVED {
-  background: #2ed31c;
-}
-
-.eval-modal-workspace-event-grade.eval-modal-workspace-event-grade--SUPPLEMENTATION {
-  background: #ea7503;
-}
-
-.eval-modal-workspace-event-buttonset {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-end;
-}
-
-.eval-modal-workspace-event-button {
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 400;
-  padding: 5px 0 0 10px;
-  text-decoration: underline;
-}
-
-.eval-modal-workspace-event-button.button-edit-event {
-  color: #009fe3;
-}
-
-.eval-modal-workspace-event-button.button-remove-event {
-  color: #d31111;
 }
 
 .eval-workspace-name {
@@ -658,7 +713,7 @@ h6 {
 .assignment-grade.grade--evaluated .assignment-grade-data,
 .assignment-grade.grade--incomplete .assignment-grade-data,
 .assignment-grade.grade--supplemented .assignment-grade-data {
-  border-radius: 3px;
+  border-radius: 2px;
   font-size: 15px;
   margin: 0 0 0 5px;
   min-width: 16px;
@@ -685,7 +740,7 @@ h6 {
 
 .assignment-evaluate-button {
   background: #009fe3;
-  border-radius: 3px;
+  border-radius: 2px;
   color: white;
   cursor: pointer;
   display: inline-block;
@@ -772,7 +827,7 @@ h6 {
 
 .assignment-literal-evaluation {
   background: #e2ffe2;
-  border-radius: 3px;
+  border-radius: 2px;
   margin: 5px 0 10px;
   padding: 5px;
 }
