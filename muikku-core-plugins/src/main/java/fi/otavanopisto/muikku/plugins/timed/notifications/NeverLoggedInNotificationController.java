@@ -29,11 +29,11 @@ public class NeverLoggedInNotificationController {
   @Inject
   private NeverLoggedInNotificationDAO neverLoggedInNotificationDAO;
   
-  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studyTimeEndsBefore){
+  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studyTimeEndsBefore, Date created){
     SearchProvider searchProvider = getProvider("elastic-search");
     return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, 
         null, null, false, true, true, firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, 
-        null, studyTimeEndsBefore);
+        null, studyTimeEndsBefore, created);
   }
 
   public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,18 +19,17 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NeverLoggedInNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
@@ -53,15 +51,9 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private UserController userController;
   
   @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
   private NotificationController notificationController;
@@ -89,12 +81,10 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       return;
     }
     
-    OffsetDateTime studyTimeEndsOdt = OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT);
     OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
-    Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
     Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = neverLoggedInNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
-    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
+    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, null, null);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
@@ -121,44 +111,28 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
       if (studentEntity != null) {
-        User student = userController.findUserByIdentifier(studentIdentifier);
+        // Do not notify students that has logged in or have been created within the last 30 days
         
-        // Do not notify students that have no study start date set or have started their studies within the last 60 days
+        OffsetDateTime created = studentEntity.getCreated().toInstant()
+            .atOffset(ZoneOffset.UTC);
+        Date lastLogin = studentEntity.getLastLogin();
         
-        if (student.getStudyStartDate() == null || student.getStudyStartDate().isAfter(sendNotificationIfNotLoggedInBefore)) {
+        if (lastLogin != null || created == null || created.isAfter(sendNotificationIfNotLoggedInBefore)) {
           continue;
-        }
-        
-        // Make sure study time end exists and falls between now and 60 days in to future
-        
-        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
-          continue;
-        }
-
-        boolean isAineopiskelu = false;
-        @SuppressWarnings("unchecked")
-        ArrayList<Integer> studyProgrammes = (ArrayList<Integer>) result.get("groups");
-        if (studyProgrammes != null) {
-          // UserGroupEntity in Muikku -> 10 maps to STUDYPROGRAMME-12 -> Aineopiskelu/peruskoulu
-          // UserGroupEntity in Muikku -> 11 maps to STUDYPROGRAMME-13 -> Aineopiskelu/lukio
-          isAineopiskelu = studyProgrammes.contains(10) || studyProgrammes.contains(11); 
         }
         
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("locale", studentLocale);
-        templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate(isAineopiskelu ? "study-time-notification-internetix" : "study-time-notification", templateModel);
+        
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
-          notificationContent,
+          localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.subject"),
+          localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content"),
           studentEntity,
           studentIdentifier,
-          "studytime"
+          "neverloggedin"
         );
         neverLoggedInNotificationController.createNeverLoggedInNotification(studentIdentifier);
-        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);
+        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_NEVERLOGGEDIN);
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }

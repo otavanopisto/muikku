@@ -90,6 +90,14 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   public Boolean getUpdatedByStudent() {
     return updatedByStudent;
   }
+  
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+  
+  public Date getCreated() {
+    return created;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -117,4 +125,7 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   @Version
   @Column(nullable = false)
   private Long version;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date created;
 }
