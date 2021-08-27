@@ -2,6 +2,7 @@ import * as React from "react";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { WorkspaceJournalType } from "~/reducers/workspaces/index";
+import "~/sass/elements/rich-text.scss";
 /**
  * EvaluationEventContentCardProps
  */
@@ -55,7 +56,7 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
       </div>
       <AnimateHeight duration={500} height={height}>
         <div
-          className="evaluation-modal__item-body"
+          className="evaluation-modal__item-body rich-text"
           dangerouslySetInnerHTML={createHtmlMarkup(content)}
         />
       </AnimateHeight>
