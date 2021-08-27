@@ -220,12 +220,12 @@ export class EvaluationMaterial extends React.Component<
       );
 
       return (
-        <div className="evaluation-modal__material-meta">
+        <div className="evaluation-modal__item-meta">
           {hasSubmitted === null ||
           (hasSubmitted !== null &&
             compositeRepliesInState.state === "WITHDRAWN") ? (
-            <div className="evaluation-modal__material-meta-item">
-              <span className="evaluation-modal__material-meta-item-data">
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-data">
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
                 )}
@@ -233,13 +233,13 @@ export class EvaluationMaterial extends React.Component<
             </div>
           ) : (
             hasSubmitted && (
-              <div className="evaluation-modal__material-meta-item">
-                <span className="evaluation-modal__material-meta-item-label">
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
                   {this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.assignmentDoneLabel"
                   )}
                 </span>
-                <span className="evaluation-modal__material-meta-item-data">
+                <span className="evaluation-modal__item-meta-item-data">
                   {moment(hasSubmitted).format("l")}
                 </span>
               </div>
@@ -247,34 +247,34 @@ export class EvaluationMaterial extends React.Component<
           )}
 
           {evaluationDate && (
-            <div className="evaluation-modal__material-meta-item">
-              <span className="evaluation-modal__material-meta-item-label">
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
                 )}
               </span>
-              <span className="evaluation-modal__material-meta-item-data">
+              <span className="evaluation-modal__item-meta-item-data">
                 {moment(evaluationDate).format("l")}
               </span>
             </div>
           )}
 
           {evaluatedWithGrade && (
-            <div className="evaluation-modal__material-meta-item">
-              <span className="evaluation-modal__material-meta-item-label">
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentGradeLabel"
                 )}
               </span>
-              <span className={`evaluation-modal__material-meta-item-data evaluation-modal__material-meta-item-data--grade ${assignmentGradeClassMod}`}>
+              <span className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}>
                 {evaluationInfo.grade}
               </span>
             </div>
           )}
 
           {needsSupplementation && !supplementationDone && (
-            <div className="evaluation-modal__material-meta-item">
-              <span className={`evaluation-modal__material-meta-item-data evaluation-modal__material-meta-item-data--grade ${assignmentGradeClassMod}`}>
+            <div className="evaluation-modal__item-meta-item">
+              <span className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}>
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
                 )}
@@ -283,8 +283,8 @@ export class EvaluationMaterial extends React.Component<
           )}
 
           {supplementationDone && (
-            <div className="evaluation-modal__material-meta-item">
-              <span className={`evaluation-modal__material-meta-item-data evaluation-modal__material-meta-item-data--grade ${assignmentGradeClassMod}`}>
+            <div className="evaluation-modal__item-meta-item">
+              <span className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}>
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
                 )}
@@ -312,7 +312,7 @@ export class EvaluationMaterial extends React.Component<
       <>
         <div
           key={this.props.material.id}
-          className={`evaluation-modal__material ${
+          className={`evaluation-modal__item ${
             this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"
           }`}
         >
@@ -391,14 +391,14 @@ export class EvaluationMaterial extends React.Component<
 
               return (
                 <div>
-                  <div className={`evaluation-modal__material-header ${evaluatedFunctionClassMod}`}>
+                  <div className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}>
                     <div
                       ref={(ref) => (this.myRef = ref)}
                       onClick={this.handleOpenMaterialContent}
-                      className={`evaluation-modal__material-header-title
-                        evaluation-modal__material-header-title--${materialTypeClass}
+                      className={`evaluation-modal__item-header-title
+                        evaluation-modal__item-header-title--${materialTypeClass}
                         ${evaluationTitleClassMod ?
-                          "evaluation-modal__material-header-title--" + evaluationTitleClassMod
+                          "evaluation-modal__item-header-title--" + evaluationTitleClassMod
                           : ""}`}
                     >{this.props.material.assignment.title}
 
@@ -407,7 +407,7 @@ export class EvaluationMaterial extends React.Component<
                         props.compositeReplies
                       )}
                     </div>
-                    <div className="evaluation-modal__material-functions">
+                    <div className="evaluation-modal__item-functions">
                       {props.material.assignment.assignmentType ===
                       "EVALUATED" ? (
                         state.compositeRepliesInState.state !==
@@ -462,21 +462,21 @@ export class EvaluationMaterial extends React.Component<
                     {props.compositeReplies &&
                       props.compositeReplies.evaluationInfo &&
                       props.compositeReplies.evaluationInfo.text && (
-                        <div className="evaluation-modal__material-literal-assessment">
-                          <div className="evaluation-modal__material-literal-assessment-label">
+                        <div className="evaluation-modal__item-literal-assessment">
+                          <div className="evaluation-modal__item-literal-assessment-label">
                             {this.props.i18n.text.get(
                               "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
                             )}
                           </div>
                           <div
-                            className="evaluation-modal__material-literal-assessment-data"
+                            className="evaluation-modal__item-literal-assessment-data"
                             dangerouslySetInnerHTML={this.createHtmlMarkup(
                               props.compositeReplies.evaluationInfo.text
                             )}
                           />
                         </div>
                       )}
-                    <div className="evaluation-modal__material-body">
+                    <div className="evaluation-modal__item-body">
                       <MaterialLoaderContent
                         {...props}
                         {...state}

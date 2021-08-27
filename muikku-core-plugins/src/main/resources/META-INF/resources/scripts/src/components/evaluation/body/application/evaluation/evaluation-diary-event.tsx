@@ -40,20 +40,22 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   ).format("LT")} `;
 
   return (
-    <div className="journal-event-container">
-      <div
-        className="journal-entry-title-wrapper"
-        onClick={handleOpenContentClick}
-      >
-        <div className="journal-entry-title">{title}</div>
-        <div className="journal-entry-date">
-          <span className="journal-entry-written-label">Kirjoitettu</span>
-          <span className="journal-entry-written-data">{formatedDate}</span>
+    <div className="evaluation-modal__item">
+      <div className="evaluation-modal__item-header">
+        <div className="evaluation-modal__item-header-title evaluation-modal__item-header-title--journal" onClick={handleOpenContentClick}>
+          {title}
+          <div className="evaluation-modal__item-meta">
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">Kirjoitettu</span>
+              <span className="evaluation-modal__item-meta-item-data">{formatedDate}</span>
+            </div>
+          </div>
         </div>
+
       </div>
       <AnimateHeight duration={500} height={height}>
         <div
-          className="journal-entry-content"
+          className="evaluation-modal__item-body"
           dangerouslySetInnerHTML={createHtmlMarkup(content)}
         />
       </AnimateHeight>

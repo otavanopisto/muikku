@@ -59,15 +59,18 @@
   white-space: nowrap;
 }
 
-.evaluation-modal__content {
+.evaluation-modal__content-wrapper {
   overflow: unset;
-  padding: 10px;
   height: unset;
 
   @include breakpoint($breakpoint-mobile-xl) {
     overflow: auto;
     height: calc(100vh - 55px);
   }
+}
+
+.evaluation-modal__content {
+  padding: 10px;
 }
 
 .evaluation-modal__content-title {
@@ -239,12 +242,12 @@
   justify-content: flex-end;
 }
 
-// Evaluation material listing
-.evaluation-modal__material {
+// Evaluation item listing
+.evaluation-modal__item {
   border-bottom: 1px solid $color-evaluation-item-border;
 }
 
-.evaluation-modal__material-header {
+.evaluation-modal__item-header {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -274,7 +277,7 @@
   // scss-lint:enable SelectorFormat
 }
 
-.evaluation-modal__material-header-title {
+.evaluation-modal__item-header-title {
   border-left: 3px solid transparent;
   cursor: pointer;
   flex-basis: auto;
@@ -285,20 +288,24 @@
   padding: 5px 10px;
 }
 
-.evaluation-modal__material-header-title--assignment {
+.evaluation-modal__item-header-title--journal {
+  border-left-color: $color-journal;
+}
+
+.evaluation-modal__item-header-title--assignment {
   border-left-color: $color-assignment;
 }
 
-.evaluation-modal__material-header-title--exercise {
+.evaluation-modal__item-header-title--exercise {
   border-left-color: $color-exercise;
 }
 
-.evaluation-modal__material-header-title--active-dialog {
+.evaluation-modal__item-header-title--active-dialog {
   color: $color-assignment;
   cursor: default;
 }
 
-.evaluation-modal__material-meta {
+.evaluation-modal__item-meta {
   align-items: center;
   color: $color-default-contrast;
   display: flex;
@@ -306,7 +313,7 @@
   font-size: 0.825rem;
 }
 
-.evaluation-modal__material-meta-item {
+.evaluation-modal__item-meta-item {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
@@ -316,20 +323,20 @@
   margin: 0 15px 0 0;
 }
 
-.evaluation-modal__material-meta-item-label {
+.evaluation-modal__item-meta-item-label {
   font-weight: 600;
   margin: 0 5px 0 0;
   padding: 4px 0;
 }
 
-.evaluation-modal__material-meta-item-data {
+.evaluation-modal__item-meta-item-data {
   align-items: center;
   display: flex;
   justify-content: center;
   padding: 4px 0;
 }
 
-.evaluation-modal__material-meta-item-data--grade {
+.evaluation-modal__item-meta-item-data--grade {
   font-weight: 600;
   line-height: 1px;
   min-height: 1.375rem;
@@ -359,29 +366,29 @@
   // scss-lint:enable SelectorFormat
 }
 
-.evaluation-modal__material-functions {
+.evaluation-modal__item-functions {
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   margin: 0 10px;
 }
 
-.evaluation-modal__material-literal-assessment {
+.evaluation-modal__item-literal-assessment {
   background: $color-evaluation-literal-assessment-background;
   border-left: 3px solid $color-default;
   font-size: 0.825rem;
   padding: 10px;
 }
 
-.evaluation-modal__material-literal-assessment-label {
+.evaluation-modal__item-literal-assessment-label {
   font-weight: 600;
 }
 
-.evaluation-modal__material-literal-assessment-data {
+.evaluation-modal__item-literal-assessment-data {
   margin: 5px 0;
 }
 
-.evaluation-modal__material-body {
+.evaluation-modal__item-body {
   margin: 0 0 0 3px;
 }
 
