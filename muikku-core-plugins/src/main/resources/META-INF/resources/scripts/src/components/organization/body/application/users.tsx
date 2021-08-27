@@ -17,7 +17,7 @@ interface OrganizationUsersProps {
   loadStudents: LoadUsersTriggerType;
 }
 
-interface OrganizationUsersState {}
+interface OrganizationUsersState { }
 
 class OrganizationUsers extends React.Component<
   OrganizationUsersProps,
@@ -29,15 +29,15 @@ class OrganizationUsers extends React.Component<
     this.studentPanelPageChange = this.studentPanelPageChange.bind(this);
   }
 
-  staffPanelPageChange(q: string, first: number, last: number) {
+  staffPanelPageChange(q: string, first: number, max: number) {
     this.props.loadStaff({
-      payload: { q, firstResult: first, lastResult: last },
+      payload: { q, firstResult: first, maxResults: max },
     });
   }
 
-  studentPanelPageChange(q: string, first: number, last: number) {
+  studentPanelPageChange(q: string, first: number, max: number) {
     this.props.loadStudents({
-      payload: { q, firstResult: first, lastResult: last },
+      payload: { q, firstResult: first, maxResults: max },
     });
   }
 
