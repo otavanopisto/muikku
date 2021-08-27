@@ -2,9 +2,6 @@ import * as React from "react";
 import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import {
-  ApplicationListItemBody,
-} from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/evaluation.scss";
 import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
@@ -17,6 +14,7 @@ import SlideDrawer from "./slide-drawer";
 import {
   MaterialCompositeRepliesType
 } from "~/reducers/workspaces/index";
+import { ButtonPill } from "~/components/general/button";
 import AssignmentEditor from "./editors/assignment-editor";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
@@ -118,7 +116,7 @@ export class EvaluationMaterial extends React.Component<
    */
   handleOpenSlideDrawer =
     (assignmentId: number) =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (this.props.evaluation.openedAssignmentEvaluationId !== assignmentId) {
         this.props.updateOpenedAssignmentEvaluation({ assignmentId });
       }
@@ -353,14 +351,17 @@ export class EvaluationMaterial extends React.Component<
                   props.compositeReplies.evaluationInfo &&
                   props.compositeReplies.evaluationInfo.grade
                 ) {
-                  evaluatedFunctionClassMod = "evaluated-graded";
+                  // Evaluated
+                  evaluatedFunctionClassMod = "state-EVALUATED";
                 } else if (
                   props.compositeReplies.state === "SUBMITTED" &&
                   props.compositeReplies.evaluationInfo.type === "INCOMPLETE"
                 ) {
-                  evaluatedFunctionClassMod = "supplemented";
+                  // Supplemented as in use to be incomplete but user has submitted it aasin
+                  evaluatedFunctionClassMod = "state-SUPPLEMENTED";
                 } else {
-                  evaluatedFunctionClassMod = "evaluated";
+                  // Incomplete
+                  evaluatedFunctionClassMod = "state-INCOMPLETE";
                 }
               }
 
@@ -390,7 +391,7 @@ export class EvaluationMaterial extends React.Component<
 
               return (
                 <div>
-                  <div className="evaluation-modal__material-header">
+                  <div className={`evaluation-modal__material-header ${evaluatedFunctionClassMod}`}>
                     <div
                       ref={(ref) => (this.myRef = ref)}
                       onClick={this.handleOpenMaterialContent}
@@ -413,14 +414,13 @@ export class EvaluationMaterial extends React.Component<
                           "UNANSWERED" &&
                         state.compositeRepliesInState.state !== "WITHDRAWN" &&
                         state.compositeRepliesInState.submitted ? (
-                          <div
+                          <ButtonPill
+                            aria-label={this.props.i18n.text.get("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle")}
                             onClick={this.handleOpenSlideDrawer(
                               props.material.assignment.id
                             )}
-                            className={`assignment-evaluate-button icon-evaluate ${evaluatedFunctionClassMod}`}
-                            title={this.props.i18n.text.get(
-                              "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
-                            )}
+                            buttonModifiers={["evaluate"]}
+                            icon="evaluate"
                           />
                         ) : null
                       ) : (
@@ -462,21 +462,21 @@ export class EvaluationMaterial extends React.Component<
                     {props.compositeReplies &&
                       props.compositeReplies.evaluationInfo &&
                       props.compositeReplies.evaluationInfo.text && (
-                        <div className="assignment-literal-evaluation-wrapper">
-                          <div className="assignment-literal-evaluation-label">
+                        <div className="evaluation-modal__material-literal-assessment">
+                          <div className="evaluation-modal__material-literal-assessment-label">
                             {this.props.i18n.text.get(
                               "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
                             )}
                           </div>
                           <div
-                            className="assignment-literal-evaluation"
+                            className="evaluation-modal__material-literal-assessment-data"
                             dangerouslySetInnerHTML={this.createHtmlMarkup(
                               props.compositeReplies.evaluationInfo.text
                             )}
                           />
                         </div>
                       )}
-                    <ApplicationListItemBody modifiers="evaluation-assignment">
+                    <div className="evaluation-modal__material-body">
                       <MaterialLoaderContent
                         {...props}
                         {...state}
@@ -487,7 +487,7 @@ export class EvaluationMaterial extends React.Component<
                         {...props}
                         {...state}
                       />
-                    </ApplicationListItemBody>
+                    </div>
                   </AnimateHeight>
                 </div>
               );

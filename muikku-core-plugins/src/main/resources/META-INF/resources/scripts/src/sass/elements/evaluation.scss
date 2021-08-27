@@ -114,19 +114,19 @@
   }
 
   &.state-FAILED {
-    color: $color-grade-failed;
+    color: $color-failed;
   }
 
   &.state-PASSED {
-    color: $color-grade-passed;
+    color: $color-passed;
   }
 
   &.state-IMPROVED {
-    color: $color-grade-passed;
+    color: $color-passed;
   }
 
   &.state-INCOMPLETE {
-    color: $color-grade-incomplete;
+    color: $color-incomplete;
   }
   // scss-lint:enable SelectorFormat
 }
@@ -168,19 +168,19 @@
   }
 
   &.state-FAILED {
-    color: $color-grade-failed;
+    color: $color-failed;
   }
 
   &.state-PASSED {
-    color: $color-grade-passed;
+    color: $color-passed;
   }
 
   &.state-IMPROVED {
-    color: $color-grade-passed;
+    color: $color-passed;
   }
 
   &.state-INCOMPLETE {
-    color: $color-grade-incomplete;
+    color: $color-incomplete;
   }
   // scss-lint:enable SelectorFormat
 }
@@ -208,19 +208,19 @@
   }
 
   &.state-FAILED {
-    background: $color-grade-failed;
+    background: $color-failed;
   }
 
   &.state-PASSED {
-    background: $color-grade-passed;
+    background: $color-passed;
   }
 
   &.state-IMPROVED {
-    background: $color-grade-passed;
+    background: $color-passed;
   }
 
   &.state-INCOMPLETE {
-    background: $color-grade-incomplete;
+    background: $color-incomplete;
   }
   // scss-lint:enable SelectorFormat
 }
@@ -245,11 +245,41 @@
 }
 
 .evaluation-modal__material-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
   padding: 10px 0;
+
+  // scss-lint:disable SelectorFormat
+  &.state-EVALUATED {
+
+    .button-pill--evaluate {
+      background: $color-passed;
+    }
+  }
+
+  &.state-SUPPLEMENTED {
+
+    .button-pill--evaluate {
+      background: $color-pending;
+    }
+  }
+
+  &.state-INCOMPLETE {
+
+    .button-pill--evaluate {
+      background: $color-incomplete;
+    }
+  }
+  // scss-lint:enable SelectorFormat
 }
 
 .evaluation-modal__material-header-title {
   border-left: 3px solid transparent;
+  cursor: pointer;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 1.125rem;
   font-weight: 400;
   padding: 5px 10px;
@@ -265,6 +295,7 @@
 
 .evaluation-modal__material-header-title--active-dialog {
   color: $color-assignment;
+  cursor: default;
 }
 
 .evaluation-modal__material-meta {
@@ -307,7 +338,7 @@
 
   // scss-lint:disable SelectorFormat
   &.state-EVALUATED {
-    background: $color-grade-passed;
+    background: $color-passed;
     border-radius: 2px;
     color: $color-default;
     font-size: 0.875rem;
@@ -321,11 +352,37 @@
   }
 
   &.state-INCOMPLETE {
-    background: $color-grade-incomplete;
+    background: $color-incomplete;
     border-radius: 2px;
     color: $color-default;
   }
   // scss-lint:enable SelectorFormat
+}
+
+.evaluation-modal__material-functions {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 10px;
+}
+
+.evaluation-modal__material-literal-assessment {
+  background: $color-evaluation-literal-assessment-background;
+  border-left: 3px solid $color-default;
+  font-size: 0.825rem;
+  padding: 10px;
+}
+
+.evaluation-modal__material-literal-assessment-label {
+  font-weight: 600;
+}
+
+.evaluation-modal__material-literal-assessment-data {
+  margin: 5px 0;
+}
+
+.evaluation-modal__material-body {
+  margin: 0 0 0 3px;
 }
 
 // Evaluation assessment drawer
@@ -699,6 +756,7 @@ h6 {
 
 .assignment-status-title.active-dialog {
   color: #ce01bd;
+
 }
 
 .assignment-done,
