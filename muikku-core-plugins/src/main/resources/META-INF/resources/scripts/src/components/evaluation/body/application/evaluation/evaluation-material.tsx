@@ -438,7 +438,7 @@ export class EvaluationMaterial extends React.Component<
 
                     <SlideDrawer
                       title={this.props.material.assignment.title}
-                      modifiers={["literal"]}
+                      modifiers={["assignment"]}
                       show={
                         this.state.openDrawer &&
                         this.props.evaluation.openedAssignmentEvaluationId ===
@@ -448,7 +448,7 @@ export class EvaluationMaterial extends React.Component<
                     >
                       <AssignmentEditor
                         editorLabel={this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
+                          "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
                         )}
                         materialEvaluation={props.material.evaluation}
                         materialAssignment={props.material.assignment}

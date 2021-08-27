@@ -1,30 +1,31 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import CKEditor from "~/components/general/ckeditor";
-import { StateType } from "../../../../../../reducers/index";
-import { AnyActionType } from "../../../../../../actions/index";
-import { StatusType } from "../../../../../../reducers/base/status";
-import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
+import { StateType } from "~/reducers/index";
+import { AnyActionType } from "~/actions/index";
+import { StatusType } from "~/reducers/base/status";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { bindActionCreators } from "redux";
 import {
   UpdateWorkspaceEvaluation,
   updateWorkspaceEvaluationToServer,
-} from "../../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
-import promisify from "../../../../../../util/promisify";
+import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
 import {
   BilledPrice,
   EvaluationEnum,
   BilledPriceRequest,
-} from "../../../../../../@types/evaluation";
-import { i18nType } from "../../../../../../reducers/base/i18n";
+} from "~/@types/evaluation";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
-} from "../../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
+import "~/sass/elements/form-elements.scss";
 
 /**
  * WorkspaceEditorProps
@@ -733,9 +734,9 @@ class WorkspaceEditor extends SessionStateComponent<
 
     return (
       <>
-        <div className="editor">
+        <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="drawer-editor-label">
+            <label className="evaluation-modal__evaluate-drawer-row-label">
               {this.props.editorLabel}
             </label>
           )}
@@ -745,14 +746,15 @@ class WorkspaceEditor extends SessionStateComponent<
           </CKEditor>
         </div>
 
-        <div className="evaluation-modal-evaluate-form-row--grade">
-          <label className="evaluation__label">
+        <div className="evaluation-modal__evaluate-drawer-row form-element">
+          <label htmlFor="workspaceEvaluationGrade" className="evaluation-modal__evaluate-drawer-row-label">
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
             )}
           </label>
           <select
-            className="evaluation__select--grade"
+            id="workspaceEvaluationGrade"
+            className="form-element__select form-element__select--evaluation"
             onChange={this.handleSelectGradeChange}
             value={this.state.grade}
           >
@@ -774,14 +776,15 @@ class WorkspaceEditor extends SessionStateComponent<
         </div>
         {(this.state.basePriceFromServer && this.props.type === "new") ||
         (this.state.existingBilledPriceObject && this.props.type === "edit") ? (
-          <div className="evaluation-modal-evaluate-form-row--grade">
-            <label className="evaluation__label">
+          <div className="evaluation-modal__evaluate-drawer-row form-element">
+            <label htmlFor="workspaceEvaluationBilling" className="evaluation-modal__evaluate-drawer-row-label">
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
               )}
             </label>
             <select
-              className="evaluation__select--grade"
+              id="workspaceEvaluationBilling"
+              className=" form-element__select form-element__select--evaluation"
               onChange={this.handleSelectPriceChange}
               value={this.state.selectedPriceOption}
               disabled={billingPriceDisabled}
@@ -791,9 +794,9 @@ class WorkspaceEditor extends SessionStateComponent<
           </div>
         ) : null}
 
-        <div className="evaluation-modal-evaluate-form-row--buttons">
+        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
           <Button
-            className={`eval-modal-evaluate-button eval-modal-evaluate-button--workspace`}
+            buttonModifiers="evaluate-workspace"
             onClick={this.handleEvaluationSave}
           >
             {this.props.i18n.text.get(
@@ -802,7 +805,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </Button>
           <Button
             onClick={this.props.onClose}
-            className="eval-modal-evaluate-button button-cancel"
+            buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -810,7 +813,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              className="eval-modal-evaluate-button button-delete-draft"
+            buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(

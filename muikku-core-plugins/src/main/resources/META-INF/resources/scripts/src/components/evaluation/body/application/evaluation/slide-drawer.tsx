@@ -24,14 +24,10 @@ const SlideDrawer: React.FC<SlideDrawerProps> = ({
   onOpen,
   modifiers,
 }) => {
-  let drawerClasses = `side-drawer ${
-    modifiers ? modifiers.map((m) => `side-drawer--${m}`).join(" ") : ""
-  }`;
+  let drawerClasses = "evaluation-modal__evaluate-drawer";
 
   if (show) {
-    drawerClasses = `side-drawer ${
-      modifiers ? modifiers.map((m) => `side-drawer--${m}`).join(" ") : ""
-    } open`;
+    drawerClasses = "evaluation-modal__evaluate-drawer state-OPEN";
   }
 
   if (show && onOpen) {
@@ -41,16 +37,15 @@ const SlideDrawer: React.FC<SlideDrawerProps> = ({
   return (
     <section className={drawerClasses}>
       <header
-        className={`eval-modal-editor-header ${
+        className={`evaluation-modal__evaluate-drawer-header ${
           modifiers
-            ? modifiers.map((m) => `eval-modal-editor-header--${m}`).join(" ")
+            ? modifiers.map((m) => `evaluation-modal__evaluate-drawer-header--${m}`).join(" ")
             : ""
-        }`}
-      >
-        <div className="eval-modal-title">{title}</div>
-        <div onClick={onClose} className="eval-modal-close arrow right"></div>
+        }`}>
+        <div className="evaluation-modal__evaluate-drawer-header-title">{title}</div>
+        <div onClick={onClose} className="evaluation-modal__evaluate-drawer-close icon-arrow-right"></div>
       </header>
-      <div className="eval-modal-evaluate-workspace-content">
+      <div className="evaluation-modal__evaluate-drawer-content evaluation-modal__evaluate-drawer-content--workspace">
         {show ? children : null}
       </div>
     </section>

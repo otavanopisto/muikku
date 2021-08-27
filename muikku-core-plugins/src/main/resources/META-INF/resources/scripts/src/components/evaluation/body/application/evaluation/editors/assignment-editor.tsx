@@ -1,28 +1,29 @@
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/evaluation.scss";
-import SessionStateComponent from "../../../../../general/session-state-component";
+import SessionStateComponent from "~/components/general/session-state-component";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "../../../../../../reducers/index";
-import { AnyActionType } from "../../../../../../actions/index";
-import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
+import { StateType } from "~/reducers/index";
+import { AnyActionType } from "~/actions/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   MaterialAssignmentType,
   MaterialEvaluationType,
-} from "../../../../../../reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "../../../../../../reducers/workspaces/index";
+} from "~/reducers/workspaces/index";
+import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "../../../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   SaveEvaluationAssignmentSupplementation,
   saveAssignmentEvaluationSupplementationToServer,
-} from "../../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   SaveEvaluationAssignmentGradeEvaluation,
   saveAssignmentEvaluationGradeToServer,
-} from "../../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
+import "~/sass/elements/form-elements.scss";
 
 /**
  * AssignmentEditorProps
@@ -293,9 +294,9 @@ class AssignmentEditor extends SessionStateComponent<
   render() {
     return (
       <>
-        <div className="editor">
+        <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="drawer-editor-label">
+            <label className="evaluation-modal__evaluate-drawer-row-label">
               {this.props.editorLabel}
             </label>
           )}
@@ -305,75 +306,80 @@ class AssignmentEditor extends SessionStateComponent<
           </CKEditor>
         </div>
 
-        <div className="evaluation-modal-evaluate-form-row--radios">
-          <label className="evaluation__label">
+        <div className="evaluation-modal__evaluate-drawer-row form-element">
+          <label className="evaluation-modal__evaluate-drawer-row-label">
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
             )}
           </label>
-          <div className="evaluation-input-radio-row">
-            <div className="evaluation-input-radio">
+          <div className="evaluation-modal__evaluate-drawer-row-data">
+            <div className="evaluation-modal__evaluate-drawer-row-item">
               <input
+                id="assignmentEvaluationTypeGRADED"
                 type="radio"
                 name="assignmentEvaluationType"
                 value="GRADED"
                 checked={this.state.assignmentEvaluationType === "GRADED"}
                 onChange={this.handleAssignmentEvaluationChange}
               />
-              <span>
+              <label htmlFor="assignmentEvaluationTypeGRADED">
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentGradeLabel"
                 )}
-              </span>
+              </label>
             </div>
-            <div className="evaluation-input-radio">
+            <div className="evaluation-modal__evaluate-drawer-row-item">
               <input
+                id="assignmentEvaluationTypeINCOMPLETE"
                 type="radio"
                 name="assignmentEvaluationType"
                 value="INCOMPLETE"
                 checked={this.state.assignmentEvaluationType === "INCOMPLETE"}
                 onChange={this.handleAssignmentEvaluationChange}
               />
-              <span>
+              <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
                 )}
-              </span>
+              </label>
             </div>
           </div>
         </div>
-        <div className="evaluation-modal-evaluate-form-row--grade">
-          <label className="evaluation__label">
+        <div className="evaluation-modal__evaluate-drawer-row  form-element">
+          <label htmlFor="assignmentEvaluationGrade" className="evaluation-modal__evaluate-drawer-row-label">
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
             )}
           </label>
-          <select
-            className="evaluation__select--grade"
-            value={this.state.grade}
-            onChange={this.handleSelectGradeChange}
-            disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}
-          >
-            <optgroup
-              label={this.props.evaluations.evaluationGradeSystem[0].name}
+          <div className="evaluation-modal__evaluate-drawer-row-data">
+            <select
+              id="assignmentEvaluationGrade"
+              className="form-element__select form-element__select--evaluation"
+              value={this.state.grade}
+              onChange={this.handleSelectGradeChange}
+              disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}
             >
-              {this.props.evaluations.evaluationGradeSystem[0].grades.map(
-                (item) => (
-                  <option
-                    key={item.id}
-                    value={`${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${item.id}`}
-                  >
-                    {item.name}
-                  </option>
-                )
-              )}
-            </optgroup>
-          </select>
+              <optgroup
+                label={this.props.evaluations.evaluationGradeSystem[0].name}
+              >
+                {this.props.evaluations.evaluationGradeSystem[0].grades.map(
+                  (item) => (
+                    <option
+                      key={item.id}
+                      value={`${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${item.id}`}
+                    >
+                      {item.name}
+                    </option>
+                  )
+                )}
+              </optgroup>
+            </select>
+          </div>
         </div>
 
-        <div className="evaluation-modal-evaluate-form-row--buttons">
+        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
           <Button
-            className={`eval-modal-evaluate-button eval-modal-evaluate-button--literal`}
+            buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
           >
             {this.props.i18n.text.get(
@@ -382,7 +388,7 @@ class AssignmentEditor extends SessionStateComponent<
           </Button>
           <Button
             onClick={this.props.onClose}
-            className="eval-modal-evaluate-button button-cancel"
+            buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -390,7 +396,7 @@ class AssignmentEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              className="eval-modal-evaluate-button button-delete-draft"
+              buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(

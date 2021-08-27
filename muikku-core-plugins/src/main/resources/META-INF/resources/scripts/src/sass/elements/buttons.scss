@@ -808,7 +808,8 @@
     margin: 0 10px 0 0;
   }
 }
-.button-pill--filter  {
+
+.button-pill--filter {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -1725,33 +1726,32 @@
   }
 }
 
-.eval-modal-evaluate-button {
-  color: white;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 16px;
-  line-height: 1;
-  padding: 8px 12px;
-  margin: 0 10px;
+.button--evaluate-assignment {
+  background-color: $color-assignment;
+  color: $color-default;
+  margin: 0 5px;
 }
 
-.eval-modal-evaluate-button--literal {
-  background-color: #ce01bd;
+.button--evaluate-supplementation {
+  background: $color-incomplete;
+  color: $color-default;
+  margin: 0 5px;
 }
 
-.eval-modal-evaluate-button--supplementation {
-  background: #ea7503;
+.button--evaluate-workspace {
+  background: $color-success;
+  color: $color-default;
+  margin: 0 5px;
 }
 
-.eval-modal-evaluate-button--literal {
-  background-color: #ce01bd;
+.button--evaluate-remove-draft {
+  background: $color-clear;
+  color: $color-default;
+  margin: 0 5px;
 }
 
-.eval-modal-evaluate-button--workspace {
-  background: #2ed31c;
+.button--evaluate-cancel {
+  background: $color-button-cancel-background;
+  color: $color-default;
+  margin: 0 5px;
 }
-
-.eval-modal-evaluate-button--new-workspace {
-  background: #009fe3;
-}
-

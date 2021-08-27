@@ -344,6 +344,9 @@ export class Evaluation extends React.Component<
                   }
                 >
                   <SupplementationEditor
+                    editorLabel={this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
+                    )}
                     onClose={
                       this.handleWorkspaceSupplementationEvaluationCloseDrawer
                     }

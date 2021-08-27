@@ -2,23 +2,24 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import CKEditor from "~/components/general/ckeditor";
 import { bindActionCreators } from "redux";
-import { StateType } from "../../../../../../reducers/index";
-import { AnyActionType } from "../../../../../../actions/index";
-import { StatusType } from "../../../../../../reducers/base/status";
-import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
-import SessionStateComponent from "../../../../../general/session-state-component";
+import { StateType } from "~/reducers/index";
+import { AnyActionType } from "~/actions/index";
+import { StatusType } from "~/reducers/base/status";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
+import SessionStateComponent from "~/components/general/session-state-component";
 import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/delete";
 import Button from "~/components/general/button";
 import {
   UpdateWorkspaceSupplementation,
   updateWorkspaceSupplementationToServer,
-} from "../../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "../../../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
-} from "../../../../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
+import "~/sass/elements/form-elements.scss";
 
 /**
  * SupplementationEditorProps
@@ -262,9 +263,9 @@ class SupplementationEditor extends SessionStateComponent<
   render() {
     return (
       <>
-        <div className="editor">
+        <div className="evaluation-modal__evaluate-drawer-row form-element">
           {this.props.editorLabel && (
-            <label className="drawer-editor-label">
+            <label className="evaluation-modal__evaluate-drawer-row-label">
               {this.props.editorLabel}
             </label>
           )}
@@ -274,9 +275,9 @@ class SupplementationEditor extends SessionStateComponent<
           </CKEditor>
         </div>
 
-        <div className="evaluation-modal-evaluate-form-row--buttons">
+        <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">
           <Button
-            className={`eval-modal-evaluate-button eval-modal-evaluate-button--supplementation`}
+            buttonModifiers="evaluate-supplementation"
             onClick={this.handleEvaluationSupplementationSave}
           >
             {this.props.i18n.text.get(
@@ -285,7 +286,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           <Button
             onClick={this.props.onClose}
-            className="eval-modal-evaluate-button button-cancel"
+            buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -293,7 +294,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-              className="eval-modal-evaluate-button button-delete-draft"
+            buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(

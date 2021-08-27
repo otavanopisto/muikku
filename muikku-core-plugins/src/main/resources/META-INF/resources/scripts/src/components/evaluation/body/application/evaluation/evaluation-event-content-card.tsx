@@ -250,7 +250,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           {renderTypeMessage(type, grade)}
         </div>
 
-        <AnimateHeight duration={500} height={height}>
+        <AnimateHeight duration={300} height={height}>
           <div
             className="evaluation-modal__event-literal-assessment"
             dangerouslySetInnerHTML={createHtmlMarkup(text)}
