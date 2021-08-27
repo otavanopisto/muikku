@@ -1,17 +1,11 @@
 import * as React from "react";
 import EvaluationCard from "./evaluation-card";
-import {
-  AssessmentRequest,
-  EvaluationSort,
-} from "~/@types/evaluation";
+import { AssessmentRequest, EvaluationSort } from "~/@types/evaluation";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import {
-  SortBy,
-  EvaluationImportantStatus,
-} from "~/@types/evaluation";
+import { SortBy, EvaluationImportantStatus } from "~/@types/evaluation";
 import {
   updateImportance,
   UpdateImportance,
@@ -385,8 +379,12 @@ export class EvaluationList extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { evaluationRequests, importantRequests, unimportantRequests } =
-      this.props.evaluations;
+    const {
+      evaluationRequests,
+      importantRequests,
+      unimportantRequests,
+      selectedWorkspaceId,
+    } = this.props.evaluations;
 
     /**
      * If assessmentsRequests are not yet passed or are still loading
@@ -447,9 +445,13 @@ export class EvaluationList extends React.Component<
         renderEvaluationCardList = (
           <div className="empty">
             <span>
-              {this.props.i18n.text.get(
-                "plugin.evaluation.cardlist.allrequesthandled"
-              )}
+              {selectedWorkspaceId === undefined
+                ? this.props.i18n.text.get(
+                    "plugin.evaluation.cardlist.allrequesthandled"
+                  )
+                : this.props.i18n.text.get(
+                    "plugin.evaluation.cardlist.noStudentsAtWorkspace"
+                  )}
             </span>
           </div>
         );

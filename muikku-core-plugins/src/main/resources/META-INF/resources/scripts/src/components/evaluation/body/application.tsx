@@ -13,6 +13,8 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
+import { WorkspaceType } from "../../../reducers/workspaces/index";
+import { EvaluationWorkspace } from "../../../@types/evaluation";
 
 /**
  * EvaluationApplicationProps
@@ -20,6 +22,7 @@ import EvaluationSorters from "./application/evaluation-list/evaluation-sorters"
 interface EvaluationApplicationProps {
   i18n: i18nType;
   status: StatusType;
+  currentWorkspace: WorkspaceType;
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
 }
@@ -67,19 +70,38 @@ class EvaluationApplication extends React.Component<
         {this.props.i18n.text.get("plugin.evaluation.title")}
       </h1>
     );
+    const currentWorkspace = this.props.currentWorkspace;
+
+    const workspaces = [...this.props.evaluations.evaluationWorkspaces];
+
+    /**
+     * This is because, when admin goes to workspace where he/she is not
+     * workspace teacher, the select list will be missing that current active workspace.
+     * So here we check if its not in the list and push currentWorkspace as temporary option
+     */
+    if (
+      currentWorkspace &&
+      this.props.evaluations.evaluationWorkspaces
+        .map((eWorkspace) => eWorkspace.id)
+        .indexOf(currentWorkspace.id) === -1
+    ) {
+      workspaces.push({ ...currentWorkspace } as EvaluationWorkspace);
+    }
+
+    workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
 
     /**
      * Maps options
      */
-    const workspaceOptions = this.props.evaluations.evaluationWorkspaces.map(
-      (wItem, i) => (
-        <option key={i} value={wItem.id}>
-          {`${wItem.name} ${
-            wItem.nameExtension !== null ? `(${wItem.nameExtension})` : ""
-          } `}
-        </option>
-      )
-    );
+    const workspaceOptions = workspaces.map((wItem, i) => (
+      <option key={wItem.id} value={wItem.id}>
+        {`${wItem.name} ${
+          wItem.nameExtension !== null && wItem.nameExtension !== ""
+            ? `(${wItem.nameExtension})`
+            : ""
+        } `}
+      </option>
+    ));
 
     /**
      * Renders primary options aka select with label
@@ -120,7 +142,7 @@ class EvaluationApplication extends React.Component<
           <EvaluationSorters />
           <div className="evaluation-cards-wrapper">
             <EvaluationList />
-         </div>
+          </div>
         </ApplicationPanel>
       </div>
     );
@@ -137,6 +159,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 
