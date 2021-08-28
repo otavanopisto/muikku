@@ -228,10 +228,47 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       </span>
     }
 
+    const loaderElement = (
+      this.state.uploadingValues.map((uploadingFile, index) => {
+        if (uploadingFile.failed) {
+          return <span className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
+            <span className="file-uploader__item-title-container">
+              <span className="file-uploader__item-title">
+                {uploadingFile.name}
+              </span>
+            </span>
+            <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
+              onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
+          </span>
+        }
+
+        return <span className="file-uploader__item" key={index}>
+            <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
+              strokeWidth: 1,
+              duration: 1000,
+              color: "#72d200",
+              trailColor: "#f5f5f5",
+              trailWidth: 1,
+              svgStyle: {width: "100%", height: "4px"},
+              text: {
+                className: "file-uploader__item-upload-percentage",
+                style: {
+                   right: "100%"
+                }
+              }
+            }}
+            strokeWidth={1} easing="easeInOut" duration={1000} color="#72d200" trailColor="#f5f5f5"
+            trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+            text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
+             progress={uploadingFile.progress}/>
+          </span>;
+      })
+    )
+
     const DialogDeleteElement = this.props.deleteDialogElement;
     let dataNode = null;
-    if (this.props.files) {
-      if (this.props.files.length) {
+    if (this.props.files || this.state.uploadingValues.length) {
+      if (this.props.files.length || this.state.uploadingValues.length) {
         dataNode = <span className="file-uploader__items-container">
           {this.props.files.map((file)=>{
             const url = this.props.fileUrlGenerator(file);
@@ -252,40 +289,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
               {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
             </span>
           })}
-          {this.state.uploadingValues.map((uploadingFile, index) => {
-            if (uploadingFile.failed) {
-              return <span className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
-                <span className="file-uploader__item-title-container">
-                  <span className="file-uploader__item-title">
-                    {uploadingFile.name}
-                  </span>
-                </span>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
-                  onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
-              </span>
-            }
-
-            return <span className="file-uploader__item" key={index}>
-                <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
-                  strokeWidth: 1,
-                  duration: 1000,
-                  color: "#72d200",
-                  trailColor: "#f5f5f5",
-                  trailWidth: 1,
-                  svgStyle: {width: "100%", height: "4px"},
-                  text: {
-                    className: "file-uploader__item-upload-percentage",
-                    style: {
-                       right: "100%"
-                    }
-                  }
-                }}
-                strokeWidth={1} easing="easeInOut" duration={1000} color="#72d200" trailColor="#f5f5f5"
-                trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-                text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
-                 progress={uploadingFile.progress}/>
-              </span>;
-          })}
+          {loaderElement}
         </span>
       } else if (this.props.emptyText && this.props.readOnly) {
         dataNode = <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span>
