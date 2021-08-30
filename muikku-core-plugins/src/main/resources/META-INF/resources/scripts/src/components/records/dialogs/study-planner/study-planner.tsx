@@ -20,7 +20,6 @@ interface EventType {
   title?: string,
   start?: string,
   end?: string,
-  overlap?: boolean,
   display?: "auto" | "background",
   backgroundColor?: string,
 }
@@ -53,7 +52,6 @@ class GuiderReservationDialog extends React.Component<guiderReservationCalendarP
           start: moment().weekday(0).toDate(),
           end: moment().toDate(),
           display: "background",
-          overlap: false,
           backgroundColor: "#cccccc"
         },
       ],
@@ -73,7 +71,7 @@ class GuiderReservationDialog extends React.Component<guiderReservationCalendarP
   handleAddEvent = () => {
     if (this.state.title) {
       const currentEvents = this.state.events;
-      let newEvents = currentEvents.concat({ title: this.state.title, overlap: false, date: this.state.dateClickArgs.dateStr });
+      let newEvents = currentEvents.concat({ title: this.state.title, date: this.state.dateClickArgs.dateStr });
       this.setState({ events: newEvents, showOverlay: false, title: "" });
 
     }

@@ -89,15 +89,18 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                           {this.props.i18n.time.format(councelor.properties['profile-vacation-start'])}
                           {councelor.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(councelor.properties['profile-vacation-end']) : null}
                         </div> : null}
-                      <CommunicatorNewMessage extraNamespace="guidance-councelor" initialSelectedItems={[{
-                        type: "staff",
-                        value: councelor,
-                      }]}><Button buttonModifiers={["info", "contact-student-councelor"]}>
-                          {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
-                        </Button></CommunicatorNewMessage>
-                      <GuiderReservationDialog ><Button buttonModifiers={["info", "contact-student-councelor"]}>
-                        {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
-                      </Button></GuiderReservationDialog>
+                      <div>
+                        <CommunicatorNewMessage extraNamespace="guidance-councelor" initialSelectedItems={[{
+                          type: "staff",
+                          value: councelor,
+                        }]}><Button buttonModifiers={["info", "contact-student-councelor"]}>
+                            {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
+                          </Button></CommunicatorNewMessage>
+                        <GuiderReservationDialog ><Button buttonModifiers={["info", "contact-student-councelor"]}>
+                          {"Varaa aika"}
+                        </Button>
+                        </GuiderReservationDialog>
+                      </div>
                     </div>
                   </div>
                 })}
