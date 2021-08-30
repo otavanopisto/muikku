@@ -78,7 +78,6 @@
     overflow: auto;
   }
 }
-
 .evaluation-modal__content {
   padding: 10px;
 }
@@ -416,7 +415,7 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    width: 50%;
+    width: calc(50%);
   }
 
   // scss-lint:disable SelectorFormat
