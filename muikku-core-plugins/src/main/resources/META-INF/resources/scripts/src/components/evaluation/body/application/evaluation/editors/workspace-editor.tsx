@@ -615,109 +615,105 @@ class WorkspaceEditor extends SessionStateComponent<
       return undefined;
     }
 
-    if (evaluationAssessmentEvents.data.length > 0) {
+    /**
+     * We want to get latest event data
+     */
+    const latestEvent =
+      evaluationAssessmentEvents.data[
+        evaluationAssessmentEvents.data.length - 1
+      ];
+
+    /**
+     * Check if raising grade or giving new one
+     */
+    const isRaised =
+      (type === "new" && this.hasGradedEvaluations()) ||
+      (type === "edit" &&
+        latestEvent &&
+        latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
+
+    /**
+     * Default options
+     */
+    let options: JSX.Element[] = [];
+
+    /**
+     * Check if base price is loaded
+     */
+    if (basePriceFromServer) {
       /**
-       * We want to get latest event data
+       * If giving a raised grade, the price is half of the base price
        */
-      const latestEvent =
-        evaluationAssessmentEvents.data[
-          evaluationAssessmentEvents.data.length - 1
-        ];
+      if (isRaised) {
+        basePriceFromServer = basePriceFromServer / 2;
+      }
 
       /**
-       * Check if raising grade or giving new one
+       * Full billing -> available for course evaluations and raised grades
        */
-      const isRaised =
-        (type === "new" && this.hasGradedEvaluations()) ||
-        (type === "edit" &&
-          latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
+      options.push(
+        <option key={basePriceFromServer} value={basePriceFromServer}>
+          {`${i18n.text.get(
+            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
+          )} ${basePriceFromServer.toFixed(2)} €`}
+        </option>
+      );
 
       /**
-       * Default options
+       * Half billing -> only available for course evaluations
        */
-      let options: JSX.Element[] = [];
-
-      /**
-       * Check if base price is loaded
-       */
-      if (basePriceFromServer) {
-        /**
-         * If giving a raised grade, the price is half of the base price
-         */
-        if (isRaised) {
-          basePriceFromServer = basePriceFromServer / 2;
-        }
-
-        /**
-         * Full billing -> available for course evaluations and raised grades
-         */
+      if (!isRaised) {
         options.push(
-          <option key={basePriceFromServer} value={basePriceFromServer}>
+          <option key={basePriceFromServer / 2} value={basePriceFromServer / 2}>
             {`${i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
-            )} ${basePriceFromServer.toFixed(2)} €`}
+              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
+            )} ${(basePriceFromServer / 2).toFixed(2)} €`}
           </option>
         );
+      }
 
+      /**
+       * No billing -> available for course evaluations and raised grades
+       */
+      options.push(
+        <option key={0} value={0}>
+          {`${i18n.text.get(
+            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
+          )} 0,00 €`}
+        </option>
+      );
+
+      /**
+       * If editing, check if existing price data is loaded
+       */
+      if (type === "edit" && this.state.existingBilledPriceObject) {
         /**
-         * Half billing -> only available for course evaluations
+         * If the price from server is not in our options...
          */
-        if (!isRaised) {
+        if (
+          this.state.basePriceFromServer !==
+            this.state.existingBilledPriceObject.price &&
+          this.state.basePriceFromServer / 2 !==
+            this.state.existingBilledPriceObject.price &&
+          this.state.existingBilledPriceObject.price > 0
+        ) {
+          /**
+           * ...then add a custom option with the current price
+           */
           options.push(
             <option
-              key={basePriceFromServer / 2}
-              value={basePriceFromServer / 2}
+              key={this.state.existingBilledPriceObject.price}
+              value={this.state.existingBilledPriceObject.price}
             >
               {`${i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
-              )} ${(basePriceFromServer / 2).toFixed(2)} €`}
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
+              )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`}
             </option>
           );
         }
-
-        /**
-         * No billing -> available for course evaluations and raised grades
-         */
-        options.push(
-          <option key={0} value={0}>
-            {`${i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
-            )} 0,00 €`}
-          </option>
-        );
-
-        /**
-         * If editing, check if existing price data is loaded
-         */
-        if (type === "edit" && this.state.existingBilledPriceObject) {
-          /**
-           * If the price from server is not in our options...
-           */
-          if (
-            this.state.basePriceFromServer !==
-              this.state.existingBilledPriceObject.price &&
-            this.state.basePriceFromServer / 2 !==
-              this.state.existingBilledPriceObject.price &&
-            this.state.existingBilledPriceObject.price > 0
-          ) {
-            /**
-             * ...then add a custom option with the current price
-             */
-            options.push(
-              <option
-                key={this.state.existingBilledPriceObject.price}
-                value={this.state.existingBilledPriceObject.price}
-              >
-                {`${i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
-                )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`}
-              </option>
-            );
-          }
-        }
       }
-      return options;
     }
+    return options;
   };
 
   /**
@@ -747,7 +743,10 @@ class WorkspaceEditor extends SessionStateComponent<
         </div>
 
         <div className="evaluation-modal__evaluate-drawer-row form-element">
-          <label htmlFor="workspaceEvaluationGrade" className="evaluation-modal__evaluate-drawer-row-label">
+          <label
+            htmlFor="workspaceEvaluationGrade"
+            className="evaluation-modal__evaluate-drawer-row-label"
+          >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
             )}
@@ -774,10 +773,17 @@ class WorkspaceEditor extends SessionStateComponent<
             </optgroup>
           </select>
         </div>
-        {(this.state.basePriceFromServer && this.props.type === "new") ||
-        (this.state.existingBilledPriceObject && this.props.type === "edit") ? (
+        {(options.length > 0 &&
+          this.state.basePriceFromServer &&
+          this.props.type === "new") ||
+        (options.length > 0 &&
+          this.state.existingBilledPriceObject &&
+          this.props.type === "edit") ? (
           <div className="evaluation-modal__evaluate-drawer-row form-element">
-            <label htmlFor="workspaceEvaluationBilling" className="evaluation-modal__evaluate-drawer-row-label">
+            <label
+              htmlFor="workspaceEvaluationBilling"
+              className="evaluation-modal__evaluate-drawer-row-label"
+            >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
               )}
@@ -813,7 +819,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-            buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
