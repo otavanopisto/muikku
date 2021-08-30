@@ -234,12 +234,12 @@ export class Evaluation extends React.Component<
           (item, i) => (
             <EvaluationAssessmentAssignment
               key={i}
-              workspace={
-                this.props.evaluation.evaluationWorkspaces[
+              workspace={this.props.evaluation.evaluationWorkspaces.find(
+                (eWorkspace) =>
+                  eWorkspace.id ===
                   this.props.evaluation.evaluationSelectedAssessmentId
                     .workspaceEntityId
-                ]
-              }
+              )}
               material={item}
               gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
             />
