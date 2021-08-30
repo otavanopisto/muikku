@@ -177,9 +177,11 @@ export class Evaluation extends React.Component<
         ))
       ) : (
         <div className="empty">
-          <span>{this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.noJournals"
-          )}</span>
+          <span>
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.noJournals"
+            )}
+          </span>
         </div>
       );
 
@@ -213,9 +215,11 @@ export class Evaluation extends React.Component<
         })
       ) : (
         <div className="empty">
-          <span>{this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.noEvents"
-          )}</span>
+          <span>
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.noEvents"
+            )}
+          </span>
         </div>
       );
 
@@ -232,7 +236,8 @@ export class Evaluation extends React.Component<
               key={i}
               workspace={
                 this.props.evaluation.evaluationWorkspaces[
-                  this.props.evaluation.selectedWorkspaceId
+                  this.props.evaluation.evaluationSelectedAssessmentId
+                    .workspaceEntityId
                 ]
               }
               material={item}
@@ -242,16 +247,20 @@ export class Evaluation extends React.Component<
         )
       ) : (
         <div className="empty">
-          <span>{this.props.i18n.text.get(
-            "plugin.evaluation.evaluationModal.noAssignmentsTitle"
-          )}</span>
+          <span>
+            {this.props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.noAssignmentsTitle"
+            )}
+          </span>
         </div>
       );
 
     return (
       <div className="evaluation-modal">
-        <div onClick={this.props.onClose} className="evaluation-modal__close icon-cross">
-        </div>
+        <div
+          onClick={this.props.onClose}
+          className="evaluation-modal__close icon-cross"
+        ></div>
 
         <section className="evaluation-modal__container">
           <header className="evaluation-modal__header evaluation-modal__header--student">
@@ -266,8 +275,8 @@ export class Evaluation extends React.Component<
                 )}
               </div>
               <div className="evaluation-modal__content-body">
-                {this.props.evaluation.evaluationCurrentSelectedRecords.state ===
-                  "READY" &&
+                {this.props.evaluation.evaluationCurrentSelectedRecords
+                  .state === "READY" &&
                 this.props.evaluation.evaluationCompositeReplies.state ===
                   "READY" ? (
                   renderEvaluationAssessmentAssignments
@@ -389,7 +398,7 @@ export class Evaluation extends React.Component<
                 </Button>
               </div>
             </div>
-            </div>
+          </div>
         </section>
         <ArchiveDialog
           isOpen={this.state.archiveStudentDialog}

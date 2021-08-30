@@ -251,7 +251,7 @@ export interface LoadEvaluationCompositeReplies {
 }
 
 export interface LoadBasePrice {
-  (): AnyActionType;
+  (data: { workspaceEntityId: number }): AnyActionType;
 }
 
 // Other
@@ -1900,46 +1900,45 @@ let archiveStudent: ArchiveStudent = function archiveStudent({
 /**
  * loadBasePriceFromServer
  */
-let loadBasePriceFromServer: LoadBasePrice =
-  function loadBasePriceFromServer() {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      const state = getState();
+let loadBasePriceFromServer: LoadBasePrice = function loadBasePriceFromServer({
+  workspaceEntityId,
+}) {
+  return async (
+    dispatch: (arg: AnyActionType) => any,
+    getState: () => StateType
+  ) => {
+    let basePrice: number | undefined = undefined;
 
-      let basePrice: number | undefined = undefined;
+    dispatch({
+      type: "UPDATE_BASE_PRICE_STATE",
+      payload: <EvaluationStateType>"LOADING",
+    });
 
-      dispatch({
-        type: "UPDATE_BASE_PRICE_STATE",
-        payload: <EvaluationStateType>"LOADING",
-      });
+    await promisify(
+      mApi().worklist.basePrice.read({
+        workspaceEntityId: workspaceEntityId,
+      }),
+      "callback"
+    )().then(
+      (data) => {
+        basePrice = data as number;
+      },
+      (reject) => {
+        basePrice = undefined;
+      }
+    );
 
-      await promisify(
-        mApi().worklist.basePrice.read({
-          workspaceEntityId: state.evaluations.selectedWorkspaceId,
-        }),
-        "callback"
-      )().then(
-        (data) => {
-          basePrice = data as number;
-        },
-        (reject) => {
-          basePrice = undefined;
-        }
-      );
+    dispatch({
+      type: "SET_BASE_PRICE",
+      payload: basePrice,
+    });
 
-      dispatch({
-        type: "SET_BASE_PRICE",
-        payload: basePrice,
-      });
-
-      dispatch({
-        type: "UPDATE_BASE_PRICE_STATE",
-        payload: <EvaluationStateType>"READY",
-      });
-    };
+    dispatch({
+      type: "UPDATE_BASE_PRICE_STATE",
+      payload: <EvaluationStateType>"READY",
+    });
   };
+};
 
 /**
  * updateNeedsReloadEvaluationRequests

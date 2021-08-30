@@ -86,7 +86,9 @@ class EvaluateDialog extends React.Component<
       userEntityId: this.props.assessment.userEntityId,
       workspaceId: this.props.assessment.workspaceEntityId,
     });
-    this.props.loadBasePriceFromServer();
+    this.props.loadBasePriceFromServer({
+      workspaceEntityId: assessment.workspaceEntityId,
+    });
   };
 
   /**
