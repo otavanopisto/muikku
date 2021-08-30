@@ -391,9 +391,10 @@ export class EvaluationMaterial extends React.Component<
 
               return (
                 <div>
-                  <div className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}>
+                  <div
+                  className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
+                  ref={(ref) => (this.myRef = ref)}>
                     <div
-                      ref={(ref) => (this.myRef = ref)}
                       onClick={this.handleOpenMaterialContent}
                       className={`evaluation-modal__item-header-title
                         evaluation-modal__item-header-title--${materialTypeClass}

@@ -254,7 +254,7 @@ export class Evaluation extends React.Component<
         </div>
 
         <section className="evaluation-modal__container">
-          <header className="evaluation-modal__header">
+          <header className="evaluation-modal__header evaluation-modal__header--student">
             <div className="evaluation-modal__header-title">{`${this.props.selectedAssessment.lastName}, ${this.props.selectedAssessment.firstName} (${this.props.selectedAssessment.studyProgramme})`}</div>
           </header>
 
@@ -294,7 +294,7 @@ export class Evaluation extends React.Component<
           </div>
         </section>
         <section className="evaluation-modal__container">
-          <header className="evaluation-modal__header">
+          <header className="evaluation-modal__header evaluation-modal__header--workspace">
             <div className="evaluation-modal__header-title">
               {this.props.selectedAssessment.workspaceName}
             </div>

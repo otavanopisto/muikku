@@ -6,9 +6,12 @@
 .evaluation-modal {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: auto;
 
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-desktop) {
     flex-direction: row;
+    overflow: hidden;
   }
 }
 
@@ -28,9 +31,10 @@
 }
 
 .evaluation-modal__container {
+  background: $color-evaluation-modal-background;
   width: 100%;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     width: 50%;
   }
 }
@@ -44,6 +48,14 @@
   white-space: nowrap;
   width: 100%;
   z-index: 60;
+}
+
+.evaluation-modal__header--workspace {
+  display: none;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: block;
+  }
 }
 
 .evaluation-modal__header-title {
@@ -60,10 +72,8 @@
 }
 
 .evaluation-modal__content-wrapper {
-  height: unset;
-  overflow: unset;
 
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-desktop) {
     height: calc(100vh - 55px);
     overflow: auto;
   }
@@ -85,16 +95,12 @@
 
 // Evaluation assessment events
 .evaluation-modal__event {
-  border-bottom: 1px solid $color-evaluation-item-border;
+  background: $color-default;
+  border: 1px solid $color-panel-border-color;
   display: flex;
   flex-flow: column wrap;
-  margin: 0;
-  padding: 0;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 5px 0;
-    padding: 10px 0 15px;
-  }
+  margin: 10px 0;
+  padding: 10px 0;
 }
 
 .evaluation-modal__event-header {
@@ -103,6 +109,7 @@
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.825rem;
+  padding: 0 10px 0 0;
 }
 
 .evaluation-modal__event-arrow {
@@ -145,7 +152,7 @@
 }
 
 .evaluation-modal__event-date {
-  background: $color-evaluation-event-background;
+  background: $color-evaluation-modal-meta-background;
   border-radius: 2px;
   color: $color-default-contrast;
   flex-basis: auto;
@@ -230,10 +237,10 @@
 }
 
 .evaluation-modal__event-literal-assessment {
-  background-color: $color-evaluation-event-background;
+  background-color: $color-evaluation-modal-meta-background;
   border-radius: 2px;
   font-size: 13px;
-  margin: 5px 0 0;
+  margin: 5px 10px 0;
   padding: 5px 10px;
 }
 
@@ -245,7 +252,10 @@
 
 // Evaluation item listing
 .evaluation-modal__item {
-  border-bottom: 1px solid $color-evaluation-item-border;
+  background: $color-default;
+  border: 1px solid $color-panel-border-color;
+  margin: 10px 0;
+  padding: 0 10px;
 }
 
 .evaluation-modal__item-header {
@@ -375,8 +385,7 @@
 }
 
 .evaluation-modal__item-literal-assessment {
-  background: $color-evaluation-literal-assessment-background;
-  border-left: 3px solid $color-default;
+  background: $color-evaluation-modal-meta-background;
   font-size: 0.825rem;
   padding: 10px;
 }
@@ -387,10 +396,6 @@
 
 .evaluation-modal__item-literal-assessment-data {
   margin: 5px 0;
-}
-
-.evaluation-modal__item-body {
-  margin: 0 0 0 3px;
 }
 
 // Evaluation assessment drawer
@@ -407,6 +412,10 @@
   z-index: 200;
 
   @include breakpoint($breakpoint-pad) {
+    width: 75%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
     width: 50%;
   }
 
