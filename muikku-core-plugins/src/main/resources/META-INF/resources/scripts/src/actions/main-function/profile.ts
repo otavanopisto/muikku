@@ -637,7 +637,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
         });
 
         if (itemWithMoreIndex === -1) {
-          newItems = [...newSummary.items, newWorklistItem];
+          newItems = [...newItems, newWorklistItem];
         } else {
           newItems.splice(itemWithMoreIndex, 0, newWorklistItem);
         }
