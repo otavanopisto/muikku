@@ -177,10 +177,9 @@ export class Evaluation extends React.Component<
         ))
       ) : (
         <div className="empty">
-          {this.props.i18n.text.get(
+          <span>{this.props.i18n.text.get(
             "plugin.evaluation.evaluationModal.noJournals"
-          )}
-          !
+          )}</span>
         </div>
       );
 
@@ -214,9 +213,9 @@ export class Evaluation extends React.Component<
         })
       ) : (
         <div className="empty">
-          {this.props.i18n.text.get(
+          <span>{this.props.i18n.text.get(
             "plugin.evaluation.evaluationModal.noEvents"
-          )}
+          )}</span>
         </div>
       );
 
@@ -243,9 +242,9 @@ export class Evaluation extends React.Component<
         )
       ) : (
         <div className="empty">
-          {this.props.i18n.text.get(
+          <span>{this.props.i18n.text.get(
             "plugin.evaluation.evaluationModal.noAssignmentsTitle"
-          )}
+          )}</span>
         </div>
       );
 
