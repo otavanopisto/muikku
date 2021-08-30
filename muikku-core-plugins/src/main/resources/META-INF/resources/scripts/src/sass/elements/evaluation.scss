@@ -6,7 +6,8 @@
 .evaluation-modal {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 55px);
+  margin: 55px 0 0;
   overflow: auto;
 
   @include breakpoint($breakpoint-desktop) {
@@ -43,7 +44,7 @@
   background: $color-info;
   min-height: 30px;
   padding: 10px 0;
-  position: sticky;
+  position: fixed;
   top: 0;
   white-space: nowrap;
   width: 100%;
@@ -416,7 +417,7 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    width: 50%;
+    width: calc(50%);
   }
 
   // scss-lint:disable SelectorFormat
