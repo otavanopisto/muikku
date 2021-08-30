@@ -6,7 +6,7 @@
 .evaluation-modal {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 55px);
   margin: 55px 0 0;
   overflow: auto;
 
