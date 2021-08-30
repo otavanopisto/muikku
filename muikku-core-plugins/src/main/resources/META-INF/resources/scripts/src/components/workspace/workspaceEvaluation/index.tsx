@@ -1,6 +1,7 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Application from "~/components/evaluation/body/application";
+import Aside from "~/components/evaluation/body/aside";
 
 /**
  * WorkspaceDiscussionBodyProps
@@ -34,9 +35,12 @@ export default class WorkspaceEvaluationBody extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    let aside = <Aside />;
+
     return (
       <div>
         <WorkspaceNavbar
+          navigation={aside}
           activeTrail="workspace-evaluation"
           workspaceUrl={this.props.workspaceUrl}
         />
