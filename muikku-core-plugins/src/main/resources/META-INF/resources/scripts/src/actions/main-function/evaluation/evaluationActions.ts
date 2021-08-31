@@ -1727,7 +1727,7 @@ let saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluati
           dispatch(
             setCurrentStudentEvaluationData({
               userEntityId,
-              workspaceId: state.evaluations.selectedWorkspaceId,
+              workspaceId: workspaceEntityId,
             })
           );
 

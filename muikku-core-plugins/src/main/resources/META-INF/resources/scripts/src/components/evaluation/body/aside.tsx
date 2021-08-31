@@ -14,6 +14,8 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
+import { WorkspaceType } from "../../../reducers/workspaces/index";
+import { EvaluationWorkspace } from "~/@types/evaluation";
 
 /**
  * NavigationAsideProps
@@ -22,6 +24,7 @@ interface NavigationAsideProps {
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   i18n: i18nType;
+  currentWorkspace: WorkspaceType;
 }
 
 /**
@@ -58,26 +61,42 @@ class NavigationAside extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const workspaces = [...this.props.evaluations.evaluationWorkspaces];
+    const currentWorkspace = this.props.currentWorkspace;
+
+    /**
+     * This is because, when admin goes to workspace where he/she is not
+     * workspace teacher, the select list will be missing that current active workspace.
+     * So here we check if its not in the list and push currentWorkspace as temporary option
+     */
+    if (
+      currentWorkspace &&
+      this.props.evaluations.evaluationWorkspaces
+        .map((eWorkspace) => eWorkspace.id)
+        .indexOf(currentWorkspace.id) === -1
+    ) {
+      workspaces.push({ ...currentWorkspace } as EvaluationWorkspace);
+    }
+
+    workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
+
     /**
      * Mapped workspaces as NavigationElement
      */
-    const renderNavigationWorkspaceElements =
-      this.props.evaluations.evaluationWorkspaces
-        .sort((a, b) => a.name.trim().localeCompare(b.name.trim()))
-        .map((wItem, i) => (
-          <NavigationElement
-            modifiers="aside-navigation"
-            key={wItem.id}
-            onClick={this.handleNavigationWorkspaceClick(wItem.id)}
-            isActive={wItem.id === this.props.evaluations.selectedWorkspaceId}
-          >
-            {`${wItem.name} ${
-              wItem.nameExtension !== null && wItem.nameExtension !== ""
-                ? `(${wItem.nameExtension})`
-                : ""
-            } `}
-          </NavigationElement>
-        ));
+    const renderNavigationWorkspaceElements = workspaces.map((wItem, i) => (
+      <NavigationElement
+        modifiers="aside-navigation"
+        key={wItem.id}
+        onClick={this.handleNavigationWorkspaceClick(wItem.id)}
+        isActive={wItem.id === this.props.evaluations.selectedWorkspaceId}
+      >
+        {`${wItem.name} ${
+          wItem.nameExtension !== null && wItem.nameExtension !== ""
+            ? `(${wItem.nameExtension})`
+            : ""
+        } `}
+      </NavigationElement>
+    ));
 
     /**
      * All Navigation elements, including choice for all evaluation request
@@ -98,7 +117,11 @@ class NavigationAside extends React.Component<
 
     return (
       <NavigationMenu>
-        <NavigationTopic name={this.props.i18n.text.get("plugin.evaluation.filter.viewSelection")}>
+        <NavigationTopic
+          name={this.props.i18n.text.get(
+            "plugin.evaluation.filter.viewSelection"
+          )}
+        >
           {renderAllNavigationElements}
         </NavigationTopic>
       </NavigationMenu>
@@ -114,6 +137,7 @@ function mapStateToProps(state: StateType) {
   return {
     evaluations: state.evaluations,
     i18n: state.i18n,
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 

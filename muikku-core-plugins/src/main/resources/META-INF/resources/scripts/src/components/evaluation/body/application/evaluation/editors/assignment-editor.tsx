@@ -150,7 +150,9 @@ class AssignmentEditor extends SessionStateComponent<
       this.props.onClose();
 
       this.props.saveAssignmentEvaluationGradeToServer({
-        workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
+        workspaceEntityId:
+          this.props.evaluations.evaluationSelectedAssessmentId
+            .workspaceEntityId,
         userEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
@@ -346,7 +348,10 @@ class AssignmentEditor extends SessionStateComponent<
           </div>
         </div>
         <div className="evaluation-modal__evaluate-drawer-row  form-element">
-          <label htmlFor="assignmentEvaluationGrade" className="evaluation-modal__evaluate-drawer-row-label">
+          <label
+            htmlFor="assignmentEvaluationGrade"
+            className="evaluation-modal__evaluate-drawer-row-label"
+          >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
             )}
