@@ -1522,7 +1522,11 @@ let updateBillingToServer: UpdateEvaluationEvent =
             {
               ...data,
             },
-            { workspaceEntityId: state.evaluations.selectedWorkspaceId }
+            {
+              workspaceEntityId:
+                state.evaluations.evaluationSelectedAssessmentId
+                  .workspaceEntityId,
+            }
           ),
           "callback"
         )();
