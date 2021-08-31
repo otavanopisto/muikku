@@ -606,7 +606,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * renderSelectOptions
    * @returns List of options
    */
-  renderSelectOptions = () => {
+  renderSelectOptions = (): JSX.Element[] | undefined => {
     const { i18n, type } = this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
@@ -773,10 +773,12 @@ class WorkspaceEditor extends SessionStateComponent<
             </optgroup>
           </select>
         </div>
-        {(options.length > 0 &&
+        {(options &&
+          options.length > 0 &&
           this.state.basePriceFromServer &&
           this.props.type === "new") ||
-        (options.length > 0 &&
+        (options &&
+          options.length > 0 &&
           this.state.existingBilledPriceObject &&
           this.props.type === "edit") ? (
           <div className="evaluation-modal__evaluate-drawer-row form-element">
