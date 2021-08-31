@@ -324,7 +324,7 @@ class WorkspaceEditor extends SessionStateComponent<
           billingPrice,
           workspaceEvaluation: {
             assessorIdentifier: status.userSchoolDataIdentifier,
-            gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
@@ -376,7 +376,7 @@ class WorkspaceEditor extends SessionStateComponent<
           workspaceEvaluation: {
             identifier: latestEvent.identifier,
             assessorIdentifier: status.userSchoolDataIdentifier,
-            gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
@@ -456,7 +456,7 @@ class WorkspaceEditor extends SessionStateComponent<
         billingPrice,
         workspaceEvaluation: {
           assessorIdentifier: status.userSchoolDataIdentifier,
-          gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].id}`,
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
