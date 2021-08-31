@@ -44,6 +44,7 @@ import { updateHops } from '~/actions/main-function/hops';
 import { updateStatistics } from '~/actions/main-function/records/statistics';
 import { updateYO, updateMatriculationSubjectEligibility } from '~/actions/main-function/records/yo';
 import { updateSummary } from '~/actions/main-function/records/summary';
+import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
 
@@ -330,6 +331,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(setWorkspaceStateFilters(true, stateFilters) as Action);
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
+      this.props.store.dispatch(loadOrganizationSummary() as Action);
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
       let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
@@ -368,7 +370,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, lastResult: 10 } }) as Action);
+      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, maxResults: 10 } }) as Action);
       this.props.store.dispatch(loadUserGroups({ payload: { q: "", firstResult: 0, maxResults: 25 } }) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
       this.loadChatSettings();

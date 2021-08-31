@@ -55,6 +55,7 @@
       FORUM_CREATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')},
       FORUM_UPDATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')},
       FORUM_DELETEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')},
+      ORGANIZATION_VIEW: #{sessionBackingBean.hasEnvironmentPermission('ORGANIZATION_VIEW')},
 
       WORKLIST_AVAILABLE: #{sessionBackingBean.canAccessWorklist},
       CHAT_AVAILABLE: #{sessionBackingBean.canAccessChat}
