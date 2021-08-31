@@ -111,7 +111,9 @@ class NavigationAside extends React.Component<
         >
           {this.props.i18n.text.get("plugin.evaluation.allRequests")}
         </NavigationElement>
-        {renderNavigationWorkspaceElements}
+        {renderNavigationWorkspaceElements.length > 0
+          ? renderNavigationWorkspaceElements
+          : null}
       </>
     );
 
