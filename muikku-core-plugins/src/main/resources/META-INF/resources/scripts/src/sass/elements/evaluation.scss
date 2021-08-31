@@ -10,7 +10,7 @@
   height: calc(100vh - 55px);
   margin: 55px 0 0;
   overflow: auto;
-  padding: 0 0 40px 0;
+  padding: 0 0 40px;
 
   @include breakpoint($breakpoint-desktop) {
     flex-direction: row;
@@ -102,8 +102,8 @@
 
   @include breakpoint($breakpoint-desktop) {
     bottom: unset;
-    position: static;
     left: unset;
+    position: static;
     right: unset;
   }
 }

@@ -13,6 +13,7 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * NavigationAsideProps
@@ -20,6 +21,7 @@ import { bindActionCreators } from "redux";
 interface NavigationAsideProps {
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
+  i18n: i18nType;
 }
 
 /**
@@ -88,7 +90,7 @@ class NavigationAside extends React.Component<
           onClick={this.handleNavigationWorkspaceClick(undefined)}
           isActive={this.props.evaluations.selectedWorkspaceId === undefined}
         >
-          Kaikki arviointipyynnöt
+          {this.props.i18n.text.get("plugin.evaluation.allRequests")}
         </NavigationElement>
         {renderNavigationWorkspaceElements}
       </>
@@ -96,7 +98,7 @@ class NavigationAside extends React.Component<
 
     return (
       <NavigationMenu>
-        <NavigationTopic name="Rajaukset">
+        <NavigationTopic name={this.props.i18n.text.get("plugin.evaluation.filter.viewSelection")}>
           {renderAllNavigationElements}
         </NavigationTopic>
       </NavigationMenu>
@@ -111,6 +113,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     evaluations: state.evaluations,
+    i18n: state.i18n,
   };
 }
 
