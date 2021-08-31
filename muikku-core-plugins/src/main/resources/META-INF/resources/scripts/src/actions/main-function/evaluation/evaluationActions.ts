@@ -532,7 +532,7 @@ let loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 
         dispatch({
           type: "SET_EVALUATION_WORKSPACES",
-          payload: evaluationWorkspaces,
+          payload: evaluationWorkspaces || [],
         });
 
         if (state.evaluations.status !== "READY") {

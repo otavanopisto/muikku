@@ -120,11 +120,13 @@ class EvaluationApplication extends React.Component<
           <option value="">
             {this.props.i18n.text.get("plugin.evaluation.allRequests")}
           </option>
-          <optgroup
-            label={this.props.i18n.text.get("plugin.evaluation.workspaces")}
-          >
-            {workspaceOptions}
-          </optgroup>
+          {workspaceOptions.length > 0 ? (
+            <optgroup
+              label={this.props.i18n.text.get("plugin.evaluation.workspaces")}
+            >
+              {workspaceOptions}
+            </optgroup>
+          ) : null}
         </select>
       </div>
     );
