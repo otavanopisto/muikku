@@ -60,20 +60,22 @@ class NavigationAside extends React.Component<
      * Mapped workspaces as NavigationElement
      */
     const renderNavigationWorkspaceElements =
-      this.props.evaluations.evaluationWorkspaces.map((wItem, i) => (
-        <NavigationElement
-          modifiers="aside-navigation"
-          key={wItem.id}
-          onClick={this.handleNavigationWorkspaceClick(wItem.id)}
-          isActive={wItem.id === this.props.evaluations.selectedWorkspaceId}
-        >
-          {`${wItem.name} ${
-            wItem.nameExtension !== null && wItem.nameExtension !== ""
-              ? `(${wItem.nameExtension})`
-              : ""
-          } `}
-        </NavigationElement>
-      ));
+      this.props.evaluations.evaluationWorkspaces
+        .sort((a, b) => a.name.trim().localeCompare(b.name.trim()))
+        .map((wItem, i) => (
+          <NavigationElement
+            modifiers="aside-navigation"
+            key={wItem.id}
+            onClick={this.handleNavigationWorkspaceClick(wItem.id)}
+            isActive={wItem.id === this.props.evaluations.selectedWorkspaceId}
+          >
+            {`${wItem.name} ${
+              wItem.nameExtension !== null && wItem.nameExtension !== ""
+                ? `(${wItem.nameExtension})`
+                : ""
+            } `}
+          </NavigationElement>
+        ));
 
     /**
      * All Navigation elements, including choice for all evaluation request
