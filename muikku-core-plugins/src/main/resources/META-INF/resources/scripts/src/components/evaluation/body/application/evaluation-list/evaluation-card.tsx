@@ -131,6 +131,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       updateEvaluationImportance(updateImportances);
     };
 
+  /**
+   * handleDialogClose
+   */
   const handleDialogClose = () => {
     if (needsReloadRequests) {
       loadEvaluationAssessmentRequestsFromServer();
@@ -202,7 +205,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
   const renderTasksDone = (
     <span
       className={`evaluation-card__content-data ${
-        rest.assignmentsDone === rest.assignmentsTotal ? "evaluation-card__content-data--all-done" : "evaluation-card__content-data--not-done"
+        rest.assignmentsDone === rest.assignmentsTotal
+          ? "evaluation-card__content-data--all-done"
+          : "evaluation-card__content-data--not-done"
       }`}
     >
       {`${rest.assignmentsDone} / ${rest.assignmentsTotal}`}
@@ -235,7 +240,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
     rest.workspaceEntityId !== selectedWorkspaceId ? (
       <DeleteRequestDialog {...rest}>
         <ButtonPill
-          aria-label={i18n.text.get("plugin.evaluation.card.button.deleteRequest.title")}
+          aria-label={i18n.text.get(
+            "plugin.evaluation.card.button.deleteRequest.title"
+          )}
           buttonModifiers="archive"
           icon="archive"
         />
@@ -245,7 +252,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         selectedWorkspaceId === rest.workspaceEntityId) ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
-          aria-label={i18n.text.get("plugin.evaluation.card.button.archiveButtonLabel")}
+          aria-label={i18n.text.get(
+            "plugin.evaluation.card.button.archiveButtonLabel"
+          )}
           buttonModifiers="archive"
           icon="archive"
         />
@@ -266,11 +275,15 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
           <span className="evaluation-card__content-label">
             {i18n.text.get("plugin.evaluation.card.joinedWorkspaceLabel")}
           </span>
-          <span className="evaluation-card__content-data">{enrollmentDate}</span>
+          <span className="evaluation-card__content-data">
+            {enrollmentDate}
+          </span>
         </div>
         <div
           className={`evaluation-card__content-row ${
-            rest.evaluationDate === null ? "evaluation-card__content-row--highlight" : ""
+            rest.evaluationDate === null
+              ? "evaluation-card__content-row--highlight"
+              : ""
           }`}
         >
           <span className="evaluation-card__content-label">
@@ -282,13 +295,17 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
         </div>
         <div
           className={`evaluation-card__content-row ${
-            rest.evaluationDate !== null ? "evaluation-card__content-row--highlight" : ""
+            rest.evaluationDate !== null
+              ? "evaluation-card__content-row--highlight"
+              : ""
           }`}
         >
           <span className="evaluation-card__content-label">
             {i18n.text.get("plugin.evaluation.card.evaluatedLabel")}
           </span>
-          <span className="evaluation-card__content-data">{evaluationDate}</span>
+          <span className="evaluation-card__content-data">
+            {evaluationDate}
+          </span>
         </div>
         <div className="evaluation-card__content-row">
           <span className="evaluation-card__content-label">
@@ -300,13 +317,17 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
       <div className="evaluation-card__footer">
         <div className="evaluation-card__button-set">
           <IconButton
-            aria-label={i18n.text.get("plugin.evaluation.card.button.markImportantButtonLabel")}
+            aria-label={i18n.text.get(
+              "plugin.evaluation.card.button.markImportantButtonLabel"
+            )}
             onClick={handleImportanceClick("important")}
             buttonModifiers={["important", evaluationImportantClassesMod]}
             icon="star-full"
           />
           <IconButton
-            aria-label={i18n.text.get("plugin.evaluation.card.button.markNonImportantButtonLabel")}
+            aria-label={i18n.text.get(
+              "plugin.evaluation.card.button.markNonImportantButtonLabel"
+            )}
             onClick={handleImportanceClick("unimportant")}
             buttonModifiers={["unimportant", evaluationUnimportantClassesMod]}
             icon="star-empty"
@@ -318,7 +339,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = ({
 
           <EvaluateDialog assessment={rest} onClose={handleDialogClose}>
             <ButtonPill
-              aria-label={i18n.text.get("plugin.evaluation.card.button.evaluateButtonLabel")}
+              aria-label={i18n.text.get(
+                "plugin.evaluation.card.button.evaluateButtonLabel"
+              )}
               buttonModifiers="evaluate"
               icon="evaluate"
             />

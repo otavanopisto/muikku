@@ -237,6 +237,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           />
         </AnimateHeight>
 
+        {/* Here check if event index is same as latest evaluated event index. If true then it can be deleted */}
         {eventIndex === latestEvaluatedEventIndex &&
         type !== EvaluationEnum.EVALUATION_REQUEST ? (
           <div className="evaluation-modal__event-buttonset">

@@ -15,11 +15,7 @@ import { cleanWorkspaceAndSupplementationDrafts } from "../../../../dialogs/dele
 import Button from "~/components/general/button";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
-import {
-  BilledPrice,
-  EvaluationEnum,
-  BilledPriceRequest,
-} from "~/@types/evaluation";
+import { BilledPrice, EvaluationEnum } from "~/@types/evaluation";
 import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -320,7 +316,7 @@ class WorkspaceEditor extends SessionStateComponent<
       onClose,
       onSuccesfulSave,
     } = this.props;
-    const { evaluationGradeSystem, evaluationAssessmentEvents } = evaluations;
+    const { evaluationAssessmentEvents } = evaluations;
     const { literalEvaluation, grade } = this.state;
     let billingPrice = undefined;
 

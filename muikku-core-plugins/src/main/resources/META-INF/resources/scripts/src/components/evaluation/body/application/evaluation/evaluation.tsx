@@ -211,6 +211,11 @@ export class Evaluation extends React.Component<
       );
 
     let isEvaluated = false;
+    /**
+     * This is because there must be chance to delete events
+     * that were added before new "request" that students may request...
+     * We pass it to evaluation event card component
+     */
     let latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
 
     /**
