@@ -70,7 +70,7 @@ class AssignmentEditor extends SessionStateComponent<
     const { evaluationGradeSystem, evaluationSelectedAssessmentId } =
       props.evaluations;
 
-    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
     const grade = materialEvaluation
       ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
@@ -100,13 +100,34 @@ class AssignmentEditor extends SessionStateComponent<
   }
 
   /**
+   * getUsedGradingScaleByGradeId
+   * @param gradeId
+   * @returns used grade system by gradeId
+   */
+  getUsedGradingScaleByGradeId = (gradeId: string) => {
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    for (let i = 0; i < evaluationGradeSystem.length; i++) {
+      const gradeSystem = evaluationGradeSystem[i];
+
+      for (let j = 0; j < gradeSystem.grades.length; j++) {
+        const grade = gradeSystem.grades[j];
+
+        if (grade.id === gradeId.split("-")[1]) {
+          return gradeSystem;
+        }
+      }
+    }
+  };
+
+  /**
    * componentDidMount
    */
   componentDidMount = () => {
     const { materialEvaluation, compositeReplies } = this.props;
     const { evaluationGradeSystem } = this.props.evaluations;
 
-    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
     const grade = materialEvaluation
       ? `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`
@@ -142,13 +163,15 @@ class AssignmentEditor extends SessionStateComponent<
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
+    const { grade } = this.state;
 
-    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
+    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
     if (this.state.assignmentEvaluationType === "GRADED") {
-      const gradingScaleIdentifier = `${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${this.props.evaluations.evaluationGradeSystem[0].id}`;
-      this.props.onClose();
+      const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
 
+      this.props.onClose();
       this.props.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
@@ -223,7 +246,7 @@ class AssignmentEditor extends SessionStateComponent<
           grade:
             compositeReplies.evaluationInfo.type === "INCOMPLETE"
               ? `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`
-              : `${materialEvaluation.gradingScaleSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
+              : `${materialEvaluation.gradeSchoolDataSource}-${materialEvaluation.gradeIdentifier}`,
           assignmentEvaluationType:
             compositeReplies.evaluationInfo.type === "INCOMPLETE"
               ? "INCOMPLETE"
@@ -265,7 +288,7 @@ class AssignmentEditor extends SessionStateComponent<
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
 
-    const defaultGrade = `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
+    const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
     this.setStateAndStore(
       {
@@ -294,6 +317,27 @@ class AssignmentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const renderGradingOptions =
+      this.props.evaluations.evaluationGradeSystem.map((gScale) => {
+        return (
+          <optgroup
+            key={`${gScale.dataSource}-${gScale.id}`}
+            label={gScale.name}
+          >
+            {gScale.grades.map((grade) => {
+              return (
+                <option
+                  key={grade.id}
+                  value={`${gScale.dataSource}-${grade.id}`}
+                >
+                  {grade.name}
+                </option>
+              );
+            })}
+          </optgroup>
+        );
+      });
+
     return (
       <>
         <div className="evaluation-modal__evaluate-drawer-row form-element">
@@ -364,20 +408,7 @@ class AssignmentEditor extends SessionStateComponent<
               onChange={this.handleSelectGradeChange}
               disabled={this.state.assignmentEvaluationType === "INCOMPLETE"}
             >
-              <optgroup
-                label={this.props.evaluations.evaluationGradeSystem[0].name}
-              >
-                {this.props.evaluations.evaluationGradeSystem[0].grades.map(
-                  (item) => (
-                    <option
-                      key={item.id}
-                      value={`${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${item.id}`}
-                    >
-                      {item.name}
-                    </option>
-                  )
-                )}
-              </optgroup>
+              {renderGradingOptions}
             </select>
           </div>
         </div>

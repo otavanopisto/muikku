@@ -1,68 +1,44 @@
 import * as React from "react";
-import {
-  EvaluationEvent,
-  EvaluationEnum,
-} from "~/@types/evaluation";
+import { EvaluationEvent, EvaluationEnum } from "~/@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
-import { EvaluationGradeSystem } from "~/@types/evaluation";
-import Link from '~/components/general/link';
+import Link from "~/components/general/link";
 import { StateType } from "~/reducers/index";
 import { Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import {
-  LoadEvaluationAssessmentRequest,
-  loadEvaluationAssessmentRequestsFromServer,
-  LoadEvaluationAssessmentEvent,
-  loadEvaluationAssessmentEventsFromServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
-  latest: boolean;
-  gradeSystem: EvaluationGradeSystem;
+  eventIndex: number;
+  latestEvaluatedEventIndex: number;
   evaluations: EvaluationState;
   onClickEdit: (
     supplementation?: boolean
   ) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
-  loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
-  loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
 }
 
 /**
  * EvaluationEventContentCard
  */
 const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
-  grade,
-  latest,
-  text,
-  type,
-  date,
-  author,
+  eventIndex,
+  latestEvaluatedEventIndex,
   i18n,
   onClickEdit,
+  evaluations,
+  children,
+  ...event
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
-  /**
-   * isEvaluated
-   * @param typeMsg
-   * @returns boolean
-   */
-  const isEvaluated = (typeMsg: EvaluationEnum) => {
-    return (
-      typeMsg === EvaluationEnum.EVALUATION_FAIL ||
-      typeMsg === EvaluationEnum.EVALUATION_PASS ||
-      typeMsg === EvaluationEnum.EVALUATION_IMPROVED
-    );
-  };
+  const { author, text, date, type, grade } = event;
 
   /**
    * arrowClassMod
@@ -117,8 +93,12 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
   let arrowClasses =
     height === 0
-      ? `evaluation-modal__event-arrow ${arrowClassMod(type)} evaluation-modal__event-arrow--right `
-      : `evaluation-modal__event-arrow ${arrowClassMod(type)} evaluation-modal__event-arrow--down `;
+      ? `evaluation-modal__event-arrow ${arrowClassMod(
+          type
+        )} evaluation-modal__event-arrow--right `
+      : `evaluation-modal__event-arrow ${arrowClassMod(
+          type
+        )} evaluation-modal__event-arrow--down `;
 
   /**
    * renderTypeMessage
@@ -244,7 +224,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           onClick={handleOpenContentClick}
           className="evaluation-modal__event-header"
         >
-          <div className={arrowClasses+ "icon-arrow-right"} />
+          <div className={arrowClasses + "icon-arrow-right"} />
           <div className="evaluation-modal__event-date">{parsedDate}</div>
 
           {renderTypeMessage(type, grade)}
@@ -257,16 +237,20 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           />
         </AnimateHeight>
 
-        {latest && type !== EvaluationEnum.EVALUATION_REQUEST ? (
+        {eventIndex === latestEvaluatedEventIndex &&
+        type !== EvaluationEnum.EVALUATION_REQUEST ? (
           <div className="evaluation-modal__event-buttonset">
-            <Link className="link link--evaluation-event-edit" onClick={onClickEdit(
+            <Link
+              className="link link--evaluation-event-edit"
+              onClick={onClickEdit(
                 type === EvaluationEnum.SUPPLEMENTATION_REQUEST
-              )}>
+              )}
+            >
               {i18n.text.get(
                 "plugin.evaluation.evaluationModal.events.editButton"
               )}
             </Link>
-            <DeleteDialog>
+            <DeleteDialog eventData={event}>
               <Link className="link link--evaluation-event-delete">
                 {i18n.text.get(
                   "plugin.evaluation.evaluationModal.events.deleteButton"
@@ -296,13 +280,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators(
-    {
-      loadEvaluationAssessmentRequestsFromServer,
-      loadEvaluationAssessmentEventsFromServer,
-    },
-    dispatch
-  );
+  return bindActionCreators({}, dispatch);
 }
 
 export default connect(

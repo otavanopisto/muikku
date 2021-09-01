@@ -63,6 +63,31 @@ export class Evaluation extends React.Component<
   }
 
   /**
+   * getLatestEvaluatedEventIndex
+   * @returns latest evaluated event index
+   */
+  getLatestEvaluatedEventIndex = () => {
+    const { evaluationAssessmentEvents } = this.props.evaluation;
+
+    if (
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length > 0
+    ) {
+      let indexOfLatestEvaluatedEvent: number = null;
+
+      for (let i = 0; i < evaluationAssessmentEvents.data.length; i++) {
+        const event = evaluationAssessmentEvents.data[i];
+
+        if (event.grade !== null) {
+          indexOfLatestEvaluatedEvent = i;
+        }
+      }
+
+      return indexOfLatestEvaluatedEvent;
+    }
+  };
+
+  /**
    * handleOpenDrawer
    */
   handleOpenWorkspaceEvaluationDrawer = () => {
@@ -186,6 +211,7 @@ export class Evaluation extends React.Component<
       );
 
     let isEvaluated = false;
+    let latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
 
     /**
      * evaluationEventContentCards
@@ -194,11 +220,6 @@ export class Evaluation extends React.Component<
       evaluationAssessmentEvents.data &&
       evaluationAssessmentEvents.data.length > 0 ? (
         evaluationAssessmentEvents.data.map((eItem, index) => {
-          let latest = false;
-
-          if (evaluationAssessmentEvents.data.length - 1 === index) {
-            latest = true;
-          }
           if (eItem.grade !== null) {
             isEvaluated = true;
           }
@@ -208,8 +229,8 @@ export class Evaluation extends React.Component<
               onClickEdit={this.handleClickEdit}
               key={index}
               {...eItem}
-              latest={latest}
-              gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
+              eventIndex={index}
+              latestEvaluatedEventIndex={latestEvaluatedEventIndex}
             />
           );
         })

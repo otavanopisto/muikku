@@ -13,6 +13,7 @@ import {
   removeWorkspaceEventFromServer,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import { i18nType } from "../../../reducers/base/i18n";
+import { EvaluationEvent } from "~/@types/evaluation";
 
 /**
  * DeleteDialogProps
@@ -23,6 +24,7 @@ interface DeleteDialogProps {
   isOpen?: boolean;
   onClose?: () => any;
   evaluations: EvaluationState;
+  eventData: EvaluationEvent;
   removeWorkspaceEventFromServer: RemoveWorkspaceEvent;
 }
 
@@ -52,25 +54,20 @@ class DeleteDialog extends React.Component<
    * handleDeleteEventClick
    */
   handleDeleteEventClick(closeDialog: () => any) {
-    const { evaluationAssessmentEvents } = this.props.evaluations;
+    const { eventData } = this.props;
 
-    if (evaluationAssessmentEvents.data) {
-      const latestIndex = evaluationAssessmentEvents.data.length - 1;
+    this.props.removeWorkspaceEventFromServer({
+      identifier: eventData.identifier,
+      eventType: eventData.type,
+      onSuccess: () => {
+        const draftId = eventData.identifier;
 
-      this.props.removeWorkspaceEventFromServer({
-        identifier: evaluationAssessmentEvents.data[latestIndex].identifier,
-        eventType: evaluationAssessmentEvents.data[latestIndex].type,
-        onSuccess: () => {
-          const draftId =
-            evaluationAssessmentEvents.data[latestIndex].identifier;
+        cleanWorkspaceAndSupplementationDrafts(draftId);
 
-          cleanWorkspaceAndSupplementationDrafts(draftId);
-
-          closeDialog();
-        },
-        onFail: () => closeDialog(),
-      });
-    }
+        closeDialog();
+      },
+      onFail: () => closeDialog(),
+    });
   }
 
   /**

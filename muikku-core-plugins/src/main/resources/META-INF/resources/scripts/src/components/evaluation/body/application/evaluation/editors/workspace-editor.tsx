@@ -107,6 +107,22 @@ class WorkspaceEditor extends SessionStateComponent<
           : "empty";
 
       /**
+       * Find what gradeSystem is selected when editing existing
+       */
+      const usedGradeSystem = evaluationGradeSystem.find(
+        (gSystem) =>
+          gSystem.id === latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
+      );
+
+      /**
+       * Find what grade is selected when editing existing
+       */
+      const usedGrade = usedGradeSystem.grades.find(
+        (grade) =>
+          grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
+      );
+
+      /**
        * As default but + latest event id
        */
       draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
@@ -116,10 +132,7 @@ class WorkspaceEditor extends SessionStateComponent<
           literalEvaluation: latestEvent.text,
           draftId,
           basePriceFromServer: basePrice.data,
-          grade:
-            `${evaluationGradeSystem[0].dataSource}-${latestEvent.gradeIdentifier}`.split(
-              "@"
-            )[1],
+          grade: `${usedGrade.dataSource}-${usedGrade.id}`,
         },
         draftId
       );
@@ -129,12 +142,33 @@ class WorkspaceEditor extends SessionStateComponent<
           literalEvaluation: "",
           draftId,
           basePriceFromServer: basePrice.data,
-          grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
         },
         draftId
       );
     }
   }
+
+  /**
+   * getUsedGradingScaleByGradeId
+   * @param gradeId
+   * @returns used grade system by gradeId
+   */
+  getUsedGradingScaleByGradeId = (gradeId: string) => {
+    const { evaluationGradeSystem } = this.props.evaluations;
+
+    for (let i = 0; i < evaluationGradeSystem.length; i++) {
+      const gradeSystem = evaluationGradeSystem[i];
+
+      for (let j = 0; j < gradeSystem.grades.length; j++) {
+        const grade = gradeSystem.grades[j];
+
+        if (grade.id === gradeId.split("-")[1]) {
+          return gradeSystem;
+        }
+      }
+    }
+  };
 
   /**
    * componentDidMount
@@ -167,14 +201,28 @@ class WorkspaceEditor extends SessionStateComponent<
           latestEvent.identifier
         );
 
+        /**
+         * Find what gradeSystem is selected when editing existing
+         */
+        const usedGradeSystem = evaluationGradeSystem.find(
+          (gSystem) =>
+            gSystem.id ===
+            latestEvent.gradeIdentifier.split("@")[0].split("-")[1]
+        );
+
+        /**
+         * Find what grade is selected when editing existing
+         */
+        const usedGrade = usedGradeSystem.grades.find(
+          (grade) =>
+            grade.id === latestEvent.gradeIdentifier.split("@")[1].split("-")[1]
+        );
+
         this.setState(
           this.getRecoverStoredState(
             {
               literalEvaluation: latestEvent.text,
-              grade:
-                `${evaluationGradeSystem[0].dataSource}-${latestEvent.gradeIdentifier}`.split(
-                  "@"
-                )[1],
+              grade: `${usedGrade.dataSource}-${usedGrade.id}`,
               existingBilledPriceObject,
               selectedPriceOption: existingBilledPriceObject
                 ? existingBilledPriceObject.price.toString()
@@ -191,7 +239,7 @@ class WorkspaceEditor extends SessionStateComponent<
           this.getRecoverStoredState(
             {
               literalEvaluation: "",
-              grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+              grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
             },
             this.state.draftId
           )
@@ -276,6 +324,8 @@ class WorkspaceEditor extends SessionStateComponent<
     const { literalEvaluation, grade } = this.state;
     let billingPrice = undefined;
 
+    const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
+
     if (evaluationAssessmentEvents.data.length > 0) {
       /**
        * Latest event data
@@ -284,6 +334,7 @@ class WorkspaceEditor extends SessionStateComponent<
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
+
       if (type === "new") {
         /**
          * Checking if pricing is enabled
@@ -324,7 +375,7 @@ class WorkspaceEditor extends SessionStateComponent<
           billingPrice,
           workspaceEvaluation: {
             assessorIdentifier: status.userSchoolDataIdentifier,
-            gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].id}`,
+            gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
@@ -376,7 +427,7 @@ class WorkspaceEditor extends SessionStateComponent<
           workspaceEvaluation: {
             identifier: latestEvent.identifier,
             assessorIdentifier: status.userSchoolDataIdentifier,
-            gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].id}`,
+            gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
             assessmentDate: new Date().getTime().toString(),
@@ -456,7 +507,7 @@ class WorkspaceEditor extends SessionStateComponent<
         billingPrice,
         workspaceEvaluation: {
           assessorIdentifier: status.userSchoolDataIdentifier,
-          gradingScaleIdentifier: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].id}`,
+          gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
           gradeIdentifier: grade,
           verbalAssessment: literalEvaluation,
           assessmentDate: new Date().getTime().toString(),
@@ -549,7 +600,7 @@ class WorkspaceEditor extends SessionStateComponent<
         this.setStateAndClear(
           {
             literalEvaluation: "",
-            grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
             selectedPriceOption: billingPrice,
           },
           this.state.draftId
@@ -559,7 +610,7 @@ class WorkspaceEditor extends SessionStateComponent<
       this.setStateAndClear(
         {
           literalEvaluation: "",
-          grade: `${evaluationGradeSystem[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
           selectedPriceOption: this.state.basePriceFromServer
             ? this.state.basePriceFromServer.toString()
             : undefined,
@@ -728,6 +779,27 @@ class WorkspaceEditor extends SessionStateComponent<
     const billingPriceDisabled =
       existingBilledPriceObject && !existingBilledPriceObject.editable;
 
+    const renderGradingOptions =
+      this.props.evaluations.evaluationGradeSystem.map((gScale) => {
+        return (
+          <optgroup
+            key={`${gScale.dataSource}-${gScale.id}`}
+            label={gScale.name}
+          >
+            {gScale.grades.map((grade) => {
+              return (
+                <option
+                  key={grade.id}
+                  value={`${gScale.dataSource}-${grade.id}`}
+                >
+                  {grade.name}
+                </option>
+              );
+            })}
+          </optgroup>
+        );
+      });
+
     return (
       <>
         <div className="evaluation-modal__evaluate-drawer-row form-element">
@@ -757,20 +829,7 @@ class WorkspaceEditor extends SessionStateComponent<
             onChange={this.handleSelectGradeChange}
             value={this.state.grade}
           >
-            <optgroup
-              label={this.props.evaluations.evaluationGradeSystem[0].name}
-            >
-              {this.props.evaluations.evaluationGradeSystem[0].grades.map(
-                (item) => (
-                  <option
-                    key={item.id}
-                    value={`${this.props.evaluations.evaluationGradeSystem[0].dataSource}-${item.id}`}
-                  >
-                    {item.name}
-                  </option>
-                )
-              )}
-            </optgroup>
+            {renderGradingOptions}
           </select>
         </div>
         {(options &&
