@@ -70,12 +70,10 @@ public class UserIndexer {
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
               userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 
               userEntity.getDefaultSchoolDataSource().getIdentifier().equals(user.getSchoolDataSource()) : false;
-          Date created = userEntity.getCreated();
           Map<String, Object> extra = new HashMap<>();
           extra.put("archetype", archetype);
           extra.put("userEntityId", userEntity.getId());
           extra.put("isDefaultIdentifier", isDefaultIdentifier);
-          extra.put("created", created);
           
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
