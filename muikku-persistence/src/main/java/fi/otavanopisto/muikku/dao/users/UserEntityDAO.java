@@ -16,14 +16,13 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
 
 	private static final long serialVersionUID = 3790128454976388680L;
 
-	public UserEntity create(Boolean archived, SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, String locale, Date created) {
+	public UserEntity create(Boolean archived, SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, String locale) {
 		UserEntity userEntity = new UserEntity();
 
 		userEntity.setArchived(archived);
 		userEntity.setDefaultIdentifier(defaultIdentifier);
 		userEntity.setDefaultSchoolDataSource(defaultSchoolDataSource);
 		userEntity.setLocale(locale);
-		userEntity.setCreated(created);
 		
 		return persist(userEntity);
 	}
