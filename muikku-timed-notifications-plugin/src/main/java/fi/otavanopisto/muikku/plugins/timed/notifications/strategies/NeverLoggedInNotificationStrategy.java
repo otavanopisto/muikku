@@ -19,7 +19,6 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -29,7 +28,9 @@ import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NeverLoggedInNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
@@ -39,8 +40,8 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
 
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.maxresults", "20"));
+  private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.notificationthreshold", "30"));
   private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.daysuntilfirstnotification", "60"));
-  private static final int NOTIFICATION_THRESHOLD_DAYS_LEFT = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.notificationthreshold", "30"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.neverloggedin.checkfreq", "30000"));
   
   @Inject
@@ -64,6 +65,9 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   @Inject
   private ActivityLogController activityLogController;
   
+  @Inject
+  private UserController userController;
+  
   @Override
   public boolean isActive(){
     return active;
@@ -76,51 +80,11 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
 
   @Override
   public void sendNotifications() {
-    Collection<Long> groups = getGroups();
-    if (groups.isEmpty()) {
-      return;
-    }
-    
-    OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
-    Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = neverLoggedInNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
-    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, null, null);
-    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
-    
-    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
-      offset = 0;
-    } else {
-      offset += MAX_RESULTS;
-    }
-    
-    for (Map<String, Object> result : searchResult.getResults()) {
-      String studentId = (String) result.get("id");
-      
-      if (StringUtils.isBlank(studentId)) {
-        logger.severe("Could not process user found from search index because it had a null id");
-        continue;
-      }
-      
-      String[] studentIdParts = studentId.split("/", 2);
-      SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
-      if (studentIdentifier == null) {
-        logger.severe(String.format("Could not process user found from search index with id %s", studentId));
-        continue;
-      }
-      
-      UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
+    List<SchoolDataIdentifier> studentsToNotify = getStudentsToNotify();
 
+    for (SchoolDataIdentifier studentIdentifier : studentsToNotify) {
+      UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
-        // Do not notify students that has logged in or have been created within the last 30 days
-        
-        OffsetDateTime created = studentEntity.getCreated().toInstant()
-            .atOffset(ZoneOffset.UTC);
-        Date lastLogin = studentEntity.getLastLogin();
-        
-        if (lastLogin != null || created == null || created.isAfter(sendNotificationIfNotLoggedInBefore)) {
-          continue;
-        }
-        
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         
         notificationController.sendNotification(
@@ -156,6 +120,77 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       }
     }
     return groups;
+  }
+  
+  public List<SchoolDataIdentifier> getStudentsToNotify() {
+    Collection<Long> groups = getGroups();
+    if (groups.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
+    Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = neverLoggedInNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
+    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT, MAX_RESULTS, studentIdentifierAlreadyNotified, thresholdDate);
+    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
+    
+    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
+      offset = 0;
+    } else {
+      offset += MAX_RESULTS;
+    }
+    
+    List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<>();
+    
+    for (Map<String, Object> result : searchResult.getResults()) {
+      String studentId = (String) result.get("id");
+      
+      if (StringUtils.isBlank(studentId)) {
+        logger.severe("Could not process user found from search index because it had a null id");
+        continue;
+      }
+      
+      String[] studentIdParts = studentId.split("/", 2);
+      SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+      if (studentIdentifier == null) {
+        logger.severe(String.format("Could not process user found from search index with id %s", studentId));
+        continue;
+      }
+      OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
+
+      User student = userController.findUserByIdentifier(studentIdentifier);
+      UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
+      if ((student != null) && isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
+
+        boolean isNettilukio = false;
+        boolean isNettipk = false;
+        @SuppressWarnings("unchecked")
+        ArrayList<Integer> studyProgrammes = (ArrayList<Integer>) result.get("groups");
+        if (studyProgrammes != null) {
+          isNettilukio = studyProgrammes.contains(5); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-6 -> Nettilukio 
+          isNettipk = studyProgrammes.contains(6); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-7 -> Nettiperuskoulu
+        }
+        
+        if (studentEntity.getLastLogin() == null && student.getStudyStartDate().isAfter(sendNotificationIfNotLoggedInBefore) && isNettilukio || isNettipk) {
+          studentIdentifiers.add(studentIdentifier);
+        }
+      }
+    }
+    
+    return studentIdentifiers;
+  }
+  
+  public boolean isNotifiedStudent(OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime currentDateTime, int thresholdDays) {
+    if ((studyStartDate == null) || (studyEndDate != null))
+      return false;
+    
+    // Earliest point when student may receive the notification is study start date + threshold day count
+    OffsetDateTime thresholdDateTime = studyStartDate.plusDays(thresholdDays);
+    
+    // Furthest point to receive the notification is studyStartDate + thresholdDays + 30 (1 month)
+    OffsetDateTime maxThresholdDateTime = studyStartDate.plusDays(thresholdDays + 30);
+
+    // If the threshold date has passed the student is valid target for the notification
+    return thresholdDateTime.isBefore(currentDateTime) && maxThresholdDateTime.isAfter(currentDateTime);
   }
 
   private int offset = 0;
