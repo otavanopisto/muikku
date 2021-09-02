@@ -31,7 +31,8 @@ interface IWorkListProps {
 interface IWorkListState {
   currentTemplate: WorklistTemplate;
   openedSections: string[];
-  sortDirection?: string,
+  sortDirection?: string;
+  sortedEntries?: any;
 }
 
 class WorkList extends React.Component<IWorkListProps, IWorkListState> {
@@ -129,7 +130,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
 
     this.setState({
       sortDirection: this.state.sortDirection === "asc" ? "desc" : "asc",
-      sortedEntriesDesc: sortedData
+      sortedEntries: sortedData
     });
   }
 
