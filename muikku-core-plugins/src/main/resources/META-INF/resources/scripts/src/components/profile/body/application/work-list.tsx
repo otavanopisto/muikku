@@ -31,10 +31,7 @@ interface IWorkListProps {
 interface IWorkListState {
   currentTemplate: WorklistTemplate;
   openedSections: string[];
-  sortDirectionEntriesDesc?: string,
-  sortedEntriesDesc?: any
-  sortDirectionEntriesDate?: string,
-  sortedEntriesDate?: any
+  sortDirection?: string,
 }
 
 class WorkList extends React.Component<IWorkListProps, IWorkListState> {
@@ -44,8 +41,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     this.state = {
       currentTemplate: null,
       openedSections: [],
-      sortDirectionEntriesDesc: "",
-      sortDirectionEntriesDate: "desc",
+      sortDirection: "desc",
     }
 
     this.insertNew = this.insertNew.bind(this);
@@ -127,25 +123,13 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     )
   }
 
-  sortEntriesByDescription(data: any) {
-    let key = "description";
-    let sortDirection = this.state.sortDirectionEntriesDesc;
+  sortEntries(data: any, key: string) {
+    let sortDirection = this.state.sortDirection;
     let sortedData = this.sortBy(data, key, sortDirection);
 
     this.setState({
-      sortDirectionEntriesDesc: this.state.sortDirectionEntriesDesc === "asc" ? "desc" : "asc",
+      sortDirection: this.state.sortDirection === "asc" ? "desc" : "asc",
       sortedEntriesDesc: sortedData
-    });
-  }
-
-  sortEntriesByDate(data: any) {
-    let key = "entryDate";
-    let sortDirection = this.state.sortDirectionEntriesDate;
-    let sortedData = this.sortBy(data, key, sortDirection);
-
-    this.setState({
-      sortDirectionEntriesDate: this.state.sortDirectionEntriesDate === "asc" ? "desc" : "asc",
-      sortedEntriesDate: sortedData
     });
   }
 
@@ -231,14 +215,14 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
                   <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
                     <Link
                       className="link link--worklist-entries-sorting"
-                      onClick={this.sortEntriesByDescription.bind(this, section.items)}>{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</Link>
+                      onClick={this.sortEntries.bind(this, section.items, "description")}>{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</Link>
                   </label>
                 </div>
                 <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
                   <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
                     <Link
                       className="link link--worklist-entries-sorting"
-                      onClick={this.sortEntriesByDate.bind(this, section.items)}>{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</Link>
+                      onClick={this.sortEntries.bind(this, section.items, "entryDate")}>{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</Link>
                   </label>
                 </div>
                 <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
