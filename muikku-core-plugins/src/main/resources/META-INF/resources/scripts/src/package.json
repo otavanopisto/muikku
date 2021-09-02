@@ -41,6 +41,7 @@
     "query-string": "^5.0.1",
     "react": "^16.13.1",
     "react-ace": "^5.2.1",
+    "react-animate-height": "^2.0.23",
     "react-color": "^2.14.1",
     "react-datepicker": "^0.61.0",
     "react-dom": "^16.13.1",

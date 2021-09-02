@@ -1,12 +1,18 @@
 import * as React from "react";
 import { SchoolSubject } from "~/@types/shared";
 import CourseTable from "../../course-table";
-import { mockSchoolSubjects } from "../../../../../../../mock/mock-data";
-import { HopsStudies, CourseStatus } from "../../../../../../../@types/shared";
-import { TextField } from "../text-field";
+import {
+  HopsStudies,
+  CourseStatus,
+  StudiesCourseData,
+} from "../../../../../../../@types/shared";
+import Dropdown from "../../../../../../general/dropdown";
+let ProgressBarCircle = require("react-progress-bar.js").Circle;
 
-interface StudiesProps {
+interface StudiesProps extends StudiesCourseData {
   studies: HopsStudies;
+  ethics: boolean;
+  finnishAsSecondLanguage: boolean;
   onStudiesChange: (studies: HopsStudies) => void;
 }
 
@@ -24,14 +30,78 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
   }
 
   /**
-   * calculateCompletedMandatoryHours
-   * @returns sum of completed course hours
+   * calculateNumberOfCompletedOptionalyCourses
+   * @returns
    */
-  calculateCompletedMandatoryHours = (): number => {
-    let hoursCompleted = 0;
+  calculateNumberOfCompletedOptionalyCourses = () => {
+    let completed = 0;
 
     for (const sSubject of this.props.studies.selectedSubjects) {
-      let oneSubjectMandatoryHours = 0;
+      if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+        continue;
+      }
+      if (
+        !this.props.finnishAsSecondLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
+        continue;
+      }
+      if (this.props.ethics && sSubject.subjectCode === "ua") {
+        continue;
+      }
+      if (!this.props.ethics && sSubject.subjectCode === "ea") {
+        continue;
+      }
+
+      for (const aCourse of sSubject.availableCourses) {
+        /**
+         * Skip mandatory courses
+         */
+        if (aCourse.mandatory) {
+          continue;
+        }
+
+        /**
+         * Check if there is completed optional courses
+         */
+        if (this.props.completedSubjectListOfIds) {
+          if (
+            this.props.completedSubjectListOfIds.find(
+              (courseId) => courseId === aCourse.id
+            )
+          ) {
+            completed++;
+          }
+        }
+      }
+    }
+
+    return completed;
+  };
+
+  /**
+   * calculateNumberOfCompletedMandatoryCourses
+   * @returns
+   */
+  calculateNumberOfCompletedMandatoryCourses = () => {
+    let completed = 0;
+
+    for (const sSubject of this.props.studies.selectedSubjects) {
+      if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+        continue;
+      }
+      if (
+        !this.props.finnishAsSecondLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
+        continue;
+      }
+      if (this.props.ethics && sSubject.subjectCode === "ua") {
+        continue;
+      }
+      if (!this.props.ethics && sSubject.subjectCode === "ea") {
+        continue;
+      }
 
       for (const aCourse of sSubject.availableCourses) {
         if (!aCourse.mandatory) {
@@ -39,118 +109,107 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
         }
 
         if (
-          aCourse.status === CourseStatus.APPROVAL ||
-          aCourse.status === CourseStatus.COMPLETED
+          this.props.completedSubjectListOfIds ||
+          this.props.approvedSubjectListOfIds
         ) {
-          oneSubjectMandatoryHours += aCourse.length;
+          if (
+            this.props.completedSubjectListOfIds &&
+            this.props.completedSubjectListOfIds.find(
+              (courseId) => courseId === aCourse.id
+            )
+          ) {
+            completed++;
+          }
+          if (
+            this.props.approvedSubjectListOfIds &&
+            this.props.approvedSubjectListOfIds.find(
+              (courseId) => courseId === aCourse.id
+            )
+          ) {
+            completed++;
+          }
         }
       }
-
-      hoursCompleted += oneSubjectMandatoryHours;
     }
 
-    return hoursCompleted;
+    return completed;
   };
 
   /**
-   * calculateMandatoryHoursNeeded
-   * @returns number of mandatory hours needed to complete all mandatory courses
+   * calculateMaxNumberOfMandatoryCourses
+   * @returns
    */
-  calculateMandatoryHoursNeeded = (): number => {
-    let hoursNeeded = 0;
+  calculateMaxNumberOfMandatoryCourses = () => {
+    let amount = 0;
 
     for (const sSubject of this.props.studies.selectedSubjects) {
-      let oneSubjectMandatoryHours = 0;
-
-      if (
-        this.props.studies.finnishAsSecondLanguage &&
-        sSubject.subjectCode === "ai"
-      ) {
+      if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
       if (
-        !this.props.studies.finnishAsSecondLanguage &&
+        !this.props.finnishAsSecondLanguage &&
         sSubject.subjectCode === "s2"
       ) {
         continue;
       }
-      if (this.props.studies.ethics && sSubject.subjectCode === "ua") {
+      if (this.props.ethics && sSubject.subjectCode === "ua") {
         continue;
       }
-      if (!this.props.studies.ethics && sSubject.subjectCode === "ea") {
+      if (!this.props.ethics && sSubject.subjectCode === "ea") {
         continue;
       }
 
       for (const aCourse of sSubject.availableCourses) {
+        /**
+         * Skip non mandatory courses
+         */
         if (!aCourse.mandatory) {
           continue;
         }
-        oneSubjectMandatoryHours += aCourse.length;
-      }
 
-      hoursNeeded += oneSubjectMandatoryHours;
+        amount++;
+      }
     }
 
-    return hoursNeeded;
+    return amount;
   };
 
   /**
-   * getTotalTime
-   * @param totalHours
-   * @param hoursPerWeek
+   * calculateMaxNumberOfOptionalCourses
+   * @returns
    */
-  getTotalTime = (totalHours: number, hoursPerWeek: number) => {
-    const totalWeeks = totalHours / hoursPerWeek;
-    let totalTimeValue: any;
-    let offsetYears = 0;
-    let offsetMonths = 0;
-    let offsetWeeks = 0;
+  calculateMaxNumberOfOptionalCourses = () => {
+    let amount = 0;
 
-    if (!hoursPerWeek || hoursPerWeek === 0) {
-      return 0;
-    }
-
-    if (totalWeeks > 52) {
-      let countYears = totalWeeks / 52;
-
-      if (countYears >= 1) {
-        totalTimeValue = Math.floor(countYears) + " v ";
+    for (const sSubject of this.props.studies.selectedSubjects) {
+      if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+        continue;
       }
-      offsetYears = countYears % 1;
-    } else {
-      offsetYears = totalWeeks / 52;
-    }
-
-    if (offsetYears > 0) {
-      let countMonths = offsetYears * 12;
-      if (countMonths >= 1) {
-        totalTimeValue = totalTimeValue
-          ? totalTimeValue + Math.floor(countMonths) + " kk "
-          : Math.floor(countMonths) + " kk ";
+      if (
+        !this.props.finnishAsSecondLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
+        continue;
       }
-      offsetMonths = countMonths % 1;
-    }
-
-    if (offsetMonths > 0) {
-      let countWeeks = offsetMonths * 4.3482;
-      if (countWeeks >= 1) {
-        totalTimeValue = totalTimeValue
-          ? totalTimeValue + Math.floor(countWeeks) + " vko "
-          : Math.floor(countWeeks) + " vko ";
+      if (this.props.ethics && sSubject.subjectCode === "ua") {
+        continue;
       }
-      offsetWeeks = countWeeks % 1;
-    }
+      if (!this.props.ethics && sSubject.subjectCode === "ea") {
+        continue;
+      }
+      for (const aCourse of sSubject.availableCourses) {
+        /**
+         * Skip mandatory courses
+         */
+        if (aCourse.mandatory) {
+          continue;
+        }
 
-    if (offsetWeeks > 0) {
-      let countDays = offsetWeeks * 7;
-      if (countDays >= 1) {
-        totalTimeValue = totalTimeValue
-          ? totalTimeValue + Math.floor(countDays) + " pv "
-          : Math.floor(countDays) + " pv ";
+        amount++;
       }
     }
 
-    return totalTimeValue;
+    return amount;
   };
 
   /**
@@ -225,39 +284,10 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
   };
 
   /**
-   * handleUsedHoursPerWeekChange
-   */
-  handleUsedHoursPerWeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.onStudiesChange({
-      ...this.props.studies,
-      usedHoursPerWeek: parseInt(e.currentTarget.value),
-    });
-  };
-
-  /**
-   * handleSelectedSubjectsChange
-   * @param selectedSubjects
-   */
-  handleSelectedSubjectsChange = (selectedSubjects: SchoolSubject[]) => {
-    this.props.onStudiesChange({ ...this.props.studies, selectedSubjects });
-  };
-
-  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const mandatoryNeededHours = this.calculateMandatoryHoursNeeded();
-    const completedMandatoryHours = this.calculateCompletedMandatoryHours();
-    const totalTime = this.getTotalTime(
-      mandatoryNeededHours,
-      this.props.studies.usedHoursPerWeek
-    );
-    const updatedTimeToCompleteMandatoryCourses = this.getTotalTime(
-      mandatoryNeededHours - completedMandatoryHours,
-      this.props.studies.usedHoursPerWeek
-    );
-
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
@@ -292,48 +322,98 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
         </fieldset>
         <fieldset className="hops__step-container__fieldset">
           <legend className="hops__step-container__subheader">
-            Opintolaskuri
+            Kurssitaulukko
           </legend>
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <TextField
-                label="Paljonko tunteja käytettävissä viikossa"
-                onChange={this.handleUsedHoursPerWeekChange}
-                value={this.props.studies.usedHoursPerWeek}
-                className="hops-input"
-              />
-            </div>
-          </div>
 
           <div className="hops-container__row">
-            <div className="hops__form-element-container hops__form-element-container-study__counter">
-              <div>
-                <h1>Tunteja viikossa:</h1>
-                <h1 className="hops__result-title">
-                  {this.props.studies.usedHoursPerWeek}
-                </h1>
-              </div>
-              <div>
-                <h1>Arvioitu tarvittava tuntimäärä (pakolliset kurssit):</h1>
-                <h1 className="hops__result-title">{mandatoryNeededHours}</h1>
-              </div>
-              <div>
-                <h1>Laskennallinen opiskeluaika:</h1>
-                <h1 className="hops__result-title">{totalTime}</h1>
-              </div>
-              <hr className="hops__calculated__hours-divider" />
-              <div>
-                <h1>Suoritetut tunnit:</h1>
-                <h1 className="hops__result-title">
-                  {completedMandatoryHours}
-                </h1>
-              </div>
-              <div>
-                <h1>Päivitetty opiskeluaika:</h1>
-                <h1 className="hops__result-title">
-                  {updatedTimeToCompleteMandatoryCourses}
-                </h1>
-              </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Dropdown
+                content={
+                  <div>
+                    <h4>Suoritetut kurssit</h4>
+                    <h5>
+                      Pakolliset:{" "}
+                      {this.calculateNumberOfCompletedMandatoryCourses()}{" "}
+                    </h5>
+                  </div>
+                }
+              >
+                <div tabIndex={0}>
+                  <ProgressBarCircle
+                    containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                    options={{
+                      strokeWidth: 10,
+                      duration: 1000,
+                      color: "#008000",
+                      trailColor: "#808080",
+                      easing: "easeInOut",
+                      trailWidth: 10,
+                      initialAnimate: true,
+                      svgStyle: {
+                        flexBasis: "25px",
+                        flexGrow: "0",
+                        flexShrink: "0",
+                        height: "25px",
+                      },
+                      text: {
+                        style: null,
+                        className:
+                          "workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace",
+                      },
+                    }}
+                    text={`${this.calculateNumberOfCompletedMandatoryCourses()} / ${this.calculateMaxNumberOfMandatoryCourses()}`}
+                    progress={
+                      this.calculateNumberOfCompletedMandatoryCourses() /
+                      this.calculateMaxNumberOfMandatoryCourses()
+                    }
+                  />
+                </div>
+              </Dropdown>
+
+              <Dropdown
+                content={
+                  <div>
+                    <h4>Suoritetut kurssit</h4>
+                    <h5>
+                      Valinnaiset:{" "}
+                      {this.calculateNumberOfCompletedOptionalyCourses()}{" "}
+                    </h5>
+                  </div>
+                }
+              >
+                <div tabIndex={0}>
+                  <ProgressBarCircle
+                    containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                    options={{
+                      strokeWidth: 10,
+                      duration: 1000,
+                      color: "#008000",
+                      trailColor: "#ADD8E6",
+                      easing: "easeInOut",
+                      trailWidth: 10,
+                      svgStyle: {
+                        flexBasis: "25px",
+                        flexGrow: "0",
+                        flexShrink: "0",
+                        height: "25px",
+                      },
+                      text: {
+                        style: null,
+                        className:
+                          "workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace",
+                      },
+                    }}
+                    text={`
+                    ${this.calculateNumberOfCompletedOptionalyCourses()}
+                    / 
+                    ${this.calculateMaxNumberOfOptionalCourses()}`}
+                    progress={
+                      this.calculateNumberOfCompletedOptionalyCourses() /
+                      this.calculateMaxNumberOfOptionalCourses()
+                    }
+                  />
+                </div>
+              </Dropdown>
             </div>
           </div>
 
@@ -341,7 +421,11 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
             <div className="hops__form-element-container">
               <CourseTable
                 selectedSubjects={this.props.studies.selectedSubjects}
-                onChange={this.handleSelectedSubjectsChange}
+                approvedSubjectListOfIds={this.props.approvedSubjectListOfIds}
+                completedSubjectListOfIds={this.props.completedSubjectListOfIds}
+                inprogressSubjectListOfIds={
+                  this.props.inprogressSubjectListOfIds
+                }
                 ethicsSelected={this.props.studies.ethics}
                 finnishAsSecondLanguage={
                   this.props.studies.finnishAsSecondLanguage
@@ -351,23 +435,29 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
           </div>
 
           <div className="hops-container__indicator-examples">
-            <div className="hops-container__course-completed">
-              <div className="hops-container__course-completed-indicator"></div>
-              <p>Suoritettu</p>
+            <div className="hops-container__course-mandatory">
+              <div className="hops-container__course-mandatory-indicator"></div>
+              <p>Pakollinen</p>
             </div>
-            <div className="hops-container__course-inprogress">
-              <div className="hops-container__course-inprogress-indicator"></div>
-              <p>Kesken</p>
+            <div className="hops-container__course-optional">
+              <div className="hops-container__course-optional-indicator"></div>
+              <p>(*)-Valinnainen</p>
             </div>
             <div className="hops-container__course-approval">
               <div className="hops-container__course-approval-indicator"></div>
               <p>Hyväksiluettu</p>
             </div>
-          </div>
-
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <p>*-merkityt ovat valinnaisia kursseja</p>
+            <div className="hops-container__course-completed">
+              <div className="hops-container__course-completed-indicator"></div>
+              <p>Suoritettu</p>
+            </div>
+            <div className="hops-container__course-latest_completed">
+              <div className="hops-container__course-latest_completed-indicator"></div>
+              <p>Viimeisin suoritettu</p>
+            </div>
+            <div className="hops-container__course-inprogress">
+              <div className="hops-container__course-inprogress-indicator"></div>
+              <p>Kesken</p>
             </div>
           </div>
         </fieldset>

@@ -7,6 +7,8 @@ import {
   FollowUpStudies,
   StudySector,
 } from "../../../../../../../@types/shared";
+import AnimateHeight from "react-animate-height";
+import { isUndefined } from "util";
 
 interface MotivationAndStudySkillsProps {
   onMotivationAndStudyChange: (
@@ -15,7 +17,11 @@ interface MotivationAndStudySkillsProps {
   motivationAndStudy: HopsMotivationAndStudy;
 }
 
-interface MotivationAndStudySkillsState {}
+interface MotivationAndStudySkillsState {
+  someOtherWay: boolean;
+  someOtherMethod: boolean;
+  somethingElse: boolean;
+}
 
 class MotivationAndStudySkills extends React.Component<
   MotivationAndStudySkillsProps,
@@ -28,8 +34,24 @@ class MotivationAndStudySkills extends React.Component<
   constructor(props: MotivationAndStudySkillsProps) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      someOtherWay: false,
+      someOtherMethod: false,
+      somethingElse: false,
+    };
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount = () => {
+    this.setState({
+      someOtherWay: this.props.motivationAndStudy.someOtherWay !== undefined,
+      someOtherMethod:
+        this.props.motivationAndStudy.someOtherMethod !== undefined,
+      somethingElse: this.props.motivationAndStudy.somethingElse !== undefined,
+    });
+  };
 
   /**
    * handleTextareaChange
@@ -41,6 +63,19 @@ class MotivationAndStudySkills extends React.Component<
       this.props.onMotivationAndStudyChange({
         ...this.props.motivationAndStudy,
         [name]: e.currentTarget.value,
+      });
+    };
+
+  /**
+   * handleCheckboxElseChanges
+   * @param name
+   */
+  handleCheckboxElseChanges =
+    (name: keyof MotivationAndStudySkillsState) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({
+        ...this.state,
+        [name]: e.target.checked,
       });
     };
 
@@ -128,18 +163,26 @@ class MotivationAndStudySkills extends React.Component<
                 checked={byDoing}
                 onChange={this.handleCheckboxItemChange("byDoing")}
               />
+              <CheckboxGroupItem
+                label="Muu? Mikä?"
+                className="group__item"
+                checked={this.state.someOtherWay}
+                onChange={this.handleCheckboxElseChanges("someOtherWay")}
+              />
             </CheckboxGroup>
           </div>
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
-                label="Muu?"
-                value={someOtherWay}
-                onChange={this.handleTextareaChange("someOtherWay")}
-              />
+          <AnimateHeight height={this.state.someOtherWay ? "auto" : 0}>
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <Textarea
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  label="Muu?"
+                  value={someOtherWay}
+                  onChange={this.handleTextareaChange("someOtherWay")}
+                />
+              </div>
             </div>
-          </div>
+          </AnimateHeight>
         </fieldset>
 
         <fieldset className="hops-container__fieldset">
@@ -185,18 +228,26 @@ class MotivationAndStudySkills extends React.Component<
                 checked={byFollowingOthers}
                 onChange={this.handleCheckboxItemChange("byFollowingOthers")}
               />
+              <CheckboxGroupItem
+                label="Muu? Mikä?"
+                className="group__item"
+                checked={this.state.someOtherMethod}
+                onChange={this.handleCheckboxElseChanges("someOtherMethod")}
+              />
             </CheckboxGroup>
           </div>
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
-                label="Muu?"
-                value={someOtherMethod}
-                onChange={this.handleTextareaChange("someOtherMethod")}
-              />
+          <AnimateHeight height={this.state.someOtherMethod ? "auto" : 0}>
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <Textarea
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  label="Muu?"
+                  value={someOtherMethod}
+                  onChange={this.handleTextareaChange("someOtherMethod")}
+                />
+              </div>
             </div>
-          </div>
+          </AnimateHeight>
         </fieldset>
 
         <fieldset className="hops-container__fieldset">
@@ -236,18 +287,26 @@ class MotivationAndStudySkills extends React.Component<
                 checked={teacher}
                 onChange={this.handleCheckboxItemChange("teacher")}
               />
+              <CheckboxGroupItem
+                label="Muu? Kuka?"
+                className="group__item"
+                checked={this.state.somethingElse}
+                onChange={this.handleCheckboxElseChanges("somethingElse")}
+              />
             </CheckboxGroup>
           </div>
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                className="form-element__textarea form-element__textarea--resize__vertically"
-                label="Muu?"
-                value={somethingElse}
-                onChange={this.handleTextareaChange("somethingElse")}
-              />
+          <AnimateHeight height={this.state.somethingElse ? "auto" : 0}>
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <Textarea
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                  label="Muu?"
+                  value={somethingElse}
+                  onChange={this.handleTextareaChange("somethingElse")}
+                />
+              </div>
             </div>
-          </div>
+          </AnimateHeight>
         </fieldset>
 
         <fieldset className="hops-container__fieldset">
@@ -298,7 +357,7 @@ class MotivationAndStudySkills extends React.Component<
           </div>
         </fieldset>
 
-        <fieldset className="hops-container__fieldset">
+        {/* <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Tavoitteet</legend>
 
           <div className="hops-container__row">
@@ -310,10 +369,10 @@ class MotivationAndStudySkills extends React.Component<
                 className="hops-select"
               >
                 <option value="">Valitse...</option>
-                <option value="6kk">6kk</option>
-                <option value="12kk">1v.</option>
-                <option value="18kk">1,5v.</option>
-                <option value="24kk">2v.</option>
+                <option value={6}>6kk</option>
+                <option value={12}>1v.</option>
+                <option value={18}>1,5v.</option>
+                <option value={24}>2v.</option>
               </select>
             </div>
           </div>
@@ -385,7 +444,7 @@ class MotivationAndStudySkills extends React.Component<
               </div>
             </div>
           ) : null}
-        </fieldset>
+        </fieldset> */}
       </div>
     );
   }

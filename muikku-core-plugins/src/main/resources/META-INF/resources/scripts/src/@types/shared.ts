@@ -49,6 +49,7 @@ export enum CourseStatus {
   APPROVAL = "APPROVAL",
   INPROGRESS = "INPROGRESS",
   NOSTATUS = "NOSTATUS",
+  SUGGESTED = "SUGGESTED",
 }
 
 /**
@@ -64,7 +65,8 @@ export interface HopsCompulsory {
   basicInfo: BasicInformation;
   startingLevel: HopsStudentStartingLevel;
   motivationAndStudy: HopsMotivationAndStudy;
-  studies: HopsStudies;
+  studiesPlanning: HopsPlanningStudies;
+  studiesCourseData: StudiesCourseData;
 }
 
 /**
@@ -108,6 +110,14 @@ export interface HopsStudies {
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
   selectedSubjects: SchoolSubject[];
+}
+
+export interface HopsPlanningStudies extends StudentsGoal {
+  usedHoursPerWeek: number;
+  selectedListOfIds: number[];
+  selectedSubjects: SchoolSubject[];
+  ethics: boolean;
+  finnishAsSecondLanguage: boolean;
 }
 
 /**
@@ -167,4 +177,15 @@ export interface Course {
   length: number;
   status: string;
   mandatory: boolean;
+  id: number;
+}
+
+export interface StudiesCourseData {
+  completedSubjectListOfIds?: number[];
+  approvedSubjectListOfIds?: number[];
+  inprogressSubjectListOfIds?: number[];
+  supervisorSugestedSubjectListOfIds?: number[];
+  selectedOptionalListOfIds?: number[];
+  ownHopsChoosed?: number;
+  ownHopsCompleted?: number;
 }

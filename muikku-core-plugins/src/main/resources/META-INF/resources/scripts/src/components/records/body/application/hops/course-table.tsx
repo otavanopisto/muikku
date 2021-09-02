@@ -9,12 +9,20 @@ import {
   Tr,
 } from "~/components/general/table";
 import { mockSchoolSubjects } from "~/mock/mock-data";
+import Dropdown from "../../../../general/dropdown";
 
 interface CourseTableProps {
-  selectedSubjects: SchoolSubject[];
+  selectedSubjects?: SchoolSubject[];
   ethicsSelected: boolean;
   finnishAsSecondLanguage: boolean;
-  onChange: (schoolSubjects: SchoolSubject[]) => void;
+  selectedSubjectListOfIds?: number[];
+  completedSubjectListOfIds?: number[];
+  approvedSubjectListOfIds?: number[];
+  inprogressSubjectListOfIds?: number[];
+  selectedOptionalListOfIds?: number[];
+  supervisorSugestedSubjectListOfIds?: number[];
+  onChange?: (schoolSubjects: SchoolSubject[]) => void;
+  onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
 }
 
 /**
@@ -31,59 +39,39 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
       const selectedSubjects = [...props.selectedSubjects];
 
       if (
-        selectedSubjects[subjectIndex].availableCourses[subjectCourseIndex] !==
-        undefined
+        props.onChangeSelectSubjectList &&
+        props.selectedSubjectListOfIds &&
+        selectedSubjects
       ) {
-        switch (
-          selectedSubjects[subjectIndex].availableCourses[subjectCourseIndex]
-            .status
+        let selectedSubjectListOfIds = [...props.selectedSubjectListOfIds];
+
+        if (
+          selectedSubjects[subjectIndex].availableCourses[
+            subjectCourseIndex
+          ] !== undefined
         ) {
-          case CourseStatus.NOSTATUS:
-            selectedSubjects[subjectIndex].availableCourses[
-              subjectCourseIndex
-            ] = {
-              ...selectedSubjects[subjectIndex].availableCourses[
+          let indexOfSubjectCourse = selectedSubjectListOfIds.findIndex(
+            (subjectId) =>
+              subjectId ===
+              selectedSubjects[subjectIndex].availableCourses[
                 subjectCourseIndex
-              ],
-              status: CourseStatus.APPROVAL,
-            };
-            break;
-          case CourseStatus.APPROVAL:
-            selectedSubjects[subjectIndex].availableCourses[
-              subjectCourseIndex
-            ] = {
-              ...selectedSubjects[subjectIndex].availableCourses[
-                subjectCourseIndex
-              ],
-              status: CourseStatus.INPROGRESS,
-            };
-            break;
+              ].id
+          );
 
-          case CourseStatus.INPROGRESS:
-            selectedSubjects[subjectIndex].availableCourses[
-              subjectCourseIndex
-            ] = {
-              ...selectedSubjects[subjectIndex].availableCourses[
+          if (indexOfSubjectCourse !== -1) {
+            selectedSubjectListOfIds.splice(indexOfSubjectCourse, 1);
+          } else {
+            selectedSubjectListOfIds.push(
+              selectedSubjects[subjectIndex].availableCourses[
                 subjectCourseIndex
-              ],
-              status: CourseStatus.COMPLETED,
-            };
-            break;
-
-          case CourseStatus.COMPLETED:
-            selectedSubjects[subjectIndex].availableCourses[
-              subjectCourseIndex
-            ] = {
-              ...selectedSubjects[subjectIndex].availableCourses[
-                subjectCourseIndex
-              ],
-              status: CourseStatus.NOSTATUS,
-            };
-            break;
+              ].id
+            );
+          }
         }
-      }
 
-      props.onChange(selectedSubjects);
+        props.onChangeSelectSubjectList &&
+          props.onChangeSelectSubjectList(selectedSubjectListOfIds);
+      }
     };
 
   /**
@@ -110,7 +98,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
   /**
    * renderRows
    */
-  const renderRows = props.selectedSubjects.map((sSubject, i) => {
+  const renderRows = mockSchoolSubjects.map((sSubject, i) => {
     let courses = [];
 
     if (props.ethicsSelected) {
@@ -145,25 +133,65 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
       if (isAvailable && sSubject.availableCourses[index] !== undefined) {
         let modifiers = ["course", "centered"];
 
+        let canBeSelected = true;
+
+        if (sSubject.availableCourses[index].mandatory) {
+          modifiers.push("MANDATORY");
+        } else {
+          modifiers.push("OPTIONAL");
+        }
+
         /**
-         * Checks courses status and pushes data cell indicator
+         * If any of these list are given, check whether course id is in
+         * and push another modifier
          */
-        switch (sSubject.availableCourses[index].status) {
-          case CourseStatus.APPROVAL:
-            modifiers.push("APPROVAL");
-            break;
+        if (
+          props.approvedSubjectListOfIds &&
+          props.approvedSubjectListOfIds.find(
+            (courseId) => courseId === sSubject.availableCourses[index].id
+          )
+        ) {
+          canBeSelected = false;
+          modifiers.push("APPROVAL");
+        } else if (
+          props.selectedOptionalListOfIds &&
+          props.selectedOptionalListOfIds.find(
+            (courseId) => courseId === sSubject.availableCourses[index].id
+          )
+        ) {
+          modifiers.push("SELECTED_OPTIONAL");
+        } else if (
+          props.completedSubjectListOfIds &&
+          props.completedSubjectListOfIds.find(
+            (courseId) => courseId === sSubject.availableCourses[index].id
+          )
+        ) {
+          canBeSelected = false;
+          modifiers.push("COMPLETED");
+        } else if (
+          props.inprogressSubjectListOfIds &&
+          props.inprogressSubjectListOfIds.find(
+            (courseId) => courseId === sSubject.availableCourses[index].id
+          )
+        ) {
+          canBeSelected = false;
+          modifiers.push("INPROGRESS");
+        } else if (
+          props.supervisorSugestedSubjectListOfIds &&
+          props.supervisorSugestedSubjectListOfIds.find(
+            (courseId) => courseId === sSubject.availableCourses[index].id
+          )
+        ) {
+          modifiers.push("SUGGESTED");
+        }
 
-          case CourseStatus.INPROGRESS:
-            modifiers.push("INPROGRESS");
-            break;
-
-          case CourseStatus.COMPLETED:
-            modifiers.push("COMPLETED");
-            break;
-
-          case CourseStatus.NOSTATUS:
-            modifiers.push("NOSTATUS");
-            break;
+        if (
+          props.selectedSubjectListOfIds &&
+          props.selectedSubjectListOfIds.find(
+            (courseId) => courseId === sSubject.availableCourses[index].id
+          )
+        ) {
+          modifiers.push("SELECTED");
         }
 
         /**
@@ -174,22 +202,62 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           courses.push(
             <Td
               key={sSubject.availableCourses[index].name}
-              onClick={handleToggleCourseClick(i, index)}
               modifiers={modifiers}
             >
-              {index + 1}
+              <Dropdown
+                openByHover={true}
+                content={
+                  <div>
+                    <h4>Suoritusaika-arvio:</h4>
+                    {sSubject.availableCourses[index].length}h
+                  </div>
+                }
+              >
+                <div tabIndex={0}>{index + 1}</div>
+              </Dropdown>
             </Td>
           );
         } else {
-          courses.push(
-            <Td
-              key={sSubject.availableCourses[index].name}
-              onClick={handleToggleCourseClick(i, index)}
-              modifiers={modifiers}
-            >
-              {index + 1}*
-            </Td>
-          );
+          if (canBeSelected) {
+            courses.push(
+              <Td
+                key={sSubject.availableCourses[index].name}
+                onClick={handleToggleCourseClick(i, index)}
+                modifiers={modifiers}
+              >
+                <Dropdown
+                  openByHover={true}
+                  content={
+                    <div>
+                      <h4>Suoritusaika-arvio:</h4>
+                      {sSubject.availableCourses[index].length}h
+                    </div>
+                  }
+                >
+                  <div tabIndex={0}>{index + 1}*</div>
+                </Dropdown>
+              </Td>
+            );
+          } else {
+            courses.push(
+              <Td
+                key={sSubject.availableCourses[index].name}
+                modifiers={modifiers}
+              >
+                <Dropdown
+                  openByHover={true}
+                  content={
+                    <div>
+                      <h4>Suoritusaika-arvio:</h4>
+                      {sSubject.availableCourses[index].length}h
+                    </div>
+                  }
+                >
+                  <div tabIndex={0}>{index + 1}*</div>
+                </Dropdown>
+              </Td>
+            );
+          }
         }
       } else {
         courses.push(

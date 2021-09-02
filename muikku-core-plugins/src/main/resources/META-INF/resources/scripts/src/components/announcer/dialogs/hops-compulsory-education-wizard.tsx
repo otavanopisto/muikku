@@ -1,9 +1,11 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import CompulsoryEducationHopsWizard from "~/components/records/body/application/hops/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
+import { HopsCompulsory } from "../../../@types/shared";
 
 interface HopsCompulsoruEducationWizardProps {
   children?: React.ReactElement<any>;
+  hops?: number;
 }
 
 interface HopsCompulsoruEducationWizardState {}
@@ -19,7 +21,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
   render() {
     let content = (closeDialog: () => any) => (
       <div>
-        <CompulsoryEducationHopsWizard />
+        <CompulsoryEducationHopsWizard testData={this.props.hops} />
       </div>
     );
     let footer = (closeDialog: () => any) => {
@@ -31,6 +33,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
         title="Henkilökohtainen opintosuunnitelma"
         content={content}
         modifier={["wizard", "hops"]}
+        closeOnOverlayClick={false}
       >
         {this.props.children}
       </Dialog>

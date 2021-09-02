@@ -13,6 +13,7 @@
   border-bottom: 1px solid $color-default-separator-border;
   margin: 0 0 15px;
   padding: 0 0 10px;
+  min-width: 100%;
 
   // @include breakpoint($breakpoint-pad) {
   //    display: flex;
@@ -72,6 +73,11 @@
   flex-shrink: 1;
   margin: 5px;
   position: relative;
+  display: flex;
+}
+
+.hops__form-element-container--hops_indicators {
+  align-items: center;
 }
 
 .hops__form-element-container--single-row {
@@ -108,6 +114,10 @@
     background-color: lighten($color-disabled, 20%);
     border: 0;
   }
+}
+
+.hops-input:disabled {
+  background-color: lightgray;
 }
 
 .hops-select {
@@ -174,8 +184,14 @@
 .hops-container__indicator-examples {
   display: flex;
   margin: 10px 0 20px;
+  flex-flow: row wrap;
 }
 
+.hops-container__course-latest_completed,
+.hops-container__course-selected,
+.hops-container__course-suggested,
+.hops-container__course-mandatory,
+.hops-container__course-optional,
 .hops-container__course-inprogress,
 .hops-container__course-approval,
 .hops-container__course-completed {
@@ -184,6 +200,11 @@
   margin: 2px 0;
 }
 
+.hops-container__course-latest_completed-indicator,
+.hops-container__course-suggested-indicator,
+.hops-container__course-selected-indicator,
+.hops-container__course-mandatory-indicator,
+.hops-container__course-optional-indicator,
 .hops-container__course-inprogress-indicator,
 .hops-container__course-approval-indicator,
 .hops-container__course-completed-indicator {
@@ -191,6 +212,18 @@
   height: 25px;
   margin: 0 10px;
   width: 25px;
+}
+
+.hops-container__course-suggested-indicator {
+  border: 2px solid pink;
+}
+
+.hops-container__course-mandatory-indicator {
+  background-color: grey;
+}
+
+.hops-container__course-optional-indicator {
+  background-color: lightblue;
 }
 
 .hops-container__course-inprogress-indicator {
@@ -203,6 +236,14 @@
 
 .hops-container__course-completed-indicator {
   background-color: green;
+}
+
+.hops-container__course-latest_completed-indicator {
+  background-color: #08e108;
+}
+
+.hops-container__course-selected-indicator {
+  background-color: wheat;
 }
 
 .hops__form-element-container-study__counter {
@@ -222,4 +263,74 @@
 .hops__calculated__hours-divider {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.hops-activity__progressbar-circle {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 105px;
+}
+
+.hops-course-activity__progressbar-circle {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 100px;
+}
+
+.hops-activity__progressbar-circle {
+  line-height: 1;
+  margin: 0 5px;
+}
+
+.hops-course-activity__progressbar-circle {
+  line-height: 1;
+  margin: 0 5px;
+}
+
+.hops-proggress-line {
+  display: flex;
+  position: relative;
+  align-items: center;
+  cursor: pointer;
+  width: calc(100% - 10px);
+  margin: 5px;
+}
+
+.hops-proggress-line .progressbar-text {
+  margin: 5px;
+}
+
+.hops-divived {
+  margin: 5px;
+}
+
+.hops-activity__progressbar-label {
+  background: $color-default;
+  border: 1px solid $color-assignment;
+  border-radius: 3px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 2px 4px;
+  position: absolute;
+  text-align: center;
+}
+
+.hops-activity__progressbar-label--workspace {
+  background: transparent;
+  border: 0;
+  padding: 0 6px;
+  white-space: nowrap;
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hops-activity__progressbar-label--assignment {
+  color: #ce01bd;
 }

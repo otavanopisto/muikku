@@ -1,4 +1,4 @@
-import { SchoolSubject } from "../@types/shared";
+import { SchoolSubject, Education, HopsCompulsory } from "../@types/shared";
 
 export const mockSchoolSubjects: SchoolSubject[] = [
   {
@@ -10,6 +10,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 1,
         mandatory: true,
       },
       {
@@ -17,6 +18,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 2,
         mandatory: true,
       },
       {
@@ -24,6 +26,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 3,
         mandatory: true,
       },
       {
@@ -31,6 +34,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 4,
         mandatory: true,
       },
       {
@@ -38,6 +42,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
+        id: 5,
         mandatory: false,
       },
       {
@@ -45,6 +50,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
+        id: 6,
         mandatory: false,
       },
     ],
@@ -58,6 +64,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 7,
         mandatory: true,
       },
       {
@@ -65,6 +72,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 8,
         mandatory: true,
       },
       {
@@ -72,6 +80,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
+        id: 9,
         mandatory: true,
       },
       {
@@ -79,6 +88,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
+        id: 10,
         mandatory: true,
       },
       {
@@ -86,6 +96,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
+        id: 11,
         mandatory: true,
       },
       {
@@ -93,6 +104,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 9,
         length: 35,
         status: "NOSTATUS",
+        id: 12,
         mandatory: true,
       },
     ],
@@ -106,6 +118,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 13,
         mandatory: true,
       },
       {
@@ -113,6 +126,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 14,
         mandatory: true,
       },
       {
@@ -120,6 +134,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 15,
         mandatory: true,
       },
       {
@@ -127,6 +142,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 16,
         mandatory: true,
       },
       {
@@ -134,6 +150,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
+        id: 17,
         mandatory: true,
       },
       {
@@ -141,6 +158,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
+        id: 18,
         mandatory: true,
       },
       {
@@ -148,6 +166,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
+        id: 19,
         mandatory: false,
       },
       {
@@ -155,6 +174,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
+        id: 20,
         mandatory: false,
       },
     ],
@@ -168,6 +188,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 21,
         mandatory: true,
       },
       {
@@ -175,6 +196,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 22,
         mandatory: true,
       },
       {
@@ -182,6 +204,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 23,
         mandatory: true,
       },
       {
@@ -189,6 +212,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 24,
         mandatory: true,
       },
       {
@@ -196,6 +220,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
+        id: 25,
         mandatory: true,
       },
       {
@@ -203,6 +228,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
+        id: 26,
         mandatory: true,
       },
       {
@@ -210,6 +236,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
+        id: 27,
         mandatory: true,
       },
       {
@@ -217,6 +244,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
+        id: 28,
         mandatory: true,
       },
       {
@@ -224,6 +252,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 9,
         length: 35,
         status: "NOSTATUS",
+        id: 29,
         mandatory: false,
       },
       {
@@ -231,6 +260,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 10,
         length: 35,
         status: "NOSTATUS",
+        id: 30,
         mandatory: false,
       },
       {
@@ -238,6 +268,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 11,
         length: 35,
         status: "NOSTATUS",
+        id: 31,
         mandatory: false,
       },
     ],
@@ -251,6 +282,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 32,
         mandatory: true,
       },
       {
@@ -258,6 +290,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 33,
         mandatory: true,
       },
       {
@@ -265,6 +298,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 34,
         mandatory: true,
       },
       {
@@ -272,6 +306,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 35,
         mandatory: true,
       },
       {
@@ -279,6 +314,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
+        id: 36,
         mandatory: true,
       },
       {
@@ -286,6 +322,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
+        id: 37,
         mandatory: true,
       },
       {
@@ -293,6 +330,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
+        id: 38,
         mandatory: true,
       },
       {
@@ -300,6 +338,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
+        id: 39,
         mandatory: true,
       },
       {
@@ -307,6 +346,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 9,
         length: 35,
         status: "NOSTATUS",
+        id: 40,
         mandatory: false,
       },
     ],
@@ -320,6 +360,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 41,
         mandatory: true,
       },
       {
@@ -327,6 +368,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 42,
         mandatory: false,
       },
     ],
@@ -340,6 +382,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 43,
         mandatory: true,
       },
       {
@@ -347,6 +390,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 44,
         mandatory: false,
       },
     ],
@@ -360,6 +404,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 45,
         mandatory: true,
       },
       {
@@ -367,6 +412,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 46,
         mandatory: false,
       },
       {
@@ -374,6 +420,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 47,
         mandatory: false,
       },
     ],
@@ -387,6 +434,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 48,
         mandatory: true,
       },
       {
@@ -394,6 +442,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 49,
         mandatory: true,
       },
     ],
@@ -407,6 +456,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 50,
         mandatory: true,
       },
       {
@@ -414,6 +464,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 51,
         mandatory: false,
       },
       {
@@ -421,6 +472,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 52,
         mandatory: false,
       },
     ],
@@ -434,6 +486,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 53,
         mandatory: true,
       },
     ],
@@ -447,6 +500,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 54,
         mandatory: true,
       },
       {
@@ -454,6 +508,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 55,
         mandatory: false,
       },
       {
@@ -461,6 +516,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 56,
         mandatory: false,
       },
     ],
@@ -474,6 +530,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 57,
         mandatory: true,
       },
       {
@@ -481,6 +538,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 58,
         mandatory: false,
       },
       {
@@ -488,6 +546,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 59,
         mandatory: false,
       },
       {
@@ -495,6 +554,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 60,
         mandatory: false,
       },
     ],
@@ -508,6 +568,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 61,
         mandatory: true,
       },
     ],
@@ -521,6 +582,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
+        id: 62,
         mandatory: true,
       },
       {
@@ -528,6 +590,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
+        id: 63,
         mandatory: true,
       },
       {
@@ -535,6 +598,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
+        id: 64,
         mandatory: false,
       },
       {
@@ -542,8 +606,244 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
+        id: 65,
         mandatory: false,
       },
     ],
   },
 ];
+
+export const hopsMock1: HopsCompulsory = {
+  basicInfo: {
+    name: "Tupu Ankka",
+    guider: "Eka Vekara",
+  },
+  startingLevel: {
+    previousEducation: Education.COMPULSORY_SCHOOL,
+    previousWorkExperience: "0-6",
+    previousYearsUsedInStudies: "",
+    finnishAsMainOrSecondaryLng: false,
+    previousLanguageExperience: [
+      {
+        name: "Englanti",
+        grade: 1,
+        hardCoded: true,
+      },
+      {
+        name: "Ruotsi",
+        grade: 1,
+        hardCoded: true,
+      },
+    ],
+  },
+  motivationAndStudy: {
+    byReading: false,
+    byListening: false,
+    byDoing: false,
+    byMemorizing: false,
+    byTakingNotes: false,
+    byDrawing: false,
+    byListeningTeacher: false,
+    byWatchingVideos: false,
+    byFollowingOthers: false,
+    noSupport: false,
+    family: false,
+    friend: false,
+    supportPerson: false,
+    teacher: false,
+    graduationGoal: "",
+    followUpGoal: "",
+  },
+
+  studiesPlanning: {
+    usedHoursPerWeek: 0,
+    selectedSubjects: [...mockSchoolSubjects],
+    graduationGoal: "",
+    followUpGoal: "",
+    ethics: false,
+    finnishAsSecondLanguage: false,
+    selectedListOfIds: [],
+  },
+  studiesCourseData: {},
+};
+
+export const hopsMock2: HopsCompulsory = {
+  basicInfo: {
+    name: "Tupu Ankka",
+    guider: "Eka Vekara",
+  },
+  startingLevel: {
+    previousEducation: Education.COMPULSORY_SCHOOL,
+    previousWorkExperience: "0-6",
+    previousYearsUsedInStudies: "5",
+    finnishAsMainOrSecondaryLng: false,
+    previousLanguageExperience: [
+      {
+        name: "Englanti",
+        grade: 3,
+        hardCoded: true,
+      },
+      {
+        name: "Ruotsi",
+        grade: 2,
+        hardCoded: true,
+      },
+    ],
+  },
+  motivationAndStudy: {
+    byReading: true,
+    byListening: true,
+    byDoing: false,
+    someOtherWay: "Tekemällä kuperkeikkoja",
+    byMemorizing: true,
+    byTakingNotes: false,
+    byDrawing: false,
+    byListeningTeacher: true,
+    byWatchingVideos: false,
+    byFollowingOthers: true,
+    noSupport: false,
+    family: true,
+    friend: true,
+    supportPerson: false,
+    teacher: false,
+    graduationGoal: "",
+    followUpGoal: "",
+  },
+
+  studiesPlanning: {
+    usedHoursPerWeek: 25,
+    selectedSubjects: [...mockSchoolSubjects],
+    graduationGoal: "",
+    followUpGoal: "",
+    ethics: false,
+    finnishAsSecondLanguage: false,
+    selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+  },
+  studiesCourseData: {
+    approvedSubjectListOfIds: [
+      1, 2, 13, 21, 22, 32, 33, 45, 48, 53, 54, 57, 61, 62,
+    ],
+    supervisorSugestedSubjectListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+  },
+};
+
+export const hopsMock3: HopsCompulsory = {
+  basicInfo: {
+    name: "Tupu Ankka",
+    guider: "Eka Vekara",
+  },
+  startingLevel: {
+    previousEducation: Education.COMPULSORY_SCHOOL,
+    previousWorkExperience: "0-6",
+    previousYearsUsedInStudies: "5",
+    finnishAsMainOrSecondaryLng: false,
+    previousLanguageExperience: [
+      {
+        name: "Englanti",
+        grade: 3,
+        hardCoded: true,
+      },
+      {
+        name: "Ruotsi",
+        grade: 2,
+        hardCoded: true,
+      },
+    ],
+  },
+  motivationAndStudy: {
+    byReading: true,
+    byListening: true,
+    byDoing: false,
+    someOtherWay: "Tekemällä kuperkeikkoja",
+    byMemorizing: true,
+    byTakingNotes: false,
+    byDrawing: false,
+    byListeningTeacher: true,
+    byWatchingVideos: false,
+    byFollowingOthers: true,
+    noSupport: false,
+    family: true,
+    friend: true,
+    supportPerson: false,
+    teacher: false,
+    graduationGoal: "",
+    followUpGoal: "",
+  },
+
+  studiesPlanning: {
+    usedHoursPerWeek: 25,
+    selectedSubjects: [...mockSchoolSubjects],
+    graduationGoal: "6",
+    followUpGoal: "",
+    ethics: false,
+    finnishAsSecondLanguage: false,
+    selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+  },
+  studiesCourseData: {
+    approvedSubjectListOfIds: [
+      1, 2, 13, 21, 22, 32, 33, 45, 48, 53, 54, 57, 61, 62,
+    ],
+    completedSubjectListOfIds: [41, 50, 3],
+    inprogressSubjectListOfIds: [34],
+  },
+};
+
+export const hopsMock4: HopsCompulsory = {
+  basicInfo: {
+    name: "Tupu Ankka",
+    guider: "Eka Vekara",
+  },
+  startingLevel: {
+    previousEducation: Education.COMPULSORY_SCHOOL,
+    previousWorkExperience: "0-6",
+    previousYearsUsedInStudies: "5",
+    finnishAsMainOrSecondaryLng: false,
+    previousLanguageExperience: [
+      {
+        name: "Englanti",
+        grade: 3,
+        hardCoded: true,
+      },
+      {
+        name: "Ruotsi",
+        grade: 2,
+        hardCoded: true,
+      },
+    ],
+  },
+  motivationAndStudy: {
+    byReading: true,
+    byListening: true,
+    byDoing: false,
+    someOtherWay: "Tekemällä kuperkeikkoja",
+    byMemorizing: true,
+    byTakingNotes: false,
+    byDrawing: false,
+    byListeningTeacher: true,
+    byWatchingVideos: false,
+    byFollowingOthers: true,
+    noSupport: false,
+    family: true,
+    friend: true,
+    supportPerson: false,
+    teacher: false,
+    graduationGoal: "",
+    followUpGoal: "",
+  },
+
+  studiesPlanning: {
+    usedHoursPerWeek: 25,
+    selectedSubjects: [...mockSchoolSubjects],
+    graduationGoal: "6",
+    followUpGoal: "",
+    ethics: false,
+    finnishAsSecondLanguage: false,
+    selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+  },
+  studiesCourseData: {
+    approvedSubjectListOfIds: [
+      1, 2, 13, 21, 22, 32, 33, 45, 48, 53, 54, 57, 61, 62,
+    ],
+    completedSubjectListOfIds: [41, 50, 3, 34, 4, 35, 49, 14],
+  },
+};

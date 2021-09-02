@@ -7,29 +7,42 @@ import { StateType } from "~/reducers";
 const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
-import { Step1, Step2, Step3, Step4 } from "./steps";
+import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
 import {
   HopsCompulsory,
-  BasicInformation,
   Education,
+  HopsPlanningStudies,
 } from "../../../../../../@types/shared";
-import StartingLevel from "./steps/starting-level";
-import { HopsStudies } from "../../../../../../@types/shared";
-import { mockSchoolSubjects } from "../../../../../../mock/mock-data";
+import {
+  HopsStudies,
+  StudiesCourseData,
+} from "../../../../../../@types/shared";
+import {
+  hopsMock1,
+  hopsMock2,
+  hopsMock3,
+  hopsMock4,
+  mockSchoolSubjects,
+} from "../../../../../../mock/mock-data";
 import {
   HopsStudentStartingLevel,
   HopsMotivationAndStudy,
 } from "../../../../../../@types/shared";
+
+export const NEEDED_OPTIONAL_COURSES = 9;
+export const NEEDED_STUDIES_IN_TOTAL = 46;
 
 interface CompulsoryEducationHopsWizardProps {
   data?: HOPSDataType;
   defaultData: HOPSDataType;
   onHopsChange?: (hops: HOPSDataType) => any;
   i18n: i18nType;
+  testData?: number;
 }
 
 interface CompulsoryEducationHopsWizardState {
   hopsCompulsory: HopsCompulsory;
+  loading: boolean;
 }
 
 class CompulsoryEducationHopsWizard extends React.Component<
@@ -44,6 +57,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
     super(props);
 
     this.state = {
+      loading: false,
       hopsCompulsory: {
         basicInfo: {
           name: "",
@@ -88,15 +102,72 @@ class CompulsoryEducationHopsWizard extends React.Component<
           graduationGoal: "",
           followUpGoal: "",
         },
-        studies: {
+        studiesPlanning: {
           usedHoursPerWeek: 0,
+          selectedSubjects: [...mockSchoolSubjects],
+          graduationGoal: "",
+          followUpGoal: "",
           ethics: false,
           finnishAsSecondLanguage: false,
-          selectedSubjects: [...mockSchoolSubjects],
+          selectedListOfIds: [],
+        },
+        studiesCourseData: {
+          approvedSubjectListOfIds: [
+            1, 2, 13, 21, 22, 32, 33, 45, 48, 53, 54, 57, 61, 62,
+          ],
+          completedSubjectListOfIds: [
+            3, 4, 14, 23, 24, 34, 35, 36, 41, 46, 47, 50, 58, 63,
+          ],
+          inprogressSubjectListOfIds: [5, 15, 37, 42, 46],
+          supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
         },
       },
     };
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount = () => {
+    const { testData } = this.props;
+
+    this.setState({
+      loading: true,
+    });
+
+    setTimeout(() => {
+      switch (testData) {
+        case 1:
+          this.setState({
+            hopsCompulsory: hopsMock1,
+          });
+          break;
+
+        case 2:
+          this.setState({
+            hopsCompulsory: hopsMock2,
+          });
+          break;
+
+        case 3:
+          this.setState({
+            hopsCompulsory: hopsMock3,
+          });
+          break;
+
+        case 4:
+          this.setState({
+            hopsCompulsory: hopsMock4,
+          });
+          break;
+
+        default:
+          break;
+      }
+
+      this.setState({ loading: false });
+    }, 1500);
+  };
 
   /**
    * handleStartingLevelChange
@@ -127,14 +198,29 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleStudiesCHange
-   * @param studies
+   * handleStudiesPlanningChange
+   * @param studiesPlanning
    */
-  handleStudiesCHange = (studies: HopsStudies) => {
+  handleStudiesPlanningChange = (studiesPlanning: HopsPlanningStudies) => {
     this.setState({
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
-        studies,
+        studiesPlanning,
+      },
+    });
+  };
+
+  /**
+   * handleDeleteCourseSelections
+   */
+  handleDeleteCourseSelections = () => {
+    this.setState({
+      hopsCompulsory: {
+        ...this.state.hopsCompulsory,
+        studiesPlanning: {
+          ...this.state.hopsCompulsory.studiesPlanning,
+          selectedListOfIds: [],
+        },
       },
     });
   };
@@ -152,7 +238,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
     const steps = [
       {
         name: "Perustiedot",
-        component: <Step1 />,
+        component: (
+          <Step1
+            loading={this.state.loading}
+            basicInformation={this.state.hopsCompulsory.basicInfo}
+          />
+        ),
       },
       {
         name: "Osaamisen ja lähtötason arvointi",
@@ -164,7 +255,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ),
       },
       {
-        name: "Opiskelutaidot ja tavoitteet",
+        name: "Opiskelutaidot ja Motivaatio",
         component: (
           <Step3
             motivationAndStudy={this.state.hopsCompulsory.motivationAndStudy}
@@ -173,11 +264,19 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ),
       },
       {
-        name: "Opinnot",
+        name: "Tavoitteet ja opintojen suunnittelu",
         component: (
-          <Step4
-            studies={this.state.hopsCompulsory.studies}
-            onStudiesChange={this.handleStudiesCHange}
+          <Step5
+            studies={{
+              ...this.state.hopsCompulsory.studiesPlanning,
+            }}
+            ethics={this.state.hopsCompulsory.studiesPlanning.ethics}
+            finnishAsSecondLanguage={
+              this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage
+            }
+            onStudiesPlanningChange={this.handleStudiesPlanningChange}
+            onDeleteSelection={this.handleDeleteCourseSelections}
+            {...this.state.hopsCompulsory.studiesCourseData}
           />
         ),
       },
