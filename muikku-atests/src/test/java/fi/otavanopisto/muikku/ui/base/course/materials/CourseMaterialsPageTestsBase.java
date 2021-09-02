@@ -2,11 +2,13 @@ package fi.otavanopisto.muikku.ui.base.course.materials;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import fi.otavanopisto.muikku.TestEnvironments;
@@ -1003,9 +1005,17 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           sleep(1000);
           waitAndClick(".button--muikku-check-exercises");
-          waitForVisible(".material-page__field-answer-examples--sorterfield");
-          mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
-          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+          
+          waitForPresent(".material-page__correct-answers-data");
+          String correctAnswersCount = getElementText(".material-page__correct-answers-data");
+          if(StringUtils.equals(correctAnswersCount, "1 / 1")) {
+            assertTrue(true);
+          }else {
+            waitForVisible(".material-page__field-answer-examples--sorterfield");
+            mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
+            assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+          }
+
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
