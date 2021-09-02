@@ -7,7 +7,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType, WorklistBillingState, WorklistTemplate } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import WorkListRow from "./components/work-list-row";
-import { ButtonPill } from '~/components/general/button';
+import { ButtonPill, IconButton } from '~/components/general/button';
 import moment from "~/lib/moment";
 import Link from '~/components/general/link';
 import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
@@ -31,6 +31,10 @@ interface IWorkListProps {
 interface IWorkListState {
   currentTemplate: WorklistTemplate;
   openedSections: string[];
+  sortDirectionEntriesDesc?: string,
+  sortedEntriesDesc?: any
+  sortDirectionEntriesDate?: string,
+  sortedEntriesDate?: any
 }
 
 class WorkList extends React.Component<IWorkListProps, IWorkListState> {
@@ -40,6 +44,8 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     this.state = {
       currentTemplate: null,
       openedSections: [],
+      sortDirectionEntriesDesc: "",
+      sortDirectionEntriesDate: "desc",
     }
 
     this.insertNew = this.insertNew.bind(this);
@@ -107,6 +113,42 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     }
   }
 
+  sortBy(data: any, key: string, direction: string) {
+    data.sort(
+      (a: any, b: any) => {
+        if (a[key] < b[key]) {
+          return direction === "asc" ? -1 : 1;
+        }
+        if (a[key] > b[key]) {
+          return direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      }
+    )
+  }
+
+  sortEntriesByDescription(data: any) {
+    let key = "description";
+    let sortDirection = this.state.sortDirectionEntriesDesc;
+    let sortedData = this.sortBy(data, key, sortDirection);
+
+    this.setState({
+      sortDirectionEntriesDesc: this.state.sortDirectionEntriesDesc === "asc" ? "desc" : "asc",
+      sortedEntriesDesc: sortedData
+    });
+  }
+
+  sortEntriesByDate(data: any) {
+    let key = "entryDate";
+    let sortDirection = this.state.sortDirectionEntriesDate;
+    let sortedData = this.sortBy(data, key, sortDirection);
+
+    this.setState({
+      sortDirectionEntriesDate: this.state.sortDirectionEntriesDate === "asc" ? "desc" : "asc",
+      sortedEntriesDate: sortedData
+    });
+  }
+
   public onSelect(e: React.ChangeEvent<HTMLSelectElement>) {
     const newTemplate = this.props.profile.worklistTemplates.find((t) => t.id.toString() === e.target.value);
     this.setState({
@@ -119,23 +161,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       return null;
     }
 
-    const sectionLabels = (<div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode application-sub-panel__multiple-items--item-labels">
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.price.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.factor.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
-      </div>
-    </div>);
-
     // let's get the first day of the previous month
     const previousMonthsFirstDay = moment().subtract(1, 'months').startOf("month");
 
@@ -143,6 +168,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     const currentMonthsFirstDay = moment().startOf("month");
 
     const sections = (
+
       this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
         // check if section open or if it has data
         const isOpen = this.state.openedSections.includes(section.summary.beginDate);
@@ -200,7 +226,35 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
               <span>{section.summary.displayName} ({section.summary.count})</span>
             </h4>
             <div className="application-sub-panel__body">
-              {isOpen && sectionLabels}
+              {isOpen && <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode application-sub-panel__multiple-items--item-labels">
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
+                    <Link
+                      className="link link--worklist-entries-sorting"
+                      onClick={this.sortEntriesByDescription.bind(this, section.items)}>{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</Link>
+                  </label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
+                    <Link
+                      className="link link--worklist-entries-sorting"
+                      onClick={this.sortEntriesByDate.bind(this, section.items)}>{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</Link>
+                  </label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
+                    {this.props.i18n.text.get("plugin.profile.worklist.price.label")}
+                  </label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
+                  <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">
+                    {this.props.i18n.text.get("plugin.profile.worklist.factor.label")}
+                  </label>
+                </div>
+                <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-actions">
+                </div>
+              </div>}
+
               {entries && entries.reverse()}
               {isOpen && sectionTotalRow}
               {shouldHaveSubmitEntriesLinkAvailable ?
