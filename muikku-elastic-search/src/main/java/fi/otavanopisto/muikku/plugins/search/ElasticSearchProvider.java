@@ -383,7 +383,7 @@ public class ElasticSearchProvider implements SearchProvider {
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
-        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore);
+        onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }
   
   @Override
@@ -401,7 +401,6 @@ public class ElasticSearchProvider implements SearchProvider {
     return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
         onlyDefaultUsers, start, maxResults, fields, null, null);
   }
-  
   
   private Set<Long> getActiveWorkspaces() {
     
