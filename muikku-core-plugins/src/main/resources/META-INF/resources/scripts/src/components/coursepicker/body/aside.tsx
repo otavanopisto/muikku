@@ -41,15 +41,16 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           return <NavigationElement modifiers="aside-navigation" key={curriculum.identifier} isActive={isActive} hash={hash}>{curriculum.name}</NavigationElement>
         })}
       </NavigationTopic>
-      <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.organization')}>
-        {this.props.workspaces.availableFilters.organizations.map((organization: WorkspaceOrganizationFilterType) => {
-          let isActive = this.props.workspaces.activeFilters.organizationFilters.includes(organization.identifier);
-          let hash = "?" + (isActive ?
-            queryString.stringify(Object.assign({}, locationData, { o: (locationData.o || []).filter((o: string) => o !== organization.identifier) }), { arrayFormat: 'bracket' }) :
-            queryString.stringify(Object.assign({}, locationData, { o: (locationData.o || []).concat(organization.identifier) }), { arrayFormat: 'bracket' }));
-          return <NavigationElement modifiers="aside-navigation" key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
-        })}
-      </NavigationTopic>
+      {this.props.workspaces.availableFilters.organizations.length > 1 ?
+        <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.organization')}>
+          {this.props.workspaces.availableFilters.organizations.map((organization: WorkspaceOrganizationFilterType) => {
+            let isActive = this.props.workspaces.activeFilters.organizationFilters.includes(organization.identifier);
+            let hash = "?" + (isActive ?
+              queryString.stringify(Object.assign({}, locationData, { o: (locationData.o || []).filter((o: string) => o !== organization.identifier) }), { arrayFormat: 'bracket' }) :
+              queryString.stringify(Object.assign({}, locationData, { o: (locationData.o || []).concat(organization.identifier) }), { arrayFormat: 'bracket' }));
+            return <NavigationElement modifiers="aside-navigation" key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
+          })}
+        </NavigationTopic> : null}
       {!this.props.status.isStudent && this.props.status.loggedIn ?
         <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
           {this.props.workspaces.availableFilters.stateFilters.map((stateFilter) => {

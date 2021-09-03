@@ -174,7 +174,7 @@ public class OrganizationUserManagementRESTService {
           hasImage));
     }
       
-    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), staffMembers, result.getTotalHitCount());
     return Response.ok(responseStaffMembers).build();
   }
   
@@ -336,7 +336,7 @@ public class OrganizationUserManagementRESTService {
       }
     }
     
-    SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), result.getLastResult(), students, result.getTotalHitCount());
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), students, result.getTotalHitCount());
     return Response.ok(responseStudents).build();
   }
   
