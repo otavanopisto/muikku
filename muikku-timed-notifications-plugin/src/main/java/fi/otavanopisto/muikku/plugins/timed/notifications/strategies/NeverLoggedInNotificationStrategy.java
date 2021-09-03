@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -23,15 +24,20 @@ import java.time.OffsetDateTime;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NeverLoggedInNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 @Startup
 @Singleton
@@ -42,7 +48,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.maxresults", "20"));
   private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.notificationthreshold", "30"));
   private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.daysuntilfirstnotification", "30"));
-  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.neverloggedin.checkfreq", "1800000"));
+  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.neverloggedin.checkfreq", "30000"));
   
   @Inject
   private NeverLoggedInNotificationController neverLoggedInNotificationController;
@@ -68,6 +74,12 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   @Inject
   private UserController userController;
   
+  @Inject 
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   @Override
   public boolean isActive(){
     return active;
@@ -81,16 +93,21 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   @Override
   public void sendNotifications() {
     List<SchoolDataIdentifier> studentsToNotify = getStudentsToNotify();
-
     for (SchoolDataIdentifier studentIdentifier : studentsToNotify) {
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
+        User student = userController.findUserByIdentifier(studentIdentifier);
+        User counselor = null;
+        UserEntity counselorEntity = getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
         
+        if (counselorEntity != null) {
+        counselor = userController.findUserByIdentifier(counselorEntity.defaultSchoolDataIdentifier());
+        }
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.subject"),
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content"),
+          localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content", new Object[] {student.getDisplayName(), counselor.getDisplayName()}),
           studentEntity,
           studentIdentifier,
           "neverloggedin"
@@ -102,6 +119,43 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       }
       
     }
+  }
+  
+  private UserEntity getStudyCounselor(SchoolDataIdentifier studentIdentifier){
+    UserEntity guidanceCounselor = null;
+    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
+    
+    // #3089: An awkward workaround to use the latest guidance group based on its identifier. Assumes a larger
+    // identifier means a more recent entity. A more proper fix would be to sync group creation dates from
+    // Pyramus and include them in the Elastic index. Then again, user groups would have to be refactored
+    // entirely, as Pyramus handles group members as students (one study programme) while Muikku handles
+    // them as user entities (all study programmes)...
+    
+    userGroupEntities.sort(new Comparator<UserGroupEntity>() {
+      public int compare(UserGroupEntity o1, UserGroupEntity o2) {
+        long l1 = NumberUtils.toLong(StringUtils.substringAfterLast(o1.getIdentifier(), "-"), -1);
+        long l2 = NumberUtils.toLong(StringUtils.substringAfterLast(o2.getIdentifier(), "-"), -1);
+        return (int) (l2 - l1);
+      }
+    });
+    
+    // Choose the first staff member of the first guidance group as CC recipient for the notification
+
+    userGroupEntities:
+    for (UserGroupEntity userGroupEntity : userGroupEntities) {
+      UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
+
+      if (userGroup.getIsGuidanceGroup()) {
+        List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
+
+        for (GroupUser groupUser : groupUsers) {
+          User user = userGroupController.findUserByGroupUser(groupUser);
+          guidanceCounselor = userEntityController.findUserEntityByUser(user);
+          break userGroupEntities;
+        }
+      }
+    }
+    return guidanceCounselor;
   }
   
   private Collection<Long> getGroups(){
@@ -161,16 +215,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
       if ((student != null) && isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
 
-        boolean isNettilukio = false;
-        boolean isNettipk = false;
-        @SuppressWarnings("unchecked")
-        ArrayList<Integer> studyProgrammes = (ArrayList<Integer>) result.get("groups");
-        if (studyProgrammes != null) {
-          isNettilukio = studyProgrammes.contains(5); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-6 -> Nettilukio 
-          isNettipk = studyProgrammes.contains(6); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-7 -> Nettiperuskoulu
-        }
-        
-        if (studentEntity.getLastLogin() == null && student.getStudyStartDate().isAfter(sendNotificationIfNotLoggedInBefore) && isNettilukio || isNettipk) {
+        if (studentEntity.getLastLogin() == null && student.getStudyStartDate().isAfter(sendNotificationIfNotLoggedInBefore) && student.getStudyProgrammeName().equals("Nettilukio") || student.getStudyProgrammeName().equals("Nettiperuskoulu")) {
           studentIdentifiers.add(studentIdentifier);
         }
       }
