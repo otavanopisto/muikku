@@ -48,7 +48,7 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.maxresults", "20"));
   private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.notificationthreshold", "30"));
   private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.neverloggedin.daysuntilfirstnotification", "30"));
-  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.neverloggedin.checkfreq", "30000"));
+  private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.neverloggedin.checkfreq", "1800000"));
   
   @Inject
   private NeverLoggedInNotificationController neverLoggedInNotificationController;
