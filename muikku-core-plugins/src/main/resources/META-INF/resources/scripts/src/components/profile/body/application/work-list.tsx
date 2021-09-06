@@ -134,7 +134,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           onToggleSection={this.toggleSection.bind(this, index)}
           previousMonthsFirstDay={previousMonthsFirstDay}
           section={section}
-          key={section.summary.beginDate} 
+          key={section.summary.beginDate}
         />
       })
     );
