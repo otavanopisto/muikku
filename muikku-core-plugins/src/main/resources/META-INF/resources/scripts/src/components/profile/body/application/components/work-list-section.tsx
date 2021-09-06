@@ -16,11 +16,11 @@ function sortBy(data: StoredWorklistItem[], property: string, direction: "asc" |
         // this gives a numeric difference
         const status = moment(a[actualProperty]).diff(b[actualProperty]);
         // reverse if the direction is wrong
-        return direction === "asc" ? -status : status;
+        return direction === "asc" ? status : -status;
       } else {
         const status = a[actualProperty].localeCompare(b[actualProperty]);
         // reverse if the direction is wrong
-        return direction === "asc" ? -status : status;
+        return direction === "asc" ? status : -status;
       }
     }
   )
@@ -44,11 +44,11 @@ export function WorkListSection(props: IWorkListSectionProps) {
   const onClickOnPropertyToSort = React.useCallback((property: string) => {
     const actualProperty = property || "entryDate";
     const actualSortByProperty = sortByProperty || "entryDate";
+    setSortByProperty(actualProperty);
     if (actualProperty === actualSortByProperty) {
       setSortByDirection(sortByDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortByProperty(property);
-      setSortByDirection("desc");
+      setSortByDirection("asc");
     }
   }, [sortByProperty, sortByDirection]);
 
