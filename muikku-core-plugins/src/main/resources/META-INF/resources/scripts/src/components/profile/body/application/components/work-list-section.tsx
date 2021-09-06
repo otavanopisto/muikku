@@ -8,22 +8,20 @@ import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
 import { i18nType } from "~/reducers/base/i18n";
 
 function sortBy(data: StoredWorklistItem[], property: string, direction: "asc" | "desc"): StoredWorklistItem[] {
-  if (!property) {
-    return data;
-  }
+  let actualProperty = property || "entryDate";
   
   return [...data].sort(
     (a: any, b: any) => {
-      if (property === "entryDate") {
+      if (actualProperty === "entryDate") {
         // this gives a numeric difference
-        const status = moment(a[property]).diff(b[property]);
+        const status = moment(a[actualProperty]).diff(b[actualProperty]);
         // reverse if the direction is wrong
         return direction === "asc" ? -status : status;
-      } else if (a[property] < b[property]) {
-        return direction === "asc" ? -1 : 1;
-      } else if (a[property] > b[property]) {
-        return direction === "asc" ? 1 : -1;
-      }
+        } else {
+          const status = a[actualProperty].localeCompare(b[actualProperty]);
+          // reverse if the direction is wrong
+          return direction === "asc" ? -status : status;
+        }
       return 0;
     }
   )
@@ -42,14 +40,14 @@ interface IWorkListSectionProps {
 
 export function WorkListSection(props: IWorkListSectionProps) {
   const [sortByProperty, setSortByProperty] = React.useState(null);
-  const [sortByDirection, setSortByDirection] = React.useState("asc");
+  const [sortByDirection, setSortByDirection] = React.useState("desc");
 
   const onClickOnPropertyToSort = React.useCallback((property: string) => {
     if (property === sortByProperty) {
       setSortByDirection(sortByDirection === "asc" ? "desc" : "asc");
     } else {
       setSortByProperty(property);
-      setSortByDirection("asc");
+      setSortByDirection("desc");
     }
   }, [sortByProperty, sortByDirection]);
 
@@ -159,7 +157,7 @@ export function WorkListSection(props: IWorkListSectionProps) {
       </h4>
       <div className="application-sub-panel__body">
         {props.isExpanded && sectionLabels}
-        {entries && entries.reverse()}
+        {entries}
         {props.isExpanded && sectionTotalRow}
         {shouldHaveSubmitEntriesLinkAvailable ?
           <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
