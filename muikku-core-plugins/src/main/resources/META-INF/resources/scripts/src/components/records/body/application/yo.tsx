@@ -191,7 +191,9 @@ class YO extends React.Component<YOProps, YOState> {
                         __html: i18n.text.get(
                           "plugin.records.matriculation.notEligible",
                           this.props.yo.eligibility.coursesCompleted,
-                          this.props.yo.eligibility.coursesRequired
+                          this.props.yo.eligibility.coursesRequired,
+                          0,
+                          20
                         ),
                       }}
                     />

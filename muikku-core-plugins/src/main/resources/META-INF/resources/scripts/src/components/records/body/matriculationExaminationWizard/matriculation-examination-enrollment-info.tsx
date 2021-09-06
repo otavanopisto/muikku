@@ -110,8 +110,7 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
                 </p>
               ) : (
                 <p className="matriculation-container__info-item">
-                  Teidän oppivelvollisuus ei ole voimassa. Tämä voi vaikuttaa
-                  tutkintojen maksullisuuteen
+                  Et ole laajennetun oppivelvollisuuden piirissä.
                 </p>
               )}
             </>

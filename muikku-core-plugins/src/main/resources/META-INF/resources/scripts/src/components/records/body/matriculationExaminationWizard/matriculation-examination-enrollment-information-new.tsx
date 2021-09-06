@@ -1491,7 +1491,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
               <p>
                 Ylioppilastutkintoon tulee sisältyä vähintään viisi eri
                 kirjoitettua ainetta. Halutessasi voit hajauttaa kirjoitukset
-                useammalle kirjoituskerralle.
+                enintään kolmelle kirjoituskerralle.
                 {` (Valittuna ${
                   this.getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
                     .length
@@ -1541,10 +1541,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
           <div className="matriculation-container__state state-SUCCESS">
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">
-              <p>
-                Näillä valinnoilla voit jo valmistua Ylioppilaaksi mikäli
-                suoritat kokeet hyväksytyin arvosanoin!
-              </p>
+              <p>Näillä valinnoilla voit valmistua ylioppilaaksi!</p>
             </div>
           </div>
         ) : null}
