@@ -229,7 +229,6 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
           this.processFileAt(realIndex);
         })
       });
-      
     }
   }
 
@@ -354,7 +353,6 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
         }
       </span>
       {dataNode}
-     
     </span>
   }
 }
