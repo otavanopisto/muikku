@@ -9,7 +9,7 @@ import { i18nType } from "~/reducers/base/i18n";
 
 function sortBy(data: StoredWorklistItem[], property: string, direction: "asc" | "desc"): StoredWorklistItem[] {
   let actualProperty = property || "entryDate";
-  
+
   return [...data].sort(
     (a: any, b: any) => {
       if (actualProperty === "entryDate") {
@@ -17,12 +17,11 @@ function sortBy(data: StoredWorklistItem[], property: string, direction: "asc" |
         const status = moment(a[actualProperty]).diff(b[actualProperty]);
         // reverse if the direction is wrong
         return direction === "asc" ? -status : status;
-        } else {
-          const status = a[actualProperty].localeCompare(b[actualProperty]);
-          // reverse if the direction is wrong
-          return direction === "asc" ? -status : status;
-        }
-      return 0;
+      } else {
+        const status = a[actualProperty].localeCompare(b[actualProperty]);
+        // reverse if the direction is wrong
+        return direction === "asc" ? -status : status;
+      }
     }
   )
 }
