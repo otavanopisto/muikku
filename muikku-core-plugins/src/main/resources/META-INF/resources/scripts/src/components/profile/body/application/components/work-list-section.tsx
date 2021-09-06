@@ -9,20 +9,19 @@ import { i18nType } from "~/reducers/base/i18n";
 
 function sortBy(data: StoredWorklistItem[], property: string, direction: "asc" | "desc"): StoredWorklistItem[] {
   let actualProperty = property || "entryDate";
-  
+
   return [...data].sort(
     (a: any, b: any) => {
       if (actualProperty === "entryDate") {
         // this gives a numeric difference
         const status = moment(a[actualProperty]).diff(b[actualProperty]);
         // reverse if the direction is wrong
-        return direction === "asc" ? -status : status;
-        } else {
-          const status = a[actualProperty].localeCompare(b[actualProperty]);
-          // reverse if the direction is wrong
-          return direction === "asc" ? -status : status;
-        }
-      return 0;
+        return direction === "asc" ? status : -status;
+      } else {
+        const status = a[actualProperty].localeCompare(b[actualProperty]);
+        // reverse if the direction is wrong
+        return direction === "asc" ? status : -status;
+      }
     }
   )
 }
@@ -45,11 +44,11 @@ export function WorkListSection(props: IWorkListSectionProps) {
   const onClickOnPropertyToSort = React.useCallback((property: string) => {
     const actualProperty = property || "entryDate";
     const actualSortByProperty = sortByProperty || "entryDate";
+    setSortByProperty(actualProperty);
     if (actualProperty === actualSortByProperty) {
       setSortByDirection(sortByDirection === "asc" ? "desc" : "asc");
     } else {
-      setSortByProperty(property);
-      setSortByDirection("desc");
+      setSortByDirection("asc");
     }
   }, [sortByProperty, sortByDirection]);
 
