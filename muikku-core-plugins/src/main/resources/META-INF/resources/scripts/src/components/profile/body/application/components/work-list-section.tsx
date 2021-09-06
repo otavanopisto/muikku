@@ -43,7 +43,9 @@ export function WorkListSection(props: IWorkListSectionProps) {
   const [sortByDirection, setSortByDirection] = React.useState("desc");
 
   const onClickOnPropertyToSort = React.useCallback((property: string) => {
-    if (property === sortByProperty) {
+    const actualProperty = property || "entryDate";
+    const actualSortByProperty = sortByProperty || "entryDate";
+    if (actualProperty === actualSortByProperty) {
       setSortByDirection(sortByDirection === "asc" ? "desc" : "asc");
     } else {
       setSortByProperty(property);
