@@ -38,6 +38,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -713,13 +714,40 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitAndClick(String selector, int timeout) {
     WebDriverWait wait = new WebDriverWait(getWebDriver(), timeout);
-    WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
-    element.click();
+    wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector))).click();
   }
   
   protected void waitAndClickXPath(String xpath) {
     waitForClickableXPath(xpath);
     clickXPath(xpath);
+  }
+  
+  /** 
+   * Clicks on an selector and checks
+   * if given element appears after defined (ms) interval as a result, 
+   * if it doesn't, it will try again
+   * number of times defined.
+   * @param clickSelector String
+   * @param elementToAppear String
+   * @param timesToTry int
+   * @param interval int
+   * @return not a thing
+   */
+  protected void waitAndClickAndConfirm(String clickSelector, String elementToAppear, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToAppear);
+    int i = 0;
+    while(elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), 10);
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      elements = findElements(elementToAppear);
+    }
+    if(elements.isEmpty())
+      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
   protected void scrollToEnd() {
@@ -1042,6 +1070,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertCheckedXPath(String xpath, Boolean expected) {
     WebElement element = getWebDriver().findElement(By.xpath(xpath));
     assertEquals(expected, element.isSelected());
+  }
+  
+  protected void assertElementCount(String cssSelector, int countToExpect) {
+    assertEquals(countElements(cssSelector), countToExpect);
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {
