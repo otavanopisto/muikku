@@ -682,7 +682,7 @@ const FundingSelect: React.FC<FundingSelectProps> = ({
               Itserahoitettu
             </option>
             <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
-              Oppivelvollisuus rahoitus (uusinta)
+              Maksuton ylioppilaskoe (uusinta)
             </option>
           </>
         ) : null}
@@ -694,10 +694,10 @@ const FundingSelect: React.FC<FundingSelectProps> = ({
               Itserahoitettu
             </option>
             <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE}>
-              Oppivelvollisuus rahoitus
+              Maksuton ylioppilaskoe
             </option>
             <option value={ExaminationFunding.COMPULSORYEDUCATION_FREE_RETRY}>
-              Oppivelvollisuus rahoitus (uusinta)
+              Maksuton ylioppilaskoe (uusinta)
             </option>
           </>
         ) : null}

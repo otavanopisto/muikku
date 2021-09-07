@@ -192,8 +192,8 @@ class YO extends React.Component<YOProps, YOState> {
                           "plugin.records.matriculation.notEligible",
                           this.props.yo.eligibility.coursesCompleted,
                           this.props.yo.eligibility.coursesRequired,
-                          0,
-                          20
+                          this.props.yo.eligibility.creditPoints,
+                          this.props.yo.eligibility.creditPointsRequired
                         ),
                       }}
                     />

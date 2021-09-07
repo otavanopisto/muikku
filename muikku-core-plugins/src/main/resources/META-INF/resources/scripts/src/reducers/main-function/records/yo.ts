@@ -31,8 +31,10 @@ export interface YOEnrollmentType{
 }
 
 export interface YOEligibilityType {
-  coursesCompleted: number,
-  coursesRequired: number
+  coursesCompleted: number;
+  coursesRequired: number;
+  creditPoints: number;
+  creditPointsRequired: number;
 }
 
 export interface YOType {
