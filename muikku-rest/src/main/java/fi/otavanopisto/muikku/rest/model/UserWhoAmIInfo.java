@@ -13,12 +13,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean hasImage, 
               boolean hasEvaluationFees,
               String curriculumIdentifier,
-              String organizationIdentifier) {
+              String organizationIdentifier,
+              boolean isDefaultOrganization) {
     super(id, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
     this.hasEvaluationFees = hasEvaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
+    this.isDefaultOrganization = isDefaultOrganization;
   }
 
   public String getStudyProgrammeName() {
@@ -53,8 +55,17 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.organizationIdentifier = organizationIdentifier;
   }
 
+  public boolean getIsDefaultOrganization() {
+    return isDefaultOrganization;
+  }
+
+  public void setIsDefaultOrganization(boolean isDefaultOrganization) {
+    this.isDefaultOrganization = isDefaultOrganization;
+  }
+
   private String studyProgrammeName;
   private boolean hasEvaluationFees;
   private String curriculumIdentifier;
   private String organizationIdentifier;
+  private boolean isDefaultOrganization;
 }
