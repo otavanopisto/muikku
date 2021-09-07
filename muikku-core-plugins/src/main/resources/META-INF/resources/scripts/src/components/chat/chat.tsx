@@ -219,7 +219,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       } catch (err) {
         this.props.displayNotification(this.props.i18n.text.get("plugin.chat.notification.roomCreateFail"), "error");
       }
-  
       this.toggleCreateChatRoomForm();
     }else {
       this.setState({
