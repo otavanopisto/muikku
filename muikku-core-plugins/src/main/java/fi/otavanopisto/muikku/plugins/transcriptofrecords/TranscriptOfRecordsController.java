@@ -380,10 +380,23 @@ public class TranscriptOfRecordsController {
     return stats.getNumMandatoryCompletedCourses();
   }
 
+  public int countCreditPointsForStudent(SchoolDataIdentifier identifier) {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+  
   public int getMandatoryCoursesRequiredForMatriculation() {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "mandatoryCoursesRequiredForMatriculation");
+    // Default is 20
+    return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
+  }
+
+  public int getMandatoryCreditPointsRequiredForMatriculation() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "mandatoryCreditPointsRequiredForMatriculation");
     // Default is 20
     return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
   }
@@ -462,5 +475,5 @@ public class TranscriptOfRecordsController {
     VopsLister.Result listerResult = lister.getResult();
     return listerResult;
   }
-  
+
 }

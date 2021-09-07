@@ -457,13 +457,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
     int coursesCompleted = transcriptOfRecordsController.countMandatoryCoursesForStudent(identifier);
     int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
-
-    if (coursesCompleted >= coursesRequired) {
+    
+    int creditPoints = transcriptOfRecordsController.countCreditPointsForStudent(identifier);
+    int creditPointsRequired = transcriptOfRecordsController.getMandatoryCreditPointsRequiredForMatriculation();
+    
+    if ((coursesCompleted >= coursesRequired) || (creditPoints >= creditPointsRequired)) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
       result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);
       result.setCoursesCompleted(coursesCompleted);
       result.setCoursesRequired(coursesRequired);
+      result.setCreditPoints(creditPoints);
+      result.setCreditPointsRequired(creditPointsRequired);
     }
 
     return Response.ok(result).build();
