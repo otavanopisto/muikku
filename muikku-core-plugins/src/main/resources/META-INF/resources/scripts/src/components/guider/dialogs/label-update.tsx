@@ -17,16 +17,35 @@ import {
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,
 } from "~/actions/main-function/guider";
-import GuiderLabelShareDialog from "./label-share";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
 import * as queryString from "query-string";
+import promisify from "../../../util/promisify";
+import mApi from "~/lib/mApi";
+import { StaffRecepientType } from "../../../reducers/user-index";
+import InputContactsAutofill from "~/components/base/input-contacts-autofill";
+import { displayNotification } from "~/actions/base/notifications";
+import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
 
 const KEYCODES = {
   ENTER: 13,
 };
+
+interface SharedFlagUser {
+  flagId: number;
+  id: number;
+  user: {
+    firstName: string;
+    hasImage: boolean;
+    lastName: string;
+    nickName: string;
+    userEntityId: number;
+    userIdentifier: string;
+  };
+  userIdentifier: string;
+}
 
 interface GuiderLabelUpdateDialogProps {
   children: React.ReactElement<any>;
@@ -36,9 +55,12 @@ interface GuiderLabelUpdateDialogProps {
   i18n: i18nType;
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType;
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType;
+  staffId: string;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 interface GuiderLabelUpdateDialogState {
+  selectedItems: StaffRecepientType[];
   displayColorPicker: boolean;
   color: string;
   name: string;
@@ -51,6 +73,12 @@ class GuiderLabelUpdateDialog extends React.Component<
   GuiderLabelUpdateDialogProps,
   GuiderLabelUpdateDialogState
 > {
+  sharesResult: SharedFlagUser[] | undefined;
+
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: GuiderLabelUpdateDialogProps) {
     super(props);
 
@@ -60,9 +88,8 @@ class GuiderLabelUpdateDialog extends React.Component<
     this.onNameChange = this.onNameChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.removeLabel = this.removeLabel.bind(this);
-    this.update = this.update.bind(this);
     this.resetState = this.resetState.bind(this);
-    this.handleKeydown = this.handleKeydown.bind(this);
+    this.onHandleKeyStrokedown = this.onHandleKeyStrokedown.bind(this);
 
     this.state = {
       displayColorPicker: false,
@@ -71,48 +98,201 @@ class GuiderLabelUpdateDialog extends React.Component<
       description: props.label.description,
       removed: false,
       locked: false,
+      selectedItems: [],
     };
   }
-  onHandleClick = () => {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker });
-  };
-  onHandleClose = () => {
-    this.setState({ displayColorPicker: false });
-  };
-  handleKeydown(code: number, closeDialog: () => any) {
-    if (code === KEYCODES.ENTER) {
-      this.update(closeDialog);
-    }
-  }
+
+  /**
+   * ComponentWillReceiveProps lifecycle, when selected flaks changes, resets states
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps: GuiderLabelUpdateDialogProps) {
     if (nextProps.label.id !== this.props.label.id) {
       this.resetState(null, nextProps);
     }
   }
-  resetState(e: HTMLElement, props = this.props): void {
+
+  /**
+   * Resets state when flaks changes
+   * @param e
+   * @param props
+   */
+  resetState = async (e: HTMLElement, props = this.props) => {
     this.setState({
       color: props.label.color,
       removed: false,
       name: props.label.name,
       description: props.label.description,
     });
-  }
-  onColorChange(color: ColorState) {
-    if (this.state.removed) {
-      return;
-    }
-    this.setState({ color: color.hex });
-  }
-  onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ name: e.target.value });
-  }
-  onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    this.setState({ description: e.target.value });
-  }
+
+    await this.getShares();
+  };
+
+  /**
+   * Parses shared flaks results and set them to state
+   */
+  updateSharesState = () => {
+    this.setState({
+      selectedItems: this.sharesResult
+        .map((result: SharedFlagUser): StaffRecepientType => {
+          return {
+            type: "staff",
+            value: {
+              id: result.user.userIdentifier,
+              email: "unknown",
+              firstName: result.user.firstName,
+              lastName: result.user.lastName,
+              properties: {},
+              hasImage: result.user.hasImage,
+              userEntityId: result.user.userEntityId,
+            },
+          };
+        })
+        .filter((r: StaffRecepientType) => r !== null),
+    });
+  };
+
+  /**
+   * Remove flak is set to happen when saved
+   */
   removeLabel() {
     this.setState({ removed: true });
   }
-  update(closeDialog: () => any) {
+
+  /**
+   * Remove flak linking. This is called by linked user that wants to
+   * cancel linking to specific flak
+   */
+  removeLabelLinking = (onClose: () => void) => {
+    this.setState({ locked: true });
+
+    /**
+     * success
+     */
+    const success = async () => {
+      const locationData = queryString.parse(
+        document.location.hash.split("?")[1] || "",
+        { arrayFormat: "bracket" }
+      );
+
+      if (locationData.l) {
+        const labelIds: number[] = locationData.l.map((element: string) =>
+          parseInt(element)
+        );
+
+        const removeCurrentLocation =
+          this.state.removed && labelIds.includes(this.props.label.id);
+
+        if (removeCurrentLocation) {
+          const newLocationData = Object.assign({}, locationData, {
+            l: labelIds.filter((id) => id !== this.props.label.id),
+          });
+          window.location.hash =
+            "#?" +
+            queryString.stringify(newLocationData, { arrayFormat: "bracket" });
+
+          const userItem = this.state.selectedItems.find(
+            (item) => item.value.id === this.props.staffId
+          );
+
+          try {
+            await promisify(
+              mApi().user.flags.shares.del(
+                this.props.label.id,
+                userItem.value.userEntityId
+              ),
+              "callback"
+            )();
+
+            this.setState({ locked: false });
+          } catch (e) {
+            this.props.displayNotification(e.message, "error");
+          }
+        }
+      }
+    };
+
+    /**
+     * fail
+     */
+    const fail = () => {
+      this.setState({
+        locked: false,
+      });
+    };
+
+    this.props.removeGuiderFilterLabel({
+      label: this.props.label,
+      success,
+      fail,
+    });
+
+    onClose();
+  };
+
+  /**
+   * Creates or delete flaks depending users selections
+   */
+  shareOrRemoveFlags = async () => {
+    const promises1 = this.state.selectedItems.map(async (member) => {
+      const wasAdded = !this.sharesResult.find((share: any) => {
+        return share.userIdentifier === member.value.id;
+      });
+
+      if (wasAdded) {
+        await mApi().user.flags.shares.create(this.props.label.id, {
+          flagId: this.props.label.id,
+          userIdentifier: member.value.id,
+        });
+      }
+    });
+
+    const promises2 = this.sharesResult.map(async (share: any) => {
+      const wasRemoved = !this.state.selectedItems.find(
+        (member: StaffRecepientType) => {
+          return member.value.id === share.userIdentifier;
+        }
+      );
+
+      if (wasRemoved) {
+        mApi().user.flags.shares.del(this.props.label.id, share.id);
+      }
+    });
+
+    await Promise.all([
+      promises1.map((pr1) =>
+        pr1.catch((error) =>
+          this.props.displayNotification(error.message, "error")
+        )
+      ),
+      promises2.map((pr2) =>
+        pr2.catch((error) =>
+          this.props.displayNotification(error.message, "error")
+        )
+      ),
+    ]);
+  };
+
+  /**
+   * Fetch shared users for flaks
+   */
+  getShares = async () => {
+    try {
+      this.sharesResult = (await promisify(
+        mApi().user.flags.shares.read(this.props.label.id),
+        "callback"
+      )()) as SharedFlagUser[];
+      this.updateSharesState();
+    } catch (e) {
+      this.props.displayNotification(e.message, "error");
+    }
+  };
+
+  /**
+   * Updates selected flaks information or deletes it
+   * @param closeDialog
+   */
+  update = async (closeDialog: () => any) => {
     // If this is a delete operation, it matters if we have selected the label we are deleting
 
     const locationData = queryString.parse(
@@ -123,6 +303,17 @@ class GuiderLabelUpdateDialog extends React.Component<
     if (this.state.locked) {
       return;
     }
+
+    /**
+     * If flag will not be removed, update flags shares anyway
+     */
+    if (!this.state.removed) {
+      this.shareOrRemoveFlags();
+    }
+
+    /**
+     * success
+     */
     const success = () => {
       // If there are no labels selected, no need for this
 
@@ -157,11 +348,16 @@ class GuiderLabelUpdateDialog extends React.Component<
       });
       closeDialog();
     };
+
+    /**
+     * fail
+     */
     const fail = () => {
       this.setState({
         locked: false,
       });
     };
+
     if (
       (this.state.name !== this.props.label.name ||
         this.state.color !== this.props.label.color ||
@@ -183,61 +379,114 @@ class GuiderLabelUpdateDialog extends React.Component<
       this.setState({
         locked: true,
       });
-      this.props.removeGuiderFilterLabel({
-        label: this.props.label,
-        success,
-        fail,
-      });
+
+      /**
+       * Checking if selectedItems list differ from sharesresult list
+       */
+      if (
+        JSON.stringify(this.state.selectedItems) !==
+        JSON.stringify(this.sharesResult)
+      ) {
+        /**
+         * This is because shares needs to be removed first
+         * before deleting whole flag
+         */
+        await this.shareOrRemoveFlags().then(() =>
+          this.props.removeGuiderFilterLabel({
+            label: this.props.label,
+            success,
+            fail,
+          })
+        );
+      } else {
+        this.props.removeGuiderFilterLabel({
+          label: this.props.label,
+          success,
+          fail,
+        });
+      }
     } else {
       closeDialog();
     }
+  };
+
+  /**
+   * Handles color changes
+   * @param color
+   */
+  onColorChange(color: ColorState) {
+    if (this.state.removed) {
+      return;
+    }
+    this.setState({ color: color.hex });
   }
+
+  /**
+   * Handles flaks name change
+   * @param e
+   */
+  onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ name: e.target.value });
+  }
+
+  /**
+   * Handles description change
+   * @param e
+   */
+  onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    this.setState({ description: e.target.value });
+  }
+
+  /**
+   * Handles color picker click
+   */
+  onHandleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+  };
+
+  /**
+   * Handles color picker close
+   */
+  onHandleClose = () => {
+    this.setState({ displayColorPicker: false });
+  };
+
+  /**
+   * Handles key stroke down
+   * @param code
+   * @param closeDialog
+   */
+  onHandleKeyStrokedown(code: number, closeDialog: () => any) {
+    if (code === KEYCODES.ENTER) {
+      this.update(closeDialog);
+    }
+  }
+
+  /**
+   * Handles members list change
+   * @param members
+   */
+  onSharedMembersChange = (members: StaffRecepientType[]) => {
+    this.setState({ selectedItems: members });
+  };
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-    let footer = (closeDialog: () => any) => {
-      return (
-        <div className="dialog__button-set">
-          <Button
-            buttonModifiers={["success", "standard-ok"]}
-            disabled={this.state.locked}
-            onClick={this.update.bind(this, closeDialog)}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.editFlagDialog.save"
-            )}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            disabled={this.state.locked}
-            onClick={closeDialog}
-          >
-            {this.props.i18n.text.get(
-              "plugin.guider.flags.editFlagDialog.cancel"
-            )}
-          </Button>
-          <GuiderLabelShareDialog label={this.props.label}>
-            <Button
-              buttonModifiers={["info", "guider-share-label"]}
-              disabled={this.state.removed || this.state.locked}
-            >
-              {this.props.i18n.text.get("plugin.guider.flags.shareFlag.label")}
-            </Button>
-          </GuiderLabelShareDialog>
-          <Button
-            buttonModifiers={["fatal", "guider-remove-label"]}
-            disabled={this.state.removed || this.state.locked}
-            onClick={this.removeLabel}
-          >
-            {this.state.removed
-              ? this.props.i18n.text.get(
-                  "plugin.guider.flags.confirmFlagDelete.deleted"
-                )
-              : this.props.i18n.text.get(
-                  "plugin.guider.flags.removeFlag.label"
-                )}
-          </Button>
-        </div>
-      );
-    };
+    const isOwnerOfCurrentLabel =
+      this.props.staffId === this.props.label.ownerIdentifier;
+
+    const AmShared = Boolean(
+      this.state.selectedItems.findIndex(
+        (item) => item.value.id === this.props.staffId
+      )
+    );
+
+    /**
+     * sliderPicker
+     */
     let sliderPicker = (
       <ChromePicker
         disableAlpha
@@ -245,6 +494,12 @@ class GuiderLabelUpdateDialog extends React.Component<
         onChange={this.onColorChange}
       />
     );
+
+    /**
+     * content
+     * @param closeDialog
+     * @returns
+     */
     let content = (closeDialog: () => any) => {
       return (
         <div
@@ -311,15 +566,109 @@ class GuiderLabelUpdateDialog extends React.Component<
                 onChange={this.onDescriptionChange}
               />
             </div>
+
+            {isOwnerOfCurrentLabel ? (
+              <div className="form-element form-element--edit-label">
+                <InputContactsAutofill
+                  label="Jaetaan henkilöille"
+                  identifier="guiderLabelShare"
+                  modifier="guider"
+                  onChange={this.onSharedMembersChange}
+                  selectedItems={this.state.selectedItems}
+                  hasGroupPermission={false}
+                  hasUserPermission={false}
+                  hasWorkspacePermission={false}
+                  hasStaffPermission
+                  showEmails={false}
+                  showFullNames
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       );
     };
+
+    /**
+     * footer
+     * @param closeDialog
+     * @returns JSX.Element
+     */
+    let footer = (closeDialog: () => any) => {
+      return (
+        <>
+          <div className="dialog__button-set">
+            <Button
+              buttonModifiers={["success", "standard-ok"]}
+              disabled={this.state.locked}
+              onClick={(e) => this.update(closeDialog)}
+            >
+              {this.props.i18n.text.get(
+                "plugin.guider.flags.editFlagDialog.save"
+              )}
+            </Button>
+            <Button
+              buttonModifiers={["cancel", "standard-cancel"]}
+              disabled={this.state.locked}
+              onClick={closeDialog}
+            >
+              {this.props.i18n.text.get(
+                "plugin.guider.flags.editFlagDialog.cancel"
+              )}
+            </Button>
+
+            {isOwnerOfCurrentLabel ? (
+              <Button
+                buttonModifiers={["fatal", "guider-remove-label"]}
+                disabled={
+                  this.state.removed ||
+                  this.state.locked ||
+                  this.state.selectedItems.length > 0
+                }
+                onClick={this.removeLabel}
+              >
+                {this.state.removed
+                  ? this.props.i18n.text.get(
+                      "plugin.guider.flags.confirmFlagDelete.deleted"
+                    )
+                  : this.props.i18n.text.get(
+                      "plugin.guider.flags.removeFlag.label"
+                    )}
+              </Button>
+            ) : (
+              <Button
+                buttonModifiers={["fatal", "guider-remove-label"]}
+                disabled={this.state.locked || AmShared}
+                onClick={(e) => this.removeLabelLinking(closeDialog)}
+              >
+                {this.state.removed
+                  ? this.props.i18n.text.get(
+                      "plugin.guider.flags.confirmFlagDelete.deleted"
+                    )
+                  : this.props.i18n.text.get(
+                      "plugin.guider.flags.removeFlag.label"
+                    )}
+              </Button>
+            )}
+          </div>
+
+          {isOwnerOfCurrentLabel && this.state.selectedItems.length > 0 && (
+            <div className="dialog__state state-INFO">
+              <div className="dialog__state-icon icon-notification"></div>
+              <div className="dialog__state-text">
+                {this.props.i18n.text.get("plugin.guider.flags.unableToDeleteFlag.description")}
+              </div>
+            </div>
+          )}
+        </>
+      );
+    };
+
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
-        onKeyStroke={this.handleKeydown}
+        onKeyStroke={this.onHandleKeyStrokedown}
         onOpen={this.resetState}
         modifier="guider-edit-label"
         title={this.props.i18n.text.get(
@@ -334,15 +683,26 @@ class GuiderLabelUpdateDialog extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    staffId: state.status.userSchoolDataIdentifier,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { updateGuiderFilterLabel, removeGuiderFilterLabel },
+    { updateGuiderFilterLabel, removeGuiderFilterLabel, displayNotification },
     dispatch
   );
 }

@@ -424,6 +424,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     delete nProps["denyWidth"];
     delete nProps["denyHeight"];
     delete nProps["handleSelector"];
+    delete nProps["enableTouch"];
 
     if (this.state.isDragging) {
       let nStyle = {...this.props.style} || {};

@@ -143,6 +143,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["scrollPadding"];
     delete elementProps["disableScroll"];
     delete elementProps["as"];
+    delete elementProps["disableSmoothScroll"];
 
     if (
       (

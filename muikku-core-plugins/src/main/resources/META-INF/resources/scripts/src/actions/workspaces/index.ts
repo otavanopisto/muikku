@@ -50,6 +50,7 @@ import {
 } from "~/reducers/workspaces";
 import equals = require("deep-equal");
 import $ from "~/lib/jquery";
+import { UploadingValue } from "~/@types/shared";
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
@@ -479,9 +480,11 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
     workspace: WorkspaceType;
     material: MaterialContentNodeType;
     files: File[];
+    uploadingValues?: UploadingValue[];
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  },
+  updateUploadingValues?:(updatedValues: UploadingValue[]) => void): AnyActionType;
 }
 
 export interface UpdateWorkspaceEditModeStateTriggerType {
@@ -1580,7 +1583,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         });
 
         await promisify(
-          mApi().organizationmanagement.workspaces.students.create(
+          mApi().organizationWorkspaceManagement.workspaces.students.create(
             data.workspace.id,
             {
               studentIdentifiers: studentIdentifiers,
@@ -1597,7 +1600,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         );
 
         await promisify(
-          mApi().organizationmanagement.workspaces.staff.create(
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(
             data.workspace.id,
             {
               staffMemberIdentifiers: staffMemberIdentifiers,
@@ -1610,7 +1613,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       // if (data.removeStudents.length > 0) {
       //   let studentIdentifiers = data.removeStudents.map(student => student.id);
 
-      // await promisify(mApi().organizationmanagement.workspaces.students
+      // await promisify(mApi().organizationWorkspaceManagement.workspaces.students
       //   .del(data.workspace.id, {
       //     studentIdentifiers: studentIdentifiers
       //   }
@@ -1622,7 +1625,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       // if (data.removeTeachers.length > 0) {
       //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
 
-      // await promisify(mApi().organizationmanagement.workspaces.staff
+      // await promisify(mApi().organizationWorkspaceManagement.workspaces.staff
       //   .del(data.workspace.id, {
       //     staffMemberIdentifiers: staffMemberIdentifiers
       //   }
@@ -1631,7 +1634,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       //   );
       // }
 
-      //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
+      //  await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 
       data.progress && data.progress("done");
       data.success && data.success();
@@ -2852,7 +2855,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         });
 
         await promisify(
-          mApi().organizationmanagement.workspaces.students.create(
+          mApi().organizationWorkspaceManagement.workspaces.students.create(
             workspace.id,
             {
               studentIdentifiers: studentIdentifiers,
@@ -2867,7 +2870,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
         await promisify(
-          mApi().organizationmanagement.workspaces.staff.create(workspace.id, {
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(workspace.id, {
             staffMemberIdentifiers: staffMemberIdentifiers,
           }),
           "callback"
@@ -3739,15 +3742,22 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
 
 const MAX_ATTACHMENT_SIZE = 10000000;
 let createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment(
-  data
+  data,
+  updateUploadingValues?:(updatedValues: UploadingValue[]) => void
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
     try {
+
+      /**
+       * Up keep updated values when mapping them
+       */
+      let updatedValues:UploadingValue[] = [];
+
       const tempFilesData = await Promise.all(
-        data.files.map((file) => {
+        data.files.map((file, index) => {
           //create the form data
           let formData = new FormData();
           //we add it to the file
@@ -3774,6 +3784,33 @@ let createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerT
               },
               error: (xhr: any, err: Error) => {
                 reject(err);
+              },
+              xhr: () => {
+                /**
+                 * If these values are not given, just return;
+                 */
+                if(!data.uploadingValues && !updateUploadingValues){
+                  return;
+                }
+
+                //we need to get the upload progress
+                let xhr = new (window as any).XMLHttpRequest();
+                //Upload progress
+                xhr.upload.addEventListener("progress", (evt:any)=>{
+
+                  if(index === 0) {
+                    updatedValues = [...data.uploadingValues]
+                  }
+                  if (evt.lengthComputable) {
+                    //we calculate the percent
+                    const percentComplete = evt.loaded / evt.total;
+                    //and set the new progress
+                    updatedValues[index].progress = percentComplete;
+                    //set the state for that new progress
+                    updateUploadingValues(updatedValues)
+                  }
+                }, false);
+                return xhr;
               },
               cache: false,
               contentType: false,

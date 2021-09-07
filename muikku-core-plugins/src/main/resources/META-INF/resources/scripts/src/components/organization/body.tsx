@@ -14,9 +14,9 @@ interface OrganizationManagementBodyState {
 export default class OrganizationManagementBody extends React.Component<OrganizationManagementBodyProps,OrganizationManagementBodyState> {
 
   render(){
-    let aside = <Aside />  
+    let aside = <Aside />
     return (<div>
-        <MainFunctionNavbar navigation={aside} activeTrail="index"/>
+        <MainFunctionNavbar navigation={aside} activeTrail="organization"/>
         <ScreenContainer>
           <Application aside={aside} />
         </ScreenContainer>
