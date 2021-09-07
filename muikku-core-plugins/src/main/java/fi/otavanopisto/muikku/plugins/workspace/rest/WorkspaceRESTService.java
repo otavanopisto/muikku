@@ -602,8 +602,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaces.isEmpty()) {
-      // TODO: return 200 & empty list instead of 204
-      return Response.noContent().build();
+      return Response.ok(workspaces).build();
     }
     
     if (orderBy.contains("lastVisit")) {
