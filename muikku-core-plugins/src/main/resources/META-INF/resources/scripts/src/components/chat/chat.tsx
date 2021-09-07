@@ -200,7 +200,6 @@ class Chat extends React.Component<IChatProps, IChatState> {
       if (!this.props.settings.nick) {
         return;
       }
-  
       try {
         const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.create({
           title: roomName,

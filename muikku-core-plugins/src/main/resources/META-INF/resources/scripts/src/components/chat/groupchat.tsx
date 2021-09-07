@@ -624,11 +624,6 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
   }
 
   handleClickOutside = (event:any) => {
-    console.log([this.chatWrapperRef, event]);
-    if (this.chatWrapperRef && !this.chatWrapperRef.current.contains(event.target)) {
-        console.log('You clicked outside of me!');
-    }
-
     this.setState({active: false});
   }
 
