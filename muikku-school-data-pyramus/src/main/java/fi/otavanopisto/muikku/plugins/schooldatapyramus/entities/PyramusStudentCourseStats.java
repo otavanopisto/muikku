@@ -4,9 +4,10 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 
 public class PyramusStudentCourseStats implements StudentCourseStats {
 
-  public PyramusStudentCourseStats(int numMandatoryCompletedCourses) {
+  public PyramusStudentCourseStats(int numMandatoryCompletedCourses, double sumMandatoryCompletedCreditPoints) {
     super();
     this.numMandatoryCompletedCourses = numMandatoryCompletedCourses;
+    this.sumMandatoryCompletedCreditPoints = sumMandatoryCompletedCreditPoints;
   }
 
   @Override
@@ -18,6 +19,15 @@ public class PyramusStudentCourseStats implements StudentCourseStats {
     this.numMandatoryCompletedCourses = numMandatoryCompletedCourses;
   }
 
-  int numMandatoryCompletedCourses;
+  @Override
+  public double getSumMandatoryCompletedCreditPoints() {
+    return sumMandatoryCompletedCreditPoints;
+  }
 
+  public void setSumMandatoryCompletedCreditPoints(double sumMandatoryCompletedCreditPoints) {
+    this.sumMandatoryCompletedCreditPoints = sumMandatoryCompletedCreditPoints;
+  }
+
+  private int numMandatoryCompletedCourses;
+  private double sumMandatoryCompletedCreditPoints;
 }

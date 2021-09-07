@@ -375,14 +375,8 @@ public class TranscriptOfRecordsController {
     return null;
   }
 
-  public int countMandatoryCoursesForStudent(SchoolDataIdentifier studentIdentifier) {
-    StudentCourseStats stats = userSchoolDataController.getStudentCourseStats(studentIdentifier);
-    return stats.getNumMandatoryCompletedCourses();
-  }
-
-  public int countCreditPointsForStudent(SchoolDataIdentifier identifier) {
-    // TODO Auto-generated method stub
-    return 0;
+  public StudentCourseStats fetchStudentCourseStats(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getStudentCourseStats(studentIdentifier);
   }
   
   public int getMandatoryCoursesRequiredForMatriculation() {
@@ -393,12 +387,12 @@ public class TranscriptOfRecordsController {
     return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
   }
 
-  public int getMandatoryCreditPointsRequiredForMatriculation() {
+  public double getMandatoryCreditPointsRequiredForMatriculation() {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "mandatoryCreditPointsRequiredForMatriculation");
     // Default is 20
-    return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
+    return StringUtils.isNotBlank(resultString) ? Double.parseDouble(resultString) : 20;
   }
 
   private SearchProvider getProvider(String name) {
