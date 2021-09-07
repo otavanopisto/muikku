@@ -118,6 +118,9 @@ export interface Term {
   adessive: string;
 }
 
+/**
+ * MatriculationStudent
+ */
 export interface MatriculationStudent {
   address: string;
   email: string;
@@ -131,6 +134,9 @@ export interface MatriculationStudent {
   studentIdentifier: string;
 }
 
+/**
+ * MatriculationStudentExamination
+ */
 export interface MatriculationStudentExamination {
   canPublishName: string;
   changedContactInfo: string;
@@ -148,6 +154,9 @@ export interface MatriculationStudentExamination {
   degreeStructure: ExamEnrollmentDegreeStructure;
 }
 
+/**
+ * MatriculationExaminationDraft
+ */
 export interface MatriculationExaminationDraft {
   changedContactInfo: string;
   guider: string;
@@ -164,6 +173,9 @@ export interface MatriculationExaminationDraft {
   finishedAttendances: ExaminationFinishedSubject[];
 }
 
+/**
+ * MatriculationExaminationApplication
+ */
 export interface MatriculationExaminationApplication {
   examId: string;
   name: string;
@@ -185,4 +197,15 @@ export interface MatriculationExaminationApplication {
   canPublishName: boolean;
   state: string;
   attendances: object[];
+}
+
+/**
+ * UploadingValue
+ */
+export interface UploadingValue {
+  name: string;
+  contentType: string;
+  failed?: boolean;
+  progress?: number;
+  file?: File;
 }
