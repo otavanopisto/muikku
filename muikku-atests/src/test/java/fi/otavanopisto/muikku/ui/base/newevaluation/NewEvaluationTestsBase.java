@@ -286,7 +286,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         
         navigate(String.format("/evaluation"), false);
         
-        waitAndClick(".button-pill--sorter .icon-sort-amount-asc");
         waitAndClickAndConfirm(".button-pill--sorter .icon-sort-amount-asc", "a.button-pill--sorter-selected .icon-sort-amount-asc", 10, 500);
         waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
