@@ -829,7 +829,7 @@ export class Groupchat extends React.Component<IGroupChatProps, IGroupChatState>
             <div onClick={this.props.leaveChatRoom} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
-          <div className={`chat__panel chat__panel--${chatRoomTypeClassName} ${this.state.active ? "chat__panel--active" : "chat__panel--notactive"}`}>
+          <div className={`chat__panel chat__panel--${chatRoomTypeClassName} ${this.state.active ? "chat__panel--active" : ""}`}>
             <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
               <div className="chat__panel-header-title">{this.props.chat.roomName}</div>
               <div onClick={this.toggleOccupantsList} className="chat__button chat__button--occupants icon-users"></div>

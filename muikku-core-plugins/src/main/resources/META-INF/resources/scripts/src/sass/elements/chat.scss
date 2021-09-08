@@ -194,11 +194,6 @@
   transition: box-shadow 0.3s ease-in-out;
 }
 
-.chat__panel--notactive {
-  box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
-  transition: box-shadow 0.3s ease-in-out;
-}
-
 .chat__panel-header {
   align-items: center;
   background-color: $color-default;

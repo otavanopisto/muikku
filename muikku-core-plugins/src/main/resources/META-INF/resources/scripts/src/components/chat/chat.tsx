@@ -657,7 +657,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                   </div>
                   <input className="chat__submit chat__submit--new-room" type="submit" value={this.props.i18n.text.get("plugin.chat.button.addRoom")} />
                   <div className="chat__subpanel-row chat__subpanel-row--mandatory">
-                    *-pakolliset kentät
+                    *-{this.props.i18n.text.get("plugin.chat.room.mandatoryFields")}
                   </div>
                 {this.state.missingFields ? <div className="chat__subpanel-row chat__subpanel-row--emessage"><p>{this.props.i18n.text.get("plugin.chat.room.missingFields")}</p></div>  : null}
                 </form>
