@@ -19,13 +19,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.util.ArchivableEntity;
+import fi.otavanopisto.muikku.model.util.OrganizationalEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
 @Cacheable
 @Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
-public class WorkspaceEntity implements ArchivableEntity, ContextReference {
+public class WorkspaceEntity implements ArchivableEntity, OrganizationalEntity, ContextReference {
   
   public Long getId() {
     return id;
