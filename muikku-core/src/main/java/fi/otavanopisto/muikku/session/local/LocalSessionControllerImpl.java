@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.util.OrganizationalEntity;
@@ -167,10 +168,14 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
             schoolDataSource,
             getLoggedUserIdentifier(),
             Boolean.FALSE);
-        if (usdi != null && !Objects.equals(usdi.getOrganization().getId(), ((OrganizationalEntity) contextReference).getOrganizationEntity().getId())) {
-          EnvironmentRoleEntity roleEntity = usdi.getRole();
-          EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
-          hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR;
+        if (usdi != null) {
+          OrganizationEntity orgA = usdi.getOrganization();
+          OrganizationEntity orgB = ((OrganizationalEntity) contextReference).getOrganizationEntity();
+          if (orgA != null && orgB != null && !Objects.equals(orgA.getId(), orgB.getId())) {
+            EnvironmentRoleEntity roleEntity = usdi.getRole();
+            EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+            hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR;
+          }
         }
       }
     }
