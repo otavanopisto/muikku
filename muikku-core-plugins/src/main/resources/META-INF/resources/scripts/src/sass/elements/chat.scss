@@ -164,6 +164,7 @@
   height: 500px;
   margin: 0 15px 0 0;
   position: relative;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .chat__panel--controlbox {
@@ -186,6 +187,11 @@
 .chat__panel--private {
   border-top: 4px solid $color-chat-private-main-color;
   width: 400px;
+}
+
+.chat__panel--active {
+  box-shadow: 0 0 15px $color-chat-controlbox-box-shadow;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .chat__panel-header {
@@ -479,6 +485,15 @@
   justify-content: space-between;
 }
 
+.chat__subpanel-row--emessage,
+.chat__subpanel-row--mandatory {
+  margin: 10px 0;
+}
+
+.chat__subpanel-row--emessage {
+  color: $color-error;
+}
+
 // Chat Form Elements
 .chat__label {
   font-size: 0.875rem;
@@ -719,7 +734,6 @@
 
 // When Chat sender is ME
 .chat__message--sender-me {
-
   .chat__message-meta {
     justify-content: flex-end;
   }
@@ -731,7 +745,6 @@
 
 // When Chat sender is THEM
 .chat__message--sender-them {
-
   .chat__message-meta {
     justify-content: flex-start;
   }
@@ -817,9 +830,7 @@
 
 // Workspace Room's specific 'sender-me' messages
 .chat__messages-container--workspace {
-
   .chat__message--sender-me {
-
     .chat__message-content {
       background: lighten($color-chat-workspace-room-main-color, 50%);
       color: $color-default-contrast;
@@ -834,9 +845,7 @@
 
 // Other Room's specific 'sender-me' messages
 .chat__messages-container--other {
-
   .chat__message--sender-me {
-
     .chat__message-content {
       background: lighten($color-chat-other-room-main-color, 50%);
       color: $color-default-contrast;
@@ -851,9 +860,7 @@
 
 // Private Chat's specific 'sender-me' messages
 .chat__messages-container--private {
-
   .chat__message--sender-me {
-
     .chat__message-content {
       background: lighten($color-chat-private-main-color, 40%);
       color: $color-default-contrast;
