@@ -159,7 +159,10 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     }
     
     // #5723: If we got permission to do something but in an organizational context, deny permission if
-    // the context belongs to another organization (unless we happen to be an administrator).
+    // the context belongs to another organization, unless the logged in user happens to be:
+    // - ADMINISTRATOR (who have access everywhere nonetheless)
+    // - STUDENT (who can study courses of other organizations)
+    // - CUSTOM (custom roles such as trusted system)
     
     if (hasPermission && isLoggedIn() && contextReference instanceof OrganizationalEntity) {
       SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(getLoggedUserSchoolDataSource());
@@ -174,7 +177,9 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
           if (orgA != null && orgB != null && !Objects.equals(orgA.getId(), orgB.getId())) {
             EnvironmentRoleEntity roleEntity = usdi.getRole();
             EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
-            hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR;
+            hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR ||
+                loggedUserRole == EnvironmentRoleArchetype.STUDENT ||
+                loggedUserRole == EnvironmentRoleArchetype.CUSTOM;
           }
         }
       }
