@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -15,16 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
-import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
-import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
-import fi.otavanopisto.muikku.model.util.OrganizationalEntity;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -49,12 +40,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
 
   @Inject
   private UserEntityDAO userEntityDAO;
-
-  @Inject
-  private SchoolDataSourceDAO schoolDataSourceDAO;
-
-  @Inject
-  private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
 
   @PostConstruct
   private void init() {
@@ -134,7 +119,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
 
   @Override
   protected boolean hasPermissionImpl(String permission, ContextReference contextReference) {
-    boolean hasPermission = false;
     PermissionResolver permissionResolver = getPermissionResolver(permission);
     if (permissionResolver == null) {
       logger.severe(String.format("could not resolve permission resolver for permission %s", permission));
@@ -143,7 +127,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     
     if (isLoggedIn()) {
       if (!isRepresenting()) {
-        hasPermission = isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
+        return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
       }
       else {
         boolean repHasPermission = permissionResolver.hasPermission(permission, contextReference, getRepresentedUser());
@@ -151,36 +135,12 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
             isSuperuser(getLoggedUserEntity()) || 
             permissionResolver.hasPermission(permission, contextReference, getLoggedUserEntity()) || 
             permissionResolver.hasEveryonePermission(permission, contextReference);
-        hasPermission = repHasPermission && loggedInHasPermission;
+        return repHasPermission && loggedInHasPermission;
       }
     }
     else {
-      hasPermission = permissionResolver.hasEveryonePermission(permission, contextReference);
+      return permissionResolver.hasEveryonePermission(permission, contextReference);
     }
-    
-    // #5723: If we got permission to do something but in an organizational context, deny permission if
-    // the context belongs to another organization (unless we happen to be an administrator).
-    
-    if (hasPermission && isLoggedIn() && contextReference instanceof OrganizationalEntity) {
-      SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(getLoggedUserSchoolDataSource());
-      if (schoolDataSource != null) {
-        UserSchoolDataIdentifier usdi = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(
-            schoolDataSource,
-            getLoggedUserIdentifier(),
-            Boolean.FALSE);
-        if (usdi != null) {
-          OrganizationEntity orgA = usdi.getOrganization();
-          OrganizationEntity orgB = ((OrganizationalEntity) contextReference).getOrganizationEntity();
-          if (orgA != null && orgB != null && !Objects.equals(orgA.getId(), orgB.getId())) {
-            EnvironmentRoleEntity roleEntity = usdi.getRole();
-            EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
-            hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR;
-          }
-        }
-      }
-    }
-    
-    return hasPermission;
   }
   
   @Override
