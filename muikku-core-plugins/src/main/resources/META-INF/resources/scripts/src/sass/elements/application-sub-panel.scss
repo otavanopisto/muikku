@@ -13,6 +13,19 @@
   }
 }
 
+.application-sub-panel--study-calendar {
+  #workspace-container {
+    background-color: #f1f1f1;
+    display: flex;
+    padding: 10px;
+    margin-bottom: 10px;
+
+    div:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+}
+
 .application-sub-panel--worklist {
   border: 0;
   margin: 0 0 15px;

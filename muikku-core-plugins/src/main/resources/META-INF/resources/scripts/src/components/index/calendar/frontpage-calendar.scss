@@ -1,0 +1,34 @@
+.frontpage-calendar {
+  padding: 10px;
+}
+
+.frontpage-calendar__title {
+  font-size: 1rem;
+}
+
+.frontpage-calendar__content {
+  padding: 10px;
+}
+
+.frontpage-calendar__events {
+  padding: 5px;
+}
+
+.frontpage-calendar__event  {
+  padding: 5px;
+
+  &::before {
+    content: " ";
+    display: inline-block;
+    border-radius: 50%;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+    background-color: green;;
+  }
+}
+
+.frontpage-calendar__event-count {
+  font-weight: 600;
+  padding: 5px,
+}

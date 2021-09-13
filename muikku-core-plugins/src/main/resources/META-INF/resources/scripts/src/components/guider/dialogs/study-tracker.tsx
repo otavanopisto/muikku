@@ -11,10 +11,11 @@ import { FormActionsElement } from '~/components/general/form-element';
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
+import interactionPlugin, { DateClickArg, Draggable } from '@fullcalendar/interaction';
 import "./study-tracker.scss"
 import moment from '~/lib/moment';
 import { GuiderStudentListType } from "~/reducers/main-function/guider";
+import title from '~/reducers/base/title';
 
 interface EventType {
   date?: string,
@@ -23,12 +24,20 @@ interface EventType {
   end?: string,
   display?: "auto" | "background",
   backgroundColor?: string,
+  resourceId?: string,
 }
 
 interface ResourceType {
   id: string,
-  title: string,
+  title?: string,
+  student?: string
 }
+
+interface calendarColumnType {
+  field: string,
+  headerContent: string,
+}
+
 
 interface guiderReservationCalendarProps {
   children?: React.ReactElement<any>,
@@ -39,13 +48,13 @@ interface guiderReservationCalendarProps {
 
 interface guiderReservationCalendarState {
   events: EventType[],
+  resourceAreaColumns: calendarColumnType[],
   dateClickArgs: DateClickArg,
   showOverlay: boolean,
   title: string
 }
 
 class StudyTracker extends React.Component<guiderReservationCalendarProps, guiderReservationCalendarState> {
-  private test = moment().weekday(0).toDate()
 
   constructor(props: guiderReservationCalendarProps) {
     super(props);
@@ -54,12 +63,37 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
       dateClickArgs: null,
       showOverlay: false,
       title: "",
+      resourceAreaColumns: [
+        {
+          field: "student",
+          headerContent: "Opiskelija"
+        }
+      ],
       events: [
         {
           start: moment().weekday(0).toDate(),
           end: moment().toDate(),
           display: "background",
-          backgroundColor: "#cccccc"
+          backgroundColor: "#cccccc",
+          title: "Kurssi"
+        },
+        {
+          start: moment().weekday(0).toDate(),
+          end: moment().add(10, "d").toDate(),
+          resourceId: "PYRAMUS-STUDENT-23",
+          title: "Kurssi"
+        },
+        {
+          start: moment().weekday(0).toDate(),
+          end: moment().add(30, "d").toDate(),
+          resourceId: "PYRAMUS-STUDENT-45",
+          title: "Kurssi"
+        },
+        {
+          start: moment().weekday(0).toDate(),
+          end: moment().add(3, "d").toDate(),
+          resourceId: "PYRAMUS-STUDENT-72",
+          title: "Kurssi"
         },
       ],
     }
@@ -71,13 +105,9 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
 
   turnUsersToResources = (users: GuiderStudentListType) => {
     const resources: ResourceType[] = [];
-
-
-
     users.map((user) => {
-      resources.push({ id: user.id, title: user.firstName + " " + user.lastName, });
+      resources.push({ id: user.id, student: user.firstName + " " + user.lastName, });
     });
-
 
     return resources.slice(0, 10);
   }
@@ -89,6 +119,10 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
       this.setState({ events: newEvents, showOverlay: false, title: "" });
 
     }
+  }
+
+  handleDateClick = (arg: DateClickArg) => {
+    this.setState({ showOverlay: true, dateClickArgs: arg });
   }
 
   closeOverlay = () => {
@@ -103,6 +137,7 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
     let content = (closePortal: () => any) =>
       <div>
         <DialogRow modifiers="guider-reservation">
+
           <FullCalendar
             plugins={[resourceTimelinePlugin, interactionPlugin]}
             editable={true}
@@ -110,6 +145,7 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
             schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
             height="auto"
             firstDay={1}
+            resourceAreaColumns={this.state.resourceAreaColumns}
             resources={this.turnUsersToResources(this.props.students)}
             allDaySlot={false}
             slotMinTime="09:00:00"
@@ -117,6 +153,14 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
             locale={"fi"}
             initialView="resourceTimelineWeek"
             events={this.state.events} />
+          <div className={`overlay ${this.state.showOverlay ? "" : "hidden"}`} >
+            <div>
+              <span>{this.state.dateClickArgs && this.state.dateClickArgs.dateStr}</span>
+            </div>
+            <input type="text" onChange={this.handleTitleChange} value={this.state.title} />
+            <button onClick={this.handleAddEvent.bind(this)} >Add</button>
+            <button onClick={this.closeOverlay}>Close</button>
+          </div>
         </DialogRow>
       </div>;
 
@@ -124,7 +168,7 @@ class StudyTracker extends React.Component<guiderReservationCalendarProps, guide
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (<Dialog modifier="guider-reservation"
-      title={"Varaa aika ohjaajalle"}
+      title={"Seuraa opiskelijoita"}
       content={content} footer={footer}>
       {this.props.children}
     </Dialog  >

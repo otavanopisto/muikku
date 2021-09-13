@@ -48,7 +48,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
       </NavigationTopic>
       <NavigationTopic name={"Opiskelijoiden opintojen seuranta"}>
         <StudyTracker students={this.props.guider && this.props.guider.students}><NavigationElement modifiers={['aside-navigation', 'aside-navigation-guider']} icon="books" isActive={false}>
-          Huutista saatana
+          Avaja dialogi
         </NavigationElement>
         </StudyTracker>
 

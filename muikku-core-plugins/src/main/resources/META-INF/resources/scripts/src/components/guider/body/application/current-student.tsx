@@ -25,6 +25,11 @@ import { displayNotification, DisplayNotificationTriggerType } from '~/actions/b
 import { UserFileType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import { GuiderType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider';
+import FullCalendar from '@fullcalendar/react'
+import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import interactionPlugin, { DateClickArg, Draggable } from '@fullcalendar/interaction';
+import { WorkspaceType } from '~/reducers/workspaces'
+import moment from '~/lib/moment';
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -40,6 +45,19 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   constructor(props: CurrentStudentProps) {
     super(props);
   }
+
+  // componentDidMount() {
+  //   let draggableElement = document.getElementById("workspace-container");
+  //   new Draggable(draggableElement, {
+  //     itemSelector: '.fc-event',
+  //     eventData: function (eventElement) {
+  //       return {
+  //         title: eventElement.innerText,
+  //         duration: { days: 5 },
+  //       }
+  //     },
+  //   })
+  // }
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   render() {
@@ -103,7 +121,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email) => {
             return <span className="application-sub-panel__single-entry" key={email.address} >
               {email.defaultAddress ? `*` : null} {email.address} ({email.type})
-          </span>
+            </span>
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>}
         </div>
       </div>}
@@ -113,7 +131,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {this.props.guider.currentStudent.phoneNumbers.length ? this.props.guider.currentStudent.phoneNumbers.map((phone) => {
             return <span className="application-sub-panel__single-entry" key={phone.number} >
               {phone.defaultNumber ? `*` : null} {phone.number} ({phone.type})
-          </span>
+            </span>
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}</span>}
         </div>
       </div>}
@@ -164,12 +182,37 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
 
     let studentWorkspaces = <Workspaces />;
 
+    let studentStudyCalendar =
+      <FullCalendar
+        plugins={[resourceTimelinePlugin, interactionPlugin]}
+        editable={true}
+        weekends={false}
+        droppable={true}
+        schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
+        headerToolbar={{ left: 'today prev,next', right: "" }}
+        firstDay={1}
+        height={200}
+        expandRows={true}
+        eventOverlap={false}
+        initialView="timelineWeek"
+        allDaySlot={false}
+        slotMinTime="09:00:00"
+        slotMaxTime="16:00:00"
+        locale={"fi"}
+      />;
+
     let formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);
       formData.append("description", "");
       formData.append("userIdentifier", this.props.guider.currentStudent.basic.id);
     }
+
+    let events: any[] = this.props.guider.currentStudent.workspaces ? this.props.guider.currentStudent.workspaces.map((workspace) => {
+      if (workspace.studentActivity.assessmentState.state !== "pass") {
+        return <div className="fc-event" style={{ color: "#fff", backgroundColor: "#3788d8" }} key={"event-of-" + workspace.id}>{workspace.name}</div>;
+      }
+    }) : [];
 
     let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <FileUploader url="/transcriptofrecordsfileupload/" formDataGenerator={formDataGenerator}
@@ -183,6 +226,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess />
     </div>
 
+
+
     return <div className="react-required-container">
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
@@ -192,6 +237,27 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
       <div className="application-sub-panel">
         {studentBasicInfo}
+      </div>
+      <div className="application-sub-panel--study-calendar">
+        <div>
+          <FullCalendar
+            plugins={[resourceTimelinePlugin, interactionPlugin]}
+            editable={true}
+            weekends={false}
+            droppable={true}
+            schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
+            headerToolbar={{ left: 'today prev,next', right: "" }}
+            firstDay={1}
+            height={200}
+            expandRows={true}
+            eventOverlap={false}
+            initialView="timelineWeek"
+            allDaySlot={false}
+            slotMinTime="09:00:00"
+            slotMaxTime="16:00:00"
+            locale={"fi"}
+          />
+        </div>
       </div>
       {studentHops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
