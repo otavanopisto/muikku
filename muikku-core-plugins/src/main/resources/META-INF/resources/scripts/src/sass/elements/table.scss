@@ -9,6 +9,24 @@
   width: 100%;
 }
 
+.table,
+.table tr,
+.table td {
+  display: grid;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: revert;
+  }
+}
+
+.table-thead {
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: revert;
+  }
+}
+
 .table-data,
 .table-head {
   border: 1px solid #ddd;
@@ -17,6 +35,19 @@
 
 .table-row:nth-child(even) {
   background-color: #f2f2f2;
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: table-row;
+  }
+}
+
+.table-row--course {
+  margin-bottom: 10px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    margin-bottom: revert;
+  }
 }
 
 /* .table__row:hover {
@@ -38,6 +69,35 @@
 .table-head--centered,
 .table-data--centered {
   text-align: center;
+}
+
+.table-data {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 5px 10px 5px;
+  width: 100%;
+  border-radius: 5px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    min-width: 40px;
+    width: 5%;
+  }
+}
+
+.table-data--subject {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-radius: unset;
+  background-color: aliceblue;
+  font-weight: bold;
+  cursor: pointer;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    margin-bottom: revert;
+    background-color: revert;
+    font-weight: revert;
+    cursor: revert;
+  }
 }
 
 .table-data--SUGGESTED {
@@ -71,6 +131,40 @@
 
 .table-data--SELECTED_OPTIONAL {
   background-color: #3ab8e1;
+}
+
+.table-data:after {
+  content: "";
+  display: block;
+  height: 15px;
+  width: 15px;
+  background: pink;
+  position: absolute;
+  top: 0;
+  transform: skewX(45deg);
+  right: -22px;
+  transition: right 0.3s ease-in;
+}
+
+.table-data--NEXT:after {
+  content: "";
+  display: block;
+  height: 15px;
+  width: 15px;
+  background: pink;
+  position: absolute;
+  top: 0;
+  transform: skewX(45deg);
+  right: -7px;
+  transition: right 0.3s ease-in;
+}
+
+table td.table-data--empty {
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: revert;
+  }
 }
 
 .table-data--NOSTATUS {

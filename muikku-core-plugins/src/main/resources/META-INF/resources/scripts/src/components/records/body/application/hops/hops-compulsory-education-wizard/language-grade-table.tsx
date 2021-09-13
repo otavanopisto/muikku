@@ -43,6 +43,7 @@ export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
  */
 interface LanguageGradeRowProps {
   index: number;
+  disabled: boolean;
   lng?: LanguageGrade;
   onDeleteRowClick?: (index: number) => void;
   onLanguageRowChange?: (updatedLng: LanguageGrade, index: number) => void;
@@ -53,6 +54,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   lng,
   onDeleteRowClick,
   onLanguageRowChange,
+  disabled,
 }) => {
   /**
    * handleOtherLngChange
@@ -87,6 +89,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
             onChange={handleOtherLngChange}
             placeholder="Kieli"
             className="hops-input"
+            disabled={disabled}
           ></input>
         )}
       </Td>
@@ -96,6 +99,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           checked={lng.grade == 1}
           onChange={handleRadioInputChange(1)}
           className="hops-input"
+          disabled={disabled}
         ></input>
       </Td>
       <Td>
@@ -104,6 +108,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           checked={lng.grade == 2}
           onChange={handleRadioInputChange(2)}
           className="hops-input"
+          disabled={disabled}
         ></input>
       </Td>
       <Td>
@@ -112,6 +117,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           checked={lng.grade == 3}
           onChange={handleRadioInputChange(3)}
           className="hops-input"
+          disabled={disabled}
         ></input>
       </Td>
       <Td>
@@ -120,6 +126,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           checked={lng.grade == 4}
           onChange={handleRadioInputChange(4)}
           className="hops-input"
+          disabled={disabled}
         ></input>
       </Td>
       <Td>
@@ -128,13 +135,18 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           checked={lng.grade == 5}
           onChange={handleRadioInputChange(5)}
           className="hops-input"
+          disabled={disabled}
         ></input>
       </Td>
       <Td modifiers={["centered"]} style={{ maxWidth: "50px" }}>
         {lng.hardCoded ? (
           "-"
         ) : (
-          <ButtonPill icon="trash" onClick={(e) => onDeleteRowClick(index)} />
+          <ButtonPill
+            icon="trash"
+            onClick={(e) => onDeleteRowClick(index)}
+            disabled={disabled}
+          />
         )}
       </Td>
     </Tr>

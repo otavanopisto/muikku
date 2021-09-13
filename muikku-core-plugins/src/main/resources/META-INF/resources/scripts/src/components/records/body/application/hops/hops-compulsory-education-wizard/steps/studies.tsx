@@ -419,7 +419,7 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
 
           <div className="hops-container__row">
             <div className="hops__form-element-container">
-              <CourseTable
+              {/* <CourseTable
                 selectedSubjects={this.props.studies.selectedSubjects}
                 approvedSubjectListOfIds={this.props.approvedSubjectListOfIds}
                 completedSubjectListOfIds={this.props.completedSubjectListOfIds}
@@ -430,7 +430,7 @@ class Studies extends React.Component<StudiesProps, StudiesState> {
                 finnishAsSecondLanguage={
                   this.props.studies.finnishAsSecondLanguage
                 }
-              />
+              /> */}
             </div>
           </div>
 

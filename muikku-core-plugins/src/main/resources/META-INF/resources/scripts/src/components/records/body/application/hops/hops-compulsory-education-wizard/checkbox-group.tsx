@@ -19,6 +19,7 @@ interface CheckboxGroupItemProps
   > {
   label: string;
   className?: string;
+  modifiers?: string[];
 }
 
 export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = ({
@@ -27,8 +28,10 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = ({
   children,
   ...inputProps
 }) => {
+  const classModifier = inputProps.disabled ? "group__item--disabled" : "";
+
   return (
-    <div className={className}>
+    <div className={`${className} ${classModifier}`}>
       <input className="item__input" {...inputProps} type="checkbox"></input>
       <label className="item__label"> {label} </label>
     </div>

@@ -17,15 +17,19 @@ import { CourseStatus } from "../../../../../../../@types/shared";
 import { NEEDED_STUDIES_IN_TOTAL } from "../hops-compulsory-education-wizard";
 import AnimateHeight from "react-animate-height";
 import { ButtonPill } from "../../../../../../general/button";
+import CourseList from "../../course-list";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
 interface StudiesPlanningProps extends StudiesCourseData {
+  user: "supervisor" | "student";
+  disabled: boolean;
   finnishAsSecondLanguage: boolean;
   ethics: boolean;
   studies: HopsPlanningStudies;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
   onDeleteSelection?: () => void;
+  onDeleteNextSelection?: () => void;
 }
 
 /**
@@ -33,6 +37,8 @@ interface StudiesPlanningProps extends StudiesCourseData {
  */
 interface StudiesPlanningState {
   openExtra: boolean;
+  selectNextIsActive: boolean;
+  supervisorSuggestedNext: number[];
 }
 
 /**
@@ -51,8 +57,40 @@ class StudiesPlanning extends React.Component<
 
     this.state = {
       openExtra: false,
+      selectNextIsActive: false,
+      supervisorSuggestedNext: [],
     };
   }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount = () => {
+    this.setState({
+      supervisorSuggestedNext:
+        this.props.studies.supervisorSuggestedNextListOfIds,
+    });
+  };
+
+  /**
+   * componentDidUpdate
+   * @param nextProps
+   * @param prevState
+   */
+  componentDidUpdate = (
+    prevProps: StudiesPlanningProps,
+    prevState: StudiesPlanningState
+  ) => {
+    if (
+      JSON.stringify(prevProps.studies.supervisorSuggestedNextListOfIds) !==
+      JSON.stringify(this.props.studies.supervisorSuggestedNextListOfIds)
+    ) {
+      this.setState({
+        supervisorSuggestedNext:
+          this.props.studies.supervisorSuggestedNextListOfIds,
+      });
+    }
+  };
 
   /**
    * compareGraduationGoalToNeededMandatoryCourses
@@ -91,13 +129,13 @@ class StudiesPlanning extends React.Component<
     if (hoursNeededToMatchGoal > this.props.studies.usedHoursPerWeek) {
       return this.renderCalculationInfoBox(
         "notenough",
-        `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${this.props.studies.graduationGoal}kk).`
+        `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${this.props.studies.graduationGoal}kk).`
       );
     }
     if (hoursNeededToMatchGoal < this.props.studies.usedHoursPerWeek) {
       return this.renderCalculationInfoBox(
         "toomuch",
-        `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${this.props.studies.graduationGoal}kk).`
+        `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${this.props.studies.graduationGoal}kk).`
       );
     }
     if (hoursNeededToMatchGoal === this.props.studies.usedHoursPerWeek) {
@@ -567,6 +605,64 @@ class StudiesPlanning extends React.Component<
   };
 
   /**
+   * handleSelectedSubjectListOfIdsChange
+   * @param listOfIds
+   */
+  handleSuperVisorListOfIdsChange = (listOfIds: number[]) => {
+    this.props.onStudiesPlanningChange({
+      ...this.props.studies,
+      supervisorSugestedSubjectListOfIds: listOfIds,
+    });
+  };
+
+  /**
+   * handleSuperVisorSuggestedForNextListOfIdsChange
+   */
+  handleSuperVisorSuggestedForNextListOfIdsChange = (listOfIds: number[]) => {
+    console.log(listOfIds);
+
+    if (this.state.supervisorSuggestedNext.length !== listOfIds.length) {
+      this.setState({
+        supervisorSuggestedNext: listOfIds,
+      });
+    }
+  };
+
+  /**
+   * handleActivateSelectSuggestedForNext
+   */
+  handleActivateSelectSuggestedForNext = () => {
+    this.setState({
+      selectNextIsActive: !this.state.selectNextIsActive,
+    });
+  };
+
+  /**
+   * handleSaveActiveSuggestedSelections
+   */
+  handleSaveActiveSuggestedSelections = () => {
+    this.props.onStudiesPlanningChange({
+      ...this.props.studies,
+      supervisorSuggestedNextListOfIds: this.state.supervisorSuggestedNext,
+    });
+
+    this.setState({
+      selectNextIsActive: false,
+    });
+  };
+
+  /**
+   * handleCancleActiveSuggestedSelectionAndRevert
+   */
+  handleCancleActiveSuggestedSelectionAndRevert = () => {
+    this.setState({
+      supervisorSuggestedNext:
+        this.props.studies.supervisorSuggestedNextListOfIds,
+      selectNextIsActive: false,
+    });
+  };
+
+  /**
    * handleFinlandAsSecondLanguage
    * @param e
    */
@@ -807,350 +903,6 @@ class StudiesPlanning extends React.Component<
     }
   };
 
-  renderDemo1 = () => {
-    const { followUpGoal, graduationGoal, followUpStudies, studySector } =
-      this.props.studies;
-
-    const canGraduate = this.hasValidAmountStudies();
-
-    const completedMandatoryStudies =
-      this.calculateNumberOfCompletedMandatoryCourses();
-    const completedOptionalStudies =
-      this.calculateNumberOfCompletedOptionalyCourses();
-
-    const needMandatoryStudies = this.calculateMaxNumberOfMandatoryCourses();
-    const neededOptionalStudies =
-      NEEDED_STUDIES_IN_TOTAL - this.calculateMaxNumberOfMandatoryCourses();
-
-    return (
-      <div className="hops-container">
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">Tavoitteet</legend>
-
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <label className="hops-label">Valmistumisaikatavoite:</label>
-              <select
-                value={graduationGoal}
-                onChange={this.handleGoalsSelectsChange("graduationGoal")}
-                className="hops-select"
-              >
-                <option value="">Valitse...</option>
-                <option value="6">6kk</option>
-                <option value="12">1v.</option>
-                <option value="18">1,5v.</option>
-                <option value="24">2v.</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <label className="hops-label">Jatkotavoitteet:</label>
-              <select
-                value={followUpGoal}
-                onChange={this.handleGoalsSelectsChange("followUpGoal")}
-                className="hops-select"
-              >
-                <option value="">Valitse...</option>
-                <option value={FollowUpGoal.POSTGRADUATE_STUDIES}>
-                  Jatko-opinnot
-                </option>
-                <option value={FollowUpGoal.WORKING_LIFE}>Työelämä</option>
-                <option value={FollowUpGoal.NO_FOLLOW_UP_GOALS}>
-                  Ei muita tavotteita
-                </option>
-              </select>
-            </div>
-          </div>
-
-          {followUpGoal === FollowUpGoal.POSTGRADUATE_STUDIES ? (
-            <div className="hops-container__row">
-              <div className="hops__form-element-container">
-                <label className="hops-label">Jatko-opinnot:</label>
-                <select
-                  value={followUpStudies}
-                  onChange={this.handleGoalsSelectsChange("followUpStudies")}
-                  className="hops-select"
-                >
-                  <option value="">Valitse...</option>
-                  <option value={FollowUpStudies.APPRENTICESHIP_TRAINING}>
-                    Oppisopimuskoulutus
-                  </option>
-                  <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
-                    Ammatillinen toinen aste
-                  </option>
-                  <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
-                    Lukio
-                  </option>
-                  <option value={FollowUpStudies.UNIVERSITY_STUDIES}>
-                    Korkeakouluopinnot
-                  </option>
-                </select>
-              </div>
-
-              <div className="hops__form-element-container">
-                <label className="hops-label">Koulutusala:</label>
-                <select
-                  value={studySector}
-                  onChange={this.handleGoalsSelectsChange("studySector")}
-                  className="hops-select"
-                >
-                  <option value="">Valitse...</option>
-                  <option value={StudySector.SOCIAL_HEALT_SECTOR}>
-                    Sosiaali- ja terveysala
-                  </option>
-                  <option value={StudySector.TRADE_SECTOR}>Kauppa</option>
-                  <option value={StudySector.TRANSPORT_SECTOR}>Liikenne</option>
-                  <option value={StudySector.EDUCATION_SECTOR}>Kasvatus</option>
-                  <option value={StudySector.INDUSTRY_SECTOR}>
-                    Teollisuus
-                  </option>
-                  <option value={StudySector.ART_SECTOR}>Taide</option>
-                </select>
-              </div>
-            </div>
-          ) : null}
-        </fieldset>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">
-            Opintojen suunnittelu
-          </legend>
-
-          <div className="hops-container__row">
-            <div className="hops__form-element-container hops__form-element-container--single-row">
-              <label className="hops-label">
-                Suoritan äidinkielen sijaan Suomen toisena kielenä?
-              </label>
-              <input
-                type="checkbox"
-                className="hops-input"
-                checked={this.props.finnishAsSecondLanguage}
-                onChange={this.handleFinnishAsSecondLanguage}
-              ></input>
-            </div>
-          </div>
-          <div className="hops-container__row">
-            <div className="hops__form-element-container hops__form-element-container--single-row">
-              <label className="hops-label">
-                Suoritan uskonnon elämänkatsomustietona?
-              </label>
-              <input
-                type="checkbox"
-                className="hops-input"
-                checked={this.props.ethics}
-                onChange={this.handleEthicsChange}
-              ></input>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops__step-container__subheader">
-            Opintolaskuri
-          </legend>
-
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <TextField
-                type="number"
-                label="Paljonko tunteja käytettävissä viikossa"
-                onChange={this.handleUsedHoursPerWeekChange}
-                value={this.props.studies.usedHoursPerWeek}
-                className="hops-input"
-              />
-            </div>
-          </div>
-
-          <div className="hops-container__row">
-            {this.renderOptionalStudiesInfoBox()}
-          </div>
-
-          <div
-            style={{ alignItems: "baseline" }}
-            className="hops-container__row"
-          >
-            <div
-              style={{ flexGrow: 0 }}
-              className="hops__form-element-container"
-            >
-              <h2 style={{ margin: "5px" }}>Suoritetut opinnot:</h2>
-              <div style={{ display: "flex" }}>
-                <Dropdown
-                  content={
-                    <div>
-                      <h4>Suoritetut kurssit</h4>
-                      <h5>Pakolliset: {completedMandatoryStudies} </h5>
-                    </div>
-                  }
-                >
-                  <div tabIndex={0}>
-                    <ProgressBarCircle
-                      containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
-                      options={{
-                        strokeWidth: 10,
-                        duration: 1000,
-                        color: "#008000",
-                        trailColor: "#808080",
-                        easing: "easeInOut",
-                        trailWidth: 10,
-                        initialAnimate: true,
-                        svgStyle: {
-                          flexBasis: "50px",
-                          flexGrow: "0",
-                          flexShrink: "0",
-                          height: "50px",
-                        },
-                        text: {
-                          style: null,
-                          className:
-                            "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
-                        },
-                      }}
-                      text={`${completedMandatoryStudies} / ${needMandatoryStudies}`}
-                      progress={
-                        completedMandatoryStudies / needMandatoryStudies
-                      }
-                    />
-                  </div>
-                </Dropdown>
-
-                <Dropdown
-                  content={
-                    <div>
-                      <h4>Suoritetut kurssit</h4>
-                      <h5>Valinnaiset: {completedOptionalStudies} </h5>
-                    </div>
-                  }
-                >
-                  <div tabIndex={0}>
-                    <ProgressBarCircle
-                      containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
-                      options={{
-                        strokeWidth: 10,
-                        duration: 1000,
-                        color: "#008000",
-                        trailColor: "#ADD8E6",
-                        easing: "easeInOut",
-                        trailWidth: 10,
-                        svgStyle: {
-                          flexBasis: "50px",
-                          flexGrow: "0",
-                          flexShrink: "0",
-                          height: "50px",
-                        },
-                        text: {
-                          style: null,
-                          className:
-                            "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
-                        },
-                      }}
-                      text={`
-                    ${completedOptionalStudies}
-                    / 
-                    ${NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies}`}
-                      progress={
-                        completedOptionalStudies /
-                        (NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies)
-                      }
-                    />
-                  </div>
-                </Dropdown>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flex: "1",
-              }}
-              className="hops__form-element-container"
-            >
-              <h2>Arvioitu opintoihin tarvittava aika:</h2>
-              {this.compareGraduationGoalToNeededForMandatoryStudies()}
-            </div>
-          </div>
-          {canGraduate ? (
-            <div className="hops-container__row">
-              <div
-                style={{
-                  border: "2px solid green",
-                  padding: "10px",
-                  fontStyle: "italic",
-                }}
-                className="hops__form-element-container"
-              >
-                <h3>
-                  Olet suorittanut perusopetuksen opinnoista valmistumiseen
-                  oikeuttavan määrän!
-                </h3>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="hops-container__row">
-            <Button onClick={this.props.onDeleteSelection}>
-              Poista valinnat
-            </Button>
-          </div>
-
-          <div style={{ overflowX: "auto" }} className="hops-container__row">
-            <div className="hops__form-element-container">
-              <CourseTable
-                selectedSubjects={this.props.studies.selectedSubjects}
-                onChange={this.handleSelectedSubjectsChange}
-                ethicsSelected={this.props.ethics}
-                finnishAsSecondLanguage={this.props.finnishAsSecondLanguage}
-                selectedSubjectListOfIds={this.props.studies.selectedListOfIds}
-                approvedSubjectListOfIds={this.props.approvedSubjectListOfIds}
-                completedSubjectListOfIds={this.props.completedSubjectListOfIds}
-                selectedOptionalListOfIds={this.props.selectedOptionalListOfIds}
-                inprogressSubjectListOfIds={
-                  this.props.inprogressSubjectListOfIds
-                }
-                supervisorSugestedSubjectListOfIds={
-                  this.props.supervisorSugestedSubjectListOfIds
-                }
-                onChangeSelectSubjectList={
-                  this.handleSelectedSubjectListOfIdsChange
-                }
-              />
-            </div>
-          </div>
-
-          <div className="hops-container__indicator-examples">
-            <div className="hops-container__course-mandatory">
-              <div className="hops-container__course-mandatory-indicator"></div>
-              <p>Pakollinen</p>
-            </div>
-            <div className="hops-container__course-optional">
-              <div className="hops-container__course-optional-indicator"></div>
-              <p>(*)-Valinnainen</p>
-            </div>
-            <div className="hops-container__course-approval">
-              <div className="hops-container__course-approval-indicator"></div>
-              <p>Hyväksiluettu</p>
-            </div>
-            <div className="hops-container__course-completed">
-              <div className="hops-container__course-completed-indicator"></div>
-              <p>Suoritettu</p>
-            </div>
-            <div className="hops-container__course-inprogress">
-              <div className="hops-container__course-inprogress-indicator"></div>
-              <p>Kesken</p>
-            </div>
-            <div className="hops-container__course-suggested">
-              <div className="hops-container__course-suggested-indicator"></div>
-              <p>Ohjaajan ehdottama</p>
-            </div>
-            <div className="hops-container__course-selected">
-              <div className="hops-container__course-selected-indicator"></div>
-              <p>Valittu</p>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-    );
-  };
-
   renderDemo2 = () => {
     const { followUpGoal, graduationGoal, followUpStudies, studySector } =
       this.props.studies;
@@ -1208,6 +960,8 @@ class StudiesPlanning extends React.Component<
 
     const proggressOfStudies = calculationDivider1;
 
+    console.log("RENDER", this.state.supervisorSuggestedNext);
+
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
@@ -1220,6 +974,7 @@ class StudiesPlanning extends React.Component<
                 value={graduationGoal}
                 onChange={this.handleGoalsSelectsChange("graduationGoal")}
                 className="hops-select"
+                disabled={this.props.disabled}
               >
                 <option value="">Valitse...</option>
                 <option value="6">6kk</option>
@@ -1237,6 +992,7 @@ class StudiesPlanning extends React.Component<
                 value={followUpGoal}
                 onChange={this.handleGoalsSelectsChange("followUpGoal")}
                 className="hops-select"
+                disabled={this.props.disabled}
               >
                 <option value="">Valitse...</option>
                 <option value={FollowUpGoal.POSTGRADUATE_STUDIES}>
@@ -1258,6 +1014,7 @@ class StudiesPlanning extends React.Component<
                   value={followUpStudies}
                   onChange={this.handleGoalsSelectsChange("followUpStudies")}
                   className="hops-select"
+                  disabled={this.props.disabled}
                 >
                   <option value="">Valitse...</option>
                   <option value={FollowUpStudies.APPRENTICESHIP_TRAINING}>
@@ -1281,6 +1038,7 @@ class StudiesPlanning extends React.Component<
                   value={studySector}
                   onChange={this.handleGoalsSelectsChange("studySector")}
                   className="hops-select"
+                  disabled={this.props.disabled}
                 >
                   <option value="">Valitse...</option>
                   <option value={StudySector.SOCIAL_HEALT_SECTOR}>
@@ -1313,6 +1071,7 @@ class StudiesPlanning extends React.Component<
                 className="hops-input"
                 checked={this.props.finnishAsSecondLanguage}
                 onChange={this.handleFinnishAsSecondLanguage}
+                disabled={this.props.disabled}
               ></input>
             </div>
           </div>
@@ -1326,6 +1085,7 @@ class StudiesPlanning extends React.Component<
                 className="hops-input"
                 checked={this.props.ethics}
                 onChange={this.handleEthicsChange}
+                disabled={this.props.disabled}
               ></input>
             </div>
           </div>
@@ -1347,6 +1107,7 @@ class StudiesPlanning extends React.Component<
                   onChange={this.handleUsedHoursPerWeekChange}
                   value={this.props.studies.usedHoursPerWeek}
                   className="hops-input"
+                  disabled={this.props.disabled}
                 />
               </div>
             </div>
@@ -1366,11 +1127,7 @@ class StudiesPlanning extends React.Component<
 
           <div style={{ flexFlow: "column" }} className="hops-container__row">
             <h2 style={{ margin: "5px" }}>Opintojen edistyminen</h2>
-            <div
-              onClick={(e) =>
-                this.setState({ openExtra: !this.state.openExtra })
-              }
-            >
+            <div>
               <ProgressBarLine
                 containerClassName="hops-activity__progressbar-line hops-course-activity__progressbar-line hops-proggress-line"
                 options={{
@@ -1540,18 +1297,56 @@ class StudiesPlanning extends React.Component<
             </div>
           </div>
 
-          <div
-            style={{ justifyContent: "flex-end" }}
-            className="hops-container__row"
-          >
-            <Button onClick={this.props.onDeleteSelection}>
-              Poista valinnat
-            </Button>
+          <div className="hops-container__row">
+            <div
+              style={{
+                flexGrow: 1,
+                display: "flex",
+                flexFlow: "wrap",
+              }}
+            >
+              {this.state.selectNextIsActive ? (
+                <>
+                  <Button onClick={this.handleSaveActiveSuggestedSelections}>
+                    Tallenna
+                  </Button>
+                  <Button
+                    onClick={this.handleCancleActiveSuggestedSelectionAndRevert}
+                  >
+                    Peruuta
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={this.handleActivateSelectSuggestedForNext}>
+                  Seuraavaksi suoritettavat?
+                </Button>
+              )}
+            </div>
+
+            <div
+              style={{
+                flexGrow: 1,
+                display: "flex",
+                flexFlow: "wrap",
+              }}
+            >
+              {this.props.user === "supervisor" ? (
+                <Button onClick={this.props.onDeleteNextSelection}>
+                  Poista suoritettavat kurssiehdotukset
+                </Button>
+              ) : null}
+
+              <Button onClick={this.props.onDeleteSelection}>
+                Poista kurssi ehdotukset
+              </Button>
+            </div>
           </div>
 
           <div style={{ overflowX: "auto" }} className="hops-container__row">
-            <div className="hops__form-element-container">
+            <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
               <CourseTable
+                user={this.props.user}
+                selectNextIsActive={this.state.selectNextIsActive}
                 selectedSubjects={this.props.studies.selectedSubjects}
                 onChange={this.handleSelectedSubjectsChange}
                 ethicsSelected={this.props.ethics}
@@ -1559,15 +1354,54 @@ class StudiesPlanning extends React.Component<
                 selectedSubjectListOfIds={this.props.studies.selectedListOfIds}
                 approvedSubjectListOfIds={this.props.approvedSubjectListOfIds}
                 completedSubjectListOfIds={this.props.completedSubjectListOfIds}
-                selectedOptionalListOfIds={this.props.selectedOptionalListOfIds}
                 inprogressSubjectListOfIds={
                   this.props.inprogressSubjectListOfIds
                 }
                 supervisorSugestedSubjectListOfIds={
-                  this.props.supervisorSugestedSubjectListOfIds
+                  this.props.studies.supervisorSugestedSubjectListOfIds
+                }
+                supervisorSuggestedNextListOfIds={
+                  this.state.supervisorSuggestedNext
                 }
                 onChangeSelectSubjectList={
-                  this.handleSelectedSubjectListOfIdsChange
+                  this.props.user === "supervisor"
+                    ? this.handleSuperVisorListOfIdsChange
+                    : this.handleSelectedSubjectListOfIdsChange
+                }
+                onChangeSuggestedForNextList={
+                  this.handleSuperVisorSuggestedForNextListOfIdsChange
+                }
+              />
+            </div>
+
+            <div className="hops__form-element-container hops__form-element-container--mobile">
+              <CourseList
+                key="jottain"
+                user={this.props.user}
+                selectNextIsActive={this.state.selectNextIsActive}
+                selectedSubjects={this.props.studies.selectedSubjects}
+                onChange={this.handleSelectedSubjectsChange}
+                ethicsSelected={this.props.ethics}
+                finnishAsSecondLanguage={this.props.finnishAsSecondLanguage}
+                selectedSubjectListOfIds={this.props.studies.selectedListOfIds}
+                approvedSubjectListOfIds={this.props.approvedSubjectListOfIds}
+                completedSubjectListOfIds={this.props.completedSubjectListOfIds}
+                inprogressSubjectListOfIds={
+                  this.props.inprogressSubjectListOfIds
+                }
+                supervisorSugestedSubjectListOfIds={
+                  this.props.studies.supervisorSugestedSubjectListOfIds
+                }
+                supervisorSuggestedNextListOfIds={
+                  this.state.supervisorSuggestedNext
+                }
+                onChangeSelectSubjectList={
+                  this.props.user === "supervisor"
+                    ? this.handleSuperVisorListOfIdsChange
+                    : this.handleSelectedSubjectListOfIdsChange
+                }
+                onChangeSuggestedForNextList={
+                  this.handleSuperVisorSuggestedForNextListOfIdsChange
                 }
               />
             </div>

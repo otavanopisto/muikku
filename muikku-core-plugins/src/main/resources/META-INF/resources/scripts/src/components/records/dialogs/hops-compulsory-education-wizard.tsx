@@ -4,8 +4,10 @@ import CompulsoryEducationHopsWizard from "~/components/records/body/application
 import { HopsCompulsory } from "../../../@types/shared";
 
 interface HopsCompulsoruEducationWizardProps {
+  user: "supervisor" | "student";
   children?: React.ReactElement<any>;
   hops?: number;
+  disabled: boolean;
 }
 
 interface HopsCompulsoruEducationWizardState {}
@@ -21,12 +23,17 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
   render() {
     let content = (closeDialog: () => any) => (
       <div>
-        <CompulsoryEducationHopsWizard testData={this.props.hops} />
+        <CompulsoryEducationHopsWizard
+          user={this.props.user}
+          testData={this.props.hops}
+          disabled={this.props.disabled}
+        />
       </div>
     );
     let footer = (closeDialog: () => any) => {
       return <div className="dialog__button-set"></div>;
     };
+
     return (
       <Dialog
         disableScroll={true}

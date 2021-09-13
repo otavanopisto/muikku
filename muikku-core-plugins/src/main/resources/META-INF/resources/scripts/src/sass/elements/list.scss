@@ -1,0 +1,124 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.list-row__container {
+  display: flex;
+  flex-flow: column;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-flow: wrap;
+  }
+}
+
+.list-subject-course__container {
+  max-height: initial;
+  overflow: unset;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    max-height: 225px;
+    overflow: auto;
+  }
+}
+
+.list-container--course {
+  margin-bottom: 10px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    margin: 5px;
+    width: calc(20% - 10px);
+  }
+}
+
+.list-item--centered {
+  text-align: center;
+}
+
+.list-item {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 5px 10px 5px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.list-item--subject {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-radius: unset;
+  background-color: aliceblue;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.list-item--course {
+  margin: 5px 0;
+  border-radius: 0;
+}
+
+.list-item--SUGGESTED {
+  border: 2px solid pink;
+}
+
+.list-item--MANDATORY {
+  background-color: grey;
+}
+
+.list-item--OPTIONAL {
+  background-color: lightblue;
+}
+
+.list-item--COMPLETED {
+  background-color: green;
+}
+
+.list-item--INPROGRESS {
+  background-color: orange;
+}
+
+.list-item--APPROVAL {
+  background-color: palegreen;
+}
+
+.list-item--SELECTED {
+  background-color: wheat;
+}
+
+.list-item--SELECTED_OPTIONAL {
+  background-color: #3ab8e1;
+}
+
+.list-item:after {
+  content: "";
+  display: block;
+  height: 15px;
+  width: 15px;
+  background: pink;
+  position: absolute;
+  top: 0;
+  transform: skewX(45deg);
+  right: -22px;
+  transition: right 0.3s ease-in;
+}
+
+.list-item--NEXT:after {
+  content: "";
+  display: block;
+  height: 15px;
+  width: 15px;
+  background: pink;
+  position: absolute;
+  top: 0;
+  transform: skewX(45deg);
+  right: -7px;
+  transition: right 0.3s ease-in;
+}
+
+.list-item--empty {
+  display: none;
+}
+
+.list-item--NOSTATUS {
+  background-color: unset;
+}

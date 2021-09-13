@@ -23,6 +23,11 @@
   }
 }
 
+.group__item--disabled {
+  background-color: #e6e5e5;
+  border: 0;
+}
+
 .item__label {
   margin: 5px;
 }

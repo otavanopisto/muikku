@@ -10,6 +10,7 @@ import Button from "../../../../../../general/button";
 import { TextField } from "../text-field";
 
 interface StartingLevelProps {
+  disabled: boolean;
   studentStartingLevel: HopsStudentStartingLevel;
   onStartingLevelChange: (startingLevel: HopsStudentStartingLevel) => void;
 }
@@ -139,6 +140,7 @@ class StartingLevel extends React.Component<
                 className="hops-select"
                 value={this.props.studentStartingLevel.previousEducation}
                 onChange={this.handleSelectsChange("previousEducation")}
+                disabled={this.props.disabled}
               >
                 <option value={Education.HOME_SCHOOL}>kotiopetus</option>
                 <option value={Education.COMPULSORY_SCHOOL}>peruskoulu</option>
@@ -156,6 +158,7 @@ class StartingLevel extends React.Component<
                   label="Mikä?"
                   className="hops-input"
                   onChange={this.handleTextAreaChange("previousEducationElse")}
+                  disabled={this.props.disabled}
                 />
               </div>
             ) : null}
@@ -169,6 +172,7 @@ class StartingLevel extends React.Component<
                 onChange={this.handleTextAreaChange(
                   "previousYearsUsedInStudies"
                 )}
+                disabled={this.props.disabled}
               />
             </div>
           </div>
@@ -180,6 +184,7 @@ class StartingLevel extends React.Component<
                 className="hops-select"
                 value={this.props.studentStartingLevel.previousWorkExperience}
                 onChange={this.handleSelectsChange("previousWorkExperience")}
+                disabled={this.props.disabled}
               >
                 <option value="0-5">0-5 vuotta</option>
                 <option value="6-10">6-10 vuotta</option>
@@ -205,6 +210,7 @@ class StartingLevel extends React.Component<
                   this.props.studentStartingLevel.finnishAsMainOrSecondaryLng
                 }
                 onChange={this.handleFinnishAsMainOrSecondaryLngChange}
+                disabled={this.props.disabled}
               ></input>
             </div>
           </div>
@@ -220,6 +226,7 @@ class StartingLevel extends React.Component<
                       lng={lngG}
                       onLanguageRowChange={this.handleCustomLngChange}
                       onDeleteRowClick={this.handleDeleteCustomLngClick}
+                      disabled={this.props.disabled}
                     />
                   )
                 )}

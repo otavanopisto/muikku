@@ -83,14 +83,28 @@
 .hops__form-element-container--single-row {
   align-items: center;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
 
   .hops-label {
     flex-basis: auto;
-    flex-grow: 0;
-    flex-shrink: 0;
     margin: 0 10px 0 0;
     padding: 0;
+  }
+}
+
+.hops__form-element-container--pad__upforwards {
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: flex;
+  }
+}
+
+.hops__form-element-container--mobile {
+  display: flex;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: none;
   }
 }
 
@@ -117,7 +131,8 @@
 }
 
 .hops-input:disabled {
-  background-color: lightgray;
+  background-color: #e6e5e5;
+  border: 0;
 }
 
 .hops-select {
@@ -130,7 +145,7 @@
   width: 100%;
 
   &[disabled] {
-    background-color: lighten($color-disabled, 20%);
+    background-color: #e6e5e5;
     border: 0;
   }
 }
@@ -173,6 +188,11 @@
 
 .hops-container__row--list {
   display: block;
+}
+
+.form-element__textarea[disabled] {
+  background-color: #e6e5e5;
+  border: 0;
 }
 
 .form-element__textarea--resize__vertically {
@@ -293,7 +313,6 @@
   display: flex;
   position: relative;
   align-items: center;
-  cursor: pointer;
   width: calc(100% - 10px);
   margin: 5px;
 }

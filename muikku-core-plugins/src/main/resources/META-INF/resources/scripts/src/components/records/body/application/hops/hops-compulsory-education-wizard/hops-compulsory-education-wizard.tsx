@@ -14,10 +14,6 @@ import {
   HopsPlanningStudies,
 } from "../../../../../../@types/shared";
 import {
-  HopsStudies,
-  StudiesCourseData,
-} from "../../../../../../@types/shared";
-import {
   hopsMock1,
   hopsMock2,
   hopsMock3,
@@ -33,11 +29,11 @@ export const NEEDED_OPTIONAL_COURSES = 9;
 export const NEEDED_STUDIES_IN_TOTAL = 46;
 
 interface CompulsoryEducationHopsWizardProps {
-  data?: HOPSDataType;
-  defaultData: HOPSDataType;
+  user: "supervisor" | "student";
   onHopsChange?: (hops: HOPSDataType) => any;
   i18n: i18nType;
   testData?: number;
+  disabled: boolean;
 }
 
 interface CompulsoryEducationHopsWizardState {
@@ -110,6 +106,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
           ethics: false,
           finnishAsSecondLanguage: false,
           selectedListOfIds: [],
+          supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
+          supervisorSuggestedNextListOfIds: [],
         },
         studiesCourseData: {
           approvedSubjectListOfIds: [
@@ -119,7 +117,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
             3, 4, 14, 23, 24, 34, 35, 36, 41, 46, 47, 50, 58, 63,
           ],
           inprogressSubjectListOfIds: [5, 15, 37, 42, 46],
-          supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
         },
       },
     };
@@ -226,20 +223,46 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
+   * handleDeleteSuperVisorSelections
+   */
+  handleDeleteSuperVisorSelections = () => {
+    this.setState({
+      hopsCompulsory: {
+        ...this.state.hopsCompulsory,
+        studiesPlanning: {
+          ...this.state.hopsCompulsory.studiesPlanning,
+          supervisorSugestedSubjectListOfIds: [],
+        },
+      },
+    });
+  };
+
+  /**
+   * handleDeleteSuggestedNextSelections
+   */
+  handleDeleteSuggestedNextSelections = () => {
+    this.setState({
+      hopsCompulsory: {
+        ...this.state.hopsCompulsory,
+        studiesPlanning: {
+          ...this.state.hopsCompulsory.studiesPlanning,
+          supervisorSuggestedNextListOfIds: [],
+        },
+      },
+    });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    let data = this.props.data || this.props.defaultData;
-    if (!data || !data.optedIn) {
-      return null;
-    }
-
     const steps = [
       {
         name: "Perustiedot",
         component: (
           <Step1
+            disabled={this.props.disabled}
             loading={this.state.loading}
             basicInformation={this.state.hopsCompulsory.basicInfo}
           />
@@ -249,6 +272,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "Osaamisen ja lähtötason arvointi",
         component: (
           <Step2
+            disabled={this.props.disabled}
             studentStartingLevel={this.state.hopsCompulsory.startingLevel}
             onStartingLevelChange={this.handleStartingLevelChange}
           />
@@ -258,6 +282,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "Opiskelutaidot ja Motivaatio",
         component: (
           <Step3
+            disabled={this.props.disabled}
             motivationAndStudy={this.state.hopsCompulsory.motivationAndStudy}
             onMotivationAndStudyChange={this.handleMotivationAndStudyChange}
           />
@@ -267,6 +292,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
         name: "Tavoitteet ja opintojen suunnittelu",
         component: (
           <Step5
+            user={this.props.user}
+            disabled={this.props.disabled}
             studies={{
               ...this.state.hopsCompulsory.studiesPlanning,
             }}
@@ -275,7 +302,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
               this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage
             }
             onStudiesPlanningChange={this.handleStudiesPlanningChange}
-            onDeleteSelection={this.handleDeleteCourseSelections}
+            onDeleteSelection={
+              this.props.user === "supervisor"
+                ? this.handleDeleteSuperVisorSelections
+                : this.handleDeleteCourseSelections
+            }
+            onDeleteNextSelection={this.handleDeleteSuggestedNextSelections}
             {...this.state.hopsCompulsory.studiesCourseData}
           />
         ),
@@ -314,7 +346,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    defaultData: state.hops && state.hops.value,
   };
 }
 

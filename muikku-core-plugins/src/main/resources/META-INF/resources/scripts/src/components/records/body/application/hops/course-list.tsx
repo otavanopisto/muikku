@@ -1,19 +1,11 @@
 import * as React from "react";
-import { CourseStatus, SchoolSubject } from "~/@types/shared";
-import {
-  Table,
-  TableHead,
-  Tbody,
-  Td,
-  Th,
-  Tr,
-} from "~/components/general/table";
+import { SchoolSubject } from "~/@types/shared";
 import { mockSchoolSubjects } from "~/mock/mock-data";
 import Dropdown from "../../../../general/dropdown";
-import Button from "../../../../general/button";
 import AnimateHeight from "react-animate-height";
+import { ListContainer, ListItem } from "~/components/general/list";
 
-interface CourseTableProps {
+interface CourseListProps {
   selectedSubjects?: SchoolSubject[];
   user: "supervisor" | "student";
   selectNextIsActive: boolean;
@@ -35,24 +27,20 @@ interface CourseTableProps {
  * CourseTable
  * @returns
  */
-const CourseTable: React.FC<CourseTableProps> = (props) => {
-  const [width, setWidth] = React.useState<number>(window.innerWidth);
+const CourseList: React.FC<CourseListProps> = (props) => {
   const [openedSubjectSelections, setOpenedSubjectSelections] = React.useState<
     string[]
   >([]);
 
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
+  const [suggestedForNextListIds, setSuggestedForNextListIds] = React.useState<
+    number[]
+  >(props.supervisorSuggestedNextListOfIds);
 
   React.useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  let isMobile: boolean = width <= 640;
+    if (props.onChangeSuggestedForNextList) {
+      props.onChangeSuggestedForNextList(suggestedForNextListIds);
+    }
+  }, [suggestedForNextListIds]);
 
   /**
    * handleTableDataChange
@@ -155,18 +143,18 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           ...props.supervisorSuggestedNextListOfIds,
         ];
 
-        const index = supervisorSuggestedNextListOfIds.findIndex(
-          (courseId) => courseId === id
-        );
-
-        if (index !== -1) {
-          supervisorSuggestedNextListOfIds.splice(index, 1);
-        } else {
+        if (e.target.checked) {
           supervisorSuggestedNextListOfIds.push(id);
+        } else {
+          supervisorSuggestedNextListOfIds.filter(
+            (courseId) => courseId !== id
+          );
         }
 
-        props.onChangeSuggestedForNextList &&
-          props.onChangeSuggestedForNextList(supervisorSuggestedNextListOfIds);
+        setSuggestedForNextListIds(supervisorSuggestedNextListOfIds);
+
+        /* props.onChangeSuggestedForNextList &&
+          props.onChangeSuggestedForNextList(supervisorSuggestedNextListOfIds); */
       }
     };
 
@@ -176,7 +164,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
    */
   const handleOpenSubjectCourseSelection =
     (subjectName: string) =>
-    (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const updatedOpenedSubjectSelections = [...openedSubjectSelections];
 
       const index = updatedOpenedSubjectSelections.findIndex(
@@ -196,22 +184,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
    * currentMaxCourses
    */
   const currentMaxCourses = getHighestCourseNumber(mockSchoolSubjects);
-
-  /**
-   * renderTableHeaderRow
-   */
-  const renderTableHeaderRow = (
-    <Tr>
-      <Th>Oppiaine</Th>
-      {Array(currentMaxCourses)
-        .fill(1)
-        .map((value, index) => (
-          <Th modifiers={["centered"]} key={index}>
-            {index + 1}
-          </Th>
-        ))}
-    </Tr>
-  );
 
   /**
    * renderRows
@@ -251,14 +223,13 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
       if (isAvailable && sSubject.availableCourses[index] !== undefined) {
         let modifiers = ["course", "centered"];
 
-        let canBeSelected = true;
-
         if (sSubject.availableCourses[index].mandatory) {
           modifiers.push("MANDATORY");
         } else {
           modifiers.push("OPTIONAL");
         }
 
+        let canBeSelected = true;
         let canBeSuggestedForNextCourse = true;
         let suggestedForNext = false;
 
@@ -319,12 +290,12 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         }
 
         if (
-          props.supervisorSuggestedNextListOfIds &&
-          props.supervisorSuggestedNextListOfIds.find(
+          suggestedForNextListIds.find(
             (courseId) => courseId === sSubject.availableCourses[index].id
           )
         ) {
           suggestedForNext = true;
+          console.log("tapahtuu");
 
           !props.selectNextIsActive && modifiers.push("NEXT");
         }
@@ -335,8 +306,8 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
          */
         if (sSubject.availableCourses[index].mandatory) {
           courses.push(
-            <Td
-              key={sSubject.availableCourses[index].name}
+            <ListItem
+              key={sSubject.availableCourses[index].id}
               modifiers={modifiers}
             >
               {canBeSelected ? (
@@ -362,14 +333,10 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                   >
                     <span>{index + 1}</span>
                     {props.selectNextIsActive && canBeSuggestedForNextCourse ? (
-                      <input
-                        type="checkbox"
+                      <ListCheckbox
                         checked={suggestedForNext}
-                        className="item__input"
-                        value={sSubject.availableCourses[index].id}
-                        onChange={handleSuggestedForNextCheckboxChange(
-                          sSubject.availableCourses[index].id
-                        )}
+                        id={sSubject.availableCourses[index].id}
+                        onChange={handleSuggestedForNextCheckboxChange}
                       />
                     ) : null}
                   </div>
@@ -386,13 +353,13 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                   <span>{index + 1}</span>
                 </div>
               )}
-            </Td>
+            </ListItem>
           );
         } else {
           if (canBeSelected) {
             courses.push(
-              <Td
-                key={sSubject.availableCourses[index].name}
+              <ListItem
+                key={sSubject.availableCourses[index].id}
                 onClick={handleToggleCourseClick(i, index)}
                 modifiers={modifiers}
               >
@@ -418,24 +385,20 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                   >
                     <span>{index + 1}*</span>
                     {props.selectNextIsActive && canBeSuggestedForNextCourse ? (
-                      <input
-                        type="checkbox"
+                      <ListCheckbox
                         checked={suggestedForNext}
-                        className="item__input"
-                        value={sSubject.availableCourses[index].id}
-                        onChange={handleSuggestedForNextCheckboxChange(
-                          sSubject.availableCourses[index].id
-                        )}
+                        id={sSubject.availableCourses[index].id}
+                        onChange={handleSuggestedForNextCheckboxChange}
                       />
                     ) : null}
                   </div>
                 </Dropdown>
-              </Td>
+              </ListItem>
             );
           } else {
             courses.push(
-              <Td
-                key={sSubject.availableCourses[index].name}
+              <ListItem
+                key={sSubject.availableCourses[index].id}
                 modifiers={modifiers}
               >
                 <div
@@ -448,32 +411,40 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                 >
                   <span>{index + 1}*</span>
                 </div>
-              </Td>
+              </ListItem>
             );
           }
         }
       } else {
         courses.push(
-          <Td key={`empty-${index}`} modifiers={["centered", "empty"]}>
+          <ListItem key={`empty-${index}`} modifiers={["centered", "empty"]}>
             -
-          </Td>
+          </ListItem>
         );
       }
     }
 
+    const open = openedSubjectSelections.includes(sSubject.name);
+
     return (
-      <Tr key={sSubject.name} modifiers={["course"]}>
-        <Td modifiers={["subject"]}>{sSubject.name}</Td>
-        {courses}
-      </Tr>
+      <ListContainer key={sSubject.name} modifiers={["course"]}>
+        <ListItem
+          modifiers={["subject"]}
+          onClick={handleOpenSubjectCourseSelection(sSubject.name)}
+        >
+          {sSubject.name}
+        </ListItem>
+        <AnimateHeight
+          height={open ? "auto" : 0}
+          className="list-subject-course__container"
+        >
+          {courses}
+        </AnimateHeight>
+      </ListContainer>
     );
   });
 
-  return (
-    <Table>
-      <Tbody>{renderRows}</Tbody>
-    </Table>
-  );
+  return <div className="list-row__container">{renderRows}</div>;
 };
 
 /**
@@ -501,4 +472,26 @@ const getHighestCourseNumber = (schoolSubjects: SchoolSubject[]): number => {
   return 9;
 };
 
-export default CourseTable;
+interface ListCheckboxProps {
+  id: number;
+  checked: boolean;
+  onChange: (id: number) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const ListCheckbox: React.FC<ListCheckboxProps> = (props) => {
+  React.useEffect(() => {
+    console.log("renter", props.checked);
+  }, [props.checked]);
+
+  return (
+    <input
+      type="checkbox"
+      checked={props.checked}
+      onChange={props.onChange(props.id)}
+      className="item__input"
+      value={props.id}
+    />
+  );
+};
+
+export default CourseList;

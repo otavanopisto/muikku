@@ -663,6 +663,8 @@ export const hopsMock1: HopsCompulsory = {
     ethics: false,
     finnishAsSecondLanguage: false,
     selectedListOfIds: [],
+    supervisorSugestedSubjectListOfIds: [],
+    supervisorSuggestedNextListOfIds: [],
   },
   studiesCourseData: {},
 };
@@ -718,12 +720,13 @@ export const hopsMock2: HopsCompulsory = {
     ethics: false,
     finnishAsSecondLanguage: false,
     selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+    supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
+    supervisorSuggestedNextListOfIds: [],
   },
   studiesCourseData: {
     approvedSubjectListOfIds: [
       1, 2, 13, 21, 22, 32, 33, 45, 48, 53, 54, 57, 61, 62,
     ],
-    supervisorSugestedSubjectListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
   },
 };
 
@@ -778,6 +781,8 @@ export const hopsMock3: HopsCompulsory = {
     ethics: false,
     finnishAsSecondLanguage: false,
     selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+    supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
+    supervisorSuggestedNextListOfIds: [],
   },
   studiesCourseData: {
     approvedSubjectListOfIds: [
@@ -839,6 +844,8 @@ export const hopsMock4: HopsCompulsory = {
     ethics: false,
     finnishAsSecondLanguage: false,
     selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
+    supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
+    supervisorSuggestedNextListOfIds: [],
   },
   studiesCourseData: {
     approvedSubjectListOfIds: [

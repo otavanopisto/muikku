@@ -4,6 +4,7 @@ import { TextField } from "../text-field";
 import { BasicInformation } from "../../../../../../../@types/shared";
 
 interface StudentHopsInformationProps {
+  disabled: boolean;
   loading: boolean;
   basicInformation: BasicInformation;
 }

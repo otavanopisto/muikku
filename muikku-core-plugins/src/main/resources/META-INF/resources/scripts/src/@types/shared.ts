@@ -115,6 +115,8 @@ export interface HopsStudies {
 export interface HopsPlanningStudies extends StudentsGoal {
   usedHoursPerWeek: number;
   selectedListOfIds: number[];
+  supervisorSugestedSubjectListOfIds: number[];
+  supervisorSuggestedNextListOfIds: number[];
   selectedSubjects: SchoolSubject[];
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
@@ -184,7 +186,6 @@ export interface StudiesCourseData {
   completedSubjectListOfIds?: number[];
   approvedSubjectListOfIds?: number[];
   inprogressSubjectListOfIds?: number[];
-  supervisorSugestedSubjectListOfIds?: number[];
   selectedOptionalListOfIds?: number[];
   ownHopsChoosed?: number;
   ownHopsCompleted?: number;
