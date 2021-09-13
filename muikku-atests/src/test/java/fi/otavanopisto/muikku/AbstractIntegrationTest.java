@@ -35,6 +35,10 @@ import com.jayway.restassured.specification.RequestSpecification;
 
 public abstract class AbstractIntegrationTest {
 
+  public AbstractIntegrationTest() {
+    this.tools = new MuikkuTestTools(this);
+  }
+  
   @Rule
   public TestName testName = new TestName();
   
@@ -401,9 +405,14 @@ public abstract class AbstractIntegrationTest {
     WORKSPACE
   }
 
+  public MuikkuTestTools tools() {
+    return tools;
+  }
+  
   private String adminSessionId;
   private String managerSessionId;
   private String teacherSessionId;
   private String studentSessionId;
   private String everyoneSessionId;
+  private MuikkuTestTools tools;
 }

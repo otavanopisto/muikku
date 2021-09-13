@@ -128,16 +128,17 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     if (isLoggedIn()) {
       if (!isRepresenting()) {
         return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
-      } else {
+      }
+      else {
         boolean repHasPermission = permissionResolver.hasPermission(permission, contextReference, getRepresentedUser());
         boolean loggedInHasPermission = 
             isSuperuser(getLoggedUserEntity()) || 
             permissionResolver.hasPermission(permission, contextReference, getLoggedUserEntity()) || 
             permissionResolver.hasEveryonePermission(permission, contextReference);
-
         return repHasPermission && loggedInHasPermission;
       }
-    } else {
+    }
+    else {
       return permissionResolver.hasEveryonePermission(permission, contextReference);
     }
   }
