@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
@@ -65,9 +63,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
   
   @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
   private GradingController gradingController;
@@ -199,15 +194,11 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           if (workspace != null) {
             String workspaceName = StringUtils.isBlank(workspace.getNameExtension()) ? workspace.getName() : String.format("%s (%s)", workspace.getName(), workspace.getNameExtension()); 
             Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-            Map<String, Object> templateModel = new HashMap<>();
-            templateModel.put("workspaceName", workspaceName);
-            templateModel.put("locale", studentLocale);
-            templateModel.put("localeHelper", jadeLocaleHelper);
-            String notificationContent = renderNotificationTemplate("requested-assessment-supplementation-notification", templateModel);
             notificationController.sendNotification(
               localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
               localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
-              notificationContent,
+              localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content", new String[] {workspaceName}) +
+              localeController.getText(studentLocale, "plugin.timednotifications.notification.automatedmessagefooter"),
               studentEntity,
               studentIdentifier,
               "requestedassessmentsupplementation"

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,7 +21,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
@@ -59,9 +57,6 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
   
   @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
   private NotificationController notificationController;
@@ -145,10 +140,11 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         }
         
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("locale", studentLocale);
-        templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate(isAineopiskelu ? "study-time-notification-internetix" : "study-time-notification", templateModel);
+        String internetixStudyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.internetix");
+        String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content") + 
+            localeController.getText(studentLocale, "plugin.timednotifications.notification.automatedmessagefooter");
+
+        String notificationContent = isAineopiskelu ? internetixStudyTimeNotification : studyTimeNotification;
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
