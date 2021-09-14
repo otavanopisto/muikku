@@ -43,12 +43,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
@@ -178,6 +180,9 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private OrganizationEntityController organizationEntityController;
   
+  @Inject
+  private PermissionController permissionController;
+
   @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO;
   
@@ -1594,20 +1599,33 @@ public class UserRESTService extends AbstractRESTService {
 
   @GET
   @Path("/whoami")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(handling = Handling.INLINE)
   public Response findWhoAmI(@Context Request request) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    SchoolDataIdentifier userIdentifier = userEntity == null ? null : sessionController.getLoggedUser();
+
+    // User roles
     
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
+    Set<String> roleSet = new HashSet<String>();
+    if (userIdentifier != null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+          findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+      roleSet.add(userSchoolDataIdentifier.getRole().getArchetype().toString());
     }
     
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
+    // Environment level permissions
+    
+    Set<String> permissionSet = new HashSet<String>();
+    List<Permission> permissions = permissionController.listPermissionsByScope("ENVIRONMENT");
+    for (Permission permission : permissions) {
+      if (sessionController.hasEnvironmentPermission(permission.getName())) {
+        permissionSet.add(permission.getName());
+      }
+    }
+    
+    // Response
+    
+    EntityTag tag = new EntityTag(DigestUtils.md5Hex(userEntity == null ? "0" : String.valueOf(userEntity.getVersion())));
 
     ResponseBuilder builder = request.evaluatePreconditions(tag);
     if (builder != null) {
@@ -1617,28 +1635,27 @@ public class UserRESTService extends AbstractRESTService {
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
 
-    User user = userController.findUserByIdentifier(userIdentifier);
-    if (user == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
+    User user = userIdentifier == null ? null : userController.findUserByIdentifier(userIdentifier);
     
-    String organizationIdentifier = user.getOrganizationIdentifier().toId();
+    String organizationIdentifier = user == null ? null : user.getOrganizationIdentifier().toId();
     String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
-    boolean isDefaultOrganization = StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
+    boolean isDefaultOrganization = user == null ? false : StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
 
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
     
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
-        userEntity.getId(),
-        user.getFirstName(),
-        user.getLastName(),
-        user.getNickName(),
-        user.getStudyProgrammeName(),
+        userEntity == null ? null : userEntity.getId(),
+        user == null ? null : user.getFirstName(),
+        user == null ? null : user.getLastName(),
+        user == null ? null : user.getNickName(),
+        user == null ? null : user.getStudyProgrammeName(),
         hasImage,
-        user.getHasEvaluationFees(),
-        user.getCurriculumIdentifier(),
+        user == null ? false : user.getHasEvaluationFees(),
+        user == null ? null : user.getCurriculumIdentifier(),
         organizationIdentifier,
-        isDefaultOrganization); 
+        isDefaultOrganization,
+        permissionSet,
+        roleSet); 
 
     return Response
         .ok(whoamiInfo)
