@@ -152,14 +152,13 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
 
     //Select field is able to mark what were meant to be the correct answers in the field itself
     let markcorrectAnswers = false;
+
     //It also has a summary component of what the correct answers were meant to be
     let correctAnswersummaryComponent = null;
-    //the classic variable
-    let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerState === "PASS"
 
     //So we only care about this logic if we didn't get the answer right and we are asking for show the right thing
     //Note that a state of UNKNOWN also goes through here, but not a state of PASS
-    if (this.props.displayCorrectAnswers && !answerIsCheckedAndItisCorrect){
+    if (this.props.displayCorrectAnswers){
       //find the correct answers from the list
       let correctAnswersFound = this.props.content.options.filter(a=>a.correct);
       //if we have some correct answers
