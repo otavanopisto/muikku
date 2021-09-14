@@ -7,7 +7,7 @@ import { StateType } from "~/reducers/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/evaluation.scss";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
-import { AssessmentRequest } from "~/@types/evaluation";
+import { AssessmentRequest, EvaluationEnum } from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
@@ -78,9 +78,39 @@ export class Evaluation extends React.Component<
       for (let i = 0; i < evaluationAssessmentEvents.data.length; i++) {
         const event = evaluationAssessmentEvents.data[i];
 
-        if (event.grade !== null) {
+        if (event.type !== EvaluationEnum.EVALUATION_REQUEST) {
           indexOfLatestEvaluatedEvent = i;
         }
+      }
+
+      return indexOfLatestEvaluatedEvent;
+    }
+  };
+
+  /**
+   * getLastEvaluatedEventIndex
+   * @returns last index
+   */
+  getLastEvaluatedEventIndex = () => {
+    const { evaluationAssessmentEvents } = this.props.evaluation;
+
+    if (
+      evaluationAssessmentEvents.data &&
+      evaluationAssessmentEvents.data.length > 0
+    ) {
+      let indexOfLatestEvaluatedEvent: number = null;
+
+      const lastEvent =
+        evaluationAssessmentEvents.data[
+          evaluationAssessmentEvents.data.length - 1
+        ];
+
+      if (
+        lastEvent.type &&
+        lastEvent.type !== EvaluationEnum.EVALUATION_REQUEST
+      ) {
+        indexOfLatestEvaluatedEvent =
+          evaluationAssessmentEvents.data.length - 1;
       }
 
       return indexOfLatestEvaluatedEvent;
@@ -218,6 +248,8 @@ export class Evaluation extends React.Component<
      */
     let latestEvaluatedEventIndex = this.getLatestEvaluatedEventIndex();
 
+    let lastEvaluatedEventIndex = this.getLastEvaluatedEventIndex();
+
     /**
      * evaluationEventContentCards
      */
@@ -229,13 +261,18 @@ export class Evaluation extends React.Component<
             isEvaluated = true;
           }
 
+          const isNotRequest = eItem.type !== EvaluationEnum.EVALUATION_REQUEST;
+
           return (
             <EvaluationEventContentCard
               onClickEdit={this.handleClickEdit}
               key={index}
               {...eItem}
-              eventIndex={index}
-              latestEvaluatedEventIndex={latestEvaluatedEventIndex}
+              showDeleteAndModify={
+                lastEvaluatedEventIndex
+                  ? lastEvaluatedEventIndex === index && isNotRequest
+                  : latestEvaluatedEventIndex === index && isNotRequest
+              }
             />
           );
         })

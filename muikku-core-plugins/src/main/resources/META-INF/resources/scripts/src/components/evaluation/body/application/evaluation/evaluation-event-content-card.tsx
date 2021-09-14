@@ -16,8 +16,7 @@ import { EvaluationState } from "~/reducers/main-function/evaluation/index";
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
   i18n: i18nType;
-  eventIndex: number;
-  latestEvaluatedEventIndex: number;
+  showDeleteAndModify: boolean;
   evaluations: EvaluationState;
   onClickEdit: (
     supplementation?: boolean
@@ -28,9 +27,8 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
  * EvaluationEventContentCard
  */
 const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
-  eventIndex,
-  latestEvaluatedEventIndex,
   i18n,
+  showDeleteAndModify,
   onClickEdit,
   evaluations,
   children,
@@ -237,9 +235,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
           />
         </AnimateHeight>
 
-        {/* Here check if event index is same as latest evaluated event index. If true then it can be deleted */}
-        {eventIndex === latestEvaluatedEventIndex &&
-        type !== EvaluationEnum.EVALUATION_REQUEST ? (
+        {showDeleteAndModify ? (
           <div className="evaluation-modal__event-buttonset">
             <Link
               className="link link--evaluation-event-edit"
