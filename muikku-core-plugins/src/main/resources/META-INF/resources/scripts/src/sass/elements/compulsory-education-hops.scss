@@ -218,6 +218,8 @@
   align-items: center;
   display: flex;
   margin: 2px 0;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .hops-container__course-latest_completed-indicator,
@@ -352,4 +354,26 @@
 
 .hops-activity__progressbar-label--assignment {
   color: #ce01bd;
+}
+
+.hops_buttons {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: wrap;
+}
+
+.hops_buttons--add {
+  justify-content: unset;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+  }
+}
+
+.hops_buttons--remove {
+  justify-content: unset;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-end;
+  }
 }

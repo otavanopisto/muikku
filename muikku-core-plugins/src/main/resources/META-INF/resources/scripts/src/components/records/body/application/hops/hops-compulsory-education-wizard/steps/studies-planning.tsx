@@ -38,7 +38,9 @@ interface StudiesPlanningProps extends StudiesCourseData {
 interface StudiesPlanningState {
   openExtra: boolean;
   selectNextIsActive: boolean;
+  selectSuggestedOptionalActive: boolean;
   supervisorSuggestedNext: number[];
+  supervisorSuggestedOptional: number[];
 }
 
 /**
@@ -58,7 +60,9 @@ class StudiesPlanning extends React.Component<
     this.state = {
       openExtra: false,
       selectNextIsActive: false,
+      selectSuggestedOptionalActive: false,
       supervisorSuggestedNext: [],
+      supervisorSuggestedOptional: [],
     };
   }
 
@@ -88,6 +92,15 @@ class StudiesPlanning extends React.Component<
       this.setState({
         supervisorSuggestedNext:
           this.props.studies.supervisorSuggestedNextListOfIds,
+      });
+    }
+    if (
+      JSON.stringify(prevProps.studies.supervisorSugestedSubjectListOfIds) !==
+      JSON.stringify(this.props.studies.supervisorSugestedSubjectListOfIds)
+    ) {
+      this.setState({
+        supervisorSuggestedOptional:
+          this.props.studies.supervisorSugestedSubjectListOfIds,
       });
     }
   };
@@ -609,21 +622,33 @@ class StudiesPlanning extends React.Component<
    * @param listOfIds
    */
   handleSuperVisorListOfIdsChange = (listOfIds: number[]) => {
-    this.props.onStudiesPlanningChange({
-      ...this.props.studies,
-      supervisorSugestedSubjectListOfIds: listOfIds,
-    });
+    if (this.state.supervisorSuggestedOptional.length !== listOfIds.length) {
+      this.setState({
+        supervisorSuggestedOptional: listOfIds,
+      });
+    }
   };
 
   /**
    * handleSuperVisorSuggestedForNextListOfIdsChange
    */
   handleSuperVisorSuggestedForNextListOfIdsChange = (listOfIds: number[]) => {
-    console.log(listOfIds);
-
     if (this.state.supervisorSuggestedNext.length !== listOfIds.length) {
       this.setState({
         supervisorSuggestedNext: listOfIds,
+      });
+    }
+  };
+
+  /**
+   * handleSuperVisorSuggestedForOptionalListOfIdsChange
+   */
+  handleSuperVisorSuggestedForOptionalListOfIdsChange = (
+    listOfIds: number[]
+  ) => {
+    if (this.state.supervisorSuggestedOptional.length !== listOfIds.length) {
+      this.setState({
+        supervisorSuggestedOptional: listOfIds,
       });
     }
   };
@@ -634,6 +659,12 @@ class StudiesPlanning extends React.Component<
   handleActivateSelectSuggestedForNext = () => {
     this.setState({
       selectNextIsActive: !this.state.selectNextIsActive,
+    });
+  };
+
+  handleActivateSelectOptional = () => {
+    this.setState({
+      selectSuggestedOptionalActive: !this.state.selectSuggestedOptionalActive,
     });
   };
 
@@ -659,6 +690,32 @@ class StudiesPlanning extends React.Component<
       supervisorSuggestedNext:
         this.props.studies.supervisorSuggestedNextListOfIds,
       selectNextIsActive: false,
+    });
+  };
+
+  /**
+   * handleSaveActiveSuggestedOptionalSelections
+   */
+  handleSaveActiveSuggestedOptionalSelections = () => {
+    this.props.onStudiesPlanningChange({
+      ...this.props.studies,
+      supervisorSugestedSubjectListOfIds:
+        this.state.supervisorSuggestedOptional,
+    });
+
+    this.setState({
+      selectSuggestedOptionalActive: false,
+    });
+  };
+
+  /**
+   * handleCancleActiveSuggestedOptionalSelectionAndRevert
+   */
+  handleCancleActiveSuggestedOptionalSelectionAndRevert = () => {
+    this.setState({
+      supervisorSuggestedNext:
+        this.props.studies.supervisorSuggestedNextListOfIds,
+      selectSuggestedOptionalActive: false,
     });
   };
 
@@ -959,8 +1016,6 @@ class StudiesPlanning extends React.Component<
     }
 
     const proggressOfStudies = calculationDivider1;
-
-    console.log("RENDER", this.state.supervisorSuggestedNext);
 
     return (
       <div className="hops-container">
@@ -1298,38 +1353,45 @@ class StudiesPlanning extends React.Component<
           </div>
 
           <div className="hops-container__row">
-            <div
-              style={{
-                flexGrow: 1,
-                display: "flex",
-                flexFlow: "wrap",
-              }}
-            >
-              {this.state.selectNextIsActive ? (
-                <>
-                  <Button onClick={this.handleSaveActiveSuggestedSelections}>
-                    Tallenna
-                  </Button>
-                  <Button
-                    onClick={this.handleCancleActiveSuggestedSelectionAndRevert}
-                  >
-                    Peruuta
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={this.handleActivateSelectSuggestedForNext}>
-                  Seuraavaksi suoritettavat?
-                </Button>
-              )}
-            </div>
+            {this.props.user === "supervisor" ? (
+              <div className="hops_buttons hops_buttons--add">
+                {this.state.selectNextIsActive ||
+                this.state.selectSuggestedOptionalActive ? (
+                  <>
+                    <Button
+                      onClick={
+                        this.state.selectNextIsActive
+                          ? this.handleSaveActiveSuggestedSelections
+                          : this.handleSaveActiveSuggestedOptionalSelections
+                      }
+                    >
+                      Tallenna
+                    </Button>
+                    <Button
+                      onClick={
+                        this.state.selectNextIsActive
+                          ? this.handleCancleActiveSuggestedSelectionAndRevert
+                          : this
+                              .handleCancleActiveSuggestedOptionalSelectionAndRevert
+                      }
+                    >
+                      Peruuta
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button onClick={this.handleActivateSelectSuggestedForNext}>
+                      Seuraavaksi suoritettavat?
+                    </Button>
+                    <Button onClick={this.handleActivateSelectOptional}>
+                      Ehdota valinnaiskursseja?
+                    </Button>
+                  </>
+                )}
+              </div>
+            ) : null}
 
-            <div
-              style={{
-                flexGrow: 1,
-                display: "flex",
-                flexFlow: "wrap",
-              }}
-            >
+            <div className="hops_buttons hops_buttons--remove">
               {this.props.user === "supervisor" ? (
                 <Button onClick={this.props.onDeleteNextSelection}>
                   Poista suoritettavat kurssiehdotukset
@@ -1347,6 +1409,9 @@ class StudiesPlanning extends React.Component<
               <CourseTable
                 user={this.props.user}
                 selectNextIsActive={this.state.selectNextIsActive}
+                selectOptionalIsActive={
+                  this.state.selectSuggestedOptionalActive
+                }
                 selectedSubjects={this.props.studies.selectedSubjects}
                 onChange={this.handleSelectedSubjectsChange}
                 ethicsSelected={this.props.ethics}
@@ -1358,7 +1423,7 @@ class StudiesPlanning extends React.Component<
                   this.props.inprogressSubjectListOfIds
                 }
                 supervisorSugestedSubjectListOfIds={
-                  this.props.studies.supervisorSugestedSubjectListOfIds
+                  this.state.supervisorSuggestedOptional
                 }
                 supervisorSuggestedNextListOfIds={
                   this.state.supervisorSuggestedNext
@@ -1369,7 +1434,9 @@ class StudiesPlanning extends React.Component<
                     : this.handleSelectedSubjectListOfIdsChange
                 }
                 onChangeSuggestedForNextList={
-                  this.handleSuperVisorSuggestedForNextListOfIdsChange
+                  this.state.selectNextIsActive
+                    ? this.handleSuperVisorSuggestedForNextListOfIdsChange
+                    : this.handleSuperVisorSuggestedForOptionalListOfIdsChange
                 }
               />
             </div>
@@ -1379,6 +1446,9 @@ class StudiesPlanning extends React.Component<
                 key="jottain"
                 user={this.props.user}
                 selectNextIsActive={this.state.selectNextIsActive}
+                selectOptionalIsActive={
+                  this.state.selectSuggestedOptionalActive
+                }
                 selectedSubjects={this.props.studies.selectedSubjects}
                 onChange={this.handleSelectedSubjectsChange}
                 ethicsSelected={this.props.ethics}
@@ -1390,7 +1460,7 @@ class StudiesPlanning extends React.Component<
                   this.props.inprogressSubjectListOfIds
                 }
                 supervisorSugestedSubjectListOfIds={
-                  this.props.studies.supervisorSugestedSubjectListOfIds
+                  this.state.supervisorSuggestedOptional
                 }
                 supervisorSuggestedNextListOfIds={
                   this.state.supervisorSuggestedNext
@@ -1401,7 +1471,9 @@ class StudiesPlanning extends React.Component<
                     : this.handleSelectedSubjectListOfIdsChange
                 }
                 onChangeSuggestedForNextList={
-                  this.handleSuperVisorSuggestedForNextListOfIdsChange
+                  this.state.selectNextIsActive
+                    ? this.handleSuperVisorSuggestedForNextListOfIdsChange
+                    : this.handleSuperVisorSuggestedForOptionalListOfIdsChange
                 }
               />
             </div>

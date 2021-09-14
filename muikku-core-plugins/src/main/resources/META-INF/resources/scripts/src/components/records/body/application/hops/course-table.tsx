@@ -10,13 +10,12 @@ import {
 } from "~/components/general/table";
 import { mockSchoolSubjects } from "~/mock/mock-data";
 import Dropdown from "../../../../general/dropdown";
-import Button from "../../../../general/button";
-import AnimateHeight from "react-animate-height";
 
 interface CourseTableProps {
   selectedSubjects?: SchoolSubject[];
   user: "supervisor" | "student";
   selectNextIsActive: boolean;
+  selectOptionalIsActive: boolean;
   ethicsSelected: boolean;
   finnishAsSecondLanguage: boolean;
   selectedSubjectListOfIds?: number[];
@@ -25,6 +24,7 @@ interface CourseTableProps {
   inprogressSubjectListOfIds?: number[];
   selectedOptionalListOfIds?: number[];
   supervisorSuggestedNextListOfIds?: number[];
+  supervisorSuggestedOptionalListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
   onChange?: (schoolSubjects: SchoolSubject[]) => void;
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
@@ -36,28 +36,15 @@ interface CourseTableProps {
  * @returns
  */
 const CourseTable: React.FC<CourseTableProps> = (props) => {
-  const [width, setWidth] = React.useState<number>(window.innerWidth);
-  const [openedSubjectSelections, setOpenedSubjectSelections] = React.useState<
-    string[]
-  >([]);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-
-  React.useEffect(() => {
-    window.addEventListener("resize", handleWindowSizeChange);
-    return () => {
-      window.removeEventListener("resize", handleWindowSizeChange);
-    };
-  }, []);
-
-  let isMobile: boolean = width <= 640;
+  React.useEffect(() => {}, [
+    props.supervisorSuggestedNextListOfIds,
+    props.supervisorSugestedSubjectListOfIds,
+  ]);
 
   /**
    * handleTableDataChange
    */
-  const handleToggleCourseClick =
+  /* const handleToggleCourseClick =
     (subjectIndex: number, subjectCourseIndex: number) =>
     (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
       const selectedSubjects = [...props.selectedSubjects];
@@ -139,7 +126,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
             props.onChangeSelectSubjectList(selectedSubjectListOfIds);
         }
       }
-    };
+    }; */
 
   /**
    * handleSuggestedForNextCheckboxChange
@@ -151,45 +138,55 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         props.onChangeSuggestedForNextList &&
         props.supervisorSuggestedNextListOfIds
       ) {
-        const supervisorSuggestedNextListOfIds = [
+        const updatedSuggestedForNextListIds = [
           ...props.supervisorSuggestedNextListOfIds,
         ];
 
-        const index = supervisorSuggestedNextListOfIds.findIndex(
+        const index = updatedSuggestedForNextListIds.findIndex(
           (courseId) => courseId === id
         );
 
         if (index !== -1) {
-          supervisorSuggestedNextListOfIds.splice(index, 1);
+          updatedSuggestedForNextListIds.splice(index, 1);
         } else {
-          supervisorSuggestedNextListOfIds.push(id);
+          updatedSuggestedForNextListIds.push(id);
         }
 
         props.onChangeSuggestedForNextList &&
-          props.onChangeSuggestedForNextList(supervisorSuggestedNextListOfIds);
+          props.onChangeSuggestedForNextList(updatedSuggestedForNextListIds);
       }
     };
 
   /**
-   * handleOpenSubjectCourseSelection
-   * @param subjectId
+   * handleSuggestedForOptionalCheckboxChange
+   * @param id
+   * @returns
    */
-  const handleOpenSubjectCourseSelection =
-    (subjectName: string) =>
-    (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
-      const updatedOpenedSubjectSelections = [...openedSubjectSelections];
+  const handleSuggestedForOptionalCheckboxChange =
+    (id: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (
+        props.onChangeSuggestedForNextList &&
+        props.supervisorSugestedSubjectListOfIds
+      ) {
+        const updatedSuggestedForOptionalListIds = [
+          ...props.supervisorSugestedSubjectListOfIds,
+        ];
 
-      const index = updatedOpenedSubjectSelections.findIndex(
-        (sId) => sId === subjectName
-      );
+        const index = updatedSuggestedForOptionalListIds.findIndex(
+          (courseId) => courseId === id
+        );
 
-      if (index !== -1) {
-        updatedOpenedSubjectSelections.splice(index, 1);
-      } else {
-        updatedOpenedSubjectSelections.push(subjectName);
+        if (index !== -1) {
+          updatedSuggestedForOptionalListIds.splice(index, 1);
+        } else {
+          updatedSuggestedForOptionalListIds.push(id);
+        }
+
+        props.onChangeSuggestedForNextList &&
+          props.onChangeSuggestedForNextList(
+            updatedSuggestedForOptionalListIds
+          );
       }
-
-      setOpenedSubjectSelections(updatedOpenedSubjectSelections);
     };
 
   /**
@@ -200,7 +197,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
   /**
    * renderTableHeaderRow
    */
-  const renderTableHeaderRow = (
+  /* const renderTableHeaderRow = (
     <Tr>
       <Th>Oppiaine</Th>
       {Array(currentMaxCourses)
@@ -211,14 +208,12 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           </Th>
         ))}
     </Tr>
-  );
+  ); */
 
   /**
    * renderRows
    */
   const renderRows = mockSchoolSubjects.map((sSubject, i) => {
-    let courses = [];
-
     if (props.ethicsSelected) {
       if (sSubject.subjectCode === "ua") {
         return;
@@ -238,38 +233,38 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
       }
     }
 
-    for (let index = 0; index < currentMaxCourses; index++) {
-      const isAvailable =
-        sSubject.availableCourses.findIndex(
-          (aCourse) => aCourse.courseNumber === index + 1
-        ) !== -1;
-
-      /**
-       * If with current course number there is available course
-       * otherwise render empty table data cell
-       */
-      if (isAvailable && sSubject.availableCourses[index] !== undefined) {
-        let modifiers = ["course", "centered"];
-
+    const courses = Array(currentMaxCourses)
+      .fill(1)
+      .map((c, index) => {
         let canBeSelected = true;
+        let modifiers = ["course", "centered"];
+        let canBeSuggestedForNextCourse = true;
+        let canBeSuggestedForOptionalCourse = true;
+        let suggestedForNext = false;
+        let suggestedForOptional = false;
 
-        if (sSubject.availableCourses[index].mandatory) {
+        const course = sSubject.availableCourses.find(
+          (aCourse) => aCourse.courseNumber === index + 1
+        );
+
+        if (course === undefined) {
+          return (
+            <Td key={`empty-${index + 1}`} modifiers={["centered", "empty"]}>
+              -
+            </Td>
+          );
+        }
+
+        if (course.mandatory) {
           modifiers.push("MANDATORY");
         } else {
           modifiers.push("OPTIONAL");
         }
 
-        let canBeSuggestedForNextCourse = true;
-        let suggestedForNext = false;
-
-        /**
-         * If any of these list are given, check whether course id is in
-         * and push another modifier
-         */
         if (
           props.approvedSubjectListOfIds &&
           props.approvedSubjectListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
           canBeSuggestedForNextCourse = false;
@@ -278,41 +273,44 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         } else if (
           props.selectedOptionalListOfIds &&
           props.selectedOptionalListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
           modifiers.push("SELECTED_OPTIONAL");
         } else if (
           props.completedSubjectListOfIds &&
           props.completedSubjectListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
+          canBeSuggestedForOptionalCourse = true;
           canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("COMPLETED");
         } else if (
           props.inprogressSubjectListOfIds &&
           props.inprogressSubjectListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
+          canBeSuggestedForOptionalCourse = true;
           canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("INPROGRESS");
         } else if (
           props.supervisorSugestedSubjectListOfIds &&
           props.supervisorSugestedSubjectListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
-          modifiers.push("SUGGESTED");
+          suggestedForOptional = true;
+          !props.selectOptionalIsActive && modifiers.push("SUGGESTED");
         }
 
         if (
           props.selectedSubjectListOfIds &&
           props.selectedSubjectListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
           modifiers.push("SELECTED");
@@ -321,7 +319,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         if (
           props.supervisorSuggestedNextListOfIds &&
           props.supervisorSuggestedNextListOfIds.find(
-            (courseId) => courseId === sSubject.availableCourses[index].id
+            (courseId) => courseId === course.id
           )
         ) {
           suggestedForNext = true;
@@ -329,25 +327,15 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           !props.selectNextIsActive && modifiers.push("NEXT");
         }
 
-        /**
-         * Checks whether course is mandatory or not
-         * and sets indicator to indicate that
-         */
-        if (sSubject.availableCourses[index].mandatory) {
-          courses.push(
-            <Td
-              key={sSubject.availableCourses[index].name}
-              modifiers={modifiers}
-            >
+        if (course.mandatory) {
+          return (
+            <Td key={course.id} modifiers={modifiers}>
               {canBeSelected ? (
                 <Dropdown
-                  openByHover={props.user === "student"}
+                  openByHover={true}
                   content={
                     <div>
-                      <h4>
-                        Suoritusaika-arvio:{" "}
-                        {sSubject.availableCourses[index].length}h
-                      </h4>
+                      <h4>Suoritusaika-arvio: {course.length}h</h4>
                     </div>
                   }
                 >
@@ -360,15 +348,15 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                       padding: "0 10px",
                     }}
                   >
-                    <span>{index + 1}</span>
+                    <span>{course.courseNumber}</span>
                     {props.selectNextIsActive && canBeSuggestedForNextCourse ? (
                       <input
                         type="checkbox"
                         checked={suggestedForNext}
                         className="item__input"
-                        value={sSubject.availableCourses[index].id}
+                        value={course.id}
                         onChange={handleSuggestedForNextCheckboxChange(
-                          sSubject.availableCourses[index].id
+                          course.id
                         )}
                       />
                     ) : null}
@@ -383,27 +371,20 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                     padding: "0 10px",
                   }}
                 >
-                  <span>{index + 1}</span>
+                  <span>{course.courseNumber}</span>
                 </div>
               )}
             </Td>
           );
         } else {
           if (canBeSelected) {
-            courses.push(
-              <Td
-                key={sSubject.availableCourses[index].name}
-                onClick={handleToggleCourseClick(i, index)}
-                modifiers={modifiers}
-              >
+            return (
+              <Td key={course.name} modifiers={modifiers}>
                 <Dropdown
-                  openByHover={props.user === "student"}
+                  openByHover={true}
                   content={
                     <div>
-                      <h4>
-                        Suoritusaika-arvio:{" "}
-                        {sSubject.availableCourses[index].length}h
-                      </h4>
+                      <h4>Suoritusaika-arvio: {course.length}h</h4>
                     </div>
                   }
                 >
@@ -416,15 +397,27 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                       padding: "0 10px",
                     }}
                   >
-                    <span>{index + 1}*</span>
+                    <span>{course.courseNumber}*</span>
                     {props.selectNextIsActive && canBeSuggestedForNextCourse ? (
                       <input
                         type="checkbox"
                         checked={suggestedForNext}
                         className="item__input"
-                        value={sSubject.availableCourses[index].id}
+                        value={course.id}
                         onChange={handleSuggestedForNextCheckboxChange(
-                          sSubject.availableCourses[index].id
+                          course.id
+                        )}
+                      />
+                    ) : null}
+                    {props.selectOptionalIsActive &&
+                    canBeSuggestedForOptionalCourse ? (
+                      <input
+                        type="checkbox"
+                        checked={suggestedForOptional}
+                        className="item__input"
+                        value={course.id}
+                        onChange={handleSuggestedForOptionalCheckboxChange(
+                          course.id
                         )}
                       />
                     ) : null}
@@ -433,11 +426,8 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               </Td>
             );
           } else {
-            courses.push(
-              <Td
-                key={sSubject.availableCourses[index].name}
-                modifiers={modifiers}
-              >
+            return (
+              <Td key={course.name} modifiers={modifiers}>
                 <div
                   style={{
                     display: "flex",
@@ -446,20 +436,13 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
                     padding: "0 10px",
                   }}
                 >
-                  <span>{index + 1}*</span>
+                  <span>{course.courseNumber}*</span>
                 </div>
               </Td>
             );
           }
         }
-      } else {
-        courses.push(
-          <Td key={`empty-${index}`} modifiers={["centered", "empty"]}>
-            -
-          </Td>
-        );
-      }
-    }
+      });
 
     return (
       <Tr key={sSubject.name} modifiers={["course"]}>
