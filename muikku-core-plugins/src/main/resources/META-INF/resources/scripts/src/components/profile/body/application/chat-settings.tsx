@@ -12,7 +12,7 @@ import { StatusType } from "~/reducers/base/status";
 import '~/sass/elements/application-sub-panel.scss';
 import { SimpleActionExecutor } from "~/actions/executor";
 
-interface IChatSettingsProps {
+interface ChatSettingsProps {
   i18n: i18nType,
   profile: ProfileType;
   status: StatusType;
@@ -21,13 +21,13 @@ interface IChatSettingsProps {
   updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
-interface IChatSettingState {
+interface ChatSettingState {
   chatVisibility: string,
   chatNickname: string,
 }
 
-class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState> {
-  constructor(props: IChatSettingsProps) {
+class ChatSettings extends React.Component<ChatSettingsProps, ChatSettingState> {
+  constructor(props: ChatSettingsProps) {
     super(props);
 
     this.save = this.save.bind(this);
@@ -40,7 +40,7 @@ class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState
     }
   }
 
-  componentWillReceiveProps(nextProps: IChatSettingsProps) {
+  componentWillReceiveProps(nextProps: ChatSettingsProps) {
     if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.visibility &&
       (!this.props.profile.chatSettings ||
         this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility)) {
