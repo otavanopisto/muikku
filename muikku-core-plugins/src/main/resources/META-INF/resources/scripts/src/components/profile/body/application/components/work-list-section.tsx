@@ -26,7 +26,7 @@ function sortBy(data: StoredWorklistItem[], property: string, direction: "asc" |
   )
 }
 
-interface IWorkListSectionProps {
+interface WorkListSectionProps {
   section: WorklistSection;
   isExpanded: boolean;
   daysInCurrentMonth: number;
@@ -37,7 +37,7 @@ interface IWorkListSectionProps {
   i18n: i18nType;
 }
 
-export function WorkListSection(props: IWorkListSectionProps) {
+export function WorkListSection(props: WorkListSectionProps) {
   const [sortByProperty, setSortByProperty] = React.useState(null);
   const [sortByDirection, setSortByDirection] = React.useState("desc");
 
