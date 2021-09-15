@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
