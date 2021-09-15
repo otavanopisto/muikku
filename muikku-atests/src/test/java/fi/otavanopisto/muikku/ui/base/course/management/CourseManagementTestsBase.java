@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.OrganizationBasicInfo;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
@@ -432,7 +433,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       Course course1 = new CourseBuilder().name("Test").id((long) 4).description("test course for testing").buildCourse();
-      CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp");
+      OrganizationBasicInfo organization = new OrganizationBasicInfo((long) 1, "Otavia", false);
+      CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp", organization);
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
