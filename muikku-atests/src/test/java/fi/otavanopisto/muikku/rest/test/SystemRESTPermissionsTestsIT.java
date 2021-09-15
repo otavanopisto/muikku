@@ -9,10 +9,16 @@ import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
 
+import fi.otavanopisto.muikku.AbstractRESTTest;
 import fi.otavanopisto.muikku.TestRole;
-import fi.otavanopisto.muikku.rest.test.plugins.announcer.AbstractAnnouncerRESTTestsIT;
+import fi.otavanopisto.muikku.atests.Workspace;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.pyramus.rest.model.Course;
 
-public class SystemRESTPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
+public class SystemRESTPermissionsTestsIT extends AbstractRESTTest {
+
+  private static final Long TEST_WORKSPACE_ID = 1L;
 
   public SystemRESTPermissionsTestsIT() {
   }
@@ -51,7 +57,7 @@ public class SystemRESTPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
   @Test
   public void testRestPermitRoles() throws NoSuchFieldException {
     // Tests that the endpoint returns 204 as expected when there is a logged user
-    EnumSet<TestRole> testRoles = EnumSet.of(TestRole.ADMIN, TestRole.MANAGER, TestRole.TEACHER, TestRole.STUDENT, TestRole.EVERYONE);
+    EnumSet<TestRole> testRoles = EnumSet.allOf(TestRole.class);
     
     for (TestRole testRole : testRoles) {
       if (testRole == TestRole.EVERYONE) {
@@ -69,6 +75,77 @@ public class SystemRESTPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
                 response.statusCode(), expectedStatusCode, role.getRole(), endpoint),
             response.statusCode(), is(expectedStatusCode));
       });
+    }
+  }
+  
+  @Test
+  public void testEnvironmentPermission() {
+    EnumSet<TestRole> testRoles = EnumSet.allOf(TestRole.class);
+    testRoles.remove(TestRole.EVERYONE);
+
+    // Tests ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM
+    
+    roles(testRoles).forEach(role ->
+      role.getRequest()
+        .get(String.format("/test_permissions/environmentpermissions/%s", "FORUM_ACCESSENVIRONMENTFORUM"))
+        .then()
+        .statusCode(204)
+    );
+  }
+
+  @Test
+  public void testWorkspacePermission() {
+    EnumSet<TestRole> testRoles = EnumSet.allOf(TestRole.class);
+    testRoles.remove(TestRole.EVERYONE);
+
+    // Tests ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM
+    
+    roles(testRoles).forEach(role ->
+      role.getRequest()
+        .get(String.format("/test_permissions/workspaces/%d/permissions/%s", TEST_WORKSPACE_ID, "FORUM_ACCESSENVIRONMENTFORUM"))
+        .then()
+        .statusCode(204)
+    );
+  }
+
+  @Test
+  public void testWorkspacePermissionFromSameOrganization() throws Exception {
+    Course course1 = new CourseBuilder()
+        .id(2L)
+        .organizationId(1L)
+        .name("testcourse")
+        .description("test course for testing")
+        .buildCourse();
+
+    Workspace workspace = tools().createWorkspace(course1, true);
+    try {
+      asManager()
+        .get(String.format("/test_permissions/workspaces/%d/permissions/%s", workspace.getId(), MuikkuPermissions.MANAGE_WORKSPACE))
+        .then()
+        .statusCode(204);
+    } finally {
+      tools().deleteWorkspace(workspace);
+    }
+  }
+
+
+  @Test
+  public void testWorkspacePermissionFromAnotherOrganization() throws Exception {
+    Course course1 = new CourseBuilder()
+        .id(2L)
+        .organizationId(2L)
+        .name("testcourse")
+        .description("test course for testing")
+        .buildCourse();
+
+    Workspace workspace = tools().createWorkspace(course1, true);
+    try {
+      asManager()
+        .get(String.format("/test_permissions/workspaces/%d/permissions/%s", workspace.getId(), MuikkuPermissions.MANAGE_WORKSPACE))
+        .then()
+        .statusCode(403);
+    } finally {
+      tools().deleteWorkspace(workspace);
     }
   }
   

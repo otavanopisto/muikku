@@ -9,6 +9,8 @@ import { StateType } from '~/reducers';
 import { WorkspacesActiveFiltersType, WorkspaceType } from '~/reducers/workspaces';
 import WorkspaceDialog from '~/components/organization/dialogs/edit-workspace';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
+import Button from '~/components/general/button';
+
 
 interface CourseProps {
   i18n: i18nType,
@@ -62,6 +64,9 @@ class Workspace extends React.Component<CourseProps, CourseState>{
             <article className="rich-text" dangerouslySetInnerHTML={{ __html: this.props.workspace.description }}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
+            <Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.workspace.urlName}`}>
+              {this.props.i18n.text.get("plugin.organization.workspaces.workspace.goto")}
+            </Button>
           </ApplicationListItemFooter>
         </div>
         : null}

@@ -14,7 +14,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { SimpleActionExecutor } from "~/actions/executor";
 
-interface IContactInformationProps {
+interface ContactInformationProps {
   i18n: i18nType,
   profile: ProfileType;
   status: StatusType;
@@ -24,7 +24,7 @@ interface IContactInformationProps {
   updateProfileAddress: UpdateProfileAddressTriggerType;
 }
 
-interface IContactInformationState {
+interface ContactInformationState {
   phoneNumber: string;
   street: string;
   postalCode: string;
@@ -34,8 +34,8 @@ interface IContactInformationState {
   locked: boolean;
 }
 
-class ContactInformation extends React.Component<IContactInformationProps, IContactInformationState> {
-  constructor(props: IContactInformationProps) {
+class ContactInformation extends React.Component<ContactInformationProps, ContactInformationState> {
+  constructor(props: ContactInformationProps) {
     super(props);
 
     this.save = this.save.bind(this);
@@ -52,7 +52,7 @@ class ContactInformation extends React.Component<IContactInformationProps, ICont
     }
   }
 
-  componentWillReceiveProps(nextProps: IContactInformationProps) {
+  componentWillReceiveProps(nextProps: ContactInformationProps) {
     if (nextProps.profile.properties['profile-phone'] &&
       this.props.profile.properties['profile-phone'] !== nextProps.profile.properties['profile-phone']) {
       this.setState({

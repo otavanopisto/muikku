@@ -10,7 +10,7 @@ import { loadProfileUsername, LoadProfileUsernameTriggerType } from '~/actions/m
 import { bindActionCreators, Dispatch } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
-interface ISecurityProps {
+interface SecurityProps {
   i18n: i18nType;
   profile: ProfileType;
   status: StatusType;
@@ -18,7 +18,7 @@ interface ISecurityProps {
   loadProfileUsername: LoadProfileUsernameTriggerType;
 }
 
-interface ISecurityState {
+interface SecurityState {
   username: string;
   oldPassword: string;
   newPassword: string;
@@ -26,8 +26,8 @@ interface ISecurityState {
   locked: boolean;
 }
 
-class Security extends React.Component<ISecurityProps, ISecurityState> {
-  constructor(props: ISecurityProps) {
+class Security extends React.Component<SecurityProps, SecurityState> {
+  constructor(props: SecurityProps) {
     super(props);
 
     this.state = {
@@ -42,7 +42,7 @@ class Security extends React.Component<ISecurityProps, ISecurityState> {
     this.updateField = this.updateField.bind(this);
   }
 
-  componentWillReceiveProps(nextProps: ISecurityProps) {
+  componentWillReceiveProps(nextProps: SecurityProps) {
     if (nextProps.profile.username !== null && nextProps.profile.username !== this.state.username) {
       this.setState({
         username: nextProps.profile.username
