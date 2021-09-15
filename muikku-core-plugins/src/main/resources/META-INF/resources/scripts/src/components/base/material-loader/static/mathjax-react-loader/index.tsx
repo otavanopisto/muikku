@@ -6,7 +6,6 @@ const baseConfig = {
   showMathMenu: true,
   tex2jax: {
     inlineMath: [
-      ["$", "$"],
       ["\\(", "\\)"]
     ]
   },
@@ -69,12 +68,12 @@ const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
   }, [loadingState, previewRef]);
 
   return (
-    <div className={className} style={style}>
+    <span className={className} style={style}>
       {loadingState === "failed" && <span>failed loading mathjax lib</span>}
-      <div id="react-mathjax-preview-result" ref={previewRef}>
+      <span className="mathjax-preview-result" id="react-mathjax-preview-result" ref={previewRef}>
         {props.math}
-      </div>
-    </div>
+      </span>
+    </span>
   )
 }
 

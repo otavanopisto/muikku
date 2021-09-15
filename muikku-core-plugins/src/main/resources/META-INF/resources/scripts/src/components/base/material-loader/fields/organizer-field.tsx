@@ -373,7 +373,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
             if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
               itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms &&
                 this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
-                return <div key={missingTermId} className="material-page__organizerfield-term material-page__organizerfield-term--missing"><StrMathJAX>{this.state.terms[missingTermId]}</StrMathJAX></div>;
+                return <span key={missingTermId} className="material-page__organizerfield-term material-page__organizerfield-term--missing"><StrMathJAX>{this.state.terms[missingTermId]}</StrMathJAX></span>;
               });
             }
 

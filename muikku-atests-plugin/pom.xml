@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.155-SNAPSHOT</version>
+    <version>1.1.162-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -50,11 +50,6 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>atests-plugin-rest-model</artifactId>
       <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>core-plugins</artifactId>
     </dependency>
 
     <dependency>

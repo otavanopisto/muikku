@@ -111,7 +111,9 @@ public class TestUtilities {
        null,
        null,
        1L,
-       false);
+       false,
+       1L,
+       1L);
     
     return course;
   }

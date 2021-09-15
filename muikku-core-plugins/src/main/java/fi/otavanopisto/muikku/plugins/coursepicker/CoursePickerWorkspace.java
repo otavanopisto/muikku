@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.coursepicker;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.Mandatority;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 
 public class CoursePickerWorkspace {
@@ -20,7 +21,7 @@ public class CoursePickerWorkspace {
       Long numVisits,
       Date lastVisit,
       String educationTypeName,
-      boolean canSignup,
+      Mandatority mandatority,
       boolean isCourseMember, 
       boolean hasCustomImage,
       OrganizationRESTModel organization) {
@@ -34,9 +35,9 @@ public class CoursePickerWorkspace {
     this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
-    this.canSignup = canSignup;
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
+    this.mandatority = mandatority;
     this.hasCustomImage = hasCustomImage;
     this.organization = organization;
   }
@@ -112,14 +113,6 @@ public class CoursePickerWorkspace {
   public void setPublished(Boolean published) {
     this.published = published;
   }
-
-  public Boolean getCanSignup() {
-    return canSignup;
-  }
-
-  public void setCanSignup(Boolean canSignup) {
-    this.canSignup = canSignup;
-  }
   
   public Boolean getIsCourseMember() {
     return isCourseMember;
@@ -135,6 +128,14 @@ public class CoursePickerWorkspace {
   
   public void setEducationTypeName(String educationTypeName) {
     this.educationTypeName = educationTypeName;
+  }
+  
+  public Mandatority getMandatority() {
+    return mandatority;
+  }
+  
+  public void setMandatority(Mandatority mandatority) {
+    this.mandatority = mandatority;
   }
   
   public boolean getHasCustomImage() {
@@ -162,9 +163,9 @@ public class CoursePickerWorkspace {
   private Long numVisits;
   private Date lastVisit;
   private Boolean published;
-  private Boolean canSignup;
   private Boolean isCourseMember;
   private String educationTypeName;
+  private Mandatority mandatority;
   private boolean hasCustomImage;
   private OrganizationRESTModel organization;
 

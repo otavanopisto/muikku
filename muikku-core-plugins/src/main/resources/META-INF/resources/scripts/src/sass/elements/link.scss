@@ -55,6 +55,16 @@
   }
 }
 
+.link--submit-worklist-approval,
+.link--worklist-entries-sorting {
+  text-decoration: underline;
+}
+
+.link--worklist-entries-sorting {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .link--forgot-password {
   flex-basis: 0;
   flex-grow: 0;

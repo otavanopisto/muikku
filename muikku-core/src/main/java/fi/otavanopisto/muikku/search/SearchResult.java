@@ -5,10 +5,9 @@ import java.util.Map;
 
 public class SearchResult {
 
-  public SearchResult(int firstResult, int lastResult, List<Map<String, Object>> results, long totalHitCount) {
+  public SearchResult(int firstResult, List<Map<String, Object>> results, long totalHitCount) {
     this.totalHitCount = totalHitCount;
     this.firstResult = firstResult;
-    this.lastResult = lastResult;
     this.results = results;
   }
 
@@ -24,12 +23,7 @@ public class SearchResult {
     return firstResult;
   }
 
-  public int getLastResult() {
-    return lastResult;
-  }
-
   private long totalHitCount;
   private int firstResult;
-  private int lastResult;
   private List<Map<String, Object>> results;
 }

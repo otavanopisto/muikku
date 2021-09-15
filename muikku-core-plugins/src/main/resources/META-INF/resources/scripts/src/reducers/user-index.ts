@@ -35,6 +35,7 @@ export interface UserType {
   curriculumIdentifier?: string,
   studyProgrammeIdentifier?: string,
   organizationIdentifier?: string,
+  isDefaultOrganization?: boolean,
 
   //EXTENDED VALUES, may or may not be available
   role?: string,
@@ -90,7 +91,7 @@ export interface UserStaffType {
   firstName: string,
   lastName: string,
   properties: any,
-  userEntityId: number
+  userEntityId: number,
   hasImage: boolean
 }
 

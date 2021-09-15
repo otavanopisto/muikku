@@ -19,6 +19,11 @@
       {/gradingScales}
     </select>
   </div>
+  <div class="evaluation-modal-evaluate-form-row" id="billingRow">
+    <label for="workspaceGradeBilling">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"/}</label>
+    <select name="workspaceGradeBilling" id="workspaceGradeBilling">
+    </select>
+  </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
       <div class="eval-modal-evaluate-button button-evaluate-passing" id="workspaceGradeSave">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"/}</div>

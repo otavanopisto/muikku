@@ -44,6 +44,7 @@ import { updateHops } from '~/actions/main-function/hops';
 import { updateStatistics } from '~/actions/main-function/records/statistics';
 import { updateYO, updateMatriculationSubjectEligibility } from '~/actions/main-function/records/yo';
 import { updateSummary } from '~/actions/main-function/records/summary';
+import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
 
@@ -105,6 +106,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), true, false);
     } else if (window.location.pathname.includes("/profile")) {
       this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
+    }
+  }
+
+  loadChatSettings = (): void => {
+    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
   }
 
@@ -235,13 +242,18 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderCoursePickerBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      let stateFilters = [
+        {
+          identifier: "unpublished",
+          name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.unpublished.label')
+        }
+      ];
+      this.props.store.dispatch(setWorkspaceStateFilters(false, stateFilters) as Action);
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
-
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
-
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
       let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
@@ -283,8 +295,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
       }
-
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <CousePickerBody />
@@ -295,12 +306,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 6));
 
-      this.props.store.dispatch(loadAnnouncementsAsAClient() as Action);
+      this.props.store.dispatch(loadAnnouncementsAsAClient({loadUserGroups: false}) as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <IndexBody />
@@ -320,6 +331,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(setWorkspaceStateFilters(true, stateFilters) as Action);
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
+      this.props.store.dispatch(loadOrganizationSummary() as Action);
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
       let currentLocationHasData = Object.keys(currentLocationData).length > 0 ? true : false;
 
@@ -358,10 +370,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadCoursePickerData(currentLocationData, true, false);
       }
 
-      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, lastResult: 10 } }) as Action);
+      this.props.store.dispatch(loadUsers({ payload: { q: "", firstResult: 0, maxResults: 10 } }) as Action);
       this.props.store.dispatch(loadUserGroups({ payload: { q: "", firstResult: 0, maxResults: 25 } }) as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <OrganizationAdministrationBody />
   }
@@ -393,7 +405,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         }
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <CommunicatorBody />
@@ -418,7 +430,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadDiscussionData(currentLocation);
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <DiscussionBody />
   }
@@ -431,7 +443,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadAnnouncementsAsAClient({ hideWorkspaceAnnouncements: "false" }, (announcements: AnnouncementListType) => { announcements }) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <AnnouncementsBody />
   }
@@ -453,7 +465,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.loadAnnouncerData(window.location.hash.replace("#", "").split("/"));
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <AnnouncerBody />
@@ -470,7 +482,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
       this.loadGuiderData();
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <GuiderBody />
   }
@@ -490,7 +502,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
         this.props.store.dispatch(loadProfileAddress() as Action);
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
 
       if (!window.location.hash) {
         window.location.hash = "#general";
@@ -514,7 +526,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <RecordsBody />

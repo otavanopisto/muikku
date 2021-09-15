@@ -50,6 +50,7 @@ import {
 } from "~/reducers/workspaces";
 import equals = require("deep-equal");
 import $ from "~/lib/jquery";
+import { UploadingValue } from "~/@types/shared";
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
@@ -230,8 +231,8 @@ export interface SelectItem {
 
 export interface workspaceStudentsQueryDataType {
   q: string | null;
-  firstResult: number | null;
-  maxResults: number | null;
+  firstResult?: number | null;
+  maxResults?: number | null;
   active?: boolean;
 }
 
@@ -260,7 +261,7 @@ let loadTemplatesFromServer: LoadTemplatesFromServerTriggerType = function loadT
         type: "UPDATE_ORGANIZATION_TEMPLATES",
         payload: <WorkspaceListType>(
           ((await promisify(
-            mApi().organizationmanagement.workspaces.read(data),
+            mApi().organizationWorkspaceManagement.workspaces.read(data),
             "callback"
           )()) || 0)
         ),
@@ -479,9 +480,11 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
     workspace: WorkspaceType;
     material: MaterialContentNodeType;
     files: File[];
+    uploadingValues?: UploadingValue[];
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  },
+  updateUploadingValues?:(updatedValues: UploadingValue[]) => void): AnyActionType;
 }
 
 export interface UpdateWorkspaceEditModeStateTriggerType {
@@ -533,11 +536,11 @@ let setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType = function s
       (workspace.details =
         data.loadDetails || (workspace && workspace.details)
           ? await reuseExistantValue(true, workspace && workspace.details, () =>
-              promisify(
-                mApi().workspace.workspaces.details.read(data.workspaceId),
-                "callback"
-              )()
-            )
+            promisify(
+              mApi().workspace.workspaces.details.read(data.workspaceId),
+              "callback"
+            )()
+          )
           : null),
         dispatch({
           type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
@@ -665,21 +668,21 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
 
         getState().status.loggedIn
           ? // The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
-            // And rerequest
-            reuseExistantValue(
-              true,
-              typeof data.refreshActivity !== "undefined" &&
-                data.refreshActivity
-                ? null
-                : workspace && workspace.studentActivity,
-              () =>
-                promisify(
-                  mApi()
-                    .guider.workspaces.activity.cacheClear()
-                    .read(data.workspaceId),
-                  "callback"
-                )()
-            )
+          // And rerequest
+          reuseExistantValue(
+            true,
+            typeof data.refreshActivity !== "undefined" &&
+              data.refreshActivity
+              ? null
+              : workspace && workspace.studentActivity,
+            () =>
+              promisify(
+                mApi()
+                  .guider.workspaces.activity.cacheClear()
+                  .read(data.workspaceId),
+                "callback"
+              )()
+          )
           : null,
 
         reuseExistantValue(true, workspace && workspace.additionalInfo, () =>
@@ -714,36 +717,36 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
 
         getState().status.loggedIn
           ? reuseExistantValue(
-              true,
-              workspace &&
-                typeof workspace.isCourseMember !== "undefined" &&
-                workspace.isCourseMember,
-              () =>
-                promisify(
-                  mApi().workspace.workspaces.amIMember.read(data.workspaceId),
-                  "callback"
-                )()
-            )
+            true,
+            workspace &&
+            typeof workspace.isCourseMember !== "undefined" &&
+            workspace.isCourseMember,
+            () =>
+              promisify(
+                mApi().workspace.workspaces.amIMember.read(data.workspaceId),
+                "callback"
+              )()
+          )
           : false,
 
         reuseExistantValue(true, workspace && workspace.journals, () => null),
 
         data.loadDetails || (workspace && workspace.details)
           ? reuseExistantValue(true, workspace && workspace.details, () =>
-              promisify(
-                mApi().workspace.workspaces.details.read(data.workspaceId),
-                "callback"
-              )()
-            )
+            promisify(
+              mApi().workspace.workspaces.details.read(data.workspaceId),
+              "callback"
+            )()
+          )
           : null,
 
         getState().status.loggedIn
           ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-              promisify(
-                mApi().chat.workspaceChatSettings.read(data.workspaceId),
-                "callback"
-              )()
-            )
+            promisify(
+              mApi().chat.workspaceChatSettings.read(data.workspaceId),
+              "callback"
+            )()
+          )
           : null,
       ])) as any;
       workspace.studentAssessments = assesments;
@@ -800,15 +803,15 @@ let requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType = func
     try {
       let assessmentRequest: WorkspaceAssessmentRequestType = <
         WorkspaceAssessmentRequestType
-      >await promisify(
-        mApi().assessmentrequest.workspace.assessmentRequests.create(
-          data.workspace.id,
-          {
-            requestText: data.text,
-          }
-        ),
-        "callback"
-      )();
+        >await promisify(
+          mApi().assessmentrequest.workspace.assessmentRequests.create(
+            data.workspace.id,
+            {
+              requestText: data.text,
+            }
+          ),
+          "callback"
+        )();
 
       let newAssessmentState = data.workspace.studentAssessments
         ? data.workspace.studentAssessments.assessmentState
@@ -878,7 +881,7 @@ let cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType = functi
     try {
       let assessmentRequest: WorkspaceAssessmentRequestType =
         data.workspace.assessmentRequests[
-          data.workspace.assessmentRequests.length - 1
+        data.workspace.assessmentRequests.length - 1
         ];
       if (!assessmentRequest) {
         dispatch(
@@ -1058,9 +1061,9 @@ export interface LoadUsersOfWorkspaceTriggerType {
     payload?: {
       q: string;
       active?: boolean;
-      firstResult: number;
-      maxResults: number;
-    };
+      firstResult?: number;
+      maxResults?: number;
+    },
     success?: (
       students: WorkspaceStudentListType | WorkspaceStaffListType
     ) => any;
@@ -1264,9 +1267,8 @@ let signupIntoWorkspace: SignupIntoWorkspaceTriggerType = function signupIntoWor
         }),
         "callback"
       )();
-      window.location.href = `${getState().status.contextPath}/workspace/${
-        data.workspace.urlName
-      }`;
+      window.location.href = `${getState().status.contextPath}/workspace/${data.workspace.urlName
+        }`;
       data.success();
     } catch (err) {
       if (!(err instanceof MApiError)) {
@@ -1420,10 +1422,10 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
           existingProducers.length == 0
             ? appliedProducers
             : appliedProducers.filter((producer) => {
-                if (!producer.id) {
-                  return producer;
-                }
-              });
+              if (!producer.id) {
+                return producer;
+              }
+            });
 
         let workspaceProducersToDelete = existingProducers.filter(
           (producer) => {
@@ -1524,6 +1526,24 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       delete originalWorkspace["staffMemberSelect"];
       delete originalWorkspace["studentsSelect"];
       delete originalWorkspace["details"];
+      delete originalWorkspace["studentActivity"];
+      delete originalWorkspace["forumStatistics"];
+      delete originalWorkspace["studentAssessments"];
+      delete originalWorkspace["studentAssessmentState"];
+      delete originalWorkspace["activityStatistics"];
+      delete originalWorkspace["feeInfo"];
+      delete originalWorkspace["assessmentRequests"];
+      delete originalWorkspace["additionalInfo"];
+      delete originalWorkspace["staffMembers"];
+      delete originalWorkspace["students"];
+      delete originalWorkspace["details"];
+      delete originalWorkspace["producers"];
+      delete originalWorkspace["contentDescription"];
+      delete originalWorkspace["isCourseMember"];
+      delete originalWorkspace["journals"];
+      delete originalWorkspace["activityLogs"];
+      delete originalWorkspace["permissions"];
+      delete originalWorkspace["chatStatus"];
 
       // Delete details from update so it wont fail
 
@@ -1563,7 +1583,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         });
 
         await promisify(
-          mApi().organizationmanagement.workspaces.students.create(
+          mApi().organizationWorkspaceManagement.workspaces.students.create(
             data.workspace.id,
             {
               studentIdentifiers: studentIdentifiers,
@@ -1580,7 +1600,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
         );
 
         await promisify(
-          mApi().organizationmanagement.workspaces.staff.create(
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(
             data.workspace.id,
             {
               staffMemberIdentifiers: staffMemberIdentifiers,
@@ -1593,7 +1613,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       // if (data.removeStudents.length > 0) {
       //   let studentIdentifiers = data.removeStudents.map(student => student.id);
 
-      // await promisify(mApi().organizationmanagement.workspaces.students
+      // await promisify(mApi().organizationWorkspaceManagement.workspaces.students
       //   .del(data.workspace.id, {
       //     studentIdentifiers: studentIdentifiers
       //   }
@@ -1605,7 +1625,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       // if (data.removeTeachers.length > 0) {
       //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
 
-      // await promisify(mApi().organizationmanagement.workspaces.staff
+      // await promisify(mApi().organizationWorkspaceManagement.workspaces.staff
       //   .del(data.workspace.id, {
       //     staffMemberIdentifiers: staffMemberIdentifiers
       //   }
@@ -1614,7 +1634,7 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       //   );
       // }
 
-      //      await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
+      //  await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
 
       data.progress && data.progress("done");
       data.success && data.success();
@@ -1804,19 +1824,17 @@ let loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType = function loadStud
     getState: () => StateType
   ) => {
     try {
-      const hasPayload: boolean = data.payload ? true : false;
-
       const payload: workspaceStudentsQueryDataType = {
         q: data.payload && data.payload.q ? data.payload.q : "",
-        firstResult:
-          data.payload && data.payload.firstResult
-            ? data.payload.firstResult
-            : 0,
-        maxResults:
-          data.payload && data.payload.maxResults
-            ? data.payload.maxResults
-            : 10,
       };
+
+      if (data.payload && data.payload.firstResult >= 0) {
+        payload.firstResult = data.payload.firstResult;
+      }
+
+      if (data.payload && data.payload.maxResults) {
+        payload.maxResults = data.payload.maxResults;
+      }
 
       if (data.payload && data.payload.active !== undefined) {
         payload.active = data.payload.active;
@@ -2077,10 +2095,10 @@ let loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies
       }
       let compositeReplies: MaterialCompositeRepliesListType = <
         MaterialCompositeRepliesListType
-      >await promisify(
-        mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
-        "callback"
-      )();
+        >await promisify(
+          mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
+          "callback"
+        )();
       dispatch({
         type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
         payload: compositeReplies || [],
@@ -2122,20 +2140,20 @@ let updateAssignmentState: UpdateAssignmentStateTriggerType = function updateAss
         let replyGenerated: any = await promisify(
           existantReplyId
             ? mApi().workspace.workspaces.materials.replies.update(
-                workspaceId,
-                workspaceMaterialId,
-                existantReplyId,
-                {
-                  state: successState,
-                }
-              )
+              workspaceId,
+              workspaceMaterialId,
+              existantReplyId,
+              {
+                state: successState,
+              }
+            )
             : mApi().workspace.workspaces.materials.replies.create(
-                workspaceId,
-                workspaceMaterialId,
-                {
-                  state: successState,
-                }
-              ),
+              workspaceId,
+              workspaceMaterialId,
+              {
+                state: successState,
+              }
+            ),
           "callback"
         )();
         replyId = replyGenerated ? replyGenerated.id : existantReplyId;
@@ -2620,10 +2638,10 @@ let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurr
         existingProducers.length == 0
           ? data.appliedProducers
           : data.appliedProducers.filter((producer) => {
-              if (!producer.id) {
-                return producer;
-              }
-            });
+            if (!producer.id) {
+              return producer;
+            }
+          });
 
       let workspaceProducersToDelete = existingProducers.filter((producer) => {
         if (producer.id) {
@@ -2661,12 +2679,12 @@ let updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurr
       // it's a mess but whatever
       let newActualWorkspaceProducers: Array<WorkspaceProducerType> = <
         Array<WorkspaceProducerType>
-      >await promisify(
-        mApi()
-          .workspace.workspaces.materialProducers.cacheClear()
-          .read(state.workspaces.currentWorkspace.id),
-        "callback"
-      )();
+        >await promisify(
+          mApi()
+            .workspace.workspaces.materialProducers.cacheClear()
+            .read(state.workspaces.currentWorkspace.id),
+          "callback"
+        )();
 
       let currentWorkspace: WorkspaceType = getState().workspaces
         .currentWorkspace;
@@ -2837,7 +2855,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         });
 
         await promisify(
-          mApi().organizationmanagement.workspaces.students.create(
+          mApi().organizationWorkspaceManagement.workspaces.students.create(
             workspace.id,
             {
               studentIdentifiers: studentIdentifiers,
@@ -2852,7 +2870,7 @@ let createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
         let staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
         await promisify(
-          mApi().organizationmanagement.workspaces.staff.create(workspace.id, {
+          mApi().organizationWorkspaceManagement.workspaces.staff.create(workspace.id, {
             staffMemberIdentifiers: staffMemberIdentifiers,
           }),
           "callback"
@@ -3073,12 +3091,12 @@ let loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermi
         .currentWorkspace;
       let permissions: WorkspacePermissionsType[] = <
         WorkspacePermissionsType[]
-      >await promisify(
-        mApi().workspace.workspaces.signupGroups.read(
-          getState().workspaces.currentWorkspace.id
-        ),
-        "callback"
-      )();
+        >await promisify(
+          mApi().workspace.workspaces.signupGroups.read(
+            getState().workspaces.currentWorkspace.id
+          ),
+          "callback"
+        )();
 
       dispatch({
         type: "UPDATE_WORKSPACE",
@@ -3118,9 +3136,9 @@ let setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType 
     let currentDraftNodeValue;
     const currentDraftNodeValueByStorage = localStorage.getItem(
       "TEMPORARY_LOCAL_DRAFT_" +
-        currentNodeValue.workspaceMaterialId +
-        "_" +
-        newState.currentNodeWorkspace.id
+      currentNodeValue.workspaceMaterialId +
+      "_" +
+      newState.currentNodeWorkspace.id
     );
     if (!currentDraftNodeValueByStorage) {
       newState.currentDraftNodeValue = { ...currentNodeValue };
@@ -3405,9 +3423,9 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
         }
         localStorage.removeItem(
           "TEMPORARY_LOCAL_DRAFT_" +
-            data.material.workspaceMaterialId +
-            "_" +
-            data.workspace.id
+          data.material.workspaceMaterialId +
+          "_" +
+          data.workspace.id
         );
       } else {
         // Trying to update the draft
@@ -3427,16 +3445,16 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
         ) {
           localStorage.removeItem(
             "TEMPORARY_LOCAL_DRAFT_" +
-              data.material.workspaceMaterialId +
-              "_" +
-              data.workspace.id
+            data.material.workspaceMaterialId +
+            "_" +
+            data.workspace.id
           );
         } else {
           localStorage.setItem(
             "TEMPORARY_LOCAL_DRAFT_" +
-              data.material.workspaceMaterialId +
-              "_" +
-              data.workspace.id,
+            data.material.workspaceMaterialId +
+            "_" +
+            data.workspace.id,
             JSON.stringify(newDraftValue)
           );
         }
@@ -3455,7 +3473,7 @@ let updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrigge
           if (message.reason === "CONTAINS_ANSWERS") {
             showRemoveAnswersDialogForPublish = true;
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       if (!data.dontTriggerReducerActions) {
@@ -3538,7 +3556,7 @@ let deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrigge
               })
             );
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       data.fail && data.fail();
@@ -3664,6 +3682,7 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           "callback"
         )()) as any).id;
       } else if (!data.makeFolder) {
+        // Creating page for section !
         const materialId = ((await promisify(
           mApi().materials.html.create({
             title: data.title,
@@ -3680,7 +3699,9 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
           }),
           "callback"
         )()) as any).id;
+
       } else {
+        //Creating section
         workspaceMaterialId = ((await promisify(
           mApi().workspace.workspaces.folders.create(data.workspace.id, {
             parentId,
@@ -3721,15 +3742,22 @@ let createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrigge
 
 const MAX_ATTACHMENT_SIZE = 10000000;
 let createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment(
-  data
+  data,
+  updateUploadingValues?:(updatedValues: UploadingValue[]) => void
 ) {
   return async (
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
     try {
+
+      /**
+       * Up keep updated values when mapping them
+       */
+      let updatedValues:UploadingValue[] = [];
+
       const tempFilesData = await Promise.all(
-        data.files.map((file) => {
+        data.files.map((file, index) => {
           //create the form data
           let formData = new FormData();
           //we add it to the file
@@ -3756,6 +3784,33 @@ let createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerT
               },
               error: (xhr: any, err: Error) => {
                 reject(err);
+              },
+              xhr: () => {
+                /**
+                 * If these values are not given, just return;
+                 */
+                if(!data.uploadingValues && !updateUploadingValues){
+                  return;
+                }
+
+                //we need to get the upload progress
+                let xhr = new (window as any).XMLHttpRequest();
+                //Upload progress
+                xhr.upload.addEventListener("progress", (evt:any)=>{
+
+                  if(index === 0) {
+                    updatedValues = [...data.uploadingValues]
+                  }
+                  if (evt.lengthComputable) {
+                    //we calculate the percent
+                    const percentComplete = evt.loaded / evt.total;
+                    //and set the new progress
+                    updatedValues[index].progress = percentComplete;
+                    //set the state for that new progress
+                    updateUploadingValues(updatedValues)
+                  }
+                }, false);
+                return xhr;
               },
               cache: false,
               contentType: false,

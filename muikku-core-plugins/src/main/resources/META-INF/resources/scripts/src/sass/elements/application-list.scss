@@ -6,7 +6,7 @@
 .application-list {
   @include text;
   height: 100%;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
   overflow: visible;
   width: 100%;
 
@@ -52,6 +52,7 @@
   display: inline-flex;
   margin-bottom: 0;
   margin-left: 10px;
+
   @include breakpoint($breakpoint-pad) {
     margin-left: 0;
   }
@@ -715,6 +716,7 @@
   display: inline-flex;
   font-size: 0.875rem;
   font-weight: 600;
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
     font-weight: 400;
@@ -1009,12 +1011,21 @@
 
 .application-list__item-body-meta-content {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 0 0 10px;
 
   label {
-    margin-right: 10px;
+    margin-right: 5px;
   }
+
+  div {
+    padding: 5px 0;
+  }
+
+  span {
+    font-weight: 300;
+  }
+
 }
 
 .application-list__item-footer--course {

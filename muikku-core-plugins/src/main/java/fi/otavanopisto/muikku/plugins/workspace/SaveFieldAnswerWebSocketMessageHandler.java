@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;

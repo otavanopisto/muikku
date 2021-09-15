@@ -14,6 +14,7 @@
 	  MUIKKU_PERMISSIONS.WORKSPACE_DISCUSSIONS_VISIBLE = #{workspaceBackingBean.discussionsVisible};
 	  MUIKKU_PERMISSIONS.WORKSPACE_USERS_VISIBLE = #{workspaceBackingBean.usersVisible};
 	  MUIKKU_PERMISSIONS.WORKSPACE_JOURNAL_VISIBLE = #{workspaceBackingBean.journalVisible};
+	  MUIKKU_PERMISSIONS.WORKSPACE_ACCESS_EVALUATION = #{sessionBackingBean.hasWorkspacePermission('ACCESS_WORKSPACE_EVALUATION')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_MATERIALS = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_FRONTPAGE')};
@@ -28,7 +29,7 @@
 	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_DETAILS = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_DETAILS')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_SIGNUP = #{sessionBackingBean.hasWorkspacePermission('WORKSPACE_SIGNUP')};
 	  MUIKKU_PERMISSIONS.WORKSPACE_IS_WORKSPACE_STUDENT = #{sessionBackingBean.hasWorkspacePermission('IS_WORKSPACE_STUDENT')};
-	  
+	  MUIKKU_PERMISSIONS.WORKSPACE_DELETE_FORUM_THREAD = #{sessionBackingBean.hasWorkspacePermission('FORUM_DELETE_WORKSPACE_MESSAGES')};
 	  WORKSPACE_ID = #{workspaceBackingBean.workspaceEntityId}; //With this you can get the workspace as http://dev.muikkuverkko.fi/rest/workspace/workspaces/285/
 	  WORKSPACE_NAME = '#{workspaceBackingBean.workspaceName}';
     </script>

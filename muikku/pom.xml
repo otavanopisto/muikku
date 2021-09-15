@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.155-SNAPSHOT</version>
+    <version>1.1.162-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -118,20 +118,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Jackson -->
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Commons -->
 
     <dependency>
@@ -220,13 +206,13 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>muikku-school-data-pyramus</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
 
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>pyramus-oauth-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -237,7 +223,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>elastic-search-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -248,7 +234,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>dummy-mail-bridge-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -259,7 +245,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>matriculation-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -270,7 +256,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>jndi-mail-bridge-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -281,7 +267,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -292,7 +278,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>h2db-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -303,7 +289,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -314,7 +300,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>evaluation-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -325,7 +311,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>timed-notifications-plugin</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -336,7 +322,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>developer-tools</artifactId>
-          <version>1.1.155-SNAPSHOT</version>
+          <version>1.1.162-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -400,7 +386,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.codehaus.jackson.jackson-core-asl,org.codehaus.jackson.jackson-mapper-asl,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
+              <Dependencies>org.apache.commons.io,org.apache.commons.collections,org.apache.commons.codec,org.apache.httpcomponents,com.h2database.h2,org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
             </manifestEntries>
           </archive>
           <classifier>${classifier}</classifier>

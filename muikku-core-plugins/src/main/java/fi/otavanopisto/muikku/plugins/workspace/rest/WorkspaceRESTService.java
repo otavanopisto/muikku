@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +56,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.annotations.GZIP;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
@@ -599,8 +602,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaces.isEmpty()) {
-      // TODO: return 200 & empty list instead of 204
-      return Response.noContent().build();
+      return Response.ok(workspaces).build();
     }
     
     if (orderBy.contains("lastVisit")) {
@@ -1144,7 +1146,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceStudents.sort(Comparator.comparing(WorkspaceStudentRestModel::getLastName).thenComparing(WorkspaceStudentRestModel::getFirstName));
     }
 
-    SearchResults<List<WorkspaceStudentRestModel>> responseStudents = new SearchResults<List<WorkspaceStudentRestModel>>(searchResult.getFirstResult(), searchResult.getLastResult(), workspaceStudents, searchResult.getTotalHitCount());
+    SearchResults<List<WorkspaceStudentRestModel>> responseStudents = new SearchResults<List<WorkspaceStudentRestModel>>(searchResult.getFirstResult(), workspaceStudents, searchResult.getTotalHitCount());
     return Response.ok(responseStudents).build();
   }
   
@@ -3369,6 +3371,64 @@ public class WorkspaceRESTService extends PluginRESTService {
         .build();
   }
   
+  @Path("/userfiles")
+  @POST
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createUserFile(MultipartFormDataInput multipart) {
+    byte[] fileData = getFile(multipart, "file");
+    String filename = String.format("%s-%s",
+        StringUtils.strip(UUID.randomUUID().toString(), "-"),
+        sanitizeFilename(getString(multipart, "name")));
+    try {
+      fileAnswerUtils.storeFileToFileSystem(FileAnswerType.FILE, sessionController.getLoggedUserEntity().getId(), filename, fileData);
+    }
+    catch (IOException e) {
+      logger.log(Level.WARNING, "Exception storing user file", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("File upload fail: %s", e.getMessage())).build();
+    }
+    return Response.ok(filename).build();
+  }
+
+  @Path("/userfiles/{USERID}/file/{FILENAME}")
+  @GET
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Produces("*/*")
+  public Response getUserFile(@PathParam("USERID") Long userEntityId, @PathParam("FILENAME") String filename) {
+    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_STUDENT_FILES)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    try {
+      byte[] data = fileAnswerUtils.getFileContent(FileAnswerType.FILE, userEntityId, filename);
+      String contentType = fileAnswerUtils.getFileContentType(FileAnswerType.FILE, userEntityId, filename); 
+      return Response.ok(data)
+          .type(contentType)
+          .header("Content-Length", data.length)
+          .header("Content-Disposition", String.format("inline; filename=\"%s\"", filename))
+          .build();
+    }
+    catch (IOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("File get fail: %s", e.getMessage())).build();
+    }
+  }
+
+  @Path("/userfiles/{USERID}/file/{FILENAME}")
+  @DELETE
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteUserFile(@PathParam("USERID") Long userEntityId, @PathParam("FILENAME") String filename) {
+    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    try {
+      fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.FILE, userEntityId, filename);
+      return Response.noContent().build();
+    }
+    catch (IOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("File delete fail: %s", e.getMessage())).build();
+    }
+  }
+  
   private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
     User user = author == null ? null : userController.findUserByUserEntityDefaults(author);
@@ -3422,6 +3482,43 @@ public class WorkspaceRESTService extends PluginRESTService {
         commentTreeAdd(comments, c, resultList);
       });
     return resultList;
+  }
+
+  private String sanitizeFilename(String filename) {
+    filename = StringUtils.trim(filename);
+    if (StringUtils.isEmpty(filename)) {
+      return filename;
+    }
+    return StringUtils.lowerCase(StringUtils.strip(StringUtils.removePattern(filename, "[\\\\/:*?\"<>|]"), "."));
+  }
+
+  private String getString(MultipartFormDataInput multipart, String field) {
+    try {
+      Map<String, List<InputPart>> form = multipart.getFormDataMap();
+      List<InputPart> inputParts = form.get(field);
+      return inputParts.size() == 0 ? null : inputParts.get(0).getBodyAsString();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  private byte[] getFile(MultipartFormDataInput multipart, String field) {
+    try {
+      Map<String, List<InputPart>> form = multipart.getFormDataMap();
+      List<InputPart> inputParts = form.get(field);
+      if (inputParts.size() == 0) {
+        return null;
+      }
+      else {
+        return IOUtils.toByteArray(inputParts.get(0).getBody(InputStream.class, null));
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
 }

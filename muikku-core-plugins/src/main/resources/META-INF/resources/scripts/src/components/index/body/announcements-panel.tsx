@@ -163,7 +163,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
             <div className="item-list item-list--panel-announcements" style={ this.props.overflow && {overflow: "auto"}}>
               {renderAnnouncements}
             </div>
-            {renderPaginationBody}
+            {this.props.announcements.length > itemsPerPage ? renderPaginationBody : null}
           </div>
           ) : (
             <div className="panel__body panel__body--empty" aria-label={this.props.i18n.text.get("plugin.frontPage.announcementPanel.ariaLabel.announcement.panel")}>

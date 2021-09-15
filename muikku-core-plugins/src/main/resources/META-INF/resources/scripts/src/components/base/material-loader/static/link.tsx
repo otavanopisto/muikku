@@ -1,6 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { HTMLtoReactComponent } from "~/util/modifiers";
+import { HTMLtoReactComponent, HTMLToReactComponentRule } from "~/util/modifiers";
 
 interface LinkProps {
   element: HTMLElement,
@@ -9,24 +9,28 @@ interface LinkProps {
     //Someone thought it was smart to set up two versions of data
     url?: string
   },
-  i18n: i18nType
+  i18n: i18nType,
+  processingRules: HTMLToReactComponentRule[],
 }
 
 export default class Link extends React.Component<LinkProps, {}>{
-  constructor(props: LinkProps){
+  constructor(props: LinkProps) {
     super(props);
   }
-  render (){
-    return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-      if (Tag === "a" && elementProps.href && elementProps.href[0] !== "#"){
-        const isAbsolute = (elementProps.href.indexOf('/') == 0) || (elementProps.href.indexOf('mailto:') == 0) ||
-          (elementProps.href.indexOf('data:') == 0) || (elementProps.href.match("^(?:[a-zA-Z]+:)?\/\/"));
+  render() {
+    const newRules = this.props.processingRules.filter((r) => r.id !== "link-rule");
+    newRules.push({
+      shouldProcessHTMLElement: (tag, element) => {
+        return tag === "a" && element.getAttribute("href") && element.getAttribute("href")[0] !== "#";
+      },
+      preprocessReactProperties: (tag, props, children, element) => {
+        const isAbsolute = (props.href.indexOf('/') == 0) || (props.href.indexOf('mailto:') == 0) ||
+          (props.href.indexOf('data:') == 0) || (props.href.match("^(?:[a-zA-Z]+:)?\/\/"));
         if (!isAbsolute) {
-          elementProps.href = this.props.path + "/" + elementProps.href;
+          props.href = this.props.path + "/" + props.href;
         }
       }
-
-      return <Tag {...elementProps}>{children}</Tag>
     });
+    return HTMLtoReactComponent(this.props.element, newRules);
   }
 }

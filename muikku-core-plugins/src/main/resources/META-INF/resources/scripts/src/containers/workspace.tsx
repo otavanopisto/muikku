@@ -97,6 +97,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       signupDialogOpen: false,
     }
   }
+
   closeEnrollmentDialog() {
     this.setState({
       enrollmentDialogOpen: false,
@@ -158,6 +159,11 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.loadWorkspaceHelpData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
         }
       }
+    }
+  }
+  loadChatSettings = (): void => {
+    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
   }
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number) {
@@ -266,11 +272,11 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       if (state.status.loggedIn && state.status.isActiveUser && state.status.permissions.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS) {
         this.props.store.dispatch(loadAnnouncementsAsAClient({
           hideEnvironmentAnnouncements: "true",
-          workspaceEntityId: state.status.currentWorkspaceId
+          workspaceEntityId: state.status.currentWorkspaceId,
         }) as Action);
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]} />
@@ -296,7 +302,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         }
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}
@@ -323,7 +329,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         this.loadWorkspaceDiscussionData(currentLocation);
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceDiscussionBody workspaceUrl={props.match.params["workspaceUrl"]} />
@@ -339,12 +345,12 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(loadAnnouncementsAsAClient({
         hideEnvironmentAnnouncements: "true",
-        workspaceEntityId: state.status.currentWorkspaceId
+        workspaceEntityId: state.status.currentWorkspaceId,
       }) as Action);
 
       this.loadWorkspaceAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <WorkspaceAnnouncementsBody workspaceUrl={props.match.params["workspaceUrl"]} />
   }
@@ -369,7 +375,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         this.loadWorkspaceAnnouncerData(window.location.hash.replace("#", "").split("/"));
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
     return <WorkspaceAnnouncerBody workspaceUrl={props.match.params["workspaceUrl"]} />
   }
@@ -421,6 +427,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id) as Action);
     }
   }
+
   renderWorkspaceMaterials(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -518,7 +525,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         }
       }
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
@@ -554,7 +561,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         }
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceUsersBody workspaceUrl={props.match.params["workspaceUrl"]} />
@@ -576,7 +583,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace) => {
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
-            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace }) as Action);
+            this.props.store.dispatch(loadStudentsOfWorkspace({ workspace, payload: { q: "", maxResults: 500 } }) as Action);
           }
           if (!workspace.journals) {
             if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
@@ -587,8 +594,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           }
         }
       }) as Action);
-
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceJournalBody workspaceUrl={props.match.params["workspaceUrl"]} />
@@ -618,7 +624,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         }
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspaceManagementBody workspaceUrl={props.match.params["workspaceUrl"]} />
@@ -637,7 +643,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         }
       }) as Action);
 
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      this.loadChatSettings();
     }
 
     return <WorkspacePermissionsBody workspaceUrl={props.match.params["workspaceUrl"]} />

@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;

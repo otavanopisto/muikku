@@ -242,6 +242,7 @@ public class MatriculationRESTService {
       resultAttendance.setTerm(attendance.getTerm());
       resultAttendance.setStatus(attendance.getStatus());
       resultAttendance.setYear(attendance.getYear());
+      resultAttendance.setFunding(attendance.getFunding());
       attendances.add(resultAttendance);
     }
     schoolDataEntity.setAttendances(attendances);

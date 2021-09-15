@@ -6,7 +6,7 @@ import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} f
 import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
-import { StoredWorklistItem, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
+import { StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
 import moment from '~/lib/moment';
 
 export interface LoadProfilePropertiesSetTriggerType {
@@ -93,6 +93,7 @@ export interface InsertProfileWorklistItemTriggerType {
     entryDate: string,
     price: number,
     factor: number,
+    billingNumber: number,
     success?: () => void,
     fail?: () => void,
   }): AnyActionType;
@@ -113,8 +114,19 @@ export interface EditProfileWorklistItemTriggerType {
     entryDate: string,
     price: number,
     factor: number,
+    billingNumber: number,
     success?: () => void,
     fail?: () => void,
+  }): AnyActionType;
+}
+
+export interface UpdateProfileWorklistItemsStateTriggerType {
+  (data: {
+    beginDate: string;
+    endDate: string;
+    state: WorklistBillingState;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -450,10 +462,14 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
 
     try {
       const worklistItem: StoredWorklistItem = await promisify(mApi().worklist.worklistItems.create(data), 'callback')() as StoredWorklistItem;
+
+      let displayName = state.i18n.time.format(worklistItem.entryDate, "MMMM YYYY");
+      displayName = displayName[0].toUpperCase() + displayName.substr(1);
+
       const expectedSummary: WorklistItemsSummary = {
         beginDate: moment(worklistItem.entryDate).startOf("month").format("YYYY-MM-DD"),
         endDate: moment(worklistItem.entryDate).endOf("month").format("YYYY-MM-DD"),
-        displayName: state.i18n.time.format(worklistItem.entryDate, "MMMM YYYY"),
+        displayName,
         count: 1,
       }
 
@@ -466,15 +482,18 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
           return moment(p.summary.beginDate).isAfter(entryDate);
         });
 
+        // we can add it here right away because not finding
+        // the worklist summary thing means that it was just
+        // created so we can add its single item right away
         if (itemWithMoreIndex === -1) {
           newWorklist.push({
             summary: expectedSummary,
-            items: null,
+            items: [worklistItem],
           });
         } else {
           newWorklist.splice(itemWithMoreIndex, 0, {
             summary: expectedSummary,
-            items: null,
+            items: [worklistItem],
           });
         }
 
@@ -485,8 +504,21 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType = function
       } else {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
         newSummary.summary.count++;
+
+        // on the other hand here we should only add the worklist
+        // item if there are items already rather than null
+        // in which case it hasn't been loaded
         if (newSummary.items) {
-          newSummary.items = [...newSummary.items, worklistItem];
+          const itemWithMoreIndex = newSummary.items.findIndex((p) => {
+            return moment(p.entryDate).isAfter(worklistItem.entryDate);
+          });
+
+          if (itemWithMoreIndex === -1) {
+            newSummary.items = [...newSummary.items, worklistItem];
+          } else {
+            newSummary.items.splice(itemWithMoreIndex, 0, worklistItem);
+          }
+
         }
 
         const newWorklist = [...currWorklist]
@@ -525,6 +557,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType = function
       if (matchingSummaryIndex !== -1) {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
         newSummary.summary.count--;
+
         if (newSummary.items) {
           newSummary.items = newSummary.items.filter((i) => i.id !== data.item.id);
         }
@@ -560,7 +593,8 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
     data.description === data.item.description &&
     data.entryDate === data.item.entryDate &&
     data.factor === data.item.factor &&
-    data.price === data.item.price
+    data.price === data.item.price &&
+    data.billingNumber === data.item.billingNumber
   ) {
     data.success && data.success();
     return;
@@ -580,6 +614,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
         description: data.description,
         price: data.price,
         factor: data.factor,
+        billingNumber: data.billingNumber,
       }), 'callback')() as StoredWorklistItem;
 
       const expectedSummaryBeginDate = moment(newWorklistItem.entryDate).startOf("month").format("YYYY-MM-DD");
@@ -588,13 +623,26 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType = function del
       const matchingSummaryIndex = currWorklist.findIndex((f) => f.summary.beginDate === expectedSummaryBeginDate);
       if (matchingSummaryIndex !== -1 && currWorklist[matchingSummaryIndex].items) {
         const newSummary = {...currWorklist[matchingSummaryIndex]};
-        newSummary.items = newSummary.items.map((i) => {
+
+        let newItems = newSummary.items.filter((i) => {
           if (i.id === data.item.id) {
-            return newWorklistItem;
+            return false;
           }
 
-          return i;
+          return true;
         });
+
+        const itemWithMoreIndex = newItems.findIndex((p) => {
+          return moment(p.entryDate).isAfter(newWorklistItem.entryDate);
+        });
+
+        if (itemWithMoreIndex === -1) {
+          newItems = [...newItems, newWorklistItem];
+        } else {
+          newItems.splice(itemWithMoreIndex, 0, newWorklistItem);
+        }
+
+        newSummary.items = newItems;
 
         const newWorklist = [...currWorklist]
         newWorklist[matchingSummaryIndex] = newSummary;
@@ -702,8 +750,55 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
   }
 }
 
+const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType = function updateProfileWorklistItemsState(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+
+    if (!state.profile || !state.profile.worklist) {
+      return;
+    }
+
+    try {
+      const updatedItems: Array<StoredWorklistItem> = await promisify(mApi().worklist.updateWorklistItemsState.update({
+        userIdentifier: state.status.userSchoolDataIdentifier,
+        beginDate: data.beginDate,
+        endDate: data.endDate,
+        state: data.state,
+      }), 'callback')() as any;
+
+      // create a new worklist where we would replace the old worklist items with
+      const newWorkList = getState().profile.worklist.map((worklistGroup) => {
+        const newWorklistGroup = {...worklistGroup};
+        if (newWorklistGroup.items) {
+          newWorklistGroup.items = newWorklistGroup.items.map((i) => {
+            const foundInUpdate = updatedItems.find((updatedItem) => updatedItem.id === i.id);
+            // we merge the data in case, as there had been issues with incomplete data from
+            // the update that is partial
+            return {...i, ...foundInUpdate} || i;
+          });
+        }
+        return newWorklistGroup;
+      });
+
+      dispatch({
+        type: "SET_WORKLIST",
+        payload: newWorkList,
+      });
+
+      data.success && data.success();
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.worklist"), 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
 export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress,
   updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
   deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
-  loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem};
+  loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem,
+  updateProfileWorklistItemsState};
 

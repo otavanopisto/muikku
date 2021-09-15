@@ -1,57 +1,79 @@
-import * as React from 'react';
-import Button from '~/components/general/button';
-import '~/sass/elements/dialog.scss';
-import '~/sass/elements/form-elements.scss';
-import DatePicker from 'react-datepicker';
+import * as React from "react";
+import Button from "~/components/general/button";
+import "~/sass/elements/dialog.scss";
+import "~/sass/elements/form-elements.scss";
+import DatePicker from "react-datepicker";
 
 // Either label or placeholder is mandatory because of wcag
 
 export type FormElementLabel = {
-  label: string,
-  placeholder?: string
-}
+  label: string;
+  placeholder?: string;
+};
 
 export type FormElementPlaceholder = {
-  label?: string,
-  placeholder: string
-}
+  label?: string;
+  placeholder: string;
+};
 
 interface FormElementProps {
-  modifiers?: string | Array<string>,
-  label?: string,
+  modifiers?: string | Array<string>;
+  label?: string;
 }
 
-interface FormElementState {
-}
+interface FormElementState { }
 
-export default class FormElement extends React.Component<FormElementProps, FormElementState> {
-
+export default class FormElement extends React.Component<
+  FormElementProps,
+  FormElementState
+> {
   constructor(props: FormElementProps) {
     super(props);
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        {this.props.label ? <div className="form-element__label">{this.props.label}</div> : null}
+      <div
+        className={`form-element ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        {this.props.label ? (
+          <div className="form-element__label">{this.props.label}</div>
+        ) : null}
         {this.props.children}
-      </div>);
+      </div>
+    );
   }
 }
 
 interface FormElementRowProps {
-  modifiers?: string | Array<string>,
+  modifiers?: string | Array<string>;
 }
 
-interface FormElementRowState {
-}
+interface FormElementRowState { }
 
-export class formElementRow extends React.Component<FormElementRowProps, FormElementRowState> {
+export class formElementRow extends React.Component<
+  FormElementRowProps,
+  FormElementRowState
+> {
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element__row ${this.props.modifiers ? modifiers.map(m => `form-element__row--${m}`).join(" ") : ""}`}>
+      <div
+        className={`form-element__row ${this.props.modifiers
+            ? modifiers.map((m) => `form-element__row--${m}`).join(" ")
+            : ""
+          }`}
+      >
         {this.props.children}
       </div>
     );
@@ -59,32 +81,50 @@ export class formElementRow extends React.Component<FormElementRowProps, FormEle
 }
 
 interface FormActionsProps {
-  executeLabel: string,
-  cancelLabel: string,
-  executeClick: () => any,
-  cancelClick: () => any,
-  locked: boolean,
-  executing?: boolean,
-  modifiers?: string | Array<string>,
-  customButton?: React.ReactElement<any>,
+  executeLabel: string;
+  cancelLabel: string;
+  executeClick: () => any;
+  cancelClick: () => any;
+  locked: boolean;
+  executing?: boolean;
+  modifiers?: string | Array<string>;
+  customButton?: React.ReactElement<any>;
 }
 
-interface FormActionsState {
-}
+interface FormActionsState { }
 
-export class FormActionsElement extends React.Component<FormActionsProps, FormActionsState> {
+export class FormActionsElement extends React.Component<
+  FormActionsProps,
+  FormActionsState
+> {
   constructor(props: FormActionsProps) {
     super(props);
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element__actions ${this.props.modifiers ? modifiers.map(m => `form-element__actions--${m}`).join(" ") : ""}`}>
-        <Button buttonModifiers="form-element-execute" onClick={this.props.executeClick} disabled={this.props.locked}>
+      <div
+        className={`form-element__actions ${this.props.modifiers
+            ? modifiers.map((m) => `form-element__actions--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        <Button
+          buttonModifiers="form-element-execute"
+          onClick={this.props.executeClick}
+          disabled={this.props.locked}
+        >
           {this.props.executeLabel}
         </Button>
-        <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
+        <Button
+          buttonModifiers="form-element-cancel"
+          onClick={this.props.cancelClick}
+          disabled={this.props.locked}
+        >
           {this.props.cancelLabel}
         </Button>
         {this.props.customButton}
@@ -94,77 +134,115 @@ export class FormActionsElement extends React.Component<FormActionsProps, FormAc
 }
 
 interface FormWizardActionsProps {
-  executeLabel: string,
-  cancelLabel: string,
-  nextLabel: string,
-  lastLabel: string,
-  lastClick: () => any,
-  nextClick: () => any,
-  executeClick: () => any,
-  cancelClick: () => any,
-  currentStep: number,
-  totalSteps: number,
-  locked: boolean,
-  executing?: boolean,
-  modifiers?: string | Array<string>
+  executeLabel: string;
+  cancelLabel: string;
+  nextLabel: string;
+  lastLabel: string;
+  lastClick: () => any;
+  nextClick: () => any;
+  executeClick: () => any;
+  cancelClick: () => any;
+  currentStep: number;
+  totalSteps: number;
+  locked: boolean;
+  executing?: boolean;
+  modifiers?: string | Array<string>;
 }
 
 interface FormWizardActionsState {
-  lastStep: boolean,
+  lastStep: boolean;
 }
 
-export class FormWizardActions extends React.Component<FormWizardActionsProps, FormWizardActionsState> {
+export class FormWizardActions extends React.Component<
+  FormWizardActionsProps,
+  FormWizardActionsState
+> {
   constructor(props: FormWizardActionsProps) {
     super(props);
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    const onLastStep = this.props.currentStep === this.props.totalSteps ? true : false;
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
+    const onLastStep =
+      this.props.currentStep === this.props.totalSteps ? true : false;
     const onFirstStep = this.props.currentStep === 1 ? true : false;
 
     return (
-      <div className={`form-element__actions-container ${this.props.modifiers ? modifiers.map(m => `form-element__actions-container--${m}`).join(" ") : ""}`}>
-        {onLastStep ?
+      <div
+        className={`form-element__actions-container ${this.props.modifiers
+            ? modifiers
+              .map((m) => `form-element__actions-container--${m}`)
+              .join(" ")
+            : ""
+          }`}
+      >
+        {onLastStep ? (
           <div className="form-element__actions">
-            <Button buttonModifiers="form-element-last" onClick={this.props.lastClick} disabled={this.props.locked}>
+            <Button
+              buttonModifiers="form-element-last"
+              onClick={this.props.lastClick}
+              disabled={this.props.locked}
+            >
               {this.props.lastLabel}
             </Button>
-            <Button buttonModifiers="form-element-execute" onClick={this.props.executeClick} disabled={this.props.locked}>
+            <Button
+              buttonModifiers="form-element-execute"
+              onClick={this.props.executeClick}
+              disabled={this.props.locked}
+            >
               {this.props.executeLabel}
             </Button>
-            <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
+            <Button
+              buttonModifiers="form-element-cancel"
+              onClick={this.props.cancelClick}
+              disabled={this.props.locked}
+            >
               {this.props.cancelLabel}
             </Button>
           </div>
-          : <div className="form-element__actions form-element__actions--wizard">
-            <Button buttonModifiers="form-element-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
+        ) : (
+          <div className="form-element__actions form-element__actions--wizard">
+            <Button
+              buttonModifiers="form-element-cancel"
+              onClick={this.props.cancelClick}
+              disabled={this.props.locked}
+            >
               {this.props.cancelLabel}
             </Button>
-            {onFirstStep ? null
-              : <Button buttonModifiers="form-element-last" onClick={this.props.lastClick} disabled={this.props.locked}>
-                {this.props.lastLabel}
-              </Button>
-            }
-            <Button buttonModifiers="form-element-next" onClick={this.props.nextClick} disabled={this.props.locked}>
+            <Button
+              buttonModifiers="form-element-last"
+              onClick={this.props.lastClick}
+              disabled={onFirstStep ? true : this.props.locked}
+            >
+              {this.props.lastLabel}
+            </Button>
+            <Button
+              buttonModifiers="form-element-next"
+              onClick={this.props.nextClick}
+              disabled={this.props.locked}
+            >
               {this.props.nextLabel}
             </Button>
-          </div>}
+          </div>
+        )}
       </div>
     );
   }
 }
 
 interface SearchFormElementProps {
-  updateField: (value: string) => any,
-  value: string,
-  id: string,
-  name: string,
-  onFocus?: () => any,
-  onBlur?: () => any,
-  placeholder: string,
-  modifiers?: string | Array<string>,
-  className?: string,
+  updateField: (value: string) => any;
+  value: string;
+  id: string;
+  name: string;
+  onFocus?: () => any;
+  onBlur?: () => any;
+  placeholder: string;
+  modifiers?: string | Array<string>;
+  className?: string;
   delay?: number;
 }
 
@@ -172,8 +250,10 @@ interface SearchFormElementState {
   value: string;
 }
 
-export class SearchFormElement extends React.Component<SearchFormElementProps, SearchFormElementState> {
-
+export class SearchFormElement extends React.Component<
+  SearchFormElementProps,
+  SearchFormElementState
+> {
   private searchInput: React.RefObject<HTMLInputElement>;
   private searchTimer: NodeJS.Timer;
   private delay: number;
@@ -182,8 +262,8 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     super(props);
     this.delay = this.props.delay >= 0 ? this.props.delay : 400;
     this.state = {
-      value: this.props.value ? this.props.value : ""
-    }
+      value: this.props.value ? this.props.value : "",
+    };
     this.updateSearchField = this.updateSearchField.bind(this);
     this.clearSearchField = this.clearSearchField.bind(this);
     this.searchInput = React.createRef();
@@ -194,11 +274,13 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
     let value = e.target.value;
     this.setState({ value: value });
     if (this.delay > 0) {
-      this.searchTimer = setTimeout(this.props.updateField.bind(null, value) as any, this.delay);
+      this.searchTimer = setTimeout(
+        this.props.updateField.bind(null, value) as any,
+        this.delay
+      );
     } else {
       this.props.updateField(value);
     }
-
   }
 
   clearSearchField() {
@@ -208,107 +290,166 @@ export class SearchFormElement extends React.Component<SearchFormElementProps, S
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element form-element--search ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""} ${this.props.className ? this.props.className : ""}`}>
-        <label htmlFor={this.props.id} className="visually-hidden">{this.props.placeholder}</label>
-        <input ref={this.searchInput} id={this.props.id} onFocus={this.props.onFocus} onBlur={this.props.onBlur} name={this.props.name} value={this.state.value} className={`form-element__input form-element__input--search ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholder={this.props.placeholder} onChange={this.updateSearchField} />
-        <div className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""}`} onClick={this.clearSearchField}></div>
+      <div
+        className={`form-element form-element--search ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          } ${this.props.className ? this.props.className : ""}`}
+      >
+        <label htmlFor={this.props.id} className="visually-hidden">
+          {this.props.placeholder}
+        </label>
+        <input
+          ref={this.searchInput}
+          id={this.props.id}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
+          name={this.props.name}
+          value={this.state.value}
+          className={`form-element__input form-element__input--search ${this.props.modifiers
+              ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
+              : ""
+            }`}
+          placeholder={this.props.placeholder}
+          onChange={this.updateSearchField}
+        />
+        <div
+          className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""
+            }`}
+          onClick={this.clearSearchField}
+        ></div>
         <div className="form-element__input-decoration--search icon-search"></div>
       </div>
-    )
+    );
   }
 }
 
 interface InputFormElementProps {
-  label: string,
-  name: string,
-  updateField: (value: string | boolean, valid: boolean, name: string) => any,
-  id: string,
-  value?: string,
-  checked?: boolean,
-  type?: string,
-  mandatory?: boolean,
-  valid?: number,
-  modifiers?: string | Array<string>,
+  label: string;
+  name: string;
+  updateField: (value: string | boolean, valid: boolean, name: string) => any;
+  id: string;
+  value?: string;
+  checked?: boolean;
+  type?: string;
+  mandatory?: boolean;
+  valid?: number;
+  modifiers?: string | Array<string>;
 }
 
 interface InputFormElementState {
-  // value: string,
-  valid: number
+  value: string;
+  valid: number;
 }
 
-export class InputFormElement extends React.Component<InputFormElementProps, InputFormElementState> {
-
+export class InputFormElement extends React.Component<
+  InputFormElementProps,
+  InputFormElementState
+> {
   constructor(props: InputFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
 
     // 0 = invalid, 1 = valid, 2 = neutral
-
     this.state = {
-      valid: this.props.valid != null ? this.props.valid : 2
-    }
+      valid: this.props.valid != null ? this.props.valid : 2,
+      value: this.props.value ? this.props.value : "",
+    };
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value;
     let name = e.target.name;
     let valid = false;
+
     if (this.props.mandatory != null && this.props.mandatory == true) {
       if (value.trim().length == 0) {
         this.setState({ valid: 0 });
         valid = false;
       } else {
-        this.setState({ valid: 1 })
+        this.setState({ valid: 1 });
         valid = true;
       }
     }
-    switch(this.props.type) {
+    switch (this.props.type) {
       case "checkbox":
         this.props.updateField(e.target.checked, valid, name);
         break;
       default:
+        this.setState({ value: e.target.value });
         this.props.updateField(value, valid, name);
     }
   }
 
   componentDidUpdate(prevProps: any) {
     if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid })
+      this.setState({ valid: this.props.valid });
     }
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
-        <input id={this.props.id} value={this.props.value} name={this.props.name} type={this.props.type ? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} checked={this.props.checked} />
+      <div
+        className={`form-element ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        <label htmlFor={this.props.id} className="form-element__label">
+          {this.props.label}
+        </label>
+        <input
+          id={this.props.id}
+          value={this.state.value}
+          name={this.props.name}
+          type={this.props.type ? this.props.type : "text"}
+          className={`form-element__input ${this.props.modifiers
+              ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
+              : ""
+            } ${this.state.valid !== 2
+              ? this.state.valid == 1
+                ? "VALID"
+                : "INVALID"
+              : ""
+            }`}
+          onChange={this.updateInputField}
+          checked={this.props.checked}
+        />
       </div>
     );
   }
 }
 
 interface SelectFormElementProps {
-  label: string,
-  name: string,
-  value?: string,
-  id: string,
-  type?: string
-  mandatory?: boolean,
-  valid?: number,
-  modifiers?: string | Array<string>,
+  label: string;
+  name: string;
+  value?: string;
+  id: string;
+  type?: string;
+  mandatory?: boolean;
+  valid?: number;
+  modifiers?: string | Array<string>;
   updateField: (value: string, valid: boolean, name: string) => any;
 }
 
 interface SelectFormElementState {
-  valid: number,
-  value: string
+  valid: number;
+  value: string;
 }
 
-export class SelectFormElement extends React.Component<SelectFormElementProps, SelectFormElementState> {
-
+export class SelectFormElement extends React.Component<
+  SelectFormElementProps,
+  SelectFormElementState
+> {
   constructor(props: SelectFormElementProps) {
     super(props);
     this.updateSelectField = this.updateSelectField.bind(this);
@@ -317,8 +458,8 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
     this.state = {
       valid: this.props.valid != null ? this.props.valid : 2,
-      value: this.props.value ? this.props.value : ""
-    }
+      value: this.props.value ? this.props.value : "",
+    };
   }
 
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -331,7 +472,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
         this.setState({ valid: 0 });
         valid = false;
       } else {
-        this.setState({ valid: 1 })
+        this.setState({ valid: 1 });
         valid = true;
       }
     }
@@ -340,16 +481,40 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
   componentDidUpdate(prevProps: any) {
     if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid, })
+      this.setState({ valid: this.props.valid });
     }
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <label htmlFor={this.props.id} className="form-element__label">{this.props.label}</label>
-        <select id={this.props.id} value={this.state.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
+      <div
+        className={`form-element ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        <label htmlFor={this.props.id} className="form-element__label">
+          {this.props.label}
+        </label>
+        <select
+          id={this.props.id}
+          value={this.state.value}
+          name={this.props.name}
+          className={`form-element__select ${this.props.modifiers
+              ? modifiers.map((m) => `form-element__select--${m}`).join(" ")
+              : ""
+            } ${this.state.valid !== 2
+              ? this.state.valid == 1
+                ? "VALID"
+                : "INVALID"
+              : ""
+            }`}
+          onChange={this.updateSelectField}
+        >
           {this.props.children}
         </select>
       </div>
@@ -358,21 +523,23 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 }
 
 interface EmailFormElementProps {
-  label: string,
-  value?: string,
-  modifiers?: string | Array<string>,
+  label: string;
+  value?: string;
+  modifiers?: string | Array<string>;
   updateField: (value: string, valid: boolean, name: string) => any;
-  mandatory?: boolean,
-  valid?: number,
+  mandatory?: boolean;
+  valid?: number;
 }
 
 interface EmailFormElementState {
-  valid: number,
-  value: string
+  valid: number;
+  value: string;
 }
 
-export class EmailFormElement extends React.Component<EmailFormElementProps, EmailFormElementState> {
-
+export class EmailFormElement extends React.Component<
+  EmailFormElementProps,
+  EmailFormElementState
+> {
   constructor(props: EmailFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -382,8 +549,8 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
 
     this.state = {
       value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2
-    }
+      valid: this.props.valid != null ? this.props.valid : 2,
+    };
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -406,37 +573,64 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
 
   componentDidUpdate(prevProps: any) {
     if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid })
+      this.setState({ valid: this.props.valid });
     }
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <label htmlFor="emailField" className="form-element__label">{this.props.label}</label>
-        <input id="emailField" value={this.state.value} name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+      <div
+        className={`form-element ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        <label htmlFor="emailField" className="form-element__label">
+          {this.props.label}
+        </label>
+        <input
+          id="emailField"
+          value={this.state.value}
+          name="email"
+          type="text"
+          className={`form-element__input ${this.props.modifiers
+              ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
+              : ""
+            } ${this.state.valid !== 2
+              ? this.state.valid == 1
+                ? "VALID"
+                : "INVALID"
+              : ""
+            }`}
+          onChange={this.updateInputField}
+        />
       </div>
     );
   }
 }
 
 interface SSNFormElementProps {
-  label: string,
-  value?: string,
-  modifiers?: string | Array<string>,
+  label: string;
+  value?: string;
+  modifiers?: string | Array<string>;
   updateField: (value: string, valid: boolean, name: string) => any;
-  mandatory?: boolean,
-  valid?: number,
+  mandatory?: boolean;
+  valid?: number;
 }
 
 interface SSNFormElementState {
-  valid: number,
-  value: string
+  valid: number;
+  value: string;
 }
 
-export class SSNFormElement extends React.Component<SSNFormElementProps, SSNFormElementState> {
-
+export class SSNFormElement extends React.Component<
+  SSNFormElementProps,
+  SSNFormElementState
+> {
   constructor(props: SSNFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -445,8 +639,8 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
 
     this.state = {
       value: this.props.value ? this.props.value : "",
-      valid: this.props.valid != null ? this.props.valid : 2
-    }
+      valid: this.props.valid != null ? this.props.valid : 2,
+    };
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -460,15 +654,15 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
 
     this.setState({ value: value });
 
-    if (value !== '' && value.length == 11 && regExp.test(post)) {
+    if (value !== "" && value.length == 11 && regExp.test(post)) {
       // Century in finnish SSN is maked with "+"" (1800), "-" (1900) or "A" (2000), I think we can safely invalidate "+"
       if (century == "A" || century == "-") {
-        const string = date + post.substring(0, 3)
+        const string = date + post.substring(0, 3);
         const num = Number(string);
         if (!isNaN(num)) {
           // The last thing to check if the "post" solution is correct.
 
-          const checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
+          const checksumChars = "0123456789ABCDEFHJKLMNPRSTUVWXY";
           valid = checksumChars[num % 31] == post.substring(3, 4).toUpperCase();
         }
       }
@@ -490,37 +684,63 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
     return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        <label htmlFor="SSNField" className="form-element__label">{this.props.label}</label>
-        <input id="SSNField" value={this.state.value} name="SSN" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+      <div
+        className={`form-element ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        <label htmlFor="SSNField" className="form-element__label">
+          {this.props.label}
+        </label>
+        <input
+          id="SSNField"
+          value={this.state.value}
+          name="ssn"
+          type="text"
+          className={`form-element__input ${this.props.modifiers
+              ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
+              : ""
+            } ${this.state.valid !== 2
+              ? this.state.valid == 1
+                ? "VALID"
+                : "INVALID"
+              : ""
+            }`}
+          onChange={this.updateInputField}
+        />
       </div>
     );
   }
 }
 
 interface DateFormElementProps {
-  labels: FormElementLabel | FormElementPlaceholder,
-  id: string,
-  updateField: (value: string) => any,
-  maxDate?: any,
-  minDate?: any,
-  selected: any,
-  value?: string,
-  locale: string,
-  mandatory?: boolean,
-  valid?: number,
-  modifiers?: string | Array<string>,
-
+  labels: FormElementLabel | FormElementPlaceholder;
+  id: string;
+  updateField: (value: string) => any;
+  maxDate?: any;
+  minDate?: any;
+  selected: any;
+  value?: string;
+  locale: string;
+  mandatory?: boolean;
+  valid?: number;
+  modifiers?: string | Array<string>;
 }
 
 interface DateFormElementState {
-  value: string,
+  value: string;
 }
 
-export class DateFormElement extends React.Component<DateFormElementProps, DateFormElementState> {
-
+export class DateFormElement extends React.Component<
+  DateFormElementProps,
+  DateFormElementState
+> {
   constructor(props: DateFormElementProps) {
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -531,18 +751,40 @@ export class DateFormElement extends React.Component<DateFormElementProps, DateF
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
 
     return (
-      <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
-        {this.props.labels.label ?
-          <label htmlFor={this.props.id} className="form-element__label">{this.props.labels.label}</label> :
-          <label htmlFor={this.props.id} className="visually-hidden">{this.props.labels.placeholder}</label>
-        }
-        <DatePicker id={this.props.id} className={`form-element__input ${this.props.modifiers ? modifiers.map(m => `form-element__input--${m}`).join(" ") : ""}`} placeholderText={this.props.labels.placeholder} onChange={this.updateInputField}
+      <div
+        className={`form-element ${this.props.modifiers
+            ? modifiers.map((m) => `form-element--${m}`).join(" ")
+            : ""
+          }`}
+      >
+        {this.props.labels.label ? (
+          <label htmlFor={this.props.id} className="form-element__label">
+            {this.props.labels.label}
+          </label>
+        ) : (
+          <label htmlFor={this.props.id} className="visually-hidden">
+            {this.props.labels.placeholder}
+          </label>
+        )}
+        <DatePicker
+          id={this.props.id}
+          className={`form-element__input ${this.props.modifiers
+              ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
+              : ""
+            }`}
+          placeholderText={this.props.labels.placeholder}
+          onChange={this.updateInputField}
           maxDate={this.props.maxDate}
           minDate={this.props.minDate}
-          locale={this.props.locale} selected={this.props.selected} />
+          locale={this.props.locale}
+          selected={this.props.selected}
+        />
       </div>
     );
   }

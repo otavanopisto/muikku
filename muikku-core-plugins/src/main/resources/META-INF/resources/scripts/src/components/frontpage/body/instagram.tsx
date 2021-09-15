@@ -1,5 +1,4 @@
 import * as React from "react";
-import InstagramFeed from '../../general/instagram-feed';
 import { i18nType } from "~/reducers/base/i18n";
 
 import '~/sass/elements/ordered-container.scss';
@@ -44,7 +43,6 @@ export default class FrontpageInstagram extends React.Component<FrontpageInstagr
                   <div className="card__meta-body-description">{this.props.i18n.text.get('plugin.studying.nettilukio.title')} / {this.props.i18n.text.get('plugin.studying.nettiperuskoulu.title')}</div>
                 </div>
               </div>
-              <InstagramFeed userId={INSTAGRAM_ID} thumbnailWidth={THUMBNAIL_WIDTH} photoCount={PHOTO_COUNT}/>
             </div>
           </div>
         </div>

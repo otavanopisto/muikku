@@ -35,6 +35,7 @@ interface DropdownState {
 
 export default class Dropdown extends React.Component<DropdownProps, DropdownState> {
   private id: string;
+  private isUnmounted: boolean = false;
   constructor(props: DropdownProps) {
     super(props);
     this.onOpen = this.onOpen.bind(this);
@@ -57,6 +58,10 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
   }
   onOpen(DOMNode: HTMLElement) {
+    if (this.isUnmounted) {
+      return;
+    }
+
     let activator: any = this.refs["activator"];
     if (!(activator instanceof HTMLElement)) {
       activator = findDOMNode(activator);
@@ -139,12 +144,19 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
   }
   beforeClose(DOMNode: HTMLElement, removeFromDOM: Function) {
+    if (this.isUnmounted) {
+      return;
+    }
+
     this.setState({
       visible: false
     });
     setTimeout(() => {
       removeFromDOM();
       setTimeout(() => {
+        if (this.isUnmounted) {
+          return;
+        }
         this.setState({
           forcedWidth: null,
         });
@@ -153,6 +165,9 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
   }
   close() {
     (this.refs["portal"] as Portal).closePortal();
+  }
+  componentWillUnmount() {
+    this.isUnmounted = true;
   }
   onKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Tab" || !this.props.items) {

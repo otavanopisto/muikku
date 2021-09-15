@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material.fieldmeta;
 
- import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class FileFieldMeta extends FieldMeta {
   

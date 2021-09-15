@@ -24,3 +24,42 @@
   margin-right: 5px;
   min-width: 15px;
 }
+
+.glyph--worklist-state-indicator {
+  font-size: 0.7rem;
+  height: 0.7rem;
+  margin: 0 5px 0 0;
+  width: 0.7rem;
+
+  // scss-lint:disable SelectorFormat
+  &.state-ENTERED {
+    color: $color-default-helper;
+  }
+
+  &.state-PROPOSED {
+    color: $color-info;
+  }
+
+  &.state-APPROVED {
+    color: $color-success;
+  }
+
+  &.state-PAID {
+    color: $color-default-contrast;
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.glyph--submit-worklist {
+  align-items: center;
+  color: $color-info;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  height: 1rem;
+  justify-content: center;
+  padding: 4px;
+  width: 1rem;
+}

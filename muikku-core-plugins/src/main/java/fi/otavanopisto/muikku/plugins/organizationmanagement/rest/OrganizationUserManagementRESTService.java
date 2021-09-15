@@ -31,9 +31,14 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.rest.model.OrganizationStudentsActivityRESTModel;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
@@ -58,6 +63,9 @@ public class OrganizationUserManagementRESTService {
   private SessionController sessionController;
 
   @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -68,6 +76,9 @@ public class OrganizationUserManagementRESTService {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private Instance<SearchProvider> searchProviderInstance;
@@ -167,8 +178,69 @@ public class OrganizationUserManagementRESTService {
           hasImage));
     }
       
-    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), staffMembers, result.getTotalHitCount());
     return Response.ok(responseStaffMembers).build();
+  }
+  
+  @GET
+  @Path("/studentsSummary")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
+  public Response studentsSummary() {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    SearchProvider searchProvider = searchProviderInstance.get();
+    if (searchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+
+    SearchResult result = searchProvider.searchUsers(
+        Arrays.asList(organization),
+        "",
+        null,                                                 // fields
+        Arrays.asList(EnvironmentRoleArchetype.STUDENT),
+        null,                                                 // userGroupFilters
+        null,                                                 // workspaceFilters
+        null,                                                 // userIdentifiers
+        true,                                                 // includeInactiveStudents
+        true,                                                 // includeHidden
+        true,                                                 // onlyDefaultUsers
+        0,
+        Integer.MAX_VALUE);
+
+    List<Map<String, Object>> results = result.getResults();
+    OrganizationStudentsActivityRESTModel studentActivityRESTModel = new OrganizationStudentsActivityRESTModel();
+    if (results != null && !results.isEmpty()) {
+      int activeStudentCount = 0;
+      int inactiveStudentCount = 0;
+      for (Map<String, Object> o : results) {
+        String studentId = (String) o.get("id");
+        String[] studentIdParts = studentId.split("/", 2);
+        SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]);
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+        if (userEntity == null) {
+          logger.warning(String.format("Skipping Elastic user %s not found in database", studentId));
+          continue;
+        }
+        if (o.get("studyEndDate") != null) {
+          inactiveStudentCount++;
+        }
+        else {
+          activeStudentCount++;
+        }
+      }
+      
+      studentActivityRESTModel.setActiveStudents(activeStudentCount);
+      studentActivityRESTModel.setInactiveStudents(inactiveStudentCount);
+      
+    }
+    return Response.ok(studentActivityRESTModel).build();
   }
   
   @GET
@@ -268,8 +340,35 @@ public class OrganizationUserManagementRESTService {
       }
     }
     
-    SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), result.getLastResult(), students, result.getTotalHitCount());
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>> responseStudents = new SearchResults<List<fi.otavanopisto.muikku.rest.model.Student>>(result.getFirstResult(), students, result.getTotalHitCount());
     return Response.ok(responseStudents).build();
+  }
+  
+  @GET
+  @Path("/contactPersons")
+  @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
+  public Response listContactPersons() {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      BridgeResponse<List<OrganizationContactPerson>> response = userSchoolDataController.listOrganizationContactPersons(dataSource, organization.schoolDataIdentifier().getIdentifier());
+      if (response.ok()) {
+        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+      }
+      else {
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      }
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   private Date getDateResult(Object value) {

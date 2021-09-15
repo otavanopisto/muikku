@@ -164,7 +164,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
   }
   onRootSelectStart(e: MouseEvent | TouchEvent, force?: boolean){
     // not left click
-    if (typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
+    if (e && typeof (e as MouseEvent).button === "number" && (e as MouseEvent).button !== 0) {
       return;
     }
 
@@ -175,8 +175,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       rootElement = this.refs.root as HTMLDivElement;
     }
 
-    const pageX = !force && (typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX);
-    const pageY = !force && (typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY);
+    const pageX = !force && ((typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX));
+    const pageY = !force && ((typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY));
 
     let handleElement:Element = rootElement;
     if (this.props.handleSelector) {
@@ -424,6 +424,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     delete nProps["denyWidth"];
     delete nProps["denyHeight"];
     delete nProps["handleSelector"];
+    delete nProps["enableTouch"];
 
     if (this.state.isDragging) {
       let nStyle = {...this.props.style} || {};

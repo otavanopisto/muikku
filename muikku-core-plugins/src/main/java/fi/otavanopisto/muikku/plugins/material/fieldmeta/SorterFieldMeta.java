@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.material.fieldmeta;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class SorterFieldMeta extends FieldMeta {
   

@@ -311,22 +311,69 @@ const translations:any = {
   "accept": "accept",
 }
 
+/**
+ * Converts a style property string into a camel case based one
+ * this is basically to convert things like text-align into textAlign
+ * for use within react
+ * @param str the string to convert
+ */
+function convertStylePropertyToCamelCase(str: string) {
+  // first we split the dashes
+  const splitted = str.split("-");
+
+  // if it's just one then we return that just one
+  if (splitted.length === 1) {
+    return splitted[0];
+  }
+
+  // otherwise we do this process of capitalization
+  return (
+    splitted[0] +
+    splitted
+      .slice(1)
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join("")
+  );
+};
+
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
   const result:any = {};
   for (let i = 0; i < declaraion.length; i++) {
     const item = declaraion.item(i);
-    result[item] = (declaraion as any)[item];
+    result[convertStylePropertyToCamelCase(item)] = (declaraion as any)[item];
   }
   return result;
 }
 
-export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: string, props: any, children: Array<any>, element: HTMLElement)=>any, key?: number):any {
-  let defaultProcesser = processer ? processer : (a:any, b:any, c:any)=>React.createElement(a,b,c);
-  let props:any = {
-    key
-  }
+export interface HTMLToReactComponentRule {
+  shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
+  preventChildProcessing?: boolean;
+  processingFunction?: (tag: string, props: any, children: Array<any>, element: HTMLElement) => any;
+  preprocessReactProperties?: (tag: string, props: any, children: Array<any>, element: HTMLElement) => string | void;
+  preprocessElement?: (element: HTMLElement) => string | void;
+  id?: string;
+}
+
+export function HTMLtoReactComponent(element: HTMLElement, rules?: HTMLToReactComponentRule[], key?: number):any {
   if (element.nodeType === 3) {
     return element.textContent;
+  }
+
+  let tagname = element.tagName.toLowerCase();
+  const matchingRule = rules.find((r) => r.shouldProcessHTMLElement(tagname, element));
+
+  if (matchingRule && matchingRule.preprocessElement) {
+    tagname = matchingRule.preprocessElement(element) || tagname;
+  }
+
+  const defaultProcesser = (tag: string, props:any, children:Array<any>)=>React.createElement(tag,props,children);
+
+  const actualProcesser = matchingRule ?
+    (matchingRule.processingFunction || defaultProcesser) :
+    defaultProcesser;
+
+  const props:any = {
+    key,
   }
   Array.from(element.attributes).forEach((attr:Attr)=>{
     if (translations[attr.name]){
@@ -336,20 +383,25 @@ export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: str
   if (element.style.cssText){
     props.style = CSSStyleDeclarationToObject(element.style);
   }
-  let children = Array.from(element.childNodes).map((node, index)=>{
+  const shouldProcessChildren = matchingRule ? !matchingRule.preventChildProcessing : true;
+  let children = shouldProcessChildren ? Array.from(element.childNodes).map((node, index)=>{
     if (node instanceof HTMLElement){
-      return HTMLtoReactComponent(node, defaultProcesser, index)
+      return HTMLtoReactComponent(node, rules, index)
     }
     return node.textContent;
-  });
-  if (!children.length){
-    children = null;
+  }) : [];
+
+  if (matchingRule && matchingRule.preprocessReactProperties) {
+    tagname = matchingRule.preprocessReactProperties(tagname, props, children, element) || tagname;
   }
-  return defaultProcesser(
-      element.tagName.toLowerCase(),
-      props,
-      children,
-      element
+
+  const finalChildren = children.length === 0 ? null : children;
+
+  return actualProcesser(
+    tagname,
+    props,
+    finalChildren,
+    element
   );
 }
 

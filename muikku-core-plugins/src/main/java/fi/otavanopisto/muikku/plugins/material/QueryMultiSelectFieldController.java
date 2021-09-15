@@ -8,7 +8,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType } from "~/reducers/main-function/profile";
-import { saveProfileProperty, SaveProfilePropertyTriggerType, updateProfileChatSettings, UpdateProfileChatSettingsTriggerType} from '~/actions/main-function/profile';
+import { saveProfileProperty, SaveProfilePropertyTriggerType, updateProfileChatSettings, UpdateProfileChatSettingsTriggerType } from '~/actions/main-function/profile';
 import { bindActionCreators, Dispatch } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import Button from '~/components/general/button';
@@ -12,7 +12,7 @@ import { StatusType } from "~/reducers/base/status";
 import '~/sass/elements/application-sub-panel.scss';
 import { SimpleActionExecutor } from "~/actions/executor";
 
-interface IChatSettingsProps {
+interface ChatSettingsProps {
   i18n: i18nType,
   profile: ProfileType;
   status: StatusType;
@@ -21,13 +21,13 @@ interface IChatSettingsProps {
   updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
-interface IChatSettingState {
+interface ChatSettingState {
   chatVisibility: string,
   chatNickname: string,
 }
 
-class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState> {
-  constructor(props: IChatSettingsProps) {
+class ChatSettings extends React.Component<ChatSettingsProps, ChatSettingState> {
+  constructor(props: ChatSettingsProps) {
     super(props);
 
     this.save = this.save.bind(this);
@@ -40,29 +40,29 @@ class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState
     }
   }
 
-  componentWillReceiveProps(nextProps: IChatSettingsProps){
+  componentWillReceiveProps(nextProps: ChatSettingsProps) {
     if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.visibility &&
-        (!this.props.profile.chatSettings ||
-        this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility)){
+      (!this.props.profile.chatSettings ||
+        this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility)) {
       this.setState({
         chatVisibility: nextProps.profile.chatSettings.visibility
       });
-    } else if (!nextProps.profile.chatSettings || typeof nextProps.profile.chatSettings.visibility === "undefined"){
+    } else if (!nextProps.profile.chatSettings || typeof nextProps.profile.chatSettings.visibility === "undefined") {
       this.setState({
         chatVisibility: "DISABLED"
       });
     }
 
     if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.nick &&
-        (!this.props.profile.chatSettings ||
-          this.props.profile.chatSettings.nick !== nextProps.profile.chatSettings.nick)){
+      (!this.props.profile.chatSettings ||
+        this.props.profile.chatSettings.nick !== nextProps.profile.chatSettings.nick)) {
       this.setState({
         chatNickname: nextProps.profile.chatSettings.nick
       });
     }
   }
 
-  save(){
+  save() {
     const executor = new SimpleActionExecutor();
     executor
       .addAction(
@@ -87,19 +87,19 @@ class ChatSettings extends React.Component<IChatSettingsProps, IChatSettingState
       );
   }
 
-  onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>){
+  onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
       chatVisibility: e.target.value
     });
   }
-  onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>){
+  onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       chatNickname: e.target.value
     });
   }
 
   public render() {
-    if (this.props.profile.location !== "chat") {
+    if (this.props.profile.location !== "chat" || !this.props.status.permissions.CHAT_AVAILABLE) {
       return null;
     }
 
@@ -145,7 +145,7 @@ function mapStateToProps(state: StateType) {
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({saveProfileProperty, displayNotification, updateProfileChatSettings}, dispatch);
+  return bindActionCreators({ saveProfileProperty, displayNotification, updateProfileChatSettings }, dispatch);
 };
 
 export default connect(

@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.List;
 
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -46,6 +47,8 @@ public interface UserSchoolDataBridge {
   public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers();
   
   /* User */
+  
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersonsByOrganization(String organizationIdentifier);
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember);
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember);

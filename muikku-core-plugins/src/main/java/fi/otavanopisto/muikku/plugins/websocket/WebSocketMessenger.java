@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 

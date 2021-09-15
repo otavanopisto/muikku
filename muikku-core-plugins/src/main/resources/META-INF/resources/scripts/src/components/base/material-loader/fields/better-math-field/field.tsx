@@ -10,6 +10,7 @@ const TIMEOUT_FOR_CANCELLING_BLUR = 300;
 interface FieldProps {
   className?: string,
   formulaClassName: string,
+  imageClassName: string,
   editorClassName: string,
   toolbarClassName: string,
   value: string,
@@ -19,7 +20,8 @@ interface FieldProps {
   onFocus: () => any,
   onLatexModeOpen: () => any,
   onLatexModeClose: () => any,
-  readOnly?: boolean
+  readOnly?: boolean,
+  userId: number,
 }
 
 interface FieldState {
@@ -35,6 +37,7 @@ function checkIsParentOrSelf(element: HTMLElement, comparer: HTMLElement | strin
 
 export default class MathField extends React.Component<FieldProps, FieldState> {
   value: string;
+  imgUrls: string[];
   MQInterface: any;
 
   selectedFormula: HTMLImageElement;
@@ -53,6 +56,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     super(props);
 
     this.value = props.value;
+    this.imgUrls = [];
     this.MQInterface = getMQInterface;
 
     this.onFocusField = this.onFocusField.bind(this);
@@ -67,6 +71,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.onAceEditorFocus = this.onAceEditorFocus.bind(this);
     this.onAceEditorInput = this.onAceEditorInput.bind(this);
     this.onDeleteSomethingInMathMode = this.onDeleteSomethingInMathMode.bind(this);
+    this.handleDrops = this.handleDrops.bind(this);
   }
   shouldComponentUpdate() {
     // this field is uncontrolled by react
@@ -117,6 +122,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     Array.from((this.refs.input as HTMLInputElement).querySelectorAll("." + this.props.formulaClassName)).forEach((element: HTMLElement) => {
       toSVG(element, warningImage, null, loadingImage);
     });
+
+    this.imgUrls = [];
+    Array.from((this.refs.input as HTMLInputElement).querySelectorAll("img." + this.props.imageClassName)).forEach((element: HTMLImageElement) => {
+      this.imgUrls.push(element.src);
+    });
   }
   onFocusField(e: React.FocusEvent<any>) {
 
@@ -149,7 +159,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     (this.refs.input as HTMLElement).classList.add("focused");
     this.props.onFocus();
   }
+  findLostImages(oldImgURLS: string[]) {
+    oldImgURLS.forEach((url) => {
+      const hasBeenRemoved = !this.imgUrls.includes(url);
+      if (hasBeenRemoved) {
+        this.deleteImage(url);
+      }
+    });
+  }
   calculateOutput() {
+    const oldImgUrls = this.imgUrls;
+    this.imgUrls = [];
     this.value = Array.from((this.refs.input as HTMLDivElement).childNodes).map((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         return node.textContent;
@@ -158,17 +178,26 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       return this.convertToText(node as HTMLElement);
     }).join("");
-    return this.value;
+    this.findLostImages(oldImgUrls);
+    return;
   }
   convertToText(node: HTMLElement): string {
     if (node.className === this.props.editorClassName) {
-      let latex = this.selectedMathField.latex();
+      let latex: string = this.selectedMathField.latex();
       if (latex.trim() === "") {
         return "";
+      }
+      if (!latex.startsWith("\\(")) {
+        latex = "\\(" + latex + "\\)";
       }
       return `<span class="${this.props.formulaClassName}">${latex}</span>`
     }
     const isImg = node.tagName === "IMG";
+    const isRawImg = isImg && node.classList.contains(this.props.imageClassName);
+    if (isRawImg) {
+      this.imgUrls.push((node as HTMLImageElement).src);
+      return node.outerHTML;
+    }
     let kids = !isImg ? Array.from(node.childNodes).map((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         return node.textContent;
@@ -177,6 +206,13 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       return this.convertToText(node as HTMLElement);
     }).join("") : (node as HTMLImageElement).alt;
+
+    // add the delimiters if necessary
+    if (isImg && (node as HTMLImageElement).alt && kids) {
+      if (!kids.startsWith("\\(")) {
+        kids = "\\(" + kids + "\\)";
+      }
+    }
 
     if (isImg && !kids) {
       return "";
@@ -323,8 +359,36 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   createNewLatex() {
     document.execCommand("insertHTML", false, `<img class="${this.props.formulaClassName}"/>`);
-    let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt])") as HTMLImageElement;
+    let image: HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt]):not([src])") as HTMLImageElement;
     this.selectFormula(image);
+  }
+  async deleteImage(url: string) {
+    return await fetch(url, {
+      method: "DELETE",
+    });
+  }
+  async insertImage(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("name", file.name);
+    const result = await fetch("/rest/workspace/userfiles", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (result.status === 200) {
+      const fileNameAsStored = await result.text();
+      const url = `/rest/workspace/userfiles/${this.props.userId}/file/${fileNameAsStored}`;
+      document.execCommand("insertHTML", false, `<img class="${this.props.imageClassName}" src="${url}"/>`);
+    }
+  }
+  handleDrops(e: React.DragEvent) {
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    e.stopPropagation();
+    e.preventDefault();
+    if (file.type.startsWith("image")) {
+      this.insertImage(file);
+    }
   }
   selectFormula(target: HTMLImageElement) {
 
@@ -347,6 +411,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.changedSelected = false;
     this.selectedFormula = target;
 
+    let selectedFormulaContentUndelimited = this.selectedFormula.alt || "";
+    if (selectedFormulaContentUndelimited.startsWith("\\(")) {
+      selectedFormulaContentUndelimited = selectedFormulaContentUndelimited.substr(2);
+    }
+    if (selectedFormulaContentUndelimited.endsWith("\\)")) {
+      selectedFormulaContentUndelimited = selectedFormulaContentUndelimited.substr(0, selectedFormulaContentUndelimited.length - 2);
+    }
+
     // Now we do all this garbage of
     // creating the component by hand
     this.selectedMathFieldContainer = document.createElement('div');
@@ -354,7 +426,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.selectedMathFieldContainer.className = this.props.editorClassName;
 
     let newElement = document.createElement('span');
-    newElement.textContent = this.selectedFormula.alt || "";
+    newElement.textContent = selectedFormulaContentUndelimited;
 
     let actualContainerForTheMathField = document.createElement('div');
     actualContainerForTheMathField.className = this.props.editorClassName + "--formula-container";
@@ -369,7 +441,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     editor.style.position = "absolute";
     editor.style.width = "100%"
     editor.style.height = "100%";
-    editor.textContent = this.selectedFormula.alt || "";
+    editor.textContent = selectedFormulaContentUndelimited;
 
     editorContainer.appendChild(editor);
 
@@ -523,6 +595,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       contentEditable={!this.props.readOnly}
       spellCheck={false}
       onFocus={this.onFocusField}
+      onDrop={this.handleDrops}
       ref="input"
       onBlur={this.onBlurField}
       onInput={this.onChange}

@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import Link from '~/components/general/link';
 
 import { i18nType } from '~/reducers/base/i18n';
 
@@ -16,6 +14,8 @@ import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody
 import Button from '~/components/general/button';
 import WorkspaceSignupDialog from '../../../dialogs/workspace-signup';
 import { WorkspaceType } from '~/reducers/workspaces';
+import promisify from '~/util/promisify';
+import mApi from '~/lib/mApi';
 
 interface CourseProps {
   i18n: i18nType,
@@ -24,7 +24,9 @@ interface CourseProps {
 }
 
 interface CourseState {
-  expanded: boolean
+  expanded: boolean;
+  canSignUp?: boolean;
+  loading: boolean;
 }
 
 class Course extends React.Component<CourseProps, CourseState>{
@@ -32,14 +34,69 @@ class Course extends React.Component<CourseProps, CourseState>{
     super(props);
 
     this.state = {
-      expanded: false
+      expanded: false,
+      canSignUp: undefined,
+      loading: false,
     }
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
-  toggleExpanded() {
-    this.setState({ expanded: !this.state.expanded })
+
+  /**
+   * Toggles course body to expanding
+   */
+  async toggleExpanded() {
+
+    /**
+     * If we already have fetched signUp requirements
+     * no need to get data again
+     */
+    if(this.state.canSignUp !== undefined){
+      this.setState({
+        expanded: !this.state.expanded
+      })
+    }
+    /**
+     * Otherwise we get requested data from api
+     */
+    else{
+      this.setState({
+        loading: true
+      })
+
+      const canSignUp = await this.checkSignUpStatus();
+
+      /**
+       * Timeout for lazier loading because
+       * otherwise it will flick loader-spinner
+       */
+      setTimeout(() => {
+        this.setState({
+          expanded: true,
+          canSignUp,
+          loading: false
+        });
+      }, 500);
+
+    }
   }
+
+  /**
+   * Sends api request to Api which returns data if
+   * user can signUp for course or is already member of
+   * the course
+   * @returns Requirements object
+   */
+  checkSignUpStatus = async ():Promise<boolean> => {
+
+    return await promisify(mApi().coursepicker.workspaces.canSignup.read(this.props.workspace.id),"callback")() as boolean;
+
+  }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
@@ -48,7 +105,7 @@ class Course extends React.Component<CourseProps, CourseState>{
         {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ? <span className="application-list__fee-indicatoricon-coin-euro icon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")} /> : null}
         <span className="application-list__header-secondary">{this.props.workspace.educationTypeName}</span>
       </ApplicationListItemHeader>
-      {this.state.expanded ?
+      {!this.state.loading && this.state.expanded ?
         <div>
           <ApplicationListItemBody className="application-list__item-body--course">
             <article className="rich-text" dangerouslySetInnerHTML={{ __html: this.props.workspace.description }}></article>
@@ -59,17 +116,22 @@ class Course extends React.Component<CourseProps, CourseState>{
                 this.props.i18n.text.get("plugin.coursepicker.course.goto") :
                 this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Button>
-            {this.props.workspace.canSignup && this.props.status.loggedIn ?
+            {this.state.canSignUp && this.props.status.loggedIn ?
               <WorkspaceSignupDialog workspace={this.props.workspace}><Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
                 {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
               </Button></WorkspaceSignupDialog> : null}
           </ApplicationListItemFooter>
         </div>
-        : null}
+        : this.state.loading && <div className="loader-empty"/>}
     </ApplicationListItem>
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -77,6 +139,11 @@ function mapStateToProps(state: StateType) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };

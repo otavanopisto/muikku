@@ -14,12 +14,8 @@
 }
 
 .application-sub-panel--worklist {
-  margin: 0 0 10px;
-
-  &:last-child {
-    border-bottom: 1px solid $color-subpanel-border;
-    margin: 0;
-  }
+  border: 0;
+  margin: 0 0 15px;
 }
 
 .application-sub-panel--yo-status-container {
@@ -49,7 +45,8 @@
   }
 }
 
-.application-sub-panel--workspace-users {
+.application-sub-panel--workspace-users,
+.application-sub-panel--organization-summary {
   margin: 0;
   padding: 10px;
 
@@ -57,6 +54,14 @@
     padding: 20px;
   }
 }
+
+.application-sub-panel--organization-users {
+
+  &:first-child {
+    padding-bottom: 12px;
+  }
+}
+
 
 // Subpanel header
 .application-sub-panel__header {
@@ -86,6 +91,7 @@
 .application-sub-panel__header--worklist-entries {
   background: $color-subpanel-header-background;
   cursor: pointer;
+  font-size: 1rem;
   margin: 0;
   padding: 5px;
 }
@@ -381,6 +387,7 @@
 }
 
 // Subpanel container for single item inside multiple-items wrapper
+
 .application-sub-panel__multiple-item-container {
   display: flex;
   flex-basis: auto;
@@ -390,10 +397,19 @@
   margin: 2px 10px 2px 0;
 
   .application-sub-panel__item-title {
+    align-items: center;
+    display: flex;
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
     font-weight: 600;
+  }
+
+  .application-sub-panel__item-title-sort-indicator {
+    font-size: 0.825rem;
+    height: 0.825rem;
+    margin: 0 4px;
+    width: 0.825rem;
   }
 
   .application-sub-panel__item-data {
@@ -434,6 +450,7 @@
 }
 
 .application-sub-panel__multiple-item-container--worklist-description {
+  align-items: center;
   flex-basis: 100%;
   margin: 2px 0;
 
@@ -540,6 +557,25 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--organization-previous-bills,
+.application-sub-panel__item--organization-contact-information {
+  align-items: flex-start;
+}
+
+.application-sub-panel__item--worklist-total {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 5px 0 5px 12px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
+}
+
+.application-sub-panel__item--worklist-items-footer {
+  margin: 5px 0 5px 12px;
+  padding: 2px 12px;
 }
 
 .application-sub-panel__item--workspace-management {
@@ -744,12 +780,6 @@
   padding: 10px 0;
 }
 
-.application-sub-panel__item-header--hops {
-  font-weight: 600;
-  margin: 2px 5px 2px 0;
-  padding: 0;
-}
-
 // Subpanel item title & label
 .application-sub-panel__item-title {
   flex-basis: 100%;
@@ -763,10 +793,33 @@
   }
 }
 
+.application-sub-panel__item-title--organization-summary,
+.application-sub-panel__item-title--organization-previous-bills,
+.application-sub-panel__item-title--organization-contact-information {
+  font-weight: 600;
+}
+
+
+
 .application-sub-panel__item-label {
   font-weight: 600;
   margin: 2px 5px 2px 0;
   padding: 0;
+}
+
+// Subpanel item title for worklist entries total
+.application-sub-panel__item-title--worklist-total {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 2px 10px 2px 0;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 2px 10px 2px 30px;
+  }
 }
 
 // Subpanel item inline value
@@ -804,6 +857,60 @@
   }
 }
 
+// Item data for organization summary
+
+.application-sub-panel__item-data--organization-summary {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.application-sub-panel__item-data-container {
+  display: flex;
+}
+
+.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
+  margin-left: 10px;
+}
+
+.application-sub-panel__item-data-container--organization-previous-bills {
+  flex-direction: column;
+}
+
+// Sub panel item sub item
+
+.application-sub-panel__item-sub-item--organization-previous-bills {
+  display: flex;
+
+  &:not(:first-child) {
+    margin-top: 5px;
+  }
+
+  div:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+// Subpanel item data for worklist entries total
+.application-sub-panel__item-data--worklist-total {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 2px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 60px;
+    justify-content: center;
+    margin: 2px 165px 2px 0;
+  }
+}
+
+// Subpanel item data for worklist entries submit link
+.application-sub-panel__item-data--worklist-submit-entries {
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
 .application-sub-panel__item-data--workspace-management {
   align-items: flex-start;
   flex-flow: column nowrap;
@@ -820,6 +927,26 @@
 .application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
+}
+
+// item-data content
+
+.application-sub-panel__item-data-content--organization-contact-information {
+  font-weight: 400;
+}
+
+.application-sub-panel__item-data-content--primary {
+  background-color: $color-hops-readable-inline-background;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
+}
+
+// item-data label
+
+.application-sub-panel__item-data-label {
+  margin-right: 5px;
 }
 
 .application-sub-panel__single-entry {

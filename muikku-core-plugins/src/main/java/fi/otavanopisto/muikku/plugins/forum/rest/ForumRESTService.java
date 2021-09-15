@@ -413,7 +413,7 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES)) {
+    if (sessionController.hasPermission(MuikkuPermissions.OWNER, thread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES)) {
       forumController.archiveThread(thread);
       return Response.noContent().build();
     } else {

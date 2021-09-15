@@ -33,43 +33,6 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
 
   render() {
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-    // Moc data because the backend lacks this
-
-    let active = [
-      {
-        name: "active",
-        label: "plugin.organization.filters.state.active.true"
-      },
-      {
-        name: "inactive",
-        label: "plugin.organization.filters.state.active.false"
-      }
-    ];
-
-
-    //   <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
-    //   {this.props.workspaces.availableFilters.stateFilters.map((state) => {
-    //     let isActive = this.props.workspaces.activeFilters.curriculumFilters.includes(state.identifier);
-    //     let hash = "?" + (isActive ?
-    //       queryString.stringify(Object.assign({}, locationData, { p: (locationData.p || []).filter((i: string) => i !== state.identifier) }), { arrayFormat: 'bracket' }) :
-    //       queryString.stringify(Object.assign({}, locationData, { p: (locationData.p || []).concat(state.name) }), { arrayFormat: 'bracket' }));
-    //     return <NavigationElement key={state.name} isActive={isActive} hash={hash}>{state.name}</NavigationElement>
-    //   })}
-    // </NavigationTopic>
-
-    //    These are waiting for backend works
-    //
-
-    //  <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.state.title')}>
-    //    {active.map( ( element ) => {
-    //      let isActive = this.state.active;
-    //      let hash = "?" + ( isActive ?
-    //        queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).filter( ( i: string ) => i !== element.name ) } ), { arrayFormat: 'bracket' } ) :
-    //        queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).concat(element.name ) } ), { arrayFormat: 'bracket' } ) )
-    //      return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
-    //    })}
-    //  </NavigationTopic>
-
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
         {this.props.workspaces.availableFilters.educationTypes.map((educationType: WorkspaceEducationFilterType) => {

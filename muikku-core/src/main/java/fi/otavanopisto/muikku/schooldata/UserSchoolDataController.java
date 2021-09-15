@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -96,6 +97,10 @@ public class UserSchoolDataController {
   }
   
   /* User */
+  
+  public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersons(String dataSource, String organizationIdentifier) {
+    return getUserBridge(dataSource).listOrganizationContactPersonsByOrganization(organizationIdentifier);
+  }
 
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return getUserBridge(dataSource).createStaffMember(staffMember);

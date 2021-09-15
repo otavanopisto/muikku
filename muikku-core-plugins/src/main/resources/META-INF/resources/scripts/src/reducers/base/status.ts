@@ -5,7 +5,7 @@
 //3. dispatch the action to this same reducer and gather the action here
 //4. it works :D
 import $ from '~/lib/jquery';
-import {ActionType} from "~/actions";
+import { ActionType } from "~/actions";
 
 export interface StatusType {
   loggedIn: boolean,
@@ -35,7 +35,7 @@ export interface ProfileStatusType {
   studyTimeEnd: string
 }
 
-export default function status(state: StatusType={
+export default function status(state: StatusType = {
   loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,
   userId: (<any>window).MUIKKU_LOGGED_USER_ID,
   permissions: (<any>window).MUIKKU_PERMISSIONS,
@@ -49,19 +49,19 @@ export default function status(state: StatusType={
   hasImage: false,
   imgVersion: (new Date()).getTime(),
   hopsEnabled: (<any>window).HOPS_ENABLED
-}, action: ActionType): StatusType{
-  if (action.type === "LOGOUT"){
+}, action: ActionType): StatusType {
+  if (action.type === "LOGOUT") {
     // chat listens to this event to close the connection
-    (window as any).ON_LOGOUT &&(window as any).ON_LOGOUT();
+    (window as any).ON_LOGOUT && (window as any).ON_LOGOUT();
     // remove the old session on logout
     window.sessionStorage.removeItem("strophe-bosh-session");
     // trigger the logout
     $('#logout').click();
     return state;
-  } else if (action.type === "UPDATE_STATUS_PROFILE"){
-    return {...state, profile: action.payload};
-  } else if (action.type === "UPDATE_STATUS_HAS_IMAGE"){
-    return {...state, hasImage: action.payload, imgVersion: (new Date()).getTime()};
+  } else if (action.type === "UPDATE_STATUS_PROFILE") {
+    return { ...state, profile: action.payload };
+  } else if (action.type === "UPDATE_STATUS_HAS_IMAGE") {
+    return { ...state, hasImage: action.payload, imgVersion: (new Date()).getTime() };
   }
   return state;
 }

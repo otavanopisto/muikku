@@ -1,10 +1,17 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import User from "~/components/general/user";
+import Avatar from "~/components/general/avatar";
 import StudentDialog from "~/components/organization/dialogs/edit-student";
 import StaffDialog from "~/components/organization/dialogs/edit-staff";
+import { getName } from "~/util/modifiers";
+import User from "~/components/general/user";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import ApplicationList from "~/components/general/application-list";
+import ApplicationList, {
+  ApplicationListItem,
+  ApplicationListItemContentWrapper,
+  ApplicationListItemContentData,
+} from "~/components/general/application-list";
+
 import "~/sass/elements/application-list.scss";
 import {
   UserPanelUsersType,
@@ -47,6 +54,7 @@ export default class UserPanel extends React.Component<
   getToPage(n: number) {
     let pageStart: number = (n - 1) * this.usersPerPage;
     let pageEnd: number = n * this.usersPerPage;
+
     let query: string = this.props.searchString
       ? this.props.searchString
       : null;
@@ -104,7 +112,7 @@ export default class UserPanel extends React.Component<
                       </StaffDialog>
                     </div>
                   );
-                return <User user={user} actions={actions} />;
+                return <User key={user.id} user={user} actions={actions} />;
               })}
           </ApplicationList>
         ) : (

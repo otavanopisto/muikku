@@ -783,7 +783,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumStatistics")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceForumStatistics(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userIdentifier") String userId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {

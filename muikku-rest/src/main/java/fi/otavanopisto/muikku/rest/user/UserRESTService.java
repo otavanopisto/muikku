@@ -1621,10 +1621,27 @@ public class UserRESTService extends AbstractRESTService {
     if (user == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
+    
+    String organizationIdentifier = user.getOrganizationIdentifier().toId();
+    String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
+    boolean isDefaultOrganization = StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
 
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+    
+    UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
+        userEntity.getId(),
+        user.getFirstName(),
+        user.getLastName(),
+        user.getNickName(),
+        user.getStudyProgrammeName(),
+        hasImage,
+        user.getHasEvaluationFees(),
+        user.getCurriculumIdentifier(),
+        organizationIdentifier,
+        isDefaultOrganization); 
+
     return Response
-        .ok(new UserWhoAmIInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.getHasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
+        .ok(whoamiInfo)
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
@@ -1758,7 +1775,7 @@ public class UserRESTService extends AbstractRESTService {
         }
       }
 
-    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), result.getLastResult(), staffMembers, result.getTotalHitCount());
+    SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>> responseStaffMembers = new SearchResults<List<fi.otavanopisto.muikku.rest.model.StaffMember>>(result.getFirstResult(), staffMembers, result.getTotalHitCount());
     return Response.ok(responseStaffMembers).build();
   }
   

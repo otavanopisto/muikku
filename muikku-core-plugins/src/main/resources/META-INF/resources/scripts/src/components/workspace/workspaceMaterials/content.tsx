@@ -45,6 +45,11 @@ interface ContentState {
   materials: MaterialContentNodeListType;
 }
 
+/**
+ * isScrolledIntoView
+ * @param el
+ * @returns
+ */
 function isScrolledIntoView(el: HTMLElement) {
   let rect = el.getBoundingClientRect();
   let elemTop = rect.top;
@@ -66,6 +71,7 @@ function isScrolledIntoView(el: HTMLElement) {
 
 class ContentComponent extends React.Component<ContentProps, ContentState> {
   private storedLastUpdateServerExecution: Function;
+  private originalMaterials: MaterialContentNodeListType;
 
   constructor(props: ContentProps) {
     super(props);
@@ -73,6 +79,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     this.state = {
       materials: props.materials,
     };
+
+    this.originalMaterials = props.materials;
 
     this.hotInsertBeforeSection = this.hotInsertBeforeSection.bind(this);
     this.hotInsertBeforeSubnode = this.hotInsertBeforeSubnode.bind(this);
@@ -85,16 +93,31 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     this.onDropBetweenSubnodes = this.onDropBetweenSubnodes.bind(this);
     this.onDropBetweenSections = this.onDropBetweenSections.bind(this);
   }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   */
   componentDidUpdate(prevProps: ContentProps) {
     if (prevProps.activeNodeId !== this.props.activeNodeId) {
       this.refresh();
     }
   }
+
+  /**
+   * componentWillReceiveProps
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
       materials: nextProps.materials,
     });
   }
+
+  /**
+   * refresh
+   * @param props
+   */
   refresh(props: ContentProps = this.props) {
     const tocElement = this.refs[props.activeNodeId] as TocElement;
     if (tocElement) {
@@ -108,6 +131,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     }
   }
+
+  /**
+   * hotInsertBeforeSection
+   * @param baseIndex
+   * @param targetBeforeIndex
+   */
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
     const newMaterialState = [...this.state.materials];
     newMaterialState.splice(baseIndex, 1);
@@ -118,7 +147,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     );
     const contentNodesRepaired = repairContentNodes(newMaterialState);
 
-    const material = this.state.materials[baseIndex];
+    const materialFromState = this.state.materials[baseIndex];
+    const material = this.originalMaterials.find((cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId);
     const update = contentNodesRepaired.find(
       (cn) => cn.workspaceMaterialId === material.workspaceMaterialId
     );
@@ -137,11 +167,20 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         },
         success: () => {
           this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
+          this.originalMaterials = contentNodesRepaired;
         },
         dontTriggerReducerActions: true,
       });
     };
   }
+
+  /**
+   * hotInsertBeforeSubnode
+   * @param parentBaseIndex
+   * @param baseIndex
+   * @param parentTargetBeforeIndex
+   * @param targetBeforeIndex
+   */
   hotInsertBeforeSubnode(
     parentBaseIndex: number,
     baseIndex: number,
@@ -178,11 +217,19 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     }
 
     const repariedNodes = repairContentNodes(newMaterialState);
-    const workspaceId = this.state.materials[parentBaseIndex].children[
-      baseIndex
-    ].workspaceMaterialId;
+    const materialParentFromState = this.state.materials[parentBaseIndex];
+    const materialFromState = materialParentFromState.children[baseIndex];
+    const workspaceId = materialFromState.workspaceMaterialId;
 
-    const material = this.state.materials[parentBaseIndex].children[baseIndex];
+    let material: MaterialContentNodeType;
+    this.originalMaterials.forEach((cn) => {
+      cn.children.forEach((ccn) => {
+        if (ccn.workspaceMaterialId === materialFromState.workspaceMaterialId) {
+          material = ccn;
+        }
+      });
+    });
+
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
       (cn: MaterialContentNodeType) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
@@ -211,11 +258,18 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         },
         success: () => {
           this.props.setWholeWorkspaceMaterials(repariedNodes);
+          this.originalMaterials = repariedNodes;
         },
         dontTriggerReducerActions: true,
       });
     };
   }
+
+  /**
+   * onInteractionBetweenSections
+   * @param base
+   * @param target
+   */
   onInteractionBetweenSections(
     base: MaterialContentNodeType,
     target: MaterialContentNodeType
@@ -229,6 +283,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       )
     );
   }
+
+  /**
+   * onDropBetweenSections
+   * @param base
+   * @param target
+   */
   onDropBetweenSections(
     base: MaterialContentNodeType,
     target: MaterialContentNodeType
@@ -236,6 +296,13 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     this.storedLastUpdateServerExecution && this.storedLastUpdateServerExecution();
     delete this.storedLastUpdateServerExecution;
   }
+
+  /**
+   * onInteractionBetweenSubnodes
+   * @param base
+   * @param target
+   * @returns
+   */
   onInteractionBetweenSubnodes(
     base: MaterialContentNodeType,
     target: MaterialContentNodeType | number
@@ -270,6 +337,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       targetBeforeIndex
     );
   }
+
+  /**
+   * onDropBetweenSubnodes
+   * @param base
+   * @param target
+   */
   onDropBetweenSubnodes(
     base: MaterialContentNodeType,
     target: MaterialContentNodeType | number
@@ -277,6 +350,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     this.storedLastUpdateServerExecution && this.storedLastUpdateServerExecution();
     delete this.storedLastUpdateServerExecution;
   }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
     if (!this.props.materials || !this.props.materials.length) {
       return null;
@@ -293,17 +371,21 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         {this.state.materials.map((node, nodeIndex) => {
           const isSectionViewRestricted =
             node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn;
+
           const isSectionViewRestrictedVisible =
             node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
-          let icon: string = isSectionViewRestrictedVisible
+
+          const iconTopic: string = isSectionViewRestrictedVisible
             ? "restriction"
             : null;
-          let iconTitle: string = isSectionViewRestrictedVisible
+
+          const iconTitleTopic: string = isSectionViewRestrictedVisible
             ? this.props.i18n.text.get(
                 "plugin.workspace.materialViewRestricted"
               )
             : null;
-          let className: string = isSectionViewRestrictedVisible
+
+          const classNameTopic: string = isSectionViewRestrictedVisible
             ? "toc__section-container--view-restricted"
             : "toc__section-container";
 
@@ -317,47 +399,42 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                   ? null
                   : "s-" + node.workspaceMaterialId
               }
-              className={className}
-              iconAfter={icon}
-              iconAfterTitle={iconTitle}
+              className={classNameTopic}
+              iconAfter={iconTopic}
+              iconAfterTitle={iconTitleTopic}
             >
               {node.children
                 .map((subnode) => {
                   if (isSectionViewRestricted) {
                     return null;
                   }
+
                   const isViewRestrictedVisible =
                     subnode.viewRestrict === "LOGGED_IN" &&
                     !this.props.isStudent;
 
-                  let isAssignment = subnode.assignmentType === "EVALUATED";
-                  let isExercise = subnode.assignmentType === "EXERCISE";
+                  const isAssignment = subnode.assignmentType === "EVALUATED";
+                  const isExercise = subnode.assignmentType === "EXERCISE";
 
                   //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
-                  let modifier = isAssignment
+                  const modifier = isAssignment
                     ? "assignment"
                     : isExercise
                     ? "exercise"
                     : null;
-                  let icon: string = isViewRestrictedVisible
-                    ? "restriction"
-                    : null;
-                  let iconTitle: string = isViewRestrictedVisible
-                    ? this.props.i18n.text.get(
-                        "plugin.workspace.materialViewRestricted"
-                      )
-                    : null;
-                  let className: string = isViewRestrictedVisible
-                    ? "toc__item--view-restricted"
-                    : null;
 
-                  let compositeReplies =
+                  let icon: string | null = null;
+                  let iconTitle: string | null = null;
+                  let className: string | null = null;
+
+                  const compositeReplies =
                     this.props.materialReplies &&
                     this.props.materialReplies.find(
                       (reply) =>
                         reply.workspaceMaterialId ===
                         subnode.workspaceMaterialId
                     );
+
                   if (compositeReplies) {
                     switch (compositeReplies.state) {
                       case "ANSWERED":
@@ -406,6 +483,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                       default:
                         break;
                     }
+                  }
+
+                  if(isViewRestrictedVisible) {
+                    icon = "restriction";
+                    className = "toc__item--view-restricted";
+                    iconTitle = this.props.i18n.text.get("plugin.workspace.materialViewRestricted")
                   }
 
                   const pageElement = (
@@ -507,6 +590,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -520,6 +608,11 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials },

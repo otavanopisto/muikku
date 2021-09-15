@@ -44,6 +44,10 @@
   display: flex;
   flex-flow: row nowrap;
   margin: 0 0 20px;
+
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .card__meta-aside {

@@ -175,6 +175,17 @@ public class DefaultSchoolDataWorkspaceListener {
               logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
             }
             else {
+              
+              // #5549: If USDI of existing WorkspaceUserEntity changes (someone changed the line of an existing course student in Pyramus),
+              // make sure that the new USDI is not already in use by some other WorkspaceUserEntity. If it is, that WorkspaceUserEntity has
+              // to be permanently deleted to avoid database unique check from crashing (can't have two WorkspaceEntity + USDI).
+
+              WorkspaceUserEntity conflictingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(
+                  workspaceEntity, newUserIdentifier.schoolDataIdentifier());
+              if (conflictingUser != null) {
+                workspaceUserEntityController.deleteWorkspaceUserEntity(conflictingUser);
+              }
+
               workspaceUserEntity = workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
               // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
               if (event.getIsActive() && !workspaceUserEntity.getActive()) {
@@ -194,7 +205,12 @@ public class DefaultSchoolDataWorkspaceListener {
           if (!event.getIsActive() && workspaceUserEntity.getActive()) {
             workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
           }
-        
+          
+          // #5549: We may have resurrected a previously archived WorkspaceUserEntity so restore it if needed
+          
+          if (workspaceUserEntity.getArchived()) {
+            workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+          }
         }
       }
       else {
@@ -214,7 +230,9 @@ public class DefaultSchoolDataWorkspaceListener {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-          workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+          // #5549: To better preserve WorkspaceEntity + USDI integrity in the future , course students archived
+          // from Pyramus (should be a very rare occurence, anyway) are permanently deleted from WorkspaceUserEntity in Muikku
+          workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
         }
       } else {
         logger.warning("could not remove workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");

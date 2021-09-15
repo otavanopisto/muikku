@@ -27,6 +27,10 @@ public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCo
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER })
   public static final String COMMUNICATOR_GROUP_MESSAGING = "COMMUNICATOR_GROUP_MESSAGING";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER})
+  public static final String COMMUNICATOR_READ_RECIPIENTS_LIST = "COMMUNICATOR_READ_RECIPIENTS_LIST";
+  
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles ({ WorkspaceRoleArchetype.TEACHER })
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })

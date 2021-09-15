@@ -247,17 +247,22 @@ public class TranscriptOfRecordsController {
     Map<SchoolDataIdentifier, WorkspaceAssessment> result = new HashMap<>();
     for (WorkspaceAssessment assessment : assessmentsByStudent) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(assessment.getWorkspaceUserIdentifier());
-      
-      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-      SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-     
-      if (!result.containsKey(workspaceIdentifier)) {
-        result.put(workspaceIdentifier, assessment);
-      } else {
-        WorkspaceAssessment storedAssessment = result.get(workspaceIdentifier);
-        
-        if (assessment.getDate().after(storedAssessment.getDate()))
+      if (workspaceUserEntity != null) {
+
+        WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+        SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+
+        if (!result.containsKey(workspaceIdentifier)) {
           result.put(workspaceIdentifier, assessment);
+        } else {
+          WorkspaceAssessment storedAssessment = result.get(workspaceIdentifier);
+
+          if (assessment.getDate().after(storedAssessment.getDate()))
+            result.put(workspaceIdentifier, assessment);
+        }
+      }
+      else {
+        logger.warning(String.format("Workspace assessment %s has no corresponding WorkspaceUserEntity", assessment.getIdentifier().toString()));
       }
     }
     

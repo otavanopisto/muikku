@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.DeserializationConfig;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.FieldMeta;
 
@@ -60,7 +61,7 @@ public class MaterialFieldCollection {
               }
               if (StringUtils.isNotBlank(content)) {
                 ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
                 materialFields.put(fieldMeta.getName(), new MaterialField(fieldMeta.getName(), fieldType, content));
               }

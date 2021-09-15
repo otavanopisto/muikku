@@ -7,6 +7,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
@@ -42,9 +43,29 @@ public class CommunicatorMessageRecipientWorkspaceGroupDAO extends CorePluginsDA
     criteria.select(root).distinct(true);
     criteria.where(
         criteriaBuilder.and(
-            root2.get(CommunicatorMessageRecipient_.recipientGroup).in(root),
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipientGroup), root),
             criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
         )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<CommunicatorMessageRecipientWorkspaceGroup> listByMessageAndUser(CommunicatorMessage communicatorMessage, UserEntity userEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageRecipientWorkspaceGroup> criteria = criteriaBuilder.createQuery(CommunicatorMessageRecipientWorkspaceGroup.class);
+    Root<CommunicatorMessageRecipientWorkspaceGroup> root = criteria.from(CommunicatorMessageRecipientWorkspaceGroup.class);
+    Root<CommunicatorMessageRecipient> root2 = criteria.from(CommunicatorMessageRecipient.class);
+    
+    criteria.select(root).distinct(true);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipientGroup), root),
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage),
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipient), userEntity.getId())
+)
     );
     
     return entityManager.createQuery(criteria).getResultList();

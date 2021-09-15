@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
