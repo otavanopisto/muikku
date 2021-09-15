@@ -433,7 +433,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       Course course1 = new CourseBuilder().name("Test").id((long) 4).description("test course for testing").buildCourse();
-      OrganizationBasicInfo organization = new OrganizationBasicInfo((long) 1, "Otavia", false);
+      OrganizationBasicInfo organization = new OrganizationBasicInfo((long) 1, "Test", false);
       CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(1l, 4l, 1l, "welp", organization);
       mockBuilder
         .addStaffMember(admin)
