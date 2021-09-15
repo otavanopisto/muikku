@@ -59,10 +59,12 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
+import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -197,6 +199,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserController userController;
+
+  @Inject
+  private PermissionController permissionController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -796,6 +801,24 @@ public class WorkspaceRESTService extends PluginRESTService {
         rootFolder.getId(),
         helpFolder.getId(),
         frontPage.getParent().getId())).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/permissions")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getWorkspacePermissions(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    Set<String> permissionSet = new HashSet<String>();
+    List<Permission> permissions = permissionController.listPermissionsByScope("WORKSPACE");
+    for (Permission permission : permissions) {
+      if (sessionController.hasWorkspacePermission(permission.getName(), workspaceEntity)) {
+        permissionSet.add(permission.getName());
+      }
+    }
+    return Response.ok(permissionSet).build();
   }
   
   @POST
