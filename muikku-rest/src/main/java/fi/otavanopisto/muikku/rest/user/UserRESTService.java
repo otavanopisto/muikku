@@ -1625,16 +1625,6 @@ public class UserRESTService extends AbstractRESTService {
     
     // Response
     
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(userEntity == null ? "0" : String.valueOf(userEntity.getVersion())));
-
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
     User user = userIdentifier == null ? null : userController.findUserByIdentifier(userIdentifier);
     
     String organizationIdentifier = user == null ? null : user.getOrganizationIdentifier().toId();
@@ -1657,11 +1647,7 @@ public class UserRESTService extends AbstractRESTService {
         permissionSet,
         roleSet); 
 
-    return Response
-        .ok(whoamiInfo)
-        .cacheControl(cacheControl)
-        .tag(tag)
-        .build();
+    return Response.ok(whoamiInfo).build();
   }
 
   @GET
