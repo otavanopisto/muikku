@@ -92,7 +92,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     let userGroupsPrimaryAction = <UserGroupDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserGroupDialog>;
     let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
-      <ApplicationPanelToolbarActionsMain>
+      <ApplicationPanelToolbarActionsMain modifier="organization-tab-search">
         <SearchFormElement value={this.state.workspaceSearchFieldValue} id="organizationWorkpaceSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="organization-workspace-search" updateField={this.doWorkspaceSearch} ></SearchFormElement>
       </ApplicationPanelToolbarActionsMain>
     </ApplicationPanelToolbar>;

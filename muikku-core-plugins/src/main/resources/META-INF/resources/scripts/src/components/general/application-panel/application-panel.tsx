@@ -18,7 +18,7 @@ interface ApplicationPanelProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
-interface ApplicationPanelState {}
+interface ApplicationPanelState { }
 
 export default class ApplicationPanel extends React.Component<
   ApplicationPanelProps,
@@ -71,9 +71,9 @@ export default class ApplicationPanel extends React.Component<
   }
 }
 
-interface ApplicationPanelToolbarProps {}
+interface ApplicationPanelToolbarProps { }
 
-interface ApplicationPanelToolbarState {}
+interface ApplicationPanelToolbarState { }
 
 export class ApplicationPanelToolbar extends React.Component<
   ApplicationPanelToolbarProps,
@@ -86,9 +86,11 @@ export class ApplicationPanelToolbar extends React.Component<
   }
 }
 
-interface ApplicationPanelToolbarActionsMainProps {}
+interface ApplicationPanelToolbarActionsMainProps {
+  modifier?: string
+}
 
-interface ApplicationPanelToolbarActionsMainState {}
+interface ApplicationPanelToolbarActionsMainState { }
 
 export class ApplicationPanelToolbarActionsMain extends React.Component<
   ApplicationPanelToolbarActionsMainProps,
@@ -96,16 +98,16 @@ export class ApplicationPanelToolbarActionsMain extends React.Component<
 > {
   render() {
     return (
-      <div className="application-panel__toolbar-actions-main">
+      <div className={`application-panel__toolbar-actions-main ${this.props.modifier ? "application-panel__toolbar-actions-main--" + this.props.modifier : ""}`}>
         {this.props.children}
       </div>
     );
   }
 }
 
-interface ApplicationPanelToolbarActionsAsideProps {}
+interface ApplicationPanelToolbarActionsAsideProps { }
 
-interface ApplicationPanelToolbarActionsAsideState {}
+interface ApplicationPanelToolbarActionsAsideState { }
 
 export class ApplicationPanelToolbarActionsAside extends React.Component<
   ApplicationPanelToolbarActionsAsideProps,
@@ -120,9 +122,9 @@ export class ApplicationPanelToolbarActionsAside extends React.Component<
   }
 }
 
-interface ApplicationPanelToolsContainerProps {}
+interface ApplicationPanelToolsContainerProps { }
 
-interface ApplicationPanelToolsContainerState {}
+interface ApplicationPanelToolsContainerState { }
 
 export class ApplicationPanelToolsContainer extends React.Component<
   ApplicationPanelToolsContainerProps,

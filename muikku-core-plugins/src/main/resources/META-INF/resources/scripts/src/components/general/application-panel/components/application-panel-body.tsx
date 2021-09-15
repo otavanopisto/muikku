@@ -9,7 +9,7 @@ interface ApplicationPanelBodyProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
-interface ApplicationPanelBodyState {}
+interface ApplicationPanelBodyState { }
 
 export default class ApplicationPanelBody extends React.Component<
   ApplicationPanelBodyProps,
@@ -30,29 +30,26 @@ export default class ApplicationPanelBody extends React.Component<
 
     return (
       <div
-        className={`application-panel__body ${
-          modifier ? "application-panel__body--" + modifier : ""
-        }`}
+        className={`application-panel__body ${modifier ? "application-panel__body--" + modifier : ""
+          }`}
       >
         <div
-          className="application-panel__actions"
+          className={`application-panel__actions ${modifier ? "application-panel__actions--" + modifier : ""}`}
         >
           {primaryOption ? (
             <div
-              className={`application-panel__helper-container application-panel__helper-container--main-action ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
-              }`}
+              className={`application-panel__helper-container application-panel__helper-container--main-action ${modifier
+                ? "application-panel__helper-container--" + modifier
+                : ""
+                }`}
             >
               {primaryOption}
             </div>
           ) : null}
           {toolbar ? (
             <div
-              className={`application-panel__main-container application-panel__main-container--actions ${
-                modifier ? "application-panel__main-container--" + modifier : ""
-              }`}
+              className={`application-panel__main-container application-panel__main-container--actions ${modifier ? "application-panel__main-container--" + modifier : ""
+                }`}
             >
               {toolbar}
             </div>
@@ -63,11 +60,10 @@ export default class ApplicationPanelBody extends React.Component<
         >
           {asideBefore ? (
             <div
-              className={`application-panel__helper-container ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
-              }`}
+              className={`application-panel__helper-container ${modifier
+                ? "application-panel__helper-container--" + modifier
+                : ""
+                }`}
             >
               {asideBefore}
             </div>
