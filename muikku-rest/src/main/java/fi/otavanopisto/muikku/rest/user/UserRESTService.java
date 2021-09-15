@@ -1631,7 +1631,7 @@ public class UserRESTService extends AbstractRESTService {
     String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
     boolean isDefaultOrganization = user == null ? false : StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
 
-    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+    boolean hasImage = userEntity == null ? false : userEntityFileController.hasProfilePicture(userEntity);
     
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
