@@ -76,11 +76,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
-        waitForClickable(".application-sub-pane__button-container .button");
-        scrollIntoView(".application-sub-pane__button-container .button");
-        waitAndClick(".application-sub-pane__button-container .button");
-        waitForVisible(".notification-queue__items");
-        
         Course course = new Course(course1.getId(), "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
@@ -102,8 +97,14 @@ public class CourseManagementTestsBase extends AbstractUITest {
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
+        waitForVisible(".notification-queue__items");
+        
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".hero__workspace-title");
+        waitUntilContentChanged(".hero__workspace-title", "");
         assertTextIgnoreCase(".hero__workspace-title", "Testing course");
       }finally{
         deleteWorkspace(workspace.getId());  
