@@ -35,20 +35,66 @@ export interface ProfileStatusType {
   studyTimeEnd: string
 }
 
+// from whoami
+// ANNOUNCER_CAN_PUBLISH_ENVIRONMENT
+// ANNOUNCER_CAN_PUBLISH_GROUPS
+// ANNOUNCER_CAN_PUBLISH_WORKSPACES
+// ANNOUNCER_TOOL
+// CHAT_AVAILABLE
+// COMMUNICATOR_GROUP_MESSAGING
+// COMMUNICATOR_WORKSPACE_MESSAGING
+// EVALUATION_VIEW_INDEX
+// FORUM_ACCESSENVIRONMENTFORUM
+// FORUM_CREATEENVIRONMENTFORUM
+// FORUM_DELETEENVIRONMENTFORUM
+// FORUM_LOCK_STICKY_PERMISSION
+// FORUM_SHOW_FULL_NAME_PERMISSION
+// FORUM_UPDATEENVIRONMENTFORUM
+// GUIDER_VIEW
+// ORGANIZATION_VIEW
+// TRANSCRIPT_OF_RECORDS_VIEW
+// WORKLIST_AVAILABLE
+// AREA_PERMISSIONS                 missing
+
+// from /workspace/workspaces/123/permissions 
+// WORKSPACE_ACCESS_EVALUATION: true
+// WORKSPACE_ANNOUNCER_TOOL: true
+// WORKSPACE_CAN_PUBLISH: true
+// WORKSPACE_DELETE_FORUM_THREAD: true
+// WORKSPACE_DISCUSSIONS_VISIBLE: true
+// WORKSPACE_GUIDES_VISIBLE: true
+// WORKSPACE_HOME_VISIBLE: true
+// WORKSPACE_IS_WORKSPACE_STUDENT: false
+// WORKSPACE_JOURNAL_VISIBLE: true
+// WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS: true
+// WORKSPACE_MANAGE_PERMISSIONS: true
+// WORKSPACE_MANAGE_WORKSPACE: true
+// WORKSPACE_MANAGE_WORKSPACE_DETAILS: true
+// WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE: true
+// WORKSPACE_MANAGE_WORKSPACE_HELP: true
+// WORKSPACE_MANAGE_WORKSPACE_MATERIALS: true
+// WORKSPACE_MATERIALS_VISIBLE: true
+// WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT: false
+// WORKSPACE_SIGNUP: false
+// WORKSPACE_USERS_VISIBLE: true
+// WORKSPACE_VIEW_WORKSPACE_DETAILS: true
+// WORSKPACE_LIST_WORKSPACE_MEMBERS: true
+
+// _MUIKKU_LOCALE should be taken from the html
 export default function status(state: StatusType = {
-  loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,
-  userId: (<any>window).MUIKKU_LOGGED_USER_ID,
-  permissions: (<any>window).MUIKKU_PERMISSIONS,
-  contextPath: (<any>window).CONTEXTPATH,
-  userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER,
-  isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER,
+  loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,    //whoami.id
+  userId: (<any>window).MUIKKU_LOGGED_USER_ID,     // whoami.id
+  permissions: (<any>window).MUIKKU_PERMISSIONS,    
+  contextPath: (<any>window).CONTEXTPATH,   // always empty
+  userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER, // missing
+  isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER, // missing
   profile: (<any>window).PROFILE_DATA,
-  isStudent: (<any>window).MUIKKU_IS_STUDENT,
-  currentWorkspaceId: (<any>window).WORKSPACE_ID,
-  currentWorkspaceName: (<any>window).WORKSPACE_NAME,
+  isStudent: (<any>window).MUIKKU_IS_STUDENT, // check if roles contain STUDENT
+  currentWorkspaceId: (<any>window).WORKSPACE_ID, // missing, different endpoint required, will require workspace path as parameter
+  currentWorkspaceName: (<any>window).WORKSPACE_NAME, // missing, different endpoint required
   hasImage: false,
   imgVersion: (new Date()).getTime(),
-  hopsEnabled: (<any>window).HOPS_ENABLED
+  hopsEnabled: (<any>window).HOPS_ENABLED // /user/property/hops.enabled
 }, action: ActionType): StatusType {
   if (action.type === "LOGOUT") {
     // chat listens to this event to close the connection
