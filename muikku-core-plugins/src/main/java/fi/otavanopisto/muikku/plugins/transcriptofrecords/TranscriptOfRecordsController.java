@@ -391,8 +391,8 @@ public class TranscriptOfRecordsController {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "mandatoryCreditPointsRequiredForMatriculation");
-    // Default is 20
-    return StringUtils.isNotBlank(resultString) ? Double.parseDouble(resultString) : 20;
+    // Default is 40
+    return StringUtils.isNotBlank(resultString) ? Double.parseDouble(resultString) : 40;
   }
 
   private SearchProvider getProvider(String name) {
