@@ -117,6 +117,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyStat
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
@@ -126,6 +127,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntry
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserRestModel;
@@ -193,6 +195,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private WorkspaceRESTModelController workspaceRESTModelController;
   
   @Inject
   private SessionController sessionController;
@@ -719,53 +724,74 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/workspaces/{URLNAME}/basicInfo")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
+      if (workspaceBasicInfo == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      return Response.ok(workspaceBasicInfo).build();
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  @GET
   @Path("/workspaces/{ID}/additionalInfo")
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceAdditionalInfo(@PathParam("ID") Long workspaceEntityId) {
 	schoolDataBridgeSessionController.startSystemSession();
 	try {
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-      if (workspaceEntity == null) {
-        return Response.status(Status.NOT_FOUND).build();
-      }
+	  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+	  if (workspaceEntity == null) {
+	    return Response.status(Status.NOT_FOUND).build();
+	  }
 
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace == null) {
-        return Response.status(Status.NOT_FOUND).build();
-      }
-    
-      String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
-      
-      EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
-      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
-    
-      Map<String, Object> result= new HashMap<>();
-      result.put("beginDate", workspace.getBeginDate());
-      result.put("endDate", workspace.getEndDate());
-      result.put("viewLink", workspace.getViewLink());
-      result.put("workspaceTypeId", typeId);
-      result.put("educationType", educationTypeObject);
-      result.put("subject", subjectObject);
-      if (typeId != null) {
-        WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
-        result.put("workspaceType", workspaceType.getName());
-      } else {
-        result.put("workspaceType", null);
-      }
-    
-      CourseLengthUnit lengthUnit = null;
-      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
-        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
-      }
-    
-      result.put("courseLengthSymbol", lengthUnit);
-      if (lengthUnit != null) {
-        result.put("courseLength", workspace.getLength());
-      } else {
-        result.put("courseLength", null);
-      }
+	  Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+	  if (workspace == null) {
+	    return Response.status(Status.NOT_FOUND).build();
+	  }
 
-      return Response.ok(result).build(); 
+	  String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+
+	  EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
+	  Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
+
+	  Map<String, Object> result= new HashMap<>();
+	  result.put("beginDate", workspace.getBeginDate());
+	  result.put("endDate", workspace.getEndDate());
+	  result.put("viewLink", workspace.getViewLink());
+	  result.put("workspaceTypeId", typeId);
+	  result.put("educationType", educationTypeObject);
+	  result.put("subject", subjectObject);
+	  if (typeId != null) {
+	    WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
+	    result.put("workspaceType", workspaceType.getName());
+	  } else {
+	    result.put("workspaceType", null);
+	  }
+
+	  CourseLengthUnit lengthUnit = null;
+	  if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
+	    lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
+	  }
+
+	  result.put("courseLengthSymbol", lengthUnit);
+	  if (lengthUnit != null) {
+	    result.put("courseLength", workspace.getLength());
+	  } else {
+	    result.put("courseLength", null);
+	  }
+
+	  return Response.ok(result).build(); 
 	} finally {
 	  schoolDataBridgeSessionController.endSystemSession();
 	}
@@ -1300,7 +1326,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.put("assignmentsDone", assignmentsDone);
     
     return Response.ok(result).build();
-}
+  }
   
   @GET
   @Path("/workspaces/{ID}/feeInfo")
