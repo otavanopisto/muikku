@@ -87,7 +87,8 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
           </p>
           <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
             <label className="matriculation__label">
-              Suoritan tutkinnon uuden tutkintorakenteen mukaisesti
+              Suoritan tutkinnon uuden tutkintorakenteen mukaisesti (tutkinnon
+              suorittaminen alkaa keväällä 2022 tai myöhemmin)
             </label>
             <input
               onChange={this.handleCheckboxChange}
@@ -104,9 +105,9 @@ export class MatriculationExaminationEnrollmentInfo extends React.Component<
               </h3>
               {this.props.compulsoryEducationEligible ? (
                 <p className="matriculation-container__info-item">
-                  Teidän oppivelvollisuus on voimassa. Valituista kokeista viisi
-                  on maksuttomia. Mikäli valittuja kokeita on enemmän kuin
-                  viisi, valitse kokeista ne jotka suoritat maksuttomana.
+                  Olet laajennetun oppivelvollisuuden piirissä. Mikäli valittuja
+                  kokeita on enemmän kuin viisi, valitse kokeista ne jotka
+                  suoritat maksuttomana.
                 </p>
               ) : (
                 <p className="matriculation-container__info-item">

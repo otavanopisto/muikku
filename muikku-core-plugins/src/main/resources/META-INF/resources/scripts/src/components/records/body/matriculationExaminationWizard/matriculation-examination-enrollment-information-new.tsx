@@ -1526,9 +1526,8 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
 
               {compulsoryEducationEligible && (
                 <p className="matriculation__hightlighted">
-                  Merkitse mitkä viisi koetta suoritat/olet suorittanut
-                  maksuttomana (oppivelvollisuus rahoitus) ja mitkä
-                  itserahoituksella.
+                  Merkitse, mitkä viisi koetta ovat sinulle maksuttomia ja mitkä
+                  kokeista maksat itse.
                 </p>
               )}
             </div>
