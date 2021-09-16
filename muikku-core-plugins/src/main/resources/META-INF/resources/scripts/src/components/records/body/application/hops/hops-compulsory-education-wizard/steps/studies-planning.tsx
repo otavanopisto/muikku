@@ -73,6 +73,8 @@ class StudiesPlanning extends React.Component<
     this.setState({
       supervisorSuggestedNext:
         this.props.studies.supervisorSuggestedNextListOfIds,
+      supervisorSuggestedOptional:
+        this.props.studies.supervisorSugestedSubjectListOfIds,
     });
   };
 
@@ -818,7 +820,8 @@ class StudiesPlanning extends React.Component<
       return (
         <div
           style={{
-            border: "2px solid orange",
+            border: "1px solid orange",
+            borderLeftWidth: "2px",
             padding: "10px",
             fontStyle: "italic",
           }}
@@ -837,7 +840,8 @@ class StudiesPlanning extends React.Component<
       return (
         <div
           style={{
-            border: "2px solid lightblue",
+            border: "1px solid lightblue",
+            borderLeftWidth: "2px",
             padding: "10px",
             fontStyle: "italic",
           }}
@@ -1180,7 +1184,10 @@ class StudiesPlanning extends React.Component<
             </div>
           ) : null}
 
-          <div style={{ flexFlow: "column" }} className="hops-container__row">
+          <div
+            style={{ flexFlow: "column", paddingBottom: "15px" }}
+            className="hops-container__row"
+          >
             <h2 style={{ margin: "5px" }}>Opintojen edistyminen</h2>
             <div>
               <ProgressBarLine
@@ -1359,31 +1366,43 @@ class StudiesPlanning extends React.Component<
                 this.state.selectSuggestedOptionalActive ? (
                   <>
                     <Button
+                      className="button button--dialog-execute"
                       onClick={
                         this.state.selectNextIsActive
                           ? this.handleSaveActiveSuggestedSelections
                           : this.handleSaveActiveSuggestedOptionalSelections
                       }
+                      style={{ margin: "5px 5px", width: "calc(50% - 10px)" }}
                     >
                       Tallenna
                     </Button>
                     <Button
+                      className="button button--dialog-cancel"
                       onClick={
                         this.state.selectNextIsActive
                           ? this.handleCancleActiveSuggestedSelectionAndRevert
                           : this
                               .handleCancleActiveSuggestedOptionalSelectionAndRevert
                       }
+                      style={{ margin: "5px 5px", width: "calc(50% - 10px)" }}
                     >
                       Peruuta
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button onClick={this.handleActivateSelectSuggestedForNext}>
-                      Seuraavaksi suoritettavat?
+                    <Button
+                      className="button button--dialog-clear"
+                      onClick={this.handleActivateSelectSuggestedForNext}
+                      style={{ margin: "5px 5px", width: "100%" }}
+                    >
+                      Ehdota suoritettavia kursseja?
                     </Button>
-                    <Button onClick={this.handleActivateSelectOptional}>
+                    <Button
+                      className="button button--dialog-clear"
+                      onClick={this.handleActivateSelectOptional}
+                      style={{ margin: "5px 5px", width: "100%" }}
+                    >
                       Ehdota valinnaiskursseja?
                     </Button>
                   </>
@@ -1393,13 +1412,33 @@ class StudiesPlanning extends React.Component<
 
             <div className="hops_buttons hops_buttons--remove">
               {this.props.user === "supervisor" ? (
-                <Button onClick={this.props.onDeleteNextSelection}>
+                <Button
+                  className="button button--dialog-execute"
+                  onClick={this.props.onDeleteNextSelection}
+                  disabled={
+                    this.props.studies.supervisorSuggestedNextListOfIds
+                      .length === 0
+                  }
+                  style={{ margin: "5px 5px", width: "100%" }}
+                >
                   Poista suoritettavat kurssiehdotukset
                 </Button>
               ) : null}
 
-              <Button onClick={this.props.onDeleteSelection}>
-                Poista kurssi ehdotukset
+              <Button
+                className="button button--dialog-execute"
+                onClick={this.props.onDeleteSelection}
+                disabled={
+                  this.props.user === "supervisor"
+                    ? this.props.studies.supervisorSugestedSubjectListOfIds
+                        .length === 0
+                    : this.props.studies.selectedListOfIds.length === 0
+                }
+                style={{ margin: "5px 5px", width: "100%" }}
+              >
+                {this.props.user === "supervisor"
+                  ? "Poista valinnaiskurssi ehdotukset"
+                  : "Poista valinnat"}
               </Button>
             </div>
           </div>

@@ -6,7 +6,7 @@ interface ListContainerProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  modifiers: string[];
+  modifiers?: string[];
 }
 
 /**
@@ -36,7 +36,7 @@ interface ListItemProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  modifiers: string[];
+  modifiers?: string[];
 }
 
 /**
@@ -53,6 +53,41 @@ export const ListItem: React.FC<ListItemProps> = ({
     <div
       className={`list-item ${
         modifiers ? modifiers.map((m) => `list-item--${m}`).join(" ") : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+
+/**
+ * ListItemIndicator
+ */
+interface ListItemIndicator
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
+  modifiers?: string[];
+}
+
+/**
+ * ListItemIndicator
+ * @param param0
+ * @returns JSX.Element
+ */
+export const ListItemIndicator: React.FC<ListItemIndicator> = ({
+  modifiers,
+  children,
+  ...rest
+}) => {
+  return (
+    <div
+      className={`list-item-indicator ${
+        modifiers
+          ? modifiers.map((m) => `list-item-indicator--${m}`).join(" ")
+          : ""
       }`}
       {...rest}
     >

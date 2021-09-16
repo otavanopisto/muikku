@@ -3,7 +3,11 @@ import { SchoolSubject } from "~/@types/shared";
 import { mockSchoolSubjects } from "~/mock/mock-data";
 import Dropdown from "../../../../general/dropdown";
 import AnimateHeight from "react-animate-height";
-import { ListContainer, ListItem } from "~/components/general/list";
+import {
+  ListContainer,
+  ListItem,
+  ListItemIndicator,
+} from "~/components/general/list";
 
 interface CourseListProps {
   selectedSubjects?: SchoolSubject[];
@@ -42,90 +46,35 @@ const CourseList: React.FC<CourseListProps> = (props) => {
   /**
    * handleTableDataChange
    */
-  /* const handleToggleCourseClick =
-    (subjectIndex: number, subjectCourseIndex: number) =>
+  const handleToggleCourseClick =
+    (courseId: number) =>
     (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
       const selectedSubjects = [...props.selectedSubjects];
 
-      if (props.user === "supervisor") {
-        if (
-          props.onChangeSelectSubjectList &&
-          props.supervisorSugestedSubjectListOfIds &&
-          selectedSubjects
-        ) {
-          let supervisorSugestedSubjectListOfIds = [
-            ...props.supervisorSugestedSubjectListOfIds,
-          ];
+      if (
+        props.onChangeSelectSubjectList &&
+        props.selectedSubjectListOfIds &&
+        selectedSubjects
+      ) {
+        let selectedOptionalCourseListOfIds = [
+          ...props.selectedSubjectListOfIds,
+        ];
 
-          if (
-            selectedSubjects[subjectIndex].availableCourses[
-              subjectCourseIndex
-            ] !== undefined
-          ) {
-            let indexOfSubjectCourse =
-              supervisorSugestedSubjectListOfIds.findIndex(
-                (subjectId) =>
-                  subjectId ===
-                  selectedSubjects[subjectIndex].availableCourses[
-                    subjectCourseIndex
-                  ].id
-              );
+        let indexOfSubjectCourse = selectedOptionalCourseListOfIds.findIndex(
+          (sCourseId) => sCourseId === courseId
+        );
 
-            if (indexOfSubjectCourse !== -1) {
-              supervisorSugestedSubjectListOfIds.splice(
-                indexOfSubjectCourse,
-                1
-              );
-            } else {
-              supervisorSugestedSubjectListOfIds.push(
-                selectedSubjects[subjectIndex].availableCourses[
-                  subjectCourseIndex
-                ].id
-              );
-            }
-          }
-
-          props.onChangeSelectSubjectList &&
-            props.onChangeSelectSubjectList(supervisorSugestedSubjectListOfIds);
+        if (indexOfSubjectCourse !== -1) {
+          selectedOptionalCourseListOfIds.splice(indexOfSubjectCourse, 1);
+        } else {
+          selectedOptionalCourseListOfIds.push(courseId);
         }
-      } else {
-        if (
-          props.onChangeSelectSubjectList &&
-          props.selectedSubjectListOfIds &&
-          selectedSubjects
-        ) {
-          let selectedSubjectListOfIds = [...props.selectedSubjectListOfIds];
 
-          if (
-            selectedSubjects[subjectIndex].availableCourses[
-              subjectCourseIndex
-            ] !== undefined
-          ) {
-            let indexOfSubjectCourse = selectedSubjectListOfIds.findIndex(
-              (subjectId) =>
-                subjectId ===
-                selectedSubjects[subjectIndex].availableCourses[
-                  subjectCourseIndex
-                ].id
-            );
-
-            if (indexOfSubjectCourse !== -1) {
-              selectedSubjectListOfIds.splice(indexOfSubjectCourse, 1);
-            } else {
-              selectedSubjectListOfIds.push(
-                selectedSubjects[subjectIndex].availableCourses[
-                  subjectCourseIndex
-                ].id
-              );
-            }
-          }
-
-          props.onChangeSelectSubjectList &&
-            props.onChangeSelectSubjectList(selectedSubjectListOfIds);
-        }
+        props.onChangeSelectSubjectList &&
+          props.onChangeSelectSubjectList(selectedOptionalCourseListOfIds);
       }
     };
- */
+
   /**
    * handleSuggestedForNextCheckboxChange
    * @param e
@@ -233,12 +182,13 @@ const CourseList: React.FC<CourseListProps> = (props) => {
     }
 
     const courses = sSubject.availableCourses.map((course, index) => {
-      let modifiers = ["course", "centered"];
+      let listItemIndicatormodifiers = ["course"];
+      let listItemModifiers = ["course"];
 
       if (course.mandatory) {
-        modifiers.push("MANDATORY");
+        listItemIndicatormodifiers.push("MANDATORY");
       } else {
-        modifiers.push("OPTIONAL");
+        listItemIndicatormodifiers.push("OPTIONAL");
       }
 
       let canBeSelected = true;
@@ -259,14 +209,14 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       ) {
         canBeSuggestedForNextCourse = false;
         canBeSelected = false;
-        modifiers.push("APPROVAL");
+        listItemIndicatormodifiers.push("APPROVAL");
       } else if (
         props.selectedOptionalListOfIds &&
         props.selectedOptionalListOfIds.find(
           (courseId) => courseId === course.id
         )
       ) {
-        modifiers.push("SELECTED_OPTIONAL");
+        listItemIndicatormodifiers.push("SELECTED_OPTIONAL");
       } else if (
         props.completedSubjectListOfIds &&
         props.completedSubjectListOfIds.find(
@@ -276,7 +226,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         canBeSuggestedForOptionalCourse = false;
         canBeSuggestedForNextCourse = false;
         canBeSelected = false;
-        modifiers.push("COMPLETED");
+        listItemIndicatormodifiers.push("COMPLETED");
       } else if (
         props.inprogressSubjectListOfIds &&
         props.inprogressSubjectListOfIds.find(
@@ -286,7 +236,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         canBeSuggestedForOptionalCourse = false;
         canBeSuggestedForNextCourse = false;
         canBeSelected = false;
-        modifiers.push("INPROGRESS");
+        listItemIndicatormodifiers.push("INPROGRESS");
       } else if (
         props.supervisorSugestedSubjectListOfIds &&
         props.supervisorSugestedSubjectListOfIds.find(
@@ -294,7 +244,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         )
       ) {
         suggestedForOptional = true;
-        !props.selectOptionalIsActive && modifiers.push("SUGGESTED");
+        !props.selectOptionalIsActive && listItemModifiers.push("SUGGESTED");
       }
 
       if (
@@ -303,7 +253,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
           (courseId) => courseId === course.id
         )
       ) {
-        modifiers.push("SELECTED");
+        listItemIndicatormodifiers.push("SELECTED");
       }
 
       if (
@@ -314,15 +264,22 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       ) {
         suggestedForNext = true;
 
-        !props.selectNextIsActive && modifiers.push("NEXT");
+        !props.selectNextIsActive && listItemModifiers.push("NEXT");
       }
 
       if (course.mandatory) {
         if (canBeSelected) {
           return (
-            <ListItem key={course.id} modifiers={modifiers}>
-              {course.courseNumber}
-              {props.selectNextIsActive && canBeSuggestedForNextCourse ? (
+            <ListItem key={course.id} modifiers={listItemModifiers}>
+              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+              {course.courseNumber}. {course.name}
+              <div
+                className={`checkbox-container ${
+                  props.selectNextIsActive && canBeSuggestedForNextCourse
+                    ? "checkbox-container--active"
+                    : ""
+                }`}
+              >
                 <input
                   type="checkbox"
                   checked={suggestedForNext}
@@ -330,22 +287,38 @@ const CourseList: React.FC<CourseListProps> = (props) => {
                   value={course.id}
                   onChange={handleSuggestedForNextCheckboxChange(course.id)}
                 />
-              ) : null}
+              </div>
             </ListItem>
           );
         } else {
           return (
-            <ListItem key={course.id} modifiers={modifiers}>
-              {course.courseNumber}
+            <ListItem key={course.id} modifiers={listItemModifiers}>
+              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+              {course.courseNumber}. {course.name}
             </ListItem>
           );
         }
       } else {
         if (canBeSelected) {
           return (
-            <ListItem key={course.id} modifiers={modifiers}>
-              {course.courseNumber}
-              {props.selectNextIsActive && canBeSuggestedForNextCourse ? (
+            <ListItem
+              key={course.id}
+              onClick={
+                props.user === "student"
+                  ? handleToggleCourseClick(course.id)
+                  : undefined
+              }
+              modifiers={listItemModifiers}
+            >
+              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+              {course.courseNumber}*. {course.name}
+              <div
+                className={`checkbox-container ${
+                  props.selectNextIsActive && canBeSuggestedForNextCourse
+                    ? "checkbox-container--active"
+                    : ""
+                }`}
+              >
                 <input
                   type="checkbox"
                   checked={suggestedForNext}
@@ -353,9 +326,15 @@ const CourseList: React.FC<CourseListProps> = (props) => {
                   value={course.id}
                   onChange={handleSuggestedForNextCheckboxChange(course.id)}
                 />
-              ) : null}
-              {props.selectOptionalIsActive &&
-              canBeSuggestedForOptionalCourse ? (
+              </div>
+              <div
+                className={`checkbox-container ${
+                  props.selectOptionalIsActive &&
+                  canBeSuggestedForOptionalCourse
+                    ? "checkbox-container--active"
+                    : ""
+                }`}
+              >
                 <input
                   type="checkbox"
                   checked={suggestedForOptional}
@@ -363,13 +342,14 @@ const CourseList: React.FC<CourseListProps> = (props) => {
                   value={course.id}
                   onChange={handleSuggestedForOptionalCheckboxChange(course.id)}
                 />
-              ) : null}
+              </div>
             </ListItem>
           );
         } else {
           return (
-            <ListItem key={course.id} modifiers={modifiers}>
-              {course.courseNumber}
+            <ListItem key={course.id} modifiers={listItemModifiers}>
+              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+              {course.courseNumber}*. {course.name}
             </ListItem>
           );
         }
@@ -385,7 +365,9 @@ const CourseList: React.FC<CourseListProps> = (props) => {
           onClick={handleOpenSubjectCourseSelection(sSubject.name)}
         >
           {sSubject.name}
+          <div className={`list-item-arrow ${open ? "down" : "right"}`} />
         </ListItem>
+
         <AnimateHeight
           height={open ? "auto" : 0}
           className="list-subject-course__container"

@@ -42,8 +42,17 @@
   width: 100%;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+}
+
+.list-item--course {
+  background-color: #fbfbfb;
+  margin: 5px 0;
+  border-radius: 0;
+}
+
+.list-item--course:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
 .list-item--subject {
@@ -53,15 +62,18 @@
   background-color: aliceblue;
   font-weight: bold;
   cursor: pointer;
+  justify-content: space-between;
 }
 
-.list-item--course {
-  margin: 5px 0;
-  border-radius: 0;
-}
-
-.list-item--SUGGESTED {
+.list-item--SUGGESTED::before {
   border: 2px solid pink;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .list-item--MANDATORY {
@@ -85,7 +97,7 @@
 }
 
 .list-item--SELECTED {
-  background-color: wheat;
+  background-color: cornsilk;
 }
 
 .list-item--SELECTED_OPTIONAL {
@@ -124,4 +136,69 @@
 
 .list-item--NOSTATUS {
   background-color: unset;
+}
+
+.list-item-arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  position: relative;
+  right: 15px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease-in;
+}
+
+.left {
+  transform: rotate(135deg);
+  transition: transform 0.3s ease-in;
+}
+
+.up {
+  transform: rotate(-135deg);
+  transition: transform 0.3s ease-in;
+}
+
+.down {
+  transform: rotate(45deg);
+  transition: transform 0.3s ease-in;
+}
+
+.list-item-indicator {
+  margin: 0 5px;
+  width: 25px;
+  height: 30px;
+  transform: skew(-20deg);
+  border-radius: 5px;
+}
+
+.list-item-indicator--MANDATORY {
+  background-color: grey;
+}
+
+.list-item-indicator--OPTIONAL {
+  background-color: lightblue;
+}
+
+.list-item-indicator--COMPLETED {
+  background-color: green;
+}
+
+.list-item-indicator--INPROGRESS {
+  background-color: orange;
+}
+
+.list-item-indicator--APPROVAL {
+  background-color: palegreen;
+}
+
+.list-item-indicator--SELECTED {
+  background-color: cornsilk;
+}
+
+.list-item-indicator--SELECTED_OPTIONAL {
+  background-color: #3ab8e1;
 }

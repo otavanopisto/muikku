@@ -59,7 +59,6 @@
 .hops-container__row {
   display: flex;
   flex-flow: column wrap;
-  padding: 5px 0;
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
@@ -130,11 +129,6 @@
   }
 }
 
-.hops-input:disabled {
-  background-color: #e6e5e5;
-  border: 0;
-}
-
 .hops-select {
   background: $color-default;
   border: 2px solid pink;
@@ -161,6 +155,16 @@
   height: 1.5rem;
   justify-content: center;
   width: 1.5rem;
+
+  &[disabled] {
+    background-color: #c1c1c1;
+    border: 0;
+  }
+}
+
+.hops-input:disabled {
+  background-color: #e6e5e5;
+  border: 0;
 }
 
 .hops-input[type="checkbox"]:checked {
@@ -203,7 +207,7 @@
 
 .hops-container__indicator-examples {
   display: flex;
-  margin: 10px 0 20px;
+  margin: 10px 5px 20px;
   flex-flow: row wrap;
 }
 
@@ -217,8 +221,7 @@
 .hops-container__course-completed {
   align-items: center;
   display: flex;
-  margin: 2px 0;
-  flex-grow: 1;
+  margin: 5px 5px 5px;
   flex-shrink: 1;
 }
 
@@ -232,7 +235,7 @@
 .hops-container__course-completed-indicator {
   display: inline-block;
   height: 25px;
-  margin: 0 10px;
+  margin: 0 10px 0 0;
   width: 25px;
 }
 
@@ -265,7 +268,7 @@
 }
 
 .hops-container__course-selected-indicator {
-  background-color: wheat;
+  background-color: cornsilk;
 }
 
 .hops__form-element-container-study__counter {
