@@ -8,6 +8,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   }
 
   public UserWhoAmIInfo(Long id,
+              String identifier,
               String firstName,
               String lastName,
               String nickName, 
@@ -19,7 +20,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isDefaultOrganization,
               Set<String> permissions,
               Set<String> roles) {
-    super(id, firstName, lastName, nickName, hasImage);
+    super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
     this.hasEvaluationFees = hasEvaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
@@ -85,6 +86,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.roles = roles;
   }
 
+  private String identifier;
   private String studyProgrammeName;
   private boolean hasEvaluationFees;
   private String curriculumIdentifier;

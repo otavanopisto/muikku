@@ -1635,6 +1635,7 @@ public class UserRESTService extends AbstractRESTService {
     
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
+        userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId(),
         user == null ? null : user.getFirstName(),
         user == null ? null : user.getLastName(),
         user == null ? null : user.getNickName(),
