@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.rest.model.UserGroup;
 
 /**

@@ -1,16 +1,7 @@
 package fi.otavanopisto.muikku.plugins.material;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.material.dao.HtmlMaterialDAO;

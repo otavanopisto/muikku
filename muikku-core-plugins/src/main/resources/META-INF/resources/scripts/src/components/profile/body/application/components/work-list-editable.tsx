@@ -15,7 +15,7 @@ const startOfCurrentMonth = moment().startOf("month");
 const startOfPreviousMonth = startOfCurrentMonth.clone().subtract(1, "months").startOf("month");
 const dayOfCurrentMonth: Number = moment(new Date()).date();
 
-interface IWorkListEditableProps {
+interface WorkListEditableProps {
   i18n: i18nType,
   locales: LocaleListType;
   onSubmit: (data: {
@@ -33,15 +33,15 @@ interface IWorkListEditableProps {
   currentMonthDayLimit: Number;
 }
 
-interface IWorksListEditableState {
+interface WorksListEditableState {
   description: string;
   date: any;
   price: string;
   factor: string;
 }
 
-class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksListEditableState> {
-  constructor(props: IWorkListEditableProps) {
+class WorkListEditable extends React.Component<WorkListEditableProps, WorksListEditableState> {
+  constructor(props: WorkListEditableProps) {
     super(props);
 
     this.state = this.setupState(props, true);
@@ -84,8 +84,8 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
       this.props.base.factor !== factor
     );
   }
-  public setupState(props: IWorkListEditableProps = this.props, setupPhase: boolean = false): IWorksListEditableState {
-    const newState: IWorksListEditableState = {
+  public setupState(props: WorkListEditableProps = this.props, setupPhase: boolean = false): WorksListEditableState {
+    const newState: WorksListEditableState = {
       description: "",
       date: null,
       factor: "",
@@ -119,7 +119,7 @@ class WorkListEditable extends React.Component<IWorkListEditableProps, IWorksLis
 
     return newState;
   }
-  public componentDidUpdate(prevProps: IWorkListEditableProps) {
+  public componentDidUpdate(prevProps: WorkListEditableProps) {
     if (prevProps.base !== this.props.base) {
       this.setupState();
     }

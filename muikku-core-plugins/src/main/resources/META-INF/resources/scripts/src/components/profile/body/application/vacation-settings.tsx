@@ -13,7 +13,7 @@ import Button from '~/components/general/button';
 import moment from "~/lib/moment";
 import { SimpleActionExecutor } from '~/actions/executor';
 
-interface IVacationSettingsProps {
+interface VacationSettingsProps {
   i18n: i18nType,
   profile: ProfileType;
   status: StatusType;
@@ -22,7 +22,7 @@ interface IVacationSettingsProps {
   updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
-interface IVacationSettingsState {
+interface VacationSettingsState {
   profileVacationStart: any,
   profileVacationEnd: any,
   vacationAutoReply: string,
@@ -30,8 +30,8 @@ interface IVacationSettingsState {
   vacationAutoReplyMsg: string,
 }
 
-class VacationSettings extends React.Component<IVacationSettingsProps, IVacationSettingsState> {
-  constructor(props: IVacationSettingsProps) {
+class VacationSettings extends React.Component<VacationSettingsProps, VacationSettingsState> {
+  constructor(props: VacationSettingsProps) {
     super(props);
 
     this.state = {
@@ -49,7 +49,7 @@ class VacationSettings extends React.Component<IVacationSettingsProps, IVacation
     this.save = this.save.bind(this);
   }
 
-  componentWillReceiveProps(nextProps: IVacationSettingsProps) {
+  componentWillReceiveProps(nextProps: VacationSettingsProps) {
     if (nextProps.profile.properties['profile-vacation-start'] &&
       this.props.profile.properties['profile-vacation-start'] !== nextProps.profile.properties['profile-vacation-start']) {
       this.setState({

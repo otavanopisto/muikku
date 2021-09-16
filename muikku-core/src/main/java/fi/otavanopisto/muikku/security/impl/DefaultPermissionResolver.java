@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.security.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -8,10 +9,14 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.util.OrganizationalEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -65,17 +70,48 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     
     SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     
+    boolean hasPermission = false;
+    
     // Workspace access
+    
     if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE) && contextReference != null) {
       WorkspaceEntity workspaceEntity = resolveWorkspace(contextReference);
       if (workspaceEntity != null) {
         if (hasWorkspaceAccess(workspaceEntity, userIdentifier, permissionEntity)) {
-          return true;
+          hasPermission = true;
         }
       }
     }
+    
     // Environment access
-    return hasEnvironmentAccess(userIdentifier, permissionEntity);
+    
+    if (!hasPermission) {
+      hasPermission = hasEnvironmentAccess(userIdentifier, permissionEntity);
+    }
+
+    // #5723: If we got permission to do something but in an organizational context, deny permission if
+    // the context belongs to another organization, unless the logged in user happens to be:
+    // - ADMINISTRATOR (who have access everywhere nonetheless)
+    // - STUDENT (who can study courses of other organizations)
+    // - CUSTOM (custom roles such as trusted system)
+    
+    if (hasPermission && contextReference instanceof OrganizationalEntity) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+          findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier); 
+      if (userSchoolDataIdentifier != null) {
+        OrganizationEntity userOrganization = userSchoolDataIdentifier.getOrganization();
+        OrganizationEntity contextOrganization = ((OrganizationalEntity) contextReference).getOrganizationEntity();
+        if (userOrganization != null && contextOrganization != null && !Objects.equals(userOrganization.getId(), contextOrganization.getId())) {
+          EnvironmentRoleEntity roleEntity = userSchoolDataIdentifier.getRole();
+          EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+          hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR ||
+              loggedUserRole == EnvironmentRoleArchetype.STUDENT ||
+              loggedUserRole == EnvironmentRoleArchetype.CUSTOM;
+        }
+      }
+    }
+    
+    return hasPermission;
   }
   
   private boolean hasWorkspaceAccess(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Permission permission) {
