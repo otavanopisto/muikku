@@ -97,6 +97,7 @@ import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.CreatedUserEntityFinder;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -192,7 +193,10 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
+
+  @Inject
+  private CurrentUserSession currentUserSession;
+
   @GET
   @Path("/property/{KEY}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -1645,6 +1649,7 @@ public class UserRESTService extends AbstractRESTService {
         user == null ? null : user.getCurriculumIdentifier(),
         organizationIdentifier,
         isDefaultOrganization,
+        currentUserSession.isActive(),
         permissionSet,
         roleSet); 
 

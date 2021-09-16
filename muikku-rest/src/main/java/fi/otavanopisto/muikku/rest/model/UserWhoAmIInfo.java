@@ -18,6 +18,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String curriculumIdentifier,
               String organizationIdentifier,
               boolean isDefaultOrganization,
+              boolean isActive,
               Set<String> permissions,
               Set<String> roles) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
@@ -26,6 +27,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
     this.isDefaultOrganization = isDefaultOrganization;
+    this.isActive = isActive;
     this.setPermissions(permissions);
     this.setRoles(roles);
   }
@@ -86,6 +88,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.roles = roles;
   }
 
+  public boolean getIsActive() {
+    return isActive;
+  }
+
+  public void setIsActive(boolean isActive) {
+    this.isActive = isActive;
+  }
+
   private String identifier;
   private String studyProgrammeName;
   private boolean hasEvaluationFees;
@@ -94,4 +104,5 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private boolean isDefaultOrganization;
   private Set<String> permissions;
   private Set<String> roles;
+  private boolean isActive;
 }
