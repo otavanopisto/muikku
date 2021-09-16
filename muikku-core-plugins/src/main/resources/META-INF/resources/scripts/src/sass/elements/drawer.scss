@@ -1,0 +1,142 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.drawer {
+  @include prefix(transition, moz webkit ms o, opacity 0.3s);
+  background-color: $color-overlay-background;
+  bottom: 0;
+  display: none;
+  font-family: $menu-font;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+
+  &.displayed {
+    display: block;
+  }
+
+  &.visible {
+    opacity: 1;
+
+    >.drawer__container {
+      left: 0;
+    }
+  }
+
+  &.dragging {
+    transition: none;
+
+    .menu__container {
+      transition: none;
+    }
+  }
+
+  // When main function aside menu is cloned to the mobile menu drawer we change the rendering
+  .menu-wrapper--aside {
+    border-bottom: solid 5px $color-default-separator-border;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    left: -$menu-width-pad;
+    width: $menu-width-pad;
+  }
+}
+
+.drawer--main-function {
+
+  .drawer__header {
+    background-color: $color-environment-menu-header-background;
+  }
+}
+
+.drawer--workspace {
+
+  .drawer__header {
+    background-color: $color-workspace-menu-header-background;
+  }
+}
+
+.drawer--hidden {
+  left: -$menu-width-mobile;
+}
+
+.drawer__header {
+  background-color: $color-menu-default-header-background;
+  height: $navbar-mobile-height;
+  position: relative;
+  width: 100%;
+}
+
+.drawer__header-logo {
+  display: inline-block;
+  height: $navbar-mobile-height;
+  width: 175px;
+}
+
+.drawer__header-link {
+  display: block;
+  height: $navbar-mobile-height;
+  position: relative;
+  z-index: 99;
+}
+
+.drawer__container {
+  @include prefix(transition, webkit moz o ms, left 0.3s);
+  align-items: center;
+  background-color: $color-menu-default-background;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  left: -$menu-width-mobile;
+  position: absolute;
+  top: 0;
+  width: $menu-width-mobile;
+}
+
+.drawer__body {
+  overflow-y: auto;
+  position: relative;
+  width: 100%;
+}
+
+.drawer__button-close {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: 600;
+  height: $navbar-mobile-height;
+  line-height: $navbar-mobile-height;
+  padding-right: 5px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  transition: background-color 0.3s;
+  vertical-align: middle;
+  width: 45px;
+
+  &:active,
+  &.active {
+    background-color: $color-menu-default-header-button-close-background-active;
+  }
+}
+
+.drawer__button-close--main-function {
+  color: $color-menu-environment-header-button-close;
+}
+
+.drawer__button-close--workspace,
+.drawer__button-close--workspace-edit-mode {
+  color: $color-menu-workspace-header-button-close;
+}
+
+.drawer__button-close--frontpage {
+  color: $color-menu-default-header-button-close;
+}

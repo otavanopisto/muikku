@@ -123,7 +123,6 @@ class NavigationAside extends React.Component<
       <NavigationElement
         key="showAll"
         isActive={allSelected}
-        modifiers="aside-navigation"
         icon="user"
         onClick={this.handleOnStudentClick(null)}
       >
@@ -142,7 +141,6 @@ class NavigationAside extends React.Component<
               student.userEntityId ===
               this.props.workspace.journals.userEntityId
             }
-            modifiers="aside-navigation"
             icon="user"
             onClick={this.handleOnStudentClick(student.userEntityId)}
           >
@@ -152,7 +150,7 @@ class NavigationAside extends React.Component<
       );
 
     return (
-      <Navigation classModifier="student-list">
+      <Navigation>
         {!this.props.status.isStudent && (
           <NavigationTopic
             name={this.props.i18n.text.get(

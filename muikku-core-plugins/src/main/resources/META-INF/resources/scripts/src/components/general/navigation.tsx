@@ -4,8 +4,7 @@ import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
 interface NavigationProps {
-  className?: string;
-  classModifier?: string;
+
 }
 
 interface NavigationState {}
@@ -15,25 +14,13 @@ export default class Navigation extends React.Component<
   NavigationState
 > {
   render() {
-    const listClassNameModifier = this.props.classModifier
-      ? (this.props.className || "menu__extras") +
-        "--" +
-        this.props.classModifier
-      : "";
 
-    const listClassName = `${
-      this.props.className
-        ? `${this.props.className} ${listClassNameModifier}`
-        : `menu__extras ${listClassNameModifier}`
-    }`;
-
-    return <div className={listClassName}>{this.props.children}</div>;
+    return (<nav className="menu-wrapper menu-wrapper--aside">{this.props.children}</nav>);
   }
 }
 
 interface NavigationTopicProps {
   name?: string;
-  icon?: string;
   /**
    * If className is given, by default its "menu__items"
    */
@@ -49,29 +36,13 @@ export class NavigationTopic extends React.Component<
 > {
   render() {
     const listClassNameModifier = this.props.classModifier
-      ? (this.props.className || "menu__items") +
-        "--" +
-        this.props.classModifier
-      : "";
-
-    const listClassName = `${
-      this.props.className
-        ? `${this.props.className} ${listClassNameModifier}`
-        : `menu__items ${listClassNameModifier}`
-    }`;
+      ? "menu--" + this.props.classModifier : "";
 
     return (
-      <ul className={listClassName}>
-        {this.props.name ? (
-          <span className="item-list__title">
-            {this.props.icon ? (
-              <span
-                className={`item-list__icon icon icon-${this.props.icon}`}
-              />
-            ) : null}
-            {this.props.name}
-          </span>
-        ) : null}
+      <ul className={`menu ${listClassNameModifier}`}>
+        <li className="menu__title">
+          {this.props.name ? this.props.name : null}
+        </li>
         {this.props.children}
       </ul>
     );
@@ -142,14 +113,14 @@ export class NavigationElement extends React.Component<
     }
 
     return (
-      <li className="menu__item--extra">
+      <li className="menu__item">
         <Link
-          className={`item-list__item item-list__item--aside-navigation ${
+          className={`menu__item-link ${
             this.props.isActive ? "active" : ""
           } ${this.props.className ? this.props.className : ""} ${(
             modifiers || []
           )
-            .map((s) => `item-list__item--${s}`)
+            .map((s) => `menu__item-link--${s}`)
             .join(" ")}`}
           onScrollToSection={this.props.onScrollToSection}
           scrollPadding={this.props.scrollPadding}
@@ -162,15 +133,15 @@ export class NavigationElement extends React.Component<
           {this.props.icon ? (
             <span
               title={this.props.iconTitle}
-              className={`item-list__icon icon-${this.props.icon}`}
+              className={`menu__item-link-icon icon-${this.props.icon}`}
               style={{ color: this.props.iconColor }}
             ></span>
           ) : null}
-          <span className="item-list__text-body">{this.props.children}</span>
+          <span className="menu__item-link-text">{this.props.children}</span>
           {this.props.iconAfter ? (
             <span
               title={this.props.iconAfterTitle}
-              className={`item-list__icon icon-${this.props.iconAfter}`}
+              className={`menu__item-link-icon icon-${this.props.iconAfter}`}
               style={{ color: this.props.iconAfterColor }}
             ></span>
           ) : null}

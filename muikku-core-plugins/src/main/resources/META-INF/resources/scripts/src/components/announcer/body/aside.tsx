@@ -12,16 +12,16 @@ import "~/sass/elements/item-list.scss";
 import Navigation, { NavigationElement } from "../../general/navigation";
 import { NavigationTopic } from "../../general/navigation";
 
-interface AnnouncerAsideProps {
+interface NavigationAsideProps {
   i18n: i18nType;
   announcements: AnnouncementsType;
 }
 
-interface AnnouncerAsideState {}
+interface NavigationAsideState {}
 
-class AnnouncerAside extends React.Component<
-  AnnouncerAsideProps,
-  AnnouncerAsideState
+class NavigationAside extends React.Component<
+  NavigationAsideProps,
+  NavigationAsideState
 > {
 
   /**
@@ -75,4 +75,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncerAside);
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);

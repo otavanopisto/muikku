@@ -13,11 +13,12 @@ function checkLinkClicked(target: HTMLElement): boolean {
   return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
 }
 
+import '~/sass/elements/drawer.scss';
 import '~/sass/elements/menu.scss';
 import '~/sass/elements/link.scss';
 import { getUserImageUrl } from '~/util/modifiers';
 
-interface MenuProps {
+interface DrawerProps {
   open: boolean,
   onClose: ()=>any,
   items: Array<React.ReactElement<any>>,
@@ -28,7 +29,7 @@ interface MenuProps {
   logout: LogoutTriggerType
 }
 
-interface MenuState {
+interface DrawerState {
   displayed: boolean,
   visible: boolean,
   dragging: boolean,
@@ -36,12 +37,12 @@ interface MenuState {
   open: boolean
 }
 
-class Menu extends React.Component<MenuProps, MenuState> {
+class Drawer extends React.Component<DrawerProps, DrawerState> {
   private touchCordX: number;
   private touchCordY: number;
   private touchMovementX: number;
   private preventXMovement: boolean;
-  constructor(props: MenuProps){
+  constructor(props: DrawerProps){
     super(props);
 
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -59,7 +60,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
       open: props.open
     }
   }
-  componentWillReceiveProps(nextProps: MenuProps){
+  componentWillReceiveProps(nextProps: DrawerProps){
     if (nextProps.open && !this.state.open){
       this.open();
     } else if (!nextProps.open && this.state.open){
@@ -139,53 +140,57 @@ class Menu extends React.Component<MenuProps, MenuState> {
     }, 300);
   }
   render(){
-    return (<div className={`menu menu--${this.props.modifier} ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
+    return (<div className={`drawer drawer--${this.props.modifier} ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
       onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu" aria-hidden="true">
-      <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
-        <div className="menu__header">
-          <div className="menu__logo">
-            <Link href="/" className="menu__link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></Link>
+      <div className="drawer__container" ref="menuContainer" style={{left: this.state.drag}}>
+        <div className="drawer__header">
+          <div className="drawer__header-logo">
+            <Link href="/" className="drawer__header-link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></Link>
           </div>
-          <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left`}></Link>
+          <Link className={`drawer__button-close drawer__button-close--${this.props.modifier} icon-arrow-left`}></Link>
         </div>
-        <div className="menu__body">
+        <div className="drawer__body">
+
           {this.props.navigation && this.props.navigation}
-          <ul className="menu__items">
-            {this.props.items.map((item, index)=>{
-              if (!item){
-                return null;
-              }
-              return <li className="menu__item" key={index}>{item}</li>
-            })}
-            {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
-            {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu-profile" href="/profile">
-                {this.props.status.hasImage ?
-                  <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image" /> :
-                  <span className="link__icon icon-user"></span>
+
+          <nav className="menu-wrapper menu-wrapper--main">
+            <ul className="menu">
+              {this.props.items.map((item, index)=>{
+                if (!item){
+                  return null;
                 }
-                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
-              </Link>
-            </li> : null}
-            {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu-instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
-                <span className="link__icon icon-question"/>
-                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
-              </Link>
-            </li> : null}
-            {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu-helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
-                <span className="link__icon icon-support"></span>
-                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
-              </Link>
-            </li> : null}
-            {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu-logout" onClick={this.props.logout}>
-                <span className="link__icon icon-sign-out"></span>
-                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
-              </Link>
-            </li> : null}
-          </ul>
+                return <li className="menu__item" key={index}>{item}</li>
+              })}
+              {this.props.status.loggedIn ? <li className="menu__spacer"></li> : null}
+              {this.props.status.loggedIn ? <li className="menu__item">
+                <Link className="link link--full link--menu link--menu-profile" href="/profile">
+                  {this.props.status.hasImage ?
+                    <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image" /> :
+                    <span className="link__icon icon-user"></span>
+                  }
+                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
+                </Link>
+              </li> : null}
+              {this.props.status.loggedIn ? <li className="menu__item">
+                <Link className="link link--full link--menu link--menu-instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
+                  <span className="link__icon icon-question"/>
+                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
+                </Link>
+              </li> : null}
+              {this.props.status.loggedIn ? <li className="menu__item">
+                <Link className="link link--full link--menu link--menu-helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
+                  <span className="link__icon icon-support"></span>
+                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
+                </Link>
+              </li> : null}
+              {this.props.status.loggedIn ? <li className="menu__item">
+                <Link className="link link--full link--menu link--menu-logout" onClick={this.props.logout}>
+                  <span className="link__icon icon-sign-out"></span>
+                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
+                </Link>
+              </li> : null}
+            </ul>
+          </nav>
         </div>
       </div>
     </div>);
@@ -207,4 +212,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Menu);
+)(Drawer);
