@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.ui.base.flags;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
 import org.junit.Test;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;

@@ -36,6 +36,7 @@ import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationStudentsActivityRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -60,6 +61,9 @@ public class OrganizationUserManagementRESTService {
 
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -352,13 +356,18 @@ public class OrganizationUserManagementRESTService {
         .findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<List<OrganizationContactPerson>> response = userSchoolDataController.listOrganizationContactPersons(dataSource, organization.schoolDataIdentifier().getIdentifier());
-
-    if (response.ok()) {
-      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      BridgeResponse<List<OrganizationContactPerson>> response = userSchoolDataController.listOrganizationContactPersons(dataSource, organization.schoolDataIdentifier().getIdentifier());
+      if (response.ok()) {
+        return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+      }
+      else {
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+      }
     }
-    else {
-      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
 
