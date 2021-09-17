@@ -3,9 +3,7 @@ import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
-interface NavigationProps {
-
-}
+interface NavigationProps {}
 
 interface NavigationState {}
 
@@ -20,11 +18,7 @@ export default class Navigation extends React.Component<
 }
 
 interface NavigationTopicProps {
-  name?: string;
-  /**
-   * If className is given, by default its "menu__items"
-   */
-  className?: string;
+  name: string;
   classModifier?: string;
 }
 
