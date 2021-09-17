@@ -114,11 +114,16 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
+        User student = userController.findUserByUserEntityDefaults(studentEntity);
+        String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.defaultContent", new Object[] {student.getDisplayName()});
+        if (guidanceCounselorEmail != null) {
+        notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), guidanceCounselorEmail});
+        }
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content") + 
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.automatedmessagefooter"),
+          notificationContent,
           studentEntity,
           studentIdentifier,
           "assesmentrequest"
