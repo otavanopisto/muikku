@@ -99,8 +99,8 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
     
       waitUntilElementCount(".user--guider", 2);
-      waitForVisible(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider");
-      click(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider");
+      waitForVisible(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider-flag");
+      click(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider-flag");
       
       waitUntilElementCount(".user--guider", 1);
       assertTextIgnoreCase(".user--guider .application-list__header-primary span", "Second User");
