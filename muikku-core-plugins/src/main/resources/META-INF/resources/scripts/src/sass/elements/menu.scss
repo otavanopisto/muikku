@@ -4,21 +4,8 @@
 @import "../base/breakpoints";
 
 .menu-wrapper {
-  width: 100%;
-}
-
-.menu-wrapper--main {
   margin: 15px 0;
-
-  .menu__item {
-    height: 35px;
-    margin: 0 0 10px;
-    text-transform: uppercase;
-  }
-}
-
-.menu-wrapper--aside {
-  margin: 12px 0 15px;
+  width: 100%;
 }
 
 .menu {
@@ -39,6 +26,7 @@
   display: block;
   font-size: $text-mobile-font-size;
   font-weight: 600;
+  line-height: 1;
   padding: 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
@@ -52,11 +40,7 @@
 }
 
 .menu__spacer {
-  height: 25px;
-
-  @include breakpoint($breakpoint-pad) {
-    height: 45px;
-  }
+  height: 15px;
 }
 
 .menu__item-link {
@@ -101,6 +85,7 @@
   margin-left: 5px;
 }
 
+// Icon color change for guider
 .menu__item-link--aside-navigation-guider {
 
   .menu__item-link-icon {
@@ -108,3 +93,84 @@
   }
 }
 
+// Mobile main navigation menu rules that appears in the Drawer
+.menu__item--main {
+  height: 35px;
+  margin: 0 0 10px;
+
+  .menu__item-link {
+    align-items: center;
+    border-radius: 18px;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0;
+
+    &.active {
+      background: $color-default-item-separator-border;
+      color: $color-default-contrast;
+      font-weight: 600;
+
+      .menu__item-link-text {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .menu__item-link-icon {
+    background-color: $color-environment-link-menu-icon-background;
+    border-radius: 100%;
+    color: $color-environment-link-menu-icon-color;
+    font-size: 20px;
+    height: 35px;
+    line-height: 35px;
+    margin: 0 10px 0 0;
+    text-align: center;
+    vertical-align: middle;
+    width: 35px;
+  }
+
+  .menu__item-link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.menu__item-link--instructions {
+
+  &.active {
+    background-color: $color-environment-link-menu-instructions-icon-background;
+    color: $color-environment-link-menu-instructions-icon-color;
+  }
+
+  .menu__item-link-icon {
+    background: $color-environment-link-menu-instructions-icon-background;
+    color: $color-environment-link-menu-instructions-icon-color;
+  }
+}
+
+.menu__item-link--helpdesk {
+
+  &.active {
+    background: $color-environment-link-menu-heldesk-icon-background;
+    color: $color-environment-link-menu-helpdesk-icon-color;
+  }
+
+  .menu__item-link-icon {
+    background: $color-environment-link-menu-heldesk-icon-background;
+    color: $color-environment-link-menu-helpdesk-icon-color;
+  }
+}
+
+.menu__item-link--logout {
+
+  &.active {
+    background: $color-environment-link-menu-logout-icon-background;
+    color: $color-environment-link-menu-logout-icon-color;
+  }
+
+  .menu__item-link-icon {
+    background: $color-environment-link-menu-logout-icon-background;
+    color: $color-environment-link-menu-logout-icon-color;
+  }
+}

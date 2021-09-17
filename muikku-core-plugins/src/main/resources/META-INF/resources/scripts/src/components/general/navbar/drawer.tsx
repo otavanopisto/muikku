@@ -159,34 +159,34 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                 if (!item){
                   return null;
                 }
-                return <li className="menu__item" key={index}>{item}</li>
+                return <li className="menu__item menu__item--main" key={index}>{item}</li>
               })}
               {this.props.status.loggedIn ? <li className="menu__spacer"></li> : null}
-              {this.props.status.loggedIn ? <li className="menu__item">
-                <Link className="link link--full link--menu link--menu-profile" href="/profile">
+              {this.props.status.loggedIn ? <li className="menu__item menu__item--main">
+                <Link className="menu__item-link menu__item-link--profile" href="/profile">
                   {this.props.status.hasImage ?
                     <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image" /> :
-                    <span className="link__icon icon-user"></span>
+                    <span className="menu__item-link-icon icon-user"></span>
                   }
-                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
+                  <span className="menu__item-link-text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
                 </Link>
               </li> : null}
-              {this.props.status.loggedIn ? <li className="menu__item">
-                <Link className="link link--full link--menu link--menu-instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
-                  <span className="link__icon icon-question"/>
-                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
+              {this.props.status.loggedIn ? <li className="menu__item menu__item--main">
+                <Link className="menu__item-link menu__item-link--instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
+                  <span className="menu__item-link-icon icon-question"/>
+                  <span className="menu__item-link-text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
                 </Link>
               </li> : null}
-              {this.props.status.loggedIn ? <li className="menu__item">
-                <Link className="link link--full link--menu link--menu-helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
-                  <span className="link__icon icon-support"></span>
-                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
+              {this.props.status.loggedIn ? <li className="menu__item menu__item--main">
+                <Link className="menu__item-link menu__item-link--helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
+                  <span className="menu__item-link-icon icon-support"></span>
+                  <span className="menu__item-link-text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
                 </Link>
               </li> : null}
-              {this.props.status.loggedIn ? <li className="menu__item">
-                <Link className="link link--full link--menu link--menu-logout" onClick={this.props.logout}>
-                  <span className="link__icon icon-sign-out"></span>
-                  <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
+              {this.props.status.loggedIn ? <li className="menu__item menu__item--main">
+                <Link className="menu__item-link menu__item-link--logout" onClick={this.props.logout}>
+                  <span className="menu__item-link-icon icon-sign-out"></span>
+                  <span className="menu__item-link-text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
                 </Link>
               </li> : null}
             </ul>

@@ -37,9 +37,12 @@
   }
 
   // When main function aside menu is cloned to the mobile menu drawer we change the rendering
-  .menu-wrapper--aside {
-    border-bottom: solid 5px $color-default-separator-border;
+  .menu-wrapper {
     padding: 0 10px;
+  }
+
+  .menu-wrapper--aside {
+    border-bottom: solid 1px $color-default-separator-border;
   }
 
   @include breakpoint($breakpoint-desktop) {
