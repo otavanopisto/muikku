@@ -177,7 +177,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       createWorkspace(course3, Boolean.TRUE);
       navigate("/coursepicker", false);
       waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-      waitAndClick(".application-panel__helper-container.application-panel__helper-container--coursepicker .menu__extras .menu__items:first-child .menu__item--extra:nth-child(3)");
+      waitAndClick(".application-panel__helper-container.application-panel__helper-container--coursepicker .menu-wrapper .menu:first-child .menu__item:nth-child(3)");
       waitForVisible(".application-list__item-header--course .application-list__header-primary");
       assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "testcourse 7 (test extension)");
     }finally{

@@ -57,8 +57,8 @@ public class FlagTestsBase extends AbstractUITest {
       waitAndClick("div.dropdown--guider-labels .link--full");
       waitAndClick("div.application-panel__toolbar span.icon-flag");
       waitForVisible(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Test flag");
+      waitForVisible(".application-panel__helper-container .icon-flag + span.menu__item-link-text");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.menu__item-link-text", "Test flag");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -99,8 +99,8 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
     
       waitUntilElementCount(".user--guider", 2);
-      waitForVisible(".application-panel__helper-container.application-panel__helper-container--coursepicker .item-list__item--aside-navigation-guider");
-      click(".application-panel__helper-container.application-panel__helper-container--coursepicker .item-list__item--aside-navigation-guider");
+      waitForVisible(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider");
+      click(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider");
       
       waitUntilElementCount(".user--guider", 1);
       assertTextIgnoreCase(".user--guider .application-list__header-primary span", "Second User");
@@ -161,8 +161,8 @@ public class FlagTestsBase extends AbstractUITest {
       
       waitForNotVisible(".dialog--guider-edit-label");
       waitForVisible(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");
+      waitForVisible(".application-panel__helper-container .icon-flag + span.menu__item-link-text");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.menu__item-link-text", "Edited title");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -210,7 +210,7 @@ public class FlagTestsBase extends AbstractUITest {
       click(".dropdown--guider-labels.visible .link--guider-label-dropdown.selected");
       
       waitAndClick(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .item-list__item.active");
+      waitForVisible(".application-panel__helper-container .menu__item-link.active");
       
       assertNotPresent(".application-list__item-header--student");
     } finally {
@@ -278,8 +278,8 @@ public class FlagTestsBase extends AbstractUITest {
 
       navigate("/guider", false);
 
-      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body");
-      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body", "Test Flaggi");
+      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .menu__item-link-text");
+      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .menu__item-link-text", "Test Flaggi");
     } finally {
       deleteFlagShares(flagId);
       deleteFlags();
