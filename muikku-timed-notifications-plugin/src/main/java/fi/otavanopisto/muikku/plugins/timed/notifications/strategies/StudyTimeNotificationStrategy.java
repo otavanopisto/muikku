@@ -141,9 +141,11 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         String internetixStudyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.internetix");
-        String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content") + 
-            localeController.getText(studentLocale, "plugin.timednotifications.notification.automatedmessagefooter");
-
+        String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.defaultContent", new Object[] {student.getDisplayName()});
+        String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        if (guidanceCounselorEmail != null) {
+        studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), guidanceCounselorEmail});
+        }
         String notificationContent = isAineopiskelu ? internetixStudyTimeNotification : studyTimeNotification;
         notificationController.sendNotification(
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),

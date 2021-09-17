@@ -34,10 +34,12 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.RequestedAssessmentSup
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -84,6 +86,9 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
   
   @Inject
   private ActivityLogController activityLogController;
+  
+  @Inject
+  private UserController userController;
   
   @Override
   public boolean isActive(){
@@ -194,11 +199,16 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           if (workspace != null) {
             String workspaceName = StringUtils.isBlank(workspace.getNameExtension()) ? workspace.getName() : String.format("%s (%s)", workspace.getName(), workspace.getNameExtension()); 
             Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
+            User student = userController.findUserByUserEntityDefaults(studentEntity);
+            String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+            String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.defaultContent", new Object[] {student.getDisplayName(), workspaceName});
+            if (guidanceCounselorEmail != null) {
+            notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), workspaceName, guidanceCounselorEmail});
+            }
             notificationController.sendNotification(
               localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
               localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
-              localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content", new String[] {workspaceName}) +
-              localeController.getText(studentLocale, "plugin.timednotifications.notification.automatedmessagefooter"),
+              notificationContent,
               studentEntity,
               studentIdentifier,
               "requestedassessmentsupplementation"
