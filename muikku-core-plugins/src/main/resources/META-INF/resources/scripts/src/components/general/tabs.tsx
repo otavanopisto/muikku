@@ -1,8 +1,10 @@
 import '~/sass/elements/tabs.scss';
 import * as React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-// import 'swiper/css/swiperslide';
+import 'swiper/scss';
+import 'swiper/scss/a11y'
+import "swiper/scss/pagination"
+import { A11y, Pagination } from 'swiper';
 
 export interface TabType {
   id: string,
@@ -25,6 +27,14 @@ interface TabsState {
 
 export default class Tabs extends React.Component<TabsProps, TabsState>{
   render(){
+    const a11yConfig = {
+      enabled: true,
+    }
+
+    const paginationConfig = {
+      el: ".tabs__pagination-container",
+      modifierClass: "tabs__pagination-container--"
+    }
     return <div className={`tabs ${this.props.modifier ? "tabs--" + this.props.modifier : ""}`}>
       <div className={`tabs__tab-labels ${this.props.modifier ? "tabs__tab-labels--" + this.props.modifier : ""}`}>
         {this.props.tabs.map((tab, index)=>{
@@ -33,9 +43,12 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
         })}
         {this.props.children}
       </div>
-      <Swiper className="tabs__tab-data-container--mobile">
+      <Swiper modules={[A11y, Pagination]} autoHeight={true} a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
       {this.props.tabs.map(t=><SwiperSlide key={t.id} >
-        <div className="tabs__mobile-tab">{t.name}</div>
+        <div className="tabs__mobile-tab">
+          <div>{t.name}</div>
+          <div className="tabs__pagination-container"> </div>
+          </div>
         {t.component()}
         </SwiperSlide>)}
       </Swiper>
@@ -64,7 +77,7 @@ export class MobileOnlyTabs extends React.Component<TabsProps, TabsState>{
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
       </div>
-      <div className="tabs__tab-data-container">
+      <div className="tabs__tab-data-container tabs__tab-data-container--mobile">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
           .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
           {t.component()}

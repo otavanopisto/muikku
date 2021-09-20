@@ -30,6 +30,7 @@
  }
 
 .tabs__tab-labels--mobile {
+  display: flex;
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
@@ -116,6 +117,7 @@
 }
 
 // Used when viewing workspace students
+
 .tabs__tab--workspace-students {
   flex-basis: 50%;
 
@@ -244,6 +246,18 @@
 }
 
 .tabs__mobile-tab {
+  align-items: center;
+  display: flex;
   font-size: 1.5rem;
+  justify-content: space-between;
   padding: 0 10px 10px;
+}
+
+.tabs__pagination-container--bullets {
+  align-items: center;
+  display: flex;
+
+  span {
+    margin-right: 4px;
+  }
 }
