@@ -16,10 +16,18 @@
 .tabs__tab-labels {
   align-items: center;
   border-bottom: 1px solid $color-tab-border;
-  display: flex;
+  display: none;
   flex-flow: row nowrap;
   padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
 }
+
+.tabs__tab-labels--application-panel {
+  border-bottom: solid 1px $color-application-panel-box-border;
+ }
 
 .tabs__tab-labels--mobile {
   @include breakpoint($breakpoint-pad) {
@@ -70,7 +78,19 @@
 }
 
 .tabs__tab-data-container {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab-data-container--mobile {
   display: flex;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
 }
 
 .tabs__tab-data {
@@ -124,16 +144,7 @@
   }
 }
 
-// Holy de viera this border thing is a mess will deal with it some day
-
 // Application-panel tabs
-.tabs__tab-labels--application-panel {
-  align-items: center;
-  border-bottom: solid 1px $color-application-panel-box-border;
-  display: flex;
-  flex-flow: row nowrap;
-  padding: 0;
-}
 
 .tabs__tab--application-panel {
   background-clip: padding-box;
@@ -230,4 +241,9 @@
     display: flex;
     flex-basis: 50%;
   }
+}
+
+.tabs__mobile-tab {
+  font-size: 1.5rem;
+  padding: 0 10px 10px;
 }

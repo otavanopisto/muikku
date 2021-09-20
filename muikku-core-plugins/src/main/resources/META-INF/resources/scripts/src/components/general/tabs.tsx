@@ -1,5 +1,8 @@
 import '~/sass/elements/tabs.scss';
 import * as React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+// import 'swiper/css/swiperslide';
 
 export interface TabType {
   id: string,
@@ -30,6 +33,12 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
         })}
         {this.props.children}
       </div>
+      <Swiper className="tabs__tab-data-container--mobile">
+      {this.props.tabs.map(t=><SwiperSlide key={t.id} >
+        <div className="tabs__mobile-tab">{t.name}</div>
+        {t.component()}
+        </SwiperSlide>)}
+      </Swiper>
       <div className="tabs__tab-data-container">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
           .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
