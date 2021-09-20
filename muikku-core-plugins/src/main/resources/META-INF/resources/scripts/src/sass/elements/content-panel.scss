@@ -92,7 +92,7 @@
 
 .content-panel__content {
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     display: flex;
     flex-flow: row nowrap;
   }
