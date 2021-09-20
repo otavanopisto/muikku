@@ -8,13 +8,13 @@ import ProfilePicture from "./components/profile-picture";
 import ProfileProperty from "./components/profile-property";
 import moment from '~/lib/moment';
 
-interface IGeneralInformationProps {
+interface GeneralInformationProps {
   i18n: i18nType,
   profile: ProfileType;
   status: StatusType;
 }
 
-interface IGeneralInformationState {
+interface GeneralInformationState {
   profileVacationStart: any;
   profileVacationEnd: any;
   phoneNumber: string,
@@ -25,8 +25,8 @@ interface IGeneralInformationState {
   vacationAutoReplyMsg: string,
 }
 
-class GeneralInformation extends React.Component<IGeneralInformationProps, IGeneralInformationState> {
-  constructor(props: IGeneralInformationProps) {
+class GeneralInformation extends React.Component<GeneralInformationProps, GeneralInformationState> {
+  constructor(props: GeneralInformationProps) {
     super(props);
   }
 

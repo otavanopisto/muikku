@@ -11,11 +11,8 @@ import org.openqa.selenium.By;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
-import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
-import fi.otavanopisto.muikku.atests.WorkspaceFolder;
-import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;

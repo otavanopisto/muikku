@@ -2,7 +2,12 @@ package fi.otavanopisto.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.*;
+import static java.lang.Math.toIntExact;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,8 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,6 +41,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -95,7 +99,6 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
-import static java.lang.Math.toIntExact;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -713,13 +716,40 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitAndClick(String selector, int timeout) {
     WebDriverWait wait = new WebDriverWait(getWebDriver(), timeout);
-    WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
-    element.click();
+    wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector))).click();
   }
   
   protected void waitAndClickXPath(String xpath) {
     waitForClickableXPath(xpath);
     clickXPath(xpath);
+  }
+  
+  /** 
+   * Clicks on an selector and checks
+   * if given element appears after defined (ms) interval as a result, 
+   * if it doesn't, it will try again
+   * number of times defined.
+   * @param clickSelector String
+   * @param elementToAppear String
+   * @param timesToTry int
+   * @param interval int
+   * @return not a thing
+   */
+  protected void waitAndClickAndConfirm(String clickSelector, String elementToAppear, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToAppear);
+    int i = 0;
+    while(elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), 10);
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      elements = findElements(elementToAppear);
+    }
+    if(elements.isEmpty())
+      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
   protected void scrollToEnd() {
