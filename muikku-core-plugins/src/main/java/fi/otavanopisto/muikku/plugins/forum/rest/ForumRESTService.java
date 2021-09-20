@@ -71,6 +71,21 @@ public class ForumRESTService extends PluginRESTService {
   @Inject
   private ForumRESTModels restModels;
   
+  /**
+   * GET mapi().forum.isAvailable
+   * 
+   * Returns whether environment level forum functionality is active and available for the currently logged in user.
+   * 
+   * Output: true|false
+   */
+  @GET
+  @Path("/isAvailable")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getIsActive() {
+    boolean available = forumController.isEnvironmentForumActive() && sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
+    return Response.ok(available).build();
+  }
+
   @GET
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
