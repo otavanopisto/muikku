@@ -13,9 +13,6 @@ interface ImageProps {
     licenseUrl: string,
     source: string,
     sourceUrl: string,
-
-    // Someone thought it was smart to set up two versions of data
-    // Just no!, data-original was NEVER saved to database as part of img attribute nor it does not have any use anymore, it's was added when preprocessing images with jquery for lazyloader was active
     original?: string
   },
   i18n: i18nType,
@@ -151,7 +148,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
         props.onLoad = this.calculateMaxWidth;
       },
       processingFunction: (Tag, props, children, element) => {
-        const src = this.props.dataset.original;
+        const src = this.props.dataset.original || "";
         const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
           (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
         if (!isAbsolute) {
