@@ -47,6 +47,8 @@ public interface SearchProvider {
       Date studyTimeEndsBefore);
 
   public SearchResult searchUserGroups(String searchTerm, String archetype, List<OrganizationEntity> organizations, int start, int maxResults);
+  public long countActiveStudents(OrganizationEntity organizationEntity);
+  public long countInactiveStudents(OrganizationEntity organizationEntity);
   
   public class Sort {
     
