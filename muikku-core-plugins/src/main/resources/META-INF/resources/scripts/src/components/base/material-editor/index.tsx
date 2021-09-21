@@ -14,7 +14,7 @@ import {
 } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import i18n, { i18nType } from "~/reducers/base/i18n";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceType,

@@ -1,10 +1,13 @@
 import '~/sass/elements/tabs.scss';
 import * as React from 'react';
+import { connect} from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/scss';
 import 'swiper/scss/a11y'
 import "swiper/scss/pagination"
 import { A11y, Pagination } from 'swiper';
+import { i18nType } from '~/reducers/base/i18n';
+import { StateType } from "~/reducers";
 
 export interface TabType {
   id: string,
@@ -17,15 +20,27 @@ interface TabsProps {
   onTabChange:(id: string)=>any,
   activeTab: string,
   modifier?: string,
+  i18n: i18nType,
   tabs: Array<TabType>,
   renderAllComponents?: boolean
   children?: React.ReactNode;
 }
 
+interface MobileOnlyTabsProps {
+  onTabChange:(id: string)=>any,
+  activeTab: string,
+  modifier?: string,
+  tabs: Array<TabType>,
+  renderAllComponents?: boolean
+  children?: React.ReactNode;
+}
+
+
+
 interface TabsState {
 }
 
-export default class Tabs extends React.Component<TabsProps, TabsState>{
+class Tabs extends React.Component<TabsProps, TabsState>{
   render(){
     const a11yConfig = {
       enabled: true,
@@ -62,7 +77,7 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
   }
 }
 
-export class MobileOnlyTabs extends React.Component<TabsProps, TabsState>{
+export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, TabsState>{
   render(){
     return <div className="tabs">
       <div className="tabs__tab-labels tabs__tab-labels--mobile">
@@ -86,3 +101,16 @@ export class MobileOnlyTabs extends React.Component<TabsProps, TabsState>{
     </div>
   }
 }
+
+
+/**
+ * mapStateToProps
+ * @param state
+ */
+ function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+export default connect(mapStateToProps)(Tabs);
