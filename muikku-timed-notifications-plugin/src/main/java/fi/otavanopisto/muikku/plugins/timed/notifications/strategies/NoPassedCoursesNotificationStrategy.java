@@ -28,9 +28,7 @@ import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 
@@ -54,9 +52,6 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserController userController;
   
   @Inject
   private NotificationController notificationController;
@@ -148,10 +143,12 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         continue;
       }
       
-      User student = userController.findUserByIdentifier(studentIdentifier);
+      Date studyStartDate = getDateResult(result.get("studyStartDate"));
+      if (studyStartDate == null) {
+        continue;
+      }
       
-      if ((student != null) && notificationController.isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
-
+      if (shouldBeNotified(studyStartDate, NOTIFICATION_THRESHOLD_DAYS)) {
         boolean isNettilukio = false;
         boolean isNettipk = false;
         @SuppressWarnings("unchecked")
@@ -160,8 +157,10 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
           isNettilukio = studyProgrammes.contains(5); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-6 -> Nettilukio 
           isNettipk = studyProgrammes.contains(6); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-7 -> Nettiperuskoulu
         }
-        
-        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, Date.from(student.getStudyStartDate().toInstant()));
+        if (!isNettilukio && !isNettipk) {
+          continue;
+        }
+        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, studyStartDate);
         if (passedCourseCount == null) {
           logger.severe(String.format("Could not read course count for %s", studentId));
           continue;
@@ -193,6 +192,21 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     }
 
     return groups;
+  }
+
+  private boolean shouldBeNotified(Date studyStartDate, int thresholdDays) {
+    if (studyStartDate == null) {
+      return false;
+    }
+    
+    // Earliest point when student may receive the notification is study start date + threshold days (300)
+    OffsetDateTime thresholdDateTime = fromDateToOffsetDateTime(studyStartDate).plusDays(thresholdDays);
+    
+    // Furthest point to receive the notification is studyStartDate + threshold days (300) + 30 days
+    OffsetDateTime maxThresholdDateTime = thresholdDateTime.plusDays(30);
+
+    // If the threshold date has passed the student is valid target for the notification
+    return thresholdDateTime.isBefore(OffsetDateTime.now()) && maxThresholdDateTime.isAfter(OffsetDateTime.now());
   }
   
   private int offset = 0;

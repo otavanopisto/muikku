@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications;
 
-import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -63,20 +62,6 @@ public class NotificationController {
           String.format("Cannot send email notification to student %s because no email address was found",
               recipient.getDefaultIdentifier()));
     }
-  }
-  
-  public boolean isNotifiedStudent(OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime currentDateTime, int thresholdDays) {
-    if ((studyStartDate == null) || (studyEndDate != null))
-      return false;
-    
-    // Earliest point when student may receive the notification is study start date + threshold day count
-    OffsetDateTime thresholdDateTime = studyStartDate.plusDays(thresholdDays);
-    
-    // Furthest point to receive the notification is studyStartDate + thresholdDays + 30 (1 month)
-    OffsetDateTime maxThresholdDateTime = studyStartDate.plusDays(thresholdDays + 30);
-
-    // If the threshold date has passed the student is valid target for the notification
-    return thresholdDateTime.isBefore(currentDateTime) && maxThresholdDateTime.isAfter(currentDateTime);
   }
   
   public String getStudyCounselorEmail(SchoolDataIdentifier studentIdentifier){

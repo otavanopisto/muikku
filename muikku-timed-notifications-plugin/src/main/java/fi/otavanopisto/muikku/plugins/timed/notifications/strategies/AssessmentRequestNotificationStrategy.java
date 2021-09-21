@@ -29,11 +29,9 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotifi
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 
@@ -52,9 +50,6 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserController userController;
   
   @Inject
   private LocaleController localeController;
@@ -179,44 +174,41 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
         continue;
       }
       
-      // Find the student by SchoolDataIdentifier
+      Date studyStartDate = getDateResult(result.get("studyStartDate"));
+      Date studyEndDate = getDateResult(result.get("studyEndDate"));
       
-      User student = userController.findUserByIdentifier(studentIdentifier);
-      if (student != null) {
-        
-        // Students without a start date (or with an end date) are never notified
-        
-        if (student.getStudyStartDate() == null || student.getStudyEndDate() != null) {
-          continue;
-        }
-        
-        // Students that have started their studies in the last 60 days should not be notified
-        // (given searchResult should not even contain these but let's check it once more, just in case) 
-        
-        OffsetDateTime thresholdDateTime = OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS);
-        if (student.getStudyStartDate().isAfter(thresholdDateTime)) {
-          logger.severe(String.format("Skipping student id %s that just started studies", studentId));
-          continue;
-        }
-      
-        // Check if student has made any assessment requests. If they have, they don't need to be notified
-  
-        WorkspaceAssessmentRequest latestRequest = gradingController.findLatestAssessmentRequestByIdentifier(studentIdentifier);
-        if (latestRequest != null) {
-          continue;
-        }
-        
-        // Check if student has any workspace assessments. If they have, they don't need to be notified
-        
-        WorkspaceAssessment latestAssessment = gradingController.findLatestWorkspaceAssessmentByIdentifier(studentIdentifier);
-        if (latestAssessment != null) {
-          continue;
-        }
-        
-        // By this point, we can be certain that the student has to be notified
-        
-        studentIdentifiers.add(studentIdentifier);
+      // Students without a start date (or with an end date) are never notified
+
+      if (studyStartDate == null || studyEndDate != null) {
+        continue;
       }
+
+      // Students that have started their studies in the last 60 days should not be notified
+      // (given searchResult should not even contain these but let's check it once more, just in case) 
+
+      OffsetDateTime thresholdDateTime = OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS);
+      if (fromDateToOffsetDateTime(studyStartDate).isAfter(thresholdDateTime)) {
+        logger.severe(String.format("Skipping student id %s that just started studies", studentId));
+        continue;
+      }
+
+      // Check if student has made any assessment requests. If they have, they don't need to be notified
+
+      WorkspaceAssessmentRequest latestRequest = gradingController.findLatestAssessmentRequestByIdentifier(studentIdentifier);
+      if (latestRequest != null) {
+        continue;
+      }
+
+      // Check if student has any workspace assessments. If they have, they don't need to be notified
+
+      WorkspaceAssessment latestAssessment = gradingController.findLatestWorkspaceAssessmentByIdentifier(studentIdentifier);
+      if (latestAssessment != null) {
+        continue;
+      }
+
+      // By this point, we can be certain that the student has to be notified
+
+      studentIdentifiers.add(studentIdentifier);
     }
     return studentIdentifiers;
   }

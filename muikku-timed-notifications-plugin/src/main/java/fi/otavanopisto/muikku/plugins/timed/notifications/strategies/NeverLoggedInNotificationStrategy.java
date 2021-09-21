@@ -28,9 +28,7 @@ import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NeverLoggedInNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 
@@ -65,9 +63,6 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
   
   @Inject
   private ActivityLogController activityLogController;
-  
-  @Inject
-  private UserController userController;
   
   @Override
   public boolean isActive(){
@@ -173,13 +168,16 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       }
       OffsetDateTime sendNotificationIfNotLoggedInBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
 
-      User student = userController.findUserByIdentifier(studentIdentifier);
-      UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
-      if ((student != null) && notificationController.isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
-
-        if (studentEntity.getLastLogin() == null && student.getStudyStartDate().isAfter(sendNotificationIfNotLoggedInBefore) && student.getStudyProgrammeName().equals("Nettilukio") || student.getStudyProgrammeName().equals("Nettiperuskoulu")) {
-          studentIdentifiers.add(studentIdentifier);
-        }
+      Date studyStartDate = getDateResult(result.get("studyStartDate"));
+      if (studyStartDate == null) {
+        continue;
+      }
+      UserEntity studentEntity = userEntityController.findUserEntityById((long) result.get("userEntityId"));
+      if (studentEntity == null) {
+        continue;
+      }
+      if (studentEntity.getLastLogin() == null && studyStartDate.before(Date.from(sendNotificationIfNotLoggedInBefore.toInstant()))) {
+        studentIdentifiers.add(studentIdentifier);
       }
     }
     

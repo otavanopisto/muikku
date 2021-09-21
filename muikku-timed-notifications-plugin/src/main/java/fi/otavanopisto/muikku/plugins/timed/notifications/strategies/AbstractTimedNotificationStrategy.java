@@ -1,6 +1,11 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -92,6 +97,28 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
     }
 
     return result;
+  }
+
+  protected OffsetDateTime fromDateToOffsetDateTime(Date date) {
+    if (date == null) {
+      return null;
+    }
+    Instant instant = date.toInstant();
+    ZoneId systemId = ZoneId.systemDefault();
+    ZoneOffset offset = systemId.getRules().getOffset(instant);
+    return date.toInstant().atOffset(offset);
+  }
+
+  protected Date getDateResult(Object value) {
+    Date date = null;
+    if (value instanceof Long) {
+      date = new Date((Long) value);
+    }
+    else if (value instanceof Double) {
+      // seconds to ms
+      date = new Date(((Double) value).longValue() * 1000);
+    }
+    return date;
   }
   
   private Timer timer;
