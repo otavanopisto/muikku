@@ -4,8 +4,7 @@ import {Action} from 'redux';
 import { updateUnreadMessageThreadsCount } from '~/actions/main-function/messages';
 import { StateType } from '~/reducers';
 import { Store } from 'redux';
-import $ from '~/lib/jquery';
-import { updateStatusHasImage } from '~/actions/base/status';
+import { loadStatus } from '~/actions/base/status';
 
 function getOptionValue(option: boolean){
   if (typeof option === "undefined"){
@@ -43,9 +42,7 @@ export default function(store: Store<StateType>, options: {
     getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
   }
 
-  $.ajax({type:"HEAD", url: `/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
-    store.dispatch(<Action>updateStatusHasImage(true));
-  });
+  store.dispatch(<Action> loadStatus());
 
   return websocket;
 }

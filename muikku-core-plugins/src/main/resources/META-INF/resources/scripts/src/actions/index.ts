@@ -18,6 +18,7 @@ import {
   LOGOUT,
   UPDATE_STATUS_PROFILE,
   UPDATE_STATUS_HAS_IMAGE,
+  UPDATE_STATUS,
 } from "./base/status";
 import { UPDATE_TITLE } from "./base/title";
 import {
@@ -383,6 +384,7 @@ export type ActionType =
   | SET_PROFILE_LOCATION
   | SET_WORKLIST_TEMPLATES
   | SET_WORKLIST
-  | TOGGLE_ALL_MESSAGE_ITEMS;
+  | TOGGLE_ALL_MESSAGE_ITEMS
+  | UPDATE_STATUS;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

@@ -6,6 +6,22 @@
 //4. it works :D
 import $ from '~/lib/jquery';
 import { ActionType } from "~/actions";
+import equals = require("deep-equal");
+
+export interface WhoAmIType {
+  curriculumIdentifier: string;
+  firstName: string;
+  lastName: string;
+  hasEvaluationFees: boolean;
+  hasImage: boolean;
+  id: number;
+  organizationIdentifier: string;
+  nickName: string;
+  isDefaultOrganization: boolean;
+  permissions: string[];
+  roles: string[];
+  studyProgrammeName: string;
+}
 
 export interface StatusType {
   loggedIn: boolean,
@@ -40,7 +56,7 @@ export interface ProfileStatusType {
 // ANNOUNCER_CAN_PUBLISH_GROUPS
 // ANNOUNCER_CAN_PUBLISH_WORKSPACES
 // ANNOUNCER_TOOL
-// CHAT_AVAILABLE
+// CHAT_AVAILABLE                   missing
 // COMMUNICATOR_GROUP_MESSAGING
 // COMMUNICATOR_WORKSPACE_MESSAGING
 // EVALUATION_VIEW_INDEX
@@ -53,7 +69,7 @@ export interface ProfileStatusType {
 // GUIDER_VIEW
 // ORGANIZATION_VIEW
 // TRANSCRIPT_OF_RECORDS_VIEW
-// WORKLIST_AVAILABLE
+// WORKLIST_AVAILABLE               missing
 // AREA_PERMISSIONS                 missing
 
 // from /workspace/workspaces/123/permissions 
@@ -80,6 +96,20 @@ export interface ProfileStatusType {
 // WORKSPACE_VIEW_WORKSPACE_DETAILS: true
 // WORSKPACE_LIST_WORKSPACE_MEMBERS: true
 
+function inequalityChecker(a: any, b: any) {
+  Object.keys(a).forEach((k) => {
+    if (a[k] !== b[k]) {
+      console.log(k, a[k], b[k]);
+    }
+  });
+
+  Object.keys(b).forEach((k) => {
+    if (a[k] !== b[k]) {
+      console.log(k, a[k], b[k]);
+    }
+  });
+}
+
 // _MUIKKU_LOCALE should be taken from the html
 export default function status(state: StatusType = {
   loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,    //whoami.id
@@ -90,7 +120,7 @@ export default function status(state: StatusType = {
   isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER, // missing
   profile: (<any>window).PROFILE_DATA,
   isStudent: (<any>window).MUIKKU_IS_STUDENT, // check if roles contain STUDENT
-  currentWorkspaceId: (<any>window).WORKSPACE_ID, // missing, different endpoint required, will require workspace path as parameter
+  currentWorkspaceId: (<any>window).WORKSPACE_ID, // /workspace/workspaces/url-name-goes-here/basicInfo
   currentWorkspaceName: (<any>window).WORKSPACE_NAME, // missing, different endpoint required
   hasImage: false,
   imgVersion: (new Date()).getTime(),
@@ -108,6 +138,36 @@ export default function status(state: StatusType = {
     return { ...state, profile: action.payload };
   } else if (action.type === "UPDATE_STATUS_HAS_IMAGE") {
     return { ...state, hasImage: action.payload, imgVersion: (new Date()).getTime() };
+  } else if (action.type === "UPDATE_STATUS") {
+
+    const actionPayloadWoPermissions = {...action.payload};
+    delete actionPayloadWoPermissions["permissions"];
+
+    // TODO remove when JSF removed
+    const stateBasedCloneWoPermissions: any = {};
+    Object.keys(actionPayloadWoPermissions).forEach((k) => {
+      stateBasedCloneWoPermissions[k] = (state as any)[k];
+    });
+
+    const permissionsBasedClone: any = {};
+    Object.keys(action.payload.permissions || {}).forEach((k) => {
+      permissionsBasedClone[k] = (state as any).permissions[k];
+    });
+
+    if (!equals(stateBasedCloneWoPermissions, actionPayloadWoPermissions, {strict: true})) {
+      console.log(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
+      inequalityChecker(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
+      console.warn("Unequality with JSF and API value found");
+    }
+
+    if (!equals(action.payload.permissions || {}, permissionsBasedClone, {strict: true})) {
+      console.log(permissionsBasedClone, action.payload.permissions);
+      inequalityChecker(permissionsBasedClone, action.payload.permissions);
+      console.warn("Unequality with JSF and API value found in permissions");
+    }
+
+
+    return { ...state, ...actionPayloadWoPermissions, permissions: {...state.permissions, ...action.payload.permissions} };
   }
   return state;
 }
