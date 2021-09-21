@@ -131,6 +131,15 @@
   }
 }
 
+.application-panel__actions--tabs {
+  position: static;
+
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+  }
+}
+
+
 .application-panel__toolbar {
   align-items: center;
   display: flex;
@@ -200,6 +209,10 @@
     flex-direction: row;
     padding: 0;
   }
+}
+
+.application-panel__content--tabs {
+  padding: 1.5rem 0 0;
 }
 
 .application-panel__content-header {
