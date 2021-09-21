@@ -484,7 +484,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         shouldProcessHTMLElement: (tagname) => tagname === "source",
         preprocessReactProperties: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
-          const src = dataset.original;
+          const src = dataset.original || "";
           const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
             (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
           if (!isAbsolute) {
