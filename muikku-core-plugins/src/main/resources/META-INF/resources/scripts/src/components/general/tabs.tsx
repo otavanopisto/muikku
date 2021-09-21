@@ -35,8 +35,6 @@ interface MobileOnlyTabsProps {
   children?: React.ReactNode;
 }
 
-
-
 interface TabsState {
 }
 
@@ -102,11 +100,11 @@ export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, TabsSta
   }
 }
 
-
 /**
  * mapStateToProps
  * @param state
  */
+
  function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
