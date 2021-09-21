@@ -870,16 +870,24 @@ class StudiesPlanning extends React.Component<
         return (
           <div
             style={{
-              border: "2px solid orange",
+              border: "1px solid orange",
+              borderLeftWidth: "2px",
               padding: "10px",
               fontStyle: "italic",
             }}
             className="hops__form-element-container"
           >
             <div>
-              <h3 style={{ display: "flex", alignItems: "center" }}>
+              <h3
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 {message && message}
                 <Dropdown
+                  openByHover
                   content={
                     <div>
                       Opintolaskuri kertoo myös ohjeistavan arvioin
@@ -888,7 +896,7 @@ class StudiesPlanning extends React.Component<
                     </div>
                   }
                 >
-                  <div tabIndex={0}>
+                  <div tabIndex={0} style={{ fontStyle: "normal" }}>
                     <ButtonPill>?</ButtonPill>
                   </div>
                 </Dropdown>
@@ -902,15 +910,23 @@ class StudiesPlanning extends React.Component<
           <div
             style={{
               border: "2px solid lightblue",
+              borderLeftWidth: "2px",
               padding: "10px",
               fontStyle: "italic",
             }}
             className="hops__form-element-container"
           >
             <div>
-              <h3 style={{ display: "flex", alignItems: "center" }}>
+              <h3
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 {message && message}{" "}
                 <Dropdown
+                  openByHover
                   content={
                     <div>
                       Opintolaskuri kertoo myös ohjeistavan arvioin
@@ -919,7 +935,7 @@ class StudiesPlanning extends React.Component<
                     </div>
                   }
                 >
-                  <div tabIndex={0}>
+                  <div tabIndex={0} style={{ fontStyle: "normal" }}>
                     <ButtonPill>?</ButtonPill>
                   </div>
                 </Dropdown>
@@ -933,15 +949,23 @@ class StudiesPlanning extends React.Component<
           <div
             style={{
               border: "2px solid green",
+              borderLeftWidth: "2px",
               padding: "10px",
               fontStyle: "italic",
             }}
             className="hops__form-element-container"
           >
             <div>
-              <h3 style={{ display: "flex", alignItems: "center" }}>
+              <h3
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 {message && message}{" "}
                 <Dropdown
+                  openByHover
                   content={
                     <div>
                       Opintolaskuri kertoo myös ohjeistavan arvioin
@@ -950,7 +974,7 @@ class StudiesPlanning extends React.Component<
                     </div>
                   }
                 >
-                  <div tabIndex={0}>
+                  <div tabIndex={0} style={{ fontStyle: "normal" }}>
                     <ButtonPill>?</ButtonPill>
                   </div>
                 </Dropdown>
@@ -1205,6 +1229,7 @@ class StudiesPlanning extends React.Component<
                     flexGrow: "0",
                     flexShrink: "0",
                     height: "30px",
+                    boxShadow: "5px 5px 5px grey",
                   },
                   text: {
                     style: {
@@ -1223,7 +1248,11 @@ class StudiesPlanning extends React.Component<
 
             <div className="hops-container__row">
               <div
-                style={{ backgroundColor: "antiquewhite", padding: "5px" }}
+                style={{
+                  backgroundColor: "antiquewhite",
+                  padding: "5px",
+                  boxShadow: "5px 5px 5px grey",
+                }}
                 className="hops__form-element-container hops__form-element-container--hops_indicators"
               >
                 <h3>Suoritetut pakolliset opinnot:</h3>
@@ -1267,7 +1296,11 @@ class StudiesPlanning extends React.Component<
                 </Dropdown>
               </div>
               <div
-                style={{ backgroundColor: "antiquewhite", padding: "5px" }}
+                style={{
+                  backgroundColor: "antiquewhite",
+                  padding: "5px",
+                  boxShadow: "5px 5px 5px grey",
+                }}
                 className="hops__form-element-container hops__form-element-container--hops_indicators"
               >
                 <h3>Suoritetut valinnais opinnot:</h3>
@@ -1317,7 +1350,11 @@ class StudiesPlanning extends React.Component<
               </div>
 
               <div
-                style={{ backgroundColor: "antiquewhite", padding: "5px" }}
+                style={{
+                  backgroundColor: "antiquewhite",
+                  padding: "5px",
+                  boxShadow: "5px 5px 5px grey",
+                }}
                 className="hops__form-element-container hops__form-element-container--hops_indicators"
               >
                 <h3>Arvioitu opintoaika (kk):</h3>
@@ -1372,7 +1409,11 @@ class StudiesPlanning extends React.Component<
                           ? this.handleSaveActiveSuggestedSelections
                           : this.handleSaveActiveSuggestedOptionalSelections
                       }
-                      style={{ margin: "5px 5px", width: "calc(50% - 10px)" }}
+                      style={{
+                        margin: "5px 5px",
+                        width: "calc(50% - 10px)",
+                        boxShadow: "5px 5px 5px grey",
+                      }}
                     >
                       Tallenna
                     </Button>
@@ -1384,7 +1425,11 @@ class StudiesPlanning extends React.Component<
                           : this
                               .handleCancleActiveSuggestedOptionalSelectionAndRevert
                       }
-                      style={{ margin: "5px 5px", width: "calc(50% - 10px)" }}
+                      style={{
+                        margin: "5px 5px",
+                        width: "calc(50% - 10px)",
+                        boxShadow: "5px 5px 5px grey",
+                      }}
                     >
                       Peruuta
                     </Button>
@@ -1394,14 +1439,22 @@ class StudiesPlanning extends React.Component<
                     <Button
                       className="button button--dialog-clear"
                       onClick={this.handleActivateSelectSuggestedForNext}
-                      style={{ margin: "5px 5px", width: "100%" }}
+                      style={{
+                        margin: "5px 5px",
+                        width: "100%",
+                        boxShadow: "5px 5px 5px grey",
+                      }}
                     >
                       Ehdota suoritettavia kursseja?
                     </Button>
                     <Button
                       className="button button--dialog-clear"
                       onClick={this.handleActivateSelectOptional}
-                      style={{ margin: "5px 5px", width: "100%" }}
+                      style={{
+                        margin: "5px 5px",
+                        width: "100%",
+                        boxShadow: "5px 5px 5px grey",
+                      }}
                     >
                       Ehdota valinnaiskursseja?
                     </Button>
@@ -1419,7 +1472,11 @@ class StudiesPlanning extends React.Component<
                     this.props.studies.supervisorSuggestedNextListOfIds
                       .length === 0
                   }
-                  style={{ margin: "5px 5px", width: "100%" }}
+                  style={{
+                    margin: "5px 5px",
+                    width: "100%",
+                    boxShadow: "5px 5px 5px grey",
+                  }}
                 >
                   Poista suoritettavat kurssiehdotukset
                 </Button>
@@ -1434,7 +1491,11 @@ class StudiesPlanning extends React.Component<
                         .length === 0
                     : this.props.studies.selectedListOfIds.length === 0
                 }
-                style={{ margin: "5px 5px", width: "100%" }}
+                style={{
+                  margin: "5px 5px",
+                  width: "100%",
+                  boxShadow: "5px 5px 5px grey",
+                }}
               >
                 {this.props.user === "supervisor"
                   ? "Poista valinnaiskurssi ehdotukset"
@@ -1443,7 +1504,7 @@ class StudiesPlanning extends React.Component<
             </div>
           </div>
 
-          <div style={{ overflowX: "auto" }} className="hops-container__row">
+          <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
               <CourseTable
                 user={this.props.user}

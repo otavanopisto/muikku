@@ -24,6 +24,7 @@
 
 .list-container--course {
   margin-bottom: 10px;
+  box-shadow: 3px 3px 3px grey;
 
   @include breakpoint($breakpoint-mobile-xl) {
     margin: 5px;
@@ -35,6 +36,33 @@
   text-align: center;
 }
 
+.list-subject-name {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 5px 10px 5px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-radius: unset;
+  background-color: aliceblue;
+  font-weight: bold;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+.list-subject-name-proggress {
+  content: "\A";
+  position: absolute;
+  background-color: green;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 5px;
+  transition: all 2s;
+}
+
 .list-item {
   position: relative;
   overflow: hidden;
@@ -43,6 +71,7 @@
   border-radius: 5px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .list-item--course {
@@ -145,6 +174,7 @@
   padding: 3px;
   position: relative;
   right: 15px;
+  z-index: 10;
 }
 
 .right {

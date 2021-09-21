@@ -46,13 +46,18 @@ interface ListItemProps
  */
 export const ListItem: React.FC<ListItemProps> = ({
   modifiers,
+  className,
   children,
   ...rest
 }) => {
+  let updatedClassName = className ? className : "list-item";
+
   return (
     <div
-      className={`list-item ${
-        modifiers ? modifiers.map((m) => `list-item--${m}`).join(" ") : ""
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
       }`}
       {...rest}
     >

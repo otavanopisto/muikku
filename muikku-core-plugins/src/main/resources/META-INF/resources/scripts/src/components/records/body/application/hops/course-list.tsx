@@ -1,7 +1,6 @@
 import * as React from "react";
 import { SchoolSubject } from "~/@types/shared";
 import { mockSchoolSubjects } from "~/mock/mock-data";
-import Dropdown from "../../../../general/dropdown";
 import AnimateHeight from "react-animate-height";
 import {
   ListContainer,
@@ -31,7 +30,7 @@ interface CourseListProps {
 
 /**
  * CourseTable
- * @returns
+ * @returns JSX.Element
  */
 const CourseList: React.FC<CourseListProps> = (props) => {
   const [openedSubjectSelections, setOpenedSubjectSelections] = React.useState<
@@ -56,20 +55,32 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         props.selectedSubjectListOfIds &&
         selectedSubjects
       ) {
-        let selectedOptionalCourseListOfIds = [
+        /**
+         * Old values
+         */
+        const selectedOptionalCourseListOfIds = [
           ...props.selectedSubjectListOfIds,
         ];
 
-        let indexOfSubjectCourse = selectedOptionalCourseListOfIds.findIndex(
+        /**
+         * Find index
+         */
+        const index = selectedOptionalCourseListOfIds.findIndex(
           (sCourseId) => sCourseId === courseId
         );
 
-        if (indexOfSubjectCourse !== -1) {
-          selectedOptionalCourseListOfIds.splice(indexOfSubjectCourse, 1);
+        /**
+         * If index is found, then splice it away, otherwise push id to updated list
+         */
+        if (index !== -1) {
+          selectedOptionalCourseListOfIds.splice(index, 1);
         } else {
           selectedOptionalCourseListOfIds.push(courseId);
         }
 
+        /**
+         * Handle it to onChange method
+         */
         props.onChangeSelectSubjectList &&
           props.onChangeSelectSubjectList(selectedOptionalCourseListOfIds);
       }
@@ -85,20 +96,30 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         props.onChangeSuggestedForNextList &&
         props.supervisorSuggestedNextListOfIds
       ) {
+        /**
+         * Old values
+         */
         const updatedSuggestedForNextListIds = [
           ...props.supervisorSuggestedNextListOfIds,
         ];
 
+        /**
+         * Find index
+         */
         const index = updatedSuggestedForNextListIds.findIndex(
           (courseId) => courseId === id
         );
-
+        /**
+         * If index is found, then splice it away, otherwise push id to updated list
+         */
         if (index !== -1) {
           updatedSuggestedForNextListIds.splice(index, 1);
         } else {
           updatedSuggestedForNextListIds.push(id);
         }
-
+        /**
+         * Handle it to onChange method
+         */
         props.onChangeSuggestedForNextList &&
           props.onChangeSuggestedForNextList(updatedSuggestedForNextListIds);
       }
@@ -115,20 +136,31 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         props.onChangeSuggestedForNextList &&
         props.supervisorSugestedSubjectListOfIds
       ) {
+        /**
+         * Old values
+         */
         const updatedSuggestedForOptionalListIds = [
           ...props.supervisorSugestedSubjectListOfIds,
         ];
 
+        /**
+         * Find index
+         */
         const index = updatedSuggestedForOptionalListIds.findIndex(
           (courseId) => courseId === id
         );
 
+        /**
+         * If index is found, then splice it away, otherwise push id to updated list
+         */
         if (index !== -1) {
           updatedSuggestedForOptionalListIds.splice(index, 1);
         } else {
           updatedSuggestedForOptionalListIds.push(id);
         }
-
+        /**
+         * Handle it to onChange method
+         */
         props.onChangeSuggestedForNextList &&
           props.onChangeSuggestedForNextList(
             updatedSuggestedForOptionalListIds
@@ -138,17 +170,27 @@ const CourseList: React.FC<CourseListProps> = (props) => {
 
   /**
    * handleOpenSubjectCourseSelection
+   * Opens and closes subject course lists
    * @param subjectId
    */
   const handleOpenSubjectCourseSelection =
     (subjectName: string) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      /**
+       * Old values
+       */
       const updatedOpenedSubjectSelections = [...openedSubjectSelections];
 
+      /**
+       * Find index
+       */
       const index = updatedOpenedSubjectSelections.findIndex(
         (sId) => sId === subjectName
       );
 
+      /**
+       * If index is found, then splice it away, otherwise push id to updated list
+       */
       if (index !== -1) {
         updatedOpenedSubjectSelections.splice(index, 1);
       } else {
@@ -162,6 +204,10 @@ const CourseList: React.FC<CourseListProps> = (props) => {
    * renderRows
    */
   const renderRows = mockSchoolSubjects.map((sSubject, i) => {
+    /**
+     * If any of these options happens
+     * just return; so skipping that subject
+     */
     if (props.ethicsSelected) {
       if (sSubject.subjectCode === "ua") {
         return;
@@ -181,16 +227,38 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       }
     }
 
-    const courses = sSubject.availableCourses.map((course, index) => {
+    // Counters
+    let mandatoryCount = 0;
+    let completedCourseCount = 0;
+
+    /**
+     * Renders courses
+     */
+    const courses = sSubject.availableCourses.map((course) => {
+      //Default modifiers
       let listItemIndicatormodifiers = ["course"];
       let listItemModifiers = ["course"];
 
       if (course.mandatory) {
+        mandatoryCount++;
         listItemIndicatormodifiers.push("MANDATORY");
+        if (
+          (props.completedSubjectListOfIds &&
+            props.completedSubjectListOfIds.find(
+              (courseId) => courseId === course.id
+            )) ||
+          (props.approvedSubjectListOfIds &&
+            props.approvedSubjectListOfIds.find(
+              (courseId) => courseId === course.id
+            ))
+        ) {
+          completedCourseCount++;
+        }
       } else {
         listItemIndicatormodifiers.push("OPTIONAL");
       }
 
+      // List item options with default values
       let canBeSelected = true;
       let canBeSuggestedForNextCourse = true;
       let canBeSuggestedForOptionalCourse = true;
@@ -223,6 +291,7 @@ const CourseList: React.FC<CourseListProps> = (props) => {
           (courseId) => courseId === course.id
         )
       ) {
+        completedCourseCount++;
         canBeSuggestedForOptionalCourse = false;
         canBeSuggestedForNextCourse = false;
         canBeSelected = false;
@@ -271,30 +340,36 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         if (canBeSelected) {
           return (
             <ListItem key={course.id} modifiers={listItemModifiers}>
-              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-              {course.courseNumber}. {course.name}
-              <div
-                className={`checkbox-container ${
-                  props.selectNextIsActive && canBeSuggestedForNextCourse
-                    ? "checkbox-container--active"
-                    : ""
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={suggestedForNext}
-                  className="item__input"
-                  value={course.id}
-                  onChange={handleSuggestedForNextCheckboxChange(course.id)}
-                />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+                {course.courseNumber}. {course.name}
+              </div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  className={`checkbox-container ${
+                    props.selectNextIsActive && canBeSuggestedForNextCourse
+                      ? "checkbox-container--active"
+                      : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={suggestedForNext}
+                    className="item__input"
+                    value={course.id}
+                    onChange={handleSuggestedForNextCheckboxChange(course.id)}
+                  />
+                </div>
               </div>
             </ListItem>
           );
         } else {
           return (
             <ListItem key={course.id} modifiers={listItemModifiers}>
-              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-              {course.courseNumber}. {course.name}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+                {course.courseNumber}. {course.name}
+              </div>
             </ListItem>
           );
         }
@@ -310,61 +385,82 @@ const CourseList: React.FC<CourseListProps> = (props) => {
               }
               modifiers={listItemModifiers}
             >
-              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-              {course.courseNumber}*. {course.name}
-              <div
-                className={`checkbox-container ${
-                  props.selectNextIsActive && canBeSuggestedForNextCourse
-                    ? "checkbox-container--active"
-                    : ""
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={suggestedForNext}
-                  className="item__input"
-                  value={course.id}
-                  onChange={handleSuggestedForNextCheckboxChange(course.id)}
-                />
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+                {course.courseNumber}*. {course.name}
               </div>
-              <div
-                className={`checkbox-container ${
-                  props.selectOptionalIsActive &&
-                  canBeSuggestedForOptionalCourse
-                    ? "checkbox-container--active"
-                    : ""
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={suggestedForOptional}
-                  className="item__input"
-                  value={course.id}
-                  onChange={handleSuggestedForOptionalCheckboxChange(course.id)}
-                />
+
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  className={`checkbox-container ${
+                    props.selectNextIsActive && canBeSuggestedForNextCourse
+                      ? "checkbox-container--active"
+                      : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={suggestedForNext}
+                    className="item__input"
+                    value={course.id}
+                    onChange={handleSuggestedForNextCheckboxChange(course.id)}
+                  />
+                </div>
+                <div
+                  className={`checkbox-container ${
+                    props.selectOptionalIsActive &&
+                    canBeSuggestedForOptionalCourse
+                      ? "checkbox-container--active"
+                      : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={suggestedForOptional}
+                    className="item__input"
+                    value={course.id}
+                    onChange={handleSuggestedForOptionalCheckboxChange(
+                      course.id
+                    )}
+                  />
+                </div>
               </div>
             </ListItem>
           );
         } else {
           return (
             <ListItem key={course.id} modifiers={listItemModifiers}>
-              <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-              {course.courseNumber}*. {course.name}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
+                {course.courseNumber}*. {course.name}
+              </div>
             </ListItem>
           );
         }
       }
     });
 
+    /**
+     * Boolean value if subject list is open
+     */
     const open = openedSubjectSelections.includes(sSubject.name);
+
+    /**
+     * Proggress value of completed mandatory courses
+     */
+    const mandatoryProggress = (completedCourseCount / mandatoryCount) * 100;
 
     return (
       <ListContainer key={sSubject.name} modifiers={["course"]}>
         <ListItem
-          modifiers={["subject"]}
+          className="list-subject-name"
           onClick={handleOpenSubjectCourseSelection(sSubject.name)}
         >
-          {sSubject.name}
+          <div
+            className="list-subject-name-proggress"
+            style={{ width: `${mandatoryProggress}%` }}
+          />
+          <span style={{ zIndex: 10 }}>{sSubject.name}</span>
           <div className={`list-item-arrow ${open ? "down" : "right"}`} />
         </ListItem>
 

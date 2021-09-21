@@ -1,3 +1,4 @@
+import { stringify } from "query-string";
 import * as React from "react";
 import "~/sass/elements/table.scss";
 
@@ -10,13 +11,23 @@ interface TableProps
     HTMLTableElement
   > {}
 
-export const Table: React.FC<TableProps> = ({ children, ...rest }) => {
+/* export const Table: React.FC<TableProps> = ({ children, ...rest }) => {
   return (
     <table className="table" {...rest}>
       {children}
     </table>
   );
-};
+}; */
+
+export const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  ({ children, ...rest }, ref) => {
+    return (
+      <table ref={ref} className="table" {...rest}>
+        {children}
+      </table>
+    );
+  }
+);
 
 /**
  * TableHeaderProps
@@ -143,3 +154,38 @@ export const Td: React.FC<TableDataProps> = ({
     </td>
   );
 };
+
+interface TableAnimationWatcherProps {
+  tableRef: React.MutableRefObject<HTMLTableElement>;
+  tableDataRef: React.RefObject<HTMLDivElement>;
+  children: (props: TableAnimationWatcherProps, state: any) => JSX.Element;
+}
+
+interface TableAnimationWatcherState {}
+
+export class TableAnimationWatcher extends React.Component<
+  TableAnimationWatcherProps,
+  TableAnimationWatcherState
+> {
+  constructor(props: TableAnimationWatcherProps) {
+    super(props);
+
+    this.state = {};
+  }
+
+  componentDidMount() {
+    /* let childElement = React.Children.only(
+      this.props.children(this.props, this.state)
+    );
+
+    childElement = React.cloneElement(childElement, {
+      ref: "table-element-content",
+    }); */
+
+    console.log("this.props", this.props);
+  }
+
+  render() {
+    return this.props.children(this.props, this.state);
+  }
+}

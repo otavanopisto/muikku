@@ -6,7 +6,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ai",
     availableCourses: [
       {
-        name: "ai1",
+        name: "Äidinkielen 1. perusteet 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -14,7 +14,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ai2",
+        name: "Äidinkielen 2. perusteet 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -22,7 +22,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ai3",
+        name: "Äidinkielen 3. perusteet 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -30,7 +30,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ai4",
+        name: "Äidinkielen 4. edistynyt oppi 1",
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
@@ -38,7 +38,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ai5",
+        name: "Äidinkielen 5. edistynyt oppi 2",
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
@@ -46,7 +46,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "ai6",
+        name: "Äidinkielen 6. Esiintymistaidot ja ilmaisu",
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
@@ -114,7 +114,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "rub",
     availableCourses: [
       {
-        name: "rub1",
+        name: "Ruotsi 1. Alkeet ja oppi 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -122,7 +122,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "rub2",
+        name: "Ruotsi 2. Alkeet ja oppi 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -130,7 +130,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "rub3",
+        name: "Ruotsi 3. Alkeet ja oppi 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -138,7 +138,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "rub4",
+        name: "Ruotsi 4. Alkeet ja oppi 4",
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
@@ -146,7 +146,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "rub5",
+        name: "Ruotsi 5. Alkeet ja oppi 5",
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
@@ -154,7 +154,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "rub6",
+        name: "Ruotsi 6. Alkeet ja oppi 6",
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
@@ -162,7 +162,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "rub7",
+        name: "Ruotsi 7. Kirosanat ja oppi 1",
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
@@ -170,7 +170,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "rub8",
+        name: "Ruotsi 7. Kirosanat ja oppi 2",
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
@@ -184,7 +184,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ena",
     availableCourses: [
       {
-        name: "ena1",
+        name: "Englanti 1. jees but litle 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -192,7 +192,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena2",
+        name: "Englanti 2. jees but litle 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -200,7 +200,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena3",
+        name: "Englanti 3. jees but litle 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -208,7 +208,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena4",
+        name: "Englanti 4. jees but litle 4",
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
@@ -216,7 +216,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena5",
+        name: "Englanti 5. jees but litle 5",
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
@@ -224,7 +224,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena6",
+        name: "Englanti 6. jees but litle 6",
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
@@ -232,7 +232,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena7",
+        name: "Englanti 7. jees but litle 7",
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
@@ -240,7 +240,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena8",
+        name: "Englanti 8. jees but litle 8",
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
@@ -248,7 +248,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ena9",
+        name: "Englanti 9. jees or not 9",
         courseNumber: 9,
         length: 35,
         status: "NOSTATUS",
@@ -256,7 +256,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "ena10",
+        name: "Englanti 10. jees or not 10",
         courseNumber: 10,
         length: 35,
         status: "NOSTATUS",
@@ -264,7 +264,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "ena11",
+        name: "Englanti 11. jees or not 11",
         courseNumber: 11,
         length: 35,
         status: "NOSTATUS",
@@ -278,7 +278,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ma",
     availableCourses: [
       {
-        name: "ma1",
+        name: "Matikka 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -286,7 +286,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma2",
+        name: "Matikka 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -294,7 +294,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma3",
+        name: "Matikka 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -302,7 +302,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma4",
+        name: "Matikka 4",
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
@@ -310,7 +310,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma5",
+        name: "Matikka 5",
         courseNumber: 5,
         length: 35,
         status: "NOSTATUS",
@@ -318,7 +318,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma6",
+        name: "Matikka 6",
         courseNumber: 6,
         length: 35,
         status: "NOSTATUS",
@@ -326,7 +326,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma7",
+        name: "Matikka 7",
         courseNumber: 7,
         length: 35,
         status: "NOSTATUS",
@@ -334,7 +334,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma8",
+        name: "Matikka 8",
         courseNumber: 8,
         length: 35,
         status: "NOSTATUS",
@@ -342,7 +342,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ma9",
+        name: "Matikka 9",
         courseNumber: 9,
         length: 35,
         status: "NOSTATUS",
@@ -356,7 +356,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ua",
     availableCourses: [
       {
-        name: "ua1",
+        name: "Uskonto 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -364,7 +364,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ua2",
+        name: "Uskonto 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -378,7 +378,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ea",
     availableCourses: [
       {
-        name: "ea1",
+        name: "Elämänkatsomustieto 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -386,7 +386,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ea2",
+        name: "Elämänkatsomustieto 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -400,7 +400,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "hy",
     availableCourses: [
       {
-        name: "hy1",
+        name: "Historia 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -408,7 +408,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "hy2",
+        name: "Historia 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -416,7 +416,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "hy3",
+        name: "Historia 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -430,7 +430,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "yo",
     availableCourses: [
       {
-        name: "yo1",
+        name: "Yhteiskuntaoppi 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -438,7 +438,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "yo2",
+        name: "Yhteiskuntaoppi 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -452,7 +452,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "fy",
     availableCourses: [
       {
-        name: "fy1",
+        name: "Fysiikka 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -460,7 +460,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "fy2",
+        name: "Fysiikka 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -468,7 +468,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "fy3",
+        name: "Fysiikka 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -482,7 +482,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ke",
     availableCourses: [
       {
-        name: "ke1",
+        name: "Kemia 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -496,7 +496,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "bi",
     availableCourses: [
       {
-        name: "bi1",
+        name: "Bioliogia 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -504,7 +504,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "bi2",
+        name: "Bioliogia 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -512,7 +512,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "bi3",
+        name: "Bioliogia 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -526,7 +526,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "man",
     availableCourses: [
       {
-        name: "man1",
+        name: "Maantieto 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -534,7 +534,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "man2",
+        name: "Maantieto 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -542,7 +542,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "man3",
+        name: "Maantieto 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -550,7 +550,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "man4",
+        name: "Maantieto 4",
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
@@ -564,7 +564,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "te",
     availableCourses: [
       {
-        name: "te1",
+        name: "Terveystieto 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -578,7 +578,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
     subjectCode: "ot",
     availableCourses: [
       {
-        name: "ot1",
+        name: "Opinto-ohjaus - ja työelämätaidot 1",
         courseNumber: 1,
         length: 35,
         status: "NOSTATUS",
@@ -586,7 +586,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ot2",
+        name: "Opinto-ohjaus - ja työelämätaidot 2",
         courseNumber: 2,
         length: 35,
         status: "NOSTATUS",
@@ -594,7 +594,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: true,
       },
       {
-        name: "ot3",
+        name: "Opinto-ohjaus - ja työelämätaidot 3",
         courseNumber: 3,
         length: 35,
         status: "NOSTATUS",
@@ -602,7 +602,7 @@ export const mockSchoolSubjects: SchoolSubject[] = [
         mandatory: false,
       },
       {
-        name: "ot4",
+        name: "Opinto-ohjaus - ja työelämätaidot 4",
         courseNumber: 4,
         length: 35,
         status: "NOSTATUS",
