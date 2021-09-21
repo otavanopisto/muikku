@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +19,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -32,6 +32,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 @Startup
 @Singleton
@@ -85,24 +86,29 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        User student = userController.findUserByIdentifier(studentIdentifier);
-        String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
-        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content.defaultContent", new Object[] {student.getDisplayName()});
-        if (guidanceCounselorEmail != null) {
-        notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), guidanceCounselorEmail});
+        UserEntityName studentName = userEntityController.getName(studentEntity);
+        if (studentName == null) {
+          logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
+          continue;
+        }
+        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content",
+            new Object[] {studentName.getDisplayNameWithLine()});
+        if (guidanceCounselorMail != null) {
+          notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content.guidanceCounselor",
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
         }
         notificationController.sendNotification(
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.subject"),
           notificationContent,
           studentEntity,
-          studentIdentifier,
-          "neverloggedin"
+          guidanceCounselorMail
         );
         neverLoggedInNotificationController.createNeverLoggedInNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_NEVERLOGGEDIN);
-      } else {
-        logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
+      }
+      else {
+        logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because UserEntity was not found", studentIdentifier.toId()));
       }
       
     }
@@ -131,10 +137,16 @@ public class NeverLoggedInNotificationStrategy extends AbstractTimedNotification
     if (groups.isEmpty()) {
       return Collections.emptyList();
     }
-    
+
     Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = neverLoggedInNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
-    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT, MAX_RESULTS, studentIdentifierAlreadyNotified, thresholdDate);
+    SearchResult searchResult = neverLoggedInNotificationController.searchActiveStudentIds(
+        getActiveOrganizations(),
+        groups,
+        FIRST_RESULT,
+        MAX_RESULTS,
+        studentIdentifierAlreadyNotified,
+        thresholdDate);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {

@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +19,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -34,6 +35,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 @Startup
 @Singleton
@@ -114,25 +116,29 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        User student = userController.findUserByUserEntityDefaults(studentEntity);
-        String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
-        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.defaultContent", new Object[] {student.getDisplayName()});
-        if (guidanceCounselorEmail != null) {
-        notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), guidanceCounselorEmail});
+        UserEntityName studentName = userEntityController.getName(studentEntity);
+        if (studentName == null) {
+          logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
+          continue;
+        }
+        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content",
+            new Object[] {studentName.getDisplayNameWithLine()});
+        if (guidanceCounselorMail != null) {
+          notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.content.guidanceCounselor",
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
         }
         notificationController.sendNotification(
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
           notificationContent,
           studentEntity,
-          studentIdentifier,
-          "assesmentrequest"
+          guidanceCounselorMail
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_ASSESMENTREQUEST);
       }
       else {
-        logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
+        logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because UserEntity was not found", studentIdentifier.toId()));
       }
     }
   }

@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -41,9 +40,6 @@ public class NotificationController {
   private UserEmailEntityController userEmailEntityController;
 
   @Inject
-  private PluginSettingsController pluginSettingsController;
-
-  @Inject
   private UserGroupController userGroupController;
 
   @Inject
@@ -52,76 +48,20 @@ public class NotificationController {
   @Inject
   private UserEntityController userEntityController;
 
-  private String getRecipientEmail() {
-    return pluginSettingsController.getPluginSetting("timed-notifications", "dryRunRecipientEmail");
-  }
-
-  private boolean isDryRun() {
-    return StringUtils.equals(pluginSettingsController.getPluginSetting("timed-notifications", "dryRunEnabled"),
-        "true");
-  }
-
-  public void sendNotification(String category, String subject, String content, UserEntity recipient, SchoolDataIdentifier recipientIdentifier, String notificationType) {
-    UserEntity guidanceCounselor = null;
-    SchoolDataIdentifier userIdentifier = recipient.defaultSchoolDataIdentifier();
-    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
-    
-    // #3089: An awkward workaround to use the latest guidance group based on its identifier. Assumes a larger
-    // identifier means a more recent entity. A more proper fix would be to sync group creation dates from
-    // Pyramus and include them in the Elastic index. Then again, user groups would have to be refactored
-    // entirely, as Pyramus handles group members as students (one study programme) while Muikku handles
-    // them as user entities (all study programmes)...
-    
-    userGroupEntities.sort(new Comparator<UserGroupEntity>() {
-      public int compare(UserGroupEntity o1, UserGroupEntity o2) {
-        long l1 = NumberUtils.toLong(StringUtils.substringAfterLast(o1.getIdentifier(), "-"), -1);
-        long l2 = NumberUtils.toLong(StringUtils.substringAfterLast(o2.getIdentifier(), "-"), -1);
-        return (int) (l2 - l1);
-      }
-    });
-    
-    // Choose the first staff member of the first guidance group as CC recipient for the notification
-
-    userGroupEntities:
-    for (UserGroupEntity userGroupEntity : userGroupEntities) {
-      UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
-
-      if (userGroup.getIsGuidanceGroup()) {
-        List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
-
-        for (GroupUser groupUser : groupUsers) {
-          User user = userGroupController.findUserByGroupUser(groupUser);
-          guidanceCounselor = userEntityController.findUserEntityByUser(user);
-          break userGroupEntities;
-        }
-      }
-    }
-
-    if (isDryRun()) {
-      String recipientEmail = getRecipientEmail();
-      if (recipientEmail == null) {
-        logger.log(Level.INFO, String.format("Sending notification %s - %s to %s", category, subject, recipient.getDefaultIdentifier()));
-      }
-      else {
-        mailer.sendMail(MailType.HTML, Arrays.asList(recipientEmail), subject,
-            "SENT TO: " + recipient.getDefaultIdentifier() + "<br/><br/><br/>" + content);
-      }
+  public void sendNotification(String subject, String content, UserEntity recipient, String guidanceCounselorMail) {
+    String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(recipient, Boolean.FALSE);
+    if (studentEmail != null) {
+      mailer.sendMail(MailType.HTML,
+          Arrays.asList(studentEmail),
+          guidanceCounselorMail == null ? Collections.emptyList() : Arrays.asList(guidanceCounselorMail),
+          Collections.emptyList(),
+          subject,
+          content);
     }
     else {
-      ArrayList<UserEntity> recipients = new ArrayList<>();
-      recipients.add(recipient);
-      if (guidanceCounselor != null) {
-        recipients.add(guidanceCounselor);
-      }
-      String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(recipient, Boolean.FALSE);
-      if (studentEmail != null) {
-        mailer.sendMail(MailType.HTML, Arrays.asList(studentEmail), subject, content);
-      }
-      else {
-        logger.log(Level.WARNING,
-            String.format("Cannot send email notification to student %s because no email address was found",
-                recipient.getDefaultIdentifier()));
-      }
+      logger.log(Level.WARNING,
+          String.format("Cannot send email notification to student %s because no email address was found",
+              recipient.getDefaultIdentifier()));
     }
   }
   

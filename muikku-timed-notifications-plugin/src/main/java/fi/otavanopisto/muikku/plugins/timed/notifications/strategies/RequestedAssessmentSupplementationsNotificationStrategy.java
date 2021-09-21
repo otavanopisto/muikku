@@ -34,13 +34,12 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.RequestedAssessmentSup
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Startup
@@ -52,7 +51,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.requestedassessmentsupplementation.maxresults", "20"));
   private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.requestedassessmentsupplementation.notificationthreshold", "7"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.requestedassessmentsupplementation.checkfreq", "1800000"));
-  
   
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -86,9 +84,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
   
   @Inject
   private ActivityLogController activityLogController;
-  
-  @Inject
-  private UserController userController;
   
   @Override
   public boolean isActive(){
@@ -199,19 +194,23 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
           if (workspace != null) {
             String workspaceName = StringUtils.isBlank(workspace.getNameExtension()) ? workspace.getName() : String.format("%s (%s)", workspace.getName(), workspace.getNameExtension()); 
             Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-            User student = userController.findUserByUserEntityDefaults(studentEntity);
-            String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
-            String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.defaultContent", new Object[] {student.getDisplayName(), workspaceName});
-            if (guidanceCounselorEmail != null) {
-            notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), workspaceName, guidanceCounselorEmail});
+            UserEntityName studentName = userEntityController.getName(studentEntity);
+            if (studentName == null) {
+              logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
+              continue;
+            }
+            String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+            String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content",
+                new Object[] {studentName.getDisplayNameWithLine(), workspaceName});
+            if (guidanceCounselorMail != null) {
+            notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.content.guidanceCounselor",
+                new Object[] {studentName.getDisplayNameWithLine(), workspaceName, guidanceCounselorMail});
             }
             notificationController.sendNotification(
-              localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
               localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
               notificationContent,
               studentEntity,
-              studentIdentifier,
-              "requestedassessmentsupplementation"
+              guidanceCounselorMail
             );
             
             // Store notification to avoid duplicates in the future
@@ -219,7 +218,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
             requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
             activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_SUPPLEMENTATIONREQUEST);
           } else {
-            logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
+            logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because UserEntity or workspace was not found", studentIdentifier.toId()));
           }
         }
       }

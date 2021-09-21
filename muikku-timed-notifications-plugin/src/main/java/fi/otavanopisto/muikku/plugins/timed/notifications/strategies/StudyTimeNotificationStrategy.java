@@ -140,20 +140,21 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         }
         
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        String internetixStudyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.internetix");
-        String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.defaultContent", new Object[] {student.getDisplayName()});
-        String guidanceCounselorEmail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
-        if (guidanceCounselorEmail != null) {
-        studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.neverloggedin.content.guidanceCounselorContent", new Object[] {student.getDisplayName(), guidanceCounselorEmail});
+        String internetixStudyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.internetix",
+            new Object[] {student.getDisplayName()});
+        String studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content",
+            new Object[] {student.getDisplayName()});
+        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        if (guidanceCounselorMail != null) {
+          studyTimeNotification = localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.content.guidanceCounselor",
+              new Object[] {student.getDisplayName(), guidanceCounselorMail});
         }
         String notificationContent = isAineopiskelu ? internetixStudyTimeNotification : studyTimeNotification;
         notificationController.sendNotification(
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
           notificationContent,
           studentEntity,
-          studentIdentifier,
-          "studytime"
+          guidanceCounselorMail
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);
