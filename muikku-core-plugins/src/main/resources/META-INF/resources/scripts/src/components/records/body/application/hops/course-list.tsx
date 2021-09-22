@@ -8,6 +8,9 @@ import {
   ListItemIndicator,
 } from "~/components/general/list";
 
+/**
+ * CourseListProps
+ */
 interface CourseListProps {
   selectedSubjects?: SchoolSubject[];
   user: "supervisor" | "student";

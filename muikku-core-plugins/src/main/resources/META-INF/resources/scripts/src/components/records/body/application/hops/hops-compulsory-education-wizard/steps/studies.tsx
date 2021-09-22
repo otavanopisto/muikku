@@ -1,6 +1,4 @@
 import * as React from "react";
-import { SchoolSubject } from "~/@types/shared";
-import CourseTable from "../../course-table";
 import {
   HopsStudies,
   CourseStatus,
@@ -9,6 +7,9 @@ import {
 import Dropdown from "../../../../../../general/dropdown";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 
+/**
+ * StudiesProps
+ */
 interface StudiesProps extends StudiesCourseData {
   studies: HopsStudies;
   ethics: boolean;
@@ -16,8 +17,14 @@ interface StudiesProps extends StudiesCourseData {
   onStudiesChange: (studies: HopsStudies) => void;
 }
 
+/**
+ * StudiesState
+ */
 interface StudiesState {}
 
+/**
+ * Studies
+ */
 class Studies extends React.Component<StudiesProps, StudiesState> {
   /**
    * constructor

@@ -211,7 +211,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
     const courses = Array(currentMaxCourses)
       .fill(1)
       .map((c, index) => {
-        let modifiers = ["centered"];
+        let modifiers = [];
 
         /**
          * If courses is available with current index
@@ -224,10 +224,12 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
          * If no, then just empty table cell "placeholder"
          */
         if (course === undefined) {
+          modifiers = ["centered"];
+
           return (
             <Td key={`empty-${index + 1}`}>
               <div
-                className={`table-data-content table-data-content--center table-data-content--empty`}
+                className={`table-data-content table-data-content-centered table-data-content--empty`}
               >
                 -
               </div>
@@ -357,7 +359,17 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
 
     return (
       <Tr key={sSubject.name} modifiers={rowMods}>
-        <Td modifiers={["subject"]}>{sSubject.name}</Td>
+        <Td modifiers={["subject"]}>
+          <div
+            style={{
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {sSubject.name}
+          </div>
+        </Td>
         {courses}
       </Tr>
     );
@@ -433,21 +445,40 @@ const TableDataContent: React.FC<TableDataContentProps> = (props) => {
   const contenNameRef = React.useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = React.useState(false);
 
-  React.useEffect(() => {}, [contentRef, contenNameRef, expanded]);
+  let initialWidth = "";
+
+  const checkboxmod = selectNextIsActive || selectOptionalIsActive ? 35 : 0;
+
+  React.useEffect(() => {
+    if (contentRef && contentRef.current) {
+      initialWidth = contentRef.current.style.width;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (expanded) {
+      updatedModifiers.push("course__hover");
+
+      contentRef.current.style.width = `${
+        contenNameRef.current.offsetWidth + 25 + checkboxmod
+      }px`;
+    } else {
+      contentRef.current.style.width = initialWidth;
+    }
+  }, [contentRef, contenNameRef, expanded]);
 
   // Element refs data
   const tableDimensions = useDimensions(tableRef);
   const tableBoundings = useElementBoundings(tableRef);
   const cellBoundings = useElementBoundings(contentRef);
-
-  console.log(
-    contenNameRef && contenNameRef.current && contenNameRef.current.offsetWidth
-  );
+  const contentNameDimensions = useDimensions(contenNameRef);
 
   if (expanded) {
     updatedModifiers.push("course__hover");
 
-    /* contentRef.current.style.width = `${contenNameRef.current.offsetWidth}px`; */
+    contentRef.current.style.width = `${
+      contenNameRef.current.offsetWidth + 25 + checkboxmod
+    }px`;
   }
 
   /**
@@ -455,7 +486,12 @@ const TableDataContent: React.FC<TableDataContentProps> = (props) => {
    * if so, change animation direction opposite direction
    * Element bounding left value - table bounding left value + animated width length
    */
-  if (cellBoundings.left - tableBoundings.left + 350 > tableDimensions.width) {
+  if (
+    cellBoundings.left -
+      tableBoundings.left +
+      (contentNameDimensions.width + 25 + checkboxmod) >
+    tableDimensions.width
+  ) {
     updatedModifiers.push("from__right");
   } else {
     updatedModifiers.push("from__left");
@@ -474,9 +510,6 @@ const TableDataContent: React.FC<TableDataContentProps> = (props) => {
         }`}
       >
         <span>{course.courseNumber}</span>
-        <div ref={contenNameRef} className="table-data-content-course-content">
-          {course.name}
-        </div>
         <div
           className={`checkbox-container ${
             selectNextIsActive && canBeSuggestedForNextCourse
@@ -491,6 +524,9 @@ const TableDataContent: React.FC<TableDataContentProps> = (props) => {
             value={course.id}
             onChange={onSuggestedForNextCheckboxChange(course.id)}
           />
+        </div>
+        <div ref={contenNameRef} className="table-data-content-course-content">
+          {course.name}
         </div>
       </div>
     ) : (
@@ -526,9 +562,6 @@ const TableDataContent: React.FC<TableDataContentProps> = (props) => {
         }
       >
         <span>{course.courseNumber}*</span>
-        <div ref={contenNameRef} className="table-data-content-course-content">
-          {course.name}
-        </div>
         <div
           className={`checkbox-container ${
             selectNextIsActive && canBeSuggestedForNextCourse
@@ -559,6 +592,9 @@ const TableDataContent: React.FC<TableDataContentProps> = (props) => {
             value={course.id}
             onChange={onSuggestedForOptionalCheckboxChange(course.id)}
           />
+        </div>
+        <div ref={contenNameRef} className="table-data-content-course-content">
+          {course.name}
         </div>
       </div>
     ) : null;

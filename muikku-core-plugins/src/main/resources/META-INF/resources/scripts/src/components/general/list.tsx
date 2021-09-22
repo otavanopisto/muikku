@@ -17,12 +17,21 @@ interface ListContainerProps
 export const ListContainer: React.FC<ListContainerProps> = ({
   modifiers,
   children,
+  className,
   ...rest
 }) => {
+  let updatedClassName = "list-container";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
   return (
     <div
-      className={`list-container ${
-        modifiers ? modifiers.map((m) => `list-container--${m}`).join(" ") : ""
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
       }`}
       {...rest}
     >
@@ -50,7 +59,11 @@ export const ListItem: React.FC<ListItemProps> = ({
   children,
   ...rest
 }) => {
-  let updatedClassName = className ? className : "list-item";
+  let updatedClassName = "list-item";
+
+  if (className) {
+    updatedClassName = className;
+  }
 
   return (
     <div
@@ -85,13 +98,20 @@ interface ListItemIndicator
 export const ListItemIndicator: React.FC<ListItemIndicator> = ({
   modifiers,
   children,
+  className,
   ...rest
 }) => {
+  let updatedClassName = "list-item-indicator";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
   return (
     <div
-      className={`list-item-indicator ${
+      className={`${updatedClassName} ${
         modifiers
-          ? modifiers.map((m) => `list-item-indicator--${m}`).join(" ")
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
           : ""
       }`}
       {...rest}

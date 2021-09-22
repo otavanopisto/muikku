@@ -3,22 +3,39 @@ import "~/sass/elements/compulsory-education-hops.scss";
 import { TextField } from "../text-field";
 import { BasicInformation } from "../../../../../../../@types/shared";
 
+/**
+ * StudentHopsInformationProps
+ */
 interface StudentHopsInformationProps {
   disabled: boolean;
   loading: boolean;
   basicInformation: BasicInformation;
 }
 
+/**
+ * StudentHopsInformationState
+ */
 interface StudentHopsInformationState {}
 
+/**
+ * StudentHopsInformation
+ */
 class StudentHopsInformation extends React.Component<
   StudentHopsInformationProps,
   StudentHopsInformationState
 > {
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: StudentHopsInformationProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <div className="hops-container">

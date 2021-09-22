@@ -9,14 +9,23 @@ import {
 import Button from "../../../../../../general/button";
 import { TextField } from "../text-field";
 
+/**
+ * StartingLevelProps
+ */
 interface StartingLevelProps {
   disabled: boolean;
   studentStartingLevel: HopsStudentStartingLevel;
   onStartingLevelChange: (startingLevel: HopsStudentStartingLevel) => void;
 }
 
+/**
+ * StartingLevelState
+ */
 interface StartingLevelState {}
 
+/**
+ * StartingLevel
+ */
 class StartingLevel extends React.Component<
   StartingLevelProps,
   StartingLevelState

@@ -1,5 +1,5 @@
 import * as React from "react";
-import Button, { ButtonPill } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import {
   Table,
   TableHead,
@@ -15,6 +15,11 @@ import { LanguageGrade } from "../../../../../../@types/shared";
  */
 interface LanguageGradeTableProps {}
 
+/**
+ * LanguageGradeTable
+ * @param param0
+ * @returns JSX.Element
+ */
 export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
   children,
 }) => {
@@ -49,6 +54,11 @@ interface LanguageGradeRowProps {
   onLanguageRowChange?: (updatedLng: LanguageGrade, index: number) => void;
 }
 
+/**
+ * LanguageGradeRow
+ * @param param0
+ * @returns JSX.Element
+ */
 export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   index,
   lng,

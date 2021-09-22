@@ -1,4 +1,3 @@
-import { stringify } from "query-string";
 import * as React from "react";
 import "~/sass/elements/table.scss";
 
@@ -9,20 +8,31 @@ interface TableProps
   extends React.DetailedHTMLProps<
     React.TableHTMLAttributes<HTMLTableElement>,
     HTMLTableElement
-  > {}
+  > {
+  modifiers?: string[];
+}
 
-/* export const Table: React.FC<TableProps> = ({ children, ...rest }) => {
-  return (
-    <table className="table" {...rest}>
-      {children}
-    </table>
-  );
-}; */
-
+/**
+ * Table
+ * @return JSX.Element
+ */
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ children, ...rest }, ref) => {
+  ({ children, modifiers, className, ...rest }, ref) => {
+    let updatedClassName = "table";
+
+    if (className) {
+      updatedClassName = className;
+    }
     return (
-      <table ref={ref} className="table" {...rest}>
+      <table
+        ref={ref}
+        className={`${updatedClassName} ${
+          modifiers
+            ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+            : ""
+        }`}
+        {...rest}
+      >
         {children}
       </table>
     );
@@ -36,13 +46,38 @@ interface TableHeaderProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement
-  > {}
+  > {
+  modifiers?: string[];
+}
 
+/**
+ * TableHead
+ * @param param0
+ * @returns JSX.Element
+ */
 export const TableHead: React.FC<TableHeaderProps> = ({
   children,
+  modifiers,
+  className,
   ...rest
 }) => {
-  return <thead {...rest}>{children}</thead>;
+  let updatedClassName = "table-thead";
+
+  if (className) {
+    updatedClassName = className;
+  }
+  return (
+    <thead
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </thead>
+  );
 };
 
 /**
@@ -52,10 +87,39 @@ interface TableBodyProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement
-  > {}
+  > {
+  modifiers?: string[];
+}
 
-export const Tbody: React.FC<TableBodyProps> = ({ children, ...rest }) => {
-  return <tbody {...rest}>{children}</tbody>;
+/**
+ * Tbody
+ * @param param0
+ * @returns JSX.Element
+ */
+export const Tbody: React.FC<TableBodyProps> = ({
+  children,
+  modifiers,
+  className,
+  ...rest
+}) => {
+  let updatedClassName = "table-tbody";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
+  return (
+    <tbody
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </tbody>
+  );
 };
 
 /**
@@ -65,10 +129,39 @@ interface TableFooterProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLTableSectionElement>,
     HTMLTableSectionElement
-  > {}
+  > {
+  modifiers?: string[];
+}
 
-export const Tfooter: React.FC<TableFooterProps> = ({ children, ...rest }) => {
-  return <tfoot {...rest}>{children}</tfoot>;
+/**
+ * Tfooter
+ * @param param0
+ * @returns JSX.Element
+ */
+export const Tfooter: React.FC<TableFooterProps> = ({
+  children,
+  modifiers,
+  className,
+  ...rest
+}) => {
+  let updatedClassName = "table-tfoot";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
+  return (
+    <tfoot
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+      {...rest}
+    >
+      {children}
+    </tfoot>
+  );
 };
 
 /**
@@ -82,15 +175,29 @@ interface TableRowProps
   modifiers?: string[];
 }
 
+/**
+ * Tr
+ * @param param0
+ * @returns JSX.Element
+ */
 export const Tr: React.FC<TableRowProps> = ({
   children,
   modifiers,
+  className,
   ...rest
 }) => {
+  let updatedClassName = "table-row";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
   return (
     <tr
-      className={`table-row ${
-        modifiers ? modifiers.map((m) => `table-row--${m}`).join(" ") : ""
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
       }`}
       {...rest}
     >
@@ -110,15 +217,29 @@ interface TableHeadProps
   modifiers?: string[];
 }
 
+/**
+ * Th
+ * @param param0
+ * @returns JSX.Element
+ */
 export const Th: React.FC<TableHeadProps> = ({
   children,
   modifiers,
+  className,
   ...rest
 }) => {
+  let updatedClassName = "table-head";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
   return (
     <th
-      className={`table-head ${
-        modifiers ? modifiers.map((m) => `table-head--${m}`).join(" ") : ""
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
       }`}
       {...rest}
     >
@@ -138,15 +259,29 @@ interface TableDataProps
   modifiers?: string[];
 }
 
+/**
+ * Td
+ * @param param0
+ * @returns JSX.Element
+ */
 export const Td: React.FC<TableDataProps> = ({
   children,
   modifiers,
+  className,
   ...rest
 }) => {
+  let updatedClassName = "table-data";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
   return (
     <td
-      className={`table-data ${
-        modifiers ? modifiers.map((m) => `table-data--${m}`).join(" ") : ""
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
       }`}
       {...rest}
     >
@@ -154,38 +289,3 @@ export const Td: React.FC<TableDataProps> = ({
     </td>
   );
 };
-
-interface TableAnimationWatcherProps {
-  tableRef: React.MutableRefObject<HTMLTableElement>;
-  tableDataRef: React.RefObject<HTMLDivElement>;
-  children: (props: TableAnimationWatcherProps, state: any) => JSX.Element;
-}
-
-interface TableAnimationWatcherState {}
-
-export class TableAnimationWatcher extends React.Component<
-  TableAnimationWatcherProps,
-  TableAnimationWatcherState
-> {
-  constructor(props: TableAnimationWatcherProps) {
-    super(props);
-
-    this.state = {};
-  }
-
-  componentDidMount() {
-    /* let childElement = React.Children.only(
-      this.props.children(this.props, this.state)
-    );
-
-    childElement = React.cloneElement(childElement, {
-      ref: "table-element-content",
-    }); */
-
-    console.log("this.props", this.props);
-  }
-
-  render() {
-    return this.props.children(this.props, this.state);
-  }
-}

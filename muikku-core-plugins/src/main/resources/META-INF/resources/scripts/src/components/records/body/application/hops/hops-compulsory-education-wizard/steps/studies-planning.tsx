@@ -15,12 +15,14 @@ import {
 import Button from "../../../../../../general/button";
 import { CourseStatus } from "../../../../../../../@types/shared";
 import { NEEDED_STUDIES_IN_TOTAL } from "../hops-compulsory-education-wizard";
-import AnimateHeight from "react-animate-height";
 import { ButtonPill } from "../../../../../../general/button";
 import CourseList from "../../course-list";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
+/**
+ * StudiesPlanningProps
+ */
 interface StudiesPlanningProps extends StudiesCourseData {
   user: "supervisor" | "student";
   disabled: boolean;
@@ -108,9 +110,13 @@ class StudiesPlanning extends React.Component<
   };
 
   /**
-   * compareGraduationGoalToNeededMandatoryCourses
+   * compareGraduationGoalToNeededForMandatoryStudies
+   * Compared graduation goal to need mandatory studies and shows indicator/message
+   * if studieplan is good enough
+   * @returns JSX.Element
    */
   compareGraduationGoalToNeededForMandatoryStudies = () => {
+    // All needed hours data needed
     const allApprovedHours = this.calculateAllApprovedHours();
     const optionalHoursCompleted = this.calculateCompletedOptionalHours();
     const mandatoryHoursCompleted = this.calculateCompletedMandatoryHours();
@@ -163,7 +169,7 @@ class StudiesPlanning extends React.Component<
 
   /**
    * calculateSelectedOptionalHours
-   * @returns
+   * @returns selected optional hours
    */
   calculateSelectedOptionalHours = (): number => {
     let hoursSelected = 0;
@@ -200,6 +206,9 @@ class StudiesPlanning extends React.Component<
     for (const sSubject of this.props.studies.selectedSubjects) {
       let oneSubjectMandatoryHours = 0;
 
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
@@ -231,12 +240,15 @@ class StudiesPlanning extends React.Component<
 
   /**
    * calculateNumberOfCompletedMandatoryCourses
-   * @returns
+   * @returns number of completed mandatory courses
    */
   calculateNumberOfCompletedMandatoryCourses = () => {
     let completed = 0;
 
     for (const sSubject of this.props.studies.selectedSubjects) {
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
@@ -287,12 +299,15 @@ class StudiesPlanning extends React.Component<
 
   /**
    * calculateNumberOfCompletedOptionalyCourses
-   * @returns
+   * @returns number of completed optional courses
    */
   calculateNumberOfCompletedOptionalyCourses = () => {
     let completed = 0;
 
     for (const sSubject of this.props.studies.selectedSubjects) {
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
@@ -335,12 +350,19 @@ class StudiesPlanning extends React.Component<
     return completed;
   };
 
+  /**
+   * calculateAllApprovedHours
+   * @returns number of all possible approved course hours
+   */
   calculateAllApprovedHours = () => {
     let hoursCompleted = 0;
 
     for (const sSubject of this.props.studies.selectedSubjects) {
       let oneSubjectHours = 0;
 
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
@@ -375,7 +397,7 @@ class StudiesPlanning extends React.Component<
 
   /**
    * calculateCompletedMandatoryHours
-   * @returns
+   * @returns completed mandatory course hours
    */
   calculateCompletedMandatoryHours = () => {
     let hoursCompleted = 0;
@@ -383,6 +405,9 @@ class StudiesPlanning extends React.Component<
     for (const sSubject of this.props.studies.selectedSubjects) {
       let oneSubjectMandatoryHours = 0;
 
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
@@ -400,6 +425,9 @@ class StudiesPlanning extends React.Component<
       }
 
       for (const aCourse of sSubject.availableCourses) {
+        /**
+         * Skip non mandatory courses
+         */
         if (!aCourse.mandatory) {
           continue;
         }
@@ -421,7 +449,7 @@ class StudiesPlanning extends React.Component<
 
   /**
    * calculateCompletedOptionalHours
-   * @returns
+   * @returns number of completed optional course hours
    */
   calculateCompletedOptionalHours = () => {
     let hoursCompleted = 0;
@@ -429,6 +457,9 @@ class StudiesPlanning extends React.Component<
     for (const sSubject of this.props.studies.selectedSubjects) {
       let oneSubjectOptionalHours = 0;
 
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }
@@ -446,6 +477,9 @@ class StudiesPlanning extends React.Component<
       }
 
       for (const aCourse of sSubject.availableCourses) {
+        /**
+         * Skip mandatory hours
+         */
         if (aCourse.mandatory) {
           continue;
         }
@@ -467,12 +501,17 @@ class StudiesPlanning extends React.Component<
 
   /**
    * calculateMaxNumberOfMandatoryCourses
-   * @returns
+   * Calculates max number of mandatory courses
+   * Takes account of possible "special" subjects
+   * @returns number of mandatory courses
    */
   calculateMaxNumberOfMandatoryCourses = () => {
     let amount = 0;
 
     for (const sSubject of this.props.studies.selectedSubjects) {
+      /**
+       * Taking account of options for "special" subjects
+       */
       if (this.props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
         continue;
       }

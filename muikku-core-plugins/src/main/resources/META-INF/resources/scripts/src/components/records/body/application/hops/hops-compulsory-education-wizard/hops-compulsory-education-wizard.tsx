@@ -28,6 +28,9 @@ import {
 export const NEEDED_OPTIONAL_COURSES = 9;
 export const NEEDED_STUDIES_IN_TOTAL = 46;
 
+/**
+ * CompulsoryEducationHopsWizardProps
+ */
 interface CompulsoryEducationHopsWizardProps {
   user: "supervisor" | "student";
   onHopsChange?: (hops: HOPSDataType) => any;
@@ -36,11 +39,17 @@ interface CompulsoryEducationHopsWizardProps {
   disabled: boolean;
 }
 
+/**
+ * CompulsoryEducationHopsWizardState
+ */
 interface CompulsoryEducationHopsWizardState {
   hopsCompulsory: HopsCompulsory;
   loading: boolean;
 }
 
+/**
+ * CompulsoryEducationHopsWizard
+ */
 class CompulsoryEducationHopsWizard extends React.Component<
   CompulsoryEducationHopsWizardProps,
   CompulsoryEducationHopsWizardState
@@ -132,6 +141,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loading: true,
     });
 
+    /**
+     * Mocks data loading!
+     */
     setTimeout(() => {
       switch (testData) {
         case 1:

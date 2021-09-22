@@ -3,10 +3,41 @@ import "~/sass/elements/checkbox-group.scss";
 /**
  * CheckboxGroupProps
  */
-interface CheckboxGroupProps {}
+interface CheckboxGroupProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
+  modifiers?: string[];
+}
 
-export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ children }) => {
-  return <div className="checkbox__group">{children}</div>;
+/**
+ * CheckboxGroup
+ * @param param0
+ * @returns JSX.Element
+ */
+export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+  children,
+  modifiers,
+  className,
+}) => {
+  let updatedClassName = "checkbox__group";
+
+  if (className) {
+    updatedClassName = className;
+  }
+
+  return (
+    <div
+      className={`${updatedClassName} ${
+        modifiers
+          ? modifiers.map((m) => `${updatedClassName}--${m}`).join(" ")
+          : ""
+      }`}
+    >
+      {children}
+    </div>
+  );
 };
 
 /**
@@ -22,6 +53,11 @@ interface CheckboxGroupItemProps
   modifiers?: string[];
 }
 
+/**
+ * CheckboxGroupItem
+ * @param param0
+ * @returns
+ */
 export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = ({
   label,
   className,
