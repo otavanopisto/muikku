@@ -4,6 +4,11 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/base.xhtml">
   
+  <ui:define name="meta">
+    <meta name="muikku:workspaceId" value="#{workspaceBackingBean.workspaceEntityId}"/>
+    <meta name="muikku:workspaceName" value="#{workspaceBackingBean.workspaceName}"/>
+  </ui:define>
+  
   <ui:define name="scripts">
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/workspace.js" />
