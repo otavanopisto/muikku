@@ -16,7 +16,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class NeverLoggedInNotificationDAO extends CorePluginsDAO<NeverLoggedInNotification> {
 
-  private static final long serialVersionUID = -593949686229292112L;
+  private static final long serialVersionUID = -2984364208802922221L;
 
   public NeverLoggedInNotification create(String studentIdentifier, Date sent){
     NeverLoggedInNotification neverLoggedInNotification = new NeverLoggedInNotification();
