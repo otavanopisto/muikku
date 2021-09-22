@@ -4,21 +4,18 @@ import { bindActionCreators, Dispatch } from "redux";
 import { InsertProfileWorklistItemTriggerType, insertProfileWorklistItem, loadProfileWorklistSection, LoadProfileWorklistSectionTriggerType } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
-import { ProfileType, WorklistBillingState, WorklistTemplate } from "~/reducers/main-function/profile";
+import { ProfileType, WorklistTemplate } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
-import WorkListRow from "./components/work-list-row";
-import { ButtonPill } from '~/components/general/button';
 import moment from "~/lib/moment";
-import Link from '~/components/general/link';
-import SubmitWorklistItemsDialog from "../../dialogs/submit-worklist-items";
 import { StatusType } from "~/reducers/base/status";
+import { WorkListSection } from "./components/work-list-section";
 
 // we use these
 const today = moment();
 const daysInCurrentMonth = today.date();
 
 // This sets the date limit of the current month when it is not possible to add new entries to the previous month
-const currentMonthDayLimit: Number = 10;
+const currentMonthDayLimit: number = 10;
 
 interface IWorkListProps {
   i18n: i18nType,
@@ -119,23 +116,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       return null;
     }
 
-    const sectionLabels = (<div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode application-sub-panel__multiple-items--item-labels">
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.description.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.date.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.price.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
-        <label className="application-sub-panel__item-title application-sub-panel__item-title--worklist-list-mode">{this.props.i18n.text.get("plugin.profile.worklist.factor.label")}</label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container  application-sub-panel__multiple-item-container--worklist-actions">
-      </div>
-    </div>);
-
     // let's get the first day of the previous month
     const previousMonthsFirstDay = moment().subtract(1, 'months').startOf("month");
 
@@ -143,74 +123,19 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
     const currentMonthsFirstDay = moment().startOf("month");
 
     const sections = (
+
       this.props.profile.worklist && this.props.profile.worklist.map((section, index) => {
-        // check if section open or if it has data
-        const isOpen = this.state.openedSections.includes(section.summary.beginDate);
-        const hasData = !!section.items;
-
-        // show section entries if it is opened and has data a.k.a entries in it
-        const entries = isOpen && hasData ? (
-          section.items.map((item) => {
-            return (
-              <WorkListRow key={item.id} item={item} currentMonthDayLimit={currentMonthDayLimit} />
-            );
-          })
-        ) : null;
-
-        // calculate the months total value of worklist entries
-        let totalCostSummary: number = isOpen && hasData ? (
-          section.items.map(item => (item.price * item.factor)).reduce((a, b) => a + b)
-        ) : null;
-
-        const sectionTotalRow = (<div className="application-sub-panel__item application-sub-panel__item--worklist-total">
-          <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">{this.props.i18n.text.get("plugin.profile.worklist.worklistEntriesTotalValueLabel")}</div>
-          <div className="application-sub-panel__item-data  application-sub-panel__item-data--worklist-total">{totalCostSummary}</div>
-        </div>);
-
-        // check if any entries are submittable based on the entry state
-        const sectionHasSubmittableEntries = section.items && section.items.some((i) => i.state === WorklistBillingState.ENTERED);
-
-        // check if section is for previous month entries
-        const sectionIsPreviousMonth = moment(section.summary.beginDate).isSame(previousMonthsFirstDay);
-
-        // check if section is for current month entries
-        const sectionIsCurrentMonth = moment(section.summary.beginDate).isSame(currentMonthsFirstDay);
-
-        // check if current months date is 10th or less so user can still submit previous months etries
-        const isPreviousMonthAvailable = daysInCurrentMonth <= currentMonthDayLimit;
-
-        // in that case we have this button, but we are only adding it in the render according to the condition
-        const submitLastMonthButton = (
-          <SubmitWorklistItemsDialog summary={section.summary}>
-            <Link className="link link--submit-worklist-approval">{this.props.i18n.text.get("plugin.profile.worklist.submitWorklistForApproval")}</Link>
-          </SubmitWorklistItemsDialog>
-        );
-
-        // submit entries link is enabled and visible IF:
-        // * section is opened AND
-        // * has entries that can be submitted AND
-        // * section is previous month AND previous month can be subbmitted a.k.a current date is 10th or less OR
-        // * section is current month
-        const shouldHaveSubmitEntriesLinkAvailable = isOpen && sectionHasSubmittableEntries && ((isPreviousMonthAvailable && sectionIsPreviousMonth) || sectionIsCurrentMonth);
-
-        return (
-          <div key={section.summary.beginDate} className="application-sub-panel application-sub-panel--worklist">
-            <h4 onClick={this.toggleSection.bind(this, index)} className="application-sub-panel__header application-sub-panel__header--worklist-entries">
-              <ButtonPill buttonModifiers="expand-worklist" icon={isOpen ? "arrow-down" : "arrow-right"} as="span" />
-              <span>{section.summary.displayName} ({section.summary.count})</span>
-            </h4>
-            <div className="application-sub-panel__body">
-              {isOpen && sectionLabels}
-              {entries && entries.reverse()}
-              {isOpen && sectionTotalRow}
-              {shouldHaveSubmitEntriesLinkAvailable ?
-                <div className="application-sub-panel__item application-sub-panel__item--worklist-items-footer">
-                  <div className="application-sub-panel__item-data application-sub-panel__item-data--worklist-submit-entries">{submitLastMonthButton}</div>
-                </div>
-                : null}
-            </div>
-          </div>
-        );
+        return <WorkListSection
+          currentMonthDayLimit={currentMonthDayLimit}
+          currentMonthsFirstDay={currentMonthsFirstDay}
+          daysInCurrentMonth={daysInCurrentMonth}
+          i18n={this.props.i18n}
+          isExpanded={this.state.openedSections.includes(section.summary.beginDate)}
+          onToggleSection={this.toggleSection.bind(this, index)}
+          previousMonthsFirstDay={previousMonthsFirstDay}
+          section={section}
+          key={section.summary.beginDate}
+        />
       })
     );
 

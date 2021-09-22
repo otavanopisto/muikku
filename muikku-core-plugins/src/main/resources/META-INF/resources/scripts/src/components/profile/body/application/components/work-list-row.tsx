@@ -20,7 +20,7 @@ const today = moment();
 // this represents the previous month from the current day
 const previousMonth = moment().subtract(1, "months");
 
-interface IWorkListRowProps {
+interface WorkListRowProps {
   i18n: i18nType;
   item: StoredWorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
@@ -28,7 +28,7 @@ interface IWorkListRowProps {
   currentMonthDayLimit: Number;
 }
 
-interface IWorksListEditableState {
+interface WorksListEditableState {
   /**
    * Whether it is in edit mode
    */
@@ -43,8 +43,8 @@ interface IWorksListEditableState {
 /**
  * The worklist row that shows the row of a worklist item
  */
-class WorkListRow extends React.Component<IWorkListRowProps, IWorksListEditableState> {
-  constructor(props: IWorkListRowProps) {
+class WorkListRow extends React.Component<WorkListRowProps, WorksListEditableState> {
+  constructor(props: WorkListRowProps) {
     super(props);
 
     this.toggleEditMode = this.toggleEditMode.bind(this);

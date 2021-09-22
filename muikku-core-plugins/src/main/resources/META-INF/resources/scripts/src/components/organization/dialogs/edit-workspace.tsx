@@ -307,10 +307,10 @@ class OrganizationEditWorkspace extends React.Component<
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate
             ? moment(workspace.details.beginDate)
-            : "",
+            : null,
           endDate: workspace.details.endDate
             ? moment(workspace.details.endDate)
-            : "",
+            : null,
         });
       },
     });
@@ -695,10 +695,10 @@ class OrganizationEditWorkspace extends React.Component<
       case 3:
         const workspaceStudents =
           this.props.currentWorkspace.students &&
-          this.props.currentWorkspace.students.results
+            this.props.currentWorkspace.students.results
             ? this.turnStudentsToSelectItems(
-                this.props.currentWorkspace.students.results
-              )
+              this.props.currentWorkspace.students.results
+            )
             : [];
         return (
           <form>
@@ -787,10 +787,10 @@ class OrganizationEditWorkspace extends React.Component<
       case 5:
         const workspaceStaff =
           this.props.currentWorkspace.staffMembers &&
-          this.props.currentWorkspace.staffMembers.results
+            this.props.currentWorkspace.staffMembers.results
             ? this.turnStaffToSelectItems(
-                this.props.currentWorkspace.staffMembers.results
-              )
+              this.props.currentWorkspace.staffMembers.results
+            )
             : [];
         return (
           <form>
@@ -881,15 +881,15 @@ class OrganizationEditWorkspace extends React.Component<
                   {this.state.beginDate
                     ? this.getLocaledDate(this.state.beginDate)
                     : this.props.i18n.text.get(
-                        "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
-                      )}
+                      "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
+                    )}
                 </span>
                 <span>
                   {this.state.endDate
                     ? this.getLocaledDate(this.state.endDate)
                     : this.props.i18n.text.get(
-                        "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
-                      )}
+                      "plugin.organization.workspaces.editWorkspace.summary.endDate.empty"
+                    )}
                 </span>
               </DialogRowContent>
             </DialogRow>
@@ -1038,66 +1038,63 @@ class OrganizationEditWorkspace extends React.Component<
     let executeContent = (
       <div>
         <div
-          className={`dialog__executer ${
-            this.state.workspaceUpdated === true
+          className={`dialog__executer ${this.state.workspaceUpdated === true
               ? "state-DONE"
               : ""
-          }`}
+            }`}
         >
           {this.props.i18n.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.updateWorkspace"
           )}
         </div>
         <div
-          className={`dialog__executer ${
-            this.state.detailsAdded === true
+          className={`dialog__executer ${this.state.detailsAdded === true
               ? "state-DONE"
               : ""
-          }`}
+            }`}
         >
           {this.props.i18n.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.addDetails"
           )}
         </div>
         <div
-          className={`dialog__executer ${
-            this.state.studentsAdded === true
+
+          className={`dialog__executer ${this.state.studentsAdded === true
               ? "state-DONE"
               : ""
-          }`}
+            }`}
         >
           {this.props.i18n.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.addStudents"
           )}
         </div>
         <div
-          className={`dialog__executer ${
-            this.state.staffAdded === true
+          className={`dialog__executer ${this.state.staffAdded === true
               ? "state-DONE"
               : ""
-          }`}
+            }`}
         >
           {this.props.i18n.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.addTeachers"
           )}
         </div>
         <div
-          className={`dialog__executer ${
-            this.state.studentsRemoved === true
+
+          className={`dialog__executer ${this.state.studentsRemoved === true
               ? "state-DONE"
               : ""
-          }`}
+            }`}
+
         >
           {this.props.i18n.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.removeStudents"
           )}
         </div>
         <div
-          className={`dialog__executer ${
-            this.state.staffRemoved === true
+          className={`dialog__executer ${this.state.staffRemoved === true
               ? "state-DONE"
               : ""
-          }`}
+            }`}
         >
           {this.props.i18n.text.get(
             "plugin.organization.workspaces.editWorkspace.summary.execute.removeTeachers"

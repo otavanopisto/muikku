@@ -39,6 +39,7 @@ export interface IAvailableChatRoomType {
   roomName: string,
   roomJID: string,
   roomDesc: string,
+  newest?: boolean
   // roomPersistent: boolean,
 }
 
@@ -96,6 +97,8 @@ interface IChatState {
   roomNameField: string;
   roomDescField: string;
   // roomPersistent: boolean;
+
+  missingFields: boolean;
 }
 
 interface IChatProps {
@@ -132,6 +135,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
       roomNameField: "",
       roomDescField: "",
       // roomPersistent: false,
+
+      missingFields: false
     }
 
     this.toggleControlBox = this.toggleControlBox.bind(this);
@@ -185,34 +190,41 @@ class Chat extends React.Component<IChatProps, IChatState> {
   async createAndJoinChatRoom(e: React.FormEvent) {
     e.preventDefault();
 
+    const {roomNameField, roomDescField} = this.state
+
     // We need to trim and replace white spaces so new room will be created succefully
-    const roomName = this.state.roomNameField;
-    const roomDesc = this.state.roomDescField;
+    const roomName = roomNameField.trim();
+    const roomDesc = roomDescField.trim();
 
-    if (!this.props.settings.nick) {
-      return;
-    }
-
-    try {
-      const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.create({
-        title: roomName,
-        description: roomDesc,
-      }), 'callback')()) as IChatRoomType;
-      const roomJID = chatRoom.name + '@conference.' + this.state.connectionHostname;
+    if(roomName !== "" && roomDesc !== ""){
+      if (!this.props.settings.nick) {
+        return;
+      }
+      try {
+        const chatRoom: IChatRoomType = await (promisify(mApi().chat.publicRoom.create({
+          title: roomName,
+          description: roomDesc,
+        }), 'callback')()) as IChatRoomType;
+        const roomJID = chatRoom.name + '@conference.' + this.state.connectionHostname;
+        this.setState({
+          availableMucRooms: this.state.availableMucRooms.concat([
+            {
+              roomDesc: chatRoom.description,
+              roomName: chatRoom.title,
+              roomJID,
+              newest: true
+            },
+          ]),
+        }, this.joinChatRoom.bind(this, roomJID));
+      } catch (err) {
+        this.props.displayNotification(this.props.i18n.text.get("plugin.chat.notification.roomCreateFail"), "error");
+      }
+      this.toggleCreateChatRoomForm();
+    }else {
       this.setState({
-        availableMucRooms: this.state.availableMucRooms.concat([
-          {
-            roomDesc: chatRoom.description,
-            roomName: chatRoom.title,
-            roomJID,
-          },
-        ]),
-      }, this.joinChatRoom.bind(this, roomJID));
-    } catch (err) {
-      this.props.displayNotification(this.props.i18n.text.get("plugin.chat.notification.roomCreateFail"), "error");
+        missingFields: true
+      });
     }
-
-    this.toggleCreateChatRoomForm();
   }
 
   // Toggle states for Control Box window opening/closing
@@ -625,7 +637,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               <div className="chat__subpanel-body">
                 <form onSubmit={this.createAndJoinChatRoom}>
                   <div className="chat__subpanel-row">
-                    <label htmlFor="newChatRoomName" className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}</label>
+                    <label htmlFor="newChatRoomName" className="chat__label">{this.props.i18n.text.get("plugin.chat.room.name")}*</label>
                     <input
                       id="newChatRoomName"
                       className="chat__textfield"
@@ -635,7 +647,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     />
                   </div>
                   <div className="chat__subpanel-row">
-                    <label htmlFor="newChatRoomDesc" className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}</label>
+                    <label htmlFor="newChatRoomDesc" className="chat__label">{this.props.i18n.text.get("plugin.chat.room.desc")}*</label>
                     <textarea
                       id="newChatRoomDesc"
                       className="chat__memofield"
@@ -644,6 +656,10 @@ class Chat extends React.Component<IChatProps, IChatState> {
                     />
                   </div>
                   <input className="chat__submit chat__submit--new-room" type="submit" value={this.props.i18n.text.get("plugin.chat.button.addRoom")} />
+                  <div className="chat__subpanel-row chat__subpanel-row--mandatory">
+                    *-{this.props.i18n.text.get("plugin.chat.room.mandatoryFields")}
+                  </div>
+                {this.state.missingFields ? <div className="chat__subpanel-row chat__subpanel-row--emessage"><p>{this.props.i18n.text.get("plugin.chat.room.missingFields")}</p></div>  : null}
                 </form>
               </div>
             </div>}
@@ -665,6 +681,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
               chat={chat}
               onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
               i18n={this.props.i18n}
+              active={chat.newest && chat.newest}
             />
             : null)}
 

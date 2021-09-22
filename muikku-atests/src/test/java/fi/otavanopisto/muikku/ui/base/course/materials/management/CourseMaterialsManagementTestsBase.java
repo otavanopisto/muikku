@@ -59,8 +59,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         clearElement(".material-editor--visible .material-editor__title");
         sendKeys(".material-editor--visible .material-editor__title", "Test title");
         waitForNotPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
-        waitAndClick(".button-pill__icon.icon-leanpub");
-        waitForPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
+        waitAndClickAndConfirm(".button-pill__icon.icon-leanpub", ".button-pill--material-editor-publish-page.button-pill--disabled", 5, 500);
         sleep(500);
         waitAndClick(".button-pill--material-page-close-editor");
         waitForNotVisible(".tabs--material-editor");

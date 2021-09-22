@@ -1011,12 +1011,21 @@
 
 .application-list__item-body-meta-content {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 0 0 10px;
 
   label {
-    margin-right: 10px;
+    margin-right: 5px;
   }
+
+  div {
+    padding: 5px 0;
+  }
+
+  span {
+    font-weight: 300;
+  }
+
 }
 
 .application-list__item-footer--course {
