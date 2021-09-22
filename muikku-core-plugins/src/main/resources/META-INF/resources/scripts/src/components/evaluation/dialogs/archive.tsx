@@ -114,7 +114,7 @@ class ArchiveDialog extends React.Component<
      * footer
      * @param closeDialog
      */
-    let footer = (closeDialog: () => any) => {
+    const footer = (closeDialog: () => any) => {
       return (
         <div className="dialog__button-set">
           <Button
@@ -145,7 +145,7 @@ class ArchiveDialog extends React.Component<
      * content
      * @param closeDialog
      */
-    let content = () => {
+    const content = () => {
       return (
         <div
           dangerouslySetInnerHTML={this.createHtmlMarkup(

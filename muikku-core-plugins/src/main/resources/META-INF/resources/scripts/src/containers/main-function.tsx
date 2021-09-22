@@ -125,9 +125,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), true, false);
     } else if (window.location.pathname.includes("/profile")) {
       this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
-    } /* else if (window.location.pathname.includes("/evaluation")) {
-      this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
-    } */
+    }
   }
 
   /**

@@ -103,7 +103,7 @@ class EvaluateDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let content = (closeDialog: () => any) => {
+    const content = (closeDialog: () => any) => {
       return (
         <Evaluation
           onClose={closeDialog}

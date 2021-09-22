@@ -79,7 +79,7 @@ class DeleteDialog extends React.Component<
 
     const studentNameString = `${evaluationSelectedAssessmentId.lastName}, ${evaluationSelectedAssessmentId.firstName}`;
 
-    let footer = (closeDialog: () => any) => {
+    const footer = (closeDialog: () => any) => {
       return (
         <div className="dialog__button-set">
           <Button
@@ -102,7 +102,7 @@ class DeleteDialog extends React.Component<
         </div>
       );
     };
-    let content = (closeDialog: () => any) => {
+    const content = (closeDialog: () => any) => {
       return (
         <div>
           {this.props.i18n.text.get(

@@ -89,7 +89,7 @@ class DeleteRequestDialog extends React.Component<
      * footer
      * @param closeDialog
      */
-    let footer = (closeDialog: () => any) => {
+    const footer = (closeDialog: () => any) => {
       return (
         <div className="dialog__button-set">
           <Button
@@ -116,7 +116,7 @@ class DeleteRequestDialog extends React.Component<
      * content
      * @param closeDialog
      */
-    let content = (closeDialog: () => any) => {
+    const content = (closeDialog: () => any) => {
       return (
         <div
           dangerouslySetInnerHTML={this.createHtmlMarkup(
