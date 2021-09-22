@@ -134,37 +134,71 @@ class DeleteDialog extends React.Component<
  * @param draftId
  */
 export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
-  if (
-    localStorage.getItem(
-      `supplementation-editor-edit.${draftId}.literalEvaluation`
-    )
-  ) {
+  const supplementationEditorEditLiteralEvaluation = localStorage.getItem(
+    `supplementation-editor-edit.${draftId}.literalEvaluation`
+  );
+
+  const supplementationEditorNewLiteralEvaluation = localStorage.getItem(
+    `supplementation-editor-new.${draftId}.literalEvaluation`
+  );
+
+  const workspaceEditorEditLiteralEvaluation = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.literalEvaluation`
+  );
+
+  const workspaceEditorEditGrade = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.grade`
+  );
+
+  const workspaceEditorEditBasePrice = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.basePrice`
+  );
+
+  const workspaceEditorEditSelectedPriceOption = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.selectedPriceOption`
+  );
+
+  const workspaceEditorEditExistingBilledPriceObject = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.existingBilledPriceObject`
+  );
+
+  const workspaceEditorNewLiteralEvaluation = localStorage.getItem(
+    `workspace-editor-new.${draftId}.literalEvaluation`
+  );
+
+  const workspaceEditorNewGrade = localStorage.getItem(
+    `workspace-editor-new.${draftId}.grade`
+  );
+
+  const workspaceEditorNewBasePrice = localStorage.getItem(
+    `workspace-editor-new.${draftId}.basePrice`
+  );
+
+  const workspaceEditorNewSelectedPriceOption = localStorage.getItem(
+    `workspace-editor-new.${draftId}.selectedPriceOption`
+  );
+
+  const workspaceEditorNewExistingBilledPriceObject = localStorage.getItem(
+    `workspace-editor-new.${draftId}.existingBilledPriceObject`
+  );
+
+  if (supplementationEditorEditLiteralEvaluation !== null) {
     localStorage.removeItem(
       `supplementation-editor-edit.${draftId}.literalEvaluation`
     );
   }
-  if (
-    localStorage.getItem(
-      `supplementation-editor-new.${draftId}.literalEvaluation`
-    )
-  ) {
+  if (supplementationEditorNewLiteralEvaluation !== null) {
     localStorage.removeItem(
       `supplementation-editor-new.${draftId}.literalEvaluation`
     );
   }
 
   if (
-    localStorage.getItem(
-      `workspace-editor-edit.${draftId}.literalEvaluation`
-    ) ||
-    localStorage.getItem(`workspace-editor-edit.${draftId}.grade`) ||
-    localStorage.getItem(
-      `workspace-editor-edit.${draftId}.selectedPriceOption`
-    ) ||
-    localStorage.getItem(`workspace-editor-edit.${draftId}.basePrice`) ||
-    localStorage.getItem(
-      `workspace-editor-edit.${draftId}.existingBilledPriceObject`
-    )
+    workspaceEditorEditLiteralEvaluation !== null ||
+    workspaceEditorEditGrade !== null ||
+    workspaceEditorEditSelectedPriceOption !== null ||
+    workspaceEditorEditBasePrice !== null ||
+    workspaceEditorEditExistingBilledPriceObject !== null
   ) {
     localStorage.removeItem(
       `workspace-editor-edit.${draftId}.literalEvaluation`
@@ -180,15 +214,11 @@ export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
   }
 
   if (
-    localStorage.getItem(`workspace-editor-new.${draftId}.literalEvaluation`) ||
-    localStorage.getItem(`workspace-editor-new.${draftId}.grade`) ||
-    localStorage.getItem(
-      `workspace-editor-new.${draftId}.selectedPriceOption`
-    ) ||
-    localStorage.getItem(`workspace-editor-new.${draftId}.basePrice`) ||
-    localStorage.getItem(
-      `workspace-editor-new.${draftId}.existingBilledPriceObject`
-    )
+    workspaceEditorNewLiteralEvaluation !== null ||
+    workspaceEditorNewGrade !== null ||
+    workspaceEditorNewSelectedPriceOption !== null ||
+    workspaceEditorNewBasePrice !== null ||
+    workspaceEditorNewExistingBilledPriceObject !== null
   ) {
     localStorage.removeItem(
       `workspace-editor-new.${draftId}.literalEvaluation`
