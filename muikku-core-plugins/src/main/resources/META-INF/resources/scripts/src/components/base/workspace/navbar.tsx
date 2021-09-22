@@ -174,80 +174,90 @@ class WorkspaceNavbar extends React.Component<
         break;
     }
   }
-  render(){
-    const itemData: ItemDataElement[] = [{
-      modifier: "settings",
-      trail: "workspace-management",
-      text: 'plugin.workspace.dock.workspace-edit',
-      href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
-      icon: "cogs",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
-    },{
-      modifier: "home",
-      trail: "index",
-      text: 'plugin.workspace.dock.home',
-      href: "/workspace/" + this.props.workspaceUrl,
-      icon: "home",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE
-    }, {
-      modifier: "help",
-      trail: "help",
-      text: 'plugin.workspace.dock.guides',
-      href: "/workspace/" + this.props.workspaceUrl + "/help",
-      icon: "question",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE
-    }, {
-      modifier: "materials",
-      trail: "materials",
-      text: 'plugin.workspace.dock.materials',
-      href: "/workspace/" + this.props.workspaceUrl + "/materials",
-      icon: "leanpub",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE
-    }, {
-      modifier: "discussion",
-      trail: "workspace-discussions",
-      text: 'plugin.workspace.dock.discussions',
-      href: "/workspace/" + this.props.workspaceUrl + "/discussions",
-      icon: "bubbles",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE
-    }, {
-      modifier: "users",
-      trail: "users",
-      text: 'plugin.workspace.dock.members',
-      href: "/workspace/" + this.props.workspaceUrl + "/users",
-      icon: "users",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE
-    }, {
-      modifier: "journal",
-      trail: "journal",
-      text: 'plugin.workspace.dock.journal',
-      href: "/workspace/" + this.props.workspaceUrl + "/journal",
-      icon: "book",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
-    },{
-      modifier: "announcer",
-      trail: "workspace-announcer",
-      text: 'plugin.workspace.dock.announcer',
-      href: "/workspace/" + this.props.workspaceUrl + "/announcer",
-      icon: "paper-plane",
-      to: true,
-      condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL
-    },{
-      modifier: "evaluation",
-      trail: "workspace-evaluation",
-      text: "plugin.evaluation.evaluation",
-      href: "/workspace/" + this.props.workspaceUrl + "/evaluation",
-      icon: "evaluate",
-      to: true,
-      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
-    }];
+  render() {
+    const itemData: ItemDataElement[] = [
+      {
+        modifier: "settings",
+        trail: "workspace-management",
+        text: "plugin.workspace.dock.workspace-edit",
+        href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
+        icon: "cogs",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
+      },
+      {
+        modifier: "home",
+        trail: "index",
+        text: "plugin.workspace.dock.home",
+        href: "/workspace/" + this.props.workspaceUrl,
+        icon: "home",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE,
+      },
+      {
+        modifier: "help",
+        trail: "help",
+        text: "plugin.workspace.dock.guides",
+        href: "/workspace/" + this.props.workspaceUrl + "/help",
+        icon: "question",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE,
+      },
+      {
+        modifier: "materials",
+        trail: "materials",
+        text: "plugin.workspace.dock.materials",
+        href: "/workspace/" + this.props.workspaceUrl + "/materials",
+        icon: "leanpub",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE,
+      },
+      {
+        modifier: "discussion",
+        trail: "workspace-discussions",
+        text: "plugin.workspace.dock.discussions",
+        href: "/workspace/" + this.props.workspaceUrl + "/discussions",
+        icon: "bubbles",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE,
+      },
+      {
+        modifier: "users",
+        trail: "users",
+        text: "plugin.workspace.dock.members",
+        href: "/workspace/" + this.props.workspaceUrl + "/users",
+        icon: "users",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE,
+      },
+      {
+        modifier: "journal",
+        trail: "journal",
+        text: "plugin.workspace.dock.journal",
+        href: "/workspace/" + this.props.workspaceUrl + "/journal",
+        icon: "book",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE,
+      },
+      {
+        modifier: "announcer",
+        trail: "workspace-announcer",
+        text: "plugin.workspace.dock.announcer",
+        href: "/workspace/" + this.props.workspaceUrl + "/announcer",
+        icon: "paper-plane",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
+      },
+      {
+        modifier: "evaluation",
+        trail: "workspace-evaluation",
+        text: "plugin.evaluation.evaluation",
+        href: "/workspace/" + this.props.workspaceUrl + "/evaluation",
+        icon: "evaluate",
+        to: true,
+        condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
+      },
+    ];
 
     let assessmentRequestItem =
       this.props.currentWorkspace &&
