@@ -16,6 +16,7 @@ import { ButtonPill } from '~/components/general/button';
 import WorkspaceDialog from '../dialogs/new-workspace';
 import UserGroupDialog from '../dialogs/new-usergroup';
 import UserDialog from '../dialogs/new-user';
+import HoverButton from '~/components/general/hover-button';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
@@ -86,11 +87,15 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.setState({ workspaceSearchFieldValue: value });
   }
 
+
   render() {
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
     let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
+    let usersPrimaryActionMobile = <UserDialog><ButtonPill icon="plus" buttonModifiers="organization"/></UserDialog>;
     let userGroupsPrimaryAction = <UserGroupDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserGroupDialog>;
+    let userGroupsPrimaryActionMobile = <UserGroupDialog><ButtonPill icon="plus" /></UserGroupDialog>;
     let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
+    let coursesPrimaryActionMobile = <WorkspaceDialog activeFilters={this.props.activeFilters}><HoverButton icon="plus" modifier="new-message" /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
         <SearchFormElement value={this.state.workspaceSearchFieldValue} id="organizationWorkpaceSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="organization-workspace-search" updateField={this.doWorkspaceSearch} ></SearchFormElement>
@@ -119,7 +124,8 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
         {
           id: "USERS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
-          component: () => { return <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />} /> }
+          mobileAction: usersPrimaryActionMobile,
+          component: () => { return <ApplicationPanelBody primaryOption={usersPrimaryAction} primaryOptionMobile={usersPrimaryActionMobile} toolbar={usersToolbar} modifier="tabs" children={<Users />} /> }
         },
         {
           id: "USERSGROUPS",
