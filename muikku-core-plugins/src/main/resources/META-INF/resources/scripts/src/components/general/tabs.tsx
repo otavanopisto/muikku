@@ -56,6 +56,12 @@ class Tabs extends React.Component<TabsProps, TabsState>{
         })}
         {this.props.children}
       </div>
+      <div className="tabs__tab-data-container">
+        {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
+          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
+          {t.component()}
+        </div>)}
+      </div>
       <Swiper modules={[A11y, Pagination]} autoHeight={true} a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
       {this.props.tabs.map(t=><SwiperSlide key={t.id} >
         <div className="tabs__mobile-tab">
@@ -65,12 +71,7 @@ class Tabs extends React.Component<TabsProps, TabsState>{
         {t.component()}
         </SwiperSlide>)}
       </Swiper>
-      <div className="tabs__tab-data-container">
-        {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
-          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
-          {t.component()}
-        </div>)}
-      </div>
+
     </div>
   }
 }
