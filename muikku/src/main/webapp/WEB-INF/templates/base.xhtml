@@ -55,6 +55,7 @@
       FORUM_CREATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')},
       FORUM_UPDATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')},
       FORUM_DELETEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')},
+      ORGANIZATION_VIEW: #{sessionBackingBean.hasEnvironmentPermission('ORGANIZATION_VIEW')},
 
       WORKLIST_AVAILABLE: #{sessionBackingBean.canAccessWorklist},
       CHAT_AVAILABLE: #{sessionBackingBean.canAccessChat}
@@ -102,7 +103,7 @@
   <script defer="defer" jsf:name="scripts/gui/locales.js" />
 
   <!-- Muikku icons -->
-  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.3.0/style.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.3.4/style.css" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic" rel="stylesheet" />
   <ui:insert name="styles"></ui:insert>
 

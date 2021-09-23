@@ -35,6 +35,9 @@ export interface UserType {
   curriculumIdentifier?: string,
   studyProgrammeIdentifier?: string,
   organizationIdentifier?: string,
+  isDefaultOrganization?: boolean,
+  permissions?: Array<string>,
+  roles?: Array<string>,
 
   //EXTENDED VALUES, may or may not be available
   role?: string,

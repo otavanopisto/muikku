@@ -10,7 +10,6 @@ export type UserGroupsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY"
 export interface UserPayloadType {
   q: string | null,
   firstResult?: number | null,
-  lastResult?: number | null,
   maxResults?: number | null,
   userGroupIds?: number[],
 }

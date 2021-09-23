@@ -110,6 +110,7 @@
 
 .footer__subitem {
   color: $color-frontpage-text-contact-us-information;
+  display: flex;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;

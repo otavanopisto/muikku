@@ -18,6 +18,7 @@ import { YOType, SubjectEligibilitySubjectsType } from './main-function/records/
 import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
+import { OrganizationSummaryType } from "./organization/summary"
 
 export interface StateType {
   notifications: NotificationListType,
@@ -39,6 +40,7 @@ export interface StateType {
   userSelect?: UsersSelectType,
   userGroups?: UserGroupsType
   workspaces?: WorkspacesType,
+  organizationSummary?: OrganizationSummaryType,
   organizationWorkspaces?: WorkspacesType,
   organizationUsers?: UsersType,
   discussion?: DiscussionType,

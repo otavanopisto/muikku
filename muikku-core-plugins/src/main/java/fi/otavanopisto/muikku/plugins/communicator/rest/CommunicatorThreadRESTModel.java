@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
-
 /**
  * REST model for message threads containing information about the thread but not the contents nor recipients.
  */

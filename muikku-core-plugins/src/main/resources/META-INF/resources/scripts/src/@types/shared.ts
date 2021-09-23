@@ -190,3 +190,10 @@ export interface StudiesCourseData {
   ownHopsChoosed?: number;
   ownHopsCompleted?: number;
 }
+export interface UploadingValue {
+  name: string;
+  contentType: string;
+  failed?: boolean;
+  progress?: number;
+  file?: File;
+}

@@ -442,12 +442,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     switch (identifierMapper.getStudentGroupType(userGroupIdentifier.getIdentifier())) {
       case STUDYPROGRAMME:
         Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(userGroupIdentifier.getIdentifier());
-        CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(null, courseId, studyProgrammeId, null);
+        CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(null, courseId, studyProgrammeId, null, null);
         pyramusClient.post(String.format("/courses/courses/%d/signupStudyProgrammes", courseId), signupStudyProgramme);
       break;
       case STUDENTGROUP:
         Long studentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupIdentifier.getIdentifier());
-        CourseSignupStudentGroup signupStudentGroup = new CourseSignupStudentGroup(null, courseId, studentGroupId, null);
+        CourseSignupStudentGroup signupStudentGroup = new CourseSignupStudentGroup(null, courseId, studentGroupId, null, null);
         pyramusClient.post(String.format("/courses/courses/%d/signupStudentGroups", courseId), signupStudentGroup);
       break;
     }

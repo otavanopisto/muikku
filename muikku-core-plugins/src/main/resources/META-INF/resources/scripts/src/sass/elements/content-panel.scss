@@ -92,7 +92,7 @@
 
 .content-panel__content {
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     display: flex;
     flex-flow: row nowrap;
   }
@@ -217,6 +217,7 @@
     max-width: 700px;
     min-width: 650px;
     order: 1;
+    z-index: 100;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {

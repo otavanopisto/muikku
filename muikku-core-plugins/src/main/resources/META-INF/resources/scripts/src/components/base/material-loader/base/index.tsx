@@ -88,9 +88,9 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 //Fixes the html inconsitencies because
 //there are some of them which shouldn't
 //but hey that's the case
-function preprocessor($html: any): any{
-  $html.find('img').each(function(){
-    if (!$(this).parent('figure').length){
+function preprocessor($html: any): any {
+  $html.find('img').each(function () {
+    if (!$(this).parent('figure').length) {
       let elem = document.createElement('span');
       elem.className = 'image';
 
@@ -413,7 +413,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE) as any;
   }
-  render(){
+  render() {
     const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
     const invisible = this.props.invisible;
     const i18n = this.props.i18n;
@@ -430,7 +430,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         preventChildProcessing: true,
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
-          return (<IFrame key={props.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>);
+          return (<IFrame key={props.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} />);
         }
       },
       {
@@ -462,7 +462,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       {
         shouldProcessHTMLElement: (tagname, element) => tagname === "span" && element.classList.contains("math-tex"),
         processingFunction: (tag, props, children, element) => {
-          return <MathJAX key={props.key} invisible={invisible} children={children}/>;
+          return <MathJAX key={props.key} invisible={invisible} children={children} />;
         },
       },
       {
@@ -471,19 +471,20 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         preventChildProcessing: true,
         processingFunction: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
-          return <Link key={props.key} element={element} path={path} dataset={dataset} i18n={i18n} processingRules={processingRules}/>;
+          return <Link key={props.key} element={element} path={path} dataset={dataset} i18n={i18n} processingRules={processingRules} />;
         },
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "table",
         processingFunction: (tagname, props, children, element) => {
-          return <Table key={props.key} element={element} props={props} children={children}/>;
+          return <Table key={props.key} element={element} props={props} children={children} />;
         },
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "source",
         preprocessReactProperties: (tag, props, children, element) => {
-          const src = props.src;
+          const dataset = extractDataSet(element);
+          const src = dataset.original || "";
           const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
             (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
           if (!isAbsolute) {

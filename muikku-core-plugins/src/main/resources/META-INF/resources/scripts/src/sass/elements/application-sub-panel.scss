@@ -45,7 +45,8 @@
   }
 }
 
-.application-sub-panel--workspace-users {
+.application-sub-panel--workspace-users,
+.application-sub-panel--organization-summary {
   margin: 0;
   padding: 10px;
 
@@ -53,6 +54,14 @@
     padding: 20px;
   }
 }
+
+.application-sub-panel--organization-users {
+
+  &:first-child {
+    padding-bottom: 12px;
+  }
+}
+
 
 // Subpanel header
 .application-sub-panel__header {
@@ -378,6 +387,7 @@
 }
 
 // Subpanel container for single item inside multiple-items wrapper
+
 .application-sub-panel__multiple-item-container {
   display: flex;
   flex-basis: auto;
@@ -387,10 +397,19 @@
   margin: 2px 10px 2px 0;
 
   .application-sub-panel__item-title {
+    align-items: center;
+    display: flex;
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
     font-weight: 600;
+  }
+
+  .application-sub-panel__item-title-sort-indicator {
+    font-size: 0.825rem;
+    height: 0.825rem;
+    margin: 0 4px;
+    width: 0.825rem;
   }
 
   .application-sub-panel__item-data {
@@ -538,6 +557,11 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--organization-previous-bills,
+.application-sub-panel__item--organization-contact-information {
+  align-items: flex-start;
 }
 
 .application-sub-panel__item--worklist-total {
@@ -756,12 +780,6 @@
   padding: 10px 0;
 }
 
-.application-sub-panel__item-header--hops {
-  font-weight: 600;
-  margin: 2px 5px 2px 0;
-  padding: 0;
-}
-
 // Subpanel item title & label
 .application-sub-panel__item-title {
   flex-basis: 100%;
@@ -774,6 +792,14 @@
     margin: 0 10px 5px 0;
   }
 }
+
+.application-sub-panel__item-title--organization-summary,
+.application-sub-panel__item-title--organization-previous-bills,
+.application-sub-panel__item-title--organization-contact-information {
+  font-weight: 600;
+}
+
+
 
 .application-sub-panel__item-label {
   font-weight: 600;
@@ -831,6 +857,39 @@
   }
 }
 
+// Item data for organization summary
+
+.application-sub-panel__item-data--organization-summary {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.application-sub-panel__item-data-container {
+  display: flex;
+}
+
+.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
+  margin-left: 10px;
+}
+
+.application-sub-panel__item-data-container--organization-previous-bills {
+  flex-direction: column;
+}
+
+// Sub panel item sub item
+
+.application-sub-panel__item-sub-item--organization-previous-bills {
+  display: flex;
+
+  &:not(:first-child) {
+    margin-top: 5px;
+  }
+
+  div:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
 // Subpanel item data for worklist entries total
 .application-sub-panel__item-data--worklist-total {
   flex-basis: auto;
@@ -868,6 +927,26 @@
 .application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
+}
+
+// item-data content
+
+.application-sub-panel__item-data-content--organization-contact-information {
+  font-weight: 400;
+}
+
+.application-sub-panel__item-data-content--primary {
+  background-color: $color-hops-readable-inline-background;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
+}
+
+// item-data label
+
+.application-sub-panel__item-data-label {
+  margin-right: 5px;
 }
 
 .application-sub-panel__single-entry {

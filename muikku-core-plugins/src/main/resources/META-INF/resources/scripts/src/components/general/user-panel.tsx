@@ -112,7 +112,7 @@ export default class UserPanel extends React.Component<
                       </StaffDialog>
                     </div>
                   );
-                return <User user={user} actions={actions} />;
+                return <User key={user.id} user={user} actions={actions} />;
               })}
           </ApplicationList>
         ) : (

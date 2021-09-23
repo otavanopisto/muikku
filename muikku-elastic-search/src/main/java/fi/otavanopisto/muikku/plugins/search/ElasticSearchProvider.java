@@ -159,7 +159,7 @@ public class ElasticSearchProvider implements SearchProvider {
       hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
-    return new SearchResult(0, searchResults.size(), searchResults, totalHitCount);
+    return new SearchResult(0, searchResults, totalHitCount);
   }
   
   @Override
@@ -197,7 +197,7 @@ public class ElasticSearchProvider implements SearchProvider {
       hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
-    return new SearchResult(0, searchResults.size(), searchResults, totalHitCount);
+    return new SearchResult(0, searchResults, totalHitCount);
   }
 
   @Override
@@ -369,11 +369,11 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
   
@@ -476,7 +476,7 @@ public class ElasticSearchProvider implements SearchProvider {
       searchResults.add(hitSource);
     }
     
-    SearchResult result = new SearchResult(0, 50, searchResults, totalHits);
+    SearchResult result = new SearchResult(0, searchResults, totalHits);
     return result;
   }
   
@@ -497,7 +497,7 @@ public class ElasticSearchProvider implements SearchProvider {
       int maxResults, 
       List<Sort> sorts) {
     if (identifiers != null && identifiers.isEmpty()) {
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
     
     BoolQueryBuilder query = boolQuery();
@@ -621,11 +621,11 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
 
@@ -813,12 +813,12 @@ public class ElasticSearchProvider implements SearchProvider {
           })
           .collect(Collectors.toList());
       
-      SearchResults<List<IndexedCommunicatorMessage>> result = new SearchResults<List<IndexedCommunicatorMessage>>(start, maxResults, searchResults, totalHitCount);
+      SearchResults<List<IndexedCommunicatorMessage>> result = new SearchResults<List<IndexedCommunicatorMessage>>(start, searchResults, totalHitCount);
       return result;
       
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResults<List<IndexedCommunicatorMessage>>(0, 0, new ArrayList<IndexedCommunicatorMessage>(), 0); 
+      return new SearchResults<List<IndexedCommunicatorMessage>>(0, new ArrayList<IndexedCommunicatorMessage>(), 0); 
     }
   }
   
@@ -879,11 +879,11 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
   }
   
@@ -922,11 +922,11 @@ public class ElasticSearchProvider implements SearchProvider {
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
   }
 
@@ -946,11 +946,11 @@ public class ElasticSearchProvider implements SearchProvider {
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
 
@@ -968,11 +968,11 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
   
@@ -1002,12 +1002,96 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+      return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0); 
     }
+  }
+
+  @Override
+  public long countActiveStudents(OrganizationEntity organizationEntity) {
+    long now = OffsetDateTime.now().toEpochSecond();
+    String organizationIdentifier = String.format("%s-%s",
+        organizationEntity.getDataSource().getIdentifier(), organizationEntity.getIdentifier());
+    
+    BoolQueryBuilder query = boolQuery();
+    query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
+    query.must(termQuery("isDefaultIdentifier", true));
+    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name()))); 
+
+    Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
+    query.must(
+      boolQuery()
+        .should(boolQuery()
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .mustNot(existsQuery("studyEndDate"))
+        )
+        .should(boolQuery()
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .must(existsQuery("studyEndDate"))
+          .must(rangeQuery("studyEndDate").gte(now))
+        )
+        .should(boolQuery()
+          .mustNot(existsQuery("studyEndDate"))
+          .mustNot(existsQuery("studyStartDate"))
+          .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+        )
+    );
+
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("User")
+        .setFrom(0)
+        .setSize(1);
+    
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    
+    return response.getHits().getTotalHits();
+  }
+
+  @Override
+  public long countInactiveStudents(OrganizationEntity organizationEntity) {
+    long now = OffsetDateTime.now().toEpochSecond();
+    String organizationIdentifier = String.format("%s-%s",
+        organizationEntity.getDataSource().getIdentifier(), organizationEntity.getIdentifier());
+
+    BoolQueryBuilder query = boolQuery();
+    query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
+    query.must(termQuery("isDefaultIdentifier", true));
+    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name()))); 
+    
+    Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
+    query.must(
+      boolQuery()
+        .should(boolQuery()
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").gte(now))
+          .mustNot(existsQuery("studyEndDate"))
+        )
+        .should(boolQuery()
+          .must(existsQuery("studyEndDate"))
+          .must(rangeQuery("studyEndDate").lte(now))
+        )
+        .should(boolQuery()
+          .mustNot(existsQuery("studyEndDate"))
+          .mustNot(existsQuery("studyStartDate"))
+          .mustNot(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+        )
+    );
+
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("User")
+        .setFrom(0)
+        .setSize(1);
+    
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    
+    return response.getHits().getTotalHits();
   }
 
   @Override
@@ -1016,6 +1100,5 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   private Client elasticClient;
-  //private Node node;
 
 }

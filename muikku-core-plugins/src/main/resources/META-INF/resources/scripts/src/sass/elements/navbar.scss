@@ -110,7 +110,6 @@
 // NAVBAR ITEMS
 .navbar__item {
   display: none;
-  float: left;
   height: $navbar-mobile-height;
   line-height: $navbar-mobile-height;
   margin: 0;
@@ -155,7 +154,8 @@
   .navbar__item--journal,
   .navbar__item--users,
   .navbar__item--assessment-request,
-  .navbar__item--workspace-management {
+  .navbar__item--workspace-management,
+  .navbar__item--organization {
     display: inline-block;
     width: $navbar-desktop-item-width;
   }

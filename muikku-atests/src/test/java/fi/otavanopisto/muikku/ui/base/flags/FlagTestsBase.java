@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.ui.base.flags;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
 import org.junit.Test;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
@@ -254,20 +255,16 @@ public class FlagTestsBase extends AbstractUITest {
       waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       waitUntilAnimationIsDone(".dialog--guider-edit-label");
       sleep(1000);
-      waitForVisible(".button--guider-share-label");
-      waitAndClick(".button--guider-share-label");
+      waitForVisible(".autocomplete__input input.tag-input__input--guider");
+      click(".autocomplete__input input.tag-input__input--guider");
 
-      waitForVisible(".autocomplete--guider .tag-input__input--guider");
-      waitAndClick(".autocomplete--guider .tag-input__input--guider");
-      sendKeys(".autocomplete--guider .tag-input__input--guider", "test");
+      sendKeys(".autocomplete__input input.tag-input__input--guider", "test");
       waitForVisible(".glyph--autocomplete-recipient");
 
       waitAndClick(".glyph--autocomplete-recipient");
 
-      waitAndClick(".dialog--guider-share-label .button--standard-ok");
-      waitForVisible(".button--guider-share-label");
-      waitForNotVisible(".dialog--guider-share-label");
-      waitAndClick(".dialog--guider-edit-label .button--standard-ok");
+      click(".dialog--guider-edit-label .button--standard-ok");
+      
       waitForNotVisible(".dialog--guider-edit-label");
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
