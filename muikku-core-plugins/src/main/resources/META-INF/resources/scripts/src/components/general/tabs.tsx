@@ -62,12 +62,10 @@ class Tabs extends React.Component<TabsProps, TabsState>{
       {this.props.tabs.map(t=> (<>
       <SwiperSlide key={t.id} >
         <div className="tabs__mobile-tab">
-          <div>{t.name}</div>
           <div className="tabs__pagination-container"> </div>
-          {t.mobileAction?
-          t.mobileAction
-        : null}
-          </div>
+          <div>{t.name}</div>
+          {t.mobileAction? t.mobileAction: <div className="tabs__mobile-tab-spacer"/>}
+        </div>
         {t.component()}
         </SwiperSlide> </>))}
 

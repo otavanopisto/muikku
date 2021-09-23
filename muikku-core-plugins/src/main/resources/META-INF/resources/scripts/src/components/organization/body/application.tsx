@@ -93,9 +93,9 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
     let usersPrimaryActionMobile = <UserDialog><ButtonPill icon="plus" buttonModifiers="organization"/></UserDialog>;
     let userGroupsPrimaryAction = <UserGroupDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserGroupDialog>;
-    let userGroupsPrimaryActionMobile = <UserGroupDialog><ButtonPill icon="plus" /></UserGroupDialog>;
+    let userGroupsPrimaryActionMobile = <UserGroupDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserGroupDialog>;
     let coursesPrimaryAction = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
-    let coursesPrimaryActionMobile = <WorkspaceDialog activeFilters={this.props.activeFilters}><HoverButton icon="plus" modifier="new-message" /></WorkspaceDialog>;
+    let coursesPrimaryActionMobile = <WorkspaceDialog activeFilters={this.props.activeFilters}><ButtonPill icon="plus" buttonModifiers="organization"  /></WorkspaceDialog>;
     let coursesToolbar = <ApplicationPanelToolbar>
       <ApplicationPanelToolbarActionsMain>
         <SearchFormElement value={this.state.workspaceSearchFieldValue} id="organizationWorkpaceSearch" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} name="organization-workspace-search" updateField={this.doWorkspaceSearch} ></SearchFormElement>
@@ -130,12 +130,14 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
         {
           id: "USERSGROUPS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.userGroups'),
+          mobileAction: userGroupsPrimaryActionMobile,
           component: () => { return <ApplicationPanelBody primaryOption={userGroupsPrimaryAction} toolbar={userGroupsToolbar} modifier="tabs" children={<Usergroups />} /> }
 
         },
         {
           id: "COURSES",
           name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
+          mobileAction: coursesPrimaryActionMobile,
           component: () => { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />} /> }
         },
 
