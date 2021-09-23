@@ -409,8 +409,8 @@ export class EvaluationMaterial extends React.Component<
                       )}
                     </div>
                     <div className="evaluation-modal__item-functions">
-                      {props.material.assignment.assignmentType ===
-                      "EVALUATED" ? (
+                      {props.material.assignment.assignmentType === "EVALUATED" || props.material.assignment.assignmentType === "EXERCISE" 
+                        ? (
                         state.compositeRepliesInState.state !==
                           "UNANSWERED" &&
                         state.compositeRepliesInState.state !== "WITHDRAWN" &&
