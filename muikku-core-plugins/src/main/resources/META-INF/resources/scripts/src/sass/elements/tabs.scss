@@ -94,6 +94,11 @@
   }
 }
 
+.tabs__tab-data-container--mobile-tabs {
+  display: flex;
+}
+
+
 .tabs__tab-data {
   display: none;
   flex-basis: 100%;
