@@ -16,11 +16,12 @@
   top: 0;
   z-index: 9999;
 
-  &.displayed {
+  // scss-lint:disable SelectorFormat
+  &.state-DISPLAYED {
     display: block;
   }
 
-  &.visible {
+  &.state-VISIBLE {
     opacity: 1;
 
     >.drawer__container {
@@ -28,13 +29,14 @@
     }
   }
 
-  &.dragging {
+  &.state-DRAGGING {
     transition: none;
 
     .menu__container {
       transition: none;
     }
   }
+  // scss-lint:enable SelectorFormat
 
   // When main function aside menu is cloned to the mobile menu drawer we change the rendering
   .menu-wrapper {

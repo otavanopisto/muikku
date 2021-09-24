@@ -140,7 +140,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     }, 300);
   }
   render(){
-    return (<div className={`drawer drawer--${this.props.modifier} ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
+    return (<div className={`drawer drawer--${this.props.modifier} ${this.state.displayed ? "state-DISPLAYED" : ""} ${this.state.visible ? "state-VISIBLE" : ""} ${this.state.dragging ? "state-DRAGGING" : ""}`}
       onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu" aria-hidden="true">
       <div className="drawer__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="drawer__header">
