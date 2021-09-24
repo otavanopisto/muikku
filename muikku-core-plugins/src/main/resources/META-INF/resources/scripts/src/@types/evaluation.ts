@@ -244,6 +244,15 @@ export interface BilledPrice {
 }
 
 /**
+ * AssignmentEvaluationAudioAssessment
+ */
+export interface AssignmentEvaluationAudioAssessment {
+  id: string;
+  name: string;
+  contentType: string;
+}
+
+/**
  * AssignmentEvaluationGradeRequest
  */
 export interface AssignmentEvaluationGradeRequest {
@@ -252,6 +261,7 @@ export interface AssignmentEvaluationGradeRequest {
   gradeIdentifier: string;
   verbalAssessment: string;
   assessmentDate: number;
+  audioAssessments: AssignmentEvaluationAudioAssessment[]
 }
 
 /**

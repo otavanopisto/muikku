@@ -24,6 +24,7 @@ import {
   saveAssignmentEvaluationGradeToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
+import { AssignmentEvaluationGradeRequest, AssignmentEvaluationAudioAssessment } from "~/@types/evaluation";
 
 /**
  * AssignmentEditorProps
@@ -171,6 +172,16 @@ class AssignmentEditor extends SessionStateComponent<
     if (this.state.assignmentEvaluationType === "GRADED") {
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
 
+      const audioAssessments : AssignmentEvaluationAudioAssessment[] = [];
+      
+//      const audioAssessments : AssignmentEvaluationAudioAssessment[] = [
+//        {
+//          id: "",
+//          name: "",
+//          contentType: ""
+//        }
+//      ];
+      
       this.props.onClose();
       this.props.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
@@ -185,6 +196,7 @@ class AssignmentEditor extends SessionStateComponent<
           gradeIdentifier: this.state.grade,
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
+          audioAssessments: audioAssessments
         },
         onSuccess: () => {
           this.setStateAndClear(
@@ -410,6 +422,9 @@ class AssignmentEditor extends SessionStateComponent<
             >
               {renderGradingOptions}
             </select>
+          </div>
+          <div>
+              TODO: Audio assessment recorder here
           </div>
         </div>
 
