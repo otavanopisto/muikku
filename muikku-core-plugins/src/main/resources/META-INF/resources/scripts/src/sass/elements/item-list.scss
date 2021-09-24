@@ -28,26 +28,6 @@
   }
 }
 
-.item-list--aside-navigation {
-  padding: 0 0 10px;
-  width: 100%;
-
-  .item-list__icon {
-    padding: 0;
-  }
-}
-
-.item-list__title {
-  display: block;
-  font-weight: 600;
-  padding: 12px 0;
-
-  .item-list__icon {
-    display: inline-block;
-    padding: 0 5px 0 0;
-  }
-}
-
 // Item-list items BASE
 .item-list__item {
   align-items: flex-start;
@@ -57,56 +37,6 @@
   display: flex;
   padding: 10px;
   position: relative;
-}
-
-// Main functions use this modifier
-.item-list__item--aside-navigation {
-  align-items: center;
-  border-radius: 2px;
-  margin: 0 0 5px;
-  padding: 5px;
-
-  &:hover,
-  &.hover {
-    background-color: $color-item-list-item-aside-background-hover;
-  }
-
-  &.active {
-    background-color: $color-item-list-item-aside-background-active;
-    color: $color-item-list-item-font-color-active;
-
-    .text,
-    .item-list__icon {
-      color: $color-item-list-item-font-color-active;
-    }
-  }
-
-  // We decrease the font size of item-list item's when they are inside aside navigation
-  .item-list__text-body {
-    font-size: $text-mobile-font-size;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    background-color: $color-item-list-item-aside-background;
-    padding: 8px;
-  }
-}
-
-// Guider specific aside navigation that adjusts icon alignment as items can have text for more than one rows
-.item-list__item--aside-navigation-guider {
-
-  .item-list__icon {
-    align-self: flex-start;
-    color: $color-workspace;
-    padding: 1px 0 0;
-  }
-}
-
-.item-list--settings {
-
-  @include breakpoint($breakpoint-pad) {
-    display: none;
-  }
 }
 
 .item-list__item--teacher {
@@ -186,7 +116,7 @@
   flex-shrink: 0;
   font-size: $item-list-icon-font-size;
   justify-content: center;
-  padding: 3px 0 0;
+  padding: 2px 0 0;
 }
 
 .item-list__icon--workspaces {

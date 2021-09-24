@@ -267,26 +267,6 @@
   margin: 0;
 }
 
-.application-panel__helper-container--workspace-journal {
-  display: none;
-  height: $navbar-mobile-height;
-  margin: 0;
-  overscroll-behavior: contain;
-  padding: 8px;
-  z-index: 1;
-
-  @include breakpoint($breakpoint-pad) {
-    @include no-scrollbars;
-    display: flex;
-    flex-basis: 220px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: $navbar-desktop-height;
-    padding: 12px;
-  }
-
-}
-
 // Main containers
 .application-panel__main-container {
   flex-basis: auto;
@@ -301,8 +281,6 @@
     padding: 12px;
   }
 }
-
-
 
 .application-panel__main-container--actions {
   background: $color-default;
