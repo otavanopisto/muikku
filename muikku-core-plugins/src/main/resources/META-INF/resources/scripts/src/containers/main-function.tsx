@@ -47,6 +47,11 @@ import { updateSummary } from '~/actions/main-function/records/summary';
 import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
+import EvaluationBody from '../components/evaluation/body';
+import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
+import * as moment from "moment";
+
+moment.locale("fi");
 
 interface MainFunctionProps {
   store: Store<StateType>,
@@ -60,6 +65,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
 
+  /**
+   * constructor
+   */
   constructor(props: MainFunctionProps) {
     super(props);
     this.renderIndexBody = this.renderIndexBody.bind(this);
@@ -72,11 +80,18 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
+    this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
 
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
+
+  /**
+   * loadlib
+   * @param url
+   * @returns
+   */
   loadlib(url: string) {
     if (this.loadedLibs.indexOf(url) !== -1) {
       return;
@@ -87,6 +102,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     script.src = url;
     document.head.appendChild(script);
   }
+
+  /**
+   * onHashChange
+   */
   onHashChange() {
     if (window.location.pathname.includes("/coursepicker")) {
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' }), false, false);
@@ -109,17 +128,27 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
   }
 
+  /**
+   * loadChatSettings
+   */
   loadChatSettings = (): void => {
     if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
   }
 
+  /**
+   * updateFirstTime
+   */
   updateFirstTime() {
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
   }
 
+  /**
+   * loadGuiderData
+   * @returns
+   */
   loadGuiderData() {
     //This code allows you to use the weird deprecated #userprofile/PYRAMUS-STUDENT-30055%22%3EJuhana type of links
     if (window.location.hash.replace("#", "").indexOf("userprofile") === 0) {
@@ -141,6 +170,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.props.store.dispatch(loadStudent(originalData.c) as Action)
   }
 
+  /**
+   * loadRecordsData
+   * @param dataSplitted
+   */
   loadRecordsData(dataSplitted: string[]) {
     let givenLocation = dataSplitted[0].split("/")[0];
     let originalData: any = queryString.parse(dataSplitted[1] || "", { arrayFormat: 'bracket' });
@@ -174,6 +207,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.props.store.dispatch(updateHops() as Action);
   }
 
+  /**
+   * loadProfileData
+   * @param location
+   */
   loadProfileData(location: string) {
     this.props.store.dispatch(setProfileLocation(location) as Action);
 
@@ -183,6 +220,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
   }
 
+  /**
+   * loadAnnouncerData
+   * @param location
+   */
   loadAnnouncerData(location: string[]) {
     const actualLocation = location.filter(l => !!l);
     if (actualLocation.length === 1) {
@@ -192,6 +233,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
   }
 
+  /**
+   * loadAnnouncementsData
+   * @param announcementId
+   */
   loadAnnouncementsData(announcementId: number) {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
@@ -218,6 +263,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }) as Action);
     }
   }
+
+  /**
+   * loadCoursePickerData
+   */
   loadCoursePickerData(originalData: any, isOrganization: boolean, refresh: boolean) {
     let filters: WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
@@ -231,6 +280,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization, refresh) as Action);
   }
 
+  /**
+   * loadCommunicatorData
+   */
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
       this.props.store.dispatch(loadMessageThreads(location[0], null) as Action);
@@ -239,6 +291,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
   }
 
+  /**
+   * renderCoursePickerBody
+   * @returns
+   */
   renderCoursePickerBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -301,6 +357,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <CousePickerBody />
   }
 
+  /**
+   * renderIndexBody
+   * @returns
+   */
   renderIndexBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -317,6 +377,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <IndexBody />
   }
 
+  /**
+   * renderOrganizationAdministrationBody
+   * @returns
+   */
   renderOrganizationAdministrationBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -378,6 +442,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <OrganizationAdministrationBody />
   }
 
+  /**
+   * renderCommunicatorBody
+   */
   renderCommunicatorBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -411,6 +478,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <CommunicatorBody />
   }
 
+  /**
+   * renderDiscussionBody
+   * @returns
+   */
   renderDiscussionBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -435,6 +506,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <DiscussionBody />
   }
 
+  /**
+   * renderAnnouncementsBody
+   */
   renderAnnouncementsBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -448,6 +522,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <AnnouncementsBody />
   }
 
+  /**
+   * renderAnnouncerBody
+   * @returns
+   */
   renderAnnouncerBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -471,6 +549,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <AnnouncerBody />
   }
 
+  /**
+   * renderGuiderBody
+   */
   renderGuiderBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -487,6 +568,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <GuiderBody />
   }
 
+  /**
+   * renderProfileBody
+   */
   renderProfileBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -514,6 +598,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <ProfileBody />
   }
 
+  /**
+   * renderRecordsBody
+   */
   renderRecordsBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
@@ -532,6 +619,33 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <RecordsBody />
   }
 
+  /**
+   * renderEvaluationBody
+   */
+  renderEvaluationBody() {
+    this.updateFirstTime();
+    if(this.itsFirstTime){
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.evaluation.evaluation')));
+      this.props.store.dispatch(loadEvaluationAssessmentRequestsFromServer() as Action);
+      this.props.store.dispatch(loadEvaluationWorkspacesFromServer() as Action);
+      this.props.store.dispatch(loadListOfImportantAssessmentIdsFromServer() as Action);
+      this.props.store.dispatch(loadListOfUnimportantAssessmentIdsFromServer() as Action);
+      this.props.store.dispatch(loadEvaluationGradingSystemFromServer() as Action);
+      this.props.store.dispatch(loadEvaluationSortFunctionFromServer() as Action);
+      this.loadChatSettings();
+    }
+
+    return <EvaluationBody/>
+  }
+
+  /**
+   * Component render method
+   */
   render() {
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -545,6 +659,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       <Route path="/guider" render={this.renderGuiderBody} />
       <Route path="/profile" render={this.renderProfileBody} />
       <Route path="/records" render={this.renderRecordsBody} />
+      <Route path="/evaluation" render={this.renderEvaluationBody} />
       <Chat />
     </div></BrowserRouter>);
   }
