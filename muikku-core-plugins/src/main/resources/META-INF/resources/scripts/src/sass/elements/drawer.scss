@@ -65,6 +65,13 @@
   }
 }
 
+.drawer--workspace-edit-mode {
+
+  .drawer__header {
+    background-color: $color-workspace-edit-mode-navbar-background;
+  }
+}
+
 .drawer--hidden {
   left: -$menu-width-mobile;
 }
