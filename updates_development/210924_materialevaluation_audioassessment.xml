@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table WorkspaceMaterialEvaluationAudioClip (
+      id bigint not null auto_increment, 
+      clipId varchar(255) not null, 
+      contentType varchar(255), 
+      fileName varchar(255), 
+      evaluation_id bigint, 
+      primary key (id)
+    );
+  </sql>
+  
+  <sql>alter table WorkspaceMaterialEvaluationAudioClip add constraint FK4gx366apxgwn9ugoab8ucqady foreign key (evaluation_id) references WorkspaceMaterialEvaluation (id);</sql>
+
+</update>
