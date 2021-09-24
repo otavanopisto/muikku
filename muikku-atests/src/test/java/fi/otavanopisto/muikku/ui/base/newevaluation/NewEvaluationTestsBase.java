@@ -93,34 +93,30 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(admin);
       login();
-      navigate(String.format("/evaluation2"), false);
-      waitAndClick(".evaluate-button");
+      navigate(String.format("/evaluation"), false);
+      waitAndClick(".button-pill--evaluate");
       
-      waitForPresent(".eval-modal-evaluate-buttonset .button-start-evaluation");
-      waitAndClick(".eval-modal-evaluate-buttonset .button-start-evaluation");
+      waitAndClickAndConfirm(".dialog--evaluation.dialog--visible a.button--evaluation-add-assessment", ".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace #workspaceEvaluationGrade", 10, 3000);
       
-      waitUntilAnimationIsDone(".eval-modal #workspaceGradeEditorContainer");
+      waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
       if(getBrowser().equals("chrome_headless")) {
         sleep(500);
       }
 
-      waitForPresent("#workspaceGradeEditorContainer .eval-modal-evaluate-workspace-content #cke_workspaceGradeText .cke_contents");
-      getWebDriver().switchTo().frame(findElementByCssSelector("#workspaceGradeEditorContainer .eval-modal-evaluate-workspace-content #cke_workspaceGradeText .cke_wysiwyg_frame"));
-      sendKeys(".cke_contents_ltr", "Test evaluation.");
-      getWebDriver().switchTo().defaultContent();
+      waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
+      addTextToCKEditor("Test evaluation.");
       
-      selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
+      selectOption("#workspaceEvaluationGrade", "PYRAMUS-1");
       
       mockBuilder
       .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
       .mockStaffCompositeCourseAssessmentRequests()
       .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
     
-      mockBuilder.mockCourseAssessments(courseStudent, admin);          
-      waitAndClick("#workspaceGradeSave");
-      waitForPresent(".notification-queue-item-success");
-      waitAndClick(".remove-button .ui-button-text");
-      assertVisible(".evaluation-well-done-container");
+      mockBuilder.mockCourseAssessments(courseStudent, admin);
+      waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
+      waitAndClick(".button--standard-ok");
+      assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -201,27 +197,30 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(admin);
         login();
-        navigate(String.format("/evaluation2"), false);
-        waitAndClick(".evaluate-button");
-        waitAndClick(".assignment-title-wrapper");
-        waitForVisible(".assignment-wrapper .muikku-text-field");
-        waitUntilContentChanged(".assignment-wrapper .muikku-text-field", "");
-        assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
-        waitAndClick(".assignment-evaluate-button");
-        waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
+        navigate(String.format("/evaluation"), false);
+        waitAndClick(".button-pill--evaluate");
+        waitAndClick(".evaluation-modal__item-header-title--assignment");
+        waitUntilAnimationIsDone(".rah-static");
+        assertValue(".evaluation-modal__item-body span.material-page__textfield input", "field value");
+        waitAndClick(".evaluation-modal .material-page--evaluation-material-page.material-page--SUBMITTED .button-pill--evaluate");
+        waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
+        waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
+        addTextToCKEditor("Test evaluation.");
+        selectOption("#assignmentEvaluationGrade", "PYRAMUS-1");
+        waitAndClick(".button--evaluate-assignment");
         
-        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
-        sendKeys(".cke_contents_ltr", "Test evaluation.");
-        getWebDriver().switchTo().defaultContent();
-       
-        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
-  
-        waitAndClick("#assignmentSaveButton");
-        waitForPresent(".notification-queue-item-success");
-        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
-        assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
+        waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
+        waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
+        assertTextIgnoreCase(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED", "Excellent");
+        
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".material-page__assignment-assessment");
+        assertText(".material-page__assignment-assessment .material-page__assignment-assessment-literal-data>p", "Test evaluation.");
+        waitForVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
+        assertText(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data", "Excellent");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
@@ -285,26 +284,23 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addStaffCompositeAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, admin.getId(), date.minusDays(2l))
         .mockStaffCompositeCourseAssessmentRequests();
         
-        navigate(String.format("/evaluation2"), false);
+        navigate(String.format("/evaluation"), false);
         
-        waitForPresent(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitAndClickAndConfirm(".button-pill--sorter .icon-sort-amount-asc", "a.button-pill--sorter-selected .icon-sort-amount-asc", 10, 500);
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
         
-        waitAndClick(".icon-sort-amount-desc");
-        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        
-        waitAndClick(".icon-sort-amount-asc");
-        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitAndClickAndConfirm(".button-pill--sorter .icon-sort-amount-desc", "a.button-pill--sorter-selected .icon-sort-amount-desc", 10, 500);
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
 
-        waitAndClick(".icon-sort-alpha-desc");
-        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitAndClickAndConfirm(".button-pill--sorter .icon-sort-alpha-asc", "a.button-pill--sorter-selected .icon-sort-alpha-asc", 10, 500);
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
         
-        waitAndClick(".icon-sort-alpha-asc");
-        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        assertTextIgnoreCase(".evaluation-card .evaluation-card-title .evaluation-card-student:nth-child(1)", "master, apprentice");
+        waitAndClickAndConfirm(".button-pill--sorter .icon-sort-alpha-desc", "a.button-pill--sorter-selected .icon-sort-alpha-desc", 10, 500);
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
         } finally {
           deleteWorkspace(workspace.getId());
         }
@@ -313,114 +309,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     }
   }
 
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.SAFARI
-    }
-  )
-  public void evaluationVisibleInMaterialViewTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
-    Builder mockBuilder = mocker();
-    try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
-      
-      Long courseId = 1l;
-      
-      login();
-      
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-  
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
-      
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
-      mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
-        .build();
-   
-      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-        "Test exercise", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
-        "EVALUATED");
-      try{        
-        logout();
-        mockBuilder.mockLogin(student);
-        login();
-  
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
-        waitAndClick(".button--muikku-submit-assignment");
-
-        waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
-
-        mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
-        .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
-        .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
-        .mockStaffCompositeCourseAssessmentRequests();
-        
-        logout();
-        mockBuilder.mockLogin(admin);
-        login();
-        navigate(String.format("/evaluation2"), false);
-        waitAndClick(".evaluate-button");
-        waitAndClick(".assignment-title-wrapper");
-        waitForVisible(".assignment-wrapper .muikku-text-field");
-        assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
-        waitAndClick(".assignment-evaluate-button");
-        waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
-
-        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
-        sendKeys(".cke_contents_ltr", "Test evaluation.");
-        getWebDriver().switchTo().defaultContent();
-        
-        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
-  
-        waitAndClick("#assignmentSaveButton");
-        waitForPresent(".notification-queue-item-success");
-        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
-        assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
-        
-        logout();
-        mockBuilder.mockLogin(student);
-        login();
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__assignment-assessment");
-        assertText(".material-page__assignment-assessment .material-page__assignment-assessment-literal-data>p", "Test evaluation.");
-        waitForVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
-        assertText(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data", "Excellent");
-      } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-          deleteWorkspace(workspace.getId());
-        }
-      } finally {
-        mockBuilder.wiremockReset();
-    }
-  }
-  
   @Test
   @TestEnvironments (
     browsers = {
@@ -481,26 +369,19 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addStaffCompositeAssessmentRequest(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student3, admin.getId(), date.minusDays(1l))
         .mockStaffCompositeCourseAssessmentRequests();
         
-        navigate(String.format("/evaluation2"), false);
+        navigate(String.format("/evaluation"), false);
         
-        waitForPresent(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
-        waitForPresent("div[data-user-entity-id=\"1\"]");
-        waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-important-button");
+        waitForPresent(".evaluation-card:first-child .evaluation-card__header-title");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
         
-        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitAndClick(".evaluation-card:last-child .button-icon--important");
+        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
         
-        waitAndClick(".icon-sort-alpha-desc");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        waitUntilTextChanged(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
-        assertTextIgnoreCase(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "student, anotha");
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        
-        waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-unimportant-button");
         waitAndClick(".icon-sort-alpha-asc");
-        waitUntilTextChanged(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");        
-        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitUntilTextChanged(".evaluation-card:last-child .evaluation-card__header-title", "student anotha");
+        assertTextIgnoreCase(".evaluation-card:last-child .evaluation-card__header-title", "tester student");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
       } finally {
           deleteWorkspace(workspace.getId());
         }
@@ -577,34 +458,27 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(admin);
         login();
         selectFinnishLocale();
-        navigate(String.format("/evaluation2"), false);
-        waitAndClick(".evaluate-button");
-        waitAndClick(".eval-modal-evaluate-buttonset .button-supplementation-request");
+        navigate(String.format("/evaluation"), false);
+        waitAndClick(".button-pill--evaluate");
+        
+        waitAndClickAndConfirm(".dialog--evaluation.dialog--visible a.button--evaluation-add-supplementation", ".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents", 10, 5000);
+        
+        waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
+        if(getBrowser().equals("chrome_headless")) {
+          sleep(500);
+        }
 
-        waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer");
-        
-        waitForElementToBeClickable("#workspaceSupplementationEditorContainer #cke_workspaceSupplementationText .cke_contents");
-        getWebDriver().switchTo().frame(findElementByCssSelector("#workspaceSupplementationEditorContainer #cke_workspaceSupplementationText .cke_contents .cke_wysiwyg_frame"));
-        sendKeys(".cke_contents_ltr", "Test supplementation request.");
-        getWebDriver().switchTo().defaultContent();
-       
-        waitAndClick("#workspaceSupplementationSave");
-        waitForPresent(".notification-queue-item-success");
+        waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
+        addTextToCKEditor("Test supplementation request.");
 
-//      TODO: This circumvents the problem described below, but it wouldn't hurt to find a better way.
-        navigate(String.format("/evaluation2"), false);
-        waitAndClick(".evaluate-button");
+        waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons a.button--evaluate-supplementation");
+        waitForNotVisible(".evaluation-modal__evaluate-drawer");
+        waitForVisible(".evaluation-modal__header-title");
+        assertTextIgnoreCase(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta", "Admin User pyysi täydennystä");
         
-        // TODO Never goes invisible, waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer"); does not work either
-        //waitForNotVisible("#workspaceSupplementationEditorContainer");
-        
-        waitForVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
-        assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Admin User pyysi täydennystä");
-        
-        // TODO Click goes to supplementation request CKEditor which should be hidden at this point
-        waitAndClick(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-header .eval-modal-workspace-event-details");
-        waitForVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
-        assertText(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p", "Test supplementation request.");
+        waitAndClick(".evaluation-modal__event:nth-child(2) .evaluation-modal__event-meta");
+        waitUntilAnimationIsDone(".evaluation-modal__event:nth-child(2) .rah-static");
+        assertText(".evaluation-modal__event:nth-child(2) .rah-static .evaluation-modal__event-literal-assessment p", "Test supplementation request.");
 
         logout();
         mockBuilder.mockLogin(student);
@@ -615,8 +489,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Työtila merkitty täydennettäväksi");
-        
-      
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

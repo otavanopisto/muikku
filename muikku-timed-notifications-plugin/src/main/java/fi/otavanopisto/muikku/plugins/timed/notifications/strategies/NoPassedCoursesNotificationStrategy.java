@@ -1,10 +1,10 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,20 +19,18 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 @Startup
 @Singleton
@@ -45,7 +43,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   private static final int MIN_PASSED_COURSES_NETTILUKIO = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.mincoursesthreshold", "7"));
   private static final int MIN_PASSED_COURSES_NETTIPK = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.mincoursesthreshold", "5"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.nopassedcourses.checkfreq", "1800000"));
-  
+
   @Inject
   private NoPassedCoursesNotificationController noPassedCoursesNotificationController;
   
@@ -56,16 +54,10 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   private UserEntityController userEntityController;
   
   @Inject
-  private UserController userController;
-  
-  @Inject
   private NotificationController notificationController;
   
   @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private JadeLocaleHelper jadeLocaleHelper;
   
   @Inject
   private Logger logger;
@@ -91,22 +83,28 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-        Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("locale", studentLocale);
-        templateModel.put("localeHelper", jadeLocaleHelper);
-        String notificationContent = renderNotificationTemplate("no-passed-courses-notification", templateModel);
+        UserEntityName studentName = userEntityController.getName(studentEntity);
+        if (studentName == null) {
+          logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because name couldn't be resolved", studentIdentifier.toId()));
+          continue;
+        }
+        String guidanceCounselorMail = notificationController.getStudyCounselorEmail(studentEntity.defaultSchoolDataIdentifier());
+        String notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.content",
+            new Object[] {studentName.getDisplayNameWithLine()});
+        if (guidanceCounselorMail != null) {
+          notificationContent = localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.content.guidanceCounselor",
+              new Object[] {studentName.getDisplayNameWithLine(), guidanceCounselorMail});
+        }
         notificationController.sendNotification(
-          localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
           notificationContent,
           studentEntity,
-          studentIdentifier,
-          "nopassedcourses"
+          guidanceCounselorMail
         );
         noPassedCoursesNotificationController.createNoPassedCoursesNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_NOPASSEDCOURSES);
       } else {
-        logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
+        logger.log(Level.SEVERE, String.format("Cannot send notification to student %s because UserEntity was not found", studentIdentifier.toId()));
       }
     }
   }
@@ -145,10 +143,12 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         continue;
       }
       
-      User student = userController.findUserByIdentifier(studentIdentifier);
+      Date studyStartDate = getDateResult(result.get("studyStartDate"));
+      if (studyStartDate == null) {
+        continue;
+      }
       
-      if ((student != null) && isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
-
+      if (shouldBeNotified(studyStartDate, NOTIFICATION_THRESHOLD_DAYS)) {
         boolean isNettilukio = false;
         boolean isNettipk = false;
         @SuppressWarnings("unchecked")
@@ -157,8 +157,10 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
           isNettilukio = studyProgrammes.contains(5); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-6 -> Nettilukio 
           isNettipk = studyProgrammes.contains(6); // UserGroupEntity in Muikku -> maps to STUDYPROGRAMME-7 -> Nettiperuskoulu
         }
-        
-        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, Date.from(student.getStudyStartDate().toInstant()));
+        if (!isNettilukio && !isNettipk) {
+          continue;
+        }
+        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, studyStartDate);
         if (passedCourseCount == null) {
           logger.severe(String.format("Could not read course count for %s", studentId));
           continue;
@@ -170,20 +172,6 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     }
     
     return studentIdentifiers;
-  }
-
-  public boolean isNotifiedStudent(OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime currentDateTime, int thresholdDays) {
-    if ((studyStartDate == null) || (studyEndDate != null))
-      return false;
-    
-    // Earliest point when student may receive the notification is study start date + threshold day count
-    OffsetDateTime thresholdDateTime = studyStartDate.plusDays(thresholdDays);
-    
-    // Furthest point to receive the notification is studyStartDate + thresholdDays + 30 (1 month)
-    OffsetDateTime maxThresholdDateTime = studyStartDate.plusDays(thresholdDays + 30);
-
-    // If the threshold date has passed the student is valid target for the notification
-    return thresholdDateTime.isBefore(currentDateTime) && maxThresholdDateTime.isAfter(currentDateTime);
   }
   
   private Collection<Long> getGroups() {
@@ -204,6 +192,21 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     }
 
     return groups;
+  }
+
+  private boolean shouldBeNotified(Date studyStartDate, int thresholdDays) {
+    if (studyStartDate == null) {
+      return false;
+    }
+    
+    // Earliest point when student may receive the notification is study start date + threshold days (300)
+    OffsetDateTime thresholdDateTime = fromDateToOffsetDateTime(studyStartDate).plusDays(thresholdDays);
+    
+    // Furthest point to receive the notification is studyStartDate + threshold days (300) + 30 days
+    OffsetDateTime maxThresholdDateTime = thresholdDateTime.plusDays(30);
+
+    // If the threshold date has passed the student is valid target for the notification
+    return thresholdDateTime.isBefore(OffsetDateTime.now()) && maxThresholdDateTime.isAfter(OffsetDateTime.now());
   }
   
   private int offset = 0;

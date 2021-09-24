@@ -482,3 +482,14 @@
     box-shadow: none;
   }
 }
+
+.link--evaluation-event-edit,
+.link--evaluation-event-delete {
+  font-size: 0.825rem;
+  padding: 5px;
+  text-decoration: underline;
+}
+
+.link--evaluation-event-delete {
+  color: $color-fatal;
+}

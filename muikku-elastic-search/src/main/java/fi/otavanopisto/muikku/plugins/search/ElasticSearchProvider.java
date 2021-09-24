@@ -1011,11 +1011,94 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
+  public long countActiveStudents(OrganizationEntity organizationEntity) {
+    long now = OffsetDateTime.now().toEpochSecond();
+    String organizationIdentifier = String.format("%s-%s",
+        organizationEntity.getDataSource().getIdentifier(), organizationEntity.getIdentifier());
+    
+    BoolQueryBuilder query = boolQuery();
+    query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
+    query.must(termQuery("isDefaultIdentifier", true));
+    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name()))); 
+
+    Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
+    query.must(
+      boolQuery()
+        .should(boolQuery()
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .mustNot(existsQuery("studyEndDate"))
+        )
+        .should(boolQuery()
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .must(existsQuery("studyEndDate"))
+          .must(rangeQuery("studyEndDate").gte(now))
+        )
+        .should(boolQuery()
+          .mustNot(existsQuery("studyEndDate"))
+          .mustNot(existsQuery("studyStartDate"))
+          .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+        )
+    );
+
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("User")
+        .setFrom(0)
+        .setSize(1);
+    
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    
+    return response.getHits().getTotalHits();
+  }
+
+  @Override
+  public long countInactiveStudents(OrganizationEntity organizationEntity) {
+    long now = OffsetDateTime.now().toEpochSecond();
+    String organizationIdentifier = String.format("%s-%s",
+        organizationEntity.getDataSource().getIdentifier(), organizationEntity.getIdentifier());
+
+    BoolQueryBuilder query = boolQuery();
+    query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
+    query.must(termQuery("isDefaultIdentifier", true));
+    query.must(termsQuery("archetype", StringUtils.lowerCase(EnvironmentRoleArchetype.STUDENT.name()))); 
+    
+    Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
+    query.must(
+      boolQuery()
+        .should(boolQuery()
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").gte(now))
+          .mustNot(existsQuery("studyEndDate"))
+        )
+        .should(boolQuery()
+          .must(existsQuery("studyEndDate"))
+          .must(rangeQuery("studyEndDate").lte(now))
+        )
+        .should(boolQuery()
+          .mustNot(existsQuery("studyEndDate"))
+          .mustNot(existsQuery("studyStartDate"))
+          .mustNot(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+        )
+    );
+
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("User")
+        .setFrom(0)
+        .setSize(1);
+    
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    
+    return response.getHits().getTotalHits();
+  }
+
+  @Override
   public String getName() {
     return "elastic-search";
   }
 
   private Client elasticClient;
-  //private Node node;
 
 }

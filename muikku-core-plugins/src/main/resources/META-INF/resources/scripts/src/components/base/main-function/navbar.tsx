@@ -102,8 +102,9 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       modifier: "evaluation",
       trail: "evaluation",
       text: 'plugin.evaluation.evaluation',
-      href: "/evaluation2",
+      href: "/evaluation",
       icon: "evaluate",
+      to: true,
       condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
       openInNewTab: "_blank",
     },{
@@ -117,13 +118,13 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
     }];
 
     return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={true}
-      modifier="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
+      modifier="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item, i)=>{
       if (!item.condition){
         return null;
       }
         return {
         modifier: item.modifier,
-        item: (<Dropdown openByHover key={item.text} content={this.props.i18n.text.get(item.text)}>
+        item: (<Dropdown openByHover key={item.text + i} content={this.props.i18n.text.get(item.text)}>
           <Link openInNewTab={item.openInNewTab} as={this.props.activeTrail == item.trail ? "span" : null} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
             aria-label={this.props.activeTrail == item.trail ? this.props.i18n.text.get("plugin.wcag.mainNavigation.currentPage.aria.label") + " " + this.props.i18n.text.get(item.text) : this.props.i18n.text.get(item.text)} role="menuitem">
           <span className={`link__icon icon-${item.icon}`}/>

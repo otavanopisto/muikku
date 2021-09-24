@@ -1074,6 +1074,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertEquals(expected, element.isSelected());
   }
   
+  protected void assertElementCount(String cssSelector, int countToExpect) {
+    assertEquals(countElements(cssSelector), countToExpect);
+  }
+  
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
