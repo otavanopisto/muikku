@@ -41,7 +41,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     this.state = {
       user: {
         role: "STUDENT",
-        studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier
       },
       locked: false,
       executing: false,
@@ -164,6 +163,9 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       }
     }
   }
+  // componentDidMount() {
+  //   this.setState({user: {role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier}});
+  // }
 
   render() {
     let content = (closePortal: () => any) =>
@@ -187,7 +189,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
             <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
             <SelectFormElement id="studyProgramme" valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
               {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme) => {
-                return <option key={studyprogramme.identifier} value={studyprogramme.identifier} {...this.props.data ? this.props.data.studyProgrammeIdentifier === studyprogramme.identifier ? "selected" : null : null}>{studyprogramme.name}</option>
+                return <option key={studyprogramme.identifier} value={studyprogramme.identifier}>{studyprogramme.name}</option>
               })
               }
             </SelectFormElement>
