@@ -1,0 +1,243 @@
+package fi.otavanopisto.muikku.plugins.hops.rest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.lang3.StringUtils;
+
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.hops.HopsController;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
+
+@Path("/hops")
+@RequestScoped
+@Stateful
+@Produces("application/json")
+@RestCatchSchoolDataExceptions
+public class HopsRestService {
+
+  @Inject
+  private Logger logger;
+
+  @Inject
+  private SessionController sessionController;
+
+  @Inject
+  private HopsController hopsController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private CourseMetaController courseMetaController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+
+  @GET
+  @Path("/{STUDENTIDENTIFIER}/studyActivity")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getStudyActivity(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_STUDY_ACTIVITY)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    
+    // Pyramus call for ongoing, transferred, and graded courses
+    
+    BridgeResponse<List<StudyActivityItemRestModel>> response = userSchoolDataController.getStudyActivity(
+        schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
+    if (response.ok()) {
+      
+      // Add suggested courses to the list
+      
+      List<StudyActivityItemRestModel> items = response.getEntity();
+      List<HopsSuggestion> suggestions = hopsController.listSuggestionsByStudentIdentifier(studentIdentifier);
+      for (HopsSuggestion suggestion : suggestions) {
+        
+        // Check if subject + course number already exists. If so, delete suggestion as it is already outdated
+        
+        long matches = items
+            .stream()
+            .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()))
+            .count();
+        if (matches == 0) {
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(suggestion.getWorkspaceEntityId());
+          if (workspaceEntity == null) {
+            logger.warning("Removing suggested workspace %d as it was not found");
+            hopsController.removeSuggestion(suggestion);
+          }
+          else {
+            StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+            item.setCourseId(suggestion.getWorkspaceEntityId());
+            item.setCourseName(workspaceEntityController.getName(workspaceEntity));
+            item.setCourseNumber(suggestion.getCourseNumber());
+            item.setDate(suggestion.getCreated());
+            item.setStatus(StudyActivityItemStatus.SUGGESTED);
+            item.setSubject(suggestion.getSubject());
+            items.add(item);
+          }
+        }
+        else {
+          
+          // Suggested subject + course number has turned into ongoing, transferred, or graded
+          
+          hopsController.removeSuggestion(suggestion);
+        }
+      }
+      
+      return Response.status(response.getStatusCode()).entity(items).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  @GET
+  @Path("/listWorkspaceSuggestions")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber) {
+
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    List<SuggestedWorkspace> suggestedWorkspaces = new ArrayList<>();
+    
+    // Turn code into a Pyramus subject identifier because Elastic index only has that :(
+    
+    String schoolDataSource = sessionController.getLoggedUserSchoolDataSource();
+    Subject subjectObject = courseMetaController.findSubjectByCode(schoolDataSource, subject);
+    if (subjectObject == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Do the search
+    
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider != null) {
+      SearchResult sr = searchProvider.searchWorkspaces(organizationEntityController.listLoggedUserOrganizations(), subjectObject.getIdentifier(), courseNumber);
+      List<Map<String, Object>> results = sr.getResults();
+      for (Map<String, Object> result : results) {
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+            if (workspaceEntity != null) {
+              SuggestedWorkspace suggestedWorkspace = new SuggestedWorkspace();
+              suggestedWorkspace.setId(workspaceEntity.getId());
+              String name = (String) result.get("name");
+              if (result.get("nameExtension") != null) {
+                name = String.format("%s (%s)", name, (String) result.get("nameExtension"));
+              }
+              suggestedWorkspace.setName(name);
+              suggestedWorkspace.setSubject(subjectObject.getCode());
+              suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
+              suggestedWorkspaces.add(suggestedWorkspace);
+            }
+          }
+        }
+      }
+    }
+    return Response.ok(suggestedWorkspaces).build();
+  }
+
+  @POST
+  @Path("/{STUDENTIDENTIFIER}/toggleSuggestion")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, SuggestedWorkspace payload) {
+
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Find a previous suggestion with subject + course number and toggle accordingly
+    
+    HopsSuggestion hopsSuggestion = hopsController.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+    if (hopsSuggestion == null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
+      if (workspaceEntity == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
+      }
+      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber(), payload.getId());
+      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+      item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
+      item.setCourseName(workspaceEntityController.getName(workspaceEntity));
+      item.setCourseNumber(hopsSuggestion.getCourseNumber());
+      item.setDate(hopsSuggestion.getCreated());
+      item.setStatus(StudyActivityItemStatus.SUGGESTED);
+      item.setSubject(hopsSuggestion.getSubject());
+      return Response.ok(item).build();
+    }
+    else {
+      hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      return Response.noContent().build();
+    }
+  }
+
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
+  }
+
+}

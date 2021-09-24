@@ -23,7 +23,7 @@ public interface SearchProvider {
   
   public WorkspaceSearchBuilder searchWorkspaces();
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, List<SchoolDataIdentifier> organizationIdentifiers, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, TemplateRestriction templateRestriction, int start, int maxResults, List<Sort> sorts);
-  public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber);
+  public SearchResult searchWorkspaces(List<OrganizationEntity> organizations, String subjectIdentifier, Integer courseNumber);
   public SearchResult findWorkspace(SchoolDataIdentifier identifier); 
   
   public CommunicatorMessageSearchBuilder searchCommunicatorMessages();
