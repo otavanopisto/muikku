@@ -32,7 +32,7 @@ import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
 
 import equals = require("deep-equal");
-import Tabs from "~/components/general/tabs";
+import Tabs, {TabType} from "~/components/general/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
@@ -851,10 +851,18 @@ class MaterialEditor extends React.Component<
       </div>
     );
 
-    const allTabs = [
+    const closeDialog =  <ButtonPill
+      buttonModifiers={["material-page-close-editor", "material-page-close-mobile-editor" ]}
+      onClick={this.onClickClose}
+      icon="arrow-left"
+  />;
+
+
+    const allTabs: TabType[] = [
       {
         id: "content",
         type: "material-editor",
+        mobileAction: closeDialog,
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
@@ -906,6 +914,7 @@ class MaterialEditor extends React.Component<
       allTabs.push({
         id: "metadata",
         type: "material-editor",
+        mobileAction: closeDialog,
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
@@ -966,6 +975,7 @@ class MaterialEditor extends React.Component<
       allTabs.push({
         id: "attachments",
         type: "material-editor",
+        mobileAction: closeDialog,
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
