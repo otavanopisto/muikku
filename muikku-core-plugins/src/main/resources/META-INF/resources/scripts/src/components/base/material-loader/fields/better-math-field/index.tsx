@@ -89,7 +89,7 @@ export default class MathField extends React.Component<MathFieldProps, MathField
         script.src = MQ_DEFAULT_SRC;
         script.async = true;
         document.head.appendChild(script);
-  
+
         let css = document.createElement('link');
         css.rel = "stylesheet";
         css.type = "text/css";
