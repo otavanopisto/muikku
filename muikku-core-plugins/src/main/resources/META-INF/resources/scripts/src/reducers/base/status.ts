@@ -32,8 +32,23 @@ export interface StatusType {
   isActiveUser: boolean,
   isStudent: boolean,
   profile: ProfileStatusType,
-  currentWorkspaceId?: number,
-  currentWorkspaceName?: string,
+  currentWorkspaceInfo?: {
+    id: number;
+    organizationEntityId: number;
+    urlName: string;
+    archived: boolean;
+    name: string;
+    nameExtension: string;
+    description: string;
+    numVisits: number;
+    lastVisit: string;
+    access: string;
+    materialDefaultLicense: string;
+    published: boolean;
+    curriculumIdentifiers: string[];
+    subjectIdentifier: string;
+    hasCustomImage: boolean;
+  },
   hasImage: boolean,
   imgVersion: number,
   hopsEnabled: boolean
@@ -120,8 +135,7 @@ export default function status(state: StatusType = {
   isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER, // missing
   profile: (<any>window).PROFILE_DATA,
   isStudent: (<any>window).MUIKKU_IS_STUDENT, // check if roles contain STUDENT
-  currentWorkspaceId: (<any>window).WORKSPACE_ID, // /workspace/workspaces/url-name-goes-here/basicInfo
-  currentWorkspaceName: (<any>window).WORKSPACE_NAME, // missing, different endpoint required
+  currentWorkspaceInfo: null,
   hasImage: false,
   imgVersion: (new Date()).getTime(),
   hopsEnabled: (<any>window).HOPS_ENABLED // /user/property/hops.enabled

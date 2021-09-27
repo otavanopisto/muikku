@@ -58,6 +58,7 @@ export type CurrentStudentUserAndWorkspaceStatusType = "WAIT" | "LOADING" | "REA
 export interface RecordsType {
   userData: AllStudentUsersDataType,
   userDataStatus: AllStudentUsersDataStatusType,
+  files: Array<UserFileType>,
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,
   current?: CurrentRecordType,
   location?: TranscriptOfRecordLocationType,
@@ -70,6 +71,7 @@ export default function records(state: RecordsType = {
   userData: [],
   userDataStatus: "WAIT",
   location: null,
+  files: null,
   current: null,
   currentStatus: "WAIT",
   curriculums: []

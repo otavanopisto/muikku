@@ -102,14 +102,23 @@ const loadStatus: LoadStatusType = function loadStatus() {
     loadChatAvailable(dispatch);
     loadWorklistAvailable(dispatch);
     loadForumIsAvailable(dispatch);
+  }
+}
 
-    if (location.pathname.startsWith("/workspace/")) {
-      const workspaceName = location.pathname.split("/")[2];
+const loadWorkspaceStatusInfo: LoadWorkspaceStatusInfoType = function loadWorkspaceStatusInfo() {
+  if (location.pathname.startsWith("/workspace/")) {
+    const workspaceName = location.pathname.split("/")[2];
 
-      const workspaceId = (await promisify(mApi().workspace.workspaces.basicInfo.read(workspaceName), 'callback')());
+    const workspaceBasicInfo = (await promisify(mApi().workspace.workspaces.basicInfo.read(workspaceName), 'callback')());
 
-      //loadWorkspacePermissions();
-    }
+    dispatch({
+      type: "UPDATE_STATUS",
+      payload: {
+        currentWorkspaceInfo: workspaceBasicInfo as any,
+      },
+    });
+
+    //loadWorkspacePermissions(workspaceBasicInfo);
   }
 }
 
