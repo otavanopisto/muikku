@@ -626,7 +626,6 @@
   &:hover,
   &.hover {
     background-color: darken($color-button-pill-background, 10%);
-
   }
 
   &:active,
@@ -784,7 +783,8 @@
 .button-pill--delete,
 .button-pill--toggle,
 .button-pill--restore,
-.button-pill--edit {
+.button-pill--edit,
+.button-pill--filter {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -811,6 +811,32 @@
 
   @include breakpoint($breakpoint-pad) {
     margin: 0 10px 0 0;
+  }
+}
+
+.button-pill--filter {
+  background-color: $color-main-function-button-pill-delete-background;
+  color: $color-main-function-button-pill-delete-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
   }
 }
 
@@ -1072,7 +1098,6 @@
 }
 
 // Environment dialog
-
 .button--workspace-management {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
@@ -1232,6 +1257,92 @@
 
 .button--muikku-update-assignment {
   background: $color-assignment;
+}
+
+// Evaluation related
+.button--evaluation-add-assessment {
+  background-color: $color-info;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-add-supplementation {
+  background-color: $color-grade-incomplete;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button-pill--sorter,
+.button-pill--archive,
+.button-pill--evaluate,
+.button-icon--important,
+.button-icon--unimportant {
+  border-radius: 2px;
+  box-sizing: unset;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "muikku";
+  font-size: 1.125rem;
+  height: 1.125rem;
+  line-height: 1.125rem;
+  margin: 0 10px 0 0;
+  padding: 6px;
+  width: 1.125rem;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button-pill--sorter {
+  background: lighten($color-default-helper, 20%);
+  color: $color-default-contrast;
+
+  &:hover {
+    background: $color-info;
+    color: $color-default;
+  }
+}
+
+.button-pill--sorter-selected {
+  background: $color-info;
+  color: $color-default;
+}
+
+.button-pill--archive {
+  background: $color-default-contrast;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-default-contrast, 10%);
+  }
+}
+
+.button-pill--evaluate {
+  background: $color-info;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-info, 10%);
+  }
+}
+
+.button-icon--important,
+.button-icon--unimportant {
+  background: transparent;
+  border-radius: 100%;
+  color: $color-info;
+
+  &:hover {
+    background: $color-default-contrast;
+    color: $color-default;
+  }
+}
+
+.button-icon--important-selected,
+.button-icon--unimportant-selected {
+  background: $color-default-contrast;
+  color: $color-default;
 }
 
 // Material master management related
@@ -1618,4 +1729,34 @@
   &:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+.button--evaluate-assignment {
+  background-color: $color-assignment;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-supplementation {
+  background: $color-incomplete;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-workspace {
+  background: $color-success;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-remove-draft {
+  background: $color-clear;
+  color: $color-default;
+  margin: 0 5px;
+}
+
+.button--evaluate-cancel {
+  background: $color-button-cancel-background;
+  color: $color-default;
+  margin: 0 5px;
 }

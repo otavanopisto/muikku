@@ -29,13 +29,13 @@ export default class ApplicationPanelBody extends React.Component<
     } = this.props;
 
     return (
-      <div
-        className={`application-panel__body ${
+      <div className={`application-panel__body ${
           modifier ? "application-panel__body--" + modifier : ""
         }`}
       >
-        <div
-          className="application-panel__actions"
+        <div className={`application-panel__actions ${
+            modifier ? "application-panel__actions--" + modifier : ""
+          }`}
         >
           {primaryOption ? (
             <div
@@ -49,8 +49,7 @@ export default class ApplicationPanelBody extends React.Component<
             </div>
           ) : null}
           {toolbar ? (
-            <div
-              className={`application-panel__main-container application-panel__main-container--actions ${
+            <div className={`application-panel__main-container application-panel__main-container--actions ${
                 modifier ? "application-panel__main-container--" + modifier : ""
               }`}
             >
@@ -58,8 +57,9 @@ export default class ApplicationPanelBody extends React.Component<
             </div>
           ) : null}
         </div>
-        <div
-          className="application-panel__content"
+        <div className={`application-panel__content ${
+          modifier ? "application-panel__content--" + modifier : ""
+        }`}
         >
           {asideBefore ? (
             <div
@@ -76,7 +76,9 @@ export default class ApplicationPanelBody extends React.Component<
             {children}
           </div>
           {asideAfter ? (
-            <div className="application-panel__helper-container">
+            <div className={`application-panel__helper-container ${
+              modifier ? "application-panel__helper-container--" + modifier : ""
+            }`}>
               {asideAfter}
             </div>
           ) : null}

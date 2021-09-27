@@ -212,7 +212,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
+        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems}
+        autofocus={!this.props.initialSelectedItems}
         showFullNames={!this.props.status.isStudent} />),
       (
         <div className="env-dialog__row" key="new-message-2">

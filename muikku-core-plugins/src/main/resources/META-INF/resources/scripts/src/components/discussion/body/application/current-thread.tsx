@@ -145,18 +145,36 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       {
 
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType) => {
+          /**
+           * user can be null in situtations where whole user is removed completely
+           * from muikku. Then there is no reply.creator to use.
+           */
           const user: DiscussionUserType = reply.creator;
-          const userCategory: number = reply.creator.id > 10 ? (reply.creator.id % 10) + 1 : reply.creator.id;
-          const canRemoveMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.removeThread || this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
-          const canEditMessage: boolean = this.props.userId === reply.creator.id || areaPermissions.editMessages;
 
+          /**
+           * By default setting remove message is false
+           */
+          let canRemoveMessage = false;
+
+          /**
+           * By default setting edit message is false
+           */
+          let canEditMessage = false;
           let avatar;
+
           if (!user) {
-            //This is what it shows when the user is not ready
+            /**
+             * This is what it shows when the user is not ready
+             * Also if reply creator is null aka deleted
+             * These situtations don't allow changing user specific color, so
+             * color is same for all of those cases
+             */
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
-            //This is what it shows when the user is ready
-            avatar = <Avatar key={reply.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory} />
+            const userCategory = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator.id;
+            canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread;
+            canEditMessage = this.props.userId === reply.creator.id || areaPermissions.editMessages;
+            avatar = <Avatar key={reply.id} id={user.id} firstName={user.firstName} hasImage={user.hasImage} userCategory={userCategory}/>
           }
 
           /**
@@ -217,6 +235,11 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -227,6 +250,11 @@ function mapStateToProps(state: StateType) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };

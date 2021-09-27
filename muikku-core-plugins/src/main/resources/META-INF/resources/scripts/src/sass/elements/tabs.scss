@@ -16,12 +16,21 @@
 .tabs__tab-labels {
   align-items: center;
   border-bottom: 1px solid $color-tab-border;
-  display: flex;
+  display: none;
   flex-flow: row nowrap;
   padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
 }
 
+.tabs__tab-labels--application-panel {
+  border-bottom: solid 1px $color-application-panel-box-border;
+ }
+
 .tabs__tab-labels--mobile {
+  display: flex;
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
@@ -70,8 +79,25 @@
 }
 
 .tabs__tab-data-container {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab-data-container--mobile {
+  display: flex;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.tabs__tab-data-container--mobile-tabs {
   display: flex;
 }
+
 
 .tabs__tab-data {
   display: none;
@@ -96,6 +122,7 @@
 }
 
 // Used when viewing workspace students
+
 .tabs__tab--workspace-students {
   flex-basis: 50%;
 
@@ -124,16 +151,7 @@
   }
 }
 
-// Holy de viera this border thing is a mess will deal with it some day
-
 // Application-panel tabs
-.tabs__tab-labels--application-panel {
-  align-items: center;
-  border-bottom: solid 1px $color-application-panel-box-border;
-  display: flex;
-  flex-flow: row nowrap;
-  padding: 0;
-}
 
 .tabs__tab--application-panel {
   background-clip: padding-box;
@@ -229,5 +247,22 @@
   @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-basis: 50%;
+  }
+}
+
+.tabs__mobile-tab {
+  align-items: center;
+  display: flex;
+  font-size: 1.5rem;
+  justify-content: space-between;
+  padding: 0 10px 10px;
+}
+
+.tabs__pagination-container--bullets {
+  align-items: center;
+  display: flex;
+
+  span {
+    margin-right: 4px;
   }
 }

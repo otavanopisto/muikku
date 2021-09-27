@@ -24,14 +24,14 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.folders.title")}>
         {this.props.messages.navigation.map((item) => {
-          return <NavigationElement modifiers="aside-navigation" iconColor={item.color} icon={item.icon} key={item.id}
+          return <NavigationElement iconColor={item.color} icon={item.icon} key={item.id}
             isActive={this.props.messages.location === item.location} hash={item.location}
             editableWrapper={LabelUpdateDialog} editableWrapperArgs={item.type === "label" ? { label: item } : null}
             isEditable={item.type === "label"}>{item.text(this.props.i18n)}</NavigationElement>
         })}
       </NavigationTopic>
-      <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")} className="item-list--settings">
-        <NavigationElement modifiers="aside-navigation" icon="cogs" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signature')}</NavigationElement>
+      <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")} classModifier="communicator-settings">
+        <NavigationElement icon="cogs" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signature')}</NavigationElement>
       </NavigationTopic>
     </Navigation>
   }

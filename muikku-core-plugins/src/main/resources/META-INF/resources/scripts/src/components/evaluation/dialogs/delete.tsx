@@ -1,0 +1,258 @@
+import * as React from "react";
+import Dialog from "~/components/general/dialog";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import Button from "~/components/general/button";
+import { AnyActionType } from "~/actions";
+import { StateType } from "~/reducers";
+import "~/sass/elements/form-elements.scss";
+import "~/sass/elements/form.scss";
+import { EvaluationState } from "../../../reducers/main-function/evaluation/index";
+import {
+  RemoveWorkspaceEvent,
+  removeWorkspaceEventFromServer,
+} from "../../../actions/main-function/evaluation/evaluationActions";
+import { i18nType } from "../../../reducers/base/i18n";
+import { EvaluationEvent } from "~/@types/evaluation";
+
+/**
+ * DeleteDialogProps
+ */
+interface DeleteDialogProps {
+  i18n: i18nType;
+  children: React.ReactElement<any>;
+  isOpen?: boolean;
+  onClose?: () => any;
+  evaluations: EvaluationState;
+  eventData: EvaluationEvent;
+  removeWorkspaceEventFromServer: RemoveWorkspaceEvent;
+}
+
+/**
+ * DeleteDialogState
+ */
+interface DeleteDialogState {}
+
+/**
+ * DeleteDialog
+ */
+class DeleteDialog extends React.Component<
+  DeleteDialogProps,
+  DeleteDialogState
+> {
+  /**
+   * constructor
+   * @param props
+   */
+  constructor(props: DeleteDialogProps) {
+    super(props);
+
+    this.handleDeleteEventClick = this.handleDeleteEventClick.bind(this);
+  }
+
+  /**
+   * handleDeleteEventClick
+   */
+  handleDeleteEventClick(closeDialog: () => any) {
+    const { eventData } = this.props;
+
+    this.props.removeWorkspaceEventFromServer({
+      identifier: eventData.identifier,
+      eventType: eventData.type,
+      onSuccess: () => {
+        const draftId = eventData.identifier;
+
+        cleanWorkspaceAndSupplementationDrafts(draftId);
+
+        closeDialog();
+      },
+      onFail: () => closeDialog(),
+    });
+  }
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
+  render() {
+    const { evaluationSelectedAssessmentId } = this.props.evaluations;
+
+    const studentNameString = `${evaluationSelectedAssessmentId.lastName}, ${evaluationSelectedAssessmentId.firstName}`;
+
+    const footer = (closeDialog: () => any) => {
+      return (
+        <div className="dialog__button-set">
+          <Button
+            buttonModifiers={["fatal", "standard-ok"]}
+            onClick={this.handleDeleteEventClick.bind(this, closeDialog)}
+          >
+            {this.props.i18n.text.get(
+              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.removeButton",
+              studentNameString
+            )}
+          </Button>
+          <Button
+            buttonModifiers={["cancel", "standard-cancel"]}
+            onClick={closeDialog}
+          >
+            {this.props.i18n.text.get(
+              "plugin.evaluation.workspaceEvaluationDialog.removeDialog.cancelButton"
+            )}
+          </Button>
+        </div>
+      );
+    };
+    const content = (closeDialog: () => any) => {
+      return (
+        <div>
+          {this.props.i18n.text.get(
+            "plugin.evaluation.workspaceEvaluationDialog.removeDialog.description",
+            studentNameString
+          )}
+        </div>
+      );
+    };
+    return (
+      <Dialog
+        isOpen={this.props.isOpen}
+        onClose={this.props.onClose}
+        modifier="evaluation-remove-assessment"
+        title={this.props.i18n.text.get(
+          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.title"
+        )}
+        content={content}
+        footer={footer}
+      >
+        {this.props.children}
+      </Dialog>
+    );
+  }
+}
+
+/**
+ * cleanWorkspaceAndSupplementationDrafts
+ * @param draftId
+ */
+export const cleanWorkspaceAndSupplementationDrafts = (draftId: string) => {
+  const supplementationEditorEditLiteralEvaluation = localStorage.getItem(
+    `supplementation-editor-edit.${draftId}.literalEvaluation`
+  );
+
+  const supplementationEditorNewLiteralEvaluation = localStorage.getItem(
+    `supplementation-editor-new.${draftId}.literalEvaluation`
+  );
+
+  const workspaceEditorEditLiteralEvaluation = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.literalEvaluation`
+  );
+
+  const workspaceEditorEditGrade = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.grade`
+  );
+
+  const workspaceEditorEditBasePrice = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.basePrice`
+  );
+
+  const workspaceEditorEditSelectedPriceOption = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.selectedPriceOption`
+  );
+
+  const workspaceEditorEditExistingBilledPriceObject = localStorage.getItem(
+    `workspace-editor-edit.${draftId}.existingBilledPriceObject`
+  );
+
+  const workspaceEditorNewLiteralEvaluation = localStorage.getItem(
+    `workspace-editor-new.${draftId}.literalEvaluation`
+  );
+
+  const workspaceEditorNewGrade = localStorage.getItem(
+    `workspace-editor-new.${draftId}.grade`
+  );
+
+  const workspaceEditorNewBasePrice = localStorage.getItem(
+    `workspace-editor-new.${draftId}.basePrice`
+  );
+
+  const workspaceEditorNewSelectedPriceOption = localStorage.getItem(
+    `workspace-editor-new.${draftId}.selectedPriceOption`
+  );
+
+  const workspaceEditorNewExistingBilledPriceObject = localStorage.getItem(
+    `workspace-editor-new.${draftId}.existingBilledPriceObject`
+  );
+
+  if (supplementationEditorEditLiteralEvaluation !== null) {
+    localStorage.removeItem(
+      `supplementation-editor-edit.${draftId}.literalEvaluation`
+    );
+  }
+  if (supplementationEditorNewLiteralEvaluation !== null) {
+    localStorage.removeItem(
+      `supplementation-editor-new.${draftId}.literalEvaluation`
+    );
+  }
+
+  if (
+    workspaceEditorEditLiteralEvaluation !== null ||
+    workspaceEditorEditGrade !== null ||
+    workspaceEditorEditSelectedPriceOption !== null ||
+    workspaceEditorEditBasePrice !== null ||
+    workspaceEditorEditExistingBilledPriceObject !== null
+  ) {
+    localStorage.removeItem(
+      `workspace-editor-edit.${draftId}.literalEvaluation`
+    );
+    localStorage.removeItem(`workspace-editor-edit.${draftId}.grade`);
+    localStorage.removeItem(
+      `workspace-editor-edit.${draftId}.selectedPriceOption`
+    );
+    localStorage.removeItem(`workspace-editor-edit.${draftId}.basePrice`);
+    localStorage.removeItem(
+      `workspace-editor-edit.${draftId}.existingBilledPriceObject`
+    );
+  }
+
+  if (
+    workspaceEditorNewLiteralEvaluation !== null ||
+    workspaceEditorNewGrade !== null ||
+    workspaceEditorNewSelectedPriceOption !== null ||
+    workspaceEditorNewBasePrice !== null ||
+    workspaceEditorNewExistingBilledPriceObject !== null
+  ) {
+    localStorage.removeItem(
+      `workspace-editor-new.${draftId}.literalEvaluation`
+    );
+    localStorage.removeItem(`workspace-editor-new.${draftId}.grade`);
+    localStorage.removeItem(
+      `workspace-editor-new.${draftId}.selectedPriceOption`
+    );
+    localStorage.removeItem(`workspace-editor-new.${draftId}.basePrice`);
+    localStorage.removeItem(
+      `workspace-editor-new.${draftId}.existingBilledPriceObject`
+    );
+  }
+};
+
+/* localStorage.getItem(`workspace-editor-edit.${draftId}.`)
+ */
+/**
+ * mapStateToProps
+ * @param state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+    evaluations: state.evaluations,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ removeWorkspaceEventFromServer }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteDialog);

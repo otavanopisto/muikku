@@ -1,0 +1,14 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.items-sorter {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 10px 10px 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+  }
+}
