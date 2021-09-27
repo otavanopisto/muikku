@@ -391,6 +391,10 @@ public class EvaluationController {
     communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
   }
   
+  public WorkspaceMaterialEvaluationAudioClip findEvaluationAudioClip(String clipId) {
+    return workspaceMaterialEvaluationAudioClipDAO.findByClipId(clipId);
+  }
+  
   public List<WorkspaceMaterialEvaluationAudioClip> listEvaluationAudioClips(WorkspaceMaterialEvaluation evaluation) {
     return workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
   }

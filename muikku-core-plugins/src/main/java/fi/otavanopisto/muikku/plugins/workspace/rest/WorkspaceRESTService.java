@@ -84,6 +84,9 @@ import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationFileStorageUtils;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -261,6 +264,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileAnswerUtils fileAnswerUtils;
+
+  @Inject
+  private EvaluationFileStorageUtils evaluationFileStorageUtils;
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -2210,6 +2216,74 @@ public class WorkspaceRESTService extends PluginRESTService {
           .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
           .build();
       }
+    }
+    
+    return Response.status(Status.NOT_FOUND).build();
+  }
+
+  @GET
+  @Path("/materialevaluationaudioassessment/{CLIPID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getMaterialEvaluationAudioAssessment(@PathParam("CLIPID") String clipId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    WorkspaceMaterialEvaluationAudioClip evaluationAudioClip = evaluationController.findEvaluationAudioClip(clipId);
+    if (evaluationAudioClip != null) {
+
+      WorkspaceMaterialEvaluation materialEvaluation = evaluationAudioClip.getEvaluation();
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialEvaluation.getWorkspaceMaterialId());
+      if (workspaceMaterial == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace material from evaluation %d", materialEvaluation.getId()))
+          .build();
+      }
+
+      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+      if (workspaceRootFolder == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace root folder for material %d", workspaceMaterial.getId()))
+          .build();
+      }
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+      if (workspaceEntity == null) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+          .entity(String.format("Could not find workspace entity for root folder %d", workspaceRootFolder.getId()))
+          .build();
+      }
+
+      if (!materialEvaluation.getStudentEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+        if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+      }
+      
+      byte[] content = null;
+      Long userEntityId = materialEvaluation.getStudentEntityId();
+      try {
+        if (evaluationFileStorageUtils.isFileInFileSystem(userEntityId, evaluationAudioClip.getClipId())) {
+          content = evaluationFileStorageUtils.getFileContent(userEntityId, evaluationAudioClip.getClipId());
+        }
+        else {
+          logger.warning(String.format("Audio %s of user %d not found from file storage", evaluationAudioClip.getClipId(), userEntityId));
+        }
+      }
+      catch (FileNotFoundException fnfe) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+      }
+
+      if (content == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      
+      return (StringUtils.isEmpty(evaluationAudioClip.getContentType()) ? Response.ok(content) : Response.ok(content).type(evaluationAudioClip.getContentType()))
+          .header("Content-Disposition", "attachment; filename=\"" + evaluationAudioClip.getFileName().replaceAll("\"", "\\\"") + "\"")
+          .build();
     }
     
     return Response.status(Status.NOT_FOUND).build();
