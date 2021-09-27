@@ -12,7 +12,7 @@ import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion_;
 
-public class HopsSuggestionDAO  extends CorePluginsDAO<HopsSuggestion>{
+public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
 
   private static final long serialVersionUID = 5746392088055973392L;
   

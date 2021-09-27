@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
-  <sql>create table HopsSuggestion (id bigint not null auto_increment, courseNumber integer, created datetime not null, studentIdentifier varchar(255) not null, subject varchar(255) not null, workspaceEntityId bigint not null, primary key (id));</sql>
+  <sql>create table Hops (id bigint not null auto_increment, formData longtext not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
+  <sql>create unique index ind_hops_student on Hops (studentIdentifier);</sql>
+
+  <sql>create table HopsHistory (id bigint not null auto_increment, date datetime not null, modifier varchar(255) not null, studentIdentifier varchar(255) not null, primary key (id));</sql>
+  <sql>create index ind_hhis_student on HopsHistory (studentIdentifier);</sql>
   
+  <sql>create table HopsSuggestion (id bigint not null auto_increment, courseNumber integer, created datetime not null, studentIdentifier varchar(255) not null, subject varchar(255) not null, workspaceEntityId bigint not null, primary key (id));</sql>
   <sql>create unique index ind_hsug_suggestion on HopsSuggestion (studentIdentifier, subject, courseNumber);</sql>
 
 </update>

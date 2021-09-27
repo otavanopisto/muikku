@@ -1,9 +1,13 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -24,8 +28,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
+import fi.otavanopisto.muikku.plugins.hops.model.Hops;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -41,6 +49,8 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -62,6 +72,9 @@ public class HopsRestService {
 
   @Inject
   private OrganizationEntityController organizationEntityController;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -75,11 +88,67 @@ public class HopsRestService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @GET
+  @Path("/{STUDENTIDENTIFIER}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
+    if (hops == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(hops.getFormData()).build();
+  }
+  
+  @POST
+  @Path("/{STUDENTIDENTIFIER}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String formData) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Validate JSON
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      objectMapper.readTree(formData);
+    }
+    catch (IOException e) {
+      logger.log(Level.WARNING, String.format("Failed to deserialize %s", formData));
+    }
+    
+    // Create or update
+    
+    Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
+    if (hops == null) {
+      hops = hopsController.createHops(studentIdentifier, formData);
+    }
+    else {
+      hops = hopsController.updateHops(hops, studentIdentifier, formData);
+    }
+
+    return Response.ok(formData).build();
+  }
 
   @GET
   @Path("/{STUDENTIDENTIFIER}/studyActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudyActivity(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
     // Access check
     
@@ -139,6 +208,46 @@ public class HopsRestService {
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
+  }
+  
+  @GET
+  @Path("/{STUDENTIDENTIFIER}/history")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifier);
+    if (history.isEmpty()) {
+      return Response.ok(Collections.<HistoryItem>emptyList()).build();
+    }
+
+    Map<String, String> nameMap = new HashMap<>();
+    List<HistoryItem> historyItems = new ArrayList<>();
+    for (HopsHistory historyEntry : history) {
+      HistoryItem historyItem = new HistoryItem();
+      historyItem.setDate(historyEntry.getDate());
+      if (nameMap.containsKey(historyEntry.getModifier())) {
+        historyItem.setModifier(nameMap.get(historyEntry.getModifier()));
+      }
+      else {
+        SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
+        UserEntityName userEntityName = userEntityController.getName(sdi);
+        if (userEntityName != null) {
+          historyItem.setModifier(userEntityName.getDisplayName());
+          nameMap.put(historyEntry.getModifier(), userEntityName.getDisplayName());
+        }
+      }
+      historyItems.add(historyItem);
+    }
+    
+    return Response.ok(historyItems).build();
   }
   
   @GET
@@ -209,7 +318,10 @@ public class HopsRestService {
     
     // Find a previous suggestion with subject + course number and toggle accordingly
     
-    HopsSuggestion hopsSuggestion = hopsController.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+    HopsSuggestion hopsSuggestion = hopsController.findSuggestionByStudentIdentifierAndSubjectAndCourseNumber(
+        studentIdentifier,
+        payload.getSubject(),
+        payload.getCourseNumber());
     if (hopsSuggestion == null) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
       if (workspaceEntity == null) {

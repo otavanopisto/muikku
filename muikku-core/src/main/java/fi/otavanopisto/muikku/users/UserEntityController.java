@@ -80,17 +80,21 @@ public class UserEntityController implements Serializable {
   }
   
   public UserEntityName getName(UserEntity userEntity) {
+    return getName(userEntity.defaultSchoolDataIdentifier());
+  }
+
+  public UserEntityName getName(SchoolDataIdentifier identifier) {
     for (SearchProvider searchProvider : searchProviders) {
       if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
-        SearchResult searchResult = searchProvider.findUser(userEntity.defaultSchoolDataIdentifier(), true);
+        SearchResult searchResult = searchProvider.findUser(identifier, true);
         if (searchResult.getTotalHitCount() > 0) {
           List<Map<String, Object>> results = searchResult.getResults();
           // Settle for first match but prefer default identifier 
           Map<String, Object> match = results.get(0);
           if (searchResult.getTotalHitCount() >  1) {
             for (Map<String, Object> result : results) {
-              String identifier = (String) result.get("identifier");
-              if (StringUtils.equals(userEntity.getDefaultIdentifier(), identifier)) {
+              String identifierString = (String) result.get("identifier");
+              if (StringUtils.equals(identifier.getIdentifier(), identifierString)) {
                 match = result;
                 break;
               }
