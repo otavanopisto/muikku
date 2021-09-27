@@ -67,7 +67,6 @@
   }
 }
 
-
 // .dialog__window--edit-user-group {
 //   @include breakpoint($breakpoint-pad) {
 //     max-width: 815px;
@@ -272,7 +271,6 @@
   }
 }
 
-
 .dialog__content-row--user-search {
   margin: 10px 0;
 }
@@ -291,9 +289,12 @@
 .dialog__content-row--new-workspace,
 .dialog__content-row--edit-workspace {
   display: flex;
+  flex-wrap: wrap;
 
-  .form-element:not(:first-child) {
-    margin-left: 20px;
+  @include breakpoint($breakpoint-pad) {
+    .form-element:not(:first-child) {
+      margin-left: 20px;
+    }
   }
 }
 

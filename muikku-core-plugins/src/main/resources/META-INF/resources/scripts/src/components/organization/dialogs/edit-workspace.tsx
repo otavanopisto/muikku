@@ -571,6 +571,7 @@ class OrganizationEditWorkspace extends React.Component<
                 updateField={this.handleDateChange.bind(this, "beginDate")}
                 locale={this.props.i18n.time.getLocale()}
                 selected={this.state.beginDate}
+                modifiers="organization-workspace-date"
                 labels={{
                   label: this.props.i18n.text.get(
                     "plugin.organization.workspaces.editWorkspace.beginDate.label"
@@ -583,6 +584,7 @@ class OrganizationEditWorkspace extends React.Component<
                 updateField={this.handleDateChange.bind(this, "endDate")}
                 locale={this.props.i18n.time.getLocale()}
                 selected={this.state.endDate}
+                modifiers="organization-workspace-date"
                 labels={{
                   label: this.props.i18n.text.get(
                     "plugin.organization.workspaces.editWorkspace.endDate.label"

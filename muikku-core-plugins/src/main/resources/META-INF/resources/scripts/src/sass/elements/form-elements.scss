@@ -91,8 +91,14 @@
   flex-grow: 1;
 }
 
+.form-element--organization-workspace-date {
+  margin-right: 10px;
+}
+
 .form-element--new-user:not(:first-child) {
-  margin-left: 20px;
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 20px;
+  }
 }
 
 .form-element--new-user-email:last-child {
@@ -175,8 +181,12 @@
 }
 
 .form-element--workspace-name,
-.form-element--workspace-name-extension {
+.form-element--workspace-name-extension,
+.form-element--dialog-workspace-name-extension {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+  margin-right: 10px;
 }
 
 .form-element--dialog-workspace-name-extension {
