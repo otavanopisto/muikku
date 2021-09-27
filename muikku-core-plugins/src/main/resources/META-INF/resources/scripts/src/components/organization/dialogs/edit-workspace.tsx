@@ -918,7 +918,7 @@ class OrganizationEditWorkspace extends React.Component<
                     );
                   })
                 ) : (
-                  <div className="empty empty--dialog-row">
+                  <div>
                     {this.props.i18n.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.students"
                     )}
@@ -951,7 +951,7 @@ class OrganizationEditWorkspace extends React.Component<
                     );
                   })
                 ) : (
-                  <div className="empty empty--dialog-row">
+                  <div>
                     {this.props.i18n.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.teachers"
                     )}
@@ -984,7 +984,7 @@ class OrganizationEditWorkspace extends React.Component<
                     );
                   })
                 ) : (
-                  <div className="empty empty--dialog-row">
+                  <div>
                     {this.props.i18n.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.students"
                     )}
@@ -1017,7 +1017,7 @@ class OrganizationEditWorkspace extends React.Component<
                     );
                   })
                 ) : (
-                  <div className="empty empty--dialog-row">
+                  <div>
                     {this.props.i18n.text.get(
                       "plugin.organization.workspaces.editWorkspace.summary.empty.teachers"
                     )}

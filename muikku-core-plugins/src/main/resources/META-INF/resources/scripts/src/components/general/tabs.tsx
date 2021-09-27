@@ -40,6 +40,7 @@ interface TabsState {
 }
 
 class Tabs extends React.Component<TabsProps, TabsState>{
+
   render(){
     const a11yConfig = {
       enabled: true,
@@ -57,18 +58,16 @@ class Tabs extends React.Component<TabsProps, TabsState>{
         })}
         {this.props.children}
       </div>
-      <Swiper modules={[A11y, Pagination]} autoHeight={true} a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
-
-      {this.props.tabs.map(t=> (<>
-      <SwiperSlide key={t.id} >
-        <div className="tabs__mobile-tab">
-          <div className="tabs__pagination-container"> </div>
-          <div>{t.name}</div>
-          {t.mobileAction? t.mobileAction: <div className="tabs__mobile-tab-spacer"/>}
-        </div>
-        {t.component()}
+      <Swiper modules={[A11y, Pagination]} a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
+        {this.props.tabs.map(t=> (<>
+        <SwiperSlide key={t.id} >
+          <div className="tabs__mobile-tab">
+            <div className="tabs__pagination-container"> </div>
+            <div>{t.name}</div>
+            {t.mobileAction? t.mobileAction: <div className="tabs__mobile-tab-spacer"/>}
+          </div>
+          {t.component()}
         </SwiperSlide> </>))}
-
       </Swiper>
       <div className="tabs__tab-data-container">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
