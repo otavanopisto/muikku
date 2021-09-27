@@ -7,12 +7,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -22,15 +24,19 @@ import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSen
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio.AudioAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -67,6 +73,9 @@ public class EvaluationController {
   private WorkspaceMaterialEvaluationDAO workspaceMaterialEvaluationDAO;
 
   @Inject
+  private WorkspaceMaterialEvaluationAudioClipDAO workspaceMaterialEvaluationAudioClipDAO;
+  
+  @Inject
   private SupplementationRequestDAO supplementationRequestDAO;
   
   @Inject
@@ -83,6 +92,9 @@ public class EvaluationController {
 
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
+  
+  @Inject
+  private EvaluationFileStorageUtils file;
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
@@ -115,7 +127,7 @@ public class EvaluationController {
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
-    
+
     return evaluation;
   }
   
@@ -213,7 +225,7 @@ public class EvaluationController {
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
-    
+
     return workspaceMaterialEvaluation;
   }
 
@@ -369,6 +381,66 @@ public class EvaluationController {
         localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationText", new Object[] {workspaceUrl, workspaceName, verbalAssessment}),
         Collections.<Tag>emptySet());
     communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
+  }
+  
+  public List<WorkspaceMaterialEvaluationAudioClip> listEvaluationAudioClips(WorkspaceMaterialEvaluation evaluation) {
+    return workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
+  }
+  
+  public void synchronizeWorkspaceMaterialEvaluationAudioAssessments(WorkspaceMaterialEvaluation evaluation, List<AudioAssessment> audioAssessments) {
+    List<WorkspaceMaterialEvaluationAudioClip> existingClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
+
+    List<String> existingClipIds = existingClips.stream().map(WorkspaceMaterialEvaluationAudioClip::getClipId).collect(Collectors.toList());
+
+    if (audioAssessments != null) {
+      for (AudioAssessment clip : audioAssessments) {
+        if (existingClipIds.contains(clip.getId())) {
+          // Already existing clip
+          existingClipIds.remove(clip.getId());
+        }
+        else {
+          // New clip
+          try {
+            byte[] audioData = TempFileUtils.getTempFileData(clip.getId());
+            if (audioData == null) {
+              throw new WorkspaceFieldIOException("Temp audio does not exist");
+            }
+            
+            // Create file
+            Long userEntityId = evaluation.getStudentEntityId();
+            file.storeFileToFileSystem(userEntityId, clip.getId(), audioData);
+            
+            // Create db entry
+            workspaceMaterialEvaluationAudioClipDAO.create(evaluation, clip.getContentType(), clip.getId(), clip.getName());
+            TempFileUtils.deleteTempFile(clip.getId());
+          }
+          catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve clip data", e);
+          }
+        }
+      }
+    }
+    
+    // Removed clips
+    
+    for (String existingClipId : existingClipIds) {
+      WorkspaceMaterialEvaluationAudioClip workspaceMaterialEvaluationAudioClip = workspaceMaterialEvaluationAudioClipDAO.findByClipId(existingClipId);
+      if (workspaceMaterialEvaluationAudioClip != null) {
+        try {
+          // Remove file
+          Long userEntityId = workspaceMaterialEvaluationAudioClip.getEvaluation().getStudentEntityId();
+          if (file.isFileInFileSystem(userEntityId, existingClipId)) {
+            file.removeFileFromFileSystem(userEntityId, existingClipId);
+          }
+          
+          // Remove db entry
+          workspaceMaterialEvaluationAudioClipDAO.delete(workspaceMaterialEvaluationAudioClip);
+        }
+        catch (Exception e) {
+          throw new RuntimeException("Failed to remove audio data", e);
+        }
+      }
+    }
   }
   
 }
