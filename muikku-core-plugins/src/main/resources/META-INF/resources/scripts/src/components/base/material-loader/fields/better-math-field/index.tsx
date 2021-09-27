@@ -65,31 +65,37 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     if (!this.loadedAce && !props.dontLoadACE){
       this.loadedAce = true;
 
-      let script = document.createElement('script');
-      script.src = ACE_DEFAULT_SRC;
-      script.async = true;
-      script.onload = ()=>{
-        let script2 = document.createElement('script');
-        script2.src = ACE_MODE_SRC;
-        script2.async = true;
-        document.head.appendChild(script2);
+      const existantScript = document.querySelector("script[src=" + JSON.stringify(ACE_DEFAULT_SRC) + "]");
+      if (!existantScript) {
+        let script = document.createElement('script');
+        script.src = ACE_DEFAULT_SRC;
+        script.async = true;
+        script.onload = ()=>{
+          let script2 = document.createElement('script');
+          script2.src = ACE_MODE_SRC;
+          script2.async = true;
+          document.head.appendChild(script2);
+        }
+        document.head.appendChild(script);
       }
-      document.head.appendChild(script);
     }
 
-    if (!props.dontLoadMQ){
+    if (!props.dontLoadMQ && !this.loadedMq){
       this.loadedMq = true;
 
-      let script = document.createElement('script');
-      script.src = MQ_DEFAULT_SRC;
-      script.async = true;
-      document.head.appendChild(script);
-
-      let css = document.createElement('link');
-      css.rel = "stylesheet";
-      css.type = "text/css";
-      css.href = MQ_DEFAULT_CSS;
-      document.head.appendChild(css);
+      const existantScript = document.querySelector("script[src=" + JSON.stringify(MQ_DEFAULT_SRC) + "]");
+      if (!existantScript) {
+        let script = document.createElement('script');
+        script.src = MQ_DEFAULT_SRC;
+        script.async = true;
+        document.head.appendChild(script);
+  
+        let css = document.createElement('link');
+        css.rel = "stylesheet";
+        css.type = "text/css";
+        css.href = MQ_DEFAULT_CSS;
+        document.head.appendChild(css);
+      }
     }
   }
   componentWillReceiveProps(nextProps: MathFieldProps){
