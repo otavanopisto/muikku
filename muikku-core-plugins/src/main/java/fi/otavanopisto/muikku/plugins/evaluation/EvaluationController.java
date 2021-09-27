@@ -267,7 +267,7 @@ public class EvaluationController {
       }
       
       evaluationAudioClips.forEach(audioClip -> {
-        evaluation.addAudioAssignmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
+        evaluation.addAudioAssessmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
       });
       
       return evaluation;

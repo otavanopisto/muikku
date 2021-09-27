@@ -38,21 +38,21 @@ public class RestAssignmentEvaluation {
     this.grade = grade;
   }
 
-  public void addAudioAssignmentAudioClip(RestAssignmentEvaluationAudioClip audioClip) {
-    this.audioAssignments.add(audioClip);
+  public void addAudioAssessmentAudioClip(RestAssignmentEvaluationAudioClip audioClip) {
+    this.getAudioAssessments().add(audioClip);
   }
   
-  public List<RestAssignmentEvaluationAudioClip> getAudioAssignments() {
-    return audioAssignments;
+  public List<RestAssignmentEvaluationAudioClip> getAudioAssessments() {
+    return audioAssessments;
   }
 
-  public void setAudioAssignments(List<RestAssignmentEvaluationAudioClip> audioAssignments) {
-    this.audioAssignments = audioAssignments;
+  public void setAudioAssessments(List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    this.audioAssessments = audioAssessments;
   }
 
   private RestAssignmentEvaluationType type;
   private String text;
   private Date date;
   private String grade;
-  private List<RestAssignmentEvaluationAudioClip> audioAssignments = new ArrayList<>();
+  private List<RestAssignmentEvaluationAudioClip> audioAssessments = new ArrayList<>();
 }
