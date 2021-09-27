@@ -49,9 +49,9 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluati
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio.AudioAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
@@ -685,8 +685,8 @@ public class Evaluation2RESTService {
     // WorkspaceMaterialEvaluation to RestAssessment
     
     List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
-    List<AudioAssessment> audioAssessments = evaluationAudioClips.stream()
-        .map(audioClip -> new AudioAssessment(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
+    List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
+        .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
         .collect(Collectors.toList());
 
     RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(
@@ -777,8 +777,8 @@ public class Evaluation2RESTService {
     // WorkspaceMaterialEvaluation to RestAssessment
     
     List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
-    List<AudioAssessment> audioAssessments = evaluationAudioClips.stream()
-        .map(audioClip -> new AudioAssessment(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
+    List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
+        .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
         .collect(Collectors.toList());
     
     RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(

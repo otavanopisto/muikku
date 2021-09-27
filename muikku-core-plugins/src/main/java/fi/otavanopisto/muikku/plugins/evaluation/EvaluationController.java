@@ -29,8 +29,8 @@ import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluation
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio.AudioAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -246,6 +246,9 @@ public class EvaluationController {
     }
     else {
       // No supplementation request or evaluation is newer
+      
+      List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(workspaceMaterialEvaluation);
+      
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setType(RestAssignmentEvaluationType.PASSED);
       evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
@@ -262,6 +265,11 @@ public class EvaluationController {
           }
         }
       }
+      
+      evaluationAudioClips.forEach(audioClip -> {
+        evaluation.addAudioAssignmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
+      });
+      
       return evaluation;
     }
   }
@@ -387,13 +395,13 @@ public class EvaluationController {
     return workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
   }
   
-  public void synchronizeWorkspaceMaterialEvaluationAudioAssessments(WorkspaceMaterialEvaluation evaluation, List<AudioAssessment> audioAssessments) {
+  public void synchronizeWorkspaceMaterialEvaluationAudioAssessments(WorkspaceMaterialEvaluation evaluation, List<RestAssignmentEvaluationAudioClip> audioAssessments) {
     List<WorkspaceMaterialEvaluationAudioClip> existingClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(evaluation);
 
     List<String> existingClipIds = existingClips.stream().map(WorkspaceMaterialEvaluationAudioClip::getClipId).collect(Collectors.toList());
 
     if (audioAssessments != null) {
-      for (AudioAssessment clip : audioAssessments) {
+      for (RestAssignmentEvaluationAudioClip clip : audioAssessments) {
         if (existingClipIds.contains(clip.getId())) {
           // Already existing clip
           existingClipIds.remove(clip.getId());
