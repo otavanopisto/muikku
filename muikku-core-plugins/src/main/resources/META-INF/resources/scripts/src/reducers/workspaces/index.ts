@@ -6,6 +6,7 @@ import {
   WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
+import { AssignmentEvaluationAudioAssessment } from "~/@types/evaluation";
 
 export interface OrganizationCourseTeacherType {
   firstName: string;
@@ -512,6 +513,7 @@ export interface MaterialEvaluationInfo {
   text: string;
   grade: string;
   date: string;
+  audioAssessments: AssignmentEvaluationAudioAssessment[];
 }
 
 export type MaterialCompositeRepliesListType =
