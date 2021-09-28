@@ -20,6 +20,10 @@ public class UserEntityName {
   public String getDisplayName() {
     return String.format("%s %s", firstName, lastName);
   }
+  
+  public String getDisplayNameWithLine() {
+    return studyProgrammeName == null ? getDisplayName() : String.format("%s %s (%s)", firstName, lastName, studyProgrammeName);
+  }
 
   public String getNickName() {
     return nickName;
