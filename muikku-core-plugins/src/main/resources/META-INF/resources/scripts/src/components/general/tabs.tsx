@@ -64,7 +64,7 @@ class Tabs extends React.Component<TabsProps, TabsState>{
           {t.component()}
         </div>)}
       </div>
-      <Swiper modules={[A11y, Pagination]} a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
+      <Swiper modules={[A11y, Pagination]} autoHeight a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
       {this.props.tabs.map(t=>
         <SwiperSlide key={t.id} >
           <div className="tabs__mobile-tab">
