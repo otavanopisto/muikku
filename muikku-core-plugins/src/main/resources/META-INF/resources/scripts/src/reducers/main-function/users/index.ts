@@ -15,7 +15,7 @@ export interface UserPayloadType {
 }
 
 export interface UsergroupPayloadType extends UserPayloadType {
-  archetype: string,
+  archetype?: string,
 }
 
 export interface PagingUserListType {
