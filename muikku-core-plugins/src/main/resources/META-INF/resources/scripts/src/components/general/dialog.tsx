@@ -78,7 +78,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       visible: false,
     });
     if (this.props.disableScroll == true) {
-      document.body.style.overflow = "scroll";
+      document.body.style.overflow = "auto";
     }
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);

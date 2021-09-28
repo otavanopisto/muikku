@@ -34,6 +34,16 @@
   }
 }
 
+// Evaluation View exeptions
+.material-page--evaluation-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
 .material-page__de-floater {
   clear: both;
 }
@@ -927,6 +937,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   height: 1.75rem;
+  max-width: calc(100% - 37px);
 }
 
 .material-page__audiofield-file--recording,

@@ -1829,24 +1829,29 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/compositeReplies")
-  @RESTPermitUnimplemented
-  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    // TODO: Correct workspace entity?
-    // TODO: Available to all logged-in users?
-    
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
-    
-    List<WorkspaceCompositeReply> result = new ArrayList<>();
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userEntityId") Long userEntityId) {
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace could not be found").build();
     }
+
+    if (userEntityId == null) {
+      userEntityId = sessionController.getLoggedUserEntity().getId();
+    }
+    else if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId()) && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    List<WorkspaceCompositeReply> result = new ArrayList<>();
     
     try {
-      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
       
       for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
@@ -1864,7 +1869,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         // Evaluation info for evaluable materials
         
         if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity(), reply.getWorkspaceMaterial()));
+          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
         }
         
         result.add(compositeReply);

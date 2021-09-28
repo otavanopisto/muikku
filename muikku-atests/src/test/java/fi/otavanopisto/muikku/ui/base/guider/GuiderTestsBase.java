@@ -95,7 +95,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", false);
-      waitAndClick("div.application-panel__helper-container a.item-list__item");
+      waitAndClick("div.application-panel__helper-container a.menu__item-link");
       waitUntilElementCount(".application-list .user--guider", 1);
       waitForPresent(".application-list__item-header .application-list__header-primary span");
       assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Test Student");

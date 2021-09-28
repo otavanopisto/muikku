@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import '~/sass/elements/screen-container.scss';
 
 interface ScreenContainerProps {

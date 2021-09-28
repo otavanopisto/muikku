@@ -19,6 +19,7 @@ import yo, { eligibilitySubjects } from '~/reducers/main-function/records/yo';
 import summary from '~/reducers/main-function/records/summary';
 import organizationSummary from '~/reducers/organization/summary';
 import { combineReducers } from 'redux';
+import evaluations from "./main-function/evaluation/index";
 
 export default combineReducers({
   notifications,
@@ -45,5 +46,6 @@ export default combineReducers({
   organizationSummary,
   discussion,
   guider,
-  profile
+  profile,
+  evaluations,
 });
