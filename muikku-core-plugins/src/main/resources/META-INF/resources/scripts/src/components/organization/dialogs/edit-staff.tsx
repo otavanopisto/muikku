@@ -182,7 +182,7 @@ class OrganizationUser extends React.Component<
           <InputFormElement
             id="lastName"
             value={this.state.user.lastName}
-            name="firstName"
+            name="lastName"
             modifiers="new-user"
             valid={this.state.lastNameValid}
             mandatory={true}

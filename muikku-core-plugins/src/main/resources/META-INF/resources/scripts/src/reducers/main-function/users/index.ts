@@ -14,6 +14,10 @@ export interface UserPayloadType {
   userGroupIds?: number[],
 }
 
+export interface UsergroupPayloadType extends UserPayloadType {
+  archetype?: string,
+}
+
 export interface PagingUserListType {
   firstResult: number,
   maxResults: number,
