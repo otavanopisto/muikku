@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.rest.user;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -42,6 +45,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -1634,9 +1640,107 @@ public class UserRESTService extends AbstractRESTService {
     String organizationIdentifier = user == null ? null : user.getOrganizationIdentifier().toId();
     String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
     boolean isDefaultOrganization = user == null ? false : StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
-
     boolean hasImage = userEntity == null ? false : userEntityFileController.hasProfilePicture(userEntity);
     
+    // Study dates
+
+    OffsetDateTime studyStartDate = user.getStudyStartDate();
+    OffsetDateTime studyEndDate = user.getStudyEndDate();
+    OffsetDateTime studyTimeEnd = user.getStudyTimeEnd();
+    String studyTimeLeftStr = null;
+    if (studyTimeEnd != null) {
+      OffsetDateTime now = OffsetDateTime.now();
+      Locale locale = sessionController.getLocale();
+        
+      if (now.isBefore(studyTimeEnd)) {
+        long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
+        now = now.plusYears(studyTimeLeftYears);
+        if (studyTimeLeftYears > 0) {
+          studyTimeLeftStr += studyTimeLeftYears + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.y");
+        }
+          
+        long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+        now = now.plusMonths(studyTimeLeftMonths);
+        if (studyTimeLeftMonths > 0) {
+          if (studyTimeLeftStr.length() > 0)
+            studyTimeLeftStr += " ";
+          studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
+        }
+        
+        long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+        now = now.plusDays(studyTimeLeftDays);
+        if (studyTimeLeftDays > 0) {
+          if (studyTimeLeftStr.length() > 0)
+            studyTimeLeftStr += " ";
+          studyTimeLeftStr += studyTimeLeftDays + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
+        }
+      }
+
+      long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+      now = now.plusMonths(studyTimeLeftMonths);
+      if (studyTimeLeftMonths > 0) {
+        if (studyTimeLeftStr.length() > 0)
+          studyTimeLeftStr += " ";
+        studyTimeLeftStr += studyTimeLeftMonths + " "
+            + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
+      }
+
+      long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+      now = now.plusDays(studyTimeLeftDays);
+      if (studyTimeLeftDays > 0) {
+        if (studyTimeLeftStr.length() > 0)
+          studyTimeLeftStr += " ";
+        studyTimeLeftStr += studyTimeLeftDays + " "
+          + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
+      }
+    }
+    
+    // Damn emails, addresses, and phoneNumbers as json
+    
+    String emails = null;
+    if (userIdentifier != null) {
+      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier);
+      try {
+        emails = new ObjectMapper().writeValueAsString(foundEmails);
+      }
+      catch (JsonProcessingException e) {
+        emails = null;
+      }
+    }
+    
+    String addresses = null;
+    if (userIdentifier != null) {
+      List<UserAddress> userAddresses = userController.listUserAddresses(user);
+      ArrayList<String> foundAddresses = new ArrayList<>();
+      for (UserAddress userAddress : userAddresses) {
+        foundAddresses.add(String.format("%s %s %s %s", userAddress.getStreet(), userAddress.getPostalCode(),
+            userAddress.getCity(), userAddress.getCountry()));
+      }
+      try {
+        addresses = new ObjectMapper().writeValueAsString(foundAddresses);
+      } 
+      catch (JsonProcessingException e) {
+        addresses = null;
+      }
+    }
+    
+    String phoneNumbers = null;
+    if (userIdentifier != null) {
+      List<UserPhoneNumber> userPhoneNumbers = userIdentifier == null ? null :  userController.listUserPhoneNumbers(user);
+      ArrayList<String> foundPhoneNumbers = new ArrayList<>();
+      for (UserPhoneNumber userPhoneNumber : userPhoneNumbers) {
+        foundPhoneNumbers.add(userPhoneNumber.getNumber());
+      }
+      try {
+        phoneNumbers = new ObjectMapper().writeValueAsString(foundPhoneNumbers);
+      }
+      catch (JsonProcessingException e) {
+        phoneNumbers = null;
+      }
+    }
+    
+    // Result object
+
     UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
         userEntity == null ? null : userEntity.getId(),
         userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId(),
@@ -1651,7 +1755,15 @@ public class UserRESTService extends AbstractRESTService {
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,
-        roleSet); 
+        roleSet,
+        user == null ? null : user.getDisplayName(),
+        emails,
+        addresses,
+        phoneNumbers,
+        studyTimeLeftStr,
+        studyStartDate,
+        studyEndDate,
+        studyTimeEnd); 
 
     return Response.ok(whoamiInfo).build();
   }
