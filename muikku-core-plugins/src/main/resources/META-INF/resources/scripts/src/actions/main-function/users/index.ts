@@ -4,7 +4,7 @@ import promisify from '~/util/promisify';
 import {
   UsersListType, UpdateUserGroupStateType, CreateUserGroupType, ModifyUserGroupUsersType,
   CurrentUserGroupType, UserPanelUsersType, PagingEnvironmentUserListType, UsersSelectType, UserStatusType,
-  StudyprogrammeListType, UpdateUserGroupType, UserGroupsStateType, StudyprogrammeTypeStatusType, UserPayloadType
+  StudyprogrammeListType, UpdateUserGroupType, UserGroupsStateType, StudyprogrammeTypeStatusType, UserPayloadType, UsergroupPayloadType,
 } from 'reducers/main-function/users';
 import { UserGroupType, UpdateUserType, CreateUserType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
@@ -85,6 +85,16 @@ export interface LoadStudyprogrammesTriggerType {
 export interface LoadUsersTriggerType {
   (data: {
     payload: UserPayloadType,
+    success?: (result: PagingEnvironmentUserListType) => any,
+    fail?: () => any,
+  }
+
+  ): AnyActionType
+}
+
+export interface LoadUsergroupsTriggerType {
+  (data: {
+    payload: UsergroupPayloadType,
     success?: (result: PagingEnvironmentUserListType) => any,
     fail?: () => any,
   }
@@ -370,10 +380,11 @@ let loadStaff: LoadUsersTriggerType = function loadStaff(data) {
   }
 }
 
-let loadUserGroups: LoadUsersTriggerType = function loadUserGroups(data) {
+let loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(data) {
   let maxResults = data.payload.maxResults ? data.payload.maxResults + 1 : 26;
 
   data.payload.maxResults = maxResults;
+  data.payload.archetype = "USERGROUP"
 
   if (!data.payload.firstResult) {
     data.payload.firstResult = 0;
