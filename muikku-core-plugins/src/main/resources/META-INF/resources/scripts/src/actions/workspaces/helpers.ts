@@ -74,10 +74,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
 
   if (actualFilters.baseFilter === "MY_COURSES") {
     myWorkspaces = true;
-  } else if (actualFilters.baseFilter === "AS_TEACHER") {
-    myWorkspaces = true;
-    includeUnpublished = true;
-  } else if (actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
+  } else if (actualFilters.baseFilter === "UNPUBLISHED") {
     includeUnpublished = true;
   }
 
