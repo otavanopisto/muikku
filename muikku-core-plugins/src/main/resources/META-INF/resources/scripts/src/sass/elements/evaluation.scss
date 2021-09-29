@@ -76,7 +76,6 @@
 }
 
 .evaluation-modal__content-wrapper {
-
   @include breakpoint($breakpoint-desktop) {
     height: calc(100vh - 55px);
     overflow: auto;
@@ -281,21 +280,18 @@
 
   // scss-lint:disable SelectorFormat
   &.state-EVALUATED {
-
     .button-pill--evaluate {
       background: $color-passed;
     }
   }
 
   &.state-SUPPLEMENTED {
-
     .button-pill--evaluate {
       background: $color-pending;
     }
   }
 
   &.state-INCOMPLETE {
-
     .button-pill--evaluate {
       background: $color-incomplete;
     }
@@ -456,7 +452,6 @@
 }
 
 .evaluation-modal__evaluate-drawer-header--assignment {
-
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-assignment;
   }
@@ -467,7 +462,6 @@
 }
 
 .evaluation-modal__evaluate-drawer-header--workspace {
-
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-info;
   }
@@ -478,7 +472,6 @@
 }
 
 .evaluation-modal__evaluate-drawer-header--supplementation {
-
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-incomplete;
   }
@@ -545,4 +538,8 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin: 5px;
+}
+
+.recorder-container {
+  margin: 10px 0;
 }

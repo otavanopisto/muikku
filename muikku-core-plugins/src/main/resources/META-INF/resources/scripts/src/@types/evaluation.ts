@@ -246,7 +246,7 @@ export interface BilledPrice {
 /**
  * AssignmentEvaluationAudioAssessment
  */
-export interface AssignmentEvaluationAudioAssessment {
+export interface AudioAssessment {
   id: string;
   name: string;
   contentType: string;
@@ -261,7 +261,7 @@ export interface AssignmentEvaluationGradeRequest {
   gradeIdentifier: string;
   verbalAssessment: string;
   assessmentDate: number;
-  audioAssessments: AssignmentEvaluationAudioAssessment[]
+  audioAssessments: AudioAssessment[];
 }
 
 /**
@@ -273,6 +273,7 @@ export interface AssignmentEvaluationSupplementationRequest {
   workspaceMaterialId: string;
   requestDate: number;
   requestText: string;
+  audioAssessments: AudioAssessment[];
 }
 
 /**

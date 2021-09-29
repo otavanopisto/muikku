@@ -11,9 +11,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import SlideDrawer from "./slide-drawer";
-import {
-  MaterialCompositeRepliesType
-} from "~/reducers/workspaces/index";
+import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import { ButtonPill } from "~/components/general/button";
 import AssignmentEditor from "./editors/assignment-editor";
 import { bindActionCreators } from "redux";
@@ -175,7 +173,7 @@ export class EvaluationMaterial extends React.Component<
    * renderAssignmentStatus
    * @returns JSX.Element
    */
-   renderAssignmentMeta = (
+  renderAssignmentMeta = (
     compositeRepliesInState?: MaterialCompositeRepliesType,
     compositeRepliesFromProps?: MaterialCompositeRepliesType
   ) => {
@@ -266,7 +264,9 @@ export class EvaluationMaterial extends React.Component<
                   "plugin.evaluation.evaluationModal.assignmentGradeLabel"
                 )}
               </span>
-              <span className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}>
+              <span
+                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
+              >
                 {evaluationInfo.grade}
               </span>
             </div>
@@ -274,7 +274,9 @@ export class EvaluationMaterial extends React.Component<
 
           {needsSupplementation && !supplementationDone && (
             <div className="evaluation-modal__item-meta-item">
-              <span className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}>
+              <span
+                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
+              >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
                 )}
@@ -284,7 +286,9 @@ export class EvaluationMaterial extends React.Component<
 
           {supplementationDone && (
             <div className="evaluation-modal__item-meta-item">
-              <span className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}>
+              <span
+                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
+              >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
                 )}
@@ -392,16 +396,21 @@ export class EvaluationMaterial extends React.Component<
               return (
                 <div>
                   <div
-                  className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
-                  ref={(ref) => (this.myRef = ref)}>
+                    className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
+                    ref={(ref) => (this.myRef = ref)}
+                  >
                     <div
                       onClick={this.handleOpenMaterialContent}
                       className={`evaluation-modal__item-header-title
                         evaluation-modal__item-header-title--${materialTypeClass}
-                        ${evaluationTitleClassMod ?
-                          "evaluation-modal__item-header-title--" + evaluationTitleClassMod
-                          : ""}`}
-                    >{this.props.material.assignment.title}
+                        ${
+                          evaluationTitleClassMod
+                            ? "evaluation-modal__item-header-title--" +
+                              evaluationTitleClassMod
+                            : ""
+                        }`}
+                    >
+                      {this.props.material.assignment.title}
 
                       {this.renderAssignmentMeta(
                         state.compositeRepliesInState,
@@ -409,14 +418,17 @@ export class EvaluationMaterial extends React.Component<
                       )}
                     </div>
                     <div className="evaluation-modal__item-functions">
-                      {props.material.assignment.assignmentType === "EVALUATED" || props.material.assignment.assignmentType === "EXERCISE" 
-                        ? (
-                        state.compositeRepliesInState.state !==
-                          "UNANSWERED" &&
+                      {props.material.assignment.assignmentType ===
+                        "EVALUATED" ||
+                      props.material.assignment.assignmentType ===
+                        "EXERCISE" ? (
+                        state.compositeRepliesInState.state !== "UNANSWERED" &&
                         state.compositeRepliesInState.state !== "WITHDRAWN" &&
                         state.compositeRepliesInState.submitted ? (
                           <ButtonPill
-                            aria-label={this.props.i18n.text.get("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle")}
+                            aria-label={this.props.i18n.text.get(
+                              "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
+                            )}
                             onClick={this.handleOpenSlideDrawer(
                               props.material.assignment.id
                             )}
