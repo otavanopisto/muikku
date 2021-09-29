@@ -60,9 +60,8 @@ public interface WorkspaceSearchBuilder {
 
   WorkspaceSearchBuilder setAccessUser(SchoolDataIdentifier accessUser);
 
-  boolean isIncludeUnpublished();
-
-  WorkspaceSearchBuilder setIncludeUnpublished(boolean includeUnpublished);
+  PublicityRestriction getPublicityRestriction();
+  WorkspaceSearchBuilder setPublicityRestriction(PublicityRestriction publicityRestriction);
 
   int getFirstResult();
 
@@ -80,7 +79,13 @@ public interface WorkspaceSearchBuilder {
 
   TemplateRestriction getTemplateRestriction();
   WorkspaceSearchBuilder setTemplateRestriction(TemplateRestriction templateRestriction);
-  
+
+  public enum PublicityRestriction {
+    LIST_ALL,
+    ONLY_PUBLISHED,
+    ONLY_UNPUBLISHED
+  }
+
   public enum TemplateRestriction {
     LIST_ALL,
     ONLY_TEMPLATES,

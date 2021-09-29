@@ -171,17 +171,6 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public boolean isIncludeUnpublished() {
-    return includeUnpublished;
-  }
-  
-  @Override
-  public WorkspaceSearchBuilder setIncludeUnpublished(boolean includeUnpublished) {
-    this.includeUnpublished = includeUnpublished;
-    return this;
-  }
-  
-  @Override
   public int getFirstResult() {
     return firstResult;
   }
@@ -234,6 +223,17 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
     return this;
   }
   
+  @Override
+  public PublicityRestriction getPublicityRestriction() {
+    return publicityRestriction;
+  }
+
+  @Override
+  public WorkspaceSearchBuilder setPublicityRestriction(PublicityRestriction publicityRestriction) {
+    this.publicityRestriction = publicityRestriction;
+    return this;
+  }
+
   private String freeText;
   private String schoolDataSource;
   private List<String> workspaceIdentifiers = null;
@@ -243,7 +243,7 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   private List<SchoolDataIdentifier> organizationIdentifiers = null;
   private EnumSet<WorkspaceAccess> accesses = EnumSet.noneOf(WorkspaceAccess.class);
   private SchoolDataIdentifier accessUser; 
-  private boolean includeUnpublished;
+  private PublicityRestriction publicityRestriction;
   private int firstResult;
   private int maxResults;
   private List<Sort> sorts = null;

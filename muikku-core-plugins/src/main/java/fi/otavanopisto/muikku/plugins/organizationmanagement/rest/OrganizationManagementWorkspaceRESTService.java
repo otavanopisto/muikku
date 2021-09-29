@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -142,7 +143,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
-        @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
         @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
@@ -158,12 +159,23 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     
-    SearchResult searchResult = null;
+    // If searching for course templates only, enforce the non-public to be listed too
     
+    if (templateRestriction == TemplateRestriction.ONLY_TEMPLATES && publicityRestriction == PublicityRestriction.ONLY_PUBLISHED) {
+      publicityRestriction = PublicityRestriction.LIST_ALL;
+    }
+
     templateRestriction = templateRestriction != null ? templateRestriction : TemplateRestriction.ONLY_WORKSPACES;
     if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
         return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+    
+    publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
+    if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
       }
     }
     
@@ -214,13 +226,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
     
-    // If searching for course templates only, enforce the includeUnpblished rule
-    
-    if (templateRestriction == TemplateRestriction.ONLY_TEMPLATES && !includeUnpublished) {
-      includeUnpublished = true;
-    }
-    
-    searchResult = searchProvider.searchWorkspaces()
+    SearchResult searchResult = searchProvider.searchWorkspaces()
         .setSchoolDataSource(schoolDataSourceFilter)
         .setSubjects(subjects)
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
@@ -230,7 +236,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(loggedUser)
-        .setIncludeUnpublished(includeUnpublished)
+        .setPublicityRestriction(publicityRestriction)
         .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
@@ -313,7 +319,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   
   searchResult = searchProvider.searchWorkspaces()
       .setOrganizationIdentifiers(organizationIdentifiers) // get this from logged in user, I guess
-      .setIncludeUnpublished(true)
+      .setPublicityRestriction(PublicityRestriction.LIST_ALL)
       .setFirstResult(0)
       .setMaxResults(Integer.MAX_VALUE)
       .search();

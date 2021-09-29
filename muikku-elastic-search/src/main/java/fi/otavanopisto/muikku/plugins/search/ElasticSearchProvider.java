@@ -68,6 +68,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 
@@ -491,7 +492,7 @@ public class ElasticSearchProvider implements SearchProvider {
       String freeText, 
       Collection<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
-      boolean includeUnpublished, 
+      PublicityRestriction publicityRestriction, 
       TemplateRestriction templateRestriction,
       int start, 
       int maxResults, 
@@ -506,7 +507,11 @@ public class ElasticSearchProvider implements SearchProvider {
 
     try {
       
-      if (!includeUnpublished) {
+      /**
+       * Temp commit
+       */
+      
+      if (publicityRestriction == PublicityRestriction.ONLY_PUBLISHED) {
         query.must(termQuery("published", Boolean.TRUE));
       }
       
@@ -572,7 +577,7 @@ public class ElasticSearchProvider implements SearchProvider {
             .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
             .minimumNumberShouldMatch(1));
       }
-      
+
       if (!CollectionUtils.isEmpty(organizationIdentifiers)) {
         List<String> organizationIds = organizationIdentifiers.stream().map(organizationIdentifier -> organizationIdentifier.toId()).collect(Collectors.toList());
 

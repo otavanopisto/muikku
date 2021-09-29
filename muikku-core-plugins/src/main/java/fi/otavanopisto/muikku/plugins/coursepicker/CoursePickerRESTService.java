@@ -72,6 +72,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
@@ -221,7 +222,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
-        @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
         @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
@@ -253,6 +254,13 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
         return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+
+    publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
+    if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
       }
     }
     
@@ -331,7 +339,7 @@ public class CoursePickerRESTService extends PluginRESTService {
           }
         }
       }
-      
+
       searchResult = searchProvider.searchWorkspaces()
         .setSchoolDataSource(schoolDataSourceFilter)
         .setSubjects(subjects)
@@ -342,7 +350,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(sessionController.getLoggedUser())
-        .setIncludeUnpublished(includeUnpublished)
+        .setPublicityRestriction(publicityRestriction)
         .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)

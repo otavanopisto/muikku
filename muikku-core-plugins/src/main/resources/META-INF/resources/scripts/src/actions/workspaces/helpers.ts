@@ -70,15 +70,15 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
   let myWorkspaces = false;
-  let includeUnpublished = false;
+  let publicity = "ONLY_PUBLISHED";
 
   if (actualFilters.baseFilter === "MY_COURSES") {
     myWorkspaces = true;
   } else if (actualFilters.baseFilter === "AS_TEACHER") {
     myWorkspaces = true;
-    includeUnpublished = true;
+    publicity = "LIST_ALL";
   } else if (actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
-    includeUnpublished = true;
+    publicity = "LIST_ALL";
   }
 
   let params = {
@@ -90,7 +90,7 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     educationTypes: actualFilters.educationFilters,
     curriculums: actualFilters.curriculumFilters,
     organizations: actualFilters.organizationFilters,
-    includeUnpublished
+    publicity
   }
 
   if (actualFilters.query) {

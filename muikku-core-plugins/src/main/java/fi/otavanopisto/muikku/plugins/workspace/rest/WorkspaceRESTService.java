@@ -147,6 +147,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -417,7 +418,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
-        @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
         @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
@@ -442,6 +443,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
         return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+    
+    publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
+    if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
       }
     }
     
@@ -476,7 +484,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
           return Response.status(Status.FORBIDDEN).build();
         }
-        workspaceEntities = Boolean.TRUE.equals(includeUnpublished) ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
+        workspaceEntities = publicityRestriction != PublicityRestriction.ONLY_PUBLISHED ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
       }
    
       // When querying workspaces of a student, plain teachers are limited to workspaces they are teaching
@@ -566,7 +574,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
-          curriculums, organizations, searchString, null, null, includeUnpublished, templateRestriction, firstResult, maxResults, sorts);
+          curriculums, organizations, searchString, null, null, publicityRestriction, templateRestriction, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
