@@ -125,14 +125,13 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           id: "USERS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
           mobileAction: usersPrimaryActionMobile,
-          component: () => { return <ApplicationPanelBody primaryOption={usersPrimaryAction} primaryOptionMobile={usersPrimaryActionMobile} toolbar={usersToolbar} modifier="tabs" children={<Users />} /> }
+          component: () => { return <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />} /> }
         },
         {
           id: "USERSGROUPS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.userGroups'),
           mobileAction: userGroupsPrimaryActionMobile,
           component: () => { return <ApplicationPanelBody primaryOption={userGroupsPrimaryAction} toolbar={userGroupsToolbar} modifier="tabs" children={<Usergroups />} /> }
-
         },
         {
           id: "COURSES",
