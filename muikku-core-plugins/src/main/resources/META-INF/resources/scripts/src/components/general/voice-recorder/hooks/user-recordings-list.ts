@@ -6,7 +6,7 @@ export default function useRecordingsList(records: RecordValue[] | null) {
   const [recordings, setRecordings] = useState<RecordValue[]>([]);
 
   useEffect(() => {
-    if (records)
+    if (records.length !== recordings.length)
       setRecordings((prevState: RecordValue[]) => {
         return [...records];
       });
