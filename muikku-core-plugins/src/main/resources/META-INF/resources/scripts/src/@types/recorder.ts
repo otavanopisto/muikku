@@ -18,8 +18,6 @@ export interface RecordValue {
 }
 
 export type Recorder = {
-  recordingMinutes: number;
-  recordingSeconds: number;
   seconds: number;
   initRecording: boolean;
   mediaStream: MediaStream | null;

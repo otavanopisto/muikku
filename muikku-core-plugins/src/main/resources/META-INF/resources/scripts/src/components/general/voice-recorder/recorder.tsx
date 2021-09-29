@@ -13,40 +13,46 @@ import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { AudioAssessment } from "../../../@types/evaluation";
+import useRecordingsList from "./hooks/user-recordings-list";
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
 interface RecorderProps {
   i18n: i18nType;
   status: StatusType;
   onChange?: (audioAssessments: AudioAssessment[]) => void;
+  values?: AudioAssessment[];
 }
 
 function Recorder(props: RecorderProps) {
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
+    values: props.values,
   });
 
+  const { recordings, deleteAudio } = useRecordingsList(recorderState.values);
+
   React.useEffect(() => {
-    if (props.onChange) {
-      let audioAssessments = recorderState.values.map(
-        (value) =>
+    if (props.onChange && props.values.length !== recordings.length) {
+      let audioAssessments = recordings.map(
+        (record) =>
           ({
-            id: value.id,
-            contentType: value.contentType,
-            name: value.name,
+            id: record.id,
+            contentType: record.contentType,
+            name: record.name,
           } as AudioAssessment)
       );
 
+      console.log("LOOPS", audioAssessments);
       props.onChange(audioAssessments);
     }
-  }, [recorderState.values]);
+  }, [recordings]);
 
-  const { values, seconds, initRecording } = recorderState;
+  const { seconds, initRecording } = recorderState;
 
   return (
     <section className="voice__recorder-section">
       <RecorderControls recorderState={recorderState} handlers={handlers} />
-      <RecordingsList records={values} />
+      <RecordingsList records={recordings} deleteAudio={deleteAudio} />
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
         <span className="material-page__audiofield-file material-page__audiofield-file--recording">
           <ProgressBarLine

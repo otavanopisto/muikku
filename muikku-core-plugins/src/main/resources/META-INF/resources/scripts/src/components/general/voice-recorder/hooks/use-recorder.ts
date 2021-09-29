@@ -8,10 +8,10 @@ import {
 import $ from "~/lib/jquery";
 import { saveRecording, startRecording } from "../handlers/recorder-controls";
 import { StatusType } from "../../../../reducers/base/status";
+import { RecordValue } from "../../../../@types/recorder";
+import { AudioAssessment } from "../../../../@types/evaluation";
 
 const initialState: Recorder = {
-  recordingMinutes: 0,
-  recordingSeconds: 0,
   seconds: 0,
   initRecording: false,
   mediaStream: null,
@@ -23,25 +23,49 @@ const initialState: Recorder = {
 
 interface UseRecorderProps {
   status: StatusType;
+  values?: AudioAssessment[];
 }
 
 export default function useRecorder(props: UseRecorderProps) {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState);
 
   useEffect(() => {
-    const MAX_RECORDER_TIME = 5;
+    if (
+      props.values &&
+      props.values !== null &&
+      recorderState.values.length !== props.values.length
+    ) {
+      setRecorderState((prevState) => {
+        return {
+          ...prevState,
+          values: props.values.map(
+            (value) =>
+              ({
+                name: value.name,
+                contentType: value.contentType,
+                id: value.id,
+                url: `/rest/workspace/materialevaluationaudioassessment/${value.id}`,
+              } as RecordValue)
+          ),
+        };
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const MAX_RECORDER_TIME = 300;
     let recordingInterval: Interval = null;
 
     if (recorderState.initRecording)
       recordingInterval = setInterval(() => {
         setRecorderState((prevState: Recorder) => {
-          if (prevState.seconds === 300) {
+          if (prevState.seconds === MAX_RECORDER_TIME) {
             typeof recordingInterval === "number" &&
               clearInterval(recordingInterval);
             return { ...prevState, seconds: 0 };
           }
 
-          if (prevState.seconds < 300) {
+          if (prevState.seconds < MAX_RECORDER_TIME) {
             return {
               ...prevState,
               seconds: prevState.seconds + 1,
@@ -88,7 +112,7 @@ export default function useRecorder(props: UseRecorderProps) {
       };
 
       recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+        const blob = new Blob(chunks, { type: "audio/mpeg; codecs=opus" });
         chunks = [];
 
         const newValues = [...recorderState.values];

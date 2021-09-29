@@ -97,7 +97,7 @@ class AssignmentEditor extends SessionStateComponent<
             : "GRADED",
         grade: grade,
         draftId,
-        audioAssessments: [],
+        audioAssessments: compositeReplies.evaluationInfo.audioAssessments,
       },
       draftId
     );
@@ -153,6 +153,7 @@ class AssignmentEditor extends SessionStateComponent<
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
+          audioAssessments: compositeReplies.evaluationInfo.audioAssessments,
         },
         this.state.draftId
       )
@@ -433,7 +434,10 @@ class AssignmentEditor extends SessionStateComponent<
             </select>
           </div>
           <div className="recorder-container">
-            <Recorder onChange={this.handleAudioAssessmentChange} />
+            <Recorder
+              onChange={this.handleAudioAssessmentChange}
+              values={this.state.audioAssessments}
+            />
           </div>
         </div>
 

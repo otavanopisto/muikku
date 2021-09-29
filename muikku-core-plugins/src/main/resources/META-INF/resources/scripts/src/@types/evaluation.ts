@@ -244,7 +244,7 @@ export interface BilledPrice {
 }
 
 /**
- * AssignmentEvaluationAudioAssessment
+ * AudioAssessment
  */
 export interface AudioAssessment {
   id: string;

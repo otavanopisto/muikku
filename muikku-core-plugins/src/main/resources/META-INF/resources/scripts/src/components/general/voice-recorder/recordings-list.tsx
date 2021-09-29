@@ -5,12 +5,11 @@ import Link from "~/components/general/link";
 
 export interface RecordingsListProps {
   records: RecordValue[] | null;
+  deleteAudio: (recordId: string) => void;
 }
 
 export default function RecordingsList(props: RecordingsListProps) {
-  const { records } = props;
-
-  const { recordings, deleteAudio } = useRecordingsList(records);
+  const { records, deleteAudio } = props;
 
   return (
     <div className="voice__recorder-recordings__container">
@@ -18,7 +17,7 @@ export default function RecordingsList(props: RecordingsListProps) {
         <>
           <h1>Your recordings</h1>
           <div className="voice__recorder-recordings__list">
-            {recordings.map((record) => {
+            {records.map((record) => {
               return (
                 <Record
                   controls
