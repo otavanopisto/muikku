@@ -1756,6 +1756,9 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
     };
   };
 
+/**
+ * saveAssignmentEvaluationSupplementationToServer
+ */
 const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation =
   function saveAssignmentEvaluationSupplementationToServer({
     workspaceEntityId,

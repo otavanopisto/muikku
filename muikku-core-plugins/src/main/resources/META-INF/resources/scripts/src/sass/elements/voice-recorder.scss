@@ -11,8 +11,8 @@
 .voice__recorder-controls__container {
   display: flex;
   height: 15%;
-  margin: auto;
   justify-content: center;
+  margin: auto;
   padding: 0.5rem;
 }
 
@@ -45,13 +45,11 @@
     }
   }
 }
+
 .voice__recorder-controls__container
   .voice__recorder-audiofield-start-record-button,
 .voice__recorder-controls__container
   .voice__recorder-audiofield-stop-record-button {
-  -moz-transition: background 0.15s;
-  -o-transition: background 0.15s;
-  -webkit-transition: background 0.15s;
   transition: background 0.15s;
   align-items: center;
   border-radius: 20px;

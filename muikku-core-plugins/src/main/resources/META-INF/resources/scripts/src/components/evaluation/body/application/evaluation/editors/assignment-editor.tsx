@@ -445,11 +445,22 @@ class AssignmentEditor extends SessionStateComponent<
               {renderGradingOptions}
             </select>
           </div>
+        </div>
+
+        <div className="evaluation-modal__evaluate-drawer-row  form-element">
           <AnimateHeight
             height={
               this.state.assignmentEvaluationType !== "INCOMPLETE" ? "auto" : 0
             }
           >
+            <label
+              htmlFor="assignmentEvaluationGrade"
+              className="evaluation-modal__evaluate-drawer-row-label"
+            >
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.audioAssessments"
+              )}
+            </label>
             <div className="recorder-container">
               <Recorder
                 onChange={this.handleAudioAssessmentChange}

@@ -1,10 +1,26 @@
 import * as React from "react";
-import { RecorderControlsProps } from "../../../@types/recorder";
+import { Recorder } from "../../../@types/recorder";
 import Link from "~/components/general/link";
+import { StateType } from "../../../reducers/index";
+import { bindActionCreators } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "../../../actions/index";
+import { i18nType } from "../../../reducers/base/i18n";
 
-export default function RecorderControls({
+export interface RecorderControlsProps {
+  recorderState: Recorder;
+  handlers: {
+    startRecording: () => void;
+    cancelRecording: () => void;
+    saveRecording: () => void;
+  };
+  i18n: i18nType;
+}
+
+function RecorderControls({
   recorderState,
   handlers,
+  i18n,
 }: RecorderControlsProps) {
   const { initRecording } = recorderState;
   const { startRecording, saveRecording } = handlers;
@@ -17,7 +33,7 @@ export default function RecorderControls({
           onClick={startRecording}
         >
           <span className="voice__recorder-audiofield-start-record-label">
-            Aloita nauhoitus
+            {i18n.text.get("plugin.workspace.audioField.startLink")}
           </span>
         </Link>
       ) : (
@@ -26,19 +42,39 @@ export default function RecorderControls({
           onClick={saveRecording}
         >
           <span className="voice__recorder-audiofield-stop-record-label">
-            Lopeta nauhoitus
+            {i18n.text.get("plugin.workspace.audioField.stopLink")}
           </span>
         </Link>
       )}
       {!initRecording ? (
         <span className="voice__recorder-audiofield-description voice__recorder-audiofield-description--start-recording">
-          Aloita äänitys klikkaamalla painiketta
+          {i18n.text.get("plugin.workspace.audioField.startRecordingHint")}
         </span>
       ) : (
         <span className="voice__recorder-audiofield-description voice__recorder-audiofield-description--stop-recording">
-          Lopeta äänitys klikkaamalla painiketta
+          {i18n.text.get("plugin.workspace.audioField.stopRecordingHint")}
         </span>
       )}
     </div>
   );
 }
+
+/**
+ * mapStateToProps
+ * @param state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    i18n: state.i18n,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecorderControls);
