@@ -72,23 +72,44 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   let myWorkspaces = false;
   let publicity = "ONLY_PUBLISHED";
 
+  // When base filter is 'My courses'
   if (actualFilters.baseFilter === "MY_COURSES") {
     myWorkspaces = true;
+  // When base filter is 'Unpublished'
   } else if (actualFilters.baseFilter === "UNPUBLISHED") {
     myWorkspaces = true;
+    publicity = "ONLY_UNPUBLISHED";
+  // When state filter has unpublished selected (this is possible in organization management)
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
     publicity = "LIST_ALL";
   }
 
-  let params = {
-    firstResult,
-    maxResults,
-    orderBy: "alphabet",
-    myWorkspaces,
-    templates: actualFilters.templates,
-    educationTypes: actualFilters.educationFilters,
-    curriculums: actualFilters.curriculumFilters,
-    organizations: actualFilters.organizationFilters,
-    publicity
+  let params = {};
+
+  // If we are loading workspaces within organization management
+  // then we use different set of params so front-end follows back-end's specs
+  if (loadOrganizationWorkspaces) {
+    params = {
+      firstResult,
+      maxResults,
+      orderBy: "alphabet",
+      templates: actualFilters.templates,
+      educationTypes: actualFilters.educationFilters,
+      curriculums: actualFilters.curriculumFilters,
+      organizations: actualFilters.organizationFilters,
+      publicity,
+    }
+  } else {
+    params = {
+      firstResult,
+      maxResults,
+      orderBy: "alphabet",
+      myWorkspaces,
+      educationTypes: actualFilters.educationFilters,
+      curriculums: actualFilters.curriculumFilters,
+      organizations: actualFilters.organizationFilters,
+      publicity
+    }
   }
 
   if (actualFilters.query) {
@@ -97,7 +118,10 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
 
   try {
 
-    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces ? <WorkspaceListType>await promisify(mApi().organizationWorkspaceManagement.workspaces.cacheClear().read(params), 'callback')() : <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces ?
+      <WorkspaceListType>await promisify(mApi().organizationWorkspaceManagement.workspaces.cacheClear().read(params), 'callback')()
+      :
+      <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
