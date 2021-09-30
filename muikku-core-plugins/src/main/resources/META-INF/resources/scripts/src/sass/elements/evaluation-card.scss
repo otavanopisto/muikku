@@ -1,0 +1,128 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.evaluation-cards-wrapper {
+  margin: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 -5px -5px;
+  }
+}
+
+.evaluation-card {
+  background: $color-default;
+  border: 1px solid darken($color-evaluation-card-border, 10%);
+  border-radius: 2px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 5px;
+  vertical-align: top;
+  width: calc(100% - 10px);
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    width: calc(50% - 10px);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    width: calc(50% - 10px);
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: calc(33.333% - 10px);
+  }
+
+  // scss-lint:disable SelectorFormat
+  &.state-REQUESTED {
+    border: 1px solid $color-evaluation-request;
+  }
+
+  &.state-FAILED {
+    border: 1px solid $color-grade-failed;
+
+    .button-pill--evaluate {
+      background: $color-grade-failed;
+    }
+  }
+
+  &.state-PASSED {
+    border: 1px solid $color-grade-passed;
+
+    .button-pill--evaluate {
+      background: $color-grade-passed;
+    }
+  }
+
+  &.state-INCOMPLETE {
+    border: 1px solid $color-grade-incomplete;
+
+    .button-pill--evaluate {
+      background: $color-grade-incomplete;
+    }
+  }
+  // scss-lint:enable SelectorFormat
+}
+
+.evaluation-card__header {
+  background: $color-evaluation-card-header-background;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  padding: 5px;
+}
+
+.evaluation-card__header-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.evaluation-card__header-desciption {
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.evaluation-card__content {
+  font-size: 0.875rem;
+  padding: 5px;
+  position: relative;
+}
+
+.evaluation-card__content-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+  position: relative;
+
+  &:last-child,
+  &:first-child {
+    margin: 0;
+  }
+}
+
+.evaluation-card__content-row--highlight {
+  font-weight: 600;
+}
+
+.evaluation-card__content-data--all-done {
+  background-color: $color-grade-passed;
+  color: $color-default;
+  padding: 2px 5px;
+}
+
+.evaluation-card__content-data--not-done {
+  background-color: $color-grade-incomplete;
+  color: $color-default;
+  padding: 2px 5px;
+}
+
+.evaluation-card__footer {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.evaluation-card__button-set {
+  display: flex;
+}

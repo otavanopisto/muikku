@@ -5,7 +5,7 @@ import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
 
 interface ApplicationPanelProps {
-  modifier: string;
+  modifier?: string;
   title?: React.ReactElement<any> | string;
   icon?: React.ReactElement<any> | string;
   panelTabs?: Array<TabType>;
@@ -31,18 +31,18 @@ export default class ApplicationPanel extends React.Component<
   render() {
     return (
       <main
-        className={`application-panel application-panel--${this.props.modifier}`}
+        className={`application-panel ${this.props.modifier? "application-panel--" + this.props.modifier : ""  }`}
         ref="panel"
       >
-        <div className="application-panel__container">
-          <h1 className="application-panel__header">
+        <div className={`application-panel__container ${this.props.modifier? "application-panel__container--" + this.props.modifier : ""  }`}>
+          <h1 className={`application-panel__header   ${this.props.modifier? "application-panel__header--" + this.props.modifier : ""  }`}>
             {this.props.title ? (
-              <span className="application-panel__header-title">
+              <span className={`application-panel__header-title ${this.props.modifier? "application-panel__header-title--" + this.props.modifier : ""  }`}>
                 {this.props.title}
               </span>
             ) : null}
             {this.props.icon ? (
-              <span className="application-panel__header-actions">
+              <span className={`application-panel__header-actions ${this.props.modifier? "application-panele__header-actions--" + this.props.modifier : ""  }`}>
                 {this.props.icon}
               </span>
             ) : null}

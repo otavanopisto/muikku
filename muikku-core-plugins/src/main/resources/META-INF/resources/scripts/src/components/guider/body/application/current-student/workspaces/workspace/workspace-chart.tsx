@@ -6,6 +6,7 @@ import { StateType } from '~/reducers';
 import { WorkspaceType } from '~/reducers/workspaces';
 import GraphFilter from '~/components/general/graph/filters/graph-filter';
 import '~/sass/elements/chart.scss';
+import '~/sass/elements/filter.scss';
 
 let AmCharts: any = null;
 

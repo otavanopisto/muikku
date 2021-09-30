@@ -242,6 +242,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.cancelChangeTrigger = true;
   }
   componentWillReceiveProps(nextProps: CKEditorProps){
+
     if (this.timeoutProps) {
       this.timeoutProps = nextProps;
       return;
@@ -255,6 +256,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     } else if ((nextProps.children || "") !== this.currentData){
       this.enableCancelChangeTrigger();
       getCKEDITOR().instances[this.name].setData(nextProps.children || "");
+
     }
   }
   shouldComponentUpdate(){
