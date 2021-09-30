@@ -9,11 +9,11 @@
 }
 
 .voice__recorder-controls__container {
-  height: 15%;
   display: flex;
+  height: 15%;
+  margin: auto;
   justify-content: center;
   padding: 0.5rem;
-  margin: auto;
 }
 
 .voice__recorder-audiofield-start-record-button {
@@ -113,54 +113,54 @@
 }
 
 .voice__recorder-recordings__list::-webkit-scrollbar-track {
-  background: #e4d3cf;
+  background: $color-scrollbar-background;
 }
 
 .voice__recorder-recordings__list::-webkit-scrollbar-thumb {
-  background: #099fff;
+  background: $taskfield-border-color;
 }
 
 .voice__recorder-recordings__list {
-  max-height: 85%;
   display: inline;
+  max-height: 85%;
   overflow-y: auto;
 }
 
 .voice__recorder-recordings__list--empty {
-  font-size: 2rem;
   display: flex;
+  font-size: 2rem;
   justify-content: center;
 }
 
 .voice__recorder-recordings__list-item {
+  align-items: center;
   display: flex;
   justify-content: space-evenly;
-  align-items: center;
   padding: 0.5rem 0;
   width: 100%;
 }
 
 .voice__recorder-recordings__list-item audio {
-  width: 100%;
   max-height: 35px;
+  width: 100%;
 }
 
 .voice__recorder-recordings__list-delete-button__container {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: center;
   margin: 0 10px;
 }
 
 .voice__recorder-recordings__list-delete-button__container .delete-button {
-  height: 25px;
+  background-color: $color-default;
   border: none;
   border-radius: 50%;
-  background-color: #fff;
   cursor: pointer;
+  height: 25px;
 }
 
 .voice__recorder-recordings__list-delete-button__container
   .delete-button:hover {
-  color: #fd1c03;
+  color: $color-recording;
 }
