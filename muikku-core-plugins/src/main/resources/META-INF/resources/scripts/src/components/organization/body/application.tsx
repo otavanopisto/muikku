@@ -87,7 +87,6 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     this.setState({ workspaceSearchFieldValue: value });
   }
 
-
   render() {
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
     let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;

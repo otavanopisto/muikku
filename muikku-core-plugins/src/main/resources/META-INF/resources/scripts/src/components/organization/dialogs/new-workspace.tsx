@@ -123,7 +123,6 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ validation, locked: false, template: { id: template.id, label: template.name }, workspaceName: template.name });
   }
 
-
   doStudentSearch(q: string) {
     this.props.loadStudents({payload:{q}});
     this.props.loadUserGroups({payload:{q}});

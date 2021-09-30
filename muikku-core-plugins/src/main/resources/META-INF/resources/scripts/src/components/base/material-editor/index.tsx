@@ -857,7 +857,6 @@ class MaterialEditor extends React.Component<
       icon="arrow-left"
   />;
 
-
     const allTabs: TabType[] = [
       {
         id: "content",
