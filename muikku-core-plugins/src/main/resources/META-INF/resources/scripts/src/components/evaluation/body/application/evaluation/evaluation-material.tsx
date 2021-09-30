@@ -20,6 +20,8 @@ import {
   UpdateOpenedAssignmentEvaluationId,
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import RecordingsList from "~/components/general/voice-recorder/recordings-list";
+import { RecordValue } from "../../../../../@types/recorder";
 
 /**
  * EvaluationMaterialProps
@@ -393,6 +395,25 @@ export class EvaluationMaterial extends React.Component<
                 contentOpen = "auto";
               }
 
+              /**
+               * Audio assessments if given, otherwise empty array
+               */
+              const recordings =
+                compositeReply &&
+                compositeReply.evaluationInfo &&
+                compositeReply.evaluationInfo.audioAssessments &&
+                compositeReply.evaluationInfo.audioAssessments !== null
+                  ? compositeReply.evaluationInfo.audioAssessments.map(
+                      (aAssessment) =>
+                        ({
+                          id: aAssessment.id,
+                          name: aAssessment.name,
+                          contentType: aAssessment.contentType,
+                          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+                        } as RecordValue)
+                    )
+                  : [];
+
               return (
                 <div>
                   <div
@@ -475,19 +496,29 @@ export class EvaluationMaterial extends React.Component<
                     {props.compositeReplies &&
                       props.compositeReplies.evaluationInfo &&
                       props.compositeReplies.evaluationInfo.text && (
-                        <div className="evaluation-modal__item-literal-assessment">
-                          <div className="evaluation-modal__item-literal-assessment-label">
-                            {this.props.i18n.text.get(
-                              "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
-                            )}
+                        <>
+                          <div className="evaluation-modal__item-literal-assessment">
+                            <div className="evaluation-modal__item-literal-assessment-label">
+                              {this.props.i18n.text.get(
+                                "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
+                              )}
+                            </div>
+                            <div
+                              className="evaluation-modal__item-literal-assessment-data"
+                              dangerouslySetInnerHTML={this.createHtmlMarkup(
+                                props.compositeReplies.evaluationInfo.text
+                              )}
+                            />
                           </div>
-                          <div
-                            className="evaluation-modal__item-literal-assessment-data"
-                            dangerouslySetInnerHTML={this.createHtmlMarkup(
-                              props.compositeReplies.evaluationInfo.text
-                            )}
-                          />
-                        </div>
+                          {recordings.length > 0 ? (
+                            <div className="evaluation-modal__item-literal-assessment">
+                              <RecordingsList
+                                records={recordings}
+                                noDeleteFunctions
+                              />
+                            </div>
+                          ) : null}
+                        </>
                       )}
                     <div className="evaluation-modal__item-body">
                       <MaterialLoaderContent

@@ -11,6 +11,9 @@ import { StatusType } from "../../../../reducers/base/status";
 import { RecordValue } from "../../../../@types/recorder";
 import { AudioAssessment } from "../../../../@types/evaluation";
 
+/**
+ * initialState
+ */
 const initialState: Recorder = {
   seconds: 0,
   initRecording: false,
@@ -21,11 +24,19 @@ const initialState: Recorder = {
   index: null,
 };
 
+/**
+ * UseRecorderProps
+ */
 interface UseRecorderProps {
   status: StatusType;
   values?: AudioAssessment[];
 }
 
+/**
+ * useRecorder
+ * @param props
+ * @returns
+ */
 export default function useRecorder(props: UseRecorderProps) {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState);
 
@@ -56,7 +67,7 @@ export default function useRecorder(props: UseRecorderProps) {
     const MAX_RECORDER_TIME = 300;
     let recordingInterval: Interval = null;
 
-    if (recorderState.initRecording)
+    if (recorderState.initRecording) {
       recordingInterval = setInterval(() => {
         setRecorderState((prevState: Recorder) => {
           if (prevState.seconds === MAX_RECORDER_TIME) {
@@ -75,8 +86,9 @@ export default function useRecorder(props: UseRecorderProps) {
           }
         });
       }, 1000);
-    else
+    } else {
       typeof recordingInterval === "number" && clearInterval(recordingInterval);
+    }
 
     return () => {
       typeof recordingInterval === "number" && clearInterval(recordingInterval);
@@ -84,6 +96,10 @@ export default function useRecorder(props: UseRecorderProps) {
   });
 
   useEffect(() => {
+    /**
+     * processFileAt
+     * @param index
+     */
     async function processFileAt(index: number) {
       //create the form data
       let formData = new FormData();
@@ -170,7 +186,9 @@ export default function useRecorder(props: UseRecorderProps) {
           ...prevState,
           mediaRecorder: new MediaRecorder(prevState.mediaStream),
         };
-      else return prevState;
+      else {
+        return prevState;
+      }
     });
   }, [recorderState.mediaStream]);
 
@@ -212,10 +230,11 @@ export default function useRecorder(props: UseRecorderProps) {
     }
 
     return () => {
-      if (recorder)
+      if (recorder) {
         recorder.stream
           .getAudioTracks()
           .forEach((track: AudioTrack) => track.stop());
+      }
     };
   }, [recorderState.mediaRecorder]);
 

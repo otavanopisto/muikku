@@ -24,11 +24,14 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
+import { WorkspaceType } from "../../../../../reducers/workspaces/index";
+import { EvaluationWorkspace } from "../../../../../@types/evaluation";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
   status: StatusType;
   onClose?: () => void;
+  currentWorkspace: WorkspaceType;
   evaluation: EvaluationState;
   selectedAssessment: AssessmentRequest;
   loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
@@ -286,6 +289,24 @@ export class Evaluation extends React.Component<
         </div>
       );
 
+    const workspaces = [...this.props.evaluation.evaluationWorkspaces];
+
+    /**
+     * This is because, when admin goes to workspace where he/she is not
+     * workspace teacher, the select list will be missing that current active workspace.
+     * So here we check if its not in the list and push currentWorkspace as temporary option
+     */
+    if (
+      this.props.currentWorkspace &&
+      this.props.evaluation.evaluationWorkspaces
+        .map((eWorkspace) => eWorkspace.id)
+        .indexOf(this.props.currentWorkspace.id) === -1
+    ) {
+      workspaces.push({
+        ...this.props.currentWorkspace,
+      } as EvaluationWorkspace);
+    }
+
     /**
      * renderEvaluationAssessmentAssignments
      */
@@ -297,14 +318,13 @@ export class Evaluation extends React.Component<
           (item, i) => (
             <EvaluationAssessmentAssignment
               key={i}
-              workspace={this.props.evaluation.evaluationWorkspaces.find(
+              workspace={workspaces.find(
                 (eWorkspace) =>
                   eWorkspace.id ===
                   this.props.evaluation.evaluationSelectedAssessmentId
                     .workspaceEntityId
               )}
               material={item}
-              gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
             />
           )
         )
@@ -483,6 +503,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluation: state.evaluations,
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 

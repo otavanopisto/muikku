@@ -1,30 +1,64 @@
-import * as React from 'react';
-import { MaterialLoaderProps } from '~/components/base/material-loader';
+import * as React from "react";
+import { MaterialLoaderProps } from "~/components/base/material-loader";
+import RecordingsList from "../../general/voice-recorder/recordings-list";
+import { RecordValue } from "../../../@types/recorder";
 
-interface MaterialLoaderAssesmentProps extends MaterialLoaderProps {
-}
+/**
+ * MaterialLoaderAssesmentProps
+ */
+interface MaterialLoaderAssesmentProps extends MaterialLoaderProps {}
 
+/**
+ * MaterialLoaderAssesment
+ * @param props
+ * @returns JSX.Element
+ */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
-  const literalAssesment = (props.material.evaluation && props.material.evaluation.verbalAssessment) ||
-    (props.compositeReplies && props.compositeReplies.evaluationInfo && props.compositeReplies.evaluationInfo.text);
-  const audioAssessments = props.compositeReplies && props.compositeReplies.evaluationInfo && props.compositeReplies.evaluationInfo.audioAssessments;
-  
-  if (!literalAssesment && (audioAssessments === undefined || audioAssessments.length < 1)) {
+  const literalAssesment =
+    (props.material.evaluation && props.material.evaluation.verbalAssessment) ||
+    (props.compositeReplies &&
+      props.compositeReplies.evaluationInfo &&
+      props.compositeReplies.evaluationInfo.text);
+  const audioAssessments =
+    props.compositeReplies &&
+    props.compositeReplies.evaluationInfo &&
+    props.compositeReplies.evaluationInfo.audioAssessments;
+
+  if (
+    !literalAssesment &&
+    (audioAssessments === undefined || audioAssessments.length < 1)
+  ) {
     return null;
   }
 
-  return (<div className="material-page__assignment-assessment-literal">
-    <div className="material-page__assignment-assessment-literal-label">{props.i18n.text.get("plugin.workspace.materialsLoader.evaluation.literal.label")}:</div>
-    <div className="material-page__assignment-assessment-literal-data rich-text" dangerouslySetInnerHTML={{__html: literalAssesment}}></div>
-      
-    {audioAssessments !== undefined ?
-      <div>
-        TODO: make these look nice
-        {audioAssessments.map((audioAssessment) => {
-          return <audio className="material-page__audiofield-file" controls src={`/rest/workspace/materialevaluationaudioassessment/${audioAssessment.id}`}></audio>
-        })}
-      </div>
-      : null}
+  const audioRecords = audioAssessments.map(
+    (aAssessment) =>
+      ({
+        id: aAssessment.id,
+        name: aAssessment.name,
+        contentType: aAssessment.contentType,
+        url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+      } as RecordValue)
+  );
 
-  </div>);
+  return (
+    <div className="material-page__assignment-assessment-literal">
+      <div className="material-page__assignment-assessment-literal-label">
+        {props.i18n.text.get(
+          "plugin.workspace.materialsLoader.evaluation.literal.label"
+        )}
+        :
+      </div>
+      <div
+        className="material-page__assignment-assessment-literal-data rich-text"
+        dangerouslySetInnerHTML={{ __html: literalAssesment }}
+      ></div>
+
+      {audioAssessments !== undefined ? (
+        <>
+          <RecordingsList records={audioRecords} noDeleteFunctions />
+        </>
+      ) : null}
+    </div>
+  );
 }

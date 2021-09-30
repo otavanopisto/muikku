@@ -1,15 +1,32 @@
 import * as React from "react";
-import useRecordingsList from "./hooks/user-recordings-list";
 import { RecordValue } from "../../../@types/recorder";
 import Link from "~/components/general/link";
 
+/**
+ * RecordingsListProps
+ */
 export interface RecordingsListProps {
   records: RecordValue[] | null;
-  deleteAudio: (recordId: string) => void;
+  noDeleteFunctions?: boolean;
+  deleteAudio?: (recordId: string) => void;
 }
 
+/**
+ * defaultRecordListProps
+ */
+const defaultRecordListProps = {
+  noDeleteFunctions: false,
+};
+
+/**
+ * RecordingsList
+ * @param props
+ * @returns JSX.Element
+ */
 export default function RecordingsList(props: RecordingsListProps) {
-  const { records, deleteAudio } = props;
+  props = { ...defaultRecordListProps, ...props };
+
+  const { records, deleteAudio, noDeleteFunctions } = props;
 
   return (
     <div className="voice__recorder-recordings__container">
@@ -24,6 +41,7 @@ export default function RecordingsList(props: RecordingsListProps) {
                   record={record}
                   src={record.url}
                   key={record.id}
+                  noDeleteFunctions={noDeleteFunctions}
                   onClickDelete={deleteAudio}
                 />
               );
@@ -39,18 +57,35 @@ export default function RecordingsList(props: RecordingsListProps) {
   );
 }
 
+/**
+ * RecordProps
+ */
 interface RecordProps
   extends React.DetailedHTMLProps<
     React.AudioHTMLAttributes<HTMLAudioElement>,
     HTMLAudioElement
   > {
   record: RecordValue;
+  noDeleteFunctions: boolean;
   onClickDelete?: (recordId: string) => void;
 }
 
+/**
+ * defaultRecordtProps
+ */
+const defaultRecordtProps = {
+  noDeleteFunctions: false,
+};
+
+/**
+ * Record
+ * @param props
+ * @returns JSX.Element
+ */
 function Record(props: RecordProps) {
+  props = { ...defaultRecordtProps, ...props };
   const audioRef = React.useRef(null);
-  const { record, onClickDelete, ...rest } = props;
+  const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
 
   return (
     <div className="voice__recorder-recordings__list-item" key={rest.key}>
@@ -63,13 +98,15 @@ function Record(props: RecordProps) {
           openInNewTab={record.name}
         />
       </div>
-      <div className="delete-button-container">
-        <Link
-          className="voice__recorder-audiofield-remove-file-button icon-trash"
-          title="Poista"
-          onClick={() => onClickDelete(record.id)}
-        />
-      </div>
+      {!noDeleteFunctions ? (
+        <div className="delete-button-container">
+          <Link
+            className="voice__recorder-audiofield-remove-file-button icon-trash"
+            title="Poista"
+            onClick={() => onClickDelete && onClickDelete(record.id)}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

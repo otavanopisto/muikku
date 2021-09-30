@@ -16,6 +16,9 @@ import { AudioAssessment } from "../../../@types/evaluation";
 import useRecordingsList from "./hooks/user-recordings-list";
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
+/**
+ * RecorderProps
+ */
 interface RecorderProps {
   i18n: i18nType;
   status: StatusType;
@@ -23,6 +26,11 @@ interface RecorderProps {
   values?: AudioAssessment[];
 }
 
+/**
+ * Recorder
+ * @param props
+ * @returns JSX.Element
+ */
 function Recorder(props: RecorderProps) {
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
@@ -42,7 +50,6 @@ function Recorder(props: RecorderProps) {
           } as AudioAssessment)
       );
 
-      console.log("LOOPS", audioAssessments);
       props.onChange(audioAssessments);
     }
   }, [recordings]);

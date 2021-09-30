@@ -1775,6 +1775,11 @@ const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentS
         payload: <EvaluationStateType>"ERROR",
       });
 
+      console.log("workspaceEntityId", workspaceEntityId);
+      console.log("workspaceMaterialId", workspaceMaterialId);
+      console.log("userEntityId", userEntityId);
+      console.log("dataToSave", dataToSave);
+
       try {
         await promisify(
           mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(

@@ -26,6 +26,7 @@ import {
 import "~/sass/elements/form-elements.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { AudioAssessment } from "../../../../../../@types/evaluation";
+import AnimateHeight from "react-animate-height";
 
 /**
  * AssignmentEditorProps
@@ -97,7 +98,12 @@ class AssignmentEditor extends SessionStateComponent<
             : "GRADED",
         grade: grade,
         draftId,
-        audioAssessments: compositeReplies.evaluationInfo.audioAssessments,
+        audioAssessments:
+          compositeReplies.evaluationInfo &&
+          compositeReplies.evaluationInfo.audioAssessments &&
+          compositeReplies.evaluationInfo.audioAssessments !== null
+            ? compositeReplies.evaluationInfo.audioAssessments
+            : [],
       },
       draftId
     );
@@ -153,7 +159,12 @@ class AssignmentEditor extends SessionStateComponent<
               ? "INCOMPLETE"
               : "GRADED",
           grade: grade,
-          audioAssessments: compositeReplies.evaluationInfo.audioAssessments,
+          audioAssessments:
+            compositeReplies.evaluationInfo &&
+            compositeReplies.evaluationInfo.audioAssessments &&
+            compositeReplies.evaluationInfo.audioAssessments !== null
+              ? compositeReplies.evaluationInfo.audioAssessments
+              : [],
         },
         this.state.draftId
       )
@@ -209,7 +220,9 @@ class AssignmentEditor extends SessionStateComponent<
       this.props.onClose();
 
       this.props.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
+        workspaceEntityId:
+          this.props.evaluations.evaluationSelectedAssessmentId
+            .workspaceEntityId,
         userEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
@@ -220,7 +233,6 @@ class AssignmentEditor extends SessionStateComponent<
           workspaceMaterialId: this.props.materialAssignment.id.toString(),
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
-          audioAssessments: this.state.audioAssessments,
         },
         onSuccess: () => {
           this.setStateAndClear(
@@ -433,12 +445,18 @@ class AssignmentEditor extends SessionStateComponent<
               {renderGradingOptions}
             </select>
           </div>
-          <div className="recorder-container">
-            <Recorder
-              onChange={this.handleAudioAssessmentChange}
-              values={this.state.audioAssessments}
-            />
-          </div>
+          <AnimateHeight
+            height={
+              this.state.assignmentEvaluationType !== "INCOMPLETE" ? "auto" : 0
+            }
+          >
+            <div className="recorder-container">
+              <Recorder
+                onChange={this.handleAudioAssessmentChange}
+                values={this.state.audioAssessments}
+              />
+            </div>
+          </AnimateHeight>
         </div>
 
         <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">

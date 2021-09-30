@@ -273,7 +273,6 @@ export interface AssignmentEvaluationSupplementationRequest {
   workspaceMaterialId: string;
   requestDate: number;
   requestText: string;
-  audioAssessments: AudioAssessment[];
 }
 
 /**

@@ -13,7 +13,6 @@ import "~/sass/elements/evaluation.scss";
 interface EvaluationAssessmentAssignmentProps {
   workspace: WorkspaceType;
   material: MaterialContentNodeType;
-  gradeSystem: EvaluationGradeSystem;
 }
 
 /**
@@ -21,7 +20,7 @@ interface EvaluationAssessmentAssignmentProps {
  */
 interface EvaluationAssessmentAssignmentState {}
 /**
- * EvaluationCard
+ * EvaluationAssessmentAssignment
  * @param props
  */
 class EvaluationAssessmentAssignment extends React.Component<
@@ -35,14 +34,12 @@ class EvaluationAssessmentAssignment extends React.Component<
   }
 
   render() {
-    return (
-      this.props.material && this.props.workspace && (
-        <EvaluationMaterial
-          workspace={this.props.workspace}
-          material={this.props.material}
-        />
-      )
-    );
+    return this.props.material && this.props.workspace ? (
+      <EvaluationMaterial
+        workspace={this.props.workspace}
+        material={this.props.material}
+      />
+    ) : null;
   }
 }
 
