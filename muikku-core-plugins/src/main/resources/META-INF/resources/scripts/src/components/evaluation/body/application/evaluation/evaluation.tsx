@@ -301,9 +301,9 @@ export class Evaluation extends React.Component<
      */
     if (
       this.props.currentWorkspace &&
-      this.props.evaluation.evaluationWorkspaces
-        .map((eWorkspace) => eWorkspace.id)
-        .indexOf(this.props.currentWorkspace.id) === -1
+      !this.props.evaluation.evaluationWorkspaces.some(
+        (eWorkspace) => eWorkspace.id === this.props.currentWorkspace.id
+      )
     ) {
       workspaces.push({
         ...this.props.currentWorkspace,
