@@ -43,12 +43,12 @@ function Record(props: RecordProps) {
 
   return (
     <>
-      <div className="voice__recorder-recordings__list-item" key={rest.key}>
+      <div className="voice-recorder__recordings-list-item" key={rest.key}>
         <span>{props.listIndex + 1}.</span>
         <audio {...rest} />
         <div className="delete-button-container">
           <Link
-            className="voice__recorder-audiofield-download-file-button icon-download"
+            className="voice-recorder__audiofield-download-file-button icon-download"
             title={props.i18n.text.get(
               "plugin.workspace.audioField.downloadLink"
             )}
@@ -59,7 +59,7 @@ function Record(props: RecordProps) {
         {!noDeleteFunctions ? (
           <div className="delete-button-container">
             <Link
-              className="voice__recorder-audiofield-remove-file-button icon-trash"
+              className="voice-recorder__audiofield-remove-file-button icon-trash"
               title={props.i18n.text.get(
                 "plugin.workspace.audioField.removeLink"
               )}

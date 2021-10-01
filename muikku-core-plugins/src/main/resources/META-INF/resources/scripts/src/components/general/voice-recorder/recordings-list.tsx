@@ -35,9 +35,9 @@ function RecordingsList(props: RecordingsListProps) {
   const { records, deleteAudio, noDeleteFunctions } = props;
 
   return (
-    <div className="voice__recorder-recordings__container">
+    <div className="vvoice-recorder__recordings-container">
       {records.length > 0 ? (
-        <div className="voice__recorder-recordings__list">
+        <div className="vvoice-recorder__recordings-list">
           {records.map((record, index) => {
             return (
               <Record
@@ -53,7 +53,7 @@ function RecordingsList(props: RecordingsListProps) {
           })}
         </div>
       ) : (
-        <div className="voice__recorder-recordings__list voice__recorder-recordings__list--empty">
+        <div className="vvoice-recorder__recordings-list vvoice-recorder__recordings-list--empty">
           <span>
             {props.i18n.text.get("plugin.workspace.audioField.noFiles")}
           </span>

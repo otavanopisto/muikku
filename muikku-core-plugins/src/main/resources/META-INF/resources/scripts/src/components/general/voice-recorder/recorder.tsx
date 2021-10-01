@@ -58,7 +58,7 @@ function Recorder(props: RecorderProps) {
   const { seconds, initRecording } = recorderState;
 
   return (
-    <section className="voice__recorder-section">
+    <section className="voice-recorder__section">
       <RecorderControls recorderState={recorderState} handlers={handlers} />
       <RecordingsList records={recordings} deleteAudio={deleteAudio} />
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
