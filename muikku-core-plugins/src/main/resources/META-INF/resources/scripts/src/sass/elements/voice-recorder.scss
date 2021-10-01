@@ -138,6 +138,11 @@
   width: 100%;
 }
 
+.voice__recorder-recordings__list-item span {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
 .voice__recorder-recordings__list-item audio {
   max-height: 35px;
   width: 100%;

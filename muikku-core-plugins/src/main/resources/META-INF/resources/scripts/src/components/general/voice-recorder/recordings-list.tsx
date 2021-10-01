@@ -38,10 +38,11 @@ function RecordingsList(props: RecordingsListProps) {
     <div className="voice__recorder-recordings__container">
       {records.length > 0 ? (
         <div className="voice__recorder-recordings__list">
-          {records.map((record) => {
+          {records.map((record, index) => {
             return (
               <Record
                 controls
+                listIndex={index}
                 record={record}
                 src={record.url}
                 key={record.id}

@@ -16,6 +16,7 @@ interface RecordProps
     HTMLAudioElement
   > {
   i18n: i18nType;
+  listIndex: number;
   record: RecordValue;
   noDeleteFunctions: boolean;
   onClickDelete?: (recordId: string) => void;
@@ -43,6 +44,7 @@ function Record(props: RecordProps) {
   return (
     <>
       <div className="voice__recorder-recordings__list-item" key={rest.key}>
+        <span>{props.listIndex + 1}.</span>
         <audio {...rest} />
         <div className="delete-button-container">
           <Link
