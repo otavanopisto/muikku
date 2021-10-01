@@ -21,7 +21,6 @@ const initialState: Recorder = {
   mediaRecorder: null,
   audio: null,
   values: [],
-  index: null,
 };
 
 /**
@@ -96,90 +95,6 @@ export default function useRecorder(props: UseRecorderProps) {
   });
 
   useEffect(() => {
-    /**
-     * processFileAt
-     * @param index
-     */
-    async function processFileAt(index: number) {
-      //create the form data
-      let formData = new FormData();
-      //the file can be the file itself as it was given or the blob as given by the steam
-      //both different types
-      let file: any =
-        recorderState.values[index].file || recorderState.values[index].blob;
-      //we add it to the file
-      formData.append("file", file);
-      //and do the thing
-      $.ajax({
-        url: props.status.contextPath + "/tempFileUploadServlet",
-        type: "POST",
-        data: formData,
-        success: (data: any) => {
-          //we change this
-          let newValues = [...recorderState.values];
-          newValues[index] = { ...recorderState.values[index] };
-          newValues[index].uploading = false;
-          newValues[index].id = data.fileId;
-          //if the server does not return a content type we'll use whatever the blob recorded, this shouldn't be the case the server should return somethings
-          newValues[index].contentType = data.fileContentType || file.type;
-          //if user didn't provide a name we will give one, this happens when recording in place, such is the default behaviour
-          newValues[index].name = newValues[index].name || data.fileId; //NO extension, we don't need it
-
-          setRecorderState((prevState: Recorder) => {
-            return {
-              ...prevState,
-              values: newValues,
-            };
-          });
-        },
-        //in case of error
-        error: (xhr: any, err: Error) => {
-          let newValues = [...recorderState.values];
-          newValues[index] = { ...recorderState.values[index] };
-          newValues[index].uploading = false;
-          newValues[index].failed = true;
-
-          setRecorderState((prevState: Recorder) => {
-            return {
-              ...prevState,
-              values: newValues,
-            };
-          });
-        },
-        xhr: () => {
-          let xhr = new (window as any).XMLHttpRequest();
-          //Upload progress same as in the file field
-          xhr.upload.addEventListener(
-            "progress",
-            (evt: any) => {
-              if (evt.lengthComputable) {
-                let percentComplete = evt.loaded / evt.total;
-                let newValues = [...recorderState.values];
-                newValues[index] = { ...recorderState.values[index] };
-                newValues[index].progress = percentComplete;
-                setRecorderState((prevState: Recorder) => {
-                  return {
-                    ...prevState,
-                    values: newValues,
-                  };
-                });
-              }
-            },
-            false
-          );
-          return xhr;
-        },
-        cache: false,
-        contentType: false,
-        processData: false,
-      });
-    }
-    if (recorderState.index !== null) {
-      processFileAt(recorderState.index);
-    }
-  }, [recorderState.index]);
-
-  useEffect(() => {
     setRecorderState((prevState) => {
       if (prevState.mediaStream)
         return {
@@ -203,28 +118,36 @@ export default function useRecorder(props: UseRecorderProps) {
         chunks.push(e.data);
       };
 
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
         const blob = new Blob(chunks, { type: "audio/mpeg; codecs=opus" });
         chunks = [];
 
-        const newValues = [...recorderState.values];
+        let newValues = [...recorderState.values];
 
-        newValues.push({
+        const savedToServer = await processFileAt({
           blob,
           url: URL.createObjectURL(blob),
           contentType: blob.type,
           uploading: true,
         });
 
+        const newValuesSavedToServer: RecordValue[] = [{ ...savedToServer }];
+
+        /**
+         * Just in case we concat array, so mutations don't happen...
+         */
+        newValues = newValues.concat(newValuesSavedToServer);
+
         setRecorderState((prevState: Recorder) => {
-          if (prevState.mediaRecorder)
+          if (prevState.mediaRecorder) {
             return {
               ...initialState,
               audio: window.URL.createObjectURL(blob),
               values: newValues,
-              index: newValues.length - 1,
             };
-          else return initialState;
+          } else {
+            return initialState;
+          }
         });
       };
     }
@@ -237,6 +160,43 @@ export default function useRecorder(props: UseRecorderProps) {
       }
     };
   }, [recorderState.mediaRecorder]);
+
+  const processFileAt = async (
+    valuesToSave: RecordValue
+  ): Promise<RecordValue> => {
+    let newValues = { ...valuesToSave };
+    //create the form data
+    let formData = new FormData();
+    // blob as given by the steam
+    let file = valuesToSave.blob;
+    //we add it to the file
+    formData.append("file", file);
+    //and do the thing
+    await $.ajax({
+      url: props.status.contextPath + "/tempFileUploadServlet",
+      type: "POST",
+      data: formData,
+      success: (data: any) => {
+        //we change this
+
+        newValues.uploading = false;
+        newValues.id = data.fileId;
+        //if the server does not return a content type we'll use whatever the blob recorded, this shouldn't be the case the server should return somethings
+        newValues.contentType = data.fileContentType || file.type;
+        //if user didn't provide a name we will give one, this happens when recording in place, such is the default behaviour
+        newValues.name = newValues.name || data.fileId; //NO extension, we don't need it
+      },
+      //in case of error
+      error: (xhr: any, err: Error) => {
+        newValues.failed = true;
+      },
+
+      cache: false,
+      contentType: false,
+      processData: false,
+    });
+    return newValues;
+  };
 
   return {
     recorderState,

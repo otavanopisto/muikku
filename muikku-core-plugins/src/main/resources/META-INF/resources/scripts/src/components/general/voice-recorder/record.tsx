@@ -38,31 +38,36 @@ function Record(props: RecordProps) {
   const audioRef = React.useRef(null);
   const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
 
+  const failed = record.failed;
+
   return (
-    <div className="voice__recorder-recordings__list-item" key={rest.key}>
-      <audio ref={audioRef} {...rest} />
-      <div className="delete-button-container">
-        <Link
-          className="voice__recorder-audiofield-download-file-button icon-download"
-          title={props.i18n.text.get(
-            "plugin.workspace.audioField.downloadLink"
-          )}
-          href={record.url}
-          openInNewTab={record.name}
-        />
-      </div>
-      {!noDeleteFunctions ? (
+    <>
+      <div className="voice__recorder-recordings__list-item" key={rest.key}>
+        <audio ref={audioRef} {...rest} />
         <div className="delete-button-container">
           <Link
-            className="voice__recorder-audiofield-remove-file-button icon-trash"
+            className="voice__recorder-audiofield-download-file-button icon-download"
             title={props.i18n.text.get(
-              "plugin.workspace.audioField.removeLink"
+              "plugin.workspace.audioField.downloadLink"
             )}
-            onClick={() => onClickDelete && onClickDelete(record.id)}
+            href={record.url}
+            openInNewTab={record.name}
           />
         </div>
-      ) : null}
-    </div>
+        {!noDeleteFunctions ? (
+          <div className="delete-button-container">
+            <Link
+              className="voice__recorder-audiofield-remove-file-button icon-trash"
+              title={props.i18n.text.get(
+                "plugin.workspace.audioField.removeLink"
+              )}
+              onClick={() => onClickDelete && onClickDelete(record.id)}
+            />
+          </div>
+        ) : null}
+      </div>
+      {failed ? <div>Virhe tallennettaessa äänipalautetta</div> : null}
+    </>
   );
 }
 

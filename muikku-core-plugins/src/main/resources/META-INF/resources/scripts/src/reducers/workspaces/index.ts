@@ -533,6 +533,7 @@ export interface MaterialEvaluationType {
   gradingScale: string;
   verbalAssessment: string;
   passed: boolean;
+  audioAssessments: AudioAssessment[];
 }
 
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;

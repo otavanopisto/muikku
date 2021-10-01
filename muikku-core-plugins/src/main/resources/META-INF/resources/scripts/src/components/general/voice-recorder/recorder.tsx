@@ -1,6 +1,6 @@
 import * as React from "react";
 import { bindActionCreators } from "redux";
-import { UseRecorder } from "../../../@types/recorder";
+import { UseRecorder, RecordValue } from "../../../@types/recorder";
 import useRecorder from "./hooks/use-recorder";
 import RecorderControls from "./recorder-controls";
 import RecordingsList from "./recordings-list";
@@ -41,14 +41,15 @@ function Recorder(props: RecorderProps) {
 
   React.useEffect(() => {
     if (props.onChange && props.values.length !== recordings.length) {
-      let audioAssessments = recordings.map(
-        (record) =>
-          ({
-            id: record.id,
-            contentType: record.contentType,
-            name: record.name,
-          } as AudioAssessment)
-      );
+      let audioAssessments = recordings.map((record) => {
+        const object: AudioAssessment = {
+          name: record.name,
+          id: record.id,
+          contentType: record.contentType,
+        };
+
+        return object;
+      });
 
       props.onChange(audioAssessments);
     }

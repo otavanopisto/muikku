@@ -19,27 +19,28 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
     (props.compositeReplies &&
       props.compositeReplies.evaluationInfo &&
       props.compositeReplies.evaluationInfo.text);
-  const audioAssessments =
-    props.compositeReplies &&
-    props.compositeReplies.evaluationInfo &&
-    props.compositeReplies.evaluationInfo.audioAssessments;
 
-  if (
-    !literalAssesment &&
-    (audioAssessments === undefined || audioAssessments.length < 1)
-  ) {
+  const audioAssessments =
+    (props.compositeReplies &&
+      props.compositeReplies.evaluationInfo &&
+      props.compositeReplies.evaluationInfo.audioAssessments) ||
+    (props.material.evaluation && props.material.evaluation.audioAssessments);
+
+  if (literalAssesment === undefined && audioAssessments === undefined) {
     return null;
   }
 
-  const audioRecords = audioAssessments.map(
-    (aAssessment) =>
-      ({
-        id: aAssessment.id,
-        name: aAssessment.name,
-        contentType: aAssessment.contentType,
-        url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
-      } as RecordValue)
-  );
+  const audioRecords =
+    audioAssessments &&
+    audioAssessments.map(
+      (aAssessment) =>
+        ({
+          id: aAssessment.id,
+          name: aAssessment.name,
+          contentType: aAssessment.contentType,
+          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+        } as RecordValue)
+    );
 
   return (
     <div className="material-page__assignment-assessment-literal">
@@ -54,8 +55,14 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
         dangerouslySetInnerHTML={{ __html: literalAssesment }}
       ></div>
 
-      {audioAssessments !== undefined ? (
+      {audioAssessments !== undefined && audioAssessments.length > 0 ? (
         <>
+          <div className="material-page__assignment-assessment-literal-label">
+            {props.i18n.text.get(
+              "plugin.workspace.materialsLoader.evaluation.verbal.label"
+            )}
+            :
+          </div>
           <RecordingsList records={audioRecords} noDeleteFunctions />
         </>
       ) : null}

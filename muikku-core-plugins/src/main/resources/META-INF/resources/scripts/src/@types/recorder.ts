@@ -24,7 +24,6 @@ export type Recorder = {
   mediaRecorder: MediaRecorder | null;
   audio: string | null;
   values: RecordValue[];
-  index: number | null;
 };
 
 export type UseRecorder = {

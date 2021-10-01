@@ -50,7 +50,6 @@
   .voice__recorder-audiofield-start-record-button,
 .voice__recorder-controls__container
   .voice__recorder-audiofield-stop-record-button {
-  transition: background 0.15s;
   align-items: center;
   border-radius: 20px;
   cursor: pointer;
@@ -64,6 +63,7 @@
   padding: 6px 10px;
   text-decoration: none;
   text-transform: uppercase;
+  transition: background 0.15s;
 }
 
 .voice__recorder-audiofield-download-file-button {
