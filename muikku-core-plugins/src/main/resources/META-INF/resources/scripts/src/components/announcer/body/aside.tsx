@@ -1,56 +1,78 @@
-import * as React from 'react';
-import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import Link from '~/components/general/link';
-import {i18nType} from '~/reducers/base/i18n';
-import { AnnouncementsType, AnnouncerNavigationItemType } from '~/reducers/announcements';
-import {StateType} from '~/reducers';
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { i18nType } from "~/reducers/base/i18n";
+import {
+  AnnouncementsType,
+  AnnouncerNavigationItemType,
+} from "~/reducers/announcements";
+import { StateType } from "~/reducers";
 
-import '~/sass/elements/buttons.scss';
-import '~/sass/elements/item-list.scss';
+import "~/sass/elements/buttons.scss";
+import "~/sass/elements/item-list.scss";
+import Navigation, { NavigationElement } from "../../general/navigation";
+import { NavigationTopic } from "../../general/navigation";
 
-interface AnnouncerAsideProps {
-  i18n: i18nType,
-  announcements: AnnouncementsType
+interface NavigationAsideProps {
+  i18n: i18nType;
+  announcements: AnnouncementsType;
 }
 
-interface AnnouncerAsideState {
+interface NavigationAsideState {}
 
-}
+class NavigationAside extends React.Component<
+  NavigationAsideProps,
+  NavigationAsideState
+> {
 
-class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAsideState> {
-  render(){
+  /**
+   * render
+   * @returns
+   */
+  render() {
+    const navigationElementList: JSX.Element[] = this.props.announcements.navigation.map(
+      (navItem: AnnouncerNavigationItemType) => (
+        <NavigationElement
+          key={navItem.id}
+          isActive={this.props.announcements.location === navItem.location}
+          hash={navItem.location}
+          icon={navItem.icon}
+        >
+          {navItem.text(this.props.i18n)}
+        </NavigationElement>
+      )
+    );
+
     return (
-      <div className="item-list item-list--aside-navigation">
-        <span className="item-list__title">{this.props.i18n.text.get("plugin.announcer.folders.title")}</span>
-        {this.props.announcements.navigation.map((item: AnnouncerNavigationItemType)=>{
-          return <Link key={item.id} className={`item-list__item item-list__item--aside-navigation ${this.props.announcements.location === item.location ? "active" : ""}`}
-            href={`#${item.location}`}>
-            <span className={`item-list__icon icon-${item.icon}`}></span>
-            <span className="item-list__text-body">
-              {item.text(this.props.i18n)}
-            </span>
-          </Link>
-        })}
-      </div>
-
-    )
+      <Navigation>
+        <NavigationTopic
+          name={this.props.i18n.text.get("plugin.announcer.folders.title")}
+        >
+          {navigationElementList}
+        </NavigationTopic>
+      </Navigation>
+    );
   }
 }
 
-function mapStateToProps(state: StateType){
+/**
+ * mapStateToProps
+ * @param state
+ * @returns
+ */
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    announcements: state.announcements
-  }
-};
+    announcements: state.announcements,
+  };
+}
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ * @returns
+ */
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
-};
+}
 
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AnnouncerAside);
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);

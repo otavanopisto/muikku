@@ -37,6 +37,8 @@ public class ActivityLogTypeConverter implements AttributeConverter<ActivityLogT
           return 12;
         case NOTIFICATION_STUDYTIME:
           return 13;
+        case NOTIFICATION_NEVERLOGGEDIN:
+          return 14;
         default:
             throw new IllegalArgumentException("Unknown" + type);
       }
@@ -73,6 +75,8 @@ public class ActivityLogTypeConverter implements AttributeConverter<ActivityLogT
           return ActivityLogType.NOTIFICATION_SUPPLEMENTATIONREQUEST;
         case 13:
           return ActivityLogType.NOTIFICATION_STUDYTIME;
+        case 14:
+          return ActivityLogType.NOTIFICATION_NEVERLOGGEDIN;
         default:
             throw new IllegalArgumentException("Unknown" + dbData);
       }

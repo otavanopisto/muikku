@@ -16,7 +16,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class StudyTimeNotificationDAO extends CorePluginsDAO<StudyTimeNotification> {
 
-  private static final long serialVersionUID = -593949686229292112L;
+  private static final long serialVersionUID = -2428496475608264591L;
 
   public StudyTimeNotification create(String studentIdentifier, Date sent){
     StudyTimeNotification studyTimeNotification = new StudyTimeNotification();
