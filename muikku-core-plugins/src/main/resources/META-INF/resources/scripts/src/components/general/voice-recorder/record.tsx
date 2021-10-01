@@ -35,7 +35,7 @@ const defaultRecordtProps = {
  */
 function Record(props: RecordProps) {
   props = { ...defaultRecordtProps, ...props };
-  const audioRef = React.useRef(null);
+
   const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
 
   const failed = record.failed;
@@ -43,7 +43,7 @@ function Record(props: RecordProps) {
   return (
     <>
       <div className="voice__recorder-recordings__list-item" key={rest.key}>
-        <audio ref={audioRef} {...rest} />
+        <audio {...rest} />
         <div className="delete-button-container">
           <Link
             className="voice__recorder-audiofield-download-file-button icon-download"
