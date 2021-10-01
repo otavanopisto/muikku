@@ -202,7 +202,9 @@ class AssignmentEditor extends SessionStateComponent<
       this.props.onClose();
 
       this.props.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
+        workspaceEntityId:
+          this.props.evaluations.evaluationSelectedAssessmentId
+            .workspaceEntityId,
         userEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
