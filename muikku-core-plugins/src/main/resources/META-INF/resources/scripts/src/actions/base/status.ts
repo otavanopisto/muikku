@@ -10,14 +10,14 @@ export interface UPDATE_STATUS_HAS_IMAGE extends SpecificActionType<"UPDATE_STAT
 export interface UPDATE_STATUS extends SpecificActionType<"UPDATE_STATUS", Partial<StatusType>> { }
 
 export interface LoadStatusType {
-  (): AnyActionType
+  (whoAmIReadyCb: () => void): AnyActionType
 }
 
 export interface LoadWorkspaceStatusInfoType {
-  (): AnyActionType
+  (readyCb: () => void): AnyActionType
 }
 
-async function loadWhoAMI(dispatch: (arg: AnyActionType) => any) {
+async function loadWhoAMI(dispatch: (arg: AnyActionType) => any, whoAmIReadyCb: () => void) {
   const whoAmI = <WhoAmIType>(await promisify(mApi().user.whoami.read(), 'callback')());
 
   dispatch({
@@ -40,9 +40,21 @@ async function loadWhoAMI(dispatch: (arg: AnyActionType) => any) {
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes("TRANSCRIPT_OF_RECORDS_VIEW"),
       },
-      profile: whoAmI.profile,
+      profile: {
+        addresses: (whoAmI.addresses && JSON.parse(whoAmI.addresses)) || [],
+        emails: (whoAmI.emails && JSON.parse(whoAmI.emails)) || [],
+        displayName: whoAmI.displayName,
+        loggedUserName: whoAmI.displayName,
+        phoneNumbers: (whoAmI.phoneNumbers && JSON.parse(whoAmI.phoneNumbers)) || [],
+        studyEndDate: whoAmI.studyEndDate,
+        studyStartDate: whoAmI.studyStartDate,
+        studyTimeEnd: whoAmI.studyTimeEnd,
+        studyTimeLeftStr: whoAmI.studyTimeLeftStr,
+      },
     },
   });
+
+  whoAmIReadyCb();
 }
 
 async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
@@ -99,22 +111,47 @@ async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
   });
 }
 
-async function loadWorkspacePermissions(workspaceId: number, dispatch: (arg: AnyActionType) => any) {
-  const permissions = <boolean>(await promisify(mApi().workspace.workspaces.permissions.read(workspaceId), 'callback')());
+async function loadWorkspacePermissions(workspaceId: number, dispatch: (arg: AnyActionType) => any, readyCb: () => void) {
+  const permissions = <string[]>(await promisify(mApi().workspace.workspaces.permissions.read(workspaceId), 'callback')());
+
+  console.log(permissions);
 
   dispatch({
     type: "UPDATE_STATUS",
     payload: {
       permissions: {
-
+        WORKSPACE_ACCESS_EVALUATION: permissions.includes("ACCESS_WORKSPACE_EVALUATION"),
+        WORKSPACE_ANNOUNCER_TOOL: permissions.includes("WORKSPACE_ANNOUNCER_TOOL"),
+        WORKSPACE_CAN_PUBLISH: permissions.includes("PUBLISH_WORKSPACE"),
+        WORKSPACE_DELETE_FORUM_THREAD: permissions.includes("FORUM_DELETE_WORKSPACE_MESSAGES"),
+        WORKSPACE_DISCUSSIONS_VISIBLE: permissions.includes("FORUM_ACCESSWORKSPACEFORUMS"),
+        WORKSPACE_GUIDES_VISIBLE: true,
+        WORKSPACE_HOME_VISIBLE: true,
+        WORKSPACE_IS_WORKSPACE_STUDENT: permissions.includes("IS_WORKSPACE_STUDENT"),
+        WORKSPACE_JOURNAL_VISIBLE: permissions.includes("ACCESS_WORKSPACE_JOURNAL"),
+        WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS: permissions.includes("LIST_WORKSPACE_ANNOUNCEMENTS"),
+        WORKSPACE_MANAGE_PERMISSIONS: permissions.includes("WORKSPACE_MANAGE_PERMISSIONS"),
+        WORKSPACE_MANAGE_WORKSPACE: permissions.includes("MANAGE_WORKSPACE"),
+        WORKSPACE_MANAGE_WORKSPACE_DETAILS: permissions.includes("MANAGE_WORKSPACE_DETAILS"),
+        WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE: permissions.includes("MANAGE_WORKSPACE_FRONTPAGE"),
+        WORKSPACE_MANAGE_WORKSPACE_HELP: permissions.includes("MANAGE_WORKSPACE_HELP"),
+        WORKSPACE_MANAGE_WORKSPACE_MATERIALS: permissions.includes("MANAGE_WORKSPACE_MATERIALS"),
+        WORKSPACE_MATERIALS_VISIBLE: true,
+        WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT: permissions.includes("REQUEST_WORKSPACE_ASSESSMENT"),
+        WORKSPACE_SIGNUP: permissions.includes("WORKSPACE_SIGNUP"),
+        WORKSPACE_USERS_VISIBLE: permissions.includes("MANAGE_WORKSPACE_MEMBERS"),
+        WORKSPACE_VIEW_WORKSPACE_DETAILS: permissions.includes("VIEW_WORKSPACE_DETAILS"),
+        WORSKPACE_LIST_WORKSPACE_MEMBERS: permissions.includes("LIST_WORKSPACE_MEMBERS"),
       }
     },
   });
+
+  readyCb();
 }
 
-const loadStatus: LoadStatusType = function loadStatus() {
+const loadStatus: LoadStatusType = function loadStatus(whoAmIReadyCb: () => void) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
-    loadWhoAMI(dispatch);
+    loadWhoAMI(dispatch, whoAmIReadyCb);
     loadChatAvailable(dispatch);
     loadWorklistAvailable(dispatch);
     loadForumIsAvailable(dispatch);
@@ -122,21 +159,10 @@ const loadStatus: LoadStatusType = function loadStatus() {
   }
 }
 
-const loadWorkspaceStatusInfo: LoadWorkspaceStatusInfoType = function loadWorkspaceStatusInfo() {
-  return null;
-  if (location.pathname.startsWith("/workspace/")) {
-    // const workspaceName = location.pathname.split("/")[2];
-
-    // const workspaceBasicInfo = (await promisify(mApi().workspace.workspaces.basicInfo.read(workspaceName), 'callback')());
-
-    // dispatch({
-    //   type: "UPDATE_STATUS",
-    //   payload: {
-    //     currentWorkspaceInfo: workspaceBasicInfo as any,
-    //   },
-    // });
-
-    //loadWorkspacePermissions(workspaceBasicInfo);
+const loadWorkspaceStatus: LoadWorkspaceStatusInfoType = function loadWorkspaceStatusInfo(readyCb: () => void) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    const worspaceId = getState().status.currentWorkspaceId;
+    loadWorkspacePermissions(worspaceId, dispatch, readyCb);
   }
 }
 
@@ -173,5 +199,5 @@ let updateStatusHasImage: UpdateStatusHasImageTriggerType = function updateStatu
   }
 }
 
-export default { logout, updateStatusProfile, updateStatusHasImage, loadStatus };
-export { logout, updateStatusProfile, updateStatusHasImage, loadStatus };
+export default { logout, updateStatusProfile, updateStatusHasImage, loadStatus, loadWorkspaceStatus };
+export { logout, updateStatusProfile, updateStatusHasImage, loadStatus, loadWorkspaceStatus };

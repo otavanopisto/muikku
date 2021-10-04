@@ -4,7 +4,7 @@ import {Action} from 'redux';
 import { updateUnreadMessageThreadsCount } from '~/actions/main-function/messages';
 import { StateType } from '~/reducers';
 import { Store } from 'redux';
-import { loadStatus } from '~/actions/base/status';
+import { loadStatus, loadWorkspaceStatus } from '~/actions/base/status';
 
 function getOptionValue(option: boolean){
   if (typeof option === "undefined"){
@@ -13,8 +13,9 @@ function getOptionValue(option: boolean){
   return option;
 }
 
-export default function(store: Store<StateType>, options: {
-  setupMessages?: boolean
+export default async function(store: Store<StateType>, options: {
+  setupMessages?: boolean,
+  setupWorkspacePermissions?: boolean,
 } = {}){
   let state:StateType = store.getState();
 
@@ -42,7 +43,24 @@ export default function(store: Store<StateType>, options: {
     getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
   }
 
-  store.dispatch(<Action> loadStatus());
-
-  return websocket;
+  if (!options.setupWorkspacePermissions) {
+    return new Promise((resolve) => {
+      const resolveFn = () => {
+        resolve(websocket);
+      }
+      store.dispatch(<Action> loadStatus(resolveFn));
+    });
+  } else {
+    return new Promise((resolve) => {
+      let loadedTotal = 0;
+      const resolveFn = () => {
+        loadedTotal++;
+        if (loadedTotal === 2) {
+          resolve(websocket);
+        }
+      }
+      store.dispatch(<Action> loadStatus(resolveFn));
+      store.dispatch(<Action> loadWorkspaceStatus(resolveFn));
+    });
+  }
 }

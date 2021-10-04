@@ -9,6 +9,12 @@ import { ActionType } from "~/actions";
 import equals = require("deep-equal");
 
 export interface WhoAmIType {
+  studyTimeEnd: string;
+  studyTimeLeftStr: string;
+  studyStartDate: string;
+  studyEndDate: string;
+  phoneNumbers: any;
+  displayName: string;
   curriculumIdentifier: string;
   firstName: string;
   lastName: string;
@@ -21,6 +27,8 @@ export interface WhoAmIType {
   permissions: string[];
   roles: string[];
   studyProgrammeName: string;
+  addresses: string;
+  emails: string;
 }
 
 export interface StatusType {
