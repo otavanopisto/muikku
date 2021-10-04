@@ -38,7 +38,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .addStaffMember(admin)
         .addCourse(course1)
         .mockLogin(admin)
@@ -108,7 +108,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .addStaffMember(admin)
         .addCourse(course1)
         .mockLogin(admin)
@@ -206,7 +206,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .mockMatriculationExam(true)
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -252,7 +252,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .mockMatriculationExam(true)
         .mockLogin(student)
         .build();
@@ -285,7 +285,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .mockLogin(student)
         .build();
         login();
