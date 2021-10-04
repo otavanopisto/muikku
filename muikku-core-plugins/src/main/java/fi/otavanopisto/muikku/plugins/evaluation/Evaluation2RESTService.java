@@ -726,16 +726,23 @@ public class Evaluation2RESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+      // Grade is required for evaluated assignments, but not required for exercises
+      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
+    
     // Workspace material evaluation
     
     WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
 
     // Grade
     
-    SchoolDataIdentifier gradingScaleIdentifier = SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier());
-    GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
-    SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
-    GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+    SchoolDataIdentifier gradingScaleIdentifier = payload.getGradingScaleIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier()) : null;
+    GradingScale gradingScale = gradingScaleIdentifier != null ? gradingController.findGradingScale(gradingScaleIdentifier) : null;
+    SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
+    GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
 
     // Assessor
     
@@ -784,11 +791,11 @@ public class Evaluation2RESTService {
     RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(
         workspaceMaterialEvaluation.getId().toString(),
         assessorIdentifier.toId(),
-        gradingScaleIdentifier.toId(),
-        gradeIdentifier.toId(),
+        gradingScaleIdentifier != null ? gradingScaleIdentifier.toId() : null,
+        gradeIdentifier != null ? gradeIdentifier.toId() : null,
         workspaceMaterialEvaluation.getVerbalAssessment(),
         workspaceMaterialEvaluation.getEvaluated(),
-        gradingScaleItem.isPassingGrade(),
+        gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
         audioAssessments);
     return Response.ok(restAssessment).build();
   }

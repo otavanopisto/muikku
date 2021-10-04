@@ -21,7 +21,8 @@ import {
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
-import { RecordValue } from "~/@types/recorder";
+import { RecordValue } from "../../../../../@types/recorder";
+import ExcerciseEditor from "./editors/excercise-editor";
 
 /**
  * EvaluationMaterialProps
@@ -41,6 +42,7 @@ interface EvaluationMaterialState {
   height: number | string;
   openContent: boolean;
   openDrawer: boolean;
+  openAssignmentType?: "EVALUATED" | "EXERCISE";
 }
 
 /**
@@ -108,6 +110,7 @@ export class EvaluationMaterial extends React.Component<
 
     this.setState({
       openDrawer: false,
+      openAssignmentType: undefined,
     });
   };
 
@@ -115,7 +118,7 @@ export class EvaluationMaterial extends React.Component<
    * handleOpenSlideDrawer
    */
   handleOpenSlideDrawer =
-    (assignmentId: number) =>
+    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (this.props.evaluation.openedAssignmentEvaluationId !== assignmentId) {
         this.props.updateOpenedAssignmentEvaluation({ assignmentId });
@@ -124,6 +127,7 @@ export class EvaluationMaterial extends React.Component<
       this.setState(
         {
           openDrawer: true,
+          openAssignmentType: assignmentType,
         },
         () => this.handleExecuteScrollToElement()
       );
@@ -439,10 +443,7 @@ export class EvaluationMaterial extends React.Component<
                       )}
                     </div>
                     <div className="evaluation-modal__item-functions">
-                      {props.material.assignment.assignmentType ===
-                        "EVALUATED" ||
-                      props.material.assignment.assignmentType ===
-                        "EXERCISE" ? (
+                      {props.material.assignment.assignmentType ? (
                         state.compositeRepliesInState.state !== "UNANSWERED" &&
                         state.compositeRepliesInState.state !== "WITHDRAWN" &&
                         state.compositeRepliesInState.submitted ? (
@@ -451,7 +452,8 @@ export class EvaluationMaterial extends React.Component<
                               "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
                             )}
                             onClick={this.handleOpenSlideDrawer(
-                              props.material.assignment.id
+                              props.material.assignment.id,
+                              props.material.assignment.assignmentType
                             )}
                             buttonModifiers={["evaluate"]}
                             icon="evaluate"
@@ -475,12 +477,35 @@ export class EvaluationMaterial extends React.Component<
                       modifiers={["assignment"]}
                       show={
                         this.state.openDrawer &&
+                        this.state.openAssignmentType === "EVALUATED" &&
                         this.props.evaluation.openedAssignmentEvaluationId ===
                           props.material.assignment.id
                       }
                       onClose={this.handleCloseSlideDrawer}
                     >
                       <AssignmentEditor
+                        editorLabel={this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
+                        )}
+                        materialEvaluation={props.material.evaluation}
+                        materialAssignment={props.material.assignment}
+                        compositeReplies={props.compositeReplies}
+                        onClose={this.handleCloseSlideDrawer}
+                      />
+                    </SlideDrawer>
+
+                    <SlideDrawer
+                      title={this.props.material.assignment.title}
+                      modifiers={["excercise"]}
+                      show={
+                        this.state.openDrawer &&
+                        this.state.openAssignmentType === "EXERCISE" &&
+                        this.props.evaluation.openedAssignmentEvaluationId ===
+                          props.material.assignment.id
+                      }
+                      onClose={this.handleCloseSlideDrawer}
+                    >
+                      <ExcerciseEditor
                         editorLabel={this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
                         )}

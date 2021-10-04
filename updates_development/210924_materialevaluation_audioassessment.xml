@@ -14,4 +14,9 @@
   
   <sql>alter table WorkspaceMaterialEvaluationAudioClip add constraint FK4gx366apxgwn9ugoab8ucqady foreign key (evaluation_id) references WorkspaceMaterialEvaluation (id);</sql>
 
+  <sql>alter table WorkspaceMaterialEvaluation modify gradeIdentifier varchar(255) NULL;</sql>
+  <sql>alter table WorkspaceMaterialEvaluation modify gradeSchoolDataSource varchar(255) NULL;</sql>
+  <sql>alter table WorkspaceMaterialEvaluation modify gradingScaleIdentifier varchar(255) NULL;</sql>
+  <sql>alter table WorkspaceMaterialEvaluation modify gradingScaleSchoolDataSource varchar(255) NULL;</sql>
+
 </update>
