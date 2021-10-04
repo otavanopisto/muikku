@@ -1141,8 +1141,8 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockMatriculationEligibility(boolean compulsoryEducation, boolean upperSecondarySchoolCurriculum) throws JsonProcessingException {
-        MatriculationEligibilities eligibles = new MatriculationEligibilities(compulsoryEducation, upperSecondarySchoolCurriculum);
+      public Builder mockMatriculationEligibility(boolean upperSecondarySchoolCurriculum) throws JsonProcessingException {
+        MatriculationEligibilities eligibles = new MatriculationEligibilities(upperSecondarySchoolCurriculum);
         String eligibilityJson = pmock.objectMapper.writeValueAsString(eligibles);
         stubFor(get(urlEqualTo("/1/matriculation/eligibility"))
           .willReturn(aResponse()

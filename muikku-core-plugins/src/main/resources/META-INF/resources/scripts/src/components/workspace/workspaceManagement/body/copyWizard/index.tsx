@@ -146,7 +146,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
     return (
       <div className='wizard'>
-        <div className='wizard_container'>
+        <div className='wizard__container'>
           <StepZilla
             stepsNavigation={!this.state.locked}
             showNavigation={!this.state.locked}
@@ -158,7 +158,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
             nextButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.next")}
-            backButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.last")}
+            backButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.prev")}
             onStepChange={this.checkLastStep.bind(this, steps)}
           />
         </div>

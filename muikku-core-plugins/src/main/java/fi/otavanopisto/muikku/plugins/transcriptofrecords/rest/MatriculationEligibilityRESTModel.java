@@ -2,6 +2,18 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 public class MatriculationEligibilityRESTModel {
   
+  public double getCreditPoints() {
+    return creditPoints;
+  }
+  public void setCreditPoints(double creditPoints) {
+    this.creditPoints = creditPoints;
+  }
+  public double getCreditPointsRequired() {
+    return creditPointsRequired;
+  }
+  public void setCreditPointsRequired(double creditPointsRequired) {
+    this.creditPointsRequired = creditPointsRequired;
+  }
   public MatriculationExamEligibilityStatus getStatus() {
     return status;
   }
@@ -23,4 +35,6 @@ public class MatriculationEligibilityRESTModel {
   private MatriculationExamEligibilityStatus status;
   private int coursesCompleted;
   private int coursesRequired;
+  private double creditPoints;
+  private double creditPointsRequired;
 }
