@@ -90,7 +90,7 @@ public class HopsRestService {
   private Instance<SearchProvider> searchProviders;
   
   @GET
-  @Path("/{STUDENTIDENTIFIER}")
+  @Path("/student/{STUDENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
@@ -110,7 +110,7 @@ public class HopsRestService {
   }
   
   @POST
-  @Path("/{STUDENTIDENTIFIER}")
+  @Path("/student/{STUDENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String formData) {
     
@@ -146,7 +146,7 @@ public class HopsRestService {
   }
 
   @GET
-  @Path("/{STUDENTIDENTIFIER}/studyActivity")
+  @Path("/student/{STUDENTIDENTIFIER}/studyActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
@@ -211,7 +211,7 @@ public class HopsRestService {
   }
   
   @GET
-  @Path("/{STUDENTIDENTIFIER}/history")
+  @Path("/student/{STUDENTIDENTIFIER}/history")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
@@ -306,7 +306,7 @@ public class HopsRestService {
   }
 
   @POST
-  @Path("/{STUDENTIDENTIFIER}/toggleSuggestion")
+  @Path("/student/{STUDENTIDENTIFIER}/toggleSuggestion")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, SuggestedWorkspace payload) {
 
