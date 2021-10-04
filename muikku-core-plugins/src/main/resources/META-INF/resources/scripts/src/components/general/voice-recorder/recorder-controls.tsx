@@ -26,32 +26,32 @@ function RecorderControls({
   const { startRecording, saveRecording } = handlers;
 
   return (
-    <div className="voice__recorder-controls__container">
+    <div className="voice-recorder__controls-container">
       {!initRecording ? (
         <Link
-          className="voice__recorder-audiofield-start-record-button icon-record"
+          className="voice-recorder__audiofield-start-record-button icon-record"
           onClick={startRecording}
         >
-          <span className="voice__recorder-audiofield-start-record-label">
+          <span className="voice-recorder__audiofield-start-record-label">
             {i18n.text.get("plugin.workspace.audioField.startLink")}
           </span>
         </Link>
       ) : (
         <Link
-          className="voice__recorder-audiofield-stop-record-button icon-stop"
+          className="voice-recorder__audiofield-stop-record-button icon-stop"
           onClick={saveRecording}
         >
-          <span className="voice__recorder-audiofield-stop-record-label">
+          <span className="voice-recorder__audiofield-stop-record-label">
             {i18n.text.get("plugin.workspace.audioField.stopLink")}
           </span>
         </Link>
       )}
       {!initRecording ? (
-        <span className="voice__recorder-audiofield-description voice__recorder-audiofield-description--start-recording">
+        <span className="voice-recorder__audiofield-description voice-recorder__audiofield-description--start-recording">
           {i18n.text.get("plugin.workspace.audioField.startRecordingHint")}
         </span>
       ) : (
-        <span className="voice__recorder-audiofield-description voice__recorder-audiofield-description--stop-recording">
+        <span className="voice-recorder__audiofield-description voice-recorder__audiofield-description--stop-recording">
           {i18n.text.get("plugin.workspace.audioField.stopRecordingHint")}
         </span>
       )}

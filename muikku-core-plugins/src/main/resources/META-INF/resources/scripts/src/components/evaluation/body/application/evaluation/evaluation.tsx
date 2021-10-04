@@ -34,7 +34,6 @@ interface EvaluationDrawerProps {
   i18n: i18nType;
   status: StatusType;
   onClose?: () => void;
-  currentWorkspace: WorkspaceType;
   evaluation: EvaluationState;
   selectedAssessment: AssessmentRequest;
   loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;

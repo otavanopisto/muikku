@@ -3,12 +3,12 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.voice__recorder-section {
+.voice-recorder__section {
   border: 3px solid $taskfield-border-color;
   padding: 5px;
 }
 
-.voice__recorder-controls__container {
+.voice-recorder__controls-container {
   display: flex;
   height: 15%;
   justify-content: center;
@@ -16,7 +16,7 @@
   padding: 0.5rem;
 }
 
-.voice__recorder-audiofield-start-record-button {
+.voice-recorder__audiofield-start-record-button {
   border: 1px solid $color-recording;
   color: $color-recording;
 
@@ -25,13 +25,13 @@
     border: 1px solid $color-recording;
     color: $color-default;
 
-    .voice__recorder-audiofield-start-record-label {
+    .voice-recorder__audiofield-start-record-label {
       color: $color-default;
     }
   }
 }
 
-.voice__recorder-audiofield-stop-record-button {
+.voice-recorder__audiofield-stop-record-button {
   border: 1px solid $color-default-contrast;
   color: $color-default-contrast;
 
@@ -40,16 +40,14 @@
     border: 1px solid $color-default-contrast;
     color: $color-default;
 
-    .voice__recorder-audiofield-stop-record-label {
+    .voice-recorder__audiofield-stop-record-label {
       color: $color-default;
     }
   }
 }
 
-.voice__recorder-controls__container
-  .voice__recorder-audiofield-start-record-button,
-.voice__recorder-controls__container
-  .voice__recorder-audiofield-stop-record-button {
+.voice-recorder__controls-container .voice-recorder__audiofield-start-record-button,
+.voice-recorder__controls-container .voice-recorder__audiofield-stop-record-button {
   align-items: center;
   border-radius: 20px;
   cursor: pointer;
@@ -66,7 +64,7 @@
   transition: background 0.15s;
 }
 
-.voice__recorder-audiofield-download-file-button {
+.voice-recorder__audiofield-download-file-button {
   background: transparent;
   color: $color-info;
   cursor: pointer;
@@ -78,7 +76,7 @@
   width: auto;
 }
 
-.voice__recorder-audiofield-remove-file-button {
+.voice-recorder__audiofield-remove-file-button {
   background: transparent;
   color: $color-fatal;
   cursor: pointer;
@@ -90,7 +88,7 @@
   width: auto;
 }
 
-.voice__recorder-audiofield-description {
+.voice-recorder__audiofield-description {
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 1;
@@ -101,70 +99,69 @@
   }
 }
 
-.voice__recorder-recordings__container {
+.voice-recorder__recordings-container {
   border-top: 3px solid $taskfield-border-color;
   border-top-style: dotted;
 }
 
-.voice__recorder-recordings__list::-webkit-scrollbar {
+.voice-recorder__recordings-list::-webkit-scrollbar {
   width: 5px;
 }
 
-.voice__recorder-recordings__list::-webkit-scrollbar-track {
+.voice-recorder__recordings-list::-webkit-scrollbar-track {
   background: $color-scrollbar-background;
 }
 
-.voice__recorder-recordings__list::-webkit-scrollbar-thumb {
+.voice-recorder__recordings-list::-webkit-scrollbar-thumb {
   background: $taskfield-border-color;
 }
 
-.voice__recorder-recordings__list {
+.voice-recorder__recordings-list {
   display: inline;
   max-height: 85%;
   overflow-y: auto;
 }
 
-.voice__recorder-recordings__list--empty {
+.voice-recorder__recordings-list--empty {
   display: flex;
   font-size: 2rem;
   justify-content: center;
 }
 
-.voice__recorder-recordings__list-item {
+.voice-recorder__recordings-list-item {
   align-items: center;
   display: flex;
   justify-content: space-evenly;
   padding: 0.5rem 0;
   width: 100%;
+
+  span {
+    font-weight: bold;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  audio {
+    max-height: 35px;
+    width: 100%;
+  }
 }
 
-.voice__recorder-recordings__list-item span {
-  font-weight: bold;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.voice__recorder-recordings__list-item audio {
-  max-height: 35px;
-  width: 100%;
-}
-
-.voice__recorder-recordings__list-delete-button__container {
+.voice-recorder__recordings-list-delete-button-container {
   align-items: center;
   display: flex;
   justify-content: center;
   margin: 0 10px;
-}
 
-.voice__recorder-recordings__list-delete-button__container .delete-button {
-  background-color: $color-default;
-  border: 0;
-  border-radius: 50%;
-  cursor: pointer;
-  height: 25px;
-}
+  .delete-button {
+    background-color: $color-default;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 25px;
 
-.voice__recorder-recordings__list-delete-button__container
-  .delete-button:hover {
-  color: $color-recording;
+    &:hover {
+      color: $color-recording;
+    }
+  }
 }
