@@ -3,51 +3,31 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.voice-recorder__section {
-  border: 3px solid $taskfield-border-color;
-  padding: 5px;
+.voice-recorder {
+  @include text;
+  background: $color-default;
+  border: 2px solid $taskfield-border-color;
+  border-radius: 2px;
+  display: block;
+  margin: 4px 0 0;
+  position: relative;
+  width: 100%;
 }
 
-.voice-recorder__controls-container {
+.voice-recorder__controls {
+  align-items: center;
   display: flex;
-  height: 15%;
+  flex-flow: row wrap;
   justify-content: center;
-  margin: auto;
-  padding: 0.5rem;
-}
+  padding: 10px;
 
-.voice-recorder__audiofield-start-record-button {
-  border: 1px solid $color-recording;
-  color: $color-recording;
-
-  &:hover {
-    background: $color-recording;
-    border: 1px solid $color-recording;
-    color: $color-default;
-
-    .voice-recorder__audiofield-start-record-label {
-      color: $color-default;
-    }
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 20px;
   }
 }
 
-.voice-recorder__audiofield-stop-record-button {
-  border: 1px solid $color-default-contrast;
-  color: $color-default-contrast;
-
-  &:hover {
-    background: $color-default-contrast;
-    border: 1px solid $color-default-contrast;
-    color: $color-default;
-
-    .voice-recorder__audiofield-stop-record-label {
-      color: $color-default;
-    }
-  }
-}
-
-.voice-recorder__controls-container .voice-recorder__audiofield-start-record-button,
-.voice-recorder__controls-container .voice-recorder__audiofield-stop-record-button {
+.voice-recorder__start-record-button,
+.voice-recorder__stop-record-button {
   align-items: center;
   border-radius: 20px;
   cursor: pointer;
@@ -64,7 +44,120 @@
   transition: background 0.15s;
 }
 
-.voice-recorder__audiofield-download-file-button {
+.voice-recorder__start-record-label,
+.voice-recorder__stop-record-label {
+  @include text;
+  padding: 0 0 0 4px;
+}
+
+.voice-recorder__start-record-label {
+  color: $color-recording;
+}
+
+.voice-recorder__stop-record-label {
+  color: $color-default-contrast;
+}
+
+.voice-recorder__start-record-button {
+  border: 1px solid $color-recording;
+  color: $color-recording;
+
+  &:hover {
+    background: $color-recording;
+    border: 1px solid $color-recording;
+    color: $color-default;
+
+    .voice-recorder__start-record-label {
+      color: $color-default;
+    }
+  }
+}
+
+.voice-recorder__stop-record-button {
+  border: 1px solid $color-default-contrast;
+  color: $color-default-contrast;
+
+  &:hover {
+    background: $color-default-contrast;
+    border: 1px solid $color-default-contrast;
+    color: $color-default;
+
+    .voice-recorder__stop-record-label {
+      color: $color-default;
+    }
+  }
+}
+
+.voice-recorder__description {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 10px 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 5px 0;
+  }
+}
+
+.voice-recorder__files-container {
+  border-top: 3px dotted lighten($taskfield-border-color, 20%);
+  display: block;
+}
+
+.voice-recorder__file-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 28px;
+  margin: 10px 5px;
+  padding: 0 5px;
+}
+
+.voice-recorder__file {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 1.75rem;
+  max-width: calc(100% - 74px);
+}
+
+.voice-recorder__file--recording,
+.voice-recorder__file--uploading {
+  height: auto;
+}
+
+
+.voice-recorder__file-record-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.voice-recorder__file-upload-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.voice-recorder__file-record-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
+}
+
+.voice-recorder__file-upload-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
+}
+
+
+.voice-recorder__download-button {
   background: transparent;
   color: $color-info;
   cursor: pointer;
@@ -76,7 +169,7 @@
   width: auto;
 }
 
-.voice-recorder__audiofield-remove-file-button {
+.voice-recorder__remove-button {
   background: transparent;
   color: $color-fatal;
   cursor: pointer;
@@ -88,80 +181,4 @@
   width: auto;
 }
 
-.voice-recorder__audiofield-description {
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 1;
-  margin: 10px 0 0;
 
-  @include breakpoint($breakpoint-pad) {
-    margin: 5px 0;
-  }
-}
-
-.voice-recorder__recordings-container {
-  border-top: 3px solid $taskfield-border-color;
-  border-top-style: dotted;
-}
-
-.voice-recorder__recordings-list::-webkit-scrollbar {
-  width: 5px;
-}
-
-.voice-recorder__recordings-list::-webkit-scrollbar-track {
-  background: $color-scrollbar-background;
-}
-
-.voice-recorder__recordings-list::-webkit-scrollbar-thumb {
-  background: $taskfield-border-color;
-}
-
-.voice-recorder__recordings-list {
-  display: inline;
-  max-height: 85%;
-  overflow-y: auto;
-}
-
-.voice-recorder__recordings-list--empty {
-  display: flex;
-  font-size: 2rem;
-  justify-content: center;
-}
-
-.voice-recorder__recordings-list-item {
-  align-items: center;
-  display: flex;
-  justify-content: space-evenly;
-  padding: 0.5rem 0;
-  width: 100%;
-
-  span {
-    font-weight: bold;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-
-  audio {
-    max-height: 35px;
-    width: 100%;
-  }
-}
-
-.voice-recorder__recordings-list-delete-button-container {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  margin: 0 10px;
-
-  .delete-button {
-    background-color: $color-default;
-    border: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    height: 25px;
-
-    &:hover {
-      color: $color-recording;
-    }
-  }
-}

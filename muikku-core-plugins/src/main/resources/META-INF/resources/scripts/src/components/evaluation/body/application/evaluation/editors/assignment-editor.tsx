@@ -25,7 +25,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import { AudioAssessment } from "../../../../../../@types/evaluation";
+import { AudioAssessment } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 
 /**
@@ -386,6 +386,27 @@ class AssignmentEditor extends SessionStateComponent<
           </CKEditor>
         </div>
 
+        <div className="evaluation-modal__evaluate-drawer-row  form-element">
+          <AnimateHeight
+            height={
+              this.state.assignmentEvaluationType !== "INCOMPLETE" ? "auto" : 0
+            }
+          >
+            <label
+              htmlFor="assignmentEvaluationGrade"
+              className="evaluation-modal__evaluate-drawer-row-label"
+            >
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.audioAssessments"
+              )}
+            </label>
+            <Recorder
+              onChange={this.handleAudioAssessmentChange}
+              values={this.state.audioAssessments}
+            />
+          </AnimateHeight>
+        </div>
+
         <div className="evaluation-modal__evaluate-drawer-row form-element">
           <label className="evaluation-modal__evaluate-drawer-row-label">
             {this.props.i18n.text.get(
@@ -445,29 +466,6 @@ class AssignmentEditor extends SessionStateComponent<
               {renderGradingOptions}
             </select>
           </div>
-        </div>
-
-        <div className="evaluation-modal__evaluate-drawer-row  form-element">
-          <AnimateHeight
-            height={
-              this.state.assignmentEvaluationType !== "INCOMPLETE" ? "auto" : 0
-            }
-          >
-            <label
-              htmlFor="assignmentEvaluationGrade"
-              className="evaluation-modal__evaluate-drawer-row-label"
-            >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments"
-              )}
-            </label>
-            <div className="recorder-container">
-              <Recorder
-                onChange={this.handleAudioAssessmentChange}
-                values={this.state.audioAssessments}
-              />
-            </div>
-          </AnimateHeight>
         </div>
 
         <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--buttons">

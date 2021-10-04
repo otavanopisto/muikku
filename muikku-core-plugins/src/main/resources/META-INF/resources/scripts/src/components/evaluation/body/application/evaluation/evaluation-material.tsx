@@ -21,7 +21,7 @@ import {
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
-import { RecordValue } from "../../../../../@types/recorder";
+import { RecordValue } from "~/@types/recorder";
 
 /**
  * EvaluationMaterialProps

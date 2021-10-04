@@ -1,11 +1,11 @@
 import * as React from "react";
-import { RecordValue } from "../../../@types/recorder";
-import { StateType } from "../../../reducers/index";
+import { RecordValue } from "~/@types/recorder";
+import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "../../../actions/index";
+import { AnyActionType } from "~/actions/index";
 import { bindActionCreators } from "redux";
 import Record from "./record";
-import { i18nType } from "../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 
 /**
  * RecordingsListProps
@@ -35,14 +35,12 @@ function RecordingsList(props: RecordingsListProps) {
   const { records, deleteAudio, noDeleteFunctions } = props;
 
   return (
-    <div className="vvoice-recorder__recordings-container">
-      {records.length > 0 ? (
-        <div className="vvoice-recorder__recordings-list">
-          {records.map((record, index) => {
+      records.length > 0 ? (
+        <div className="voice-recorder__files-container">
+          {records.map((record) => {
             return (
               <Record
                 controls
-                listIndex={index}
                 record={record}
                 src={record.url}
                 key={record.id}
@@ -53,13 +51,9 @@ function RecordingsList(props: RecordingsListProps) {
           })}
         </div>
       ) : (
-        <div className="vvoice-recorder__recordings-list vvoice-recorder__recordings-list--empty">
-          <span>
-            {props.i18n.text.get("plugin.workspace.audioField.noFiles")}
-          </span>
-        </div>
-      )}
-    </div>
+        null
+      )
+
   );
 }
 

@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Recorder } from "../../../@types/recorder";
+import { Recorder } from "~/@types/recorder";
 import Link from "~/components/general/link";
-import { StateType } from "../../../reducers/index";
+import { StateType } from "~/reducers/index";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "../../../actions/index";
-import { i18nType } from "../../../reducers/base/i18n";
+import { AnyActionType } from "~/actions/index";
+import { i18nType } from "~/reducers/base/i18n";
 
 export interface RecorderControlsProps {
   recorderState: Recorder;
@@ -26,32 +26,32 @@ function RecorderControls({
   const { startRecording, saveRecording } = handlers;
 
   return (
-    <div className="voice-recorder__controls-container">
+    <div className="voice-recorder__controls">
       {!initRecording ? (
         <Link
-          className="voice-recorder__audiofield-start-record-button icon-record"
+          className="voice-recorder__start-record-button icon-record"
           onClick={startRecording}
         >
-          <span className="voice-recorder__audiofield-start-record-label">
+          <span className="voice-recorder__start-record-label">
             {i18n.text.get("plugin.workspace.audioField.startLink")}
           </span>
         </Link>
       ) : (
         <Link
-          className="voice-recorder__audiofield-stop-record-button icon-stop"
+          className="voice-recorder__stop-record-button icon-stop"
           onClick={saveRecording}
         >
-          <span className="voice-recorder__audiofield-stop-record-label">
+          <span className="voice-recorder__stop-record-label">
             {i18n.text.get("plugin.workspace.audioField.stopLink")}
           </span>
         </Link>
       )}
       {!initRecording ? (
-        <span className="voice-recorder__audiofield-description voice-recorder__audiofield-description--start-recording">
+        <span className="voice-recorder__description voice-recorder__description--start-recording">
           {i18n.text.get("plugin.workspace.audioField.startRecordingHint")}
         </span>
       ) : (
-        <span className="voice-recorder__audiofield-description voice-recorder__audiofield-description--stop-recording">
+        <span className="voice-recorder__description voice-recorder__description--stop-recording">
           {i18n.text.get("plugin.workspace.audioField.stopRecordingHint")}
         </span>
       )}
