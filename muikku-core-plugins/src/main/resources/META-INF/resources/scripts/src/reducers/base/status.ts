@@ -51,7 +51,8 @@ export interface StatusType {
   },
   hasImage: boolean,
   imgVersion: number,
-  hopsEnabled: boolean
+  hopsEnabled: boolean,
+  currentWorkspaceId: number,
 }
 
 export interface ProfileStatusType {
@@ -111,34 +112,38 @@ export interface ProfileStatusType {
 // WORKSPACE_VIEW_WORKSPACE_DETAILS: true
 // WORSKPACE_LIST_WORKSPACE_MEMBERS: true
 
-function inequalityChecker(a: any, b: any) {
-  Object.keys(a).forEach((k) => {
-    if (a[k] !== b[k]) {
-      console.log(k, a[k], b[k]);
-    }
-  });
+// function inequalityChecker(a: any, b: any) {
+//   Object.keys(a).forEach((k) => {
+//     if (a[k] !== b[k]) {
+//       console.log(k, a[k], b[k]);
+//     }
+//   });
 
-  Object.keys(b).forEach((k) => {
-    if (a[k] !== b[k]) {
-      console.log(k, a[k], b[k]);
-    }
-  });
-}
+//   Object.keys(b).forEach((k) => {
+//     if (a[k] !== b[k]) {
+//       console.log(k, a[k], b[k]);
+//     }
+//   });
+// }
+
+const workspaceIdNode = document.querySelector('meta[name="muikku:workspaceId"]');
+const roleNode = document.querySelector('meta[name="muikku:role"]');
 
 // _MUIKKU_LOCALE should be taken from the html
 export default function status(state: StatusType = {
-  loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,    //whoami.id
-  userId: (<any>window).MUIKKU_LOGGED_USER_ID,     // whoami.id
-  permissions: (<any>window).MUIKKU_PERMISSIONS,    
-  contextPath: (<any>window).CONTEXTPATH,   // always empty
-  userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER, // missing
-  isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER, // missing
-  profile: (<any>window).PROFILE_DATA,
-  isStudent: (<any>window).MUIKKU_IS_STUDENT, // check if roles contain STUDENT
+  loggedIn: JSON.parse(document.querySelector('meta[name="muikku:loggedIn"]').getAttribute("value")),    //whoami.id
+  userId: parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value")) || null,     // whoami.id
+  permissions: {},    
+  contextPath: "",   // always empty
+  userSchoolDataIdentifier: document.querySelector('meta[name="muikku:loggedUser"]').getAttribute("value"), // missing
+  isActiveUser: JSON.parse(document.querySelector('meta[name="muikku:activeUser"]').getAttribute("value")), // missing
+  profile: null,
+  isStudent: roleNode.getAttribute("value") === "STUDENT", // check if roles contain STUDENT
   currentWorkspaceInfo: null,
   hasImage: false,
   imgVersion: (new Date()).getTime(),
-  hopsEnabled: (<any>window).HOPS_ENABLED // /user/property/hops.enabled
+  currentWorkspaceId: (workspaceIdNode && parseInt(workspaceIdNode.getAttribute("value"))) || null,
+  hopsEnabled: false // /user/property/hops.enabled
 }, action: ActionType): StatusType {
   if (action.type === "LOGOUT") {
     // chat listens to this event to close the connection
@@ -168,17 +173,17 @@ export default function status(state: StatusType = {
       permissionsBasedClone[k] = (state as any).permissions[k];
     });
 
-    if (!equals(stateBasedCloneWoPermissions, actionPayloadWoPermissions, {strict: true})) {
-      console.log(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
-      inequalityChecker(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
-      console.warn("Unequality with JSF and API value found");
-    }
+    // if (!equals(stateBasedCloneWoPermissions, actionPayloadWoPermissions, {strict: true})) {
+    //   console.log(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
+    //   inequalityChecker(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
+    //   console.warn("Unequality with JSF and API value found");
+    // }
 
-    if (!equals(action.payload.permissions || {}, permissionsBasedClone, {strict: true})) {
-      console.log(permissionsBasedClone, action.payload.permissions);
-      inequalityChecker(permissionsBasedClone, action.payload.permissions);
-      console.warn("Unequality with JSF and API value found in permissions");
-    }
+    // if (!equals(action.payload.permissions || {}, permissionsBasedClone, {strict: true})) {
+    //   console.log(permissionsBasedClone, action.payload.permissions);
+    //   inequalityChecker(permissionsBasedClone, action.payload.permissions);
+    //   console.warn("Unequality with JSF and API value found in permissions");
+    // }
 
 
     return { ...state, ...actionPayloadWoPermissions, permissions: {...state.permissions, ...action.payload.permissions} };

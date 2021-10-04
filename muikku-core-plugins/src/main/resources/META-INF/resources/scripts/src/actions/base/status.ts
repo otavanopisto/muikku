@@ -13,6 +13,10 @@ export interface LoadStatusType {
   (): AnyActionType
 }
 
+export interface LoadWorkspaceStatusInfoType {
+  (): AnyActionType
+}
+
 async function loadWhoAMI(dispatch: (arg: AnyActionType) => any) {
   const whoAmI = <WhoAmIType>(await promisify(mApi().user.whoami.read(), 'callback')());
 
@@ -35,7 +39,8 @@ async function loadWhoAMI(dispatch: (arg: AnyActionType) => any) {
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes("TRANSCRIPT_OF_RECORDS_VIEW"),
-      }
+      },
+      profile: whoAmI.profile,
     },
   });
 }
@@ -83,6 +88,17 @@ async function loadForumIsAvailable(dispatch: (arg: AnyActionType) => any) {
   });
 }
 
+async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
+  const value = <any>(await promisify(mApi().user.property.read("hops.enabled"), 'callback')());
+
+  dispatch({
+    type: "UPDATE_STATUS",
+    payload: {
+      hopsEnabled: value.value,
+    },
+  });
+}
+
 async function loadWorkspacePermissions(workspaceId: number, dispatch: (arg: AnyActionType) => any) {
   const permissions = <boolean>(await promisify(mApi().workspace.workspaces.permissions.read(workspaceId), 'callback')());
 
@@ -102,21 +118,23 @@ const loadStatus: LoadStatusType = function loadStatus() {
     loadChatAvailable(dispatch);
     loadWorklistAvailable(dispatch);
     loadForumIsAvailable(dispatch);
+    loadHopsEnabled(dispatch);
   }
 }
 
 const loadWorkspaceStatusInfo: LoadWorkspaceStatusInfoType = function loadWorkspaceStatusInfo() {
+  return null;
   if (location.pathname.startsWith("/workspace/")) {
-    const workspaceName = location.pathname.split("/")[2];
+    // const workspaceName = location.pathname.split("/")[2];
 
-    const workspaceBasicInfo = (await promisify(mApi().workspace.workspaces.basicInfo.read(workspaceName), 'callback')());
+    // const workspaceBasicInfo = (await promisify(mApi().workspace.workspaces.basicInfo.read(workspaceName), 'callback')());
 
-    dispatch({
-      type: "UPDATE_STATUS",
-      payload: {
-        currentWorkspaceInfo: workspaceBasicInfo as any,
-      },
-    });
+    // dispatch({
+    //   type: "UPDATE_STATUS",
+    //   payload: {
+    //     currentWorkspaceInfo: workspaceBasicInfo as any,
+    //   },
+    // });
 
     //loadWorkspacePermissions(workspaceBasicInfo);
   }

@@ -385,9 +385,7 @@ export default class Workspace extends React.Component<
       );
 
       let state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(state.status.currentWorkspaceName)
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -397,6 +395,9 @@ export default class Workspace extends React.Component<
                 loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
+            this.props.store.dispatch(
+              titleActions.updateTitle(workspace.name)
+            );
           },
         }) as Action
       );

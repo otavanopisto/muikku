@@ -28,6 +28,8 @@ interface IPrivateChatState {
   lastMessageStamp: string,
 }
 
+const roleNode = document.querySelector('meta[name="muikku:role"]');
+
 export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChatState> {
 
   private messagesListenerHandler: any = null;
@@ -47,7 +49,7 @@ export class PrivateChat extends React.Component<IPrivateChatProps, IPrivateChat
       messageNotification: !!this.props.initializingStanza,
       currentMessageToBeSent: "",
       targetPrescense: "xa",
-      isStudent: (window as any).MUIKKU_IS_STUDENT,
+      isStudent: roleNode.getAttribute("value") === "STUDENT",
       loadingMessages: false,
       canLoadMoreMessages: true,
       lastMessageStamp: null,
