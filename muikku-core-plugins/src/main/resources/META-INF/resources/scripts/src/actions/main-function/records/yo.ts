@@ -119,7 +119,7 @@ let updateYO: updateYOTriggerType = function updateYO() {
       });
 
       let eligibility: any = await promisify(mApi().records.studentMatriculationEligibility
-        .read((window as any).MUIKKU_LOGGED_USER), 'callback')();
+        .read(document.querySelector('meta[name="muikku:loggedUser"]').getAttribute("value")), 'callback')();
       let eligibilityStatus = eligibility.status;
       let eligibilityData: YOEligibilityType = {
         coursesCompleted: eligibility.coursesCompleted,

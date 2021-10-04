@@ -14,7 +14,8 @@ import Synchronizer from "../base/synchronizer";
 //if it's not there
 if (!(window as any).MediaRecorder) {
   let script = document.createElement('script');
-  script.src = (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/polyfill-mediarecorder.js.jsf";
+  // CONTEXTPATHREMOVED
+  script.src = "/javax.faces.resource/scripts/dist/polyfill-mediarecorder.js.jsf";
   script.async = true;
   document.head.appendChild(script);
 }

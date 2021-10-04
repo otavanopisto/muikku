@@ -123,7 +123,7 @@ class ContactInformation extends React.Component<ContactInformationProps, Contac
   }
 
   public render() {
-    if (this.props.profile.location !== "contact") {
+    if (this.props.profile.location !== "contact" || !this.props.status.profile) {
       return null;
     }
 
