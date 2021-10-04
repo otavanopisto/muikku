@@ -35,6 +35,7 @@ interface EvaluationDrawerProps {
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
+  currentWorkspace: WorkspaceType;
   selectedAssessment: AssessmentRequest;
   loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
