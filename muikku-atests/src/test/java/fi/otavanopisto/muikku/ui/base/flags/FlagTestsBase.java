@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.ui.base.flags;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
 import org.junit.Test;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
@@ -24,22 +25,26 @@ public class FlagTestsBase extends AbstractUITest {
   public void createNewFlagTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").organizationId(1l).buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").organizationId(1l).buildCourse();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
     mockBuilder
-      .addStaffMember(admin)
-      .addStudent(student)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .addCourse(course2)
-      .build();
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
-    Workspace workspace = createWorkspace(course1, true);
-    Workspace workspace2 = createWorkspace(course2, true);
-    MockCourseStudent mcs = new MockCourseStudent(3l, course1.getId(), student.getId());
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
     mockBuilder.
-      addCourseStudent(course1.getId(), mcs).
+      addCourseStudent(workspace.getId(), mcs).
+      addCourseStudent(workspace.getId(), mcs2).
       build();
     try {
       navigate("/guider", false);
@@ -52,8 +57,8 @@ public class FlagTestsBase extends AbstractUITest {
       waitAndClick("div.dropdown--guider-labels .link--full");
       waitAndClick("div.application-panel__toolbar span.icon-flag");
       waitForVisible(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Test flag");
+      waitForVisible(".application-panel__helper-container .icon-flag + span.menu__item-link-text");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.menu__item-link-text", "Test flag");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -94,8 +99,8 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
     
       waitUntilElementCount(".user--guider", 2);
-      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
-      click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
+      waitForVisible(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider-flag");
+      click(".application-panel__helper-container.application-panel__helper-container--guider .menu__item-link--aside-navigation-guider-flag");
       
       waitUntilElementCount(".user--guider", 1);
       assertTextIgnoreCase(".user--guider .application-list__header-primary span", "Second User");
@@ -156,8 +161,8 @@ public class FlagTestsBase extends AbstractUITest {
       
       waitForNotVisible(".dialog--guider-edit-label");
       waitForVisible(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");
+      waitForVisible(".application-panel__helper-container .icon-flag + span.menu__item-link-text");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.menu__item-link-text", "Edited title");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -205,7 +210,7 @@ public class FlagTestsBase extends AbstractUITest {
       click(".dropdown--guider-labels.visible .link--guider-label-dropdown.selected");
       
       waitAndClick(".application-panel__helper-container .icon-flag");
-      waitForVisible(".application-panel__helper-container .item-list__item.active");
+      waitForVisible(".application-panel__helper-container .menu__item-link.active");
       
       assertNotPresent(".application-list__item-header--student");
     } finally {
@@ -273,8 +278,8 @@ public class FlagTestsBase extends AbstractUITest {
 
       navigate("/guider", false);
 
-      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body");
-      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body", "Test Flaggi");
+      waitForVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .menu__item-link-text");
+      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .menu__item-link-text", "Test Flaggi");
     } finally {
       deleteFlagShares(flagId);
       deleteFlags();

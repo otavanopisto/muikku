@@ -1,15 +1,15 @@
 package fi.otavanopisto.muikku.mock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -25,8 +25,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -111,6 +109,17 @@ public class PyramusMock {
         List<Grade> grades = new ArrayList<>();
         grades.add(new Grade(1l, "Excellent", "Excellent answer showing expertise in area of study", 1l, true, "0", null, false));
         grades.add(new Grade(2l, "Failed", "Failed answer. Not proving any expertise in the matter.", 1l, false, "1", null, false));
+        pmock.gradingScales.put(gs, grades);
+        
+        gs = new GradingScale(2l, "4-10", "Lukion ja peruskoulun arviointiasteikko", false);
+        grades = new ArrayList<>();
+        grades.add(new Grade(3l, "4", "4", 2l, false, "4", null, false));
+        grades.add(new Grade(4l, "5", "5", 2l, true, "5", null, false));
+        grades.add(new Grade(5l, "6", "6", 2l, true, "6", null, false));
+        grades.add(new Grade(6l, "7", "7", 2l, true, "7", null, false));
+        grades.add(new Grade(7l, "8", "8", 2l, true, "8", null, false));
+        grades.add(new Grade(8l, "9", "9", 2l, true, "9", null, false));
+        grades.add(new Grade(9l, "10", "10", 2l, true, "10", null, false));
         pmock.gradingScales.put(gs, grades);
         
         pmock.educationalTimeUnits.add(new EducationalTimeUnit((long) 1, "test time unit", "h", (double) 1, false));
@@ -480,6 +489,11 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(pmock.educationalTimeUnits))
             .withStatus(200)));
+        return this;
+      }
+      
+      public Builder addGradingScaleWithGrades(GradingScale gradingScale, List<Grade> grades) {
+        pmock.gradingScales.put(gradingScale, grades);
         return this;
       }
       
@@ -1127,8 +1141,8 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockMatriculationEligibility(boolean compulsoryEducation, boolean upperSecondarySchoolCurriculum) throws JsonProcessingException {
-        MatriculationEligibilities eligibles = new MatriculationEligibilities(compulsoryEducation, upperSecondarySchoolCurriculum);
+      public Builder mockMatriculationEligibility(boolean upperSecondarySchoolCurriculum) throws JsonProcessingException {
+        MatriculationEligibilities eligibles = new MatriculationEligibilities(upperSecondarySchoolCurriculum);
         String eligibilityJson = pmock.objectMapper.writeValueAsString(eligibles);
         stubFor(get(urlEqualTo("/1/matriculation/eligibility"))
           .willReturn(aResponse()

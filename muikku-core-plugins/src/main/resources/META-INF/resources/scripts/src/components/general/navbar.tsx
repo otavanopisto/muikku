@@ -1,6 +1,6 @@
 import LanguagePicker from './navbar/language-picker';
 import ProfileItem from './navbar/profile-item';
-import Menu from './navbar/menu';
+import Drawer from './navbar/drawer';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
@@ -80,7 +80,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             </ul>
           </div>
         </nav>
-        <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}
+        <Drawer open={this.state.isMenuOpen} onClose={this.closeMenu}
           items={this.props.menuItems} modifier={this.props.modifier} navigation={this.props.navigation}/>
         {this.props.extraContent}
       </div>

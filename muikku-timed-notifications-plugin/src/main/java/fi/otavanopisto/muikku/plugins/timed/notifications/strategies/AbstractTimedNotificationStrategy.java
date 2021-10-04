@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications.strategies;
 
-import java.io.IOException;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -17,33 +18,22 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.neuland.jade4j.JadeConfiguration;
-import de.neuland.jade4j.exceptions.JadeException;
-import fi.otavanopisto.muikku.jade.JadeController;
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
-import fi.otavanopisto.muikku.plugins.timed.notifications.TimedNotificationsJadeTemplateLoader;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 
 public abstract class AbstractTimedNotificationStrategy implements TimedNotificationStrategy {
   
-  private static final String ENABLED_ORGANIZATIONS = System.getProperty("muikku.timednotifications.enabledorganizations");
-  
   @Resource
   private TimerService timerService;
   
   @Inject
-  private JadeController jadeController;
-  
-  @Inject
-  private TimedNotificationsJadeTemplateLoader timedNotificationsJadeTemplateLoader;
-  
-  @Inject
-  private Logger logger;
-  
-  @Inject
   private OrganizationEntityController organizationEntityController;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -71,19 +61,7 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
     return true;
   }
   
-  protected String renderNotificationTemplate(String templateName, Map<String, Object> templateModel) {
-    JadeConfiguration jadeConfiguration = new JadeConfiguration();
-    jadeConfiguration.setTemplateLoader(timedNotificationsJadeTemplateLoader);
-    try {
-      return jadeController.renderTemplate(jadeConfiguration, templateName, templateModel);
-    } catch (JadeException | IOException e) {
-      logger.log(Level.SEVERE, "Error rendering notification template", e);
-    }
-    return null;
-  }
-  
   private void startTimer(long duration) {
-    
     if (this.timer != null) {
       this.timer.cancel();
       this.timer = null;
@@ -94,12 +72,14 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
     
     this.timer = timerService.createSingleActionTimer(duration, timerConfig);
   }
-
+  
   protected List<OrganizationEntity> getActiveOrganizations() {
     List<OrganizationEntity> result = new ArrayList<>();
     
-    if (StringUtils.isNotBlank(ENABLED_ORGANIZATIONS)) {
-      String[] organizationIdentifiers = StringUtils.split(ENABLED_ORGANIZATIONS, ",");
+    String enabledOrganizations = pluginSettingsController.getPluginSetting("timed-notifications", "enabledOrganizations");
+    
+    if (StringUtils.isNotBlank(enabledOrganizations)) {
+      String[] organizationIdentifiers = StringUtils.split(enabledOrganizations, ",");
 
       for (String organizationIdentifierStr : organizationIdentifiers) {
         if (StringUtils.isNotBlank(organizationIdentifierStr)) {
@@ -115,8 +95,30 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
         }
       }
     }
-    
+
     return result;
+  }
+
+  protected OffsetDateTime fromDateToOffsetDateTime(Date date) {
+    if (date == null) {
+      return null;
+    }
+    Instant instant = date.toInstant();
+    ZoneId systemId = ZoneId.systemDefault();
+    ZoneOffset offset = systemId.getRules().getOffset(instant);
+    return date.toInstant().atOffset(offset);
+  }
+
+  protected Date getDateResult(Object value) {
+    Date date = null;
+    if (value instanceof Long) {
+      date = new Date((Long) value);
+    }
+    else if (value instanceof Double) {
+      // seconds to ms
+      date = new Date(((Double) value).longValue() * 1000);
+    }
+    return date;
   }
   
   private Timer timer;

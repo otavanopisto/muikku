@@ -2,7 +2,12 @@ package fi.otavanopisto.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.*;
+import static java.lang.Math.toIntExact;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,8 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.json.JSONArray;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -96,7 +99,6 @@ import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
-import static java.lang.Math.toIntExact;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -1070,6 +1072,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertCheckedXPath(String xpath, Boolean expected) {
     WebElement element = getWebDriver().findElement(By.xpath(xpath));
     assertEquals(expected, element.isSelected());
+  }
+  
+  protected void assertElementCount(String cssSelector, int countToExpect) {
+    assertEquals(countElements(cssSelector), countToExpect);
   }
   
   protected void loginAdmin() throws JsonProcessingException, Exception {

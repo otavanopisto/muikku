@@ -5,13 +5,14 @@ public class MatriculationCurrentExam {
   public MatriculationCurrentExam() {
   }
   
-  public MatriculationCurrentExam(long id, long starts, long ends, boolean eligible, boolean enrolled, long enrollmentDate) {
+  public MatriculationCurrentExam(long id, long starts, long ends, boolean eligible, boolean enrolled, long enrollmentDate, boolean compulsoryEducationEligible) {
     this.id = id;
     this.starts = starts;
     this.ends = ends;
     this.eligible = eligible;
     this.enrolled = enrolled;
     this.enrollmentDate = enrollmentDate;
+    this.compulsoryEducationEligible = compulsoryEducationEligible;
   }
 
   public long getStarts() {
@@ -62,10 +63,19 @@ public class MatriculationCurrentExam {
     this.enrollmentDate = enrollmentDate;
   }
 
+  public boolean isCompulsoryEducationEligible() {
+    return compulsoryEducationEligible;
+  }
+
+  public void setCompulsoryEducationEligible(boolean compulsoryEducationEligible) {
+    this.compulsoryEducationEligible = compulsoryEducationEligible;
+  }
+
   private long id;
   private long starts;
   private long ends;
   private boolean eligible;
   private boolean enrolled;
   private long enrollmentDate;
+  private boolean compulsoryEducationEligible;
 }

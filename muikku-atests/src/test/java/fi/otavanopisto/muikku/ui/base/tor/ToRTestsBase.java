@@ -38,7 +38,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .addStaffMember(admin)
         .addCourse(course1)
         .mockLogin(admin)
@@ -108,7 +108,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .addStaffMember(admin)
         .addCourse(course1)
         .mockLogin(admin)
@@ -156,25 +156,21 @@ public class ToRTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(admin);
         login();
-        navigate(String.format("/evaluation2"), false);
-        waitAndClick(".evaluate-button");
-        waitAndClick(".assignment-title-wrapper");
-        waitForVisible(".assignment-wrapper .muikku-text-field");
-        assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
-        waitAndClick(".assignment-evaluate-button");
-        waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
-        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
-        sendKeys(".cke_contents_ltr", "Test evaluation.");
-        getWebDriver().switchTo().defaultContent();
+        navigate(String.format("/evaluation"), false);
+        waitAndClick(".button-pill--evaluate");
+        waitAndClick(".evaluation-modal__item-header-title--assignment");
+        waitUntilAnimationIsDone(".rah-static");
+        assertValue(".evaluation-modal__item-body span.material-page__textfield input", "field value");
+        waitAndClick(".evaluation-modal .material-page--evaluation-material-page.material-page--SUBMITTED .button-pill--evaluate");
+        waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
+        waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
+        addTextToCKEditor("Test evaluation.");
+        selectOption("#assignmentEvaluationGrade", "PYRAMUS-1");
+        waitAndClick(".button--evaluate-assignment");
         
-        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
-  
-        waitAndClick("#assignmentSaveButton");
-        waitForPresent(".notification-queue-item-success");
-        waitForVisible(".assignment-wrapper .assignment-evaluated-label");
-        waitForVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
-        assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
+        waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
+        waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
+        assertTextIgnoreCase(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED", "Excellent");
         
         logout();
         mockBuilder.mockLogin(student);
@@ -210,7 +206,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .mockMatriculationExam(true)
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -256,7 +252,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .mockMatriculationExam(true)
         .mockLogin(student)
         .build();
@@ -289,7 +285,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(false, true)
+        .mockMatriculationEligibility(true)
         .mockLogin(student)
         .build();
         login();

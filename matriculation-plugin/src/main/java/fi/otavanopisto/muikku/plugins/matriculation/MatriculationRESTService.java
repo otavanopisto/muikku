@@ -231,6 +231,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setMessage(enrollment.getMessage());
     schoolDataEntity.setStudentId(studentId);
     schoolDataEntity.setState(enrollment.getState());
+    schoolDataEntity.setDegreeStructure(enrollment.getDegreeStructure());
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
@@ -259,6 +260,6 @@ public class MatriculationRESTService {
   }
 
   private MatriculationCurrentExam restModel(MatriculationExam exam) {
-    return new MatriculationCurrentExam(exam.getId(), exam.getStarts(), exam.getEnds(), exam.isEligible(), exam.isEnrolled(), exam.getEnrollmentDate());
+    return new MatriculationCurrentExam(exam.getId(), exam.getStarts(), exam.getEnds(), exam.isEligible(), exam.isEnrolled(), exam.getEnrollmentDate(), exam.isCompulsoryEducationEligible());
   }
 }

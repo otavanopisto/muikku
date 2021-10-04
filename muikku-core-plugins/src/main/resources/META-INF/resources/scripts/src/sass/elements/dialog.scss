@@ -18,6 +18,26 @@
   z-index: 9999;
 }
 
+.dialog--matriculation {
+
+  .dialog__window {
+
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
+}
+
 .dialog--visible {
   opacity: 1;
 }
@@ -67,17 +87,6 @@
   }
 }
 
-
-// .dialog__window--edit-user-group {
-//   @include breakpoint($breakpoint-pad) {
-//     max-width: 815px;
-
-//     .dialog__content {
-//       height: 546px;
-//     }
-//   }
-// }
-
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
@@ -118,10 +127,16 @@
     bottom: 20px;
     display: flex;
     flex-direction: column;
-    left: 20px;
+    left: 5px;
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 5px;
+    top: 0;
+
+    @include breakpoint($breakpoint-pad) {
+      left: 20px;
+      right: 20px;
+      top: 20px;
+    }
   }
 
   .wizard__content {
@@ -130,6 +145,7 @@
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
+    overflow: auto;
   }
 }
 
@@ -272,7 +288,6 @@
   }
 }
 
-
 .dialog__content-row--user-search {
   margin: 10px 0;
 }
@@ -375,6 +390,32 @@
 
     @include breakpoint($breakpoint-desktop) {
       margin: 0 10px 0 0;
+    }
+  }
+}
+
+.dialog--evaluation {
+  width: 100%;
+
+  .dialog__header--evaluation {
+    display: none;
+  }
+
+  .dialog__content {
+    height: calc(100vh - 100px);
+    padding: 0;
+  }
+
+  .dialog__window--evaluation {
+
+    @include breakpoint($breakpoint-pad) {
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      max-width: 100%;
+      position: fixed;
+      right: 0;
+      top: 0;
     }
   }
 }

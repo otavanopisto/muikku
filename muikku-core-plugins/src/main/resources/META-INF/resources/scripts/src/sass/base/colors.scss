@@ -95,19 +95,6 @@ $color-license-options-background: #f8f8f8;
 
 $color-message-from-workspace-background: #f5f5f5;
 
-// Evaluation
-$color-evaluation-request: $color-primary;
-$color-grade-not-assessed: #b3b2b2;
-$color-grade-incomplete: #ea7503;
-$color-grade-passed: #24c118;
-$color-grade-failed: #de3211;
-$color-task-evaluation: #e2ffe2;
-
-// Wizard
-$color-wizard-todo: $color-grade-not-assessed;
-$color-wizard-doing: $color-grade-incomplete;
-$color-wizard-done: $color-grade-passed;
-
 // Assignment & Exercise
 $color-assignment:#ce01bd;
 $color-exercise: #ff9900;
@@ -119,6 +106,7 @@ $color-failed: #de3211;
 $color-pending: #009fe3;
 $color-incomplete: #ea7503;
 $color-example: #e2ffe2;
+$color-journal: #0effe6;
 $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;
 $color-disabled-taskfield-border: #e3e3e3;
@@ -129,6 +117,25 @@ $color-taskfield-explanation-background: #fafeff;
 $color-taskfield-hint-border: #d6d823;
 $color-taskfield-hint-background: #ffffe1;
 $color-mobile-toc-default-shadow: rgba(0, 0, 0, 0.2);
+
+// Evaluation
+$color-evaluation-request: $color-submitted;
+$color-grade-not-assessed: #b3b2b2;
+$color-grade-incomplete: $color-incomplete;
+$color-grade-passed: $color-passed;
+$color-grade-failed: $color-failed;
+$color-task-evaluation: #e2ffe2;
+$color-evaluation-modal-background: #f5f5f5;
+
+$color-evaluation-card-border: #dfdfdf;
+$color-evaluation-card-header-background: #f8f8f8;
+$color-evaluation-modal-meta-background: #f8f8f8;
+$color-evaluation-item-border: #ebebeb;
+
+// Wizard
+$color-wizard-todo: $color-grade-not-assessed;
+$color-wizard-doing: $color-incomplete;
+$color-wizard-done: $color-passed;
 
 // Material management
 $color-material-edit-panel-shadow: rgba(0, 0, 0, 0.95);
@@ -445,6 +452,9 @@ $color-form-element-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
 
 // Environment dialog form elements
 $color-env-dialog-form-element-border: #f8a1ce;
+
+// Matriculation Exam form elements
+$color-matriculation-dialog-form-element-border: #f8a1ce;
 
 // Autocomplete
 $color-autocomplete-list-border: #dcdcdc;
