@@ -7,7 +7,11 @@ import { StateType } from "~/reducers/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/evaluation.scss";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
-import { AssessmentRequest, EvaluationEnum } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  EvaluationEnum,
+  EvaluationWorkspace,
+} from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
@@ -24,8 +28,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
-import { WorkspaceType } from "../../../../../reducers/workspaces/index";
-import { EvaluationWorkspace } from "../../../../../@types/evaluation";
+import { WorkspaceType } from "~/reducers/workspaces";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
@@ -298,9 +301,9 @@ export class Evaluation extends React.Component<
      */
     if (
       this.props.currentWorkspace &&
-      this.props.evaluation.evaluationWorkspaces
-        .map((eWorkspace) => eWorkspace.id)
-        .indexOf(this.props.currentWorkspace.id) === -1
+      !this.props.evaluation.evaluationWorkspaces.some(
+        (eWorkspace) => eWorkspace.id === this.props.currentWorkspace.id
+      )
     ) {
       workspaces.push({
         ...this.props.currentWorkspace,

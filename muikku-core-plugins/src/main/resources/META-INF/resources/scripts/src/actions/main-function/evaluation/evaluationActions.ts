@@ -1758,6 +1758,8 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
 
 /**
  * saveAssignmentEvaluationSupplementationToServer
+ * @param param0
+ * @returns
  */
 const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation =
   function saveAssignmentEvaluationSupplementationToServer({

@@ -7,4 +7,5 @@ public interface MatriculationExam {
   boolean isEligible();
   boolean isEnrolled();
   long getEnrollmentDate();
+  boolean isCompulsoryEducationEligible();
 }
