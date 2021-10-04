@@ -1644,9 +1644,9 @@ public class UserRESTService extends AbstractRESTService {
     
     // Study dates
 
-    OffsetDateTime studyStartDate = user.getStudyStartDate();
-    OffsetDateTime studyEndDate = user.getStudyEndDate();
-    OffsetDateTime studyTimeEnd = user.getStudyTimeEnd();
+    OffsetDateTime studyStartDate = user == null ? null : user.getStudyStartDate();
+    OffsetDateTime studyEndDate = user == null ? null : user.getStudyEndDate();
+    OffsetDateTime studyTimeEnd = user == null ? null : user.getStudyTimeEnd();
     String studyTimeLeftStr = null;
     if (studyTimeEnd != null) {
       OffsetDateTime now = OffsetDateTime.now();
