@@ -11,7 +11,6 @@ import mApi from "~/lib/mApi";
 import promisify from "../../../util/promisify";
 import { MApiError } from "../../../lib/mApi";
 import notificationActions from "~/actions/base/notifications";
-import { CurrentRecordType } from "../../../reducers/main-function/records/index";
 import {
   EvaluationEnum,
   BilledPriceRequest,
@@ -24,14 +23,6 @@ import {
   WorkspaceSupplementationSaveRequest,
 } from "../../../@types/evaluation";
 import {
-  AllStudentUsersDataType,
-  RecordGroupType,
-} from "../../../reducers/main-function/records/index";
-import {
-  WorkspaceType,
-  WorkspaceStudentAssessmentStateType,
-  WorkspaceStudentActivityType,
-  WorkspaceJournalListType,
   MaterialAssignmentType,
   MaterialContentNodeType,
   MaterialEvaluationType,
@@ -1758,6 +1749,8 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
 
 /**
  * saveAssignmentEvaluationSupplementationToServer
+ * @param param0
+ * @returns
  */
 const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation =
   function saveAssignmentEvaluationSupplementationToServer({

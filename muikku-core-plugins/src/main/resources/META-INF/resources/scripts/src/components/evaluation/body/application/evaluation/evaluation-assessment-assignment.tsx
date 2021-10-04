@@ -34,12 +34,15 @@ class EvaluationAssessmentAssignment extends React.Component<
   }
 
   render() {
-    return this.props.material && this.props.workspace ? (
-      <EvaluationMaterial
-        workspace={this.props.workspace}
-        material={this.props.material}
-      />
-    ) : null;
+    return (
+      this.props.material &&
+      this.props.workspace && (
+        <EvaluationMaterial
+          workspace={this.props.workspace}
+          material={this.props.material}
+        />
+      )
+    );
   }
 }
 
