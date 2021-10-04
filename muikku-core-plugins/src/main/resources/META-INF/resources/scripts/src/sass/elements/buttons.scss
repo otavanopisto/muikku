@@ -34,6 +34,11 @@
     background-color: $color-button-disabled-background;
     cursor: default;
   }
+
+  > [class^="icon-"],
+  > [class*=" icon-"] {
+    margin-right: 5px;
+  }
 }
 
 .button-image {
@@ -1729,6 +1734,27 @@
   &:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+.button--add-matriculation-row {
+  background: $color-default;
+  border: 1px solid $color-default;
+  border-radius: 2px;
+  color: $color-info;
+  padding: 4px 6px;
+}
+
+.button--remove-matriculation-row {
+  align-items: center;
+  background: transparent;
+  border-radius: 2px;
+  color: $color-fatal;
+  display: flex;
+  font-size: 1.25rem;
+  height: 2.25rem;
+  justify-content: center;
+  padding: 5px;
+  width: 2.25rem;
 }
 
 .button--evaluate-assignment {
