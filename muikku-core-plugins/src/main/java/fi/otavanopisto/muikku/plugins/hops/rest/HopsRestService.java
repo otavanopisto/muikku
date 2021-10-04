@@ -103,10 +103,7 @@ public class HopsRestService {
     }
     
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
-    if (hops == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    return Response.ok(hops.getFormData()).build();
+    return hops == null ? Response.ok().build() : Response.ok(hops.getFormData()).build();  
   }
   
   @POST
