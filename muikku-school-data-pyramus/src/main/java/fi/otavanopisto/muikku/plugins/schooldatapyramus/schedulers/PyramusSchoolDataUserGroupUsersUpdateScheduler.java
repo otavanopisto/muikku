@@ -55,8 +55,7 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
               count += pyramusUpdater.updateStudentGroupUsers(userGroupId);
             break;
             case STUDYPROGRAMME:
-              Long studyProgrammeId = identityMapper.getPyramusStudyProgrammeId(userGroupEntity.getIdentifier());
-              count += pyramusUpdater.updateStudyProgrammeGroupUsers(studyProgrammeId);
+              // No efficient way to update all study programme members
             break;
           }
         }
