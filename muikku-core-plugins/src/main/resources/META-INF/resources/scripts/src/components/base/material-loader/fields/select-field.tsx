@@ -5,6 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
+import { UsedAs } from "~/@types/shared";
 
 interface SelectFieldProps {
   type: string,
@@ -22,6 +23,7 @@ interface SelectFieldProps {
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
 
+  usedAs: UsedAs;
   i18n: i18nType,
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,

@@ -5,6 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
+import { UsedAs } from "~/@types/shared";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -18,6 +19,7 @@ interface MultiSelectFieldProps {
       correct: boolean
     }>
   },
+  usedAs: UsedAs;
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,

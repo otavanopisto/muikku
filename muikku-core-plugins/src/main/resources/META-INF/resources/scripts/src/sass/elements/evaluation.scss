@@ -250,6 +250,11 @@
   // scss-lint:enable SelectorFormat
 }
 
+.evaluation-modal__event-literal-assessment p,
+.evaluation-modal__item-literal-assessment-data p {
+  margin: 5px 0;
+}
+
 .evaluation-modal__event-literal-assessment {
   background-color: $color-evaluation-modal-meta-background;
   border-radius: 2px;

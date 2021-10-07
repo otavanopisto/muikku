@@ -36,6 +36,7 @@ import {
 
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
+import { UsedAs } from "~/@types/shared";
 
 //These represent the states assignments and exercises can be in
 const STATES = [
@@ -134,10 +135,7 @@ const STATES = [
   },
 ];
 
-/**
- * UsedAs
- */
-type UsedAs = "default" | "evaluationTool";
+
 
 export interface MaterialLoaderProps {
   material: MaterialContentNodeType;

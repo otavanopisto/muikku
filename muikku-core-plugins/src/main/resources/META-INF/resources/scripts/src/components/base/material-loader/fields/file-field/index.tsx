@@ -5,6 +5,7 @@ import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
+import { UsedAs } from "~/@types/shared";
 
 interface FileFieldProps {
   type: string,
@@ -13,7 +14,7 @@ interface FileFieldProps {
   },
   i18n: i18nType,
   status: StatusType,
-
+  usedAs: UsedAs;
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
