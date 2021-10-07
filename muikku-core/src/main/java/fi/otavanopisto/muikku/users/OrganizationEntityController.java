@@ -1,11 +1,15 @@
 package fi.otavanopisto.muikku.users;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.OrganizationEntityDAO;
@@ -16,6 +20,9 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationWorkspaceVisibility;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
@@ -167,6 +174,85 @@ public class OrganizationEntityController {
         EnvironmentRoleArchetype.ADMINISTRATOR.equals(usdi.getRole().getArchetype()) &&
         usdi.getOrganization() != null &&
         usdi.getOrganization().getId().equals(1L);
+  }
+
+  /**
+   * Returns a list of OrganizationAccess which includes a collection of permissions logged user can
+   * act on an organization. The given list is not filtered.
+   * 
+   * @param organizations
+   * @return
+   */
+  public List<OrganizationAccess> listCurrentUserOrganizationAccess(List<OrganizationEntity> organizations) {
+    List<OrganizationEntity> loggedUserOrganizations = listLoggedUserOrganizations();
+    List<SchoolDataIdentifier> loggedUserOrganizationIdentifiers = loggedUserOrganizations.stream().map(organization -> organization.schoolDataIdentifier()).collect(Collectors.toList());
+    
+    List<OrganizationAccess> organizationAccesses = organizations.stream()
+      .map(organization -> {
+        boolean myOrganization = loggedUserOrganizationIdentifiers.contains(organization.schoolDataIdentifier());
+        
+        boolean canListTemplates = myOrganization && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES);
+        boolean canListUnpublished = myOrganization && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES);
+        
+        return new OrganizationAccess(organization.schoolDataIdentifier(), canListTemplates, canListUnpublished);
+      })
+      .collect(Collectors.toList());
+    
+    return organizationAccesses;
+  }
+
+  public List<OrganizationRestriction> listUserOrganizationRestrictions(List<OrganizationEntity> organizations,
+      PublicityRestriction publicityRestriction, TemplateRestriction templateRestriction) {
+    List<OrganizationAccess> organizationAccesses = listCurrentUserOrganizationAccess(organizations);
+    List<OrganizationRestriction> organizationRestrictions = new ArrayList<>();
+    List<SchoolDataIdentifier> organizationIdentifiers = organizations.stream().map(organization -> organization.schoolDataIdentifier()).collect(Collectors.toList());
+    
+    for (OrganizationAccess accessibleOrganization : organizationAccesses) {
+      if (CollectionUtils.isNotEmpty(organizationIdentifiers) && !organizationIdentifiers.contains(accessibleOrganization.getOrganizationIdentifier())) {
+        // If the organizationIds list is specified but the accessible organization is not in the list, we skip it
+        continue;
+      }
+
+      PublicityRestriction organizationPublicityRestriction = publicityRestriction;
+      TemplateRestriction organizationTemplateRestriction = templateRestriction;
+      
+      /*
+       * for admins, allow w/e is selected for all organizations
+       * everyone else, allow w/e is selected for own organization, but not unpublished for other orgs
+       */
+      
+      if (!accessibleOrganization.isListUnpublished()) {
+        switch (publicityRestriction) {
+          case LIST_ALL:
+            organizationPublicityRestriction = PublicityRestriction.ONLY_PUBLISHED;
+          break;
+          case ONLY_UNPUBLISHED:
+            organizationPublicityRestriction = PublicityRestriction.NONE;
+          break;
+          case ONLY_PUBLISHED:
+          case NONE:
+          break;
+        }
+      }
+
+      if (!accessibleOrganization.isListTemplates()) {
+        switch (templateRestriction) {
+          case LIST_ALL:
+            organizationTemplateRestriction = TemplateRestriction.ONLY_WORKSPACES;
+          break;
+          case ONLY_TEMPLATES:
+            organizationTemplateRestriction = TemplateRestriction.NONE;
+          break;
+          case ONLY_WORKSPACES:
+          case NONE:
+          break;
+        }
+      }
+
+      organizationRestrictions.add(new OrganizationRestriction(accessibleOrganization.getOrganizationIdentifier(), organizationPublicityRestriction, organizationTemplateRestriction));
+    }
+    
+    return organizationRestrictions;
   }
 
 }

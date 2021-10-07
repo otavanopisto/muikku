@@ -147,6 +147,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -560,6 +561,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       // TODO: Limit to organizations the logged user has access to (how though?)
 
+      List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+      
       List<SchoolDataIdentifier> organizations = null;
       if (organizationIds != null) {
         organizations = new ArrayList<>(organizationIds.size());
@@ -573,8 +576,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
-          curriculums, organizations, searchString, null, null, publicityRestriction, templateRestriction, firstResult, maxResults, sorts);
+          curriculums, organizationRestrictions, searchString, null, null, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {

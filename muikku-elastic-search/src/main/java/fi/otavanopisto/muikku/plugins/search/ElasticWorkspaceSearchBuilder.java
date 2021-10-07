@@ -17,12 +17,10 @@ public class ElasticWorkspaceSearchBuilder extends AbstractWorkspaceSearchBuilde
         getWorkspaceIdentifiers(),
         getEducationTypeIdentifiers(),
         getCurriculumIdentifiers(),
-        getOrganizationIdentifiers(),
+        getOrganizationRestrictions(),
         getFreeText(),
         getAccesses(),
         getAccessUser(),
-        getPublicityRestriction(),
-        getTemplateRestriction(),
         getFirstResult(),
         getMaxResults(),
         getSorts()

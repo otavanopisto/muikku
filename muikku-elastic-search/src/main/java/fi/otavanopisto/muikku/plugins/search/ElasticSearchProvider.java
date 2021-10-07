@@ -68,8 +68,8 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
-import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @ApplicationScoped
@@ -488,12 +488,10 @@ public class ElasticSearchProvider implements SearchProvider {
       List<String> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
       List<SchoolDataIdentifier> curriculumIdentifiers, 
-      List<SchoolDataIdentifier> organizationIdentifiers, 
+      Collection<OrganizationRestriction> organizationRestrictions,
       String freeText, 
       Collection<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
-      PublicityRestriction publicityRestriction, 
-      TemplateRestriction templateRestriction,
       int start, 
       int maxResults, 
       List<Sort> sorts) {
@@ -506,26 +504,6 @@ public class ElasticSearchProvider implements SearchProvider {
     freeText = sanitizeSearchString(freeText);
 
     try {
-      
-      /**
-       * Temp commit
-       */
-      
-      if (publicityRestriction == PublicityRestriction.ONLY_PUBLISHED) {
-        query.must(termQuery("published", Boolean.TRUE));
-      }
-      
-      switch (templateRestriction) {
-        case ONLY_WORKSPACES:
-          query.must(termQuery("isTemplate", Boolean.FALSE));
-        break;
-        case ONLY_TEMPLATES:
-          query.must(termQuery("isTemplate", Boolean.TRUE));
-        break;
-        case LIST_ALL:
-          // No restrictions
-        break;
-      }
       
       if (accesses != null) {
         BoolQueryBuilder accessQuery = boolQuery();
@@ -578,12 +556,42 @@ public class ElasticSearchProvider implements SearchProvider {
             .minimumNumberShouldMatch(1));
       }
 
-      if (!CollectionUtils.isEmpty(organizationIdentifiers)) {
-        List<String> organizationIds = organizationIdentifiers.stream().map(organizationIdentifier -> organizationIdentifier.toId()).collect(Collectors.toList());
+      BoolQueryBuilder organizationQuery = boolQuery();
+      
+      for (OrganizationRestriction organizationRestriction : organizationRestrictions) {
+        SchoolDataIdentifier organizationIdentifier = organizationRestriction.getOrganizationIdentifier();
+        PublicityRestriction organizationPublicityRestriction = organizationRestriction.getPublicityRestriction();
 
-        query.must(termsQuery("organizationIdentifier.untouched", organizationIds));
+        BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
+        
+        switch (organizationPublicityRestriction) {
+          case ONLY_PUBLISHED:
+            organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.TRUE));
+          break;
+          case ONLY_UNPUBLISHED:
+            organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.FALSE));
+          break;
+          case LIST_ALL:
+          break;
+        }
+        
+        switch (organizationRestriction.getTemplateRestriction()) {
+          case ONLY_WORKSPACES:
+            organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.FALSE));
+          break;
+          case ONLY_TEMPLATES:
+            organizationRestrictionQuery.must(termQuery("isTemplate", Boolean.TRUE));
+          break;
+          case LIST_ALL:
+            // No restrictions
+          break;
+        }
+        
+        organizationQuery.should(organizationRestrictionQuery);
       }
-  
+      
+      query.must(organizationQuery.minimumNumberShouldMatch(1));
+      
       if (identifiers != null) {
         query.must(termsQuery("identifier", identifiers));
       }

@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -30,6 +29,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,12 +72,14 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -157,6 +159,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   @Any
@@ -319,26 +324,23 @@ public class CoursePickerRESTService extends PluginRESTService {
           }
         }
       }
-      
-      List<OrganizationEntity> accessibleOrganizations = coursePickerController.listAccessibleOrganizations();
-      Set<SchoolDataIdentifier> accessibleOrganizationsIdentifiers = accessibleOrganizations.stream().map(OrganizationEntity::schoolDataIdentifier).collect(Collectors.toSet());
-      
-      List<SchoolDataIdentifier> organizationIdentifiers = null;
+
+      final List<SchoolDataIdentifier> organizationIdentifiers = organizationIds != null ? new ArrayList<>(organizationIds.size()) : null;
       if (organizationIds != null) {
-        organizationIdentifiers = new ArrayList<>(organizationIds.size());
         for (String organizationId : organizationIds) {
           SchoolDataIdentifier organizationIdentifier = SchoolDataIdentifier.fromId(organizationId);
           if (organizationIdentifier != null) {
-            if (accessibleOrganizationsIdentifiers.contains(organizationIdentifier)) {
-              organizationIdentifiers.add(organizationIdentifier);
-            } else {
-              Response.status(Status.BAD_REQUEST).entity("Organization not found");
-            }
+            organizationIdentifiers.add(organizationIdentifier);
           } else {
             return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed organization identifier", organizationId)).build();
           }
         }
       }
+      
+      List<OrganizationEntity> organizations = coursePickerController.listAccessibleOrganizations();
+      organizations.removeIf(organization -> CollectionUtils.isNotEmpty(organizationIdentifiers) && !organizationIdentifiers.contains(organization.schoolDataIdentifier()));
+      
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
 
       searchResult = searchProvider.searchWorkspaces()
         .setSchoolDataSource(schoolDataSourceFilter)
@@ -346,12 +348,10 @@ public class CoursePickerRESTService extends PluginRESTService {
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setEducationTypeIdentifiers(educationTypes)
         .setCurriculumIdentifiers(curriculumIdentifiers)
-        .setOrganizationIdentifiers(organizationIdentifiers)
+        .setOrganizationRestrictions(organizationRestrictions)
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(sessionController.getLoggedUser())
-        .setPublicityRestriction(publicityRestriction)
-        .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
         .setSorts(sorts)

@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -218,13 +219,8 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
 
     // Restrict search to the organizations of the user (except when searching for course templates only)
     
-    List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
-    if (templateRestriction != TemplateRestriction.ONLY_TEMPLATES) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
-      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
-        organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
-      }
-    }
+    List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
     
     SearchResult searchResult = searchProvider.searchWorkspaces()
         .setSchoolDataSource(schoolDataSourceFilter)
@@ -232,12 +228,10 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setEducationTypeIdentifiers(educationTypes)
         .setCurriculumIdentifiers(curriculumIdentifiers)
-        .setOrganizationIdentifiers(organizationIdentifiers)
+        .setOrganizationRestrictions(organizationRestrictions)
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(loggedUser)
-        .setPublicityRestriction(publicityRestriction)
-        .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
         .setSorts(sorts)
@@ -311,15 +305,11 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   SearchResult searchResult = null;
   
   // Restrict search to the organizations of the user
-  List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
-  UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
-  if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
-    organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
-  }
+  List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+  List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES);
   
   searchResult = searchProvider.searchWorkspaces()
-      .setOrganizationIdentifiers(organizationIdentifiers) // get this from logged in user, I guess
-      .setPublicityRestriction(PublicityRestriction.LIST_ALL)
+      .setOrganizationRestrictions(organizationRestrictions)
       .setFirstResult(0)
       .setMaxResults(Integer.MAX_VALUE)
       .search();
@@ -330,13 +320,13 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
 
   
   List<Map<String, Object>> results = searchResult.getResults();
-    for (Map<String, Object> result : results) {
-      if ((Boolean) result.get("published")) {
-        publishedCount++;
-      } else {
-        unpublishedCount++;
-      }
+  for (Map<String, Object> result : results) {
+    if ((Boolean) result.get("published")) {
+      publishedCount++;
+    } else {
+      unpublishedCount++;
     }
+  }
   
   overviewWorkspaces.setPublishedCount(publishedCount);
   overviewWorkspaces.setUnpublishedCount(unpublishedCount);

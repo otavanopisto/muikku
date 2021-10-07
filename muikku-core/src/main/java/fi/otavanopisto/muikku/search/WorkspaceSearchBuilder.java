@@ -40,12 +40,6 @@ public interface WorkspaceSearchBuilder {
 
   WorkspaceSearchBuilder setCurriculumIdentifiers(List<SchoolDataIdentifier> curriculumIdentifiers);
 
-  List<SchoolDataIdentifier> getOrganizationIdentifiers();
-
-  WorkspaceSearchBuilder addOrganizationIdentifier(SchoolDataIdentifier organizationIdentifier);
-
-  WorkspaceSearchBuilder setOrganizationIdentifiers(List<SchoolDataIdentifier> organizationIdentifiers);
-
   String getFreeText();
 
   WorkspaceSearchBuilder setFreeText(String freeText);
@@ -59,9 +53,6 @@ public interface WorkspaceSearchBuilder {
   SchoolDataIdentifier getAccessUser();
 
   WorkspaceSearchBuilder setAccessUser(SchoolDataIdentifier accessUser);
-
-  PublicityRestriction getPublicityRestriction();
-  WorkspaceSearchBuilder setPublicityRestriction(PublicityRestriction publicityRestriction);
 
   int getFirstResult();
 
@@ -77,19 +68,46 @@ public interface WorkspaceSearchBuilder {
 
   WorkspaceSearchBuilder setSorts(List<Sort> sorts);
 
-  TemplateRestriction getTemplateRestriction();
-  WorkspaceSearchBuilder setTemplateRestriction(TemplateRestriction templateRestriction);
-
   public enum PublicityRestriction {
+    NONE,
     LIST_ALL,
     ONLY_PUBLISHED,
     ONLY_UNPUBLISHED
   }
 
   public enum TemplateRestriction {
+    NONE,
     LIST_ALL,
     ONLY_TEMPLATES,
     ONLY_WORKSPACES
   }
   
+  public static class OrganizationRestriction {
+    
+    public OrganizationRestriction(SchoolDataIdentifier organizationIdentifier, PublicityRestriction publicityRestriction, TemplateRestriction templateRestriction) {
+      this.organizationIdentifier = organizationIdentifier;
+      this.publicityRestriction = publicityRestriction;
+      this.templateRestriction = templateRestriction;
+    }
+    
+    public SchoolDataIdentifier getOrganizationIdentifier() {
+      return organizationIdentifier;
+    }
+    
+    public PublicityRestriction getPublicityRestriction() {
+      return publicityRestriction;
+    }
+    
+    public TemplateRestriction getTemplateRestriction() {
+      return templateRestriction;
+    }
+
+    private final SchoolDataIdentifier organizationIdentifier;
+    private final PublicityRestriction publicityRestriction;
+    private final TemplateRestriction templateRestriction;
+  }
+
+  WorkspaceSearchBuilder addOrganizationRestriction(OrganizationRestriction organizationRestriction);
+  WorkspaceSearchBuilder setOrganizationRestrictions(List<OrganizationRestriction> organizationRestrictions);
+  List<OrganizationRestriction> getOrganizationRestrictions();
 }
