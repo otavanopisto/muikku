@@ -164,7 +164,6 @@ export default class TextField extends React.Component<
   }
   //We check for rightness on mount and update
   componentDidMount() {
-    console.log("no mitäs tulee", this.props.usedAs);
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState) {

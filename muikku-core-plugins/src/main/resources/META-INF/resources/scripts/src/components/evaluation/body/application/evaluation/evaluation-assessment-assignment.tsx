@@ -13,6 +13,7 @@ import "~/sass/elements/evaluation.scss";
 interface EvaluationAssessmentAssignmentProps {
   workspace: WorkspaceType;
   material: MaterialContentNodeType;
+  open: boolean;
 }
 
 /**
@@ -40,6 +41,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         <EvaluationMaterial
           workspace={this.props.workspace}
           material={this.props.material}
+          openContent={this.props.open}
         />
       )
     );

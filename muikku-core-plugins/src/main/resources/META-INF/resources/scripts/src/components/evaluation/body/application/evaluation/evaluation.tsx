@@ -45,6 +45,8 @@ interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
   showWorkspaceSupplemenationDrawer: boolean;
+  openAllDiaryEntries: boolean;
+  openAllMaterialContent: boolean;
   edit?: boolean;
   showContent: boolean;
 }
@@ -65,6 +67,8 @@ export class Evaluation extends React.Component<
       showWorkspaceEvaluationDrawer: false,
       showWorkspaceSupplemenationDrawer: false,
       showContent: false,
+      openAllDiaryEntries: true,
+      openAllMaterialContent: true,
     };
   }
 
@@ -224,6 +228,42 @@ export class Evaluation extends React.Component<
     };
 
   /**
+   * handleCloseAllDiaryEntries
+   */
+  handleCloseAllDiaryEntriesClick = () => {
+    this.setState({
+      openAllDiaryEntries: false,
+    });
+  };
+
+  /**
+   * handleOpenAllDiaryEntries
+   */
+  handleOpenAllDiaryEntriesClick = () => {
+    this.setState({
+      openAllDiaryEntries: true,
+    });
+  };
+
+  /**
+   * handleCloseAllMaterialContentEntriesClick
+   */
+  handleCloseAllMaterialContentClick = () => {
+    this.setState({
+      openAllMaterialContent: false,
+    });
+  };
+
+  /**
+   * handleOpenAllMaterialContentClick
+   */
+  handleOpenAllMaterialContentClick = () => {
+    this.setState({
+      openAllMaterialContent: true,
+    });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -233,9 +273,11 @@ export class Evaluation extends React.Component<
     const evaluationDiaryEvents =
       this.props.evaluation.evaluationDiaryEntries.data &&
       this.props.evaluation.evaluationDiaryEntries.data.length > 0 ? (
-        this.props.evaluation.evaluationDiaryEntries.data.map((item) => (
-          <EvaluationDiaryEvent key={item.id} {...item} />
-        ))
+        this.props.evaluation.evaluationDiaryEntries.data.map((item) => {
+          const isOpen = this.state.openAllDiaryEntries;
+
+          return <EvaluationDiaryEvent key={item.id} open={isOpen} {...item} />;
+        })
       ) : (
         <div className="empty">
           <span>
@@ -318,18 +360,23 @@ export class Evaluation extends React.Component<
       this.props.evaluation.evaluationCurrentSelectedRecords.data.materials
         .length > 0 ? (
         this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
-          (item, i) => (
-            <EvaluationAssessmentAssignment
-              key={i}
-              workspace={workspaces.find(
-                (eWorkspace) =>
-                  eWorkspace.id ===
-                  this.props.evaluation.evaluationSelectedAssessmentId
-                    .workspaceEntityId
-              )}
-              material={item}
-            />
-          )
+          (item, i) => {
+            const open = this.state.openAllMaterialContent;
+
+            return (
+              <EvaluationAssessmentAssignment
+                key={i}
+                workspace={workspaces.find(
+                  (eWorkspace) =>
+                    eWorkspace.id ===
+                    this.props.evaluation.evaluationSelectedAssessmentId
+                      .workspaceEntityId
+                )}
+                open={open}
+                material={item}
+              />
+            );
+          }
         )
       ) : (
         <div className="empty">
@@ -356,9 +403,17 @@ export class Evaluation extends React.Component<
           <div className="evaluation-modal__content-wrapper">
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentsTitle"
-                )}
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentsTitle"
+                  )}
+                  <button onClick={this.handleCloseAllMaterialContentClick}>
+                    Seesam close
+                  </button>
+                  <button onClick={this.handleOpenAllMaterialContentClick}>
+                    Seesam open
+                  </button>
+                </>
               </div>
               <div className="evaluation-modal__content-body">
                 {this.props.evaluation.evaluationCurrentSelectedRecords
@@ -373,9 +428,17 @@ export class Evaluation extends React.Component<
             </div>
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalTitle"
-                )}
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalTitle"
+                  )}
+                  <button onClick={this.handleCloseAllDiaryEntriesClick}>
+                    Seesam close
+                  </button>
+                  <button onClick={this.handleOpenAllDiaryEntriesClick}>
+                    Seesam open
+                  </button>
+                </>
               </div>
               <div className="evaluation-modal__content-body">
                 {this.props.evaluation.evaluationDiaryEntries.state ===
