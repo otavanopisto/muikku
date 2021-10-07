@@ -1,6 +1,323 @@
 import { SchoolSubject, Education, HopsCompulsory } from "../@types/shared";
 
-export const mockSchoolSubjects: SchoolSubject[] = [
+/* export const nationalCourseTable = [
+  {
+    name: "Äidinkieli",
+    subjectCode: "ai",
+    availableCourses: [
+      {
+        name: "Suomen kielen ja kirjallisuuden perusteet",
+        courseNumber: 1,
+      },
+      {
+        name: "Monimuotoiset tekstit ",
+        courseNumber: 2,
+      },
+      {
+        name: "Tekstien tuottaminen ja tulkitseminen",
+        courseNumber: 3,
+      },
+      {
+        name: "Kieli ja kulttuuri",
+        courseNumber: 4,
+      },
+      {
+        name: "Puhe- ja vuorovaikutustaidot",
+        courseNumber: 5,
+      },
+      {
+        name: "Median maailma",
+        courseNumber: 6,
+      },
+      {
+        name: "Kauno- ja tietokirjallisuuden lukeminen",
+        courseNumber: 7,
+      },
+      {
+        name: "Tekstien tulkinta",
+        courseNumber: 8,
+      },
+      {
+        name: "Tekstien tuottaminen",
+        courseNumber: 9,
+      },
+      {
+        name: "Nykykulttuurin ilmiöitä ja kirjallisuutta",
+        courseNumber: 10,
+      },
+    ],
+  },
+  {
+    name: "Suomi toisena kielenä (s2)",
+    subjectCode: "s2",
+    availableCourses: [
+      {
+        name: "Opiskelutaitojen vahvistaminen",
+        courseNumber: 1,
+      },
+      {
+        name: "Luonnontieteen tekstit tutummiksi",
+        courseNumber: 2,
+      },
+      {
+        name: "Yhteiskunnallisten aineiden tekstit tutummiksi",
+        courseNumber: 3,
+      },
+      {
+        name: "Median tekstejä ja kuvia",
+        courseNumber: 4,
+      },
+      {
+        name: "Tiedonhankintataitojen syventäminen",
+        courseNumber: 5,
+      },
+      {
+        name: "Uutistekstit",
+        courseNumber: 6,
+      },
+      {
+        name: "Mielipiteen ilmaiseminen ja perusteleminen",
+        courseNumber: 7,
+      },
+      {
+        name: "Kaunokirjalliset tekstit tutuiksi",
+        courseNumber: 8,
+      },
+      {
+        name: "Kulttuurinen moninaisuus - moninainen kulttuuri",
+        courseNumber: 9,
+      },
+      {
+        name: "Ajankohtaiset ilmiöt Suomessa ja maailmalla",
+        courseNumber: 10,
+      },
+    ],
+  },
+  {
+    name: "Toinen kotimainen kieli, ruotsi (rub)",
+    subjectCode: "rub",
+    availableCourses: [
+      {
+        name: "Kielitaidon alkeet: Lähtökohtia ruotsin opiskelulle",
+        courseNumber: 1,
+      },
+      {
+        name: "Kielitaidon alkeet: Perusviestintää arkipäivän sosiaalisissa tilanteissa",
+        courseNumber: 2,
+      },
+      {
+        name: "Kielitaidon alkeet: Vuorovaikutus asiointitilanteissa",
+        courseNumber: 3,
+      },
+      {
+        name: "Kielitaidon alkeet: Selviytyminen muodollisemmista tilanteista ",
+        courseNumber: 4,
+      },
+      {
+        name: "Kielitaidon alkeet: Palvelu- ja viranomaistilanteet",
+        courseNumber: 5,
+      },
+      {
+        name: "Kielitaidon alkeet: Ajankohtaiset ilmiöt",
+        courseNumber: 6,
+      },
+      {
+        name: "Kehittyvä kielitaito: Miksi Suomessa puhutaan ruotsia?",
+        courseNumber: 7,
+      },
+      {
+        name: "Kehittyvä kielitaito: Avaimet elinikäiseen kieltenopiskeluun",
+        courseNumber: 8,
+      },
+    ],
+  },
+  {
+    name: "Vieras kieli, englanti (ena)",
+    subjectCode: "ena",
+    availableCourses: [
+      {
+        name: "Kehittyvä kielitaito: Työelämässä toimiminen ja muita muodollisia tilanteita",
+        courseNumber: 1,
+      },
+      {
+        name: "Kehittyvä kielitaito: Palvelu- ja viranomaistilanteet ja osallistuva kansalainen",
+        courseNumber: 2,
+      },
+      {
+        name: "Kehittyvä kielitaito: Kertomuksia minusta ja ympäristöstäni",
+        courseNumber: 3,
+      },
+      {
+        name: "Kehittyvä kielitaito: Ajankohtaiset ilmiöt",
+        courseNumber: 4,
+      },
+      {
+        name: "Kulttuurikohtaamisia",
+        courseNumber: 5,
+      },
+      {
+        name: "Globaalienglanti",
+        courseNumber: 6,
+      },
+      {
+        name: "Liikkuvuus ja kansainvälisyys",
+        courseNumber: 7,
+      },
+      {
+        name: "Avaimet elinikäiseen kieltenopiskeluun",
+        courseNumber: 8,
+      },
+    ],
+  },
+  {
+    name: "Matikka",
+    subjectCode: "Ma",
+    availableCourses: [
+      {
+        name: "Luvut ja laskutoimitukset I",
+        courseNumber: 1,
+      },
+      {
+        name: "Luvut ja laskutoimitukset II",
+        courseNumber: 2,
+      },
+      {
+        name: "Lausekkeet",
+        courseNumber: 3,
+      },
+      {
+        name: "Yhtälöt",
+        courseNumber: 4,
+      },
+      {
+        name: "Geometria",
+        courseNumber: 5,
+      },
+      {
+        name: "Prosentit",
+        courseNumber: 6,
+      },
+      {
+        name: "Funktiot ja tilastot",
+        courseNumber: 7,
+      },
+      {
+        name: "Geometria ja trigonometria",
+        courseNumber: 8,
+      },
+    ],
+  },
+  {
+    name: "Uskonto",
+    subjectCode: "Ua",
+    availableCourses: [
+      {
+        name: "Uskonnot maailmassa",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Elämänkatsomustieto",
+    subjectCode: "Et",
+    availableCourses: [
+      {
+        name: "Katsomukset ja ihmisoikeudet",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Historia",
+    subjectCode: "Hi",
+    availableCourses: [
+      {
+        name: "Suomen historian käännekohdat",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Yhteiskuntaoppi",
+    subjectCode: "Yh",
+    availableCourses: [
+      {
+        name: "Yhteiskuntajärjestelmä sekä julkiset palvelut",
+        courseNumber: 1,
+      },
+      {
+        name: "Työelämän tuntemus ja oma talous",
+        courseNumber: 2,
+      },
+    ],
+  },
+  {
+    name: "Fysiikka",
+    subjectCode: "Fy",
+    availableCourses: [
+      {
+        name: "Fysiikka omassa elämässä ja elinympäristössä",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Kemia omassa elämässä ja elinympäristössä",
+    subjectCode: "s2",
+    availableCourses: [
+      {
+        name: "Jatko-opinnot ja ammatinvalinta",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Biologia",
+    subjectCode: "Bi",
+    availableCourses: [
+      {
+        name: "Mitä elämä on?",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Maantieto",
+    subjectCode: "Ge",
+    availableCourses: [
+      {
+        name: " Muuttuva maapallo ja kestävä tulevaisuus",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Terveystieto",
+    subjectCode: "Te",
+    availableCourses: [
+      {
+        name: "Terve elämä",
+        courseNumber: 1,
+      },
+    ],
+  },
+  {
+    name: "Opinto-ohjaus ja työelämätaidot",
+    subjectCode: "Op",
+    availableCourses: [
+      {
+        name: "Jatko-opinnot ja ammatinvalinta",
+        courseNumber: 1,
+      },
+      {
+        name: "Työelämäosaaminen",
+        courseNumber: 2,
+      },
+    ],
+  },
+]; */
+
+export const schoolCourseTable: SchoolSubject[] = [
   {
     name: "Äidinkieli",
     subjectCode: "ai",
@@ -657,7 +974,6 @@ export const hopsMock1: HopsCompulsory = {
 
   studiesPlanning: {
     usedHoursPerWeek: 0,
-    selectedSubjects: [...mockSchoolSubjects],
     graduationGoal: "",
     followUpGoal: "",
     ethics: false,
@@ -714,7 +1030,6 @@ export const hopsMock2: HopsCompulsory = {
 
   studiesPlanning: {
     usedHoursPerWeek: 25,
-    selectedSubjects: [...mockSchoolSubjects],
     graduationGoal: "",
     followUpGoal: "",
     ethics: false,
@@ -775,7 +1090,6 @@ export const hopsMock3: HopsCompulsory = {
 
   studiesPlanning: {
     usedHoursPerWeek: 25,
-    selectedSubjects: [...mockSchoolSubjects],
     graduationGoal: "6",
     followUpGoal: "",
     ethics: false,
@@ -838,7 +1152,6 @@ export const hopsMock4: HopsCompulsory = {
 
   studiesPlanning: {
     usedHoursPerWeek: 25,
-    selectedSubjects: [...mockSchoolSubjects],
     graduationGoal: "6",
     followUpGoal: "",
     ethics: false,

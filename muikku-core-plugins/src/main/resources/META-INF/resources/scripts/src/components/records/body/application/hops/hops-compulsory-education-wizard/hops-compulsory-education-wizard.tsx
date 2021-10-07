@@ -7,7 +7,9 @@ import { StateType } from "~/reducers";
 const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
-import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
+import { Step1, Step2, Step3, Step5 } from "./steps";
+import promisify from "../../../../../../util/promisify";
+import mApi from "~/lib/mApi";
 import {
   HopsCompulsory,
   Education,
@@ -18,7 +20,7 @@ import {
   hopsMock2,
   hopsMock3,
   hopsMock4,
-  mockSchoolSubjects,
+  schoolCourseTable,
 } from "../../../../../../mock/mock-data";
 import {
   HopsStudentStartingLevel,
@@ -109,7 +111,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
         },
         studiesPlanning: {
           usedHoursPerWeek: 0,
-          selectedSubjects: [...mockSchoolSubjects],
           graduationGoal: "",
           followUpGoal: "",
           ethics: false,
@@ -134,7 +135,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
   /**
    * componentDidMount
    */
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { testData } = this.props;
 
     this.setState({
@@ -173,9 +174,23 @@ class CompulsoryEducationHopsWizard extends React.Component<
         default:
           break;
       }
-
-      this.setState({ loading: false });
     }, 1500);
+
+    /*  const hops = await promisify(
+      mApi().hops.student.read((window as any).MUIKKU_LOGGED_USER),
+      "callback"
+    )();
+
+    const peilaus = await promisify(
+      mApi().hops.student.studyActivity.read(
+        (window as any).MUIKKU_LOGGED_USER
+      ),
+      "callback"
+    )();
+
+    console.log("hops :::>", [hops, peilaus]); */
+
+    this.setState({ loading: false });
   };
 
   /**

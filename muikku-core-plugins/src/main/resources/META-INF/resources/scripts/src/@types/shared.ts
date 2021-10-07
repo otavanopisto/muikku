@@ -241,10 +241,9 @@ export enum FollowUpGoal {
 }
 
 export enum CourseStatus {
-  COMPLETED = "COMPLETED",
-  APPROVAL = "APPROVAL",
-  INPROGRESS = "INPROGRESS",
-  NOSTATUS = "NOSTATUS",
+  ONGOING = "ONGOING",
+  GRADED = "GRADED",
+  TRANSFERRED = "TRANSFERRED",
   SUGGESTED = "SUGGESTED",
 }
 
@@ -313,7 +312,6 @@ export interface HopsPlanningStudies extends StudentsGoal {
   selectedListOfIds: number[];
   supervisorSugestedSubjectListOfIds: number[];
   supervisorSuggestedNextListOfIds: number[];
-  selectedSubjects: SchoolSubject[];
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
 }
@@ -378,6 +376,16 @@ export interface Course {
   id: number;
 }
 
+export interface StudentActivityCourse {
+  subject: string;
+  courseId: number; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
+  courseNumber: number;
+  courseName: string;
+  grade: number; // jos on arvioitu tahi hyväksiluettu
+  status: CourseStatus;
+  date: string;
+}
+
 export interface StudiesCourseData {
   completedSubjectListOfIds?: number[];
   approvedSubjectListOfIds?: number[];
@@ -392,4 +400,11 @@ export interface UploadingValue {
   failed?: boolean;
   progress?: number;
   file?: File;
+}
+
+export interface Suggestion {
+  id: number;
+  name: string;
+  subject: string;
+  courseNumber: number;
 }
