@@ -407,12 +407,19 @@ export class Evaluation extends React.Component<
                   {this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.assignmentsTitle"
                   )}
-                  <button onClick={this.handleCloseAllMaterialContentClick}>
-                    Seesam close
-                  </button>
-                  <button onClick={this.handleOpenAllMaterialContentClick}>
-                    Seesam open
-                  </button>
+                  {this.props.evaluation.evaluationCurrentSelectedRecords
+                    .state === "READY" &&
+                  this.props.evaluation.evaluationCompositeReplies.state ===
+                    "READY" ? (
+                    <>
+                      <button onClick={this.handleCloseAllMaterialContentClick}>
+                        Seesam close
+                      </button>
+                      <button onClick={this.handleOpenAllMaterialContentClick}>
+                        Seesam open
+                      </button>
+                    </>
+                  ) : null}
                 </>
               </div>
               <div className="evaluation-modal__content-body">
@@ -432,12 +439,17 @@ export class Evaluation extends React.Component<
                   {this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.journalTitle"
                   )}
-                  <button onClick={this.handleCloseAllDiaryEntriesClick}>
-                    Seesam close
-                  </button>
-                  <button onClick={this.handleOpenAllDiaryEntriesClick}>
-                    Seesam open
-                  </button>
+                  {this.props.evaluation.evaluationDiaryEntries.state ===
+                  "READY" ? (
+                    <>
+                      <button onClick={this.handleCloseAllDiaryEntriesClick}>
+                        Seesam close
+                      </button>
+                      <button onClick={this.handleOpenAllDiaryEntriesClick}>
+                        Seesam open
+                      </button>
+                    </>
+                  ) : null}
                 </>
               </div>
               <div className="evaluation-modal__content-body">
