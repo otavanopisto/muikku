@@ -56,9 +56,7 @@ interface EvaluationDrawerState {
   materialFetched: boolean;
 }
 
-export const CKEditorConfig = (
-  locale: string,
-) => ({
+export const CKEditorConfig = (locale: string) => ({
   linkShowTargetTab: true,
   forcePasteAsPlainText: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
@@ -74,14 +72,7 @@ export const CKEditorConfig = (
   toolbar: [
     {
       name: "clipboard",
-      items: [
-        "Cut",
-        "Copy",
-        "Paste",
-        "-",
-        "Undo",
-        "Redo",
-      ],
+      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"],
     },
     {
       name: "basicstyles",
@@ -610,12 +601,18 @@ export class Evaluation extends React.Component<
                   this.props.evaluation.evaluationCompositeReplies.state ===
                     "READY" ? (
                     <div className="evaluation-modal__content-actions">
-                      <Link className="link link--evaluation-close-open" onClick={this.handleCloseAllMaterialContentClick}>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleCloseAllMaterialContentClick}
+                      >
                         {this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.closeAll"
                         )}
                       </Link>
-                      <Link className="link link--evaluation-close-open" onClick={this.handleOpenAllMaterialContentClick}>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleOpenAllMaterialContentClick}
+                      >
                         {this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.openAll"
                         )}
@@ -644,12 +641,18 @@ export class Evaluation extends React.Component<
                   {this.props.evaluation.evaluationDiaryEntries.state ===
                   "READY" ? (
                     <div className="evaluation-modal__content-actions">
-                      <Link className="link link--evaluation-close-open" onClick={this.handleCloseAllDiaryEntriesClick}>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleCloseAllDiaryEntriesClick}
+                      >
                         {this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.closeAll"
                         )}
                       </Link>
-                      <Link className="link link--evaluation-close-open" onClick={this.handleOpenAllDiaryEntriesClick}>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleOpenAllDiaryEntriesClick}
+                      >
                         {this.props.i18n.text.get(
                           "plugin.evaluation.evaluationModal.openAll"
                         )}
