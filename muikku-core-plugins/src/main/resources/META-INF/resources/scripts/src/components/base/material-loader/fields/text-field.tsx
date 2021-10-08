@@ -323,7 +323,7 @@ export default class TextField extends React.Component<
         <span
           className={`material-page__textfield ${fieldStateAfterCheck} material-page__textfield--evaluation`}
         >
-          {this.state.value}
+          {this.state.value ? this.state.value : <>&nbsp;</>}
         </span>
       );
 
