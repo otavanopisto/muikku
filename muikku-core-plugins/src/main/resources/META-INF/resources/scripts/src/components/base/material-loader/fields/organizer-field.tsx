@@ -136,7 +136,8 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
   shouldComponentUpdate(nextProps: OrganizerFieldProps, nextState: OrganizerFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
-    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError
+    || nextProps.invisible !== this.props.invisible;
   }
   checkAnswers(){
     //if we are allowed

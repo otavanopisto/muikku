@@ -82,7 +82,8 @@ export default class TextField extends React.Component<
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
       this.state.synced !== nextState.synced ||
-      this.state.syncError !== nextState.syncError
+      this.state.syncError !== nextState.syncError ||
+      nextProps.invisible !== this.props.invisible
     );
   }
   //when the input change
