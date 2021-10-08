@@ -135,8 +135,6 @@ const STATES = [
   },
 ];
 
-
-
 export interface MaterialLoaderProps {
   material: MaterialContentNodeType;
   folder?: MaterialContentNodeType;
@@ -222,6 +220,10 @@ export interface MaterialLoaderProps {
   ) => any;
 }
 
+interface DefaultMaterialLoaderProps {
+  usedAs: UsedAs;
+}
+
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
   compositeRepliesInState: MaterialCompositeRepliesType;
@@ -255,6 +257,10 @@ class MaterialLoader extends React.Component<
 > {
   private stateConfiguration: any;
   private answerRegistrySync: { [name: string]: any };
+
+  static defaultProps: DefaultMaterialLoaderProps = {
+    usedAs: "default",
+  };
 
   constructor(props: MaterialLoaderProps) {
     super(props);

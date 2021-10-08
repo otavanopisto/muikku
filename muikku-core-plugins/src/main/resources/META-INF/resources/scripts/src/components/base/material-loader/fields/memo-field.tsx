@@ -132,6 +132,7 @@ export default class MemoField extends React.Component<
     this.onInputChange = this.onInputChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
   }
+
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState) {
     return (
       !equals(nextProps.content, this.props.content) ||
