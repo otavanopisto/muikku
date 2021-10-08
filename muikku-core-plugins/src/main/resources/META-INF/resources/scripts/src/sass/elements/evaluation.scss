@@ -87,7 +87,29 @@
 }
 
 .evaluation-modal__content-title {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
   font-size: 1.375rem;
+  justify-content: space-between;
+
+  @include breakpoint($breakpoint-pad){
+    align-items: center;
+    flex-flow: row nowrap;
+  }
+}
+
+.evaluation-modal__content-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 5px 0;
+
+  @include breakpoint($breakpoint-pad){
+    padding: 0 10px;
+  }
 }
 
 .evaluation-modal__content-buttonset {
@@ -252,10 +274,10 @@
 
 .evaluation-modal__event-literal-assessment p,
 .evaluation-modal__item-literal-assessment-data p {
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
 
   &:last-child {
-    margin: 0 0 5px 0;
+    margin: 0 0 5px;
   }
 }
 
