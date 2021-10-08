@@ -91,17 +91,13 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
   }
   componentWillReceiveProps(nextProps: FieldProps) {
-    console.log("ennen if",[nextProps, this.props]);
     if (nextProps.className !== this.props.className) {
-      console.log("nextProps.className !== this.props.className",[nextProps, this.props]);
       (this.refs.input as HTMLElement).className = nextProps.className;
     }
 
     if (nextProps.readOnly !== this.props.readOnly) {
-      console.log("nextProps.readOnly !== this.props.readOnly", nextProps )
 
       if (nextProps.readOnly) {
-        console.log("nextProps.readOnly", nextProps );
 
         (this.refs.input as HTMLElement).classList.add("material-page__mathfield--readonly");
         (this.refs.input as HTMLElement).removeAttribute("contentEditable");
