@@ -29,6 +29,7 @@ import {
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
 import { WorkspaceType } from "~/reducers/workspaces";
+import Link from "~/components/general/link";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
@@ -411,14 +412,18 @@ export class Evaluation extends React.Component<
                     .state === "READY" &&
                   this.props.evaluation.evaluationCompositeReplies.state ===
                     "READY" ? (
-                    <>
-                      <button onClick={this.handleCloseAllMaterialContentClick}>
-                        Seesam close
-                      </button>
-                      <button onClick={this.handleOpenAllMaterialContentClick}>
-                        Seesam open
-                      </button>
-                    </>
+                    <div className="evaluation-modal__content-actions">
+                      <Link className="link link--evaluation-close-open" onClick={this.handleCloseAllMaterialContentClick}>
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.closeAll"
+                        )}
+                      </Link>
+                      <Link className="link link--evaluation-close-open" onClick={this.handleOpenAllMaterialContentClick}>
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.openAll"
+                        )}
+                      </Link>
+                    </div>
                   ) : null}
                 </>
               </div>
@@ -441,14 +446,18 @@ export class Evaluation extends React.Component<
                   )}
                   {this.props.evaluation.evaluationDiaryEntries.state ===
                   "READY" ? (
-                    <>
-                      <button onClick={this.handleCloseAllDiaryEntriesClick}>
-                        Seesam close
-                      </button>
-                      <button onClick={this.handleOpenAllDiaryEntriesClick}>
-                        Seesam open
-                      </button>
-                    </>
+                    <div className="evaluation-modal__content-actions">
+                      <Link className="link link--evaluation-close-open" onClick={this.handleCloseAllDiaryEntriesClick}>
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.closeAll"
+                        )}
+                      </Link>
+                      <Link className="link link--evaluation-close-open" onClick={this.handleOpenAllDiaryEntriesClick}>
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.openAll"
+                        )}
+                      </Link>
+                    </div>
                   ) : null}
                 </>
               </div>

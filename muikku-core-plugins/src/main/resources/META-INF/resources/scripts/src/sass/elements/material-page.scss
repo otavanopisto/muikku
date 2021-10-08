@@ -595,10 +595,12 @@
 
   &.correct-answer {
     border: 2px solid $color-correct-answer;
+    background: $color-default;
   }
 
   &.incorrect-answer {
     border: 2px solid $color-incorrect-answer;
+    background: $color-default;
   }
 }
 
