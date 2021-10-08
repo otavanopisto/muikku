@@ -143,7 +143,8 @@ export default class MemoField extends React.Component<
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
       this.state.synced !== nextState.synced ||
-      this.state.syncError !== nextState.syncError
+      this.state.syncError !== nextState.syncError ||
+      nextProps.invisible !== this.props.invisible
     );
   }
   //very simple this one is for only when raw input from the textarea changes
