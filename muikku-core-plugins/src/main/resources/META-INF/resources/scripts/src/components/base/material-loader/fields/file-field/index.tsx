@@ -56,7 +56,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     this.removeFile = this.removeFile.bind(this);
   }
   shouldComponentUpdate(nextProps: FileFieldProps, nextState: FileFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) || nextProps.invisible !== this.props.invisible;
   }
   onFileAdded(file: File, data: any) {
     const newValues = [...this.state.values, {

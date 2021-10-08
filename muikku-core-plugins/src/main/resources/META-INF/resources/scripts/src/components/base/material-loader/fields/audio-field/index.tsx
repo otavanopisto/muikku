@@ -101,7 +101,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     this.processFileAt = this.processFileAt.bind(this);
   }
   shouldComponentUpdate(nextProps: AudioFieldProps, nextState: AudioFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) || nextProps.invisible !== this.props.invisible;
   }
   getSupportsMediaAPI(){
     //dang must be a fast AF browser for this to happen
