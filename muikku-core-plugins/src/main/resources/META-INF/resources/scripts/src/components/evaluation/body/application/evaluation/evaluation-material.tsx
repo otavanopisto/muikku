@@ -31,6 +31,7 @@ export interface EvaluationMaterialProps {
   evaluation: EvaluationState;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   openContent: boolean;
+  onClickOpen?: (id: number) => void;
 }
 
 /**
@@ -103,6 +104,10 @@ export class EvaluationMaterial extends React.Component<
    */
   handleOpenMaterialContent = () => {
     const { openContent } = this.state;
+
+    if (this.props.onClickOpen) {
+      this.props.onClickOpen(this.props.material.id);
+    }
 
     this.setState({ openContent: !openContent });
   };

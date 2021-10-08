@@ -24,6 +24,8 @@ import {
   saveAssignmentEvaluationGradeToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
+import { LocaleListType } from "~/reducers/base/locales";
+import { CKEditorConfig } from "../evaluation"
 
 /**
  * AssignmentEditorProps
@@ -35,6 +37,7 @@ interface AssignmentEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
+  locale: LocaleListType;
   editorLabel?: string;
   modifiers?: string[];
   saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
@@ -349,7 +352,9 @@ class AssignmentEditor extends SessionStateComponent<
             </label>
           )}
 
-          <CKEditor onChange={this.handleCKEditorChange}>
+          <CKEditor
+            onChange={this.handleCKEditorChange}
+            configuration={CKEditorConfig(this.props.locale.current)}>
             {this.state.literalEvaluation}
           </CKEditor>
         </div>
@@ -457,6 +462,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
+    locale: state.locales,
   };
 }
 
