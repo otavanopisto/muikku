@@ -14,6 +14,7 @@ interface EvaluationAssessmentAssignmentProps {
   workspace: WorkspaceType;
   material: MaterialContentNodeType;
   open: boolean;
+  onClickOpen?: (id: number) => void;
 }
 
 /**
@@ -42,6 +43,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           workspace={this.props.workspace}
           material={this.props.material}
           openContent={this.props.open}
+          onClickOpen={this.props.onClickOpen}
         />
       )
     );

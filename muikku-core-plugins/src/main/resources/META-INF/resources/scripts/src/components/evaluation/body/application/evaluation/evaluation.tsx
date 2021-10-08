@@ -49,6 +49,10 @@ interface EvaluationDrawerState {
   openAllMaterialContent: boolean;
   edit?: boolean;
   showContent: boolean;
+  listOfDiaryIds: number[];
+  listOfMaterialIds: number[];
+  diaryFetched: boolean;
+  materialFetched: boolean;
 }
 
 export class Evaluation extends React.Component<
@@ -69,7 +73,53 @@ export class Evaluation extends React.Component<
       showContent: false,
       openAllDiaryEntries: true,
       openAllMaterialContent: false,
+      listOfDiaryIds: [],
+      listOfMaterialIds: [],
+      diaryFetched: false,
+      materialFetched: false,
     };
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   */
+  componentDidUpdate(
+    prevProps: EvaluationDrawerProps,
+    prevState: EvaluationDrawerState
+  ) {
+    if (
+      !this.state.diaryFetched &&
+      this.props.evaluation.evaluationCurrentSelectedRecords &&
+      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
+      this.props.evaluation.evaluationCompositeReplies.state === "READY"
+    ) {
+      const numberList =
+        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+          (item) => item.id
+        );
+
+      this.setState({
+        diaryFetched: true,
+        listOfMaterialIds: numberList,
+      });
+    }
+
+    if (
+      !this.state.diaryFetched &&
+      this.props.evaluation.evaluationDiaryEntries &&
+      this.props.evaluation.evaluationDiaryEntries.data
+    ) {
+      const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
+        (item) => item.id
+      );
+
+      this.setState({
+        diaryFetched: true,
+        listOfDiaryIds: numberList,
+      });
+    }
   }
 
   /**
@@ -232,7 +282,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllDiaryEntriesClick = () => {
     this.setState({
-      openAllDiaryEntries: false,
+      listOfDiaryIds: [],
     });
   };
 
@@ -240,9 +290,18 @@ export class Evaluation extends React.Component<
    * handleOpenAllDiaryEntries
    */
   handleOpenAllDiaryEntriesClick = () => {
-    this.setState({
-      openAllDiaryEntries: true,
-    });
+    if (
+      this.props.evaluation.evaluationDiaryEntries &&
+      this.props.evaluation.evaluationDiaryEntries.data
+    ) {
+      const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
+        (item) => item.id
+      );
+
+      this.setState({
+        listOfDiaryIds: numberList,
+      });
+    }
   };
 
   /**
@@ -250,7 +309,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllMaterialContentClick = () => {
     this.setState({
-      openAllMaterialContent: false,
+      listOfMaterialIds: [],
     });
   };
 
@@ -258,8 +317,58 @@ export class Evaluation extends React.Component<
    * handleOpenAllMaterialContentClick
    */
   handleOpenAllMaterialContentClick = () => {
+    if (
+      this.props.evaluation.evaluationCurrentSelectedRecords &&
+      this.props.evaluation.evaluationCurrentSelectedRecords.data
+    ) {
+      const numberList =
+        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+          (item) => item.id
+        );
+
+      this.setState({
+        listOfMaterialIds: numberList,
+      });
+    }
+  };
+
+  /**
+   * handleOpenDiaryEntryClick
+   * @param id
+   */
+  handleOpenDiaryEntryClick = (id: number) => {
+    let updatedList = [...this.state.listOfDiaryIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
     this.setState({
-      openAllMaterialContent: true,
+      listOfDiaryIds: updatedList,
+    });
+  };
+
+  /**
+   * handleOpenDiaryEntryClick
+   * @param id
+   */
+  handleOpenMaterialClick = (id: number) => {
+    let updatedList = [...this.state.listOfMaterialIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
+    this.setState({
+      listOfMaterialIds: updatedList,
     });
   };
 
@@ -274,9 +383,16 @@ export class Evaluation extends React.Component<
       this.props.evaluation.evaluationDiaryEntries.data &&
       this.props.evaluation.evaluationDiaryEntries.data.length > 0 ? (
         this.props.evaluation.evaluationDiaryEntries.data.map((item) => {
-          const isOpen = this.state.openAllDiaryEntries;
+          const isOpen = this.state.listOfDiaryIds.includes(item.id);
 
-          return <EvaluationDiaryEvent key={item.id} open={isOpen} {...item} />;
+          return (
+            <EvaluationDiaryEvent
+              key={item.id}
+              open={isOpen}
+              {...item}
+              onClickOpen={this.handleOpenDiaryEntryClick}
+            />
+          );
         })
       ) : (
         <div className="empty">
@@ -361,7 +477,7 @@ export class Evaluation extends React.Component<
         .length > 0 ? (
         this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
           (item, i) => {
-            const open = this.state.openAllMaterialContent;
+            const open = this.state.listOfMaterialIds.includes(item.id);
 
             return (
               <EvaluationAssessmentAssignment
@@ -373,6 +489,7 @@ export class Evaluation extends React.Component<
                       .workspaceEntityId
                 )}
                 open={open}
+                onClickOpen={this.handleOpenMaterialClick}
                 material={item}
               />
             );

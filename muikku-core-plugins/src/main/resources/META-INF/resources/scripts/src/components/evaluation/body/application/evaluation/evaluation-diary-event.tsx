@@ -8,6 +8,7 @@ import "~/sass/elements/rich-text.scss";
  */
 interface EvaluationDiaryEventProps extends WorkspaceJournalType {
   open: boolean;
+  onClickOpen?: (diaryId: number) => void;
 }
 
 /**
@@ -18,10 +19,11 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
   content,
   created,
   open,
+  onClickOpen,
+  id,
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
-  /* const [initialRender, setInitialRender] = React.useState(false);
-   */
+
   React.useEffect(() => {
     const openAsHeight = open ? "auto" : 0;
     if (openAsHeight !== height) {
@@ -44,6 +46,9 @@ const EvaluationDiaryEvent: React.FC<EvaluationDiaryEventProps> = ({
    * handleOpenContentClick
    */
   const handleOpenContentClick = () => {
+    if (onClickOpen) {
+      onClickOpen(id);
+    }
     setHeight(height === 0 ? "auto" : 0);
   };
 
