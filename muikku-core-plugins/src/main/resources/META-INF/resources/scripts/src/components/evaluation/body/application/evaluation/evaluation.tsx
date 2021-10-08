@@ -52,6 +52,88 @@ interface EvaluationDrawerState {
   showContent: boolean;
 }
 
+export const CKEditorConfig = (
+  locale: string,
+) => ({
+  linkShowTargetTab: true,
+  forcePasteAsPlainText: true,
+  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
+  entities: false,
+  entities_latin: false,
+  entities_greek: false,
+  language: locale,
+  format_tags: "p;h3;h4",
+  height: 400,
+  mathJaxLib:
+    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [
+    {
+      name: "clipboard",
+      items: [
+        "Cut",
+        "Copy",
+        "Paste",
+        "PasteText",
+        "PasteFromWord",
+        "-",
+        "Undo",
+        "Redo",
+      ],
+    },
+    {
+      name: "basicstyles",
+      items: [
+        "Bold",
+        "Italic",
+        "Underline",
+        "Strike",
+        "Subscript",
+        "Superscript",
+        "-",
+        "RemoveFormat",
+      ],
+    },
+    "/",
+    {
+      name: "insert",
+      items: [
+        "Image",
+        "Audio",
+        "oembed",
+        "Muikku-mathjax",
+        "Table",
+        "SpecialChar",
+      ],
+    },
+    { name: "links", items: ["Link", "Unlink"] },
+    { name: "colors", items: ["TextColor", "BGColor"] },
+    "/",
+    {
+      name: "paragraph",
+      items: [
+        "NumberedList",
+        "BulletedList",
+        "-",
+        "Outdent",
+        "Indent",
+        "-",
+        "JustifyLeft",
+        "JustifyCenter",
+        "JustifyRight",
+        "JustifyBlock",
+        "-",
+        "BidiLtr",
+        "BidiRtl",
+      ],
+    },
+    { name: "tools", items: ["Maximize"] },
+  ],
+  removePlugins: "image",
+  resize_enabled: true,
+  extraPlugins: "divarea,image2,muikku-mathjax",
+});
+
 export class Evaluation extends React.Component<
   EvaluationDrawerProps,
   EvaluationDrawerState

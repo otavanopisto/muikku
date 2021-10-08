@@ -594,13 +594,13 @@
   padding: 0 6px;
 
   &.correct-answer {
-    border: 2px solid $color-correct-answer;
     background: $color-default;
+    border: 2px solid $color-correct-answer;
   }
 
   &.incorrect-answer {
-    border: 2px solid $color-incorrect-answer;
     background: $color-default;
+    border: 2px solid $color-incorrect-answer;
   }
 }
 
