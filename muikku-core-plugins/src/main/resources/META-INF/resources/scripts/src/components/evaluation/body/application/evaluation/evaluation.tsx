@@ -68,7 +68,7 @@ export class Evaluation extends React.Component<
       showWorkspaceSupplemenationDrawer: false,
       showContent: false,
       openAllDiaryEntries: true,
-      openAllMaterialContent: true,
+      openAllMaterialContent: false,
     };
   }
 
