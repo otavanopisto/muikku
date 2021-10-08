@@ -74,8 +74,6 @@ export const CKEditorConfig = (
         "Cut",
         "Copy",
         "Paste",
-        "PasteText",
-        "PasteFromWord",
         "-",
         "Undo",
         "Redo",
