@@ -1449,6 +1449,7 @@ const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
               return <MaterialContentNodeType>Object.assign(material, {
                 evaluation: evaluations[index],
                 assignment: assignments[index],
+                path: assignments[index].path,
               });
             });
           })(),
