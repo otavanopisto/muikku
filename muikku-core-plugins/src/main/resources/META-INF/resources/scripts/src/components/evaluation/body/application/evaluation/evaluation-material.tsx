@@ -343,8 +343,6 @@ export class EvaluationMaterial extends React.Component<
 
     const invisible = contentOpen === 0;
 
-    console.log(this.props.material.path);
-
     return (
       <>
         <div
