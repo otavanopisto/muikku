@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,6 +8,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
@@ -53,6 +56,9 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class EvaluationController {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   @BaseUrl
   private String baseUrl;
@@ -137,6 +143,20 @@ public class EvaluationController {
 
   public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
     if (evaluation != null) {
+      List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = listEvaluationAudioClips(evaluation);
+      for (WorkspaceMaterialEvaluationAudioClip evaluationAudioClip : evaluationAudioClips) {
+        if (file.isFileInFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId())) {
+          try {
+            file.removeFileFromFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId());
+          } catch (IOException e) {
+            logger.log(Level.SEVERE, String.format("Could not remove clip %s", evaluationAudioClip.getClipId()), e);
+          }
+        }
+        
+        // Remove db entry
+        workspaceMaterialEvaluationAudioClipDAO.delete(evaluationAudioClip);
+      }
+      
       workspaceMaterialEvaluationDAO.delete(evaluation);
     }
   }
