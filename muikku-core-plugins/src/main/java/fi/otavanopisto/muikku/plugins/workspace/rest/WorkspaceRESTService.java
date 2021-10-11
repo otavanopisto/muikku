@@ -1802,7 +1802,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/compositeReply")
+  @Path("/workspaces/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/compositeReply")
   @RESTPermit(handling = Handling.INLINE)
   public Response getWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
 
