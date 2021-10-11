@@ -25,7 +25,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
-import { CKEditorConfig } from "../evaluation"
+import { CKEditorConfig } from "../evaluation";
 
 /**
  * AssignmentEditorProps
@@ -189,6 +189,7 @@ class AssignmentEditor extends SessionStateComponent<
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
         },
+        materialId: this.props.materialAssignment.materialId,
         onSuccess: () => {
           this.setStateAndClear(
             {
@@ -219,6 +220,7 @@ class AssignmentEditor extends SessionStateComponent<
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
         },
+        materialId: this.props.materialAssignment.materialId,
         onSuccess: () => {
           this.setStateAndClear(
             {
@@ -354,7 +356,8 @@ class AssignmentEditor extends SessionStateComponent<
 
           <CKEditor
             onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}>
+            configuration={CKEditorConfig(this.props.locale.current)}
+          >
             {this.state.literalEvaluation}
           </CKEditor>
         </div>
