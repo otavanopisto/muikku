@@ -594,12 +594,10 @@
   padding: 0 6px;
 
   &.correct-answer {
-    background: $color-default;
     border: 2px solid $color-correct-answer;
   }
 
   &.incorrect-answer {
-    background: $color-default;
     border: 2px solid $color-incorrect-answer;
   }
 }
@@ -873,6 +871,12 @@
     line-height: 1.75rem;
     min-height: 2.75rem;
   }
+}
+
+.material-page__ckeditor-replacement--evaluation { // This is for ckeditor replacement div in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
 }
 
 // File field
