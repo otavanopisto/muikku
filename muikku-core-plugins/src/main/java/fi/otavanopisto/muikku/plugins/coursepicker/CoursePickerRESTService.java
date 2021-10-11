@@ -264,8 +264,13 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
     if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
-        return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_UNPUBLISHED_WORKSPACES)) {
+        if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES)) {
+          // List only from workspaces the user is member of
+          workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity());
+        } else {
+          return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
+        }
       }
     }
     

@@ -77,7 +77,6 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     myWorkspaces = true;
   // When base filter is 'Unpublished'
   } else if (actualFilters.baseFilter === "UNPUBLISHED") {
-    myWorkspaces = true;
     publicity = "ONLY_UNPUBLISHED";
   // When state filter has unpublished selected (this is possible in organization management)
   } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {

@@ -192,7 +192,7 @@ public class OrganizationEntityController {
         boolean myOrganization = loggedUserOrganizationIdentifiers.contains(organization.schoolDataIdentifier());
         
         boolean canListTemplates = myOrganization && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES);
-        boolean canListUnpublished = myOrganization && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES);
+        boolean canListUnpublished = myOrganization && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES);
         
         return new OrganizationAccess(organization.schoolDataIdentifier(), canListTemplates, canListUnpublished);
       })
@@ -216,21 +216,16 @@ public class OrganizationEntityController {
       PublicityRestriction organizationPublicityRestriction = publicityRestriction;
       TemplateRestriction organizationTemplateRestriction = templateRestriction;
       
-      /*
-       * for admins, allow w/e is selected for all organizations
-       * everyone else, allow w/e is selected for own organization, but not unpublished for other orgs
-       */
-      
       if (!accessibleOrganization.isListUnpublished()) {
         switch (publicityRestriction) {
           case LIST_ALL:
+            // Demote to only published when there's no access to unpublished
             organizationPublicityRestriction = PublicityRestriction.ONLY_PUBLISHED;
           break;
           case ONLY_UNPUBLISHED:
-            organizationPublicityRestriction = PublicityRestriction.NONE;
-          break;
+            // Drop from search, as no result can hit this when there's no access to unpublished
+            continue;
           case ONLY_PUBLISHED:
-          case NONE:
           break;
         }
       }
@@ -238,13 +233,13 @@ public class OrganizationEntityController {
       if (!accessibleOrganization.isListTemplates()) {
         switch (templateRestriction) {
           case LIST_ALL:
+            // Demote to only workspaces when there's no access to templates
             organizationTemplateRestriction = TemplateRestriction.ONLY_WORKSPACES;
           break;
           case ONLY_TEMPLATES:
-            organizationTemplateRestriction = TemplateRestriction.NONE;
-          break;
+            // Drop from search, as no result can hit this when there's no access to templates
+            continue;
           case ONLY_WORKSPACES:
-          case NONE:
           break;
         }
       }

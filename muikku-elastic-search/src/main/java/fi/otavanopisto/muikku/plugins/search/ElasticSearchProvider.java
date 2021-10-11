@@ -69,7 +69,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
-import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @ApplicationScoped
@@ -495,7 +494,7 @@ public class ElasticSearchProvider implements SearchProvider {
       int start, 
       int maxResults, 
       List<Sort> sorts) {
-    if (identifiers != null && identifiers.isEmpty()) {
+    if ((identifiers != null && identifiers.isEmpty()) || CollectionUtils.isEmpty(organizationRestrictions)) {
       return new SearchResult(0, new ArrayList<Map<String,Object>>(), 0);
     }
     
@@ -560,11 +559,10 @@ public class ElasticSearchProvider implements SearchProvider {
       
       for (OrganizationRestriction organizationRestriction : organizationRestrictions) {
         SchoolDataIdentifier organizationIdentifier = organizationRestriction.getOrganizationIdentifier();
-        PublicityRestriction organizationPublicityRestriction = organizationRestriction.getPublicityRestriction();
 
         BoolQueryBuilder organizationRestrictionQuery = boolQuery().must(termQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
         
-        switch (organizationPublicityRestriction) {
+        switch (organizationRestriction.getPublicityRestriction()) {
           case ONLY_PUBLISHED:
             organizationRestrictionQuery = organizationRestrictionQuery.must(termQuery("published", Boolean.TRUE));
           break;

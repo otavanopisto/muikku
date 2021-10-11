@@ -69,14 +69,12 @@ public interface WorkspaceSearchBuilder {
   WorkspaceSearchBuilder setSorts(List<Sort> sorts);
 
   public enum PublicityRestriction {
-    NONE,
     LIST_ALL,
     ONLY_PUBLISHED,
     ONLY_UNPUBLISHED
   }
 
   public enum TemplateRestriction {
-    NONE,
     LIST_ALL,
     ONLY_TEMPLATES,
     ONLY_WORKSPACES

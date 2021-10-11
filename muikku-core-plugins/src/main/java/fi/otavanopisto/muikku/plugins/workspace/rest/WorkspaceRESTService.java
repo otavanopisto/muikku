@@ -449,8 +449,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
     if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
-        return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_UNPUBLISHED_WORKSPACES)) {
+        if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES)) {
+          // List only from workspaces the user is member of
+          workspaceIdentifierFilters = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream()
+              .map(WorkspaceEntity::getIdentifier)
+              .collect(Collectors.toList());
+        } else {
+          return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
+        }
       }
     }
     
@@ -482,7 +489,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
       }
       else {
-        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_UNPUBLISHED_WORKSPACES)) {
           return Response.status(Status.FORBIDDEN).build();
         }
         workspaceEntities = publicityRestriction != PublicityRestriction.ONLY_PUBLISHED ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
