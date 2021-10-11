@@ -17,8 +17,14 @@ import {
   BilledPriceRequest,
   EvaluationData,
 } from "../../../@types/evaluation";
-import { MaterialCompositeRepliesType } from "../../../reducers/workspaces/index";
-import { WorkspaceUserEntity } from "../../../@types/evaluation";
+import {
+  MaterialCompositeRepliesType,
+  MaterialContentNodeListType,
+} from "../../../reducers/workspaces/index";
+import {
+  WorkspaceUserEntity,
+  AssignmentEvaluationSaveReturn,
+} from "../../../@types/evaluation";
 import {
   WorkspaceEvaluationSaveRequest,
   WorkspaceSupplementationSaveRequest,
@@ -74,6 +80,12 @@ export interface UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE
   extends SpecificActionType<
     "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE",
     EvaluationStateType
+  > {}
+
+export interface UPDATE_CURRENT_SELECTED_EVALUATION_DATA_ON_SAVE
+  extends SpecificActionType<
+    "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_ON_SAVE",
+    AssignmentEvaluationSaveReturn
   > {}
 
 export interface UPDATE_EVALUATION_CURRENT_EVENTS_STATE
@@ -221,6 +233,13 @@ export interface SetCurrentStudentEvaluationData {
   (data: { userEntityId: number; workspaceId: number }): AnyActionType;
 }
 
+export interface UpdateCurrentStudentEvaluationData {
+  (data: {
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn;
+    materialId: number;
+  }): AnyActionType;
+}
+
 export interface LoadEvaluationAssessmentEvent {
   (data: {
     assessment: AssessmentRequest;
@@ -297,6 +316,7 @@ export interface SaveEvaluationAssignmentGradeEvaluation {
     userEntityId: number;
     workspaceMaterialId: number;
     dataToSave: AssignmentEvaluationGradeRequest;
+    materialId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -308,6 +328,7 @@ export interface SaveEvaluationAssignmentSupplementation {
     userEntityId: number;
     workspaceMaterialId: number;
     dataToSave: AssignmentEvaluationSupplementationRequest;
+    materialId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -1467,6 +1488,65 @@ const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
   };
 
 /**
+ * updateCurrentStudentEvaluationData
+ */
+const updateCurrentStudentEvaluationData: UpdateCurrentStudentEvaluationData =
+  function updateCurrentStudentEvaluationData(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      /**
+       * Get initial values that needs to be updated
+       */
+      let updatedMaterials: MaterialContentNodeListType =
+        getState().evaluations.evaluationCurrentSelectedRecords.data.materials;
+      /**
+       * Finding index of material that needs data to be updated
+       */
+      const index = updatedMaterials.findIndex(
+        (item) => item.id === data.materialId
+      );
+
+      /**
+       * gradeId and source are included in same string, so splittin is required
+       */
+      const gradeIdentifierSplitted =
+        data.assigmentSaveReturn.gradeIdentifier.split("-");
+      /**
+       * gradeScaleId and source are included in same string, so splittin is required
+       */
+      const gradeScaleIdentifierSplitted =
+        data.assigmentSaveReturn.gradingScaleIdentifier.split("-");
+
+      const gradeId = gradeIdentifierSplitted[1];
+      const gradeDataSource = gradeIdentifierSplitted[0];
+
+      const gradeScaleId = gradeScaleIdentifierSplitted[1];
+      const gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
+
+      /**
+       * Updates founded evaluation items with new values
+       */
+      updatedMaterials[index].evaluation = {
+        ...updatedMaterials[index].evaluation,
+        evaluated: data.assigmentSaveReturn.assessmentDate,
+        verbalAssessment: data.assigmentSaveReturn.verbalAssessment,
+        gradeIdentifier: gradeId,
+        gradeSchoolDataSource: gradeDataSource,
+        gradingScaleIdentifier: gradeScaleId,
+        gradingScaleSchoolDataSource: gradeScaleDataSource,
+        passed: data.assigmentSaveReturn.passing,
+      };
+
+      dispatch({
+        type: "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
+        payload: { materials: updatedMaterials },
+      });
+    };
+  };
+
+/**
  * setSelectedWorkspaceId
  * @param data
  */
@@ -1695,6 +1775,7 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
     userEntityId,
     dataToSave,
     onSuccess,
+    materialId,
   }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
@@ -1720,16 +1801,25 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
             }
           ),
           "callback"
-        )().then(async () => {
+        )().then(async (data: AssignmentEvaluationSaveReturn) => {
           await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
+          /**
+           * Here we update redux state and specifically that material node evaluation that just got updated
+           * with new valeus from server. This is for permformance reasons. So no need to load materials again with
+           * new values
+           */
           dispatch(
-            setCurrentStudentEvaluationData({
-              userEntityId,
-              workspaceId: workspaceEntityId,
+            updateCurrentStudentEvaluationData({
+              assigmentSaveReturn: data,
+              materialId: materialId,
             })
           );
 
+          /**
+           * Compositereplies on the otherhand needs to be updated by loading new values from server, just for
+           * so data is surely right and updated correctly
+           */
           dispatch(
             loadEvaluationCompositeRepliesFromServer({
               userEntityId,
@@ -1978,6 +2068,7 @@ export {
   updateWorkspaceEvaluationToServer,
   updateBillingToServer,
   updateWorkspaceSupplementationToServer,
+  updateCurrentStudentEvaluationData,
   removeWorkspaceEventFromServer,
   setSelectedWorkspaceId,
   setEvaluationFilters,

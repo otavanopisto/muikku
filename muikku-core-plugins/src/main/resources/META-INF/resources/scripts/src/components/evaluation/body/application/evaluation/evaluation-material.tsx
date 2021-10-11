@@ -128,18 +128,18 @@ export class EvaluationMaterial extends React.Component<
    */
   handleOpenSlideDrawer =
     (assignmentId: number) =>
-      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        if (this.props.evaluation.openedAssignmentEvaluationId !== assignmentId) {
-          this.props.updateOpenedAssignmentEvaluation({ assignmentId });
-        }
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      if (this.props.evaluation.openedAssignmentEvaluationId !== assignmentId) {
+        this.props.updateOpenedAssignmentEvaluation({ assignmentId });
+      }
 
-        this.setState(
-          {
-            openDrawer: true,
-          },
-          () => this.handleExecuteScrollToElement()
-        );
-      };
+      this.setState(
+        {
+          openDrawer: true,
+        },
+        () => this.handleExecuteScrollToElement()
+      );
+    };
 
   /**
    * handleExecuteScrollToElement
@@ -235,8 +235,8 @@ export class EvaluationMaterial extends React.Component<
       return (
         <div className="evaluation-modal__item-meta">
           {hasSubmitted === null ||
-            (hasSubmitted !== null &&
-              compositeRepliesInState.state === "WITHDRAWN") ? (
+          (hasSubmitted !== null &&
+            compositeRepliesInState.state === "WITHDRAWN") ? (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-data">
                 {this.props.i18n.text.get(
@@ -332,7 +332,7 @@ export class EvaluationMaterial extends React.Component<
       this.state.openContent ||
       (this.state.openDrawer &&
         this.props.evaluation.openedAssignmentEvaluationId ===
-        this.props.material.assignment.id)
+          this.props.material.assignment.id)
     ) {
       /**
        * Open invidual material content or if hitting evaluation button then that corresponding
@@ -341,16 +341,15 @@ export class EvaluationMaterial extends React.Component<
       contentOpen = "auto";
     }
 
-    const invisible = contentOpen === 0;
-
-    console.log(this.props.material.path);
+    /*   console.log(this.props.material.path); */
 
     return (
       <>
         <div
           key={this.props.material.id}
-          className={`evaluation-modal__item ${this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"
-            }`}
+          className={`evaluation-modal__item ${
+            this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"
+          }`}
         >
           <MaterialLoader
             material={this.props.material}
@@ -361,7 +360,6 @@ export class EvaluationMaterial extends React.Component<
             modifiers="evaluation-material-page"
             usedAs={"evaluationTool"}
             compositeReplies={compositeReply}
-            invisible={invisible}
             userEntityId={
               this.props.evaluation.evaluationSelectedAssessmentId.userEntityId
             }
@@ -380,7 +378,7 @@ export class EvaluationMaterial extends React.Component<
                 (this.props.material.evaluation ||
                   (props.compositeReplies.evaluationInfo &&
                     props.compositeReplies.evaluationInfo.type ===
-                    "INCOMPLETE"))
+                      "INCOMPLETE"))
               ) {
                 if (
                   props.compositeReplies.evaluationInfo &&
@@ -403,7 +401,7 @@ export class EvaluationMaterial extends React.Component<
               if (
                 this.state.openDrawer &&
                 this.props.evaluation.openedAssignmentEvaluationId ===
-                props.material.assignment.id
+                  props.material.assignment.id
               ) {
                 /**
                  * Assigning class mod to evaluation material title if corresponding dialog is open
@@ -421,10 +419,11 @@ export class EvaluationMaterial extends React.Component<
                       onClick={this.handleOpenMaterialContent}
                       className={`evaluation-modal__item-header-title
                         evaluation-modal__item-header-title--${materialTypeClass}
-                        ${evaluationTitleClassMod
-                          ? "evaluation-modal__item-header-title--" +
+                        ${
                           evaluationTitleClassMod
-                          : ""
+                            ? "evaluation-modal__item-header-title--" +
+                              evaluationTitleClassMod
+                            : ""
                         }`}
                     >
                       {this.props.material.assignment.title}
@@ -436,10 +435,10 @@ export class EvaluationMaterial extends React.Component<
                     </div>
                     <div className="evaluation-modal__item-functions">
                       {props.material.assignment.assignmentType ===
-                        "EVALUATED" ? (
+                      "EVALUATED" ? (
                         state.compositeRepliesInState.state !== "UNANSWERED" &&
-                          state.compositeRepliesInState.state !== "WITHDRAWN" &&
-                          state.compositeRepliesInState.submitted ? (
+                        state.compositeRepliesInState.state !== "WITHDRAWN" &&
+                        state.compositeRepliesInState.submitted ? (
                           <ButtonPill
                             aria-label={this.props.i18n.text.get(
                               "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
@@ -470,7 +469,7 @@ export class EvaluationMaterial extends React.Component<
                       show={
                         this.state.openDrawer &&
                         this.props.evaluation.openedAssignmentEvaluationId ===
-                        props.material.assignment.id
+                          props.material.assignment.id
                       }
                       onClose={this.handleCloseSlideDrawer}
                     >
