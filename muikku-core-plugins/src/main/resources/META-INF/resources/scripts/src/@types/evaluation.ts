@@ -225,6 +225,16 @@ export interface WorkspaceEvaluationSaveReturn {
   passing: boolean;
 }
 
+export interface AssignmentEvaluationSaveReturn {
+  assessmentDate: string;
+  assessorIdentifier: string;
+  gradeIdentifier: string;
+  gradingScaleIdentifier: string;
+  identifier: string;
+  passing: boolean;
+  verbalAssessment: string;
+}
+
 /**
  * WorkspaceSupplementationSaveRequest
  */

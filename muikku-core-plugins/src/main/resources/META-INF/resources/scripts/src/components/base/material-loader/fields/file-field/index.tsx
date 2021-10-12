@@ -5,6 +5,7 @@ import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
+import { UsedAs } from "~/@types/shared";
 
 interface FileFieldProps {
   type: string,
@@ -13,7 +14,7 @@ interface FileFieldProps {
   },
   i18n: i18nType,
   status: StatusType,
-
+  usedAs: UsedAs;
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
@@ -55,7 +56,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     this.removeFile = this.removeFile.bind(this);
   }
   shouldComponentUpdate(nextProps: FileFieldProps, nextState: FileFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) || nextProps.invisible !== this.props.invisible;
   }
   onFileAdded(file: File, data: any) {
     const newValues = [...this.state.values, {
@@ -127,6 +128,8 @@ export default class FileField extends React.Component<FileFieldProps, FileField
          deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
          downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}
+         fileDownloadAllUrlGenerator={(f) => '/rest/workspace/allfileanswers/' + f[0].fileId + '?archiveName=' + this.props.i18n.text.get('plugin.workspace.fileField.zipFileName')}
+         fileDownloadAllLabel={this.props.i18n.text.get("plugin.workspace.fileField.downloadAllLink")}
          deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="taskfield"
          uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}
          invisible={this.props.invisible} notificationOfSuccessText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.uploadSuccessful")} displayNotificationOnSuccess/>

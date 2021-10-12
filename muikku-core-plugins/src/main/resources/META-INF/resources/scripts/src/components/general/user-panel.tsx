@@ -101,7 +101,7 @@ export default class UserPanel extends React.Component<
                         <span className="icon-pencil"></span>
                       </StudentDialog>
                     </div>
-                  ) : data.role === "ADMINISTRATOR" ? (
+                  ) : data.role === "ADMINISTRATOR" || data.role === "STUDY_PROGRAMME_LEADER" ? (
                     <div title={data.role}>
                       <span className="state-DISABLED icon-pencil"></span>
                     </div>
