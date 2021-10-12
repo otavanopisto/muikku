@@ -240,22 +240,15 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
    */
   render() {
 
-    const downloadAll = this.props.fileDownloadAllUrlGenerator && this.props.files && this.props.files.length ? (
-      <span className="file-uploader__item">
-        {this.props.showURL ? <span className="file-uploader__item-title-container">
-          <span className="file-uploader__item-title">{this.props.fileDownloadAllLabel}</span>
-          <span className="file-uploader__item-url">{this.props.fileDownloadAllUrlGenerator(this.props.files)}</span></span>
-          :
-          <span className="file-uploader__item-title-container">
-            <span className="file-uploader__item-title">{this.props.fileDownloadAllLabel}</span>
-          </span>
-        }
+    // Download All is not rendered with material page's attachments list nor in Guider
+    const downloadAll = this.props.fileDownloadAllUrlGenerator && this.props.files && this.props.files.length > 1 ? (
+      <span className="file-uploader__item file-uploader__item--download-all">
         <Link
           href={this.props.fileDownloadAllUrlGenerator(this.props.files)}
           openInNewTab={this.props.fileDownloadAllLabel}
-          className="file-uploader__item-download-icon icon-download"
-          title={this.props.downloadFileText ? this.props.downloadFileText : ""}
-        />
+          className="link link--download-all"
+          title={this.props.fileDownloadAllLabel ? this.props.fileDownloadAllLabel : ""}
+        >{this.props.fileDownloadAllLabel}</Link>
       </span>
     ) : null;
 

@@ -103,7 +103,7 @@
   font-size: 1.375rem;
   justify-content: space-between;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     align-items: center;
     flex-flow: row nowrap;
   }
@@ -117,7 +117,7 @@
   flex-shrink: 0;
   padding: 5px 0;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     padding: 0 10px;
   }
 }
