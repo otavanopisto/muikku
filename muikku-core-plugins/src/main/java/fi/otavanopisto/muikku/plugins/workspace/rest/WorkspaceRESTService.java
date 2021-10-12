@@ -1840,7 +1840,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         answers.add(answer);
       }
 
-      WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), answers);
+      WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), reply.getSubmitted(), answers);
 
       // Evaluation info for evaluable materials
 
@@ -1891,7 +1891,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           answers.add(answer);
         }
         
-        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), answers);
+        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), reply.getSubmitted(), answers);
         
         // Evaluation info for evaluable materials
         
