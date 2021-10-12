@@ -15,6 +15,7 @@ interface EvaluationAssessmentAssignmentProps {
   material: MaterialContentNodeType;
   open: boolean;
   onClickOpen?: (id: number) => void;
+  onSave?: (materialId: number) => void;
 }
 
 /**
@@ -44,6 +45,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           material={this.props.material}
           openContent={this.props.open}
           onClickOpen={this.props.onClickOpen}
+          onSave={this.props.onSave}
         />
       )
     );

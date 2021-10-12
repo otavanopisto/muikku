@@ -1557,6 +1557,7 @@ const updateCurrentStudentEvaluationData: UpdateCurrentStudentEvaluationData =
 
 /**
  * updateCurrentStudentEvaluationData
+ * Updates one compositereply in compositeReplies list with new coming values from backend
  */
 const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
   function updateCurrentStudentEvaluationData(data) {
@@ -1564,44 +1565,56 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      dispatch({
-        type: "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE",
-        payload: <EvaluationStateType>"LOADING",
-      });
+      const state = getState();
+
+      /**
+       * There is reason why update composite replies state is not changed here. Because
+       * we don't wan't to change ui to loading states that would re render materials. It should still have
+       * some indicator maybe specificilly to that component which compositereply is updating so there is
+       * indicating that tell if something is coming from backend. But currently this is how its working now
+       */
 
       /**
        * Get initial values that needs to be updated
        */
       let updatedCompositeReplies: MaterialCompositeRepliesType[] =
-        getState().evaluations.evaluationCompositeReplies.data;
+        state.evaluations.evaluationCompositeReplies.data;
 
-      const updatedCompositeReply = (await promisify(
-        mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
-          data.workspaceId,
-          data.userEntityId,
-          data.workspaceMaterialId
-        ),
-        "callback"
-      )()) as MaterialCompositeRepliesType;
+      try {
+        const updatedCompositeReply = (await promisify(
+          mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
+            data.workspaceId,
+            data.userEntityId,
+            data.workspaceMaterialId
+          ),
+          "callback"
+        )()) as MaterialCompositeRepliesType;
 
-      const index = updatedCompositeReplies.findIndex(
-        (item) =>
-          item.workspaceMaterialId === updatedCompositeReply.workspaceMaterialId
-      );
+        const index = updatedCompositeReplies.findIndex(
+          (item) =>
+            item.workspaceMaterialId ===
+            updatedCompositeReply.workspaceMaterialId
+        );
 
-      updatedCompositeReplies[index] = {
-        ...updatedCompositeReply,
-      };
+        updatedCompositeReplies[index] = {
+          ...updatedCompositeReply,
+        };
 
-      dispatch({
-        type: "SET_EVALUATION_COMPOSITE_REPLIES",
-        payload: updatedCompositeReplies,
-      });
-
-      dispatch({
-        type: "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE",
-        payload: <EvaluationStateType>"READY",
-      });
+        dispatch({
+          type: "SET_EVALUATION_COMPOSITE_REPLIES",
+          payload: updatedCompositeReplies,
+        });
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            state.i18n.text.get(
+              "plugin.evaluation.notifications.assignmentdata.error",
+              err.message
+            ),
+            "error"
+          )
+        );
+      }
     };
   };
 
@@ -1874,24 +1887,15 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
               materialId: materialId,
             })
           );
-
+          /**
+           * Compositereplies on the otherhand needs to be updated by loading new values from server, just for
+           * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
+           */
           dispatch(
             updateCurrentStudentCompositeRepliesData({
               workspaceId: state.evaluations.selectedWorkspaceId,
               userEntityId: userEntityId,
               workspaceMaterialId: workspaceMaterialId,
-            })
-          );
-
-          /**
-           * Compositereplies on the otherhand needs to be updated by loading new values from server, just for
-           * so data is surely right and updated correctly
-           */
-          dispatch(
-            loadEvaluationCompositeRepliesFromServer({
-              userEntityId,
-              onSuccess,
-              workspaceId: workspaceEntityId,
             })
           );
         });
@@ -1951,11 +1955,15 @@ const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentS
         )().then(async () => {
           await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
+          /**
+           * Compositereplies needs to be updated by loading new values from server, just for
+           * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
+           */
           dispatch(
-            loadEvaluationCompositeRepliesFromServer({
-              userEntityId,
-              onSuccess,
-              workspaceId: workspaceEntityId,
+            updateCurrentStudentCompositeRepliesData({
+              workspaceId: state.evaluations.selectedWorkspaceId,
+              userEntityId: userEntityId,
+              workspaceMaterialId: workspaceMaterialId,
             })
           );
         });

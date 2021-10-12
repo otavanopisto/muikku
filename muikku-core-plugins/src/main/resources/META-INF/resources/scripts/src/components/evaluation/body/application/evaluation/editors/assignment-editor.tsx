@@ -43,6 +43,7 @@ interface AssignmentEditorProps {
   saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
   saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation;
   onClose?: () => void;
+  onAssigmentSave?: (materialId: number) => void;
 }
 
 /**
@@ -173,8 +174,13 @@ class AssignmentEditor extends SessionStateComponent<
 
     if (this.state.assignmentEvaluationType === "GRADED") {
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
+      if (this.props.onAssigmentSave) {
+        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+      }
 
-      this.props.onClose();
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
       this.props.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
@@ -203,7 +209,13 @@ class AssignmentEditor extends SessionStateComponent<
         onFail: () => this.props.onClose(),
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
-      this.props.onClose();
+      if (this.props.onAssigmentSave) {
+        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+      }
+
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
 
       this.props.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId:

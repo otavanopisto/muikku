@@ -32,6 +32,7 @@ export interface EvaluationMaterialProps {
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   openContent: boolean;
   onClickOpen?: (id: number) => void;
+  onSave?: (materialId: number) => void;
 }
 
 /**
@@ -146,6 +147,11 @@ export class EvaluationMaterial extends React.Component<
    */
   handleExecuteScrollToElement = () => {
     window.dispatchEvent(new Event("resize"));
+    if (this.props.evaluation.openedAssignmentEvaluationId) {
+      setTimeout(() => {
+        this.myRef.scrollIntoView({ behavior: "smooth" });
+      }, 600);
+    }
     this.myRef.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -189,18 +195,16 @@ export class EvaluationMaterial extends React.Component<
    * @returns JSX.Element
    */
   renderAssignmentMeta = (
-    compositeRepliesInState?: MaterialCompositeRepliesType,
     compositeRepliesFromProps?: MaterialCompositeRepliesType
   ) => {
-    if (compositeRepliesInState && compositeRepliesFromProps) {
+    if (compositeRepliesFromProps) {
       const { evaluationInfo } = compositeRepliesFromProps;
 
       /**
        * Checking if assigments is submitted at all.
        * Its date string
        */
-      const hasSubmitted =
-        compositeRepliesInState && compositeRepliesInState.submitted;
+      const hasSubmitted = compositeRepliesFromProps.submitted;
 
       /**
        * Checking if its evaluated with grade
@@ -236,7 +240,7 @@ export class EvaluationMaterial extends React.Component<
         <div className="evaluation-modal__item-meta">
           {hasSubmitted === null ||
           (hasSubmitted !== null &&
-            compositeRepliesInState.state === "WITHDRAWN") ? (
+            compositeRepliesFromProps.state === "WITHDRAWN") ? (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-data">
                 {this.props.i18n.text.get(
@@ -355,7 +359,6 @@ export class EvaluationMaterial extends React.Component<
             material={this.props.material}
             workspace={this.props.workspace}
             readOnly
-            loadCompositeReplies
             answersVisible
             modifiers="evaluation-material-page"
             usedAs={"evaluationTool"}
@@ -428,17 +431,14 @@ export class EvaluationMaterial extends React.Component<
                     >
                       {this.props.material.assignment.title}
 
-                      {this.renderAssignmentMeta(
-                        state.compositeRepliesInState,
-                        props.compositeReplies
-                      )}
+                      {this.renderAssignmentMeta(props.compositeReplies)}
                     </div>
                     <div className="evaluation-modal__item-functions">
                       {props.material.assignment.assignmentType ===
                       "EVALUATED" ? (
-                        state.compositeRepliesInState.state !== "UNANSWERED" &&
-                        state.compositeRepliesInState.state !== "WITHDRAWN" &&
-                        state.compositeRepliesInState.submitted ? (
+                        props.compositeReplies &&
+                        props.compositeReplies.state !== "UNANSWERED" &&
+                        props.compositeReplies.state !== "WITHDRAWN" ? (
                           <ButtonPill
                             aria-label={this.props.i18n.text.get(
                               "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
@@ -451,8 +451,9 @@ export class EvaluationMaterial extends React.Component<
                           />
                         ) : null
                       ) : (
-                        state.compositeRepliesInState &&
-                        state.compositeRepliesInState.submitted && (
+                        props.compositeReplies &&
+                        props.compositeReplies.state === "SUBMITTED" &&
+                        props.compositeReplies.submitted && (
                           <div
                             className="exercise-done-indicator icon-checkmark"
                             title={this.props.i18n.text.get(
@@ -480,6 +481,7 @@ export class EvaluationMaterial extends React.Component<
                         materialEvaluation={props.material.evaluation}
                         materialAssignment={props.material.assignment}
                         compositeReplies={props.compositeReplies}
+                        onAssigmentSave={this.props.onSave}
                         onClose={this.handleCloseSlideDrawer}
                       />
                     </SlideDrawer>

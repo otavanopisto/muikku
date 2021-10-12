@@ -405,6 +405,20 @@ export class Evaluation extends React.Component<
   };
 
   /**
+   * handleCloseSpecificMaterialContent
+   * @param materialId
+   */
+  handleCloseSpecificMaterialContent = (materialId: number) => {
+    const listOfMaterialIds = this.state.listOfMaterialIds.filter(
+      (id) => id !== materialId
+    );
+
+    this.setState({
+      listOfMaterialIds,
+    });
+  };
+
+  /**
    * handleOpenDiaryEntryClick
    * @param id
    */
@@ -563,6 +577,7 @@ export class Evaluation extends React.Component<
                 open={open}
                 onClickOpen={this.handleOpenMaterialClick}
                 material={item}
+                onSave={this.handleCloseSpecificMaterialContent}
               />
             );
           }
