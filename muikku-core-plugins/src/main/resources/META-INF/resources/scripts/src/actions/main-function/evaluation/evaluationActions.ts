@@ -1893,7 +1893,7 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
            */
           dispatch(
             updateCurrentStudentCompositeRepliesData({
-              workspaceId: state.evaluations.selectedWorkspaceId,
+              workspaceId: workspaceEntityId,
               userEntityId: userEntityId,
               workspaceMaterialId: workspaceMaterialId,
             })
@@ -1961,7 +1961,7 @@ const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentS
            */
           dispatch(
             updateCurrentStudentCompositeRepliesData({
-              workspaceId: state.evaluations.selectedWorkspaceId,
+              workspaceId: workspaceEntityId,
               userEntityId: userEntityId,
               workspaceMaterialId: workspaceMaterialId,
             })
