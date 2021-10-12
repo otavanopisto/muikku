@@ -5,6 +5,7 @@ import java.util.Set;
 
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
@@ -33,6 +34,10 @@ public interface WorkspaceSchoolDataBridge {
   public Workspace updateWorkspace(Workspace workspace);
   
   public void removeWorkspace(String identifier);
+  
+  /* Workspace activity */
+  
+  public List<WorkspaceActivity> listWorkspaceActivities(String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits);
   
   /* Workspace Types */
   
