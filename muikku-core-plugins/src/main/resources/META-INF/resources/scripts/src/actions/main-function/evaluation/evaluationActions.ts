@@ -240,6 +240,14 @@ export interface UpdateCurrentStudentEvaluationData {
   }): AnyActionType;
 }
 
+export interface UpdateCurrentStudentEvaluationCompositeRepliesData {
+  (data: {
+    workspaceId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+  }): AnyActionType;
+}
+
 export interface LoadEvaluationAssessmentEvent {
   (data: {
     assessment: AssessmentRequest;
@@ -1548,6 +1556,56 @@ const updateCurrentStudentEvaluationData: UpdateCurrentStudentEvaluationData =
   };
 
 /**
+ * updateCurrentStudentEvaluationData
+ */
+const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
+  function updateCurrentStudentEvaluationData(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => any,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE",
+        payload: <EvaluationStateType>"LOADING",
+      });
+
+      /**
+       * Get initial values that needs to be updated
+       */
+      let updatedCompositeReplies: MaterialCompositeRepliesType[] =
+        getState().evaluations.evaluationCompositeReplies.data;
+
+      const updatedCompositeReply = (await promisify(
+        mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
+          data.workspaceId,
+          data.userEntityId,
+          data.workspaceMaterialId
+        ),
+        "callback"
+      )()) as MaterialCompositeRepliesType;
+
+      const index = updatedCompositeReplies.findIndex(
+        (item) =>
+          item.workspaceMaterialId === updatedCompositeReply.workspaceMaterialId
+      );
+
+      updatedCompositeReplies[index] = {
+        ...updatedCompositeReply,
+      };
+
+      dispatch({
+        type: "SET_EVALUATION_COMPOSITE_REPLIES",
+        payload: updatedCompositeReplies,
+      });
+
+      dispatch({
+        type: "UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE",
+        payload: <EvaluationStateType>"READY",
+      });
+    };
+  };
+
+/**
  * setSelectedWorkspaceId
  * @param data
  */
@@ -1814,6 +1872,14 @@ const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvalua
             updateCurrentStudentEvaluationData({
               assigmentSaveReturn: data,
               materialId: materialId,
+            })
+          );
+
+          dispatch(
+            updateCurrentStudentCompositeRepliesData({
+              workspaceId: state.evaluations.selectedWorkspaceId,
+              userEntityId: userEntityId,
+              workspaceMaterialId: workspaceMaterialId,
             })
           );
 
