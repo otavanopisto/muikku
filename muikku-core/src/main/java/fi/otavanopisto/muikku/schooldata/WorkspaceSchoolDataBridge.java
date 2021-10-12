@@ -35,10 +35,6 @@ public interface WorkspaceSchoolDataBridge {
   
   public void removeWorkspace(String identifier);
   
-  /* Workspace activity */
-  
-  public List<WorkspaceActivity> listWorkspaceActivities(String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits);
-  
   /* Workspace Types */
   
   public WorkspaceType findWorkspaceType(String identifier);
