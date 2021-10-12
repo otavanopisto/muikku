@@ -8,28 +8,28 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import Evaluation from "../body/application/evaluation/evaluation";
-import { AssessmentRequest } from "../../../@types/evaluation";
-import { StatusType } from "../../../reducers/base/status";
+import { AssessmentRequest } from "~/@types/evaluation";
+import { StatusType } from "~/reducers/base/status";
 import {
   LoadBasePrice,
   loadBasePriceFromServer,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationStudyDiaryEvent,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   LoadEvaluationCompositeReplies,
   loadEvaluationCompositeRepliesFromServer,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   SetCurrentStudentEvaluationData,
   setCurrentStudentEvaluationData,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 import {
   UpdateEvaluationSelectedAssessment,
   updateSelectedAssessment,
-} from "../../../actions/main-function/evaluation/evaluationActions";
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluateDialogProps

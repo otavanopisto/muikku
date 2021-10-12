@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -554,6 +555,20 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(subjectArrayJson)
         .withStatus(200)));
+
+    // Signup groups - all empty here
+    
+    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudyProgrammes", id)))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(objectMapper.writeValueAsString(Collections.emptyList()))
+          .withStatus(200)));
+    
+    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/signupStudentGroups", id)))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(objectMapper.writeValueAsString(Collections.emptyList()))
+          .withStatus(200)));
   }
 
   public static void mockCommons() throws JsonProcessingException {

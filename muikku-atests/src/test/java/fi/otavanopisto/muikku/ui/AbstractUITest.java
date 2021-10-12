@@ -877,6 +877,23 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
+  protected void waitUntilHasText(final String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          waitForVisible(selector);
+          String text = getWebDriver().findElement(By.cssSelector(selector)).getText();
+          if(text != null) {
+            return StringUtils.isBlank(text) ? false : true; 
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void waitUntilAnimationIsDone(final String selector) {
     WebDriverWait wdw = new WebDriverWait(getWebDriver(), 20);
     ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
@@ -1618,6 +1635,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected String getAttributeValue(String selector, String attribute){
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
 

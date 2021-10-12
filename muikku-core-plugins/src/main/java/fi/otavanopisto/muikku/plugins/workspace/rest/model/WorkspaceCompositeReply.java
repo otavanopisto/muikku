@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
@@ -10,11 +11,12 @@ public class WorkspaceCompositeReply {
   public WorkspaceCompositeReply(){
   }
   
-  public WorkspaceCompositeReply(Long workspaceMaterialId, Long workspaceMaterialReplyId, WorkspaceMaterialReplyState state, List<WorkspaceMaterialFieldAnswer> answers) {
+  public WorkspaceCompositeReply(Long workspaceMaterialId, Long workspaceMaterialReplyId, WorkspaceMaterialReplyState state, Date submitted, List<WorkspaceMaterialFieldAnswer> answers) {
     this.workspaceMaterialId = workspaceMaterialId;
     this.workspaceMaterialReplyId = workspaceMaterialReplyId;
     this.state = state;
     this.answers = answers;
+    this.submitted = submitted;
   }
   
   public Long getWorkspaceMaterialId() {
@@ -53,10 +55,19 @@ public class WorkspaceCompositeReply {
     this.evaluationInfo = evaluationInfo;
   }
 
+  public Date getSubmitted() {
+    return submitted;
+  }
+
+  public void setSubmitted(Date submitted) {
+    this.submitted = submitted;
+  }
+
   private Long workspaceMaterialId;
   private Long workspaceMaterialReplyId;
   private WorkspaceMaterialReplyState state;
   private List<WorkspaceMaterialFieldAnswer> answers;
   private RestAssignmentEvaluation evaluationInfo;
+  private Date submitted;
 
 }

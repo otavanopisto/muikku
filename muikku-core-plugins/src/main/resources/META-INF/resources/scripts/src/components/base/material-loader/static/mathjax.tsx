@@ -14,7 +14,7 @@ export default class MathJAX extends React.Component<MathJaxProps, {}>{
     super(props);
   }
   public shouldComponentUpdate(nextProps: MathJaxProps) {
-    return (nextProps.children !== this.props.children);
+    return (nextProps.children !== this.props.children) || nextProps.invisible !== this.props.invisible;
   }
   render(){
     if (disableMathjax) {

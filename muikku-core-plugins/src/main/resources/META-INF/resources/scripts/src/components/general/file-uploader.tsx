@@ -15,20 +15,22 @@ import { UploadingValue } from '../../@types/shared';
  */
 interface FileUploaderProps {
   // Default uploading process
-  onFileError?: (file: File, err:Error)=>any,
+  onFileError?: (file: File, err: Error) => any,
   fileTooLargeErrorText?: string;
-  onFileSuccess?: (file: File, response: any)=>any,
+  onFileSuccess?: (file: File, response: any) => any,
   formDataGenerator?: (file: File, formData: FormData) => any,
   uploadingTextProcesser?: (i: number) => string,
   url?: string,
   uploadingValues?: UploadingValue[]
   // taking control from it
-  onFileInputChange?: (e: React.ChangeEvent<HTMLInputElement>)=>any,
+  onFileInputChange?: (e: React.ChangeEvent<HTMLInputElement>) => any,
   modifier?: string,
   files?: any[],
   fileIdKey: string,
-  fileUrlGenerator: (file: any)=>any,
-  fileExtraNodeGenerator?: (file: any)=>any,
+  fileUrlGenerator: (file: any) => any,
+  fileDownloadAllUrlGenerator?: (files: any) => string;
+  fileDownloadAllLabel?: string;
+  fileExtraNodeGenerator?: (file: any) => any,
   fileNameKey: string,
   deleteDialogElement: any,
   deleteDialogElementProps?: any,
@@ -61,7 +63,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
    * constructor
    * @param props
    */
-  constructor(props: FileUploaderProps){
+  constructor(props: FileUploaderProps) {
     super(props);
 
     this.state = {
@@ -74,7 +76,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
   }
 
   componentDidMount = () => {
-    if(this.props.uploadingValues){
+    if (this.props.uploadingValues) {
       this.setState({
         uploadingValues: this.props.uploadingValues
       })
@@ -82,7 +84,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
   }
 
   componentDidUpdate = (prevProps: FileUploaderProps, prevState: FileUploaderState) => {
-    if(JSON.stringify(prevProps.uploadingValues) !== JSON.stringify(this.props.uploadingValues)){
+    if (JSON.stringify(prevProps.uploadingValues) !== JSON.stringify(this.props.uploadingValues)) {
       this.setState({
         uploadingValues: this.props.uploadingValues
       })
@@ -108,7 +110,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
    * @param index
    */
   processFileAt(index: number) {
-  //first we create a new form data
+    //first we create a new form data
     let formData = new FormData();
     //get the file from that index
     let file = this.state.uploadingValues[index] && this.state.uploadingValues[index].file && this.state.uploadingValues[index].file;
@@ -118,7 +120,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       //on error we do similarly that on success
       let newValues = [...this.state.uploadingValues];
       const successIndex = newValues.findIndex(f => f.file === file);
-      newValues[successIndex] = {...this.state.uploadingValues[successIndex]}
+      newValues[successIndex] = { ...this.state.uploadingValues[successIndex] }
       newValues[successIndex].failed = true;
 
       //and call set state
@@ -131,74 +133,74 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       return;
     }
 
-    if(file && this.props.formDataGenerator){
+    if (file && this.props.formDataGenerator) {
       this.props.formDataGenerator(file, formData);
     }
 
-    if(file){
+    if (file) {
       //we make the ajax request to the temp file upload servlet
-    $.ajax({
-      url: this.props.url,
-      type: 'POST',
-      data: formData,
-      success: (data: any)=>{
-        let actualData = data;
-        try {
-          actualData = JSON.parse(data);
-        } catch (err) {}
-        //make a copy of the values
-        let newValues = [...this.state.uploadingValues];
-        const successIndex = newValues.findIndex(f => f.file === file);
-        newValues.splice(successIndex, 1);
+      $.ajax({
+        url: this.props.url,
+        type: 'POST',
+        data: formData,
+        success: (data: any) => {
+          let actualData = data;
+          try {
+            actualData = JSON.parse(data);
+          } catch (err) { }
+          //make a copy of the values
+          let newValues = [...this.state.uploadingValues];
+          const successIndex = newValues.findIndex(f => f.file === file);
+          newValues.splice(successIndex, 1);
 
-        //and call set state
-        this.setState({
-          uploadingValues: newValues
-        });
-        this.props.displayNotificationOnSuccess && this.props.displayNotification(this.props.notificationOfSuccessText, "success");
-        this.props.onFileSuccess && this.props.onFileSuccess(file, actualData);
-      },
-      error: (xhr:any, err:Error)=>{
-        //on error we do similarly that on success
-        let newValues = [...this.state.uploadingValues];
-        const successIndex = newValues.findIndex(f => f.file === file);
-        newValues[successIndex] = {...this.state.uploadingValues[successIndex]}
-        newValues[successIndex].failed = true;
-        //and call set state
-        this.setState({
-          uploadingValues: newValues
-        });
+          //and call set state
+          this.setState({
+            uploadingValues: newValues
+          });
+          this.props.displayNotificationOnSuccess && this.props.displayNotification(this.props.notificationOfSuccessText, "success");
+          this.props.onFileSuccess && this.props.onFileSuccess(file, actualData);
+        },
+        error: (xhr: any, err: Error) => {
+          //on error we do similarly that on success
+          let newValues = [...this.state.uploadingValues];
+          const successIndex = newValues.findIndex(f => f.file === file);
+          newValues[successIndex] = { ...this.state.uploadingValues[successIndex] }
+          newValues[successIndex].failed = true;
+          //and call set state
+          this.setState({
+            uploadingValues: newValues
+          });
 
-        this.props.displayNotificationOnError && this.props.displayNotification(err.message, "error");
-        this.props.onFileError && this.props.onFileError(file, err);
-      },
-      xhr: ()=>{
-        //we need to get the upload progress
-        let xhr = new (window as any).XMLHttpRequest();
-        //Upload progress
-        xhr.upload.addEventListener("progress", (evt:any)=>{
-          if (evt.lengthComputable) {
-            const currentIndex = this.state.uploadingValues.findIndex(f => f.file === file);
-            //we calculate the percent
-            let percentComplete = evt.loaded / evt.total;
-            //make a copy of the values
-            let newValues = [...this.state.uploadingValues];
-            //find it at that specific index and make a copy
-            newValues[currentIndex] = {...this.state.uploadingValues[currentIndex]}
-            //and set the new progress
-            newValues[currentIndex].progress = percentComplete;
-            //set the state for that new progress
-            this.setState({
-              uploadingValues: newValues
-            });
-          }
-        }, false);
-        return xhr;
-      },
-      cache: false,
-      contentType: false,
-      processData: false
-    })
+          this.props.displayNotificationOnError && this.props.displayNotification(err.message, "error");
+          this.props.onFileError && this.props.onFileError(file, err);
+        },
+        xhr: () => {
+          //we need to get the upload progress
+          let xhr = new (window as any).XMLHttpRequest();
+          //Upload progress
+          xhr.upload.addEventListener("progress", (evt: any) => {
+            if (evt.lengthComputable) {
+              const currentIndex = this.state.uploadingValues.findIndex(f => f.file === file);
+              //we calculate the percent
+              let percentComplete = evt.loaded / evt.total;
+              //make a copy of the values
+              let newValues = [...this.state.uploadingValues];
+              //find it at that specific index and make a copy
+              newValues[currentIndex] = { ...this.state.uploadingValues[currentIndex] }
+              //and set the new progress
+              newValues[currentIndex].progress = percentComplete;
+              //set the state for that new progress
+              this.setState({
+                uploadingValues: newValues
+              });
+            }
+          }, false);
+          return xhr;
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+      })
     }
   }
 
@@ -209,8 +211,8 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
   onFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (this.props.onFileInputChange) {
       this.props.onFileInputChange(e);
-    }else {
-      let newValues = Array.from(e.target.files).map((file)=>{
+    } else {
+      let newValues = Array.from(e.target.files).map((file) => {
         return {
           name: file.name,
           contentType: file.type,
@@ -220,9 +222,9 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       });
       //let's get the original size of the array that we currently got
       let originalLenght = this.state.uploadingValues.length;
-      this.setState({uploadingValues: this.state.uploadingValues.concat(newValues)}, () => {
+      this.setState({ uploadingValues: this.state.uploadingValues.concat(newValues) }, () => {
         //we are going to loop thru those newly added values
-        newValues.forEach((value, index)=>{
+        newValues.forEach((value, index) => {
           //we get the real index
           let realIndex = index + originalLenght;
           //we tell this to process the file
@@ -236,7 +238,19 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
    * render
    * @returns JSX.Element
    */
-  render(){
+  render() {
+
+    // Download All is not rendered with material page's attachments list nor in Guider
+    const downloadAll = this.props.fileDownloadAllUrlGenerator && this.props.files && this.props.files.length > 1 ? (
+      <span className="file-uploader__item file-uploader__item--download-all">
+        <Link
+          href={this.props.fileDownloadAllUrlGenerator(this.props.files)}
+          openInNewTab={this.props.fileDownloadAllLabel}
+          className="link link--download-all"
+          title={this.props.fileDownloadAllLabel ? this.props.fileDownloadAllLabel : ""}
+        >{this.props.fileDownloadAllLabel}</Link>
+      </span>
+    ) : null;
 
     let uniqueElementID = "file-uploader__hint-" + uuid.v4();
     if (this.props.invisible) {
@@ -244,12 +258,12 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
         <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
           <span id={uniqueElementID} className="file-uploader__hint">{this.props.hintText}</span>
           {this.props.readOnly ? null :
-            (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field"/>)
+            (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field" />)
           }
         </span>
         {this.props.files && (this.props.files.length ?
           <span className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
-            {this.props.files.map((file)=>{
+            {this.props.files.map((file) => {
               const url = this.props.fileUrlGenerator(file);
               return <span className="file-uploader__item" key={file[this.props.fileIdKey]}>
                 <span className="file-uploader__item-attachment-icon icon-attachment"></span>
@@ -260,14 +274,15 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                   <span className="file-uploader__item-title-container">
                     <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
                   </span>
-                  }
-                <Link className="file-uploader__item-download-icon icon-download"/>
+                }
+                <Link className="file-uploader__item-download-icon icon-download" />
                 {this.props.readOnly ? null :
-                  <Link className="file-uploader__item-delete-icon icon-trash"/>
+                  <Link className="file-uploader__item-delete-icon icon-trash" />
                 }
                 {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
               </span>
             })}
+            {downloadAll}
           </span> : this.props.emptyText && this.props.readOnly ? <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span> :
             this.props.emptyText ? <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span> : null
         )}
@@ -284,39 +299,39 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
               </span>
             </span>
             <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
-              onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
+              onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""} />
           </span>
         }
 
         return <span className="file-uploader__item" key={index}>
-            <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
-              strokeWidth: 1,
-              duration: 1000,
-              color: "#72d200",
-              trailColor: "#f5f5f5",
-              trailWidth: 1,
-              svgStyle: {width: "100%", height: "4px"},
-              text: {
-                className: "file-uploader__item-upload-percentage",
-                style: {
-                   right: "100%"
-                }
+          <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
+            strokeWidth: 1,
+            duration: 1000,
+            color: "#72d200",
+            trailColor: "#f5f5f5",
+            trailWidth: 1,
+            svgStyle: { width: "100%", height: "4px" },
+            text: {
+              className: "file-uploader__item-upload-percentage",
+              style: {
+                right: "100%"
               }
-            }}
+            }
+          }}
             strokeWidth={1} easing="easeInOut" duration={1000} color="#72d200" trailColor="#f5f5f5"
-            trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+            trailWidth={1} svgStyle={{ width: "100%", height: "4px" }}
             text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
-             progress={uploadingFile.progress}/>
-          </span>;
+            progress={uploadingFile.progress} />
+        </span>;
       })
     )
 
     const DialogDeleteElement = this.props.deleteDialogElement;
     let dataNode = null;
-    if (this.props.files || this.state.uploadingValues.length) {
+    if (this.props.files || this.state.uploadingValues.length) {
       if (this.props.files.length || this.state.uploadingValues.length) {
         dataNode = <span className="file-uploader__items-container">
-          {this.props.files.map((file)=>{
+          {this.props.files.map((file) => {
             const url = this.props.fileUrlGenerator(file);
             return <span className={`file-uploader__item ${this.props.modifier ? "file-uploader__item--" + this.props.modifier : ""}`} key={file[this.props.fileIdKey]}>
               <span className="file-uploader__item-attachment-icon icon-attachment"></span>
@@ -327,15 +342,16 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                 <span className="file-uploader__item-title-container">
                   <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
                 </span>
-                }
-              <Link href={url} openInNewTab={file[this.props.fileNameKey]} className="file-uploader__item-download-icon icon-download" title={this.props.downloadFileText ? this.props.downloadFileText : ""}/>
+              }
+              <Link href={url} openInNewTab={file[this.props.fileNameKey]} className="file-uploader__item-download-icon icon-download" title={this.props.downloadFileText ? this.props.downloadFileText : ""} />
               {this.props.readOnly ? null : <DialogDeleteElement file={file} {...this.props.deleteDialogElementProps}>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-trash" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-trash" title={this.props.deleteFileText ? this.props.deleteFileText : ""} />
               </DialogDeleteElement>}
               {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
             </span>
           })}
           {loaderElement}
+          {downloadAll}
         </span>
       }
       else if (this.props.emptyText && this.props.readOnly) {
@@ -349,7 +365,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
         <span id={uniqueElementID} className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
-          (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange} value=''/>)
+          (<input aria-labelledby={uniqueElementID} type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange} value='' />)
         }
       </span>
       {dataNode}
@@ -361,7 +377,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
  * mapStateToProps
  * @param state
  */
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
   }
 };
@@ -370,8 +386,8 @@ function mapStateToProps(state: StateType){
  * mapDispatchToProps
  * @param dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({displayNotification}, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 };
 
 export default connect(
