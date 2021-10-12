@@ -113,8 +113,7 @@ async function loadHopsEnabled(dispatch: (arg: AnyActionType) => any) {
 
 async function loadWorkspacePermissions(workspaceId: number, dispatch: (arg: AnyActionType) => any, readyCb: () => void) {
   const permissions = <string[]>(await promisify(mApi().workspace.workspaces.permissions.read(workspaceId), 'callback')());
-
-  console.log(permissions);
+  const canCurrentWorkspaceSignup = <boolean>(await promisify(mApi().coursepicker.workspaces.canSignup.read(workspaceId), 'callback')())
 
   dispatch({
     type: "UPDATE_STATUS",
@@ -142,7 +141,8 @@ async function loadWorkspacePermissions(workspaceId: number, dispatch: (arg: Any
         WORKSPACE_USERS_VISIBLE: permissions.includes("MANAGE_WORKSPACE_MEMBERS"),
         WORKSPACE_VIEW_WORKSPACE_DETAILS: permissions.includes("VIEW_WORKSPACE_DETAILS"),
         WORSKPACE_LIST_WORKSPACE_MEMBERS: permissions.includes("LIST_WORKSPACE_MEMBERS"),
-      }
+      },
+      canCurrentWorkspaceSignup,
     },
   });
 

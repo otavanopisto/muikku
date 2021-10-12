@@ -6,7 +6,6 @@
 //4. it works :D
 import $ from '~/lib/jquery';
 import { ActionType } from "~/actions";
-import equals = require("deep-equal");
 
 export interface WhoAmIType {
   studyTimeEnd: string;
@@ -57,6 +56,7 @@ export interface StatusType {
     subjectIdentifier: string;
     hasCustomImage: boolean;
   },
+  canCurrentWorkspaceSignup: boolean;
   hasImage: boolean,
   imgVersion: number,
   hopsEnabled: boolean,
@@ -75,65 +75,6 @@ export interface ProfileStatusType {
   studyTimeEnd: string
 }
 
-// from whoami
-// ANNOUNCER_CAN_PUBLISH_ENVIRONMENT
-// ANNOUNCER_CAN_PUBLISH_GROUPS
-// ANNOUNCER_CAN_PUBLISH_WORKSPACES
-// ANNOUNCER_TOOL
-// CHAT_AVAILABLE                   missing
-// COMMUNICATOR_GROUP_MESSAGING
-// COMMUNICATOR_WORKSPACE_MESSAGING
-// EVALUATION_VIEW_INDEX
-// FORUM_ACCESSENVIRONMENTFORUM
-// FORUM_CREATEENVIRONMENTFORUM
-// FORUM_DELETEENVIRONMENTFORUM
-// FORUM_LOCK_STICKY_PERMISSION
-// FORUM_SHOW_FULL_NAME_PERMISSION
-// FORUM_UPDATEENVIRONMENTFORUM
-// GUIDER_VIEW
-// ORGANIZATION_VIEW
-// TRANSCRIPT_OF_RECORDS_VIEW
-// WORKLIST_AVAILABLE               missing
-// AREA_PERMISSIONS                 missing
-
-// from /workspace/workspaces/123/permissions 
-// WORKSPACE_ACCESS_EVALUATION: true
-// WORKSPACE_ANNOUNCER_TOOL: true
-// WORKSPACE_CAN_PUBLISH: true
-// WORKSPACE_DELETE_FORUM_THREAD: true
-// WORKSPACE_DISCUSSIONS_VISIBLE: true
-// WORKSPACE_GUIDES_VISIBLE: true
-// WORKSPACE_HOME_VISIBLE: true
-// WORKSPACE_IS_WORKSPACE_STUDENT: false
-// WORKSPACE_JOURNAL_VISIBLE: true
-// WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS: true
-// WORKSPACE_MANAGE_PERMISSIONS: true
-// WORKSPACE_MANAGE_WORKSPACE: true
-// WORKSPACE_MANAGE_WORKSPACE_DETAILS: true
-// WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE: true
-// WORKSPACE_MANAGE_WORKSPACE_HELP: true
-// WORKSPACE_MANAGE_WORKSPACE_MATERIALS: true
-// WORKSPACE_MATERIALS_VISIBLE: true
-// WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT: false
-// WORKSPACE_SIGNUP: false
-// WORKSPACE_USERS_VISIBLE: true
-// WORKSPACE_VIEW_WORKSPACE_DETAILS: true
-// WORSKPACE_LIST_WORKSPACE_MEMBERS: true
-
-// function inequalityChecker(a: any, b: any) {
-//   Object.keys(a).forEach((k) => {
-//     if (a[k] !== b[k]) {
-//       console.log(k, a[k], b[k]);
-//     }
-//   });
-
-//   Object.keys(b).forEach((k) => {
-//     if (a[k] !== b[k]) {
-//       console.log(k, a[k], b[k]);
-//     }
-//   });
-// }
-
 const workspaceIdNode = document.querySelector('meta[name="muikku:workspaceId"]');
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
@@ -151,6 +92,7 @@ export default function status(state: StatusType = {
   hasImage: false,
   imgVersion: (new Date()).getTime(),
   currentWorkspaceId: (workspaceIdNode && parseInt(workspaceIdNode.getAttribute("value"))) || null,
+  canCurrentWorkspaceSignup: false,
   hopsEnabled: false // /user/property/hops.enabled
 }, action: ActionType): StatusType {
   if (action.type === "LOGOUT") {
@@ -180,19 +122,6 @@ export default function status(state: StatusType = {
     Object.keys(action.payload.permissions || {}).forEach((k) => {
       permissionsBasedClone[k] = (state as any).permissions[k];
     });
-
-    // if (!equals(stateBasedCloneWoPermissions, actionPayloadWoPermissions, {strict: true})) {
-    //   console.log(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
-    //   inequalityChecker(stateBasedCloneWoPermissions, actionPayloadWoPermissions);
-    //   console.warn("Unequality with JSF and API value found");
-    // }
-
-    // if (!equals(action.payload.permissions || {}, permissionsBasedClone, {strict: true})) {
-    //   console.log(permissionsBasedClone, action.payload.permissions);
-    //   inequalityChecker(permissionsBasedClone, action.payload.permissions);
-    //   console.warn("Unequality with JSF and API value found in permissions");
-    // }
-
 
     return { ...state, ...actionPayloadWoPermissions, permissions: {...state.permissions, ...action.payload.permissions} };
   }

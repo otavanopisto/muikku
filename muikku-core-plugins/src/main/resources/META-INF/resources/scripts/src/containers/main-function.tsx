@@ -65,6 +65,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
   private subscribedChatSettings: boolean = false;
+  private loadedChatSettings: boolean = false;
 
   /**
    * constructor
@@ -134,7 +135,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
    */
   loadChatSettings = (): void => {
     if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      if (!this.loadedChatSettings) {
+        this.loadedChatSettings = true;
+        this.props.store.dispatch(loadProfileChatSettings() as Action);
+      }
     } else if (!this.subscribedChatSettings) {
       this.subscribedChatSettings = true;
       this.props.store.subscribe(this.loadChatSettings);
