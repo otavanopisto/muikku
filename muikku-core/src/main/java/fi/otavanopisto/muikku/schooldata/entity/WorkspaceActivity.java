@@ -69,6 +69,38 @@ public class WorkspaceActivity {
     this.identifier = identifier;
   }
 
+  public Integer getExercisesTotal() {
+    return exercisesTotal;
+  }
+
+  public void setExercisesTotal(Integer exercisesTotal) {
+    this.exercisesTotal = exercisesTotal;
+  }
+
+  public Integer getExercisesAnswered() {
+    return exercisesAnswered;
+  }
+
+  public void setExercisesAnswered(Integer exercisesAnswered) {
+    this.exercisesAnswered = exercisesAnswered;
+  }
+
+  public Integer getEvaluablesTotal() {
+    return evaluablesTotal;
+  }
+
+  public void setEvaluablesTotal(Integer evaluablesTotal) {
+    this.evaluablesTotal = evaluablesTotal;
+  }
+
+  public Integer getEvaluablesAnswered() {
+    return evaluablesAnswered;
+  }
+
+  public void setEvaluablesAnswered(Integer evaluablesAnswered) {
+    this.evaluablesAnswered = evaluablesAnswered;
+  }
+
   private Long id;
   private String identifier;
   private String name;
@@ -77,5 +109,9 @@ public class WorkspaceActivity {
   private Boolean passingGrade;
   private Date date;
   private WorkspaceActivityState state;
+  private Integer exercisesTotal;
+  private Integer exercisesAnswered;
+  private Integer evaluablesTotal;
+  private Integer evaluablesAnswered;
 
 }

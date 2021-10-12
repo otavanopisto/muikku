@@ -636,35 +636,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/user/{ID}/workspaceActivity")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceActivities(@PathParam("ID") String id, @QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("includeTransferCredits") boolean includeTransferCredits) {
-    
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
-    if (studentIdentifier == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
-    }
-
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.GET_WORKSPACE_ACTIVITY)) {
-      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
-    UserEntity userEntity = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getUserEntity() : null;
-    
-    
-    // Access check
-    
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.GET_WORKSPACE_ACTIVITY)) {
-      
-    }
-    return null;
-
-  }
-  
-  @GET
   @Path("/workspaces/{ID}")
   @RESTPermitUnimplemented
   public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
