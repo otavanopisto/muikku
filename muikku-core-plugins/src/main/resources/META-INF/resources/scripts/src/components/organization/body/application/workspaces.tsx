@@ -2,11 +2,12 @@ import * as React from 'react';
 import { StateType } from '~/reducers';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
+import ApplicationList, { ApplicationListItem, } from '~/components/general/application-list';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Workspace from './workspaces/workspace';
 import { i18nType } from '~/reducers/base/i18n';
 import { loadMoreOrganizationWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
+import Button from '~/components/general/button';
 
 import { WorkspacesStateType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
 
@@ -21,30 +22,32 @@ interface OrganizationWorkspacesProps {
 interface OrganizationWorkspacesState {
 }
 
-class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProps, OrganizationWorkspacesState> {
+class OrganizationWorkspaces extends React.Component<OrganizationWorkspacesProps, OrganizationWorkspacesState> {
 
   constructor(props: OrganizationWorkspacesProps) {
     super(props);
-    //once this is in state READY only then a loading more event can be triggered
-    this.statePropertyLocation = "workspacesState";
-    //it will only call the function if this is true
-    this.hasMorePropertyLocation = "workspacesHasMore";
-    //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationWorkspacesFromServer";
+    // //once this is in state READY only then a loading more event can be triggered
+    // this.statePropertyLocation = "workspacesState";
+    // //it will only call the function if this is true
+    // this.hasMorePropertyLocation = "workspacesHasMore";
+    // //this is the function that will be called
+    // this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationWorkspacesFromServer";
   }
 
   render() {
     if (this.props.workspacesState === "LOADING") {
       return null;
     } else if (this.props.workspacesState === "ERROR") {
-      //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-      //message but here we got to put something
-      return <div className="empty"><span>{"ERROR"}</span></div>
+      return <div className="empty"><span>{this.props.i18n.text.get("plugin.organization.workspaces.error.loadError")}</span></div>
     } else if (this.props.workspaces.length === 0) {
-      return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
+      return <div className="empty"><span>{this.props.i18n.text.get("plugin.organization.workspaces.searchResult.empty")}</span></div>
     }
     return (
-      <ApplicationList>
+      <ApplicationList modifiers="organization" footer={this.props.workspacesHasMore === true ? <Button
+        buttonModifiers="load-further"
+        onClick={this.props.loadMoreOrganizationWorkspacesFromServer}>
+        {this.props.i18n.text.get("plugin.organization.workspaces.loadMore")}
+      </Button> : null}>
         {this.props.workspaces.map((workspace: WorkspaceType) => {
           return <Workspace key={workspace.id} workspace={workspace} />
         })}

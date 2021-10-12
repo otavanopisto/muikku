@@ -98,6 +98,13 @@
   }
 }
 
+.application-list__footer--organization {
+  align-items: center;
+  display:flex;
+  justify-content: center;
+}
+
+
 .application-list__title {
   @include mainfunction-subpanel-title;
 }
