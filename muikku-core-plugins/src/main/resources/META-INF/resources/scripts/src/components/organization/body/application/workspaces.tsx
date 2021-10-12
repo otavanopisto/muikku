@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useRef, useCallback} from "react"
 import { StateType } from '~/reducers';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -8,7 +9,7 @@ import Workspace from './workspaces/workspace';
 import { i18nType } from '~/reducers/base/i18n';
 import { loadMoreOrganizationWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
-import { WorkspacesStateType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
+import workspaces, { WorkspacesStateType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
 
 interface OrganizationWorkspacesProps {
   i18n: i18nType,
@@ -21,16 +22,22 @@ interface OrganizationWorkspacesProps {
 interface OrganizationWorkspacesState {
 }
 
-class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProps, OrganizationWorkspacesState> {
+class OrganizationWorkspaces extends React.Component<OrganizationWorkspacesProps, OrganizationWorkspacesState> {
+
+  private observer = useRef();
+  private lastWorkspaceRef = useCallback(node => {
+    console.log(node);
+  }, []);
+
 
   constructor(props: OrganizationWorkspacesProps) {
     super(props);
-    //once this is in state READY only then a loading more event can be triggered
-    this.statePropertyLocation = "workspacesState";
-    //it will only call the function if this is true
-    this.hasMorePropertyLocation = "workspacesHasMore";
-    //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationWorkspacesFromServer";
+    // //once this is in state READY only then a loading more event can be triggered
+    // this.statePropertyLocation = "workspacesState";
+    // //it will only call the function if this is true
+    // this.hasMorePropertyLocation = "workspacesHasMore";
+    // //this is the function that will be called
+    // this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationWorkspacesFromServer";
   }
 
   render() {
@@ -45,8 +52,12 @@ class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProp
     }
     return (
       <ApplicationList>
-        {this.props.workspaces.map((workspace: WorkspaceType) => {
-          return <Workspace key={workspace.id} workspace={workspace} />
+        {this.props.workspaces.map((workspace: WorkspaceType, index) => {
+          if(workspaces.length === index + 1) {
+            return <Workspace ref={this.lastWorkspaceRef} key={workspace.id} workspace={workspace} />
+          } else {
+            return <Workspace ref={this.lastWorkspaceRef} key={workspace.id} workspace={workspace} />
+          }
         })}
         {this.props.workspacesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty" /> : null}
       </ApplicationList>
