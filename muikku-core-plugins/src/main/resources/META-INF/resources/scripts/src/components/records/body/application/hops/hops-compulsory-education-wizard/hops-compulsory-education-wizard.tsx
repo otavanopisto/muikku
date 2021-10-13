@@ -8,8 +8,7 @@ const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
 import { Step1, Step2, Step3, Step5 } from "./steps";
-import promisify from "../../../../../../util/promisify";
-import mApi from "~/lib/mApi";
+import { GuiderType } from "../../../../../../reducers/main-function/guider/index";
 import {
   HopsCompulsory,
   Education,
@@ -20,7 +19,6 @@ import {
   hopsMock2,
   hopsMock3,
   hopsMock4,
-  schoolCourseTable,
 } from "../../../../../../mock/mock-data";
 import {
   HopsStudentStartingLevel,
@@ -39,6 +37,7 @@ interface CompulsoryEducationHopsWizardProps {
   i18n: i18nType;
   testData?: number;
   disabled: boolean;
+  guider: GuiderType;
 }
 
 /**
@@ -321,6 +320,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           <Step5
             user={this.props.user}
             disabled={this.props.disabled}
+            studentId={this.props.guider.currentStudent.basic.id}
             studies={{
               ...this.state.hopsCompulsory.studiesPlanning,
             }}
@@ -373,6 +373,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
+    guider: state.guider,
   };
 }
 

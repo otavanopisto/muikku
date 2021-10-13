@@ -11,6 +11,7 @@ import CourseList from "../course-table/course-list";
 import { schoolCourseTable } from "../../../../../../../mock/mock-data";
 import StudyCalculationInfoBox from "./calculation-info-box";
 import OptionalStudiesInfoBox from "./optional-studiess-info-box";
+import { useStudentActivity } from "./hooks/useStudentActivity";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -19,6 +20,7 @@ let ProgressBarLine = require("react-progress-bar.js").Line;
  */
 interface StudyToolProps extends StudiesCourseData {
   user: "supervisor" | "student";
+  studentId: string;
   disabled: boolean;
   showIndicators?: boolean;
   finnishAsSecondLanguage: boolean;
@@ -40,6 +42,10 @@ const defaultProps = {
  */
 const StudyTool: React.FC<StudyToolProps> = (props) => {
   props = { ...defaultProps, ...props };
+
+  const studentActivity = useStudentActivity(props.studentId);
+
+  console.log(studentActivity);
 
   /**
    * handleUsedHoursPerWeekChange
@@ -798,9 +804,13 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             ethicsSelected={props.ethics}
             finnishAsSecondLanguage={props.finnishAsSecondLanguage}
             selectedSubjectListOfIds={props.studies.selectedListOfIds}
-            approvedSubjectListOfIds={props.approvedSubjectListOfIds}
+            suggestedList={studentActivity.suggestedList}
+            onGoingList={studentActivity.onGoingList}
+            gradedList={studentActivity.gradedList}
+            transferedList={studentActivity.transferedList}
+            /*             approvedSubjectListOfIds={props.approvedSubjectListOfIds}
             completedSubjectListOfIds={props.completedSubjectListOfIds}
-            inprogressSubjectListOfIds={props.inprogressSubjectListOfIds}
+            inprogressSubjectListOfIds={props.inprogressSubjectListOfIds} */
             onChangeSelectSubjectList={
               props.user === "student"
                 ? handleSelectedSubjectListOfIdsChange

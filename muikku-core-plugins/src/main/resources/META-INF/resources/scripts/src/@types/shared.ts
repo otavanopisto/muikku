@@ -371,7 +371,6 @@ export interface Course {
   name: string;
   courseNumber: number;
   length: number;
-  status: string;
   mandatory: boolean;
   id: number;
 }
@@ -407,4 +406,11 @@ export interface Suggestion {
   name: string;
   subject: string;
   courseNumber: number;
+}
+
+export interface StudentActivityByStatus {
+  onGoingList: StudentActivityCourse[];
+  suggestedList: StudentActivityCourse[];
+  transferedList: StudentActivityCourse[];
+  gradedList: StudentActivityCourse[];
 }

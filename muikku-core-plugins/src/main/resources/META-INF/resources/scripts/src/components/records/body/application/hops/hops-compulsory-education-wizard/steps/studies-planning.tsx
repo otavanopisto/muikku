@@ -19,6 +19,7 @@ interface StudiesPlanningProps extends StudiesCourseData {
   finnishAsSecondLanguage: boolean;
   ethics: boolean;
   studies: HopsPlanningStudies;
+  studentId: string;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
   onDeleteSelection?: () => void;
   onDeleteNextSelection?: () => void;
@@ -267,6 +268,7 @@ class StudiesPlanning extends React.Component<
         </fieldset>
         <StudyTool
           user={this.props.user}
+          studentId={this.props.studentId}
           disabled={this.props.disabled}
           finnishAsSecondLanguage={this.props.finnishAsSecondLanguage}
           ethics={this.props.ethics}
