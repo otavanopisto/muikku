@@ -286,15 +286,18 @@ export default class MemoField extends React.Component<
       if (this.props.readOnly) {
         //here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
         field = !this.props.content.richedit ? (
+          <TextareaAutosize
+            readOnly
+            className="material-page__memofield"
+            value={this.state.value}
+            onChange={this.onInputChange}
+          />
+        ) : (
           <div
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation">
-              {this.state.value.replace(/(?:\r\n|\r|\n)/g, '<br/>')}
-          </div>
-        ):
-        (<div
-          className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
+            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
-        />);
+          />
+        );
       }
     }
 
