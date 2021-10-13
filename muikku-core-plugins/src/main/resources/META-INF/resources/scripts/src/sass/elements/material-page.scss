@@ -869,6 +869,13 @@
   }
 }
 
+.material-page__memofield--evaluation { // This is for memofield replacement style in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
+  padding: 15px 20px;
+}
+
 .material-page__ckeditor-replacement { // This is for ckeditor replacement div
   @include taskfield-text;
   @include taskfield-defaults;

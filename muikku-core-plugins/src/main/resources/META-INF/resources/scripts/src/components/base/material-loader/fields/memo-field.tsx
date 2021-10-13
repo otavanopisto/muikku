@@ -288,7 +288,7 @@ export default class MemoField extends React.Component<
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield"
+            className="material-page__memofield material-page__memofield--evaluation"
             value={this.state.value}
             onChange={this.onInputChange}
           />
