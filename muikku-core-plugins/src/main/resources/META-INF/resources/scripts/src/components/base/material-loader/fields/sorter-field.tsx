@@ -5,6 +5,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
+import { UsedAs } from "~/@types/shared";
 
 interface SorterFieldItemType {
   id: string,
@@ -20,6 +21,7 @@ interface SorterFieldProps {
     items: Array<SorterFieldItemType>
   },
 
+  usedAs: UsedAs;
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
@@ -91,7 +93,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   shouldComponentUpdate(nextProps: SorterFieldProps, nextState: SorterFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
-    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError
+    || nextProps.invisible !== this.props.invisible;
   }
   //Swaps two items
   swap(itemA: SorterFieldItemType, itemB: SorterFieldItemType){
