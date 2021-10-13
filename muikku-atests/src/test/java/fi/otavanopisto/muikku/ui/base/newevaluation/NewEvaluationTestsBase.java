@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.ui.base.newevaluation;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -168,7 +169,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
         "Test exercise", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p><p><img alt=\"\" data-author=\"\" data-author-url=\"\" data-license=\"\" data-license-url=\"\" data-source=\"\" data-source-url=\"\" height=\"354\" src=\"5T0EHUR.gif\" width=\"500\" /></p>", 
         "EVALUATED");
       try{        
         logout();
@@ -201,7 +202,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--evaluate");
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        assertValue(".evaluation-modal__item-body span.material-page__textfield input", "field value");
+        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        String srcUrl = getAttributeValue(".evaluation-modal__item-body span.image img", "src");
+        assertEquals(srcUrl, getAppUrl(false) + "/workspace/testcourse/materials/test-course-material-folder/test-exercise/5T0EHUR.gif");
         waitAndClick(".evaluation-modal .material-page--evaluation-material-page.material-page--SUBMITTED .button-pill--evaluate");
         waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
