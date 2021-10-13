@@ -136,6 +136,7 @@ public class EvaluationController {
       SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
           userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
       if (supplementationRequest != null && supplementationRequest.getRequestDate().getTime() > activity.getDate().getTime()) {
+        activity.setText(supplementationRequest.getRequestText());
         activity.setDate(supplementationRequest.getRequestDate());
         activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
       }

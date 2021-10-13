@@ -101,6 +101,14 @@ public class WorkspaceActivity {
     this.evaluablesAnswered = evaluablesAnswered;
   }
 
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+
   private Long id;
   private String identifier;
   private String name;
@@ -108,6 +116,7 @@ public class WorkspaceActivity {
   private String grade;
   private Boolean passingGrade;
   private Date date;
+  private String text;
   private WorkspaceActivityState state;
   private Integer exercisesTotal;
   private Integer exercisesAnswered;
