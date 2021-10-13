@@ -100,10 +100,9 @@
 
 .application-list__footer--organization {
   align-items: center;
-  display:flex;
+  display: 1flex;
   justify-content: center;
 }
-
 
 .application-list__title {
   @include mainfunction-subpanel-title;
