@@ -76,7 +76,7 @@ import {
   UPDATE_SUMMARY_STATUS,
   LOAD_WORKSPACE_SUMMARY,
   LOAD_ORGANIZATION_CONTACTS,
-  LOAD_STUDENT_SUMMARY
+  LOAD_STUDENT_SUMMARY,
 } from "./organization/summary";
 
 import {
@@ -204,6 +204,7 @@ import {
 } from "./main-function/hops";
 import { LOAD_CREDENTIALS, CREDENTIALS_STATE } from "./base/credentials";
 import { UPDATE_ERROR } from "./base/error";
+import { UPDATE_CURRENT_SELECTED_EVALUATION_DATA_ON_SAVE } from "./main-function/evaluation/evaluationActions";
 import {
   UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS,
   UPDATE_BASE_PRICE_STATE,
@@ -459,6 +460,7 @@ export type ActionType =
   | UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE
   | UPDATE_EVALUATION_REQUESTS_STATE
   | UPDATE_NEEDS_RELOAD_EVALUATION_REQUESTS
-  | UPDATE_BASE_PRICE_STATE;
+  | UPDATE_BASE_PRICE_STATE
+  | UPDATE_CURRENT_SELECTED_EVALUATION_DATA_ON_SAVE;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.rest.test.plugins.announcer;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +49,9 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
   }
   
   @Before
-  public void beforeWorkspaceAnnouncement() {
+  public void beforeWorkspaceAnnouncement() throws ClassNotFoundException, SQLException {
     List<Long> workspaceEntityIds = new ArrayList<>();
-    workspaceEntityIds.add(PyramusMocksRest.WORKSPACE1_ID);
+    workspaceEntityIds.add(getWorkspaceEntityIdForIdentifier(PyramusMocksRest.WORKSPACE1_ID.toString()));
     
     Announcement publicAnnouncement = new Announcement(
         null,                           // id, 
@@ -73,9 +74,9 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
   }
   
   @Before
-  public void beforeWorkspaceAnnouncement2() {
+  public void beforeWorkspaceAnnouncement2() throws ClassNotFoundException, SQLException {
     List<Long> workspaceEntityIds = new ArrayList<>();
-    workspaceEntityIds.add(PyramusMocksRest.WORKSPACE2_ID);
+    workspaceEntityIds.add(getWorkspaceEntityIdForIdentifier(PyramusMocksRest.WORKSPACE2_ID.toString()));
     
     Announcement publicAnnouncement = new Announcement(
         null,                           // id, 

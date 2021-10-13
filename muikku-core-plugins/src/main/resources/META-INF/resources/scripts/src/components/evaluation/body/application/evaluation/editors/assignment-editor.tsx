@@ -24,6 +24,8 @@ import {
   saveAssignmentEvaluationGradeToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
+import { LocaleListType } from "~/reducers/base/locales";
+import { CKEditorConfig } from "../evaluation";
 
 /**
  * AssignmentEditorProps
@@ -35,11 +37,13 @@ interface AssignmentEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
+  locale: LocaleListType;
   editorLabel?: string;
   modifiers?: string[];
   saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
   saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation;
   onClose?: () => void;
+  onAssigmentSave?: (materialId: number) => void;
 }
 
 /**
@@ -170,8 +174,13 @@ class AssignmentEditor extends SessionStateComponent<
 
     if (this.state.assignmentEvaluationType === "GRADED") {
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
+      if (this.props.onAssigmentSave) {
+        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+      }
 
-      this.props.onClose();
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
       this.props.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
@@ -186,6 +195,7 @@ class AssignmentEditor extends SessionStateComponent<
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
         },
+        materialId: this.props.materialAssignment.materialId,
         onSuccess: () => {
           this.setStateAndClear(
             {
@@ -199,7 +209,13 @@ class AssignmentEditor extends SessionStateComponent<
         onFail: () => this.props.onClose(),
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
-      this.props.onClose();
+      if (this.props.onAssigmentSave) {
+        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+      }
+
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
 
       this.props.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId:
@@ -216,6 +232,7 @@ class AssignmentEditor extends SessionStateComponent<
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
         },
+        materialId: this.props.materialAssignment.materialId,
         onSuccess: () => {
           this.setStateAndClear(
             {
@@ -349,7 +366,10 @@ class AssignmentEditor extends SessionStateComponent<
             </label>
           )}
 
-          <CKEditor onChange={this.handleCKEditorChange}>
+          <CKEditor
+            onChange={this.handleCKEditorChange}
+            configuration={CKEditorConfig(this.props.locale.current)}
+          >
             {this.state.literalEvaluation}
           </CKEditor>
         </div>
@@ -457,6 +477,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
+    locale: state.locales,
   };
 }
 

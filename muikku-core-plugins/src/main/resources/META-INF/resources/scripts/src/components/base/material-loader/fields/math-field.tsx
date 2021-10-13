@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/math-field.scss';
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
+import { UsedAs } from "~/@types/shared";
 
 interface MathFieldProps {
   type: string,
@@ -12,7 +13,7 @@ interface MathFieldProps {
   },
   i18n: i18nType,
   userId: number,
-
+  usedAs: UsedAs;
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any

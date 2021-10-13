@@ -160,6 +160,10 @@
   }
 }
 
+.file-uploader__item--download-all {
+  justify-content: flex-end;
+}
+
 .file-uploader__item--material-editor {
   align-items: flex-start;
 
