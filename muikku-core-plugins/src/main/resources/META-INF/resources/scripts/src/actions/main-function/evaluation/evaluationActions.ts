@@ -1228,7 +1228,7 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
       } else {
         try {
           await promisify(
-            mApi().evaluation.workspaceuser.supplementationrequest.create(
+            mApi().evaluation.workspaceuser.supplementationrequest.update(
               state.evaluations.evaluationSelectedAssessmentId
                 .workspaceUserEntityId,
               {
