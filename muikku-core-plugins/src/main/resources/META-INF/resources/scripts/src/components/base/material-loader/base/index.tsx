@@ -99,7 +99,7 @@ function preprocessor($html: any): any {
       const src = this.getAttribute("src");
       if (src) {
         this.dataset.original = src;
-        this.src = "";
+        $(this).removeAttr("src");
       }
 
       elem.appendChild(this);
@@ -107,7 +107,7 @@ function preprocessor($html: any): any {
       const src = this.getAttribute("src");
       if (src) {
         this.dataset.original = src;
-        this.src = "";
+        $(this).removeAttr("src");
       }
     }
   });
@@ -120,7 +120,7 @@ function preprocessor($html: any): any {
 
     if (src) {
       this.dataset.original = src;
-      this.src = "";
+      $(this).removeAttr("src");
     }
   }
   );
