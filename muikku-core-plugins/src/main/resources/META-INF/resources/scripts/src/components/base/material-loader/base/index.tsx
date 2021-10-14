@@ -113,7 +113,7 @@ function preprocessor($html: any): any {
   });
 
   $html.find('audio').each(function () {
-    $(this).setAttr("preload", "none");
+    $(this).attr("preload", "none");
   })
 
   $html.find('source').each(function () {
