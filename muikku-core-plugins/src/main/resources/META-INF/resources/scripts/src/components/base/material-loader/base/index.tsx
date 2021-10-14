@@ -491,6 +491,12 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         },
       },
       {
+        shouldProcessHTMLElement: (tagname) => tagname === "audio",
+        preprocessReactProperties: (tag, props, children, element) => {
+          props.preload = "none";
+        }
+      },
+      {
         shouldProcessHTMLElement: (tagname) => tagname === "source",
         preprocessReactProperties: (tag, props, children, element) => {
           const dataset = extractDataSet(element);
