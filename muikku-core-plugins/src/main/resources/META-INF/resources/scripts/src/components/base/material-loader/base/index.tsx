@@ -118,7 +118,7 @@ function preprocessor($html: any): any {
 
   $html.find('source').each(function () {
 
-    //This is done because there will be a bunch of 404's if the src is left untouched - the original url for the audio file src is faulty
+    //This is done because there will be a bunch of 404's if the src is left untouched - the original url for the audio file src is incomplete as it's missing section/material_page path
 
     const src = this.getAttribute("src");
 
