@@ -53,7 +53,9 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (props) =>
         {userGroups &&
           userGroups.map((userGroup: UserGroupType, index) => {
             if (userGroups.length === index + 1) {
-              return <div key={userGroup.id} ref={lastUserGroupRef}><Usergroup key={userGroup.id} usergroup={userGroup} /></div>;
+              // This div wrapper exists because callback ref must return
+              // an element and a class component returns a mounted instance
+              return <div className="ref-wrapper ref-wrapper--last-organization-item" key={userGroup.id} ref={lastUserGroupRef}><Usergroup usergroup={userGroup} /></div>;
             } else {
               return <Usergroup key={userGroup.id} usergroup={userGroup} />
             }

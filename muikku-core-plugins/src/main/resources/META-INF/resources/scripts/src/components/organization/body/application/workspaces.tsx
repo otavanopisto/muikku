@@ -6,6 +6,7 @@ import ApplicationList, { ApplicationListItem } from '~/components/general/appli
 import useInfinityScroll from '~/hooks/useInfinityScroll';
 import Workspace from './workspaces/workspace';
 import { i18nType } from '~/reducers/base/i18n';
+import '~/sass/elements/ref-wrapper.scss'
 import { loadMoreOrganizationWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
 import { WorkspacesStateType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
@@ -37,7 +38,10 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (props) =>
     <ApplicationList>
       {workspaces.map((workspace: WorkspaceType, index) => {
         if (workspaces.length === index + 1) {
-          return <div key={workspace.id} ref={loadMoreWorkspacesRef}>
+
+          // This div wrapper exists because callback ref must return
+          // an element and a class component returns a mounted instance
+          return <div className="ref-wrapper ref-wrapper--last-organization-item" key={workspace.id} ref={loadMoreWorkspacesRef}>
             <Workspace workspace={workspace} />
           </div>
         } else {
