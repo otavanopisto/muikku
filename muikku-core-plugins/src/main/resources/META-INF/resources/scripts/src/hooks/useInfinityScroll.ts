@@ -26,5 +26,3 @@ const useInfinityScroll = (hasMore: boolean, state: LoadingState, loadMore: () =
   }, [hasMore, state]);
 }
 export default useInfinityScroll;
-
-

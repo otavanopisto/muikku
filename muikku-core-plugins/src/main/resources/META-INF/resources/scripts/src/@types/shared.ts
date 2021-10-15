@@ -9,8 +9,6 @@ export type PageLocation = "Home" | "Help" | "Materials";
 
 export type LoadingState = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
-
-
 /**
  * Loading state type
  */
