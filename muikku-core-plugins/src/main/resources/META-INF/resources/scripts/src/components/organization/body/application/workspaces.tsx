@@ -47,7 +47,6 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (props) =>
   );
 }
 
-
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,

@@ -66,7 +66,6 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (props) =>
   );
 }
 
-
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
