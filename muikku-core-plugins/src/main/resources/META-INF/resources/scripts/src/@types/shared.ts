@@ -4,6 +4,14 @@
 export type PageLocation = "Home" | "Help" | "Materials";
 
 /**
+ * Loading items state type
+ */
+
+export type LoadingState = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+
+
+
+/**
  * Loading state type
  */
 export type SaveState =
@@ -60,7 +68,7 @@ export interface ExaminationSubject {
  */
 export interface ExaminationInformation
   extends MatriculationStudent,
-    MatriculationStudentExamination {
+  MatriculationStudentExamination {
   date: string;
 }
 
