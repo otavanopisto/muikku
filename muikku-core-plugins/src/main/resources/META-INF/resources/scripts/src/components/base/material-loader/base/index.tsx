@@ -23,6 +23,7 @@ import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from '~/components/base/material-loader/static/table';
 import MathJAX from '~/components/base/material-loader/static/mathjax';
 import { UsedAs } from '~/@types/shared';
+import { AudioPoolComponent } from '~/components/general/audio-pool-component';
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -493,7 +494,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       {
         shouldProcessHTMLElement: (tagname) => tagname === "audio",
         preprocessReactProperties: (tag, props, children, element) => {
-          props.preload = "metadata";
+          props.preload = "none";
+        },
+        processingFunction: (tag, props, children, element) => {
+          return (<AudioPoolComponent {...props}>{children}</AudioPoolComponent>);
         }
       },
       {

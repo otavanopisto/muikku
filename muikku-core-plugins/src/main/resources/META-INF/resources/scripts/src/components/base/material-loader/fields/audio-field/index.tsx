@@ -8,6 +8,7 @@ import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import Synchronizer from "../base/synchronizer";
+import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 
 //so we use the media recorder
 //the media recorder is polyfilled
@@ -347,7 +348,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         if (!value.uploading) {
           //if the value is not uploading, we set it as static
           return <span className="material-page__audiofield-file-container" key={index}>
-            <audio className="material-page__audiofield-file" controls src={value.url} preload="metadata"/>
+            <AudioPoolComponent className="material-page__audiofield-file" controls src={value.url} preload="none"/>
             <Link className="material-page__audiofield-download-file-button icon-download"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/>
 
