@@ -37,7 +37,9 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (props) =>
     <ApplicationList>
       {workspaces.map((workspace: WorkspaceType, index) => {
         if (workspaces.length === index + 1) {
-          return <div key={workspace.id} ref={loadMoreWorkspacesRef}><Workspace key={workspace.id} workspace={workspace} /></div>
+          return <div key={workspace.id} ref={loadMoreWorkspacesRef}>
+            <Workspace workspace={workspace} />
+          </div>
         } else {
           return <Workspace key={workspace.id} workspace={workspace} />
         }
