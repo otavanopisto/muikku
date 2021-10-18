@@ -1,31 +1,30 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
-import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
 public class AssessmentRequestController {
+  
+  @Inject
+  private Logger logger;
   
   @Inject
   private AssessmentRequestMessageIdDAO assessmentRequestMessageIdDAO;
@@ -86,84 +85,59 @@ public class AssessmentRequestController {
   public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     
-    // List all asssessments, latest first
-    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
-        workspaceEntity.getDataSource().getIdentifier(), 
-        workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-    workspaceAssessments.sort(Comparator.comparing(WorkspaceAssessment::getDate).reversed());
-
-    // List all unhandled assessment requests, latest first
-    List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
-        workspaceEntity.getDataSource().getIdentifier(), 
-        workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-    if (!assessmentRequests.isEmpty()) {
-      // Strip assessment requests that have been handled (TODO could be handled in Pyramus)
-      for (int i = assessmentRequests.size() - 1; i >= 0; i--) {
-        if (assessmentRequests.get(i).getHandled()) {
-          assessmentRequests.remove(i);
-        }
-      }
-      assessmentRequests.sort(Comparator.comparing(WorkspaceAssessmentRequest::getDate).reversed());
-    }
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+    SchoolDataIdentifier userIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier();
     
-    // List latest supplementation request
-    UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
-        userEntity.getId(),
-        workspaceEntity.getId(),
-        Boolean.FALSE);
+    // Ask activity with user + workspace combo
     
-    WorkspaceAssessment latestAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
-    // #3927: Assessment without grade are anomalies from Pyramus so treat them as such 
-    if (latestAssessment != null && (latestAssessment.getGradeIdentifier() == null || latestAssessment.getGradingScaleIdentifier() == null)) {
-      latestAssessment = null;
-    }
-    WorkspaceAssessmentRequest latestRequest = assessmentRequests.isEmpty() ? null : assessmentRequests.get(0);
-      
-    // #4008: Incomplete if supplementation request exists and is newer than latest assessment or assessment request
-    if (supplementationRequest != null) {
-      if (latestAssessment == null || (latestAssessment != null && supplementationRequest.getRequestDate().after(latestAssessment.getDate()))) {
-        if (latestRequest == null || (latestRequest != null && supplementationRequest.getRequestDate().after(latestRequest.getDate()))) {
-          return new WorkspaceAssessmentState(WorkspaceAssessmentState.INCOMPLETE, supplementationRequest.getRequestDate(), supplementationRequest.getRequestText());
-        }
-      }
-    }
-    GradingScale gradingScale = null;
-    GradingScaleItem grade = null;
-    if (latestAssessment != null) {
-      gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
-      grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier());
-      
-      if (gradingScale == null || grade == null) {
-        latestAssessment = null;
-      }
-    }
-    if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
-
-      // Has assessment and no request, or the request is older
-   
-      return grade.isPassingGrade()
-          ? new WorkspaceAssessmentState(WorkspaceAssessmentState.PASS, latestAssessment.getDate(), latestAssessment.getVerbalAssessment(), grade.getName(), latestAssessment.getDate())
-          : new WorkspaceAssessmentState(WorkspaceAssessmentState.FAIL, latestAssessment.getDate(), latestAssessment.getVerbalAssessment(), grade.getName(), latestAssessment.getDate());
-    }
-    else if (latestRequest != null && (latestAssessment == null || latestAssessment.getDate().before(latestRequest.getDate()))) {
-      // Has request and no assessment, or the assessment is older
-      if (latestAssessment == null) {
-        return new WorkspaceAssessmentState(WorkspaceAssessmentState.PENDING, latestRequest.getDate(), latestRequest.getRequestText());
-      }
-      else if (Boolean.TRUE.equals(latestAssessment.getPassing())) {
-        return new WorkspaceAssessmentState(WorkspaceAssessmentState.PENDING_PASS, latestRequest.getDate(), latestRequest.getRequestText(), grade.getName(), latestAssessment.getDate());
-      }
-      else {
-        return new WorkspaceAssessmentState(WorkspaceAssessmentState.PENDING_FAIL, latestRequest.getDate(), latestRequest.getRequestText(), grade.getName(), latestAssessment.getDate());
-      }
-    }
-    else {
-      // Has neither assessment nor request
+    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
+        userIdentifier,
+        workspaceIdentifier,
+        false,
+        false);
+    if (activities.isEmpty()) {
+      logger.warning(String.format("WorkspaceUserEntity %d not found in Pyramus", workspaceUserEntity.getId()));
       return new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
     }
+    WorkspaceActivity activity = activities.get(0);
+    
+    // Convert WorkspaceActivityState to WorkspaceAssessmentState
+    
+    String state = null;
+    switch (activity.getState()) {
+    case ASSESSMENT_REQUESTED:
+      state = WorkspaceAssessmentState.PENDING;
+      if (activity.getGrade() != null) {
+        if (activity.getPassingGrade()) {
+          state = WorkspaceAssessmentState.PENDING_PASS;
+        }
+        else {
+          state = WorkspaceAssessmentState.PENDING_FAIL;
+        }
+      }
+      break;
+    case GRADED:
+      if (activity.getPassingGrade()) {
+        state = WorkspaceAssessmentState.PASS;
+      }
+      else {
+        state = WorkspaceAssessmentState.FAIL;
+      }
+      break;
+    case SUPPLEMENTATION_REQUESTED:
+      state = WorkspaceAssessmentState.INCOMPLETE;
+      break;
+    case ONGOING:
+    case TRANSFERRED:
+    default:
+      state = WorkspaceAssessmentState.UNASSESSED;
+      break;
+    }
+    
+    // Return the state
+    // TODO Refactor functionality using this method to just use WorkspaceActivity instead
+    
+    return new WorkspaceAssessmentState(state, activity.getDate(), activity.getText(), activity.getGrade(), activity.getGradeDate());
   }
 
   public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, SchoolDataIdentifier assessmentRequestIdentifier) {

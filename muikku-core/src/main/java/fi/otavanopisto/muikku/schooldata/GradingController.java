@@ -49,7 +49,6 @@ public class GradingController {
     return gradingSchoolDataController.listWorkspaceActivities(schoolDataSource, studentIdentifier, workspaceIdentifier, includeTransferCredits);
   }
   
-  
   /* CompositeGradingScale */
   
   public List<CompositeGradingScale> listCompositeGradingScales() {

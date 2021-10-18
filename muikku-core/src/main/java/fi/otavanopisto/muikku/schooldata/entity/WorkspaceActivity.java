@@ -109,12 +109,21 @@ public class WorkspaceActivity {
     this.text = text;
   }
 
+  public Date getGradeDate() {
+    return gradeDate;
+  }
+
+  public void setGradeDate(Date gradeDate) {
+    this.gradeDate = gradeDate;
+  }
+
   private Long id;
   private String identifier;
   private String name;
   private List<String> curriculumIdentifiers;
   private String grade;
   private Boolean passingGrade;
+  private Date gradeDate;
   private Date date;
   private String text;
   private WorkspaceActivityState state;

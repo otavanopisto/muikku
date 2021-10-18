@@ -395,9 +395,11 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       }
       activity.setName(response[i].getCourseName());
       activity.setGrade(response[i].getGrade());
+      activity.setGradeDate(response[i].getGradeDate());
       activity.setPassingGrade(response[i].getPassingGrade());
       activity.setState(WorkspaceActivityState.valueOf(response[i].getState().toString()));
       activity.setDate(response[i].getActivityDate());
+      activity.setText(response[i].getText());
       activities.add(activity);
     }
     
