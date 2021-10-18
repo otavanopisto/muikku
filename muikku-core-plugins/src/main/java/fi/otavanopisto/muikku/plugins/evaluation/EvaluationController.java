@@ -119,7 +119,7 @@ public class EvaluationController {
       
       // WorkspaceEntityId
       
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource,  activity.getIdentifier());
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, activity.getIdentifier());
       if (workspaceEntity == null) {
         logger.warning(String.format("Pyramus course %s not found", activity.getIdentifier()));
         continue;
@@ -216,13 +216,13 @@ public class EvaluationController {
 
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
     WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
-        workspaceMaterial.getId(),  
-        gradingScale.getIdentifier(), 
-        gradingScale.getSchoolDataSource(), 
-        grade.getIdentifier(), 
-        grade.getSchoolDataSource(), 
-        assessor.getId(), 
-        evaluated, 
+        workspaceMaterial.getId(),
+        gradingScale.getIdentifier(),
+        gradingScale.getSchoolDataSource(),
+        grade.getIdentifier(),
+        grade.getSchoolDataSource(),
+        assessor.getId(),
+        evaluated,
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
