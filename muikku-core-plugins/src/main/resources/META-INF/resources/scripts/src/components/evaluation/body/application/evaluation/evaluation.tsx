@@ -102,6 +102,7 @@ export const CKEditorConfig = (locale: string) => ({
     { name: "links", items: ["Link", "Unlink"] },
     { name: "colors", items: ["TextColor", "BGColor"] },
     "/",
+    { name: 'styles', items: [ 'Format' ] },
     {
       name: "paragraph",
       items: [

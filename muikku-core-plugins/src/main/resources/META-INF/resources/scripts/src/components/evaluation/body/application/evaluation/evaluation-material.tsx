@@ -20,6 +20,7 @@ import {
   UpdateOpenedAssignmentEvaluationId,
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import "~/sass/elements/rich-text.scss";
 
 /**
  * EvaluationMaterialProps
@@ -498,7 +499,7 @@ export class EvaluationMaterial extends React.Component<
                             )}
                           </div>
                           <div
-                            className="evaluation-modal__item-literal-assessment-data"
+                            className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
                             dangerouslySetInnerHTML={this.createHtmlMarkup(
                               props.compositeReplies.evaluationInfo.text
                             )}
