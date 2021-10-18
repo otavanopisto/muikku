@@ -51,7 +51,7 @@ interface EvaluationDrawerState {
   edit?: boolean;
   showContent: boolean;
   listOfDiaryIds: number[];
-  listOfMaterialIds: number[];
+  listOfAssignmentIds: number[];
   diaryFetched: boolean;
   materialFetched: boolean;
 }
@@ -146,7 +146,7 @@ export class Evaluation extends React.Component<
       openAllDiaryEntries: true,
       openAllMaterialContent: false,
       listOfDiaryIds: [],
-      listOfMaterialIds: [],
+      listOfAssignmentIds: [],
       diaryFetched: false,
       materialFetched: false,
     };
@@ -163,18 +163,18 @@ export class Evaluation extends React.Component<
   ) {
     if (
       !this.state.diaryFetched &&
-      this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
-      this.props.evaluation.evaluationCompositeReplies.state === "READY"
+      this.props.evaluation.evaluationCurrentStudentAssigments &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.state === "READY"
     ) {
       const numberList =
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
           (item) => item.id
         );
 
       this.setState({
         diaryFetched: true,
-        listOfMaterialIds: numberList,
+        listOfAssignmentIds: numberList,
       });
     }
 
@@ -381,7 +381,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllMaterialContentClick = () => {
     this.setState({
-      listOfMaterialIds: [],
+      listOfAssignmentIds: [],
     });
   };
 
@@ -390,16 +390,16 @@ export class Evaluation extends React.Component<
    */
   handleOpenAllMaterialContentClick = () => {
     if (
-      this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data
+      this.props.evaluation.evaluationCurrentStudentAssigments &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data
     ) {
       const numberList =
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
           (item) => item.id
         );
 
       this.setState({
-        listOfMaterialIds: numberList,
+        listOfAssignmentIds: numberList,
       });
     }
   };
@@ -409,12 +409,12 @@ export class Evaluation extends React.Component<
    * @param materialId
    */
   handleCloseSpecificMaterialContent = (materialId: number) => {
-    const listOfMaterialIds = this.state.listOfMaterialIds.filter(
+    const listOfAssignmentIds = this.state.listOfAssignmentIds.filter(
       (id) => id !== materialId
     );
 
     this.setState({
-      listOfMaterialIds,
+      listOfAssignmentIds,
     });
   };
 
@@ -443,7 +443,7 @@ export class Evaluation extends React.Component<
    * @param id
    */
   handleOpenMaterialClick = (id: number) => {
-    let updatedList = [...this.state.listOfMaterialIds];
+    let updatedList = [...this.state.listOfAssignmentIds];
 
     const index = updatedList.findIndex((itemId) => itemId === id);
 
@@ -454,7 +454,7 @@ export class Evaluation extends React.Component<
     }
 
     this.setState({
-      listOfMaterialIds: updatedList,
+      listOfAssignmentIds: updatedList,
     });
   };
 
@@ -558,12 +558,12 @@ export class Evaluation extends React.Component<
      * renderEvaluationAssessmentAssignments
      */
     const renderEvaluationAssessmentAssignments =
-      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data.materials
+      this.props.evaluation.evaluationCurrentStudentAssigments.data &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments
         .length > 0 ? (
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
           (item, i) => {
-            const open = this.state.listOfMaterialIds.includes(item.id);
+            const open = this.state.listOfAssignmentIds.includes(item.id);
 
             return (
               <EvaluationAssessmentAssignment
@@ -576,7 +576,7 @@ export class Evaluation extends React.Component<
                 )}
                 open={open}
                 onClickOpen={this.handleOpenMaterialClick}
-                material={item}
+                assigment={item}
                 onSave={this.handleCloseSpecificMaterialContent}
               />
             );
@@ -611,7 +611,7 @@ export class Evaluation extends React.Component<
                   {this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.assignmentsTitle"
                   )}
-                  {this.props.evaluation.evaluationCurrentSelectedRecords
+                  {this.props.evaluation.evaluationCurrentStudentAssigments
                     .state === "READY" &&
                   this.props.evaluation.evaluationCompositeReplies.state ===
                     "READY" ? (
@@ -637,7 +637,7 @@ export class Evaluation extends React.Component<
                 </>
               </div>
               <div className="evaluation-modal__content-body">
-                {this.props.evaluation.evaluationCurrentSelectedRecords
+                {this.props.evaluation.evaluationCurrentStudentAssigments
                   .state === "READY" &&
                 this.props.evaluation.evaluationCompositeReplies.state ===
                   "READY" ? (

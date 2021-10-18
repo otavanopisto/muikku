@@ -16,16 +16,20 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import { i18nType } from "~/reducers/base/i18n";
 import {
-  SaveEvaluationAssignmentSupplementation,
-  saveAssignmentEvaluationSupplementationToServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
-  SaveEvaluationAssignmentGradeEvaluation,
-  saveAssignmentEvaluationGradeToServer,
+  UpdateCurrentStudentEvaluationCompositeRepliesData,
+  updateCurrentStudentCompositeRepliesData,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
+import mApi from "~/lib/mApi";
+import notificationActions from "~/actions/base/notifications";
+import {
+  AssignmentEvaluationGradeRequest,
+  AssignmentEvaluationSaveReturn,
+  AssignmentEvaluationSupplementationRequest,
+} from "~/@types/evaluation";
+import promisify from "~/util/promisify";
 
 /**
  * AssignmentEditorProps
@@ -40,8 +44,10 @@ interface AssignmentEditorProps {
   locale: LocaleListType;
   editorLabel?: string;
   modifiers?: string[];
-  saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
-  saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation;
+  updateMaterialEvaluationData: (
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+  ) => void;
+  updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   onClose?: () => void;
   onAssigmentSave?: (materialId: number) => void;
 }
@@ -160,10 +166,135 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
+   * saveAssignmentEvaluationGradeToServer
+   */
+  saveAssignmentEvaluationGradeToServer = async (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+    dataToSave: AssignmentEvaluationGradeRequest;
+    materialId: number;
+    defaultGrade: string;
+  }) => {
+    const {
+      workspaceEntityId,
+      userEntityId,
+      workspaceMaterialId,
+      dataToSave,
+      defaultGrade,
+    } = data;
+
+    try {
+      await promisify(
+        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
+          workspaceEntityId,
+          userEntityId,
+          workspaceMaterialId,
+          {
+            ...dataToSave,
+          }
+        ),
+        "callback"
+      )().then(async (data: AssignmentEvaluationSaveReturn) => {
+        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+
+        this.props.updateCurrentStudentCompositeRepliesData({
+          workspaceId: workspaceEntityId,
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+        });
+
+        this.props.updateMaterialEvaluationData(data);
+
+        this.setStateAndClear(
+          {
+            literalEvaluation: "",
+            grade: defaultGrade,
+            assignmentEvaluationType: "GRADED",
+          },
+          this.state.draftId
+        );
+      });
+    } catch (error) {
+      notificationActions.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.evaluation.notifications.saveAssigmentGrade.error",
+          error.message
+        ),
+        "error"
+      );
+    }
+  };
+
+  /**
+   * saveAssignmentEvaluationSupplementationToServer
+   * @param data
+   */
+  saveAssignmentEvaluationSupplementationToServer = async (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+    dataToSave: AssignmentEvaluationSupplementationRequest;
+    materialId: number;
+    defaultGrade: string;
+  }) => {
+    const {
+      workspaceEntityId,
+      userEntityId,
+      workspaceMaterialId,
+      dataToSave,
+      defaultGrade,
+    } = data;
+    try {
+      await promisify(
+        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
+          workspaceEntityId,
+          userEntityId,
+          workspaceMaterialId,
+          {
+            ...dataToSave,
+          }
+        ),
+        "callback"
+      )().then(async () => {
+        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+
+        /**
+         * Compositereplies needs to be updated by loading new values from server, just for
+         * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
+         */
+
+        this.props.updateCurrentStudentCompositeRepliesData({
+          workspaceId: workspaceEntityId,
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+        });
+
+        this.setStateAndClear(
+          {
+            literalEvaluation: "",
+            grade: defaultGrade,
+            assignmentEvaluationType: "INCOMPLETE",
+          },
+          this.state.draftId
+        );
+      });
+    } catch (error) {
+      notificationActions.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
+          error.message
+        ),
+        "error"
+      );
+    }
+  };
+
+  /**
    * handleSaveAssignment
    * @param e
    */
-  handleSaveAssignment = (
+  handleSaveAssignment = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
@@ -181,7 +312,7 @@ class AssignmentEditor extends SessionStateComponent<
       if (this.props.onClose) {
         this.props.onClose();
       }
-      this.props.saveAssignmentEvaluationGradeToServer({
+      await this.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
             .workspaceEntityId,
@@ -196,17 +327,7 @@ class AssignmentEditor extends SessionStateComponent<
           assessmentDate: new Date().getTime(),
         },
         materialId: this.props.materialAssignment.materialId,
-        onSuccess: () => {
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-              grade: defaultGrade,
-              assignmentEvaluationType: "GRADED",
-            },
-            this.state.draftId
-          );
-        },
-        onFail: () => this.props.onClose(),
+        defaultGrade,
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
       if (this.props.onAssigmentSave) {
@@ -217,7 +338,7 @@ class AssignmentEditor extends SessionStateComponent<
         this.props.onClose();
       }
 
-      this.props.saveAssignmentEvaluationSupplementationToServer({
+      this.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
             .workspaceEntityId,
@@ -233,17 +354,7 @@ class AssignmentEditor extends SessionStateComponent<
           requestText: this.state.literalEvaluation,
         },
         materialId: this.props.materialAssignment.materialId,
-        onSuccess: () => {
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-              grade: defaultGrade,
-              assignmentEvaluationType: "INCOMPLETE",
-            },
-            this.state.draftId
-          );
-        },
-        onFail: () => this.props.onClose(),
+        defaultGrade,
       });
     }
   };
@@ -488,8 +599,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      saveAssignmentEvaluationGradeToServer,
-      saveAssignmentEvaluationSupplementationToServer,
+      updateCurrentStudentCompositeRepliesData,
     },
     dispatch
   );

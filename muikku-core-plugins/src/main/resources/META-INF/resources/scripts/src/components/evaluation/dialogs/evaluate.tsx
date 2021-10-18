@@ -13,20 +13,12 @@ import { StatusType } from "~/reducers/base/status";
 import {
   LoadBasePrice,
   loadBasePriceFromServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
+  LoadEvaluationCurrentStudentAssigments,
+  loadCurrentStudentAssigmentsData,
   LoadEvaluationStudyDiaryEvent,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
   LoadEvaluationCompositeReplies,
   loadEvaluationCompositeRepliesFromServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
-  SetCurrentStudentEvaluationData,
-  setCurrentStudentEvaluationData,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
   UpdateEvaluationSelectedAssessment,
   updateSelectedAssessment,
 } from "~/actions/main-function/evaluation/evaluationActions";
@@ -43,7 +35,7 @@ interface EvaluateDialogProps {
   status: StatusType;
   assessment: AssessmentRequest;
   updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
-  setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData;
+  loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer: LoadEvaluationStudyDiaryEvent;
   loadBasePriceFromServer: LoadBasePrice;
@@ -79,13 +71,13 @@ class EvaluateDialog extends React.Component<
       userEntityId: this.props.assessment.userEntityId,
       workspaceId: assessment.workspaceEntityId,
     });
+    this.props.loadCurrentStudentAssigmentsData({
+      workspaceId: assessment.workspaceEntityId,
+    });
     this.props.loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer({
       assessment,
     });
-    this.props.setCurrentStudentEvaluationData({
-      userEntityId: this.props.assessment.userEntityId,
-      workspaceId: this.props.assessment.workspaceEntityId,
-    });
+
     this.props.loadBasePriceFromServer({
       workspaceEntityId: assessment.workspaceEntityId,
     });
@@ -146,7 +138,8 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       updateSelectedAssessment,
-      setCurrentStudentEvaluationData,
+      loadCurrentStudentAssigmentsData,
+
       loadEvaluationCompositeRepliesFromServer,
       loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
       loadBasePriceFromServer,
