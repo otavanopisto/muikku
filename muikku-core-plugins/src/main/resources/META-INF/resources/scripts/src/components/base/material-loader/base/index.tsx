@@ -114,7 +114,7 @@ function preprocessor($html: any): any {
   });
 
   $html.find('audio').each(function () {
-    $(this).attr("preload", "metadata");
+    $(this).attr("preload", "none");
   })
 
   $html.find('source').each(function () {
@@ -494,7 +494,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       {
         shouldProcessHTMLElement: (tagname) => tagname === "audio",
         preprocessReactProperties: (tag, props, children, element) => {
-          props.preload = "metadata";
+          props.preload = "none";
         },
         processingFunction: (tag, props, children, element) => {
           return (<AudioPoolComponent {...props} invisible={invisible}>{children}</AudioPoolComponent>);

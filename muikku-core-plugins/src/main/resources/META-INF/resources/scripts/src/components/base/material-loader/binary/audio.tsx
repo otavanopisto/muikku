@@ -12,7 +12,7 @@ export default function Audio(props: {
       className="material-page__audiofield-file"
       controls
       src={`/rest/materials/binary/${props.material.materialId}/content`}
-      preload="metadata"
+      preload="none"
     />
   </div>
 }
