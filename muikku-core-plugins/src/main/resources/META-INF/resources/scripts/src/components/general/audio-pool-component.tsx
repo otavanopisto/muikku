@@ -1,7 +1,9 @@
 import * as React from "react";
 import * as uuid from "uuid";
 
-interface IAudioPoolComponentProps extends React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement> {}
+interface IAudioPoolComponentProps extends React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement> {
+  invisible?: boolean;
+}
 
 interface IAudioPoolComponentState {
   key: string;
@@ -38,6 +40,10 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
         // all the events are irrelevant to when it does
         // its networking
         streaming: false,
+        // a hack of a property that says if it's playing
+        // but in reality just specified if once it started
+        // playing because there's no way to know
+        playing: false,
       }
     }
   }
@@ -48,6 +54,7 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
     delete (window as any).AUDIOPOOL[this.univId];
   }
   public kill() {
+    (window as any).AUDIOPOOL[this.univId].playing = false;
     // first we kill the standard to remove
     // the sources as well as its children
     this.setState({
@@ -72,6 +79,9 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
     });
   }
   public killEverything() {
+    this.initialSetup();
+    (window as any).AUDIOPOOL[this.univId].playing = true;
+
     // since I am not allowed to know by the HTML specs
     // what is currently streaming because no single event
     // wants to tell me what is currently streaming and what isn't
@@ -83,14 +93,19 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
       if (key === this.univId) {
         return;
       }
-      (window as any).AUDIOPOOL[key].component.kill();
+      (window as any).AUDIOPOOL[key].playing && (window as any).AUDIOPOOL[key].component.kill();
     });
   }
   public render() {
-    if (this.state.killed) {
-      const newProps = {...this.props};
+    const newProps = {...this.props};
+    delete newProps.invisible;
+
+    if (this.props.invisible || this.state.killed) {
       delete newProps.src;
       delete newProps.children;
+    }
+
+    if (this.state.killed) {
       return (
         <audio {...newProps} key={this.state.key} ref={this.audioRef}/>
       );
