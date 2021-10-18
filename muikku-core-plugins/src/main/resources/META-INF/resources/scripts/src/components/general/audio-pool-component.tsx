@@ -1,9 +1,7 @@
 import * as React from "react";
 import * as uuid from "uuid";
 
-interface IAudioPoolComponentProps extends React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement> {
-
-}
+interface IAudioPoolComponentProps extends React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement> {}
 
 interface IAudioPoolComponentState {
   key: string;
@@ -63,7 +61,7 @@ export class AudioPoolComponent extends React.Component<IAudioPoolComponentProps
       this.setState({
         key: "killed",
       }, () => {
-        
+
         // now we want to restore it back to original
         // and all buffering should've been cancelled
         this.setState({
