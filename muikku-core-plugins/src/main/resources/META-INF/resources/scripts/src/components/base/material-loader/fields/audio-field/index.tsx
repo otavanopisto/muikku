@@ -348,7 +348,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         if (!value.uploading) {
           //if the value is not uploading, we set it as static
           return <span className="material-page__audiofield-file-container" key={index}>
-            <AudioPoolComponent className="material-page__audiofield-file" controls src={value.url} preload="none"/>
+            <AudioPoolComponent className="material-page__audiofield-file" controls src={value.url} preload="metadata"/>
             <Link className="material-page__audiofield-download-file-button icon-download"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/>
 
