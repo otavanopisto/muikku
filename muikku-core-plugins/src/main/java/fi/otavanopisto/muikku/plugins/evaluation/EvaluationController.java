@@ -37,7 +37,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.schooldata.GradingController;
-import fi.otavanopisto.muikku.schooldata.GradingSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -81,9 +80,6 @@ public class EvaluationController {
   private GradingController gradingController;
   
   @Inject
-  private GradingSchoolDataController gradingSchoolDataController;
-
-  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -105,7 +101,7 @@ public class EvaluationController {
     
     // Ask base information from Pyramus
     
-    List<WorkspaceActivity> activities = gradingSchoolDataController.listWorkspaceActivities(
+    List<WorkspaceActivity> activities = gradingController.listWorkspaceActivities(
         dataSource,
         studentIdentifier.getIdentifier(),
         workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
