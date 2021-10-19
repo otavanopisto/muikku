@@ -10,6 +10,7 @@ import {
   loadStudents,
   loadStaff,
 } from "~/actions/main-function/users";
+
 interface OrganizationUsersProps {
   i18n: i18nType;
   users: UsersType;

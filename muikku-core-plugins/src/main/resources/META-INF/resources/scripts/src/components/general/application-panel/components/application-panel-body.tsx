@@ -2,7 +2,8 @@ import * as React from "react";
 
 interface ApplicationPanelBodyProps {
   modifier?: string;
-  primaryOption?: React.ReactElement<any>;
+  primaryOption?: React.ReactElement<any> | Array<React.ReactElement<any>>;
+  primaryOptionMobile?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   toolbar?: React.ReactElement<any>;
   asideBefore?: React.ReactElement<any>;
   asideAfter?: React.ReactElement<any>;
@@ -22,6 +23,7 @@ export default class ApplicationPanelBody extends React.Component<
     const {
       modifier,
       primaryOption,
+      primaryOptionMobile,
       toolbar,
       children,
       asideAfter,
@@ -32,8 +34,7 @@ export default class ApplicationPanelBody extends React.Component<
 
       <div className={`application-panel__body ${
           modifier ? "application-panel__body--" + modifier : ""
-        }`}
-      >
+        }`}>
         <div className={`application-panel__actions ${
             modifier ? "application-panel__actions--" + modifier : ""
           }`}>
@@ -79,6 +80,7 @@ export default class ApplicationPanelBody extends React.Component<
             </div>
           ) : null}
         </div>
+        {primaryOptionMobile}
       </div>
     );
   }
