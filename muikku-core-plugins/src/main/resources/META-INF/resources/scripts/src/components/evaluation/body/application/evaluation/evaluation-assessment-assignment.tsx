@@ -580,7 +580,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   )}
                 </div>
                 <div
-                  className="evaluation-modal__item-literal-assessment-data"
+                  className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
                   dangerouslySetInnerHTML={this.createHtmlMarkup(
                     compositeReply.evaluationInfo.text
                   )}
