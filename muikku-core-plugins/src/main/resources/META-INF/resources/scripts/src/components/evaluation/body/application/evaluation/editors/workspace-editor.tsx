@@ -23,7 +23,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
-import { CKEditorConfig } from "../evaluation"
+import { CKEditorConfig } from "../evaluation";
 
 /**
  * WorkspaceEditorProps
@@ -35,6 +35,7 @@ interface WorkspaceEditorProps {
   locale: LocaleListType;
   type?: "new" | "edit";
   editorLabel?: string;
+  eventId?: string;
   onSuccesfulSave?: () => void;
   onClose?: () => void;
   updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation;
@@ -95,10 +96,19 @@ class WorkspaceEditor extends SessionStateComponent<
       (evaluationAssessmentEvents.data.length > 0 && props.type !== "new") ||
       (evaluationAssessmentEvents.data.length > 0 && props.type === "edit")
     ) {
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
+
+      /**
+       * If editing existing event, we need to find that specific event from event list by its' id
+       */
+      if (this.props.eventId) {
+        latestEvent = evaluationAssessmentEvents.data.find(
+          (eItem) => eItem.identifier === this.props.eventId
+        );
+      }
 
       const eventId =
         evaluationAssessmentEvents.data.length > 0 && latestEvent.identifier
@@ -180,7 +190,7 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * Latest event data
        */
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
@@ -189,6 +199,15 @@ class WorkspaceEditor extends SessionStateComponent<
        * if editing...
        */
       if (this.props.type === "edit") {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        if (this.props.eventId) {
+          latestEvent = evaluationAssessmentEvents.data.find(
+            (eItem) => eItem.identifier === this.props.eventId
+          );
+        }
+
         let existingBilledPriceObject: BilledPrice | undefined = undefined;
 
         /**
@@ -329,7 +348,7 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * Latest event data
        */
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
@@ -397,6 +416,15 @@ class WorkspaceEditor extends SessionStateComponent<
           onFail: () => onClose(),
         });
       } else {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        if (this.props.eventId) {
+          latestEvent = evaluationAssessmentEvents.data.find(
+            (eItem) => eItem.identifier === this.props.eventId
+          );
+        }
+
         if (this.state.basePriceFromServer) {
           /**
            * If we have exixting price object
@@ -429,7 +457,7 @@ class WorkspaceEditor extends SessionStateComponent<
             gradingScaleIdentifier: `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`,
             gradeIdentifier: grade,
             verbalAssessment: literalEvaluation,
-            assessmentDate: new Date().getTime().toString(),
+            assessmentDate: latestEvent.date,
           },
           onSuccess: () => {
             cleanWorkspaceAndSupplementationDrafts(this.state.draftId);
@@ -459,42 +487,9 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       if (this.state.basePriceFromServer) {
         /**
-         * Latest event data
-         */
-        const latestEvent =
-          evaluationAssessmentEvents.data[
-            evaluationAssessmentEvents.data.length - 1
-          ];
-
-        let isRaised = false;
-        /**
-         * There is change that no previous events exists
-         */
-        if (latestEvent) {
-          /**
-           * Check if raising grade or giving new one
-           * By default it is false
-           */
-          isRaised = type === "new" && this.isGraded(latestEvent.type);
-        }
-
-        /**
          * setting base price if enabled
          */
         billingPrice = this.state.basePriceFromServer.toString();
-
-        /**
-         * If raised then half of base price
-         */
-        if (isRaised) {
-          billingPrice = (this.state.basePriceFromServer / 2).toString();
-          /**
-           * But if selected price is there, then that over anything else
-           */
-          if (this.state.selectedPriceOption) {
-            billingPrice = this.state.selectedPriceOption.toString();
-          }
-        }
       }
 
       /**
@@ -668,10 +663,19 @@ class WorkspaceEditor extends SessionStateComponent<
     /**
      * We want to get latest event data
      */
-    const latestEvent =
+    let latestEvent =
       evaluationAssessmentEvents.data[
         evaluationAssessmentEvents.data.length - 1
       ];
+
+    /**
+     * If editing existing event, we need to find that specific event from event list by its' id
+     */
+    if (this.props.eventId && type === "edit") {
+      latestEvent = evaluationAssessmentEvents.data.find(
+        (eItem) => eItem.identifier === this.props.eventId
+      );
+    }
 
     /**
      * Check if raising grade or giving new one
@@ -810,7 +814,8 @@ class WorkspaceEditor extends SessionStateComponent<
 
           <CKEditor
             onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}>
+            configuration={CKEditorConfig(this.props.locale.current)}
+          >
             {this.state.literalEvaluation}
           </CKEditor>
         </div>

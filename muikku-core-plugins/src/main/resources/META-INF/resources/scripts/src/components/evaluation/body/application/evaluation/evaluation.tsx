@@ -46,6 +46,7 @@ interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
   showWorkspaceSupplemenationDrawer: boolean;
+  eventByIdOpened?: string;
   openAllDiaryEntries: boolean;
   openAllMaterialContent: boolean;
   edit?: boolean;
@@ -53,7 +54,6 @@ interface EvaluationDrawerState {
   listOfDiaryIds: number[];
   listOfAssignmentIds: number[];
   diaryFetched: boolean;
-  materialFetched: boolean;
 }
 
 export const CKEditorConfig = (locale: string) => ({
@@ -148,7 +148,6 @@ export class Evaluation extends React.Component<
       listOfDiaryIds: [],
       listOfAssignmentIds: [],
       diaryFetched: false,
-      materialFetched: false,
     };
   }
 
@@ -163,25 +162,9 @@ export class Evaluation extends React.Component<
   ) {
     if (
       !this.state.diaryFetched &&
-      this.props.evaluation.evaluationCurrentStudentAssigments &&
-      this.props.evaluation.evaluationCurrentStudentAssigments.data &&
-      this.props.evaluation.evaluationCurrentStudentAssigments.state === "READY"
-    ) {
-      const numberList =
-        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
-          (item) => item.id
-        );
-
-      this.setState({
-        diaryFetched: true,
-        listOfAssignmentIds: numberList,
-      });
-    }
-
-    if (
-      !this.state.diaryFetched &&
       this.props.evaluation.evaluationDiaryEntries &&
-      this.props.evaluation.evaluationDiaryEntries.data
+      this.props.evaluation.evaluationDiaryEntries.data &&
+      this.props.evaluation.evaluationDiaryEntries.state === "READY"
     ) {
       const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
         (item) => item.id
@@ -264,6 +247,7 @@ export class Evaluation extends React.Component<
   handleWorkspaceEvaluationCloseDrawer = () => {
     if (this.state.edit) {
       this.setState({
+        eventByIdOpened: undefined,
         edit: false,
         showWorkspaceEvaluationDrawer: false,
       });
@@ -289,6 +273,7 @@ export class Evaluation extends React.Component<
   handleWorkspaceSupplementationEvaluationCloseDrawer = () => {
     if (this.state.edit) {
       this.setState({
+        eventByIdOpened: undefined,
         edit: false,
         showWorkspaceSupplemenationDrawer: false,
       });
@@ -334,17 +319,19 @@ export class Evaluation extends React.Component<
    * @param supplementation
    */
   handleClickEdit =
-    (supplementation?: boolean) =>
+    (eventId: string, supplementation?: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (supplementation) {
         this.setState({
           edit: true,
           showWorkspaceSupplemenationDrawer: true,
+          eventByIdOpened: eventId,
         });
       } else {
         this.setState({
           edit: true,
           showWorkspaceEvaluationDrawer: true,
+          eventByIdOpened: eventId,
         });
       }
     };
@@ -717,6 +704,7 @@ export class Evaluation extends React.Component<
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
                 >
                   <WorkspaceEditor
+                    eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                     )}
@@ -737,6 +725,7 @@ export class Evaluation extends React.Component<
                   }
                 >
                   <SupplementationEditor
+                    eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                     )}

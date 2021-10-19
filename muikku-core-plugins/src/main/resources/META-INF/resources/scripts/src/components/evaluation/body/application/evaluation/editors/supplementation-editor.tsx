@@ -21,7 +21,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import { LocaleListType } from "~/reducers/base/locales";
-import { CKEditorConfig } from "../evaluation"
+import { CKEditorConfig } from "../evaluation";
 
 /**
  * SupplementationEditorProps
@@ -32,6 +32,7 @@ interface SupplementationEditorProps {
   evaluations: EvaluationState;
   locale: LocaleListType;
   type?: "new" | "edit";
+  eventId?: string;
   editorLabel?: string;
   modifiers?: string[];
   onClose?: () => void;
@@ -78,10 +79,19 @@ class SupplementationEditor extends SessionStateComponent<
       (evaluationAssessmentEvents.data.length > 0 && props.type !== "new") ||
       (evaluationAssessmentEvents.data.length > 0 && props.type === "edit")
     ) {
-      const latestEvent =
+      let latestEvent =
         evaluationAssessmentEvents.data[
           evaluationAssessmentEvents.data.length - 1
         ];
+
+      /**
+       * If editing existing event, we need to find that specific event from event list by its' id
+       */
+      if (this.props.eventId) {
+        latestEvent = evaluationAssessmentEvents.data.find(
+          (eItem) => eItem.identifier === this.props.eventId
+        );
+      }
 
       const eventId =
         evaluationAssessmentEvents.data.length > 0 && latestEvent.identifier
@@ -117,11 +127,20 @@ class SupplementationEditor extends SessionStateComponent<
   componentDidMount = () => {
     const { evaluationAssessmentEvents } = this.props.evaluations;
 
-    const latestIndex =
+    let latestIndex =
       evaluationAssessmentEvents.data &&
       evaluationAssessmentEvents.data.length - 1;
 
     if (this.props.type === "edit") {
+      if (this.props.eventId) {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        latestIndex = evaluationAssessmentEvents.data.findIndex(
+          (eItem) => eItem.identifier === this.props.eventId
+        );
+      }
+
       this.setState(
         this.getRecoverStoredState(
           {
@@ -191,9 +210,18 @@ class SupplementationEditor extends SessionStateComponent<
       /**
        * Latest assessments event index whom identifier we want to get
        */
-      const latestIndex =
+      let latestIndex =
         evaluationAssessmentEvents.data &&
         evaluationAssessmentEvents.data.length - 1;
+
+      if (this.props.eventId) {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        latestIndex = evaluationAssessmentEvents.data.findIndex(
+          (eItem) => eItem.identifier === this.props.eventId
+        );
+      }
 
       this.props.updateWorkspaceSupplementationToServer({
         type: "edit",
@@ -201,7 +229,9 @@ class SupplementationEditor extends SessionStateComponent<
           id:
             evaluationAssessmentEvents.data &&
             evaluationAssessmentEvents.data[latestIndex].identifier,
-          requestDate: new Date().getTime().toString(),
+          requestDate:
+            evaluationAssessmentEvents.data &&
+            evaluationAssessmentEvents.data[latestIndex].date,
           requestText: this.state.literalEvaluation,
         },
         onSuccess: () => {
@@ -231,9 +261,18 @@ class SupplementationEditor extends SessionStateComponent<
   handleDeleteEditorDraft = () => {
     if (this.props.type === "edit") {
       const { evaluationAssessmentEvents } = this.props.evaluations;
-      const latestIndex =
+      let latestIndex =
         evaluationAssessmentEvents.data &&
         evaluationAssessmentEvents.data.length - 1;
+
+      if (this.props.eventId) {
+        /**
+         * If editing existing event, we need to find that specific event from event list by its' id
+         */
+        latestIndex = evaluationAssessmentEvents.data.findIndex(
+          (eItem) => eItem.identifier === this.props.eventId
+        );
+      }
 
       /**
        * If editing delete draft, and set back to default values from event data
@@ -275,7 +314,8 @@ class SupplementationEditor extends SessionStateComponent<
 
           <CKEditor
             onChange={this.handleCKEditorChange}
-            configuration={CKEditorConfig(this.props.locale.current)}>
+            configuration={CKEditorConfig(this.props.locale.current)}
+          >
             {this.state.literalEvaluation}
           </CKEditor>
         </div>
@@ -299,7 +339,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           {this.recovered && (
             <Button
-            buttonModifiers="evaluate-remove-draft"
+              buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
