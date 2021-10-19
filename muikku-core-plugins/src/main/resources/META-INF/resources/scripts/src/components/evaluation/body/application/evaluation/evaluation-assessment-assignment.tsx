@@ -13,6 +13,9 @@ import "~/sass/elements/evaluation.scss";
 interface EvaluationAssessmentAssignmentProps {
   workspace: WorkspaceType;
   material: MaterialContentNodeType;
+  open: boolean;
+  onClickOpen?: (id: number) => void;
+  onSave?: (materialId: number) => void;
 }
 
 /**
@@ -40,6 +43,9 @@ class EvaluationAssessmentAssignment extends React.Component<
         <EvaluationMaterial
           workspace={this.props.workspace}
           material={this.props.material}
+          openContent={this.props.open}
+          onClickOpen={this.props.onClickOpen}
+          onSave={this.props.onSave}
         />
       )
     );

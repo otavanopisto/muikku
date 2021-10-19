@@ -132,6 +132,8 @@ $color-evaluation-card-header-background: #f8f8f8;
 $color-evaluation-modal-meta-background: #f8f8f8;
 $color-evaluation-item-border: #ebebeb;
 
+$color-evaluation-readonly-taskfield-background: #ebf7ff;
+
 // Wizard
 $color-wizard-todo: $color-grade-not-assessed;
 $color-wizard-doing: $color-incomplete;
@@ -442,7 +444,6 @@ $color-form-element-border: #62c3eb;
 $color-form-element-selected: #29b0c4;
 
 $color-form-element-autocomplete-highlight: #ffc200;
-
 
 // Form field input tag
 $color-form-element-selected-item-background:  $color-label-background;

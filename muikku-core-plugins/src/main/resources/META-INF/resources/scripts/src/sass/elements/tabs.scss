@@ -31,6 +31,7 @@
 
 .tabs__tab-labels--mobile {
   display: flex;
+
   @include breakpoint($breakpoint-pad) {
     display: none;
   }

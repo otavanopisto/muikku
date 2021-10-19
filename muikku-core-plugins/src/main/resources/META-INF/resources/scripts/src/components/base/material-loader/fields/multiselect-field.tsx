@@ -5,6 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
+import { UsedAs } from "~/@types/shared";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -18,6 +19,7 @@ interface MultiSelectFieldProps {
       correct: boolean
     }>
   },
+  usedAs: UsedAs;
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
@@ -68,7 +70,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
   shouldComponentUpdate(nextProps: MultiSelectFieldProps, nextState: MultiSelectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
-    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError
+    || nextProps.invisible !== this.props.invisible;
   }
   checkAnswers(){
     //if we are not allowed we return
