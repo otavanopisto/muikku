@@ -25,7 +25,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import { AudioAssessment } from "../../../../../../@types/evaluation";
+import { AudioAssessment } from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 
 /**
@@ -286,31 +286,6 @@ class ExcerciseEditor extends SessionStateComponent<
           </CKEditor>
         </div>
 
-        <div className="evaluation-modal__evaluate-drawer-row form-element">
-          <label className="evaluation-modal__evaluate-drawer-row-label">
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
-            )}
-          </label>
-          <div className="evaluation-modal__evaluate-drawer-row-data">
-            <div className="evaluation-modal__evaluate-drawer-row-item">
-              <input
-                id="assignmentEvaluationTypeINCOMPLETE"
-                type="checkbox"
-                name="assignmentEvaluationType"
-                value="INCOMPLETE"
-                checked={this.state.needsSupplementation}
-                onChange={this.handleAssignmentEvaluationChange}
-              />
-              <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
-                )}
-              </label>
-            </div>
-          </div>
-        </div>
-
         <div className="evaluation-modal__evaluate-drawer-row  form-element">
           <AnimateHeight height={!this.state.needsSupplementation ? "auto" : 0}>
             <label
@@ -321,12 +296,10 @@ class ExcerciseEditor extends SessionStateComponent<
                 "plugin.evaluation.evaluationModal.audioAssessments"
               )}
             </label>
-            <div className="recorder-container">
-              <Recorder
-                onChange={this.handleAudioAssessmentChange}
-                values={this.state.audioAssessments}
-              />
-            </div>
+            <Recorder
+              onChange={this.handleAudioAssessmentChange}
+              values={this.state.audioAssessments}
+            />
           </AnimateHeight>
         </div>
 
