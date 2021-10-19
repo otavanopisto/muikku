@@ -386,11 +386,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     if (this.itsFirstTime) {
       let stateFilters = [
         {
-          identifier: "unpublished",
+          identifier: "UNPUBLISHED",
           name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.unpublished.label')
         },
         {
-          identifier: "published",
+          identifier: "PUBLISHED",
           name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.published.label')
         }
       ];
@@ -411,7 +411,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
       let loadWorkspacesByUser = (user: UserType) => {
         if (!currentLocationHasData) {
-          let defaultSelections: any = {};
+          let defaultSelections: any = {
+            p: ["PUBLISHED"]
+          };
           if (user.organizationIdentifier) {
             defaultSelections["o"] = [user.organizationIdentifier];
           }

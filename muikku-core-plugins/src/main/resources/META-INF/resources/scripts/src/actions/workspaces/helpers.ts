@@ -78,13 +78,17 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
     // When base filter is 'Unpublished'
   } else if (actualFilters.baseFilter === "UNPUBLISHED") {
     publicity = "ONLY_UNPUBLISHED";
-    // When state filter has unpublished selected (this is possible in organization management)
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("published") && actualFilters.stateFilters.includes("unpublished")) {
+    // When state filter has unpublished and published selected (this is possible in organization management)
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("PUBLISHED") && actualFilters.stateFilters.includes("UNPUBLISHED")) {
     publicity = "LIST_ALL";
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
+    // When state filter has only unpublished selected (this is possible in organization management)
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("UNPUBLISHED")) {
     publicity = "ONLY_UNPUBLISHED";
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("published")) {
+    // When state filter has only published selected (this is possible in organization management)
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("PUBLISHED")) {
     publicity = "ONLY_PUBLISHED";
+  } else if (loadOrganizationWorkspaces) {
+    publicity = "LIST_ALL";
   }
 
   let params = {};
