@@ -3,6 +3,7 @@ import {
   WorkspaceJournalListType,
   MaterialContentNodeListType,
   MaterialCompositeRepliesType,
+  MaterialAssignmentType,
 } from "../reducers/workspaces/index";
 /**
  * EvaluationEnum
@@ -280,6 +281,10 @@ export interface AssignmentEvaluationSupplementationRequest {
  */
 export interface EvaluationData {
   materials: MaterialContentNodeListType;
+}
+
+export interface EvaluationAssigmentData {
+  assigments: MaterialAssignmentType[];
 }
 
 /**

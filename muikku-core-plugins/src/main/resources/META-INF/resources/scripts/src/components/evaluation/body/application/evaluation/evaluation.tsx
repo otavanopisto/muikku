@@ -46,14 +46,14 @@ interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
   showWorkspaceSupplemenationDrawer: boolean;
+  eventByIdOpened?: string;
   openAllDiaryEntries: boolean;
   openAllMaterialContent: boolean;
   edit?: boolean;
   showContent: boolean;
   listOfDiaryIds: number[];
-  listOfMaterialIds: number[];
+  listOfAssignmentIds: number[];
   diaryFetched: boolean;
-  materialFetched: boolean;
 }
 
 export const CKEditorConfig = (locale: string) => ({
@@ -65,6 +65,7 @@ export const CKEditorConfig = (locale: string) => ({
   entities_greek: false,
   language: locale,
   format_tags: "p;h3;h4",
+  colorButton_colors: "000000,800000,8B4513,2F4F4F,008080,000080,4B0082,B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080,FF0000,FF8C00,FFD700,008000,00FFFF,0000FF,EE82EE,A9A9A9,FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3,FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFFFFF",
   height: 400,
   mathJaxLib:
     "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
@@ -102,6 +103,7 @@ export const CKEditorConfig = (locale: string) => ({
     { name: "links", items: ["Link", "Unlink"] },
     { name: "colors", items: ["TextColor", "BGColor"] },
     "/",
+    { name: 'styles', items: [ 'Format' ] },
     {
       name: "paragraph",
       items: [
@@ -146,9 +148,8 @@ export class Evaluation extends React.Component<
       openAllDiaryEntries: true,
       openAllMaterialContent: false,
       listOfDiaryIds: [],
-      listOfMaterialIds: [],
+      listOfAssignmentIds: [],
       diaryFetched: false,
-      materialFetched: false,
     };
   }
 
@@ -163,25 +164,9 @@ export class Evaluation extends React.Component<
   ) {
     if (
       !this.state.diaryFetched &&
-      this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
-      this.props.evaluation.evaluationCompositeReplies.state === "READY"
-    ) {
-      const numberList =
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
-          (item) => item.id
-        );
-
-      this.setState({
-        diaryFetched: true,
-        listOfMaterialIds: numberList,
-      });
-    }
-
-    if (
-      !this.state.diaryFetched &&
       this.props.evaluation.evaluationDiaryEntries &&
-      this.props.evaluation.evaluationDiaryEntries.data
+      this.props.evaluation.evaluationDiaryEntries.data &&
+      this.props.evaluation.evaluationDiaryEntries.state === "READY"
     ) {
       const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
         (item) => item.id
@@ -264,6 +249,7 @@ export class Evaluation extends React.Component<
   handleWorkspaceEvaluationCloseDrawer = () => {
     if (this.state.edit) {
       this.setState({
+        eventByIdOpened: undefined,
         edit: false,
         showWorkspaceEvaluationDrawer: false,
       });
@@ -289,6 +275,7 @@ export class Evaluation extends React.Component<
   handleWorkspaceSupplementationEvaluationCloseDrawer = () => {
     if (this.state.edit) {
       this.setState({
+        eventByIdOpened: undefined,
         edit: false,
         showWorkspaceSupplemenationDrawer: false,
       });
@@ -334,17 +321,19 @@ export class Evaluation extends React.Component<
    * @param supplementation
    */
   handleClickEdit =
-    (supplementation?: boolean) =>
+    (eventId: string, supplementation?: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (supplementation) {
         this.setState({
           edit: true,
           showWorkspaceSupplemenationDrawer: true,
+          eventByIdOpened: eventId,
         });
       } else {
         this.setState({
           edit: true,
           showWorkspaceEvaluationDrawer: true,
+          eventByIdOpened: eventId,
         });
       }
     };
@@ -381,7 +370,7 @@ export class Evaluation extends React.Component<
    */
   handleCloseAllMaterialContentClick = () => {
     this.setState({
-      listOfMaterialIds: [],
+      listOfAssignmentIds: [],
     });
   };
 
@@ -390,16 +379,16 @@ export class Evaluation extends React.Component<
    */
   handleOpenAllMaterialContentClick = () => {
     if (
-      this.props.evaluation.evaluationCurrentSelectedRecords &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data
+      this.props.evaluation.evaluationCurrentStudentAssigments &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data
     ) {
       const numberList =
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
           (item) => item.id
         );
 
       this.setState({
-        listOfMaterialIds: numberList,
+        listOfAssignmentIds: numberList,
       });
     }
   };
@@ -409,12 +398,12 @@ export class Evaluation extends React.Component<
    * @param materialId
    */
   handleCloseSpecificMaterialContent = (materialId: number) => {
-    const listOfMaterialIds = this.state.listOfMaterialIds.filter(
+    const listOfAssignmentIds = this.state.listOfAssignmentIds.filter(
       (id) => id !== materialId
     );
 
     this.setState({
-      listOfMaterialIds,
+      listOfAssignmentIds,
     });
   };
 
@@ -443,7 +432,7 @@ export class Evaluation extends React.Component<
    * @param id
    */
   handleOpenMaterialClick = (id: number) => {
-    let updatedList = [...this.state.listOfMaterialIds];
+    let updatedList = [...this.state.listOfAssignmentIds];
 
     const index = updatedList.findIndex((itemId) => itemId === id);
 
@@ -454,7 +443,7 @@ export class Evaluation extends React.Component<
     }
 
     this.setState({
-      listOfMaterialIds: updatedList,
+      listOfAssignmentIds: updatedList,
     });
   };
 
@@ -558,12 +547,12 @@ export class Evaluation extends React.Component<
      * renderEvaluationAssessmentAssignments
      */
     const renderEvaluationAssessmentAssignments =
-      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data.materials
+      this.props.evaluation.evaluationCurrentStudentAssigments.data &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments
         .length > 0 ? (
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
           (item, i) => {
-            const open = this.state.listOfMaterialIds.includes(item.id);
+            const open = this.state.listOfAssignmentIds.includes(item.id);
 
             return (
               <EvaluationAssessmentAssignment
@@ -576,7 +565,7 @@ export class Evaluation extends React.Component<
                 )}
                 open={open}
                 onClickOpen={this.handleOpenMaterialClick}
-                material={item}
+                assigment={item}
                 onSave={this.handleCloseSpecificMaterialContent}
               />
             );
@@ -611,7 +600,7 @@ export class Evaluation extends React.Component<
                   {this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.assignmentsTitle"
                   )}
-                  {this.props.evaluation.evaluationCurrentSelectedRecords
+                  {this.props.evaluation.evaluationCurrentStudentAssigments
                     .state === "READY" &&
                   this.props.evaluation.evaluationCompositeReplies.state ===
                     "READY" ? (
@@ -637,7 +626,7 @@ export class Evaluation extends React.Component<
                 </>
               </div>
               <div className="evaluation-modal__content-body">
-                {this.props.evaluation.evaluationCurrentSelectedRecords
+                {this.props.evaluation.evaluationCurrentStudentAssigments
                   .state === "READY" &&
                 this.props.evaluation.evaluationCompositeReplies.state ===
                   "READY" ? (
@@ -717,6 +706,7 @@ export class Evaluation extends React.Component<
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
                 >
                   <WorkspaceEditor
+                    eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                     )}
@@ -737,6 +727,7 @@ export class Evaluation extends React.Component<
                   }
                 >
                   <SupplementationEditor
+                    eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                     )}
