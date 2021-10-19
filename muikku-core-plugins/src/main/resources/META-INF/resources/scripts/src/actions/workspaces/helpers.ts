@@ -75,12 +75,16 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
   // When base filter is 'My courses'
   if (actualFilters.baseFilter === "MY_COURSES") {
     myWorkspaces = true;
-  // When base filter is 'Unpublished'
+    // When base filter is 'Unpublished'
   } else if (actualFilters.baseFilter === "UNPUBLISHED") {
     publicity = "ONLY_UNPUBLISHED";
-  // When state filter has unpublished selected (this is possible in organization management)
-  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
+    // When state filter has unpublished selected (this is possible in organization management)
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("published") && actualFilters.stateFilters.includes("unpublished")) {
     publicity = "LIST_ALL";
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("unpublished")) {
+    publicity = "ONLY_UNPUBLISHED";
+  } else if (loadOrganizationWorkspaces && actualFilters.stateFilters && actualFilters.stateFilters.includes("published")) {
+    publicity = "ONLY_PUBLISHED";
   }
 
   let params = {};
