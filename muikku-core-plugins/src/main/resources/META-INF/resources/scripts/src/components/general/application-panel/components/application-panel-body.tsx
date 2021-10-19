@@ -2,14 +2,15 @@ import * as React from "react";
 
 interface ApplicationPanelBodyProps {
   modifier?: string;
-  primaryOption?: React.ReactElement<any>;
+  primaryOption?: React.ReactElement<any> | Array<React.ReactElement<any>>;
+  primaryOptionMobile?: React.ReactElement<any> | Array<React.ReactElement<any>>;
   toolbar?: React.ReactElement<any>;
   asideBefore?: React.ReactElement<any>;
   asideAfter?: React.ReactElement<any>;
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
 }
 
-interface ApplicationPanelBodyState {}
+interface ApplicationPanelBodyState { }
 
 export default class ApplicationPanelBody extends React.Component<
   ApplicationPanelBodyProps,
@@ -22,6 +23,7 @@ export default class ApplicationPanelBody extends React.Component<
     const {
       modifier,
       primaryOption,
+      primaryOptionMobile,
       toolbar,
       children,
       asideAfter,
@@ -29,30 +31,26 @@ export default class ApplicationPanelBody extends React.Component<
     } = this.props;
 
     return (
+
       <div className={`application-panel__body ${
           modifier ? "application-panel__body--" + modifier : ""
-        }`}
-      >
+        }`}>
         <div className={`application-panel__actions ${
             modifier ? "application-panel__actions--" + modifier : ""
-          }`}
-        >
+          }`}>
           {primaryOption ? (
             <div
-              className={`application-panel__helper-container application-panel__helper-container--main-action ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
-              }`}
-            >
+              className={`application-panel__helper-container application-panel__helper-container--main-action ${modifier
+                ? "application-panel__helper-container--" + modifier
+                : ""
+                }`}>
               {primaryOption}
             </div>
           ) : null}
           {toolbar ? (
             <div className={`application-panel__main-container application-panel__main-container--actions ${
                 modifier ? "application-panel__main-container--" + modifier : ""
-              }`}
-            >
+              }`}>
               {toolbar}
             </div>
           ) : null}
@@ -63,11 +61,10 @@ export default class ApplicationPanelBody extends React.Component<
         >
           {asideBefore ? (
             <div
-              className={`application-panel__helper-container ${
-                modifier
-                  ? "application-panel__helper-container--" + modifier
-                  : ""
-              }`}
+              className={`application-panel__helper-container ${modifier
+                ? "application-panel__helper-container--" + modifier
+                : ""
+                }`}
             >
               {asideBefore}
             </div>
@@ -83,6 +80,7 @@ export default class ApplicationPanelBody extends React.Component<
             </div>
           ) : null}
         </div>
+        {primaryOptionMobile}
       </div>
     );
   }
