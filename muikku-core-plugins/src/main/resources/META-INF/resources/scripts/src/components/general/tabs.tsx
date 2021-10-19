@@ -13,6 +13,7 @@ export interface TabType {
   id: string,
   name: string,
   type?: string,
+  mobileAction?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   component: () => React.ReactElement<any>
 }
 
@@ -48,6 +49,7 @@ class Tabs extends React.Component<TabsProps, TabsState>{
       el: ".tabs__pagination-container",
       modifierClass: "tabs__pagination-container--"
     }
+
     return <div className={`tabs ${this.props.modifier ? "tabs--" + this.props.modifier : ""}`}>
       <div className={`tabs__tab-labels ${this.props.modifier ? "tabs__tab-labels--" + this.props.modifier : ""}`}>
         {this.props.tabs.map((tab, index) => {
@@ -63,15 +65,16 @@ class Tabs extends React.Component<TabsProps, TabsState>{
           </div>)}
       </div>
       <Swiper modules={[A11y, Pagination]} a11y={a11yConfig} pagination={paginationConfig} className="tabs__tab-data-container tabs__tab-data-container--mobile">
-        {this.props.tabs.map(t => <SwiperSlide key={t.id} >
-          <div className="tabs__mobile-tab">
-            <div>{t.name}</div>
-            <div className="tabs__pagination-container"></div>
-          </div>
-          {t.component()}
-        </SwiperSlide>)}
+        {this.props.tabs.map(t =>
+          <SwiperSlide key={t.id} >
+            <div className="tabs__mobile-tab">
+              <div className="tabs__pagination-container"> </div>
+              <div>{t.name}</div>
+              {t.mobileAction ? t.mobileAction : <div className="tabs__mobile-tab-spacer" />}
+            </div>
+            {t.component()}
+          </SwiperSlide>)}
       </Swiper>
-
     </div>
   }
 }

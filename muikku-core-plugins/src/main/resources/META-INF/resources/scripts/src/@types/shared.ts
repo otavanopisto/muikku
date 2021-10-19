@@ -1,4 +1,9 @@
 /**
+ * UsedAs
+ */
+export type UsedAs = "default" | "evaluationTool";
+
+/**
  * PageLocation type
  */
 export type PageLocation = "Home" | "Help" | "Materials";

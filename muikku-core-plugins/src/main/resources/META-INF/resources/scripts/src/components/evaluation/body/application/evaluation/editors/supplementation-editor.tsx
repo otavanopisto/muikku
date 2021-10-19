@@ -20,6 +20,8 @@ import {
   updateNeedsReloadEvaluationRequests,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
+import { LocaleListType } from "~/reducers/base/locales";
+import { CKEditorConfig } from "../evaluation"
 
 /**
  * SupplementationEditorProps
@@ -28,6 +30,7 @@ interface SupplementationEditorProps {
   i18n: i18nType;
   status: StatusType;
   evaluations: EvaluationState;
+  locale: LocaleListType;
   type?: "new" | "edit";
   editorLabel?: string;
   modifiers?: string[];
@@ -270,7 +273,9 @@ class SupplementationEditor extends SessionStateComponent<
             </label>
           )}
 
-          <CKEditor onChange={this.handleCKEditorChange}>
+          <CKEditor
+            onChange={this.handleCKEditorChange}
+            configuration={CKEditorConfig(this.props.locale.current)}>
             {this.state.literalEvaluation}
           </CKEditor>
         </div>
@@ -317,6 +322,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
+    locale: state.locales,
   };
 }
 

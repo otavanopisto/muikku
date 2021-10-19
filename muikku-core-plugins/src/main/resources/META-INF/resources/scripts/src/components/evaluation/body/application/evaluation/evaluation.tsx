@@ -29,6 +29,7 @@ import {
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
 import { WorkspaceType } from "~/reducers/workspaces";
+import Link from "~/components/general/link";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
@@ -45,9 +46,88 @@ interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
   showWorkspaceSupplemenationDrawer: boolean;
+  openAllDiaryEntries: boolean;
+  openAllMaterialContent: boolean;
   edit?: boolean;
   showContent: boolean;
+  listOfDiaryIds: number[];
+  listOfMaterialIds: number[];
+  diaryFetched: boolean;
+  materialFetched: boolean;
 }
+
+export const CKEditorConfig = (locale: string) => ({
+  linkShowTargetTab: true,
+  forcePasteAsPlainText: true,
+  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
+  entities: false,
+  entities_latin: false,
+  entities_greek: false,
+  language: locale,
+  format_tags: "p;h3;h4",
+  colorButton_colors: "000000,800000,8B4513,2F4F4F,008080,000080,4B0082,B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080,FF0000,FF8C00,FFD700,008000,00FFFF,0000FF,EE82EE,A9A9A9,FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3,FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFFFFF",
+  height: 400,
+  mathJaxLib:
+    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [
+    {
+      name: "clipboard",
+      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"],
+    },
+    {
+      name: "basicstyles",
+      items: [
+        "Bold",
+        "Italic",
+        "Underline",
+        "Strike",
+        "Subscript",
+        "Superscript",
+        "-",
+        "RemoveFormat",
+      ],
+    },
+    "/",
+    {
+      name: "insert",
+      items: [
+        "Image",
+        "Audio",
+        "oembed",
+        "Muikku-mathjax",
+        "Table",
+        "SpecialChar",
+      ],
+    },
+    { name: "links", items: ["Link", "Unlink"] },
+    { name: "colors", items: ["TextColor", "BGColor"] },
+    "/",
+    { name: 'styles', items: [ 'Format' ] },
+    {
+      name: "paragraph",
+      items: [
+        "NumberedList",
+        "BulletedList",
+        "-",
+        "Outdent",
+        "Indent",
+        "-",
+        "JustifyLeft",
+        "JustifyCenter",
+        "JustifyRight",
+        "JustifyBlock",
+        "-",
+        "BidiLtr",
+        "BidiRtl",
+      ],
+    },
+    { name: "tools", items: ["Maximize"] },
+  ],
+  removePlugins: "image",
+  resize_enabled: true,
+  extraPlugins: "divarea,image2,muikku-mathjax",
+});
 
 export class Evaluation extends React.Component<
   EvaluationDrawerProps,
@@ -65,7 +145,55 @@ export class Evaluation extends React.Component<
       showWorkspaceEvaluationDrawer: false,
       showWorkspaceSupplemenationDrawer: false,
       showContent: false,
+      openAllDiaryEntries: true,
+      openAllMaterialContent: false,
+      listOfDiaryIds: [],
+      listOfMaterialIds: [],
+      diaryFetched: false,
+      materialFetched: false,
     };
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   */
+  componentDidUpdate(
+    prevProps: EvaluationDrawerProps,
+    prevState: EvaluationDrawerState
+  ) {
+    if (
+      !this.state.diaryFetched &&
+      this.props.evaluation.evaluationCurrentSelectedRecords &&
+      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
+      this.props.evaluation.evaluationCompositeReplies.state === "READY"
+    ) {
+      const numberList =
+        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+          (item) => item.id
+        );
+
+      this.setState({
+        diaryFetched: true,
+        listOfMaterialIds: numberList,
+      });
+    }
+
+    if (
+      !this.state.diaryFetched &&
+      this.props.evaluation.evaluationDiaryEntries &&
+      this.props.evaluation.evaluationDiaryEntries.data
+    ) {
+      const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
+        (item) => item.id
+      );
+
+      this.setState({
+        diaryFetched: true,
+        listOfDiaryIds: numberList,
+      });
+    }
   }
 
   /**
@@ -224,6 +352,115 @@ export class Evaluation extends React.Component<
     };
 
   /**
+   * handleCloseAllDiaryEntries
+   */
+  handleCloseAllDiaryEntriesClick = () => {
+    this.setState({
+      listOfDiaryIds: [],
+    });
+  };
+
+  /**
+   * handleOpenAllDiaryEntries
+   */
+  handleOpenAllDiaryEntriesClick = () => {
+    if (
+      this.props.evaluation.evaluationDiaryEntries &&
+      this.props.evaluation.evaluationDiaryEntries.data
+    ) {
+      const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
+        (item) => item.id
+      );
+
+      this.setState({
+        listOfDiaryIds: numberList,
+      });
+    }
+  };
+
+  /**
+   * handleCloseAllMaterialContentEntriesClick
+   */
+  handleCloseAllMaterialContentClick = () => {
+    this.setState({
+      listOfMaterialIds: [],
+    });
+  };
+
+  /**
+   * handleOpenAllMaterialContentClick
+   */
+  handleOpenAllMaterialContentClick = () => {
+    if (
+      this.props.evaluation.evaluationCurrentSelectedRecords &&
+      this.props.evaluation.evaluationCurrentSelectedRecords.data
+    ) {
+      const numberList =
+        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
+          (item) => item.id
+        );
+
+      this.setState({
+        listOfMaterialIds: numberList,
+      });
+    }
+  };
+
+  /**
+   * handleCloseSpecificMaterialContent
+   * @param materialId
+   */
+  handleCloseSpecificMaterialContent = (materialId: number) => {
+    const listOfMaterialIds = this.state.listOfMaterialIds.filter(
+      (id) => id !== materialId
+    );
+
+    this.setState({
+      listOfMaterialIds,
+    });
+  };
+
+  /**
+   * handleOpenDiaryEntryClick
+   * @param id
+   */
+  handleOpenDiaryEntryClick = (id: number) => {
+    let updatedList = [...this.state.listOfDiaryIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
+    this.setState({
+      listOfDiaryIds: updatedList,
+    });
+  };
+
+  /**
+   * handleOpenDiaryEntryClick
+   * @param id
+   */
+  handleOpenMaterialClick = (id: number) => {
+    let updatedList = [...this.state.listOfMaterialIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
+    this.setState({
+      listOfMaterialIds: updatedList,
+    });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -233,9 +470,18 @@ export class Evaluation extends React.Component<
     const evaluationDiaryEvents =
       this.props.evaluation.evaluationDiaryEntries.data &&
       this.props.evaluation.evaluationDiaryEntries.data.length > 0 ? (
-        this.props.evaluation.evaluationDiaryEntries.data.map((item) => (
-          <EvaluationDiaryEvent key={item.id} {...item} />
-        ))
+        this.props.evaluation.evaluationDiaryEntries.data.map((item) => {
+          const isOpen = this.state.listOfDiaryIds.includes(item.id);
+
+          return (
+            <EvaluationDiaryEvent
+              key={item.id}
+              open={isOpen}
+              {...item}
+              onClickOpen={this.handleOpenDiaryEntryClick}
+            />
+          );
+        })
       ) : (
         <div className="empty">
           <span>
@@ -318,18 +564,25 @@ export class Evaluation extends React.Component<
       this.props.evaluation.evaluationCurrentSelectedRecords.data.materials
         .length > 0 ? (
         this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
-          (item, i) => (
-            <EvaluationAssessmentAssignment
-              key={i}
-              workspace={workspaces.find(
-                (eWorkspace) =>
-                  eWorkspace.id ===
-                  this.props.evaluation.evaluationSelectedAssessmentId
-                    .workspaceEntityId
-              )}
-              material={item}
-            />
-          )
+          (item, i) => {
+            const open = this.state.listOfMaterialIds.includes(item.id);
+
+            return (
+              <EvaluationAssessmentAssignment
+                key={i}
+                workspace={workspaces.find(
+                  (eWorkspace) =>
+                    eWorkspace.id ===
+                    this.props.evaluation.evaluationSelectedAssessmentId
+                      .workspaceEntityId
+                )}
+                open={open}
+                onClickOpen={this.handleOpenMaterialClick}
+                material={item}
+                onSave={this.handleCloseSpecificMaterialContent}
+              />
+            );
+          }
         )
       ) : (
         <div className="empty">
@@ -356,9 +609,34 @@ export class Evaluation extends React.Component<
           <div className="evaluation-modal__content-wrapper">
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentsTitle"
-                )}
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentsTitle"
+                  )}
+                  {this.props.evaluation.evaluationCurrentSelectedRecords
+                    .state === "READY" &&
+                  this.props.evaluation.evaluationCompositeReplies.state ===
+                    "READY" ? (
+                    <div className="evaluation-modal__content-actions">
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleCloseAllMaterialContentClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.closeAll"
+                        )}
+                      </Link>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleOpenAllMaterialContentClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.openAll"
+                        )}
+                      </Link>
+                    </div>
+                  ) : null}
+                </>
               </div>
               <div className="evaluation-modal__content-body">
                 {this.props.evaluation.evaluationCurrentSelectedRecords
@@ -373,9 +651,32 @@ export class Evaluation extends React.Component<
             </div>
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalTitle"
-                )}
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalTitle"
+                  )}
+                  {this.props.evaluation.evaluationDiaryEntries.state ===
+                  "READY" ? (
+                    <div className="evaluation-modal__content-actions">
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleCloseAllDiaryEntriesClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.closeAll"
+                        )}
+                      </Link>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleOpenAllDiaryEntriesClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.openAll"
+                        )}
+                      </Link>
+                    </div>
+                  ) : null}
+                </>
               </div>
               <div className="evaluation-modal__content-body">
                 {this.props.evaluation.evaluationDiaryEntries.state ===
