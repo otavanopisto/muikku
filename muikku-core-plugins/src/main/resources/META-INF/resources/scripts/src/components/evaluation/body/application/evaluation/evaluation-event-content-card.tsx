@@ -10,6 +10,7 @@ import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
+import "~/sass/elements/rich-text.scss";
 
 /**
  * EvaluationEventContentCardProps
@@ -231,7 +232,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 
         <AnimateHeight duration={300} height={height}>
           <div
-            className="evaluation-modal__event-literal-assessment"
+            className="evaluation-modal__event-literal-assessment rich-text rich-text--evaluation-literal"
             dangerouslySetInnerHTML={createHtmlMarkup(text)}
           />
         </AnimateHeight>
