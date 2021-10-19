@@ -23,6 +23,7 @@ import {
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { RecordValue } from "../../../../../@types/recorder";
 import ExcerciseEditor from "./editors/excercise-editor";
+import "~/sass/elements/rich-text.scss";
 
 /**
  * EvaluationMaterialProps

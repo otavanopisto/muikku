@@ -63,6 +63,7 @@ const extraConfig = (props: CKEditorProps) => ({
   entities_latin: false,
   entities_greek: false,
   entities: false,
+  format_tags: "p;h3;h4",
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'links', items: [ 'Link' ] },
