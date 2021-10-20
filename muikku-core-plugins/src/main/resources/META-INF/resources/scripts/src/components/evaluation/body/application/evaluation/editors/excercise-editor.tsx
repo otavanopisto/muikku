@@ -1,32 +1,35 @@
 import * as React from "react";
-import CKEditor from "~/components/general/ckeditor";
-import "~/sass/elements/evaluation.scss";
-import SessionStateComponent from "~/components/general/session-state-component";
+import AnimateHeight from "react-animate-height";
+import { i18nType } from "../../../../../../reducers/base/i18n";
+import {
+  MaterialEvaluationType,
+  MaterialAssignmentType,
+  MaterialCompositeRepliesType,
+} from "../../../../../../reducers/workspaces/index";
+import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
+import { StatusType } from "../../../../../../reducers/base/status";
+import {
+  AudioAssessment,
+  AssignmentEvaluationSupplementationRequest,
+  AssignmentEvaluationGradeRequest,
+  AssignmentEvaluationSaveReturn,
+} from "../../../../../../@types/evaluation";
+import SessionStateComponent from "../../../../../general/session-state-component";
+import CKEditor from "../../../../../general/ckeditor";
+import Button from "../../../../../general/button";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers/index";
-import { AnyActionType } from "~/actions/index";
-import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import {
-  MaterialAssignmentType,
-  MaterialEvaluationType,
-} from "~/reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
-import Button from "~/components/general/button";
-import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
-import {
-  SaveEvaluationAssignmentSupplementation,
-  saveAssignmentEvaluationSupplementationToServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
-  SaveEvaluationAssignmentGradeEvaluation,
-  saveAssignmentEvaluationGradeToServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import "~/sass/elements/form-elements.scss";
+import { AnyActionType } from "../../../../../../actions/index";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import { AudioAssessment } from "~/@types/evaluation";
-import AnimateHeight from "react-animate-height";
+import mApi from "~/lib/mApi";
+import promisify from "../../../../../../util/promisify";
+import { StateType } from "reducers";
+import { displayNotification } from "~/actions/base/notifications";
+import { DisplayNotificationTriggerType } from "../../../../../../actions/base/notifications";
+import {
+  UpdateCurrentStudentEvaluationCompositeRepliesData,
+  updateCurrentStudentCompositeRepliesData,
+} from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * AssignmentEditorProps
@@ -38,10 +41,13 @@ interface AssignmentEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
+  updateMaterialEvaluationData: (
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+  ) => void;
+  updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
+  displayNotification: DisplayNotificationTriggerType;
   editorLabel?: string;
   modifiers?: string[];
-  saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
-  saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation;
   onClose?: () => void;
 }
 
@@ -129,6 +135,109 @@ class ExcerciseEditor extends SessionStateComponent<
   };
 
   /**
+   * saveAssignmentEvaluationGradeToServer
+   */
+  saveAssignmentEvaluationGradeToServer = async (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+    dataToSave: AssignmentEvaluationGradeRequest;
+    materialId: number;
+  }) => {
+    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
+      data;
+
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
+
+    try {
+      await promisify(
+        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
+          workspaceEntityId,
+          userEntityId,
+          workspaceMaterialId,
+          {
+            ...dataToSave,
+          }
+        ),
+        "callback"
+      )().then(async (data: AssignmentEvaluationSaveReturn) => {
+        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+
+        this.props.updateCurrentStudentCompositeRepliesData({
+          workspaceId: workspaceEntityId,
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+        });
+
+        this.props.updateMaterialEvaluationData(data);
+      });
+    } catch (error) {
+      this.props.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.evaluation.notifications.saveAssigmentGrade.error",
+          error.message
+        ),
+        "error"
+      );
+    }
+  };
+
+  /**
+   * saveAssignmentEvaluationSupplementationToServer
+   * @param data
+   */
+  saveAssignmentEvaluationSupplementationToServer = async (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+    dataToSave: AssignmentEvaluationSupplementationRequest;
+    materialId: number;
+  }) => {
+    const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
+      data;
+
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
+    try {
+      await promisify(
+        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
+          workspaceEntityId,
+          userEntityId,
+          workspaceMaterialId,
+          {
+            ...dataToSave,
+          }
+        ),
+        "callback"
+      )().then(async () => {
+        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+
+        /**
+         * Compositereplies needs to be updated by loading new values from server, just for
+         * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
+         */
+
+        this.props.updateCurrentStudentCompositeRepliesData({
+          workspaceId: workspaceEntityId,
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+        });
+      });
+    } catch (error) {
+      this.props.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
+          error.message
+        ),
+        "error"
+      );
+    }
+  };
+
+  /**
    * handleSaveAssignment
    * @param e
    */
@@ -139,8 +248,7 @@ class ExcerciseEditor extends SessionStateComponent<
      * Backend endpoint is different for normal grade evalution and supplementation
      */
     if (!this.state.needsSupplementation) {
-      this.props.onClose();
-      this.props.saveAssignmentEvaluationGradeToServer({
+      this.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
             .workspaceEntityId,
@@ -156,22 +264,9 @@ class ExcerciseEditor extends SessionStateComponent<
           audioAssessments: this.state.audioAssessments,
         },
         materialId: this.props.materialAssignment.materialId,
-        onSuccess: () => {
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-              needsSupplementation: false,
-              audioAssessments: [],
-            },
-            this.state.draftId
-          );
-        },
-        onFail: () => this.props.onClose(),
       });
     } else {
-      this.props.onClose();
-
-      this.props.saveAssignmentEvaluationSupplementationToServer({
+      this.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
             .workspaceEntityId,
@@ -187,17 +282,6 @@ class ExcerciseEditor extends SessionStateComponent<
           requestText: this.state.literalEvaluation,
         },
         materialId: this.props.materialAssignment.materialId,
-        onSuccess: () => {
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-              needsSupplementation: true,
-              audioAssessments: [],
-            },
-            this.state.draftId
-          );
-        },
-        onFail: () => this.props.onClose(),
       });
     }
   };
@@ -356,10 +440,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    {
-      saveAssignmentEvaluationGradeToServer,
-      saveAssignmentEvaluationSupplementationToServer,
-    },
+    { updateCurrentStudentCompositeRepliesData, displayNotification },
     dispatch
   );
 }

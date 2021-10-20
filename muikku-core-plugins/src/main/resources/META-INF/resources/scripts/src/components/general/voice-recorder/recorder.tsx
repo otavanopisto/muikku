@@ -40,7 +40,10 @@ function Recorder(props: RecorderProps) {
   const { recordings, deleteAudio } = useRecordingsList(recorderState.values);
 
   React.useEffect(() => {
-    if (props.onChange && props.values.length !== recordings.length) {
+    if (
+      props.onChange &&
+      JSON.stringify(props.values) !== JSON.stringify(recordings)
+    ) {
       let audioAssessments = recordings.map((record) => {
         const object: AudioAssessment = {
           name: record.name,

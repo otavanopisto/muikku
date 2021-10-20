@@ -26,6 +26,9 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
+import ExcerciseEditor from "./editors/excercise-editor";
+import RecordingsList from "~/components/general/voice-recorder/recordings-list";
+import { RecordValue } from "~/@types/recorder";
 
 /**
  * EvaluationCardProps
@@ -49,6 +52,7 @@ interface EvaluationAssessmentAssignmentState {
   openDrawer: boolean;
   materialNode?: MaterialContentNodeType;
   isLoading: boolean;
+  openAssignmentType?: "EVALUATED" | "EXERCISE";
 }
 /**
  * EvaluationAssessmentAssignment
@@ -162,24 +166,37 @@ class EvaluationAssessmentAssignment extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    let updatedMaterial: MaterialContentNodeType;
+    let updatedMaterial: MaterialContentNodeType = {
+      ...this.state.materialNode,
+    };
 
-    /**
-     * gradeId and source are included in same string, so splittin is required
-     */
-    const gradeIdentifierSplitted =
-      assigmentSaveReturn.gradeIdentifier.split("-");
-    /**
-     * gradeScaleId and source are included in same string, so splittin is required
-     */
-    const gradeScaleIdentifierSplitted =
-      assigmentSaveReturn.gradingScaleIdentifier.split("-");
+    let gradeId = null;
+    let gradeDataSource = null;
 
-    const gradeId = gradeIdentifierSplitted[1];
-    const gradeDataSource = gradeIdentifierSplitted[0];
+    let gradeScaleId = null;
+    let gradeScaleDataSource = null;
 
-    const gradeScaleId = gradeScaleIdentifierSplitted[1];
-    const gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
+    if (assigmentSaveReturn.gradeIdentifier !== null) {
+      /**
+       * gradeId and source are included in same string, so splittin is required
+       */
+      const gradeIdentifierSplitted =
+        assigmentSaveReturn.gradeIdentifier.split("-");
+
+      gradeId = gradeIdentifierSplitted[1];
+      gradeDataSource = gradeIdentifierSplitted[0];
+    }
+    if (assigmentSaveReturn.gradingScaleIdentifier !== null) {
+      /**
+       * gradeScaleId and source are included in same string, so splittin is required
+       */
+      const gradeScaleIdentifierSplitted =
+        assigmentSaveReturn.gradingScaleIdentifier.split("-");
+
+      gradeScaleId = gradeScaleIdentifierSplitted[1];
+
+      gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
+    }
 
     /**
      * Updates founded evaluation items with new values
@@ -236,6 +253,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     this.setState({
       openDrawer: false,
+      openAssignmentType: undefined,
     });
   };
 
@@ -243,7 +261,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * handleOpenSlideDrawer
    */
   handleOpenSlideDrawer =
-    (assignmentId: number) =>
+    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
@@ -258,6 +276,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       this.setState(
         {
           openDrawer: true,
+          openAssignmentType: assignmentType,
         },
         () => this.handleExecuteScrollToElement()
       );
@@ -442,6 +461,16 @@ class EvaluationAssessmentAssignment extends React.Component<
         (cReply) => cReply.workspaceMaterialId === this.props.assigment.id
       );
 
+    const recordings =
+      compositeReply &&
+      compositeReply.evaluationInfo &&
+      compositeReply.evaluationInfo.audioAssessments.map(
+        (aAssessment) =>
+          ({
+            ...aAssessment,
+          } as RecordValue)
+      );
+
     let contentOpen: string | number = 0;
 
     if (
@@ -517,7 +546,8 @@ class EvaluationAssessmentAssignment extends React.Component<
             {this.renderAssignmentMeta(compositeReply)}
           </div>
           <div className="evaluation-modal__item-functions">
-            {this.props.assigment.assignmentType === "EVALUATED" ? (
+            {this.props.assigment.assignmentType === "EVALUATED" ||
+            this.props.assigment.assignmentType === "EXERCISE" ? (
               compositeReply &&
               compositeReply.state !== "UNANSWERED" &&
               compositeReply.state !== "WITHDRAWN" ? (
@@ -525,28 +555,24 @@ class EvaluationAssessmentAssignment extends React.Component<
                   aria-label={this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
                   )}
-                  onClick={this.handleOpenSlideDrawer(this.props.assigment.id)}
+                  onClick={this.handleOpenSlideDrawer(
+                    this.props.assigment.id,
+                    this.props.assigment.assignmentType
+                  )}
                   buttonModifiers={["evaluate"]}
                   icon="evaluate"
                 />
               ) : null
-            ) : (
-              compositeReply &&
-              compositeReply.state === "SUBMITTED" &&
-              compositeReply.submitted && (
-                <div
-                  className="exercise-done-indicator icon-checkmark"
-                  title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.exerciseDoneIndicatorTitle"
-                  )}
-                ></div>
-              )
-            )}
+            ) : null}
           </div>
         </div>
         <SlideDrawer
           title={this.props.assigment.title}
-          modifiers={["assignment"]}
+          modifiers={
+            this.props.assigment.assignmentType === "EVALUATED"
+              ? ["assignment"]
+              : ["excercise"]
+          }
           show={
             this.state.openDrawer &&
             this.props.evaluations.openedAssignmentEvaluationId ===
@@ -557,35 +583,64 @@ class EvaluationAssessmentAssignment extends React.Component<
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.state.materialNode ? (
-            <AssignmentEditor
-              editorLabel={this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
-              )}
-              materialEvaluation={this.state.materialNode.evaluation}
-              materialAssignment={this.state.materialNode.assignment}
-              compositeReplies={compositeReply}
-              updateMaterialEvaluationData={this.updateMaterialEvaluationData}
-              onClose={this.handleCloseSlideDrawer}
-            />
+            this.props.assigment.assignmentType === "EVALUATED" ? (
+              <AssignmentEditor
+                editorLabel={this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
+                )}
+                materialEvaluation={this.state.materialNode.evaluation}
+                materialAssignment={this.state.materialNode.assignment}
+                compositeReplies={compositeReply}
+                updateMaterialEvaluationData={this.updateMaterialEvaluationData}
+                onClose={this.handleCloseSlideDrawer}
+              />
+            ) : (
+              <ExcerciseEditor
+                editorLabel={this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
+                )}
+                materialEvaluation={this.state.materialNode.evaluation}
+                materialAssignment={this.state.materialNode.assignment}
+                compositeReplies={compositeReply}
+                updateMaterialEvaluationData={this.updateMaterialEvaluationData}
+                onClose={this.handleCloseSlideDrawer}
+              />
+            )
           ) : null}
         </SlideDrawer>
+
         <AnimateHeight duration={400} height={contentOpen}>
           {compositeReply &&
             compositeReply.evaluationInfo &&
             compositeReply.evaluationInfo.text && (
-              <div className="evaluation-modal__item-literal-assessment">
-                <div className="evaluation-modal__item-literal-assessment-label">
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
-                  )}
+              <>
+                <div className="evaluation-modal__item-literal-assessment">
+                  <div className="evaluation-modal__item-literal-assessment-label">
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
+                    )}
+                  </div>
+
+                  <div
+                    className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
+                    dangerouslySetInnerHTML={this.createHtmlMarkup(
+                      compositeReply.evaluationInfo.text
+                    )}
+                  />
                 </div>
-                <div
-                  className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
-                  dangerouslySetInnerHTML={this.createHtmlMarkup(
-                    compositeReply.evaluationInfo.text
-                  )}
-                />
-              </div>
+                <div className="evaluation-modal__item-literal-assessment">
+                  {recordings.length > 0 ? (
+                    <>
+                      <div className="evaluation-modal__item-literal-assessment-label">
+                        Suullinen palaute
+                      </div>
+                      <div className="evaluation-modal__item-literal-assessment-label">
+                        <RecordingsList records={recordings} />
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </>
             )}
           {this.state.isLoading ? (
             <div className="loader-empty" />

@@ -6,6 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
+import AnimateHeight from "react-animate-height";
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
@@ -39,6 +40,12 @@ function Record(props: RecordProps) {
 
   const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
 
+  const open = record.uploading || record.failed;
+
+  const handleClickDelete = () => {
+    onClickDelete && onClickDelete(record.id);
+  };
+
   return (
     <>
       <div className="voice-recorder__file-container" key={rest.key}>
@@ -57,45 +64,47 @@ function Record(props: RecordProps) {
             title={props.i18n.text.get(
               "plugin.workspace.audioField.removeLink"
             )}
-            onClick={() => onClickDelete && onClickDelete(record.id)}
+            onClick={handleClickDelete}
           />
         ) : null}
       </div>
-      {record.uploading ? (
-        <div style={{ margin: "0 10px" }}>
-          <ProgressBarLine
-            containerClassName="voice-recorder__file-record-progressbar"
-            options={{
-              strokeWidth: 1,
-              duration: 1000,
-              color: "#de3211",
-              trailColor: "#f5f5f5",
-              trailWidth: 1,
-              svgStyle: { width: "100%", height: "4px" },
-              text: {
-                className: "voice-recorder__file-record-percentage",
-                style: {
-                  right: "100%",
+      <AnimateHeight height={open ? "auto" : 0}>
+        {record.uploading ? (
+          <div style={{ margin: "0 10px" }}>
+            <ProgressBarLine
+              containerClassName="voice-recorder__file-record-progressbar"
+              options={{
+                strokeWidth: 1,
+                duration: 1000,
+                color: "#de3211",
+                trailColor: "#f5f5f5",
+                trailWidth: 1,
+                svgStyle: { width: "100%", height: "4px" },
+                text: {
+                  className: "voice-recorder__file-record-percentage",
+                  style: {
+                    right: "100%",
+                  },
                 },
-              },
-            }}
-            strokeWidth={1}
-            easing="easeInOut"
-            duration={1000}
-            color="#de3211"
-            trailColor="#f5f5f5"
-            trailWidth={1}
-            svgStyle={{ width: "100%", height: "4px" }}
-            text={`${Math.round(record.progress * 100)}%`}
-            progress={record.progress}
-          />
-        </div>
-      ) : null}
-      {record.failed ? (
-        <div className="voice-recorder__file-record-error">
-          Virhe tallennettaessa äänipalautetta
-        </div>
-      ) : null}
+              }}
+              strokeWidth={1}
+              easing="easeInOut"
+              duration={1000}
+              color="#de3211"
+              trailColor="#f5f5f5"
+              trailWidth={1}
+              svgStyle={{ width: "100%", height: "4px" }}
+              text={`${Math.round(record.progress * 100)}%`}
+              progress={record.progress}
+            />
+          </div>
+        ) : null}
+        {record.failed ? (
+          <div className="voice-recorder__file-record-error">
+            {props.i18n.text.get("plugin.workspace.audioField.uploadFailed")}
+          </div>
+        ) : null}
+      </AnimateHeight>
     </>
   );
 }

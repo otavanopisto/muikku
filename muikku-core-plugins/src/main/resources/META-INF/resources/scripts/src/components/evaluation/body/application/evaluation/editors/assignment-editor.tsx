@@ -224,14 +224,13 @@ class AssignmentEditor extends SessionStateComponent<
 
         this.props.updateMaterialEvaluationData(data);
 
-        this.setStateAndClear(
-          {
-            literalEvaluation: "",
-            grade: defaultGrade,
-            assignmentEvaluationType: "GRADED",
-          },
-          this.state.draftId
-        );
+        if (this.props.onAssigmentSave) {
+          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+        }
+
+        if (this.props.onClose) {
+          this.props.onClose();
+        }
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -288,14 +287,13 @@ class AssignmentEditor extends SessionStateComponent<
           workspaceMaterialId: workspaceMaterialId,
         });
 
-        this.setStateAndClear(
-          {
-            literalEvaluation: "",
-            grade: defaultGrade,
-            assignmentEvaluationType: "INCOMPLETE",
-          },
-          this.state.draftId
-        );
+        if (this.props.onAssigmentSave) {
+          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+        }
+
+        if (this.props.onClose) {
+          this.props.onClose();
+        }
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -326,13 +324,7 @@ class AssignmentEditor extends SessionStateComponent<
      */
     if (this.state.assignmentEvaluationType === "GRADED") {
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
-      if (this.props.onAssigmentSave) {
-        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
-      }
 
-      if (this.props.onClose) {
-        this.props.onClose();
-      }
       await this.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
@@ -352,14 +344,6 @@ class AssignmentEditor extends SessionStateComponent<
         defaultGrade,
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
-      if (this.props.onAssigmentSave) {
-        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
-      }
-
-      if (this.props.onClose) {
-        this.props.onClose();
-      }
-
       this.saveAssignmentEvaluationSupplementationToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId

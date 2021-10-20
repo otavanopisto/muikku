@@ -54,7 +54,6 @@ export class EvaluationMaterial extends React.Component<
         material={this.props.material}
         workspace={this.props.workspace}
         compositeReplies={this.props.compositeReply}
-        loadCompositeReplies={this.props.compositeReply === undefined}
         readOnly
         answersVisible
         modifiers="evaluation-material-page"

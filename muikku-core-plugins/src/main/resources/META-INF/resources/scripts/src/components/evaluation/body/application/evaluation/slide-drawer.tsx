@@ -39,11 +39,19 @@ const SlideDrawer: React.FC<SlideDrawerProps> = ({
       <header
         className={`evaluation-modal__evaluate-drawer-header ${
           modifiers
-            ? modifiers.map((m) => `evaluation-modal__evaluate-drawer-header--${m}`).join(" ")
+            ? modifiers
+                .map((m) => `evaluation-modal__evaluate-drawer-header--${m}`)
+                .join(" ")
             : ""
-        }`}>
-        <div className="evaluation-modal__evaluate-drawer-header-title">{title}</div>
-        <div onClick={onClose} className="evaluation-modal__evaluate-drawer-close icon-arrow-right"></div>
+        }`}
+      >
+        <div className="evaluation-modal__evaluate-drawer-header-title">
+          {title}
+        </div>
+        <div
+          onClick={onClose}
+          className="evaluation-modal__evaluate-drawer-close icon-arrow-right"
+        ></div>
       </header>
       <div className="evaluation-modal__evaluate-drawer-content evaluation-modal__evaluate-drawer-content--workspace">
         {show ? children : null}
