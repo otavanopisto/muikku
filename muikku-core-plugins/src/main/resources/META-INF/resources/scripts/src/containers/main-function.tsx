@@ -298,13 +298,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderCoursePickerBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      // let stateFilters = [
-      //   {
-      //     identifier: "unpublished",
-      //     name: this.props.store.getState().i18n.text.get('plugin.organization.filters.workspaceState.unpublished.label')
-      //   }
-      // ];
-      // this.props.store.dispatch(setWorkspaceStateFilters(false, stateFilters) as Action);
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
@@ -365,7 +358,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.updateFirstTime();
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 6));
-
       this.props.store.dispatch(loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
