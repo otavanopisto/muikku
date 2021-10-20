@@ -3,6 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   @include text;
