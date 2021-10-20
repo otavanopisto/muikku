@@ -438,17 +438,18 @@
   margin: 0 10px;
 }
 
-.evaluation-modal__item-literal-assessment {
+.evaluation-modal__item-literal-assessment,
+.evaluation-modal__item-audio-assessment {
   background: $color-evaluation-modal-meta-background;
   font-size: 0.825rem;
   padding: 10px;
 }
 
-.evaluation-modal__item-literal-assessment-label {
+.evaluation-modal__item-assessment-label {
   font-weight: 600;
 }
 
-.evaluation-modal__item-literal-assessment-data {
+.evaluation-modal__item-assessment-data {
   margin: 5px 0;
 }
 
