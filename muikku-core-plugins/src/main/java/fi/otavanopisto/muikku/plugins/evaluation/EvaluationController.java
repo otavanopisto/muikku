@@ -98,6 +98,7 @@ public class EvaluationController {
       boolean includeTransferCredits,
       boolean includeAssignmentStatistics) {
     String dataSource = studentIdentifier.getDataSource(); 
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
     
     // Ask base information from Pyramus
     
@@ -128,16 +129,15 @@ public class EvaluationController {
       
       // Supplementation request, if one exists and is newer than activity date so far
       
-      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
       SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
           userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
-      if (supplementationRequest != null && supplementationRequest.getRequestDate().getTime() > activity.getDate().getTime()) {
+      if (supplementationRequest != null && supplementationRequest.getRequestDate().after(activity.getDate())) {
         activity.setText(supplementationRequest.getRequestText());
         activity.setDate(supplementationRequest.getRequestDate());
         activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
       }
       
-      // Assignment statistics
+      // Optional assignment statistics
       
       if (includeAssignmentStatistics) {
         int exercisesTotal = 0;

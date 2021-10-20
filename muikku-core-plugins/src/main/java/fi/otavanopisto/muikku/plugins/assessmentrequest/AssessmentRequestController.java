@@ -91,10 +91,10 @@ public class AssessmentRequestController {
     // Ask activity with user + workspace combo
     
     List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
-        userIdentifier,
-        workspaceIdentifier,
-        false,
-        false);
+        userIdentifier,          // for this user only
+        workspaceIdentifier,     // for this workspace only
+        false,                   // no interest in transfer credits
+        false);                  // no interest for assignment statistics
     if (activities.isEmpty()) {
       logger.warning(String.format("WorkspaceUserEntity %d not found in Pyramus", workspaceUserEntity.getId()));
       return new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);

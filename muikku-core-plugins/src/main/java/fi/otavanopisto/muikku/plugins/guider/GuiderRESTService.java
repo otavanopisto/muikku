@@ -582,7 +582,6 @@ public class GuiderRESTService extends PluginRESTService {
         workspaceIdentifier,
         includeTransferCredits,
         includeAssignmentStatistics);
-    System.out.println("Serving " + activities.size() + " courses");
     return Response.ok(activities).build();
   }
 
