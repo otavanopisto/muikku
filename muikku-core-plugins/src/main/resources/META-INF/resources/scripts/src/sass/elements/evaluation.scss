@@ -3,6 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .evaluation-modal {
   background: $color-evaluation-modal-background;
   display: flex;

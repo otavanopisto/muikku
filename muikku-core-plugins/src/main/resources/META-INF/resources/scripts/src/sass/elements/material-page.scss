@@ -3,6 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .material-page {
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;

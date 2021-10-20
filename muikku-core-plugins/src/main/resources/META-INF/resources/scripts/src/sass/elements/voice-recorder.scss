@@ -180,10 +180,10 @@
 }
 
 .voice-recorder__file-record-error {
-  margin: 10px;
-  padding: 5px;
   border: 1px solid $color-fatal;
   border-left: 5px solid $color-fatal;
   font-size: 1rem;
   font-style: italic;
+  margin: 10px;
+  padding: 5px;
 }
