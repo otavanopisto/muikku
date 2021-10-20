@@ -1849,7 +1849,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       // Evaluation info for evaluable materials
 
-      if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+      if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED || reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE) {
         compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
       }
       return Response.ok(compositeReply).build();
