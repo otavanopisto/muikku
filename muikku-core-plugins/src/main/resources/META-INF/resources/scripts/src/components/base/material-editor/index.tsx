@@ -148,6 +148,7 @@ const CKEditorConfig = (
         "Muikku-mathjax",
         "Table",
         "Iframe",
+        "Smiley",
         "SpecialChar",
         "CreateDiv",
       ],
