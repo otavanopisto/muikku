@@ -2,28 +2,14 @@ import * as React from "react";
 import { MaterialContentNodeType, WorkspaceType } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import AnimateHeight from "react-animate-height";
 import "~/sass/elements/evaluation.scss";
 import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
-import * as moment from "moment";
 import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
-import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import SlideDrawer from "./slide-drawer";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
-import { ButtonPill } from "~/components/general/button";
-import AssignmentEditor from "./editors/assignment-editor";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
-import {
-  UpdateOpenedAssignmentEvaluationId,
-  updateOpenedAssignmentEvaluation,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import RecordingsList from "~/components/general/voice-recorder/recordings-list";
-import { RecordValue } from "../../../../../@types/recorder";
-import ExcerciseEditor from "./editors/excercise-editor";
-import "~/sass/elements/rich-text.scss";
 
 /**
  * EvaluationMaterialProps
@@ -31,22 +17,15 @@ import "~/sass/elements/rich-text.scss";
 export interface EvaluationMaterialProps {
   i18n: i18nType;
   material: MaterialContentNodeType;
+  compositeReply?: MaterialCompositeRepliesType;
   workspace: WorkspaceType;
-  evaluation: EvaluationState;
-  updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
-  openContent: boolean;
-  onClickOpen?: (id: number) => void;
-  onSave?: (materialId: number) => void;
+  userEntityId: number;
 }
 
 /**
  * EvaluationMaterialState
  */
-interface EvaluationMaterialState {
-  openContent: boolean;
-  openDrawer: boolean;
-  openAssignmentType?: "EVALUATED" | "EXERCISE";
-}
+interface EvaluationMaterialState {}
 
 /**
  * EvaluationMaterial
@@ -55,8 +34,6 @@ export class EvaluationMaterial extends React.Component<
   EvaluationMaterialProps,
   EvaluationMaterialState
 > {
-  private myRef: HTMLDivElement = undefined;
-
   /**
    * constructor
    * @param props
@@ -64,530 +41,40 @@ export class EvaluationMaterial extends React.Component<
   constructor(props: EvaluationMaterialProps) {
     super(props);
 
-    this.state = {
-      openDrawer: false,
-      openContent: false,
-    };
+    this.state = {};
   }
-
-  /**
-   * componentDidMount
-   */
-  componentDidMount() {
-    this.setState({
-      openContent: this.props.openContent,
-    });
-  }
-
-  /**
-   * componentWillReceiveProps
-   * @param nextProps
-   */
-  componentDidUpdate(
-    prevProps: EvaluationMaterialProps,
-    prevState: EvaluationMaterialState
-  ) {
-    if (this.props.openContent !== prevProps.openContent) {
-      this.setState({
-        openContent: this.props.openContent,
-      });
-    }
-  }
-
-  /**
-   * createHtmlMarkup
-   * This should sanitize html
-   * @param htmlString string that contains html
-   */
-  createHtmlMarkup = (htmlString: string) => {
-    return {
-      __html: htmlString,
-    };
-  };
-
-  /**
-   * toggleOpened
-   */
-  handleOpenMaterialContent = () => {
-    const { openContent } = this.state;
-
-    if (this.props.onClickOpen) {
-      this.props.onClickOpen(this.props.material.id);
-    }
-
-    this.setState({ openContent: !openContent });
-  };
-
-  /**
-   * handleCloseSlideDrawer
-   */
-  handleCloseSlideDrawer = () => {
-    this.props.updateOpenedAssignmentEvaluation({ assignmentId: undefined });
-
-    this.setState({
-      openDrawer: false,
-      openAssignmentType: undefined,
-    });
-  };
-
-  /**
-   * handleOpenSlideDrawer
-   */
-  handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      if (this.props.evaluation.openedAssignmentEvaluationId !== assignmentId) {
-        this.props.updateOpenedAssignmentEvaluation({ assignmentId });
-      }
-
-      this.setState(
-        {
-          openDrawer: true,
-          openAssignmentType: assignmentType,
-        },
-        () => this.handleExecuteScrollToElement()
-      );
-    };
-
-  /**
-   * handleExecuteScrollToElement
-   */
-  handleExecuteScrollToElement = () => {
-    window.dispatchEvent(new Event("resize"));
-    if (this.props.evaluation.openedAssignmentEvaluationId) {
-      setTimeout(() => {
-        this.myRef.scrollIntoView({ behavior: "smooth" });
-      }, 600);
-    }
-    this.myRef.scrollIntoView({ behavior: "smooth" });
-  };
-
-  /**
-   * assignmentTypeClass
-   * @returns string
-   */
-  materialTypeClass = () => {
-    if (this.props.material.assignment.assignmentType === "EVALUATED") {
-      return "assignment";
-    }
-    return "exercise";
-  };
-
-  /**
-   * assigmentGradeClass
-   * @param state
-   * @returns classMod
-   */
-  assigmentGradeClass = (
-    compositeRepliesFromProps?: MaterialCompositeRepliesType
-  ) => {
-    if (compositeRepliesFromProps) {
-      const { evaluationInfo } = compositeRepliesFromProps;
-
-      if (evaluationInfo && evaluationInfo.type !== "INCOMPLETE") {
-        return "state-EVALUATED";
-      } else if (
-        compositeRepliesFromProps.state === "SUBMITTED" &&
-        evaluationInfo &&
-        evaluationInfo.type === "INCOMPLETE"
-      ) {
-        return "state-SUPPLEMENTED";
-      }
-      return "state-INCOMPLETE";
-    }
-  };
-
-  /**
-   * renderAssignmentStatus
-   * @returns JSX.Element
-   */
-  renderAssignmentMeta = (
-    compositeRepliesFromProps?: MaterialCompositeRepliesType
-  ) => {
-    if (compositeRepliesFromProps) {
-      const { evaluationInfo } = compositeRepliesFromProps;
-
-      /**
-       * Checking if assigments is submitted at all.
-       * Its date string
-       */
-      const hasSubmitted = compositeRepliesFromProps.submitted;
-
-      /**
-       * Checking if its evaluated with grade
-       */
-      const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
-
-      /**
-       * Needs supplementation
-       */
-      const needsSupplementation =
-        evaluationInfo && evaluationInfo.type === "INCOMPLETE";
-
-      /**
-       * If evaluation is given as supplementation request and student
-       * cancels and makes changes to answers and submits again
-       */
-      const supplementationDone =
-        compositeRepliesFromProps.state === "SUBMITTED" && needsSupplementation;
-
-      /**
-       * Evaluation date if evaluated
-       */
-      const evaluationDate = evaluationInfo && evaluationInfo.date;
-
-      /**
-       * Grade class mod
-       */
-      const assignmentGradeClassMod = this.assigmentGradeClass(
-        compositeRepliesFromProps
-      );
-
-      return (
-        <div className="evaluation-modal__item-meta">
-          {hasSubmitted === null ||
-          (hasSubmitted !== null &&
-            compositeRepliesFromProps.state === "WITHDRAWN") ? (
-            <div className="evaluation-modal__item-meta-item">
-              <span className="evaluation-modal__item-meta-item-data">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentNotDoneLabel"
-                )}
-              </span>
-            </div>
-          ) : (
-            hasSubmitted && (
-              <div className="evaluation-modal__item-meta-item">
-                <span className="evaluation-modal__item-meta-item-label">
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentDoneLabel"
-                  )}
-                </span>
-                <span className="evaluation-modal__item-meta-item-data">
-                  {moment(hasSubmitted).format("l")}
-                </span>
-              </div>
-            )
-          )}
-
-          {evaluationDate && (
-            <div className="evaluation-modal__item-meta-item">
-              <span className="evaluation-modal__item-meta-item-label">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"
-                )}
-              </span>
-              <span className="evaluation-modal__item-meta-item-data">
-                {moment(evaluationDate).format("l")}
-              </span>
-            </div>
-          )}
-
-          {evaluatedWithGrade && (
-            <div className="evaluation-modal__item-meta-item">
-              <span className="evaluation-modal__item-meta-item-label">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-                )}
-              </span>
-              <span
-                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-              >
-                {evaluationInfo.grade}
-              </span>
-            </div>
-          )}
-
-          {needsSupplementation && !supplementationDone && (
-            <div className="evaluation-modal__item-meta-item">
-              <span
-                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-              >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
-                )}
-              </span>
-            </div>
-          )}
-
-          {supplementationDone && (
-            <div className="evaluation-modal__item-meta-item">
-              <span
-                className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
-              >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteDoneLabel"
-                )}
-              </span>
-            </div>
-          )}
-        </div>
-      );
-    }
-  };
 
   /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const materialTypeClass = this.materialTypeClass();
-    const compositeReply =
-      this.props.evaluation.evaluationCompositeReplies.data &&
-      this.props.evaluation.evaluationCompositeReplies.data.find(
-        (item) => item.workspaceMaterialId === this.props.material.assignment.id
-      );
-
-    let contentOpen: string | number = 0;
-    if (
-      this.state.openContent ||
-      (this.state.openDrawer &&
-        this.props.evaluation.openedAssignmentEvaluationId ===
-          this.props.material.assignment.id)
-    ) {
-      /**
-       * Open invidual material content or if hitting evaluation button then that corresponding
-       * content and dialog together
-       */
-      contentOpen = "auto";
-    }
-
-    const invisible = contentOpen === 0;
-
     return (
-      <>
-        <div
-          key={this.props.material.id}
-          className={`evaluation-modal__item ${
-            this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"
-          }`}
-        >
-          <MaterialLoader
-            material={this.props.material}
-            workspace={this.props.workspace}
-            readOnly
-            answersVisible
-            modifiers="evaluation-material-page"
-            usedAs={"evaluationTool"}
-            compositeReplies={compositeReply}
-            userEntityId={
-              this.props.evaluation.evaluationSelectedAssessmentId.userEntityId
-            }
-          >
-            {(props, state, stateConfiguration) => {
-              let evaluatedFunctionClassMod = "";
-              let evaluationTitleClassMod = "";
+      <MaterialLoader
+        material={this.props.material}
+        workspace={this.props.workspace}
+        compositeReplies={this.props.compositeReply}
+        loadCompositeReplies={this.props.compositeReply === undefined}
+        readOnly
+        answersVisible
+        modifiers="evaluation-material-page"
+        usedAs={"evaluationTool"}
+        userEntityId={this.props.userEntityId}
+      >
+        {(props, state, stateConfiguration) => {
+          return (
+            <div className="evaluation-modal__item-body">
+              <MaterialLoaderContent
+                {...props}
+                {...state}
+                stateConfiguration={stateConfiguration}
+              />
 
-              /**
-               * Evaluation function class mod
-               */
-              if (
-                props.compositeReplies &&
-                props.compositeReplies.evaluationInfo &&
-                props.compositeReplies.evaluationInfo.date &&
-                (this.props.material.evaluation ||
-                  (props.compositeReplies.evaluationInfo &&
-                    props.compositeReplies.evaluationInfo.type ===
-                      "INCOMPLETE"))
-              ) {
-                if (
-                  props.compositeReplies.evaluationInfo &&
-                  props.compositeReplies.evaluationInfo.grade
-                ) {
-                  // Evaluated
-                  evaluatedFunctionClassMod = "state-EVALUATED";
-                } else if (
-                  props.compositeReplies.state === "SUBMITTED" &&
-                  props.compositeReplies.evaluationInfo.type === "INCOMPLETE"
-                ) {
-                  // Supplemented as in use to be incomplete but user has submitted it aasin
-                  evaluatedFunctionClassMod = "state-SUPPLEMENTED";
-                } else {
-                  // Incomplete
-                  evaluatedFunctionClassMod = "state-INCOMPLETE";
-                }
-              }
-
-              if (
-                this.state.openDrawer &&
-                this.props.evaluation.openedAssignmentEvaluationId ===
-                  props.material.assignment.id
-              ) {
-                /**
-                 * Assigning class mod to evaluation material title if corresponding dialog is open
-                 */
-                evaluationTitleClassMod = "active-dialog";
-              }
-
-              if (
-                this.state.openContent ||
-                (this.state.openDrawer &&
-                  this.props.evaluation.openedAssignmentEvaluationId ===
-                    props.material.assignment.id)
-              ) {
-                /**
-                 * Open invidual material content or if hitting evaluation button then that corresponding
-                 * content and dialog together
-                 */
-                contentOpen = "auto";
-              }
-
-              /**
-               * Audio assessments if given, otherwise empty array
-               */
-              const recordings =
-                compositeReply &&
-                compositeReply.evaluationInfo &&
-                compositeReply.evaluationInfo.audioAssessments &&
-                compositeReply.evaluationInfo.audioAssessments !== null
-                  ? compositeReply.evaluationInfo.audioAssessments.map(
-                      (aAssessment) =>
-                        ({
-                          id: aAssessment.id,
-                          name: aAssessment.name,
-                          contentType: aAssessment.contentType,
-                          url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
-                        } as RecordValue)
-                    )
-                  : [];
-
-              return (
-                <div>
-                  <div
-                    className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
-                    ref={(ref) => (this.myRef = ref)}
-                  >
-                    <div
-                      onClick={this.handleOpenMaterialContent}
-                      className={`evaluation-modal__item-header-title
-                        evaluation-modal__item-header-title--${materialTypeClass}
-                        ${
-                          evaluationTitleClassMod
-                            ? "evaluation-modal__item-header-title--" +
-                              evaluationTitleClassMod
-                            : ""
-                        }`}
-                    >
-                      {this.props.material.assignment.title}
-
-                      {this.renderAssignmentMeta(props.compositeReplies)}
-                    </div>
-                    <div className="evaluation-modal__item-functions">
-                      {props.material.assignment.assignmentType ===
-                        "EVALUATED" ||
-                      props.material.assignment.assignmentType ===
-                        "EXERCISE" ? (
-                        props.compositeReplies &&
-                        props.compositeReplies.state !== "UNANSWERED" &&
-                        props.compositeReplies.state !== "WITHDRAWN" ? (
-                          <ButtonPill
-                            aria-label={this.props.i18n.text.get(
-                              "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
-                            )}
-                            onClick={this.handleOpenSlideDrawer(
-                              props.material.assignment.id,
-                              props.material.assignment.assignmentType
-                            )}
-                            buttonModifiers={["evaluate"]}
-                            icon="evaluate"
-                          />
-                        ) : null
-                      ) : null}
-                    </div>
-
-                    <SlideDrawer
-                      title={this.props.material.assignment.title}
-                      modifiers={["assignment"]}
-                      show={
-                        this.state.openDrawer &&
-                        this.state.openAssignmentType === "EVALUATED" &&
-                        this.props.evaluation.openedAssignmentEvaluationId ===
-                          props.material.assignment.id
-                      }
-                      onClose={this.handleCloseSlideDrawer}
-                    >
-                      <AssignmentEditor
-                        editorLabel={this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
-                        )}
-                        materialEvaluation={props.material.evaluation}
-                        materialAssignment={props.material.assignment}
-                        compositeReplies={props.compositeReplies}
-                        onAssigmentSave={this.props.onSave}
-                        onClose={this.handleCloseSlideDrawer}
-                      />
-                    </SlideDrawer>
-
-                    <SlideDrawer
-                      title={this.props.material.assignment.title}
-                      modifiers={["excercise"]}
-                      show={
-                        this.state.openDrawer &&
-                        this.state.openAssignmentType === "EXERCISE" &&
-                        this.props.evaluation.openedAssignmentEvaluationId ===
-                          props.material.assignment.id
-                      }
-                      onClose={this.handleCloseSlideDrawer}
-                    >
-                      <ExcerciseEditor
-                        editorLabel={this.props.i18n.text.get(
-                          "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
-                        )}
-                        materialEvaluation={props.material.evaluation}
-                        materialAssignment={props.material.assignment}
-                        compositeReplies={props.compositeReplies}
-                        onClose={this.handleCloseSlideDrawer}
-                      />
-                    </SlideDrawer>
-                  </div>
-
-                  <AnimateHeight duration={400} height={contentOpen}>
-                    {props.compositeReplies &&
-                      props.compositeReplies.evaluationInfo &&
-                      props.compositeReplies.evaluationInfo.text && (
-                        <>
-                          <div className="evaluation-modal__item-literal-assessment">
-                            <div className="evaluation-modal__item-literal-assessment-label">
-                              {this.props.i18n.text.get(
-                                "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
-                              )}
-                            </div>
-                            <div
-                              className="evaluation-modal__item-literal-assessment-data"
-                              dangerouslySetInnerHTML={this.createHtmlMarkup(
-                                props.compositeReplies.evaluationInfo.text
-                              )}
-                            />
-                          </div>
-                          {recordings.length > 0 ? (
-                            <div className="evaluation-modal__item-literal-assessment">
-                              <RecordingsList
-                                records={recordings}
-                                noDeleteFunctions
-                              />
-                            </div>
-                          ) : null}
-                        </>
-                      )}
-                    <div className="evaluation-modal__item-body">
-                      <MaterialLoaderContent
-                        {...props}
-                        {...state}
-                        stateConfiguration={stateConfiguration}
-                      />
-
-                      <MaterialLoaderCorrectAnswerCounter
-                        {...props}
-                        {...state}
-                      />
-                    </div>
-                  </AnimateHeight>
-                </div>
-              );
-            }}
-          </MaterialLoader>
-        </div>
-      </>
+              <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
+            </div>
+          );
+        }}
+      </MaterialLoader>
     );
   }
 }
@@ -599,7 +86,6 @@ export class EvaluationMaterial extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    evaluation: state.evaluations,
   };
 }
 
@@ -608,7 +94,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
+  return bindActionCreators({}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EvaluationMaterial);

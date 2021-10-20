@@ -11,6 +11,7 @@ import mApi from "~/lib/mApi";
 import promisify from "../../../util/promisify";
 import { MApiError } from "../../../lib/mApi";
 import notificationActions from "~/actions/base/notifications";
+import { EvaluationAssigmentData } from "../../../@types/evaluation";
 import {
   EvaluationEnum,
   BilledPriceRequest,
@@ -33,10 +34,7 @@ import {
   MaterialContentNodeType,
   MaterialEvaluationType,
 } from "../../../reducers/workspaces/index";
-import {
-  EvaluationAssignment,
-  EvaluationStudyDiaryEvent,
-} from "../../../@types/evaluation";
+import { EvaluationStudyDiaryEvent } from "../../../@types/evaluation";
 import {
   UpdateImportanceObject,
   EvaluationEvent,
@@ -67,18 +65,6 @@ export interface UPDATE_EVALUATION_COMPOSITE_REPLIES_STATE
     EvaluationStateType
   > {}
 
-export interface UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE
-  extends SpecificActionType<
-    "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE",
-    EvaluationStateType
-  > {}
-
-export interface UPDATE_CURRENT_SELECTED_EVALUATION_DATA_ON_SAVE
-  extends SpecificActionType<
-    "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_ON_SAVE",
-    AssignmentEvaluationSaveReturn
-  > {}
-
 export interface UPDATE_EVALUATION_CURRENT_EVENTS_STATE
   extends SpecificActionType<
     "UPDATE_EVALUATION_CURRENT_EVENTS_STATE",
@@ -94,6 +80,12 @@ export interface UPDATE_CURRENT_SELECTED_EVALUATION_DIARY_DATA_STATE
 export interface UPDATE_EVALUATION_REQUESTS_STATE
   extends SpecificActionType<
     "UPDATE_EVALUATION_REQUESTS_STATE",
+    EvaluationStateType
+  > {}
+
+export interface UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE
+  extends SpecificActionType<
+    "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE",
     EvaluationStateType
   > {}
 
@@ -145,6 +137,12 @@ export interface SET_EVALUATION_COMPOSITE_REPLIES
     MaterialCompositeRepliesType[]
   > {}
 
+export interface SET_EVALUATION_STUDENT_ASSIGMENTS
+  extends SpecificActionType<
+    "SET_EVALUATION_STUDENT_ASSIGMENTS",
+    EvaluationAssigmentData
+  > {}
+
 export interface UPDATE_EVALUATION_SEARCH
   extends SpecificActionType<"UPDATE_EVALUATION_SEARCH", string> {}
 
@@ -172,7 +170,7 @@ export interface SET_EVALUATION_SELECTED_ASSESSMENT_EVENTS
 export interface SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS
   extends SpecificActionType<
     "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
-    EvaluationAssignment[]
+    EvaluationAssigmentData
   > {}
 
 export interface SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS
@@ -180,11 +178,6 @@ export interface SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS
     "SET_EVALUATION_SELECTED_ASSESSMENT_STUDY_DIARY_EVENTS",
     EvaluationStudyDiaryEvent[]
   > {}
-
-export type UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT = SpecificActionType<
-  "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
-  EvaluationData
->;
 
 export interface UPDATE_OPENED_ASSIGNMENTS_EVALUATION
   extends SpecificActionType<"UPDATE_OPENED_ASSIGNMENTS_EVALUATION", number> {}
@@ -220,8 +213,8 @@ export interface LoadEvaluationSortFunction {
   (): AnyActionType;
 }
 
-export interface SetCurrentStudentEvaluationData {
-  (data: { userEntityId: number; workspaceId: number }): AnyActionType;
+export interface LoadEvaluationCurrentStudentAssigments {
+  (data: { workspaceId: number }): AnyActionType;
 }
 
 export interface UpdateCurrentStudentEvaluationData {
@@ -1373,29 +1366,28 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
   };
 
 /**
- * setCurrentStudentEvaluationData
- * @param userEntityId
- * @param userId
- * @param workspaceId
+ * loadCurrentStudentAssigmentsData
+ * @param param0
+ * @returns
  */
-const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
-  function setCurrentStudentEvaluationData({ userEntityId, workspaceId }) {
+const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
+  function loadCurrentStudentAssigmentsData({ workspaceId }) {
     return async (
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
       const state = getState();
 
-      try {
-        dispatch({
-          type: "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE",
-          payload: <EvaluationStateType>"LOADING",
-        });
+      dispatch({
+        type: "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE",
+        payload: "LOADING",
+      });
 
-        let [materials] = await Promise.all([
+      try {
+        let [assigments] = await Promise.all([
           (async () => {
             let assignmentsExcercise =
-              <Array<MaterialAssignmentType>>await promisify(
+              <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
                 }),
@@ -1403,7 +1395,7 @@ const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
               )() || [];
 
             let assignmentsEvaluated =
-              <Array<MaterialAssignmentType>>await promisify(
+              <MaterialAssignmentType[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EVALUATED",
                 }),
@@ -1415,55 +1407,18 @@ const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
               ...assignmentsExcercise,
             ];
 
-            let materials: Array<MaterialContentNodeType>;
-            let evaluations: Array<MaterialEvaluationType>;
-            [materials, evaluations] = <any>await Promise.all([
-              Promise.all(
-                assignments.map((assignment) => {
-                  return promisify(
-                    mApi().materials.html.read(assignment.materialId),
-                    "callback"
-                  )();
-                })
-              ),
-              Promise.all(
-                assignments.map((assignment) => {
-                  return promisify(
-                    mApi().workspace.workspaces.materials.evaluations.read(
-                      workspaceId,
-                      assignment.id,
-                      {
-                        userEntityId,
-                      }
-                    ),
-                    "callback"
-                  )().then((evaluations: Array<MaterialEvaluationType>) => {
-                    return evaluations[0];
-                  });
-                })
-              ),
-            ]);
-
-            return materials.map((material, index) => {
-              return <MaterialContentNodeType>Object.assign(material, {
-                evaluation: evaluations[index],
-                assignment: assignments[index],
-                path: assignments[index].path,
-              });
-            });
+            return assignments;
           })(),
         ]);
 
         dispatch({
-          type: "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
-          payload: {
-            materials,
-          },
+          type: "SET_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS",
+          payload: { assigments },
         });
 
         dispatch({
-          type: "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE",
-          payload: <EvaluationStateType>"READY",
+          type: "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE",
+          payload: "READY",
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {
@@ -1480,7 +1435,7 @@ const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
         );
 
         dispatch({
-          type: "UPDATE_CURRENT_SELECTED_EVALUATION_DATA_STATE",
+          type: "UPDATE_EVALUATION_SELECTED_ASSESSMENT_ASSIGNMENTS_STATE",
           payload: <EvaluationStateType>"ERROR",
         });
       }
@@ -1488,66 +1443,7 @@ const setCurrentStudentEvaluationData: SetCurrentStudentEvaluationData =
   };
 
 /**
- * updateCurrentStudentEvaluationData
- */
-const updateCurrentStudentEvaluationData: UpdateCurrentStudentEvaluationData =
-  function updateCurrentStudentEvaluationData(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      /**
-       * Get initial values that needs to be updated
-       */
-      let updatedMaterials: MaterialContentNodeListType =
-        getState().evaluations.evaluationCurrentSelectedRecords.data.materials;
-      /**
-       * Finding index of material that needs data to be updated
-       */
-      const index = updatedMaterials.findIndex(
-        (item) => item.id === data.materialId
-      );
-
-      /**
-       * gradeId and source are included in same string, so splittin is required
-       */
-      const gradeIdentifierSplitted =
-        data.assigmentSaveReturn.gradeIdentifier.split("-");
-      /**
-       * gradeScaleId and source are included in same string, so splittin is required
-       */
-      const gradeScaleIdentifierSplitted =
-        data.assigmentSaveReturn.gradingScaleIdentifier.split("-");
-
-      const gradeId = gradeIdentifierSplitted[1];
-      const gradeDataSource = gradeIdentifierSplitted[0];
-
-      const gradeScaleId = gradeScaleIdentifierSplitted[1];
-      const gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
-
-      /**
-       * Updates founded evaluation items with new values
-       */
-      updatedMaterials[index].evaluation = {
-        ...updatedMaterials[index].evaluation,
-        evaluated: data.assigmentSaveReturn.assessmentDate,
-        verbalAssessment: data.assigmentSaveReturn.verbalAssessment,
-        gradeIdentifier: gradeId,
-        gradeSchoolDataSource: gradeDataSource,
-        gradingScaleIdentifier: gradeScaleId,
-        gradingScaleSchoolDataSource: gradeScaleDataSource,
-        passed: data.assigmentSaveReturn.passing,
-      };
-
-      dispatch({
-        type: "UPDATE_EVALUATION_RECORDS_CURRENT_STUDENT",
-        payload: { materials: updatedMaterials },
-      });
-    };
-  };
-
-/**
- * updateCurrentStudentEvaluationData
+ * updateCurrentStudentCompositeRepliesData
  * Updates one compositereply in compositeReplies list with new coming values from backend
  */
 const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
@@ -1829,154 +1725,6 @@ const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
   };
 
 /**
- * saveAssignmentEvaluationGradeToServer
- */
-const saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation =
-  function saveAssignmentEvaluationGradeToServer({
-    workspaceEntityId,
-    workspaceMaterialId,
-    userEntityId,
-    dataToSave,
-    onSuccess,
-    materialId,
-  }) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-
-      if (state.evaluations.status !== "LOADING") {
-        dispatch({
-          type: "UPDATE_EVALUATION_STATE",
-          payload: <EvaluationStateType>"LOADING",
-        });
-      }
-
-      try {
-        await promisify(
-          mApi().evaluation.workspace.user.workspacematerial.assessment.create(
-            workspaceEntityId,
-            userEntityId,
-            workspaceMaterialId,
-            {
-              ...dataToSave,
-            }
-          ),
-          "callback"
-        )().then(async (data: AssignmentEvaluationSaveReturn) => {
-          await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
-          /**
-           * Here we update redux state and specifically that material node evaluation that just got updated
-           * with new valeus from server. This is for permformance reasons. So no need to load materials again with
-           * new values
-           */
-          dispatch(
-            updateCurrentStudentEvaluationData({
-              assigmentSaveReturn: data,
-              materialId: materialId,
-            })
-          );
-          /**
-           * Compositereplies on the otherhand needs to be updated by loading new values from server, just for
-           * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
-           */
-          dispatch(
-            updateCurrentStudentCompositeRepliesData({
-              workspaceId: workspaceEntityId,
-              userEntityId: userEntityId,
-              workspaceMaterialId: workspaceMaterialId,
-            })
-          );
-        });
-      } catch (error) {
-        dispatch(
-          notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.saveAssigmentGrade.error",
-              error.message
-            ),
-            "error"
-          )
-        );
-        dispatch({
-          type: "UPDATE_EVALUATION_STATE",
-          payload: <EvaluationStateType>"ERROR",
-        });
-      }
-    };
-  };
-
-/**
- * saveAssignmentEvaluationSupplementationToServer
- * @param param0
- * @returns
- */
-const saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation =
-  function saveAssignmentEvaluationSupplementationToServer({
-    workspaceEntityId,
-    workspaceMaterialId,
-    userEntityId,
-    dataToSave,
-    onSuccess,
-  }) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-
-      dispatch({
-        type: "UPDATE_EVALUATION_STATE",
-        payload: <EvaluationStateType>"ERROR",
-      });
-
-      try {
-        await promisify(
-          mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
-            workspaceEntityId,
-            userEntityId,
-            workspaceMaterialId,
-            {
-              ...dataToSave,
-            }
-          ),
-          "callback"
-        )().then(async () => {
-          await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
-          /**
-           * Compositereplies needs to be updated by loading new values from server, just for
-           * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
-           */
-          dispatch(
-            updateCurrentStudentCompositeRepliesData({
-              workspaceId: workspaceEntityId,
-              userEntityId: userEntityId,
-              workspaceMaterialId: workspaceMaterialId,
-            })
-          );
-        });
-      } catch (error) {
-        dispatch(
-          notificationActions.displayNotification(
-            state.i18n.text.get(
-              "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
-              error.message
-            ),
-            "error"
-          )
-        );
-        dispatch({
-          type: "UPDATE_EVALUATION_STATE",
-          payload: <EvaluationStateType>"ERROR",
-        });
-      }
-    };
-  };
-
-/**
  * deleteAssessmentRequest
  * @param data
  */
@@ -2129,20 +1877,18 @@ export {
   LoadBilledPriceFromServer,
   loadEvaluationCompositeRepliesFromServer,
   saveEvaluationSortFunctionToServer,
-  saveAssignmentEvaluationGradeToServer,
-  saveAssignmentEvaluationSupplementationToServer,
   updateWorkspaceEvaluationToServer,
   updateBillingToServer,
   updateWorkspaceSupplementationToServer,
-  updateCurrentStudentEvaluationData,
   removeWorkspaceEventFromServer,
   setSelectedWorkspaceId,
   setEvaluationFilters,
-  setCurrentStudentEvaluationData,
+  loadCurrentStudentAssigmentsData,
   updateEvaluationSearch,
   updateNeedsReloadEvaluationRequests,
   updateImportance,
   updateSelectedAssessment,
+  updateCurrentStudentCompositeRepliesData,
   updateOpenedAssignmentEvaluation,
   loadEvaluationAssessmentEventsFromServer,
   loadEvaluationSelectedAssessmentStudyDiaryEventsFromServer,
