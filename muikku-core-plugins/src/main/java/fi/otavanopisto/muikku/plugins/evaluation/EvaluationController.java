@@ -121,15 +121,16 @@ public class EvaluationController {
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
     WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
         workspaceMaterial.getId(),  
-        gradingScale.getIdentifier(), 
-        gradingScale.getSchoolDataSource(), 
-        grade.getIdentifier(), 
-        grade.getSchoolDataSource(), 
+        gradingScale != null ? gradingScale.getIdentifier() : null, 
+        gradingScale != null ? gradingScale.getSchoolDataSource() : null, 
+        grade != null ? grade.getIdentifier() : null, 
+        grade != null ? grade.getSchoolDataSource() : null, 
         assessor.getId(), 
         evaluated, 
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-    WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+    // Null grade is translated to passed as it's likely to be an exercise evaluation
+    WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
