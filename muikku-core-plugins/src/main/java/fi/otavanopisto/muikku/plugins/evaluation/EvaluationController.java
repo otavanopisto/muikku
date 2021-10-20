@@ -121,10 +121,10 @@ public class EvaluationController {
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
     WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
         workspaceMaterial.getId(),  
-        gradingScale.getIdentifier(), 
-        gradingScale.getSchoolDataSource(), 
-        grade.getIdentifier(), 
-        grade.getSchoolDataSource(), 
+        gradingScale != null ? gradingScale.getIdentifier() : null, 
+        gradingScale != null ? gradingScale.getSchoolDataSource() : null, 
+        grade != null ? grade.getIdentifier() : null, 
+        grade != null ? grade.getSchoolDataSource() : null, 
         assessor.getId(), 
         evaluated, 
         verbalAssessment);
