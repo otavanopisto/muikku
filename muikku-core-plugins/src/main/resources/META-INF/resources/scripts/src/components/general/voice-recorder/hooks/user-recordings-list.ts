@@ -11,7 +11,9 @@ export default function useRecordingsList(records: RecordValue[] | null) {
   const [recordings, setRecordings] = useState<RecordValue[]>([]);
 
   useEffect(() => {
-    if (records.length !== recordings.length) {
+    const isUploading = JSON.stringify(records) !== JSON.stringify(recordings);
+
+    if (records.length !== recordings.length || isUploading) {
       setRecordings([...records]);
     }
   }, [records]);

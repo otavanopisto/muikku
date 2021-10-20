@@ -124,20 +124,6 @@ export default function useRecorder(props: UseRecorderProps) {
 
         let newValues = [...recorderState.values];
 
-        const savedToServer = await processFileAt({
-          blob,
-          url: URL.createObjectURL(blob),
-          contentType: blob.type,
-          uploading: true,
-        });
-
-        const newValuesSavedToServer: RecordValue[] = [{ ...savedToServer }];
-
-        /**
-         * Just in case we concat array, so mutations don't happen...
-         */
-        newValues = newValues.concat(newValuesSavedToServer);
-
         setRecorderState((prevState: Recorder) => {
           if (prevState.mediaRecorder) {
             return {
@@ -149,6 +135,24 @@ export default function useRecorder(props: UseRecorderProps) {
             return initialState;
           }
         });
+
+        processFileAt(
+          {
+            blob,
+            url: URL.createObjectURL(blob),
+            contentType: blob.type,
+            uploading: true,
+            progress: 0,
+          },
+          newValues
+        );
+
+        /* const newValuesSavedToServer: RecordValue[] = [{ ...savedToServer }]; */
+
+        /**
+         * Just in case we concat array, so mutations don't happen...
+         */
+        /* newValues = newValues.concat(newValuesSavedToServer); */
       };
     }
 
@@ -161,41 +165,98 @@ export default function useRecorder(props: UseRecorderProps) {
     };
   }, [recorderState.mediaRecorder]);
 
-  const processFileAt = async (
-    valuesToSave: RecordValue
-  ): Promise<RecordValue> => {
-    let newValues = { ...valuesToSave };
+  const processFileAt = (
+    valueToSave: RecordValue,
+    initialValue: RecordValue[]
+  ) => {
+    let newValue = { ...valueToSave };
     //create the form data
     let formData = new FormData();
     // blob as given by the steam
-    let file = valuesToSave.blob;
+    let file = valueToSave.blob;
     //we add it to the file
     formData.append("file", file);
     //and do the thing
-    await $.ajax({
+    $.ajax({
       url: props.status.contextPath + "/tempFileUploadServlet",
       type: "POST",
       data: formData,
       success: (data: any) => {
-        //we change this
-
-        newValues.uploading = false;
-        newValues.id = data.fileId;
+        newValue.uploading = false;
+        newValue.id = data.fileId;
         //if the server does not return a content type we'll use whatever the blob recorded, this shouldn't be the case the server should return somethings
-        newValues.contentType = data.fileContentType || file.type;
+        newValue.contentType = data.fileContentType || file.type;
         //if user didn't provide a name we will give one, this happens when recording in place, such is the default behaviour
-        newValues.name = newValues.name || data.fileId; //NO extension, we don't need it
+        newValue.name = newValue.name || data.fileId; //NO extension, we don't need it
+
+        const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
+
+        const updatedAllValues = initialValue.concat(newValueSavedToServer);
+
+        setRecorderState((prevState) => {
+          return {
+            ...initialState,
+            audio: window.URL.createObjectURL(valueToSave.blob),
+            values: updatedAllValues,
+          };
+        });
       },
       //in case of error
       error: (xhr: any, err: Error) => {
-        newValues.failed = true;
+        newValue.uploading = false;
+        newValue.failed = true;
+        newValue.contentType = file.type;
+
+        const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
+
+        const updatedAllValues = initialValue.concat(newValueSavedToServer);
+
+        setRecorderState((prevState) => {
+          return {
+            ...initialState,
+            audio: window.URL.createObjectURL(valueToSave.blob),
+            values: updatedAllValues,
+          };
+        });
+      },
+      xhr: () => {
+        //we need to get the upload progress
+        let xhr = new (window as any).XMLHttpRequest();
+        //Upload progress
+        xhr.upload.addEventListener(
+          "progress",
+          (evt: any) => {
+            if (evt.lengthComputable) {
+              //we calculate the percent
+              let percentComplete = evt.loaded / evt.total;
+              //make a copy of the values
+
+              newValue.progress = percentComplete;
+
+              const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
+
+              const updatedAllValues = initialValue.concat(
+                newValueSavedToServer
+              );
+
+              setRecorderState((prevState) => {
+                return {
+                  ...prevState,
+                  audio: window.URL.createObjectURL(valueToSave.blob),
+                  values: updatedAllValues,
+                };
+              });
+            }
+          },
+          false
+        );
+        return xhr;
       },
 
       cache: false,
       contentType: false,
       processData: false,
     });
-    return newValues;
   };
 
   return {

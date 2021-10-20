@@ -138,7 +138,7 @@ class ExcerciseEditor extends SessionStateComponent<
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
      */
-    /* if (!this.state.needsSupplementation) {
+    if (!this.state.needsSupplementation) {
       this.props.onClose();
       this.props.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
@@ -155,6 +155,7 @@ class ExcerciseEditor extends SessionStateComponent<
           assessmentDate: new Date().getTime(),
           audioAssessments: this.state.audioAssessments,
         },
+        materialId: this.props.materialAssignment.materialId,
         onSuccess: () => {
           this.setStateAndClear(
             {
@@ -185,6 +186,7 @@ class ExcerciseEditor extends SessionStateComponent<
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
         },
+        materialId: this.props.materialAssignment.materialId,
         onSuccess: () => {
           this.setStateAndClear(
             {
@@ -197,7 +199,7 @@ class ExcerciseEditor extends SessionStateComponent<
         },
         onFail: () => this.props.onClose(),
       });
-    } */
+    }
   };
 
   /**

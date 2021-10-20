@@ -474,7 +474,9 @@ export class EvaluationMaterial extends React.Component<
                     </div>
                     <div className="evaluation-modal__item-functions">
                       {props.material.assignment.assignmentType ===
-                      "EVALUATED" ? (
+                        "EVALUATED" ||
+                      props.material.assignment.assignmentType ===
+                        "EXERCISE" ? (
                         props.compositeReplies &&
                         props.compositeReplies.state !== "UNANSWERED" &&
                         props.compositeReplies.state !== "WITHDRAWN" ? (
@@ -490,18 +492,7 @@ export class EvaluationMaterial extends React.Component<
                             icon="evaluate"
                           />
                         ) : null
-                      ) : (
-                        props.compositeReplies &&
-                        props.compositeReplies.state === "SUBMITTED" &&
-                        props.compositeReplies.submitted && (
-                          <div
-                            className="exercise-done-indicator icon-checkmark"
-                            title={this.props.i18n.text.get(
-                              "plugin.evaluation.evaluationModal.exerciseDoneIndicatorTitle"
-                            )}
-                          ></div>
-                        )
-                      )}
+                      ) : null}
                     </div>
 
                     <SlideDrawer
