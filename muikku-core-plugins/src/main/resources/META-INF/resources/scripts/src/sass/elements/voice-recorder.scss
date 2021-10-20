@@ -127,7 +127,6 @@
   height: auto;
 }
 
-
 .voice-recorder__file-record-progressbar {
   @include text;
   flex-basis: auto;
@@ -156,7 +155,6 @@
   margin: 0 0 5px;
 }
 
-
 .voice-recorder__download-button {
   background: transparent;
   color: $color-info;
@@ -181,4 +179,11 @@
   width: auto;
 }
 
-
+.voice-recorder__file-record-error {
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid $color-fatal;
+  border-left: 5px solid $color-fatal;
+  font-size: 1rem;
+  font-style: italic;
+}

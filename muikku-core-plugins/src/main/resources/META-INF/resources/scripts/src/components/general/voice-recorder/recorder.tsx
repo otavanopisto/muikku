@@ -60,7 +60,7 @@ function Recorder(props: RecorderProps) {
   return (
     <div className="voice-recorder">
       <RecorderControls recorderState={recorderState} handlers={handlers} />
-      <RecordingsList records={recordings} deleteAudio={deleteAudio} />
+
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
         <span className="voice-recorder__file-container voice-recorder__file-container--recording">
           <ProgressBarLine
@@ -86,17 +86,19 @@ function Recorder(props: RecorderProps) {
             trailColor="#f5f5f5"
             trailWidth={1}
             svgStyle={{ width: "100%", height: "4px" }}
-            text={props.i18n.text.get("plugin.evaluation.evaluationModal.recordingAssessment.statusRecording", moment("2015-01-01")
-              .startOf("day")
-              .seconds(seconds)
-              .format("mm:ss"), moment("2015-01-01")
-              .startOf("day")
-              .seconds(300)
-              .format("mm:ss"))}
+            text={props.i18n.text.get(
+              "plugin.evaluation.evaluationModal.recordingAssessment.statusRecording",
+              moment("2015-01-01")
+                .startOf("day")
+                .seconds(seconds)
+                .format("mm:ss"),
+              moment("2015-01-01").startOf("day").seconds(300).format("mm:ss")
+            )}
             progress={seconds / 300}
           />
         </span>
       </AnimateHeight>
+      <RecordingsList records={recordings} deleteAudio={deleteAudio} />
     </div>
   );
 }

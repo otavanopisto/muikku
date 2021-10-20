@@ -25,12 +25,15 @@ function RecorderControls({
   const { initRecording } = recorderState;
   const { startRecording, saveRecording } = handlers;
 
+  const disabled = recorderState.values.some((rItem) => rItem.uploading);
+
   return (
     <div className="voice-recorder__controls">
       {!initRecording ? (
         <Link
           className="voice-recorder__start-record-button icon-record"
           onClick={startRecording}
+          disabled={disabled}
         >
           <span className="voice-recorder__start-record-label">
             {i18n.text.get("plugin.workspace.audioField.startLink")}
@@ -40,6 +43,7 @@ function RecorderControls({
         <Link
           className="voice-recorder__stop-record-button icon-stop"
           onClick={saveRecording}
+          disabled={disabled}
         >
           <span className="voice-recorder__stop-record-label">
             {i18n.text.get("plugin.workspace.audioField.stopLink")}

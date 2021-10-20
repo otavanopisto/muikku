@@ -6,6 +6,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
+let ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * RecordProps
@@ -38,20 +39,18 @@ function Record(props: RecordProps) {
 
   const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
 
-  const failed = record.failed;
-
   return (
     <>
       <div className="voice-recorder__file-container" key={rest.key}>
         <audio className="voice-recorder__file" {...rest} />
-          <Link
-            className="voice-recorder__download-button icon-download"
-            title={props.i18n.text.get(
-              "plugin.workspace.audioField.downloadLink"
-            )}
-            href={record.url}
-            openInNewTab={record.name}
-          />
+        <Link
+          className="voice-recorder__download-button icon-download"
+          title={props.i18n.text.get(
+            "plugin.workspace.audioField.downloadLink"
+          )}
+          href={record.url}
+          openInNewTab={record.name}
+        />
         {!noDeleteFunctions ? (
           <Link
             className="voice-recorder__remove-button icon-trash"
@@ -62,7 +61,41 @@ function Record(props: RecordProps) {
           />
         ) : null}
       </div>
-      {failed ? <div>Virhe tallennettaessa äänipalautetta</div> : null}
+      {record.uploading ? (
+        <div style={{ margin: "0 10px" }}>
+          <ProgressBarLine
+            containerClassName="voice-recorder__file-record-progressbar"
+            options={{
+              strokeWidth: 1,
+              duration: 1000,
+              color: "#de3211",
+              trailColor: "#f5f5f5",
+              trailWidth: 1,
+              svgStyle: { width: "100%", height: "4px" },
+              text: {
+                className: "voice-recorder__file-record-percentage",
+                style: {
+                  right: "100%",
+                },
+              },
+            }}
+            strokeWidth={1}
+            easing="easeInOut"
+            duration={1000}
+            color="#de3211"
+            trailColor="#f5f5f5"
+            trailWidth={1}
+            svgStyle={{ width: "100%", height: "4px" }}
+            text={`${Math.round(record.progress * 100)}%`}
+            progress={record.progress}
+          />
+        </div>
+      ) : null}
+      {record.failed ? (
+        <div className="voice-recorder__file-record-error">
+          Virhe tallennettaessa äänipalautetta
+        </div>
+      ) : null}
     </>
   );
 }

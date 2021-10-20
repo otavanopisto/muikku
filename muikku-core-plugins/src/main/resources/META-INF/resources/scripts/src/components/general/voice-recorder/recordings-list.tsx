@@ -34,27 +34,22 @@ function RecordingsList(props: RecordingsListProps) {
 
   const { records, deleteAudio, noDeleteFunctions } = props;
 
-  return (
-      records.length > 0 ? (
-        <div className="voice-recorder__files-container">
-          {records.map((record) => {
-            return (
-              <Record
-                controls
-                record={record}
-                src={record.url}
-                key={record.id}
-                noDeleteFunctions={noDeleteFunctions}
-                onClickDelete={deleteAudio}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        null
-      )
-
-  );
+  return records.length > 0 ? (
+    <div className="voice-recorder__files-container">
+      {records.map((record) => {
+        return (
+          <Record
+            controls
+            record={record}
+            src={record.url}
+            key={record.id}
+            noDeleteFunctions={noDeleteFunctions}
+            onClickDelete={deleteAudio}
+          />
+        );
+      })}
+    </div>
+  ) : null;
 }
 
 /**
