@@ -129,7 +129,8 @@ public class EvaluationController {
         evaluated, 
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-    WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
+    // Null grade is translated to passed as it's likely to be an exercise evaluation
+    WorkspaceMaterialReplyState state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
