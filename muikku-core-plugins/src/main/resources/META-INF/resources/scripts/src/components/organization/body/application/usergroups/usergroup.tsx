@@ -10,8 +10,6 @@ import UserGroupDialog from "~/components/organization/dialogs/edit-usergroup";
 import {
   ApplicationListItem,
   ApplicationListItemHeader,
-  ApplicationListItemBody,
-  ApplicationListItemFooter,
 } from "~/components/general/application-list";
 import { UserGroupType } from "~/reducers/user-index";
 
@@ -21,7 +19,7 @@ interface CourseProps {
   usergroup: UserGroupType;
 }
 
-interface CourseState {}
+interface CourseState { }
 
 class Workspace extends React.Component<CourseProps, CourseState> {
   constructor(props: CourseProps) {
