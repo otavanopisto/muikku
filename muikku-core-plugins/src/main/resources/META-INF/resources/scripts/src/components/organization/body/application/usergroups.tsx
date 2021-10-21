@@ -15,7 +15,6 @@ import {
 import { UserGroupType } from "~/reducers/user-index";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 
-
 interface OrganizationUserGroupsProps {
   i18n: i18nType;
   userGroups: Array<UserGroupType>;
@@ -24,12 +23,10 @@ interface OrganizationUserGroupsProps {
   loadMoreUserGroups: LoadMoreUserTriggerType;
 }
 
-
 const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (props) => {
 
   const { i18n, userGroups, userGroupsState, userGroupsHasMore, loadMoreUserGroups } = props;
   const lastUserGroupRef = useInfinityScroll(userGroupsHasMore, userGroupsState, loadMoreUserGroups);
-
 
   if (userGroupsState === "LOADING") {
     return null;
