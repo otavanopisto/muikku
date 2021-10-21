@@ -53,6 +53,7 @@ interface EvaluationAssessmentAssignmentState {
   materialNode?: MaterialContentNodeType;
   isLoading: boolean;
   openAssignmentType?: "EVALUATED" | "EXERCISE";
+  showCloseEditorWarning: boolean;
 }
 /**
  * EvaluationAssessmentAssignment
@@ -76,6 +77,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       openContent: false,
       isLoading: false,
       materialNode: undefined,
+      showCloseEditorWarning: false,
     };
   }
 
@@ -254,6 +256,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       openDrawer: false,
       openAssignmentType: undefined,
+      showCloseEditorWarning: false,
     });
   };
 
@@ -293,6 +296,15 @@ class EvaluationAssessmentAssignment extends React.Component<
       }, 600);
     }
     this.myRef.scrollIntoView({ behavior: "smooth" });
+  };
+
+  /**
+   * handleAudioAssessmentChange
+   */
+  handleAudioAssessmentChange = () => {
+    this.setState({
+      showCloseEditorWarning: true,
+    });
   };
 
   /**
@@ -468,6 +480,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         (aAssessment) =>
           ({
             ...aAssessment,
+            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
           } as RecordValue)
       );
 
@@ -567,6 +580,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           </div>
         </div>
         <SlideDrawer
+          showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
           modifiers={
             this.props.assigment.assignmentType === "EVALUATED"
@@ -585,6 +599,10 @@ class EvaluationAssessmentAssignment extends React.Component<
           ) : this.state.materialNode ? (
             this.props.assigment.assignmentType === "EVALUATED" ? (
               <AssignmentEditor
+                onAudioAssessmentChange={this.handleAudioAssessmentChange}
+                showAudioAssessmentWarningOnClose={
+                  this.state.showCloseEditorWarning
+                }
                 editorLabel={this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
                 )}
@@ -596,6 +614,10 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             ) : (
               <ExcerciseEditor
+                onAudioAssessmentChange={this.handleAudioAssessmentChange}
+                showAudioAssessmentWarningOnClose={
+                  this.state.showCloseEditorWarning
+                }
                 editorLabel={this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
                 )}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   Recorder,
   MediaRecorderEvent,
@@ -33,6 +33,8 @@ interface UseRecorderProps {
 
 /**
  * useRecorder
+ * Custom hook to handle Recorder functioning. It handles returning values on changes, actual
+ * recording proggress and saving to to tempfile servlet
  * @param props
  * @returns
  */
@@ -146,13 +148,6 @@ export default function useRecorder(props: UseRecorderProps) {
           },
           newValues
         );
-
-        /* const newValuesSavedToServer: RecordValue[] = [{ ...savedToServer }]; */
-
-        /**
-         * Just in case we concat array, so mutations don't happen...
-         */
-        /* newValues = newValues.concat(newValuesSavedToServer); */
       };
     }
 

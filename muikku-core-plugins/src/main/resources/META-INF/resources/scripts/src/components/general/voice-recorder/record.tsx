@@ -7,6 +7,8 @@ import { AnyActionType } from "~/actions/index";
 import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import AnimateHeight from "react-animate-height";
+import DeleteDialog from "./dialogs/delete-warning";
+
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
@@ -32,6 +34,8 @@ const defaultRecordtProps = {
 
 /**
  * Record
+ * Shows invidual records and their functions like download/delete buttons
+ * and if uploading to tempfile servlet, the proggressbar and error if so
  * @param props
  * @returns JSX.Element
  */
@@ -59,13 +63,14 @@ function Record(props: RecordProps) {
           openInNewTab={record.name}
         />
         {!noDeleteFunctions ? (
-          <Link
-            className="voice-recorder__remove-button icon-trash"
-            title={props.i18n.text.get(
-              "plugin.workspace.audioField.removeLink"
-            )}
-            onClick={handleClickDelete}
-          />
+          <DeleteDialog onDeleteAudio={handleClickDelete}>
+            <Link
+              className="voice-recorder__remove-button icon-trash"
+              title={props.i18n.text.get(
+                "plugin.workspace.audioField.removeLink"
+              )}
+            />
+          </DeleteDialog>
         ) : null}
       </div>
       <AnimateHeight height={open ? "auto" : 0}>

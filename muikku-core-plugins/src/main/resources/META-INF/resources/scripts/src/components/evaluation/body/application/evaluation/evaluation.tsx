@@ -100,7 +100,7 @@ export const CKEditorConfig = (locale: string) => ({
         "Table",
         "Smiley",
         "SpecialChar",
-       ],
+      ],
     },
     { name: "links", items: ["Link", "Unlink"] },
     { name: "colors", items: ["TextColor", "BGColor"] },
