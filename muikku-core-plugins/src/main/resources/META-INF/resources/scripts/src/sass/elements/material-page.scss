@@ -514,7 +514,7 @@
   @include taskfield-text;
   @include taskfield-defaults;
   box-sizing: content-box;
-  margin: 4px;
+  margin: 4px 0;
   max-width: calc(100% - 8px);
   min-height: 7.25rem;
   outline: none;
@@ -579,6 +579,26 @@
 
   &.incorrect-answer input {
     border-color: $color-incorrect-answer;
+  }
+}
+
+// Textfield style implementation for Evaluation view
+.material-page__textfield--evaluation {
+  @include taskfield-text;
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 2px solid $color-evaluation-readonly-taskfield-background;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 4px;
+  min-width: 30px;
+  padding: 0 6px;
+
+  &.correct-answer {
+    border: 2px solid $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    border: 2px solid $color-incorrect-answer;
   }
 }
 
@@ -679,10 +699,10 @@
   border: solid 2px $taskfield-border-color;
   border-radius: 100%;
   display: inline-flex;
-  height: 1rem;
+  height: 1.125rem;
   justify-content: center;
-  min-width: 1rem;
-  width: 1rem;
+  min-width: 1.125rem;
+  width: 1.125rem;
 
   &:checked {
     background-color: $taskfield-border-color;
@@ -714,13 +734,25 @@
   margin: 4px;
   padding: 4px;
 
-  &.correct-answer { // // If the whole taskfield is correct we then mark taskfield items as correct
+  &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
 
     .material-page__checkbox {
       border-color: $color-correct-answer;
 
       &:checked {
         background-color: $color-correct-answer;
+        border-color: $color-correct-answer;
+      }
+    }
+  }
+
+  &.incorrect-answer { // If the whole taskfield is correct we then mark taskfield items as correct
+
+    .material-page__checkbox {
+      border-color: $color-incorrect-answer;
+
+      &:checked {
+        background-color: $color-incorrect-answer;
       }
     }
   }
@@ -751,10 +783,10 @@
   border: solid 2px $taskfield-border-color;
   border-radius: 2px;
   display: inline-flex;
-  height: 1rem;
+  height: 1.125rem;
   justify-content: center;
-  min-width: 1rem;
-  width: 1rem;
+  min-width: 1.125rem;
+  width: 1.125rem;
 
   &:checked {
     background-color: $taskfield-border-color;
@@ -773,6 +805,7 @@
 
     &:checked {
       background-color: $color-correct-answer;
+      border-color: $color-correct-answer;
     }
   }
 
@@ -781,6 +814,7 @@
 
     &:checked {
       background-color: $color-incorrect-answer;
+      border-color: $color-incorrect-answer;
     }
   }
 }
@@ -835,6 +869,13 @@
   }
 }
 
+.material-page__memofield--evaluation { // This is for memofield replacement style in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
+  padding: 15px 20px;
+}
+
 .material-page__ckeditor-replacement { // This is for ckeditor replacement div
   @include taskfield-text;
   @include taskfield-defaults;
@@ -851,6 +892,12 @@
     line-height: 1.75rem;
     min-height: 2.75rem;
   }
+}
+
+.material-page__ckeditor-replacement--evaluation { // This is for ckeditor replacement div in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
 }
 
 // File field

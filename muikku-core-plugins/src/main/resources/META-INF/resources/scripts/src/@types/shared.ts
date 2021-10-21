@@ -1,7 +1,18 @@
 /**
+ * UsedAs
+ */
+export type UsedAs = "default" | "evaluationTool";
+
+/**
  * PageLocation type
  */
 export type PageLocation = "Home" | "Help" | "Materials";
+
+/**
+ * Loading items state type
+ */
+
+export type LoadingState = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
 /**
  * Loading state type
@@ -60,7 +71,7 @@ export interface ExaminationSubject {
  */
 export interface ExaminationInformation
   extends MatriculationStudent,
-    MatriculationStudentExamination {
+  MatriculationStudentExamination {
   date: string;
 }
 

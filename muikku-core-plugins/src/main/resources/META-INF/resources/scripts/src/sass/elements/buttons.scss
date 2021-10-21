@@ -1416,6 +1416,11 @@
   }
 }
 
+.button-pill--material-page-close-mobile-editor {
+  position: static;
+}
+
+
 .button-pill--material-editor {
   @include prefix(transition, moz o ms webkit, all 0.15s);
   background: $color-material-page-admin-panel-main-color;

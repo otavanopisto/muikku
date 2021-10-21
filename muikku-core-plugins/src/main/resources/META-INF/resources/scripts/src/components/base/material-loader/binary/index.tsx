@@ -17,6 +17,7 @@ const registry = {
 export default function BinaryMaterialLoader(props: {
   material: MaterialContentNodeType,
   i18n: i18nType,
+  invisible?: boolean,
 }) {
   let Element = Any;
   Object.keys(registry).forEach((matchKey) => {

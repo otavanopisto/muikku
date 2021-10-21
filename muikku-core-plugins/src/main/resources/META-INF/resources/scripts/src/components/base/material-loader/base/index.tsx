@@ -22,6 +22,8 @@ import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from '~/components/base/material-loader/static/table';
 import MathJAX from '~/components/base/material-loader/static/mathjax';
+import { UsedAs } from '~/@types/shared';
+import { AudioPoolComponent } from '~/components/general/audio-pool-component';
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -70,7 +72,7 @@ interface BaseProps {
   checkAnswers: boolean,
   onAnswerChange: (name: string, status: boolean) => any,
   onAnswerCheckableChange: (status: boolean) => any,
-
+  usedAs: UsedAs;
   invisible: boolean,
 }
 
@@ -98,7 +100,7 @@ function preprocessor($html: any): any {
       const src = this.getAttribute("src");
       if (src) {
         this.dataset.original = src;
-        this.src = "";
+        $(this).removeAttr("src");
       }
 
       elem.appendChild(this);
@@ -106,20 +108,24 @@ function preprocessor($html: any): any {
       const src = this.getAttribute("src");
       if (src) {
         this.dataset.original = src;
-        this.src = "";
+        $(this).removeAttr("src");
       }
     }
   });
 
+  $html.find('audio').each(function () {
+    $(this).attr("preload", "metadata");
+  })
+
   $html.find('source').each(function () {
 
-    //This is done because there will be a bunch of 404's if the src is left untouched - the original url for the audio file src is faulty
+    //This is done because there will be a bunch of 404's if the src is left untouched - the original url for the audio file src is incomplete as it's missing section/material_page path
 
     const src = this.getAttribute("src");
 
     if (src) {
       this.dataset.original = src;
-      this.src = "";
+      $(this).removeAttr("src");
     }
   }
   );
@@ -325,6 +331,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["status"] = props.status;
     parameters["readOnly"] = props.readOnly;
 
+    /**
+     * Passing used as default value a.k.a "materials or evaluation tool"
+     */
+    parameters["usedAs"] = props.usedAs;
+
     //We set the value if we have one in composite replies
     parameters["initialValue"] = null;
     if (props.compositeReplies && props.compositeReplies.answers) {
@@ -479,6 +490,15 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         processingFunction: (tagname, props, children, element) => {
           return <Table key={props.key} element={element} props={props} children={children} />;
         },
+      },
+      {
+        shouldProcessHTMLElement: (tagname) => tagname === "audio",
+        preprocessReactProperties: (tag, props, children, element) => {
+          props.preload = "metadata";
+        },
+        processingFunction: (tag, props, children, element) => {
+          return (<AudioPoolComponent {...props} invisible={invisible}>{children}</AudioPoolComponent>);
+        }
       },
       {
         shouldProcessHTMLElement: (tagname) => tagname === "source",

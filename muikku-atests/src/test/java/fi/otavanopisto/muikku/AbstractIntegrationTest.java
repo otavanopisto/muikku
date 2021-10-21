@@ -376,6 +376,23 @@ public abstract class AbstractIntegrationTest {
     return null;
   }
   
+  protected Long getWorkspaceEntityIdForIdentifier(String identifier) throws SQLException, ClassNotFoundException {
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("select id from WorkspaceEntity where identifier = '%s'", identifier));
+      ResultSet results = statement.getResultSet();
+      if (results.next()) {              
+        Long id = results.getLong(1);
+        return id;
+      }
+    } finally {
+      connection.close();
+    }
+    
+    return null;
+  }
+  
   protected void dumpWorkspaceUsers() throws SQLException, ClassNotFoundException {
     System.out.println("Dumping all workspace users");
     
@@ -393,6 +410,26 @@ public abstract class AbstractIntegrationTest {
         Boolean archived = results.getBoolean(6);
         
         System.out.println(String.format("#%d (%s), ws: %d, u: %d, r: %d, a: (%b)", id, identifier, workspaceEntityId, userSchoolDataIdentifierId, workspaceUserRoleId, archived));
+      }
+    } finally {
+      connection.close();
+    }
+  }
+  
+  protected void dumpWorkspaces() throws SQLException, ClassNotFoundException {
+    System.out.println("Dumping all workspaces");
+    
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(String.format("SELECT id, identifier, archived FROM workspaceentity"));
+      ResultSet results = statement.getResultSet();
+      while (results.next()) {              
+        Long id = results.getLong(1);
+        String identifier = results.getString(2);
+        Boolean archived = results.getBoolean(3);
+        
+        System.out.println(String.format("#%d (%s), ar:%b", id, identifier, archived));
       }
     } finally {
       connection.close();

@@ -154,16 +154,6 @@ class OrganizationUser extends React.Component<
                 "plugin.organization.users.role.TEACHER"
               )}
             </option>
-            <option value="STUDY_PROGRAMME_LEADER">
-              {this.props.i18n.text.get(
-                "plugin.organization.users.role.STUDY_PROGRAMME_LEADER"
-              )}
-            </option>
-            <option value="STUDY_GUIDER">
-              {this.props.i18n.text.get(
-                "plugin.organization.users.role.STUDY_GUIDER"
-              )}
-            </option>
           </SelectFormElement>
         </DialogRow>
         <DialogRow modifiers="new-user">

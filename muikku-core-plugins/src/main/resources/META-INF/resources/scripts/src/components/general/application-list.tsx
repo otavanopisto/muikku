@@ -26,12 +26,11 @@ export default class ApplicationList extends React.Component<ApplicationListProp
 }
 
 interface ApplicationListItemProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  modifiers?: string | Array<string>
+  modifiers?: string | Array<string>,
   classState?: string,
 }
 
 interface ApplicationListItemState {
-
 }
 
 export class ApplicationListItem extends React.Component<ApplicationListItemProps, ApplicationListItemState> {

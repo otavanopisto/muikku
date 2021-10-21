@@ -3,6 +3,7 @@ import {
   WorkspaceJournalListType,
   MaterialContentNodeListType,
   MaterialCompositeRepliesType,
+  MaterialAssignmentType,
 } from "../reducers/workspaces/index";
 /**
  * EvaluationEnum
@@ -225,6 +226,16 @@ export interface WorkspaceEvaluationSaveReturn {
   passing: boolean;
 }
 
+export interface AssignmentEvaluationSaveReturn {
+  assessmentDate: string;
+  assessorIdentifier: string;
+  gradeIdentifier: string;
+  gradingScaleIdentifier: string;
+  identifier: string;
+  passing: boolean;
+  verbalAssessment: string;
+}
+
 /**
  * WorkspaceSupplementationSaveRequest
  */
@@ -270,6 +281,10 @@ export interface AssignmentEvaluationSupplementationRequest {
  */
 export interface EvaluationData {
   materials: MaterialContentNodeListType;
+}
+
+export interface EvaluationAssigmentData {
+  assigments: MaterialAssignmentType[];
 }
 
 /**

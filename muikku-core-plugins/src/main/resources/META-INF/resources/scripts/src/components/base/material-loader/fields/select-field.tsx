@@ -5,6 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
+import { UsedAs } from "~/@types/shared";
 
 interface SelectFieldProps {
   type: string,
@@ -22,6 +23,7 @@ interface SelectFieldProps {
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
 
+  usedAs: UsedAs;
   i18n: i18nType,
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
@@ -71,7 +73,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
   shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
-    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError
+    || nextProps.invisible !== this.props.invisible;
   }
   checkAnswers(){
     //if we are allowed to check answers

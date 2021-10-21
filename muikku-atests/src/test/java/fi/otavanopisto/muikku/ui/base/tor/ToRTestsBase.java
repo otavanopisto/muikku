@@ -160,8 +160,9 @@ public class ToRTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--evaluate");
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        assertValue(".evaluation-modal__item-body span.material-page__textfield input", "field value");
-        waitAndClick(".evaluation-modal .material-page--evaluation-material-page.material-page--SUBMITTED .button-pill--evaluate");
+        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
         waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
         addTextToCKEditor("Test evaluation.");

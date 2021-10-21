@@ -163,9 +163,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       }
     }
   }
-  // componentDidMount() {
-  //   this.setState({user: {role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier}});
-  // }
 
   render() {
     let content = (closePortal: () => any) =>
@@ -175,8 +172,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
             <option value="STUDENT">{this.props.i18n.text.get('plugin.organization.users.role.STUDENT')}</option>
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.role.MANAGER')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.role.TEACHER')}</option>
-            <option value="STUDY_GUIDER">{this.props.i18n.text.get('plugin.organization.users.role.STUDY_GUIDER')}</option>
-            <option value="STUDY_PROGRAMME_LEADER">{this.props.i18n.text.get('plugin.organization.users.role.STUDY_PROGRAMME_LEADER')}</option>
           </SelectFormElement>
         </DialogRow>
         <DialogRow modifiers="new-user">

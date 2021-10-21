@@ -118,6 +118,11 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     this.setState({ validation, locked: false, template: { id: parseInt(e.target.value), label: e.target.name }, workspaceName: e.target.name });
   }
 
+  selectTemplateMobile =  (template:WorkspaceType ) => {
+    let validation: ValidationType = Object.assign(this.state.validation, { templateSelected: true });
+    this.setState({ validation, locked: false, template: { id: template.id, label: template.name }, workspaceName: template.name });
+  }
+
   doStudentSearch(q: string) {
     this.props.loadStudents({payload:{q}});
     this.props.loadUserGroups({payload:{q}});
@@ -265,6 +270,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
 
     switch (page) {
       case 1:
+
         return <form>
           <DialogRow>
             <DialogRowHeader title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step1.title', page + "/" + this.totalSteps)} description={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.step1.description')} />
@@ -276,10 +282,11 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <ApplicationList modifiers="workspace-templates">
               {this.props.templates.length > 0 ?
                 this.props.templates.map((template: WorkspaceType) => {
-                  let aside = <input key={template.id} type="radio" checked={this.state.template && this.state.template.id === template.id ? true : false} onChange={this.selectTemplate} name={template.name} value={template.id} />;
-                  return <ApplicationListItem className="course" key={template.id}>
+                  const templateSelected = this.state.template && this.state.template.id === template.id;
+                  let aside = <input key={template.id} type="radio" checked={templateSelected} onChange={this.selectTemplate} name={template.name} value={template.id} />;
+                  return <ApplicationListItem onClick={this.selectTemplateMobile.bind(this, template)} className={`course ${templateSelected? "selected" : ""}`}  key={template.id}>
                     <ApplicationListItemContentWrapper asideModifiers="course" aside={aside}>
-                      <ApplicationListItemHeader modifiers="course">
+                      <ApplicationListItemHeader  modifiers="course">
                         <span className="application-list__header-primary">{template.name}</span>
                         <span className="application-list__header-secondary">{template.educationTypeName}</span>
                       </ApplicationListItemHeader>
@@ -300,8 +307,8 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
             <InputFormElement id="workspaceExtension" modifiers="dialog-workspace-name-extension" updateField={this.setWorkspaceNameExtension} valid={this.state.validation.nameExtensionValid} name="workspaceNameExtension" label={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.nameExtension.label')} value={this.state.workspaceNameExtension}></InputFormElement>
           </DialogRow>
           <DialogRow modifiers="new-workspace">
-            <DateFormElement id="workspaceBeginDate" maxDate={this.state.endDate} updateField={this.handleDateChange.bind(this, "beginDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.beginDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.beginDate.label") }} />
-            <DateFormElement id="workspaceEndDate" minDate={this.state.beginDate} updateField={this.handleDateChange.bind(this, "endDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.endDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.endDate.label") }} />
+            <DateFormElement id="workspaceBeginDate" modifiers="organization-workspace-date" maxDate={this.state.endDate} updateField={this.handleDateChange.bind(this, "beginDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.beginDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.beginDate.label") }} />
+            <DateFormElement id="workspaceEndDate" modifiers="organization-workspace-date" minDate={this.state.beginDate} updateField={this.handleDateChange.bind(this, "endDate")} locale={this.props.i18n.time.getLocale()} selected={this.state.endDate} labels={{ label: this.props.i18n.text.get("plugin.organization.workspaces.editWorkspace.endDate.label") }} />
           </DialogRow>
           <DialogRow modifiers="new-workspace">
             <fieldset>
@@ -435,7 +442,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     let executeContent = <div><div className={`dialog__executer ${this.state.workspaceCreated === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.createWorkspace')}</div>
       <div className={`dialog__executer ${this.state.detailsAdded === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addDetails')}</div>
       <div className={`dialog__executer ${this.state.studentsAdded === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addStudents')}</div>
-      <div className={`dialog__executer ${this.state.staffAdded === true ? "dstate-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers')}</div>
+      <div className={`dialog__executer ${this.state.staffAdded === true ? "state-DONE" : ""}`}>{this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.summary.execute.addTeachers')}</div>
     </div>;
     let footer = (closePortal: () => any) => <FormWizardActions locked={this.state.locked}
       currentStep={this.state.currentStep} totalSteps={this.totalSteps}
