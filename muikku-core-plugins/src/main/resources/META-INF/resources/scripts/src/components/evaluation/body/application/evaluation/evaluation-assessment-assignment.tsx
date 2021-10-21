@@ -650,20 +650,18 @@ class EvaluationAssessmentAssignment extends React.Component<
                     )}
                   />
                 </div>
-                <div className="evaluation-modal__item-verbal-assessment">
-                  {recordings.length > 0 ? (
-                    <>
-                      <div className="evaluation-modal__item-assessment-verbal-label">
-                      {this.props.i18n.text.get(
-                      "plugin.evaluation.evaluationModal.audioAssessments"
-                    )}
-                      </div>
-                      <div className="voice-container">
-                        <RecordingsList records={recordings} />
-                      </div>
-                    </>
-                  ) : null}
-                </div>
+                {recordings.length > 0 ? (
+                  <div className="evaluation-modal__item-verbal-assessment">
+                    <div className="evaluation-modal__item-assessment-verbal-label">
+                    {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.audioAssessments"
+                  )}
+                    </div>
+                    <div className="voice-container">
+                      <RecordingsList records={recordings} />
+                    </div>
+                  </div>
+                ) : null}
               </>
             )}
           {this.state.isLoading ? (
