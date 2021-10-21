@@ -43,7 +43,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (props) =>
     return (
       <div className="empty">
         <span>
-          {i18n.text.get("plugin.coursepicker.searchResult.empty")}
+          {props.i18n.text.get("plugin.organization.userGroups.searchResult.empty")}
         </span>
       </div>
     );
