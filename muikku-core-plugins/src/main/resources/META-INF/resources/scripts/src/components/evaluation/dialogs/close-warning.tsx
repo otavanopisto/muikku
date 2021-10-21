@@ -62,22 +62,26 @@ class WarningDialog extends React.Component<
             buttonModifiers={["fatal", "standard-ok"]}
             onClick={this.handleContinueClick.bind(this, closeDialog)}
           >
-            Poista
+            {this.props.i18n.text.get(
+          "plugin.evaluation.assignmentEvaluationDialog.unsavedVerbalRecordings.proceedButton"
+        )}
           </Button>
           <Button
             buttonModifiers={["cancel", "standard-cancel"]}
             onClick={closeDialog}
           >
-            Peruuta
+            {this.props.i18n.text.get(
+          "plugin.evaluation.assignmentEvaluationDialog.unsavedVerbalRecordings.cancelButton"
+        )}
           </Button>
         </div>
       );
     };
     const content = (closeDialog: () => any) => {
       return (
-        <div>
-          Teillä on tallentamattomia äänitallenteita. Oletko varma, että haluat
-          sulkea arviontityökalun?
+        <div>{this.props.i18n.text.get(
+          "plugin.evaluation.assignmentEvaluationDialog.unsavedVerbalRecordings.description"
+        )}
         </div>
       );
     };
@@ -87,7 +91,7 @@ class WarningDialog extends React.Component<
         onClose={this.props.onClose}
         modifier="evaluation-remove-assessment"
         title={this.props.i18n.text.get(
-          "plugin.evaluation.workspaceEvaluationDialog.removeDialog.title"
+          "plugin.evaluation.assignmentEvaluationDialog.unsavedVerbalRecordings.title"
         )}
         content={content}
         footer={footer}

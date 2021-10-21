@@ -133,6 +133,10 @@
   margin: 5px;
 }
 
+.voice-recorder__file-container--recording {
+  margin: 10px;
+}
+
 .voice-recorder__file {
   @include text;
   flex-basis: auto;
