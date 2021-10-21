@@ -443,6 +443,10 @@
   background: $color-evaluation-modal-meta-background;
   font-size: 0.825rem;
   padding: 10px;
+
+  .voice-recorder__remove-button {
+    display: none;
+  }
 }
 
 .evaluation-modal__item-assessment-literal-label,
