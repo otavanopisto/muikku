@@ -1797,7 +1797,8 @@ mark[data-muikku-word-definition] {
   flex-shrink: 0;
 }
 
-.material-page__assignment-assessment-literal-label {
+.material-page__assignment-assessment-literal-label,
+.material-page__assignment-assessment-verbal-label {
   @include assessment-text;
   font-weight: bold;
 }

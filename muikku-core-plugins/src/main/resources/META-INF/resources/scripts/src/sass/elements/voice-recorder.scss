@@ -14,6 +14,22 @@
   width: 100%;
 }
 
+.voice-container {
+  @include text;
+  margin: 4px 0 0;
+  position: relative;
+  width: 100%;
+
+  .voice-recorder__files-container {
+    padding: 0;
+  }
+
+  .voice-recorder__file-container {
+    margin: 10px 0 0;
+    padding: 0;
+  }
+}
+
 .voice-recorder__controls {
   align-items: center;
   display: flex;
@@ -102,6 +118,11 @@
 .voice-recorder__files-container {
   border-top: 3px dotted lighten($taskfield-border-color, 20%);
   display: block;
+  padding: 5px;
+
+  &:first-child {
+    border: 0;
+  }
 }
 
 .voice-recorder__file-container {
@@ -109,8 +130,7 @@
   display: flex;
   flex-flow: row nowrap;
   height: 28px;
-  margin: 10px 5px;
-  padding: 0 5px;
+  margin: 5px;
 }
 
 .voice-recorder__file {
@@ -119,7 +139,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   height: 1.75rem;
-  max-width: calc(100% - 74px);
+  max-width: 100%;
 }
 
 .voice-recorder__file--recording,

@@ -57,13 +57,15 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
 
       {audioAssessments !== undefined && audioAssessments.length > 0 ? (
         <>
-          <div className="material-page__assignment-assessment-literal-label">
+          <div className="material-page__assignment-assessment-verbal-label">
             {props.i18n.text.get(
               "plugin.workspace.materialsLoader.evaluation.verbal.label"
             )}
             :
           </div>
-          <RecordingsList records={audioRecords} noDeleteFunctions />
+          <div className="voice-container">
+            <RecordingsList records={audioRecords} noDeleteFunctions />
+          </div>
         </>
       ) : null}
     </div>

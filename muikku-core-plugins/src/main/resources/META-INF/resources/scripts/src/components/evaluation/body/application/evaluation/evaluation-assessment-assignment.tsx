@@ -9,7 +9,7 @@ import {
   MaterialEvaluationType,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
-import { AnyActionType } from "../../../../../actions/index";
+import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as moment from "moment";
@@ -637,26 +637,28 @@ class EvaluationAssessmentAssignment extends React.Component<
             compositeReply.evaluationInfo.text && (
               <>
                 <div className="evaluation-modal__item-literal-assessment">
-                  <div className="evaluation-modal__item-literal-assessment-label">
+                  <div className="evaluation-modal__item-assessment-literal-label">
                     {this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
                     )}
                   </div>
 
                   <div
-                    className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
+                    className="evaluation-modal__item-assessment-literal-data rich-text rich-text--evaluation-literal"
                     dangerouslySetInnerHTML={this.createHtmlMarkup(
                       compositeReply.evaluationInfo.text
                     )}
                   />
                 </div>
-                <div className="evaluation-modal__item-literal-assessment">
+                <div className="evaluation-modal__item-verbal-assessment">
                   {recordings.length > 0 ? (
                     <>
-                      <div className="evaluation-modal__item-literal-assessment-label">
-                        Suullinen palaute
+                      <div className="evaluation-modal__item-assessment-verbal-label">
+                      {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.audioAssessments"
+                    )}
                       </div>
-                      <div className="evaluation-modal__item-literal-assessment-label">
+                      <div className="voice-container">
                         <RecordingsList records={recordings} />
                       </div>
                     </>
