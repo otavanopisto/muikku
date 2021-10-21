@@ -8,6 +8,7 @@ import { bindActionCreators } from "redux";
 import { i18nType } from "~/reducers/base/i18n";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
+import { AudioPoolComponent } from "../audio-pool-component";
 
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -46,6 +47,9 @@ function Record(props: RecordProps) {
 
   const open = record.uploading || record.failed;
 
+  /**
+   * handleClickDelete
+   */
   const handleClickDelete = () => {
     onClickDelete && onClickDelete(record.id);
   };
@@ -53,7 +57,13 @@ function Record(props: RecordProps) {
   return (
     <>
       <div className="voice-recorder__file-container" key={rest.key}>
-        <audio className="voice-recorder__file" {...rest} />
+        <AudioPoolComponent
+          className="voice-recorder__file"
+          controls={rest.controls}
+          src={record.url}
+          preload="metadata"
+        />
+
         <Link
           className="voice-recorder__download-button icon-download"
           title={props.i18n.text.get(

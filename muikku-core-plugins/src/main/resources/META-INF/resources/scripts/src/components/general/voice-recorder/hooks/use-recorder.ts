@@ -116,12 +116,19 @@ export default function useRecorder(props: UseRecorderProps) {
     if (recorder && recorder.state === "inactive") {
       recorder.start();
 
+      /**
+       * On start, get contentType. For some reason when recording stop
+       * and blob is build, content type is gone
+       */
+      let contentType: string;
+
       recorder.ondataavailable = (e: MediaRecorderEvent) => {
+        contentType = e.data.type;
         chunks.push(e.data);
       };
 
       recorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: "audio/mpeg; codecs=opus" });
+        const blob = new Blob(chunks, { type: contentType });
         chunks = [];
 
         let newValues = [...recorderState.values];
