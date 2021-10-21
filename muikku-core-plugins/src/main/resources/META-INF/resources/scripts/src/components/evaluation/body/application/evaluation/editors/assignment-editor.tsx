@@ -33,6 +33,7 @@ import {
   AssignmentEvaluationSupplementationRequest,
 } from "~/@types/evaluation";
 import promisify from "~/util/promisify";
+import WarningDialog from "../../../../dialogs/close-warning";
 
 /**
  * AssignmentEditorProps
@@ -47,6 +48,8 @@ interface AssignmentEditorProps {
   locale: LocaleListType;
   editorLabel?: string;
   modifiers?: string[];
+  showAudioAssessmentWarningOnClose: boolean;
+  onAudioAssessmentChange: () => void;
   updateMaterialEvaluationData: (
     assigmentSaveReturn: AssignmentEvaluationSaveReturn
   ) => void;
@@ -181,6 +184,17 @@ class AssignmentEditor extends SessionStateComponent<
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
     });
+  };
+
+  componentDidUpdate = (
+    prevProps: AssignmentEditorProps,
+    prevState: AssignmentEditorState
+  ) => {
+    if (
+      this.state.audioAssessments.length !== prevState.audioAssessments.length
+    ) {
+      this.props.onAudioAssessmentChange();
+    }
   };
 
   /**
@@ -593,14 +607,25 @@ class AssignmentEditor extends SessionStateComponent<
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
             )}
           </Button>
-          <Button
-            onClick={this.props.onClose}
-            buttonModifiers="evaluate-cancel"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
-          </Button>
+          {this.props.showAudioAssessmentWarningOnClose ? (
+            <WarningDialog onContinueClick={this.props.onClose}>
+              <Button buttonModifiers="evaluate-cancel">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+                )}
+              </Button>
+            </WarningDialog>
+          ) : (
+            <Button
+              onClick={this.props.onClose}
+              buttonModifiers="evaluate-cancel"
+            >
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+              )}
+            </Button>
+          )}
+
           {this.recovered && (
             <Button
               buttonModifiers="evaluate-remove-draft"

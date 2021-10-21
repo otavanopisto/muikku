@@ -39,10 +39,28 @@ function Recorder(props: RecorderProps) {
 
   const { recordings, deleteAudio } = useRecordingsList(recorderState.values);
 
+  /**
+   * Mutatable object to be changed on initial render
+   * it helps checks if initial render has happened or not
+   */
+  const firstUpdate = React.useRef(true);
+
   React.useEffect(() => {
+    /**
+     * Check if intial render has happened, if not then changed mutatable object
+     */
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+
+    /**
+     * After initial render and if onChange method has been passed, and values have changed
+     */
     if (
       props.onChange &&
-      JSON.stringify(props.values) !== JSON.stringify(recordings)
+      JSON.stringify(props.values) !== JSON.stringify(recordings) &&
+      !firstUpdate.current
     ) {
       let audioAssessments = recordings.map((record) => {
         const object: AudioAssessment = {
