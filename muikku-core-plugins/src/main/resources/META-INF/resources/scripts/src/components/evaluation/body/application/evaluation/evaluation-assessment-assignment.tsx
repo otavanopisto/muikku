@@ -241,10 +241,6 @@ class EvaluationAssessmentAssignment extends React.Component<
     }
 
     this.setState({ openContent: !openContent });
-
-    if (this.state.materialNode === undefined) {
-      this.loadMaterialData();
-    }
   };
 
   /**
@@ -653,12 +649,12 @@ class EvaluationAssessmentAssignment extends React.Component<
                 {recordings.length > 0 ? (
                   <div className="evaluation-modal__item-verbal-assessment">
                     <div className="evaluation-modal__item-assessment-verbal-label">
-                    {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.audioAssessments"
-                  )}
+                      {this.props.i18n.text.get(
+                        "plugin.evaluation.evaluationModal.audioAssessments"
+                      )}
                     </div>
                     <div className="voice-container">
-                      <RecordingsList records={recordings} />
+                      <RecordingsList records={recordings} noDeleteFunctions />
                     </div>
                   </div>
                 ) : null}
