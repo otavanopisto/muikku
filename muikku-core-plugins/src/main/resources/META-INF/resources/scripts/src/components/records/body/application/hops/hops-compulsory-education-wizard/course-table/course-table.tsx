@@ -1,11 +1,16 @@
 import * as React from "react";
-import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
+import {
+  SchoolSubject,
+  StudentActivityByStatus,
+  StudentActivityCourse,
+} from "~/@types/shared";
 import { Table, Tbody, Td, Tr } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { TableDataContent } from "./table-data-content";
 import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
+import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 
 interface CourseTableProps extends Partial<StudentActivityByStatus> {
   user: "supervisor" | "student";
@@ -20,6 +25,13 @@ interface CourseTableProps extends Partial<StudentActivityByStatus> {
   approvedSubjectListOfIds?: number[];
   inprogressSubjectListOfIds?: number[]; */
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
+  updateSuggestion: (
+    goal: "add" | "remove",
+    courseNumber: number,
+    subjectCode: string,
+    suggestionId: number,
+    studentId: string
+  ) => void;
 }
 
 /**
@@ -153,6 +165,9 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         let canBeSuggestedForNextCourse = true;
         let canBeSuggestedForOptionalCourse = true;
 
+        let suggestedCourseData: StudentActivityCourse[] | undefined =
+          undefined;
+
         /**
          * If any of these list are given, check whether course id is in
          * and push another modifier or change table data content options values
@@ -225,6 +240,9 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               sCourse.courseNumber === course.courseNumber
           )
         ) {
+          suggestedCourseData = props.suggestedList.filter(
+            (sCourse) => sCourse.subject === sSubject.subjectCode
+          );
           modifiers.push("NEXT");
         }
 
@@ -236,10 +254,12 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               tableRef={tableRef}
               subjectCode={sSubject.subjectCode}
               course={course}
+              suggestedActivityCourses={suggestedCourseData}
               canBeSelected={canBeSelected}
               canBeSuggestedForNextCourse={canBeSuggestedForNextCourse}
               canBeSuggestedForOptionalCourse={canBeSuggestedForOptionalCourse}
               onToggleCourseClick={handleToggleCourseClick}
+              updateSuggestion={props.updateSuggestion}
             />
           </Td>
         );

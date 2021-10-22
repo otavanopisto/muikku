@@ -262,11 +262,9 @@ export interface LanguageGrade {
 }
 
 export interface HopsCompulsory {
-  basicInfo: BasicInformation;
   startingLevel: HopsStudentStartingLevel;
   motivationAndStudy: HopsMotivationAndStudy;
   studiesPlanning: HopsPlanningStudies;
-  studiesCourseData: StudiesCourseData;
 }
 
 /**
@@ -276,7 +274,12 @@ export interface BasicInformation {
   name: string;
   guider: string;
   dateOfIssue?: Date;
-  updates?: Date[];
+  updates?: HopsUpdates[];
+}
+
+export interface HopsUpdates {
+  date: Date;
+  modifier: string;
 }
 
 /**
@@ -299,6 +302,8 @@ export interface HopsMotivationAndStudy
     StudentLearningMethod,
     StudentSupportive,
     StudentsGoal {
+  scaleSize: number;
+  scaleName: string;
   hardOrEasyInStudies?: string;
   strengthsOrWeaknesses?: string;
   interests?: string;
@@ -315,8 +320,6 @@ export interface HopsStudies {
 export interface HopsPlanningStudies extends StudentsGoal {
   usedHoursPerWeek: number;
   selectedListOfIds: number[];
-  supervisorSugestedSubjectListOfIds: number[];
-  supervisorSuggestedNextListOfIds: number[];
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
 }
@@ -326,6 +329,15 @@ export interface HopsPlanningStudies extends StudentsGoal {
  */
 export interface StudentsGoal {
   graduationGoal: string;
+  /* followUpGoal: string;
+  followUpStudies?: string;
+  studySector?: string; */
+}
+
+/**
+ * FollowUpGoal
+ */
+export interface FollowUp {
   followUpGoal: string;
   followUpStudies?: string;
   studySector?: string;
@@ -335,9 +347,9 @@ export interface StudentsGoal {
  * WayToLearn
  */
 export interface WayToLearn {
-  byReading: boolean;
-  byListening: boolean;
-  byDoing: boolean;
+  byReading: number;
+  byListening: number;
+  byDoing: number;
   someOtherWay?: string;
 }
 
@@ -345,12 +357,12 @@ export interface WayToLearn {
  * StudentLearningMethod
  */
 export interface StudentLearningMethod {
-  byMemorizing: boolean;
-  byTakingNotes: boolean;
-  byDrawing: boolean;
-  byListeningTeacher: boolean;
-  byWatchingVideos: boolean;
-  byFollowingOthers: boolean;
+  byMemorizing: number;
+  byTakingNotes: number;
+  byDrawing: number;
+  byListeningTeacher: number;
+  byWatchingVideos: number;
+  byFollowingOthers: number;
   someOtherMethod?: string;
 }
 
@@ -358,11 +370,11 @@ export interface StudentLearningMethod {
  * StudentSupportive
  */
 export interface StudentSupportive {
-  noSupport: boolean;
-  family: boolean;
-  friend: boolean;
-  supportPerson: boolean;
-  teacher: boolean;
+  noSupport: number;
+  family: number;
+  friend: number;
+  supportPerson: number;
+  teacher: number;
   somethingElse?: string;
 }
 

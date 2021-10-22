@@ -8,7 +8,13 @@ const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
 import { Step1, Step2, Step3, Step5 } from "./steps";
-import { GuiderType } from "../../../../../../reducers/main-function/guider/index";
+import {
+  GuiderType,
+  GuiderStudentType,
+} from "../../../../../../reducers/main-function/guider/index";
+import promisify from "../../../../../../util/promisify";
+import mApi from "~/lib/mApi";
+import { BasicInformation, HopsUpdates } from "../../../../../../@types/shared";
 import {
   HopsCompulsory,
   Education,
@@ -44,6 +50,7 @@ interface CompulsoryEducationHopsWizardProps {
  * CompulsoryEducationHopsWizardState
  */
 interface CompulsoryEducationHopsWizardState {
+  basicInfo: BasicInformation;
   hopsCompulsory: HopsCompulsory;
   loading: boolean;
 }
@@ -64,11 +71,11 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
     this.state = {
       loading: false,
+      basicInfo: {
+        name: "",
+        guider: "",
+      },
       hopsCompulsory: {
-        basicInfo: {
-          name: "",
-          guider: "",
-        },
         startingLevel: {
           previousEducation: Education.COMPULSORY_SCHOOL,
           previousWorkExperience: "0-6",
@@ -88,44 +95,33 @@ class CompulsoryEducationHopsWizard extends React.Component<
           ],
         },
         motivationAndStudy: {
-          byReading: false,
-          byListening: false,
-          byDoing: false,
+          byReading: 0,
+          byListening: 0,
+          byDoing: 0,
           someOtherWay: "",
-          byMemorizing: false,
-          byTakingNotes: false,
-          byDrawing: false,
-          byListeningTeacher: false,
-          byWatchingVideos: false,
-          byFollowingOthers: false,
+          byMemorizing: 0,
+          byTakingNotes: 0,
+          byDrawing: 0,
+          byListeningTeacher: 0,
+          byWatchingVideos: 0,
+          byFollowingOthers: 0,
           someOtherMethod: "",
-          noSupport: false,
-          family: false,
-          friend: false,
-          supportPerson: false,
-          teacher: false,
+          noSupport: 0,
+          family: 0,
+          friend: 0,
+          supportPerson: 0,
+          teacher: 0,
           somethingElse: "",
           graduationGoal: "",
-          followUpGoal: "",
+          scaleSize: 5,
+          scaleName: "0-5",
         },
         studiesPlanning: {
           usedHoursPerWeek: 0,
           graduationGoal: "",
-          followUpGoal: "",
           ethics: false,
           finnishAsSecondLanguage: false,
           selectedListOfIds: [],
-          supervisorSugestedSubjectListOfIds: [6, 40, 51, 59, 64],
-          supervisorSuggestedNextListOfIds: [],
-        },
-        studiesCourseData: {
-          approvedSubjectListOfIds: [
-            1, 2, 13, 21, 22, 32, 33, 45, 48, 53, 54, 57, 61, 62,
-          ],
-          completedSubjectListOfIds: [
-            3, 4, 14, 23, 24, 34, 35, 36, 41, 46, 47, 50, 58, 63,
-          ],
-          inprogressSubjectListOfIds: [5, 15, 37, 42, 46],
         },
       },
     };
@@ -141,55 +137,90 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loading: true,
     });
 
-    /**
-     * Mocks data loading!
-     */
-    setTimeout(() => {
-      switch (testData) {
-        case 1:
-          this.setState({
-            hopsCompulsory: hopsMock1,
-          });
-          break;
+    const studentId =
+      this.props.user === "supervisor"
+        ? this.props.guider.currentStudent.basic.id
+        : (window as any).MUIKKU_LOGGED_USER;
 
-        case 2:
-          this.setState({
-            hopsCompulsory: hopsMock2,
-          });
-          break;
-
-        case 3:
-          this.setState({
-            hopsCompulsory: hopsMock3,
-          });
-          break;
-
-        case 4:
-          this.setState({
-            hopsCompulsory: hopsMock4,
-          });
-          break;
-
-        default:
-          break;
-      }
-    }, 1500);
-
-    /*  const hops = await promisify(
-      mApi().hops.student.read((window as any).MUIKKU_LOGGED_USER),
+    const studentHopsHistory = (await promisify(
+      mApi().hops.student.history.read(studentId),
       "callback"
-    )();
+    )()) as HopsUpdates[];
 
-    const peilaus = await promisify(
-      mApi().hops.student.studyActivity.read(
-        (window as any).MUIKKU_LOGGED_USER
-      ),
+    const studentBasicInfo = (await promisify(
+      mApi().guider.students.read(studentId),
       "callback"
-    )();
+    )()) as GuiderStudentType;
 
-    console.log("hops :::>", [hops, peilaus]); */
+    const hops = (await promisify(
+      mApi().hops.student.read(studentId),
+      "callback"
+    )()) as HopsCompulsory;
 
-    this.setState({ loading: false });
+    console.log("Tiedot :::>", [hops, studentHopsHistory, studentBasicInfo]);
+
+    const loadedHops =
+      hops !== undefined
+        ? hops
+        : {
+            startingLevel: {
+              previousEducation: Education.COMPULSORY_SCHOOL,
+              previousWorkExperience: "0-6",
+              previousYearsUsedInStudies: "",
+              finnishAsMainOrSecondaryLng: false,
+              previousLanguageExperience: [
+                {
+                  name: "Englanti",
+                  grade: 1,
+                  hardCoded: true,
+                },
+                {
+                  name: "Ruotsi",
+                  grade: 1,
+                  hardCoded: true,
+                },
+              ],
+            },
+            motivationAndStudy: {
+              byReading: 0,
+              byListening: 0,
+              byDoing: 0,
+              someOtherWay: undefined,
+              byMemorizing: 0,
+              byTakingNotes: 0,
+              byDrawing: 0,
+              byListeningTeacher: 0,
+              byWatchingVideos: 0,
+              byFollowingOthers: 0,
+              someOtherMethod: undefined,
+              noSupport: 0,
+              family: 0,
+              friend: 0,
+              supportPerson: 0,
+              teacher: 0,
+              somethingElse: undefined,
+              graduationGoal: "",
+              scaleSize: 5,
+              scaleName: "0-5",
+            },
+            studiesPlanning: {
+              usedHoursPerWeek: 0,
+              graduationGoal: "",
+              ethics: false,
+              finnishAsSecondLanguage: false,
+              selectedListOfIds: [],
+            },
+          };
+
+    this.setState({
+      loading: false,
+      basicInfo: {
+        name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
+        guider: "???Joku ohjaaja???",
+        updates: studentHopsHistory,
+      },
+      hopsCompulsory: loadedHops,
+    });
   };
 
   /**
@@ -252,7 +283,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * handleDeleteSuperVisorSelections
    */
   handleDeleteSuperVisorSelections = () => {
-    this.setState({
+    /* this.setState({
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
         studiesPlanning: {
@@ -260,14 +291,14 @@ class CompulsoryEducationHopsWizard extends React.Component<
           supervisorSugestedSubjectListOfIds: [],
         },
       },
-    });
+    }); */
   };
 
   /**
    * handleDeleteSuggestedNextSelections
    */
   handleDeleteSuggestedNextSelections = () => {
-    this.setState({
+    /* this.setState({
       hopsCompulsory: {
         ...this.state.hopsCompulsory,
         studiesPlanning: {
@@ -275,7 +306,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           supervisorSuggestedNextListOfIds: [],
         },
       },
-    });
+    }); */
   };
 
   /**
@@ -290,7 +321,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
           <Step1
             disabled={this.props.disabled}
             loading={this.state.loading}
-            basicInformation={this.state.hopsCompulsory.basicInfo}
+            basicInformation={this.state.basicInfo}
           />
         ),
       },
@@ -335,7 +366,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
                 : this.handleDeleteCourseSelections
             }
             onDeleteNextSelection={this.handleDeleteSuggestedNextSelections}
-            {...this.state.hopsCompulsory.studiesCourseData}
           />
         ),
       },

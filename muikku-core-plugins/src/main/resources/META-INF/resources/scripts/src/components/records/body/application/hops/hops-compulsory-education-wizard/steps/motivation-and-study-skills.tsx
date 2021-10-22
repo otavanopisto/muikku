@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Textarea } from "../text-area";
-import { CheckboxGroup, CheckboxGroupItem } from "../checkbox-group";
+import { CheckboxGroupItem, ScaleInputGroup } from "../input-groups";
 import { HopsMotivationAndStudy } from "../../../../../../../@types/shared";
 import AnimateHeight from "react-animate-height";
+import { InputGroup } from "../input-groups";
 
 /**
  * MotivationAndStudySkillsProps
@@ -84,6 +85,21 @@ class MotivationAndStudySkills extends React.Component<
     };
 
   /**
+   * handleScaleRangeChange
+   * @param name
+   * @returns
+   */
+  handleScaleRangeChange = (
+    name: keyof HopsMotivationAndStudy,
+    scaleValue: number
+  ) => {
+    this.props.onMotivationAndStudyChange({
+      ...this.props.motivationAndStudy,
+      [name]: scaleValue,
+    });
+  };
+
+  /**
    * handleCheckboxItemChange
    * @param name
    */
@@ -141,30 +157,38 @@ class MotivationAndStudySkills extends React.Component<
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">Miten opin?</legend>
+          <legend className="hops-container__subheader">
+            Miten opin? Asteikolla 0-4.
+          </legend>
 
           <div className="hops-container__row hops-container__row--list">
-            <CheckboxGroup>
-              <CheckboxGroupItem
+            <InputGroup>
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Lukemalla"
                 className="group__item"
-                checked={byReading}
-                onChange={this.handleCheckboxItemChange("byReading")}
+                value={byReading}
+                name="byReading"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Kuuntelemalla"
                 className="group__item"
-                checked={byListening}
-                onChange={this.handleCheckboxItemChange("byListening")}
+                value={byListening}
+                name="byListening"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Tekemällä"
                 className="group__item"
-                checked={byDoing}
-                onChange={this.handleCheckboxItemChange("byDoing")}
+                value={byDoing}
+                name="byDoing"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
               <CheckboxGroupItem
                 label="Muu? Mikä?"
@@ -173,7 +197,7 @@ class MotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxElseChanges("someOtherWay")}
                 disabled={this.props.disabled}
               />
-            </CheckboxGroup>
+            </InputGroup>
           </div>
           <AnimateHeight height={this.state.someOtherWay ? "auto" : 0}>
             <div className="hops-container__row">
@@ -192,52 +216,64 @@ class MotivationAndStudySkills extends React.Component<
 
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
-            Millaisia tapoja olen aiemmin käyttänyt?
+            Millaisia tapoja olen aiemmin käyttänyt? Asteikolla 0-4.
           </legend>
 
           <div className="hops-container__row hops-container__row--list">
-            <CheckboxGroup>
-              <CheckboxGroupItem
+            <InputGroup>
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Opettelen asioita ulkoa"
                 className="group__item"
-                checked={byMemorizing}
-                onChange={this.handleCheckboxItemChange("byMemorizing")}
+                value={byMemorizing}
+                name="byMemorizing"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Kirjoitan muistiinpanoja"
                 className="group__item"
-                checked={byTakingNotes}
-                onChange={this.handleCheckboxItemChange("byTakingNotes")}
+                value={byTakingNotes}
+                name="byTakingNotes"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Piirrän kuvioita"
                 className="group__item"
-                checked={byDrawing}
-                onChange={this.handleCheckboxItemChange("byDrawing")}
+                value={byDrawing}
+                name="byDrawing"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Kuuntelen opettaja"
                 className="group__item"
-                checked={byListeningTeacher}
-                onChange={this.handleCheckboxItemChange("byListeningTeacher")}
+                value={byListeningTeacher}
+                name="byListeningTeacher"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Katson videoita"
                 className="group__item"
-                checked={byWatchingVideos}
-                onChange={this.handleCheckboxItemChange("byWatchingVideos")}
+                value={byWatchingVideos}
+                name="byWatchingVideos"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Seuraan toisen tekemistä"
                 className="group__item"
-                checked={byFollowingOthers}
-                onChange={this.handleCheckboxItemChange("byFollowingOthers")}
+                value={byFollowingOthers}
+                name="byFollowingOthers"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
               <CheckboxGroupItem
                 label="Muu? Mikä?"
@@ -246,7 +282,7 @@ class MotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxElseChanges("someOtherMethod")}
                 disabled={this.props.disabled}
               />
-            </CheckboxGroup>
+            </InputGroup>
           </div>
           <AnimateHeight height={this.state.someOtherMethod ? "auto" : 0}>
             <div className="hops-container__row">
@@ -265,45 +301,55 @@ class MotivationAndStudySkills extends React.Component<
 
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
-            Keneltä saan tukea opiskeluun?
+            Keneltä saan tukea opiskeluun? Asteikolla 0-4.
           </legend>
 
           <div className="hops-container__row hops-container__row--list">
-            <CheckboxGroup>
-              <CheckboxGroupItem
+            <InputGroup>
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="En saa tukea"
                 className="group__item"
-                checked={noSupport}
-                onChange={this.handleCheckboxItemChange("noSupport")}
+                value={noSupport}
+                name="noSupport"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Perheenjäseneltä"
                 className="group__item"
-                checked={family}
-                onChange={this.handleCheckboxItemChange("family")}
+                value={family}
+                name="family"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Ystävältä"
                 className="group__item"
-                checked={friend}
-                onChange={this.handleCheckboxItemChange("friend")}
+                value={friend}
+                name="friend"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Tukihenkilöltä"
                 className="group__item"
-                checked={supportPerson}
-                onChange={this.handleCheckboxItemChange("supportPerson")}
+                value={supportPerson}
+                name="supportPerson"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
-              <CheckboxGroupItem
+              <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Opettajalta"
                 className="group__item"
-                checked={teacher}
-                onChange={this.handleCheckboxItemChange("teacher")}
+                value={teacher}
+                name="teacher"
+                onChangeScaleGroup={this.handleScaleRangeChange}
                 disabled={this.props.disabled}
+                scaleSize={this.props.motivationAndStudy.scaleSize}
               />
               <CheckboxGroupItem
                 label="Muu? Kuka?"
@@ -312,7 +358,7 @@ class MotivationAndStudySkills extends React.Component<
                 onChange={this.handleCheckboxElseChanges("somethingElse")}
                 disabled={this.props.disabled}
               />
-            </CheckboxGroup>
+            </InputGroup>
           </div>
           <AnimateHeight height={this.state.somethingElse ? "auto" : 0}>
             <div className="hops-container__row">

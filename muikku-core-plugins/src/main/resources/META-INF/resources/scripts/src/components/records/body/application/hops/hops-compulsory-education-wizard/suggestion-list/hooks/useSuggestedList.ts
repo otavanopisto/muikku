@@ -2,6 +2,7 @@ import { Suggestion, Course } from "../../../../../../../../@types/shared";
 import promisify from "../../../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import * as React from "react";
+import { updateSuggestion } from "../handlers/handlers";
 
 export interface UseSuggestion {
   isLoading: boolean;
@@ -24,21 +25,19 @@ export const useSuggestionList = (subjectCode: string, course: Course) => {
     ) => {
       setSuggestins({ ...suggestions, isLoading: true });
 
-      setTimeout(async () => {
-        const suggestionListForSubject = (await promisify(
-          mApi().hops.listWorkspaceSuggestions.read({
-            subject: subjectCode,
-            courseNumber: course.courseNumber,
-          }),
-          "callback"
-        )()) as Suggestion[];
+      const suggestionListForSubject = (await promisify(
+        mApi().hops.listWorkspaceSuggestions.read({
+          subject: subjectCode,
+          courseNumber: course.courseNumber,
+        }),
+        "callback"
+      )()) as Suggestion[];
 
-        setSuggestins({
-          ...suggestions,
-          isLoading: false,
-          suggestionsList: suggestionListForSubject,
-        });
-      }, 3000);
+      setSuggestins({
+        ...suggestions,
+        isLoading: false,
+        suggestionsList: suggestionListForSubject,
+      });
     };
 
     loadSuggestionListData(subjectCode, course);

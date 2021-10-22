@@ -27,7 +27,7 @@ export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
     <Table>
       <TableHead>
         <Tr>
-          <Th style={{ maxWidth: "80px" }}>Kieli</Th>
+          <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
           <Th modifiers={["centered"]}>1</Th>
           <Th modifiers={["centered"]}>2</Th>
           <Th modifiers={["centered"]}>3</Th>
@@ -89,7 +89,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
 
   return (
     <Tr>
-      <Td style={{ maxWidth: "80px" }}>
+      <Td style={{ maxWidth: "80px", textAlign: "center" }}>
         {lng.hardCoded ? (
           <label className="hops-label">{lng.name}</label>
         ) : (

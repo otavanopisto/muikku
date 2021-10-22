@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SchoolSubject } from "~/@types/shared";
+import { StudentActivityByStatus } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
 import AnimateHeight from "react-animate-height";
 import {
@@ -11,17 +11,19 @@ import {
 /**
  * CourseListProps
  */
-interface CourseListProps {
+interface CourseListProps extends Partial<StudentActivityByStatus> {
   user: "supervisor" | "student";
   ethicsSelected: boolean;
   finnishAsSecondLanguage: boolean;
   selectedSubjectListOfIds?: number[];
-  completedSubjectListOfIds?: number[];
-  approvedSubjectListOfIds?: number[];
-  inprogressSubjectListOfIds?: number[];
+
   selectedOptionalListOfIds?: number[];
   supervisorSuggestedNextListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
+
+  /* completedSubjectListOfIds?: number[];
+  approvedSubjectListOfIds?: number[];
+  inprogressSubjectListOfIds?: number[]; */
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
 }
 
@@ -152,13 +154,17 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         mandatoryCount++;
         listItemIndicatormodifiers.push("MANDATORY");
         if (
-          (props.completedSubjectListOfIds &&
-            props.completedSubjectListOfIds.find(
-              (courseId) => courseId === course.id
+          (props.gradedList &&
+            props.gradedList.find(
+              (gCourse) =>
+                gCourse.subject === sSubject.subjectCode &&
+                gCourse.courseNumber === course.courseNumber
             )) ||
-          (props.approvedSubjectListOfIds &&
-            props.approvedSubjectListOfIds.find(
-              (courseId) => courseId === course.id
+          (props.transferedList &&
+            props.transferedList.find(
+              (tCourse) =>
+                tCourse.subject === sSubject.subjectCode &&
+                tCourse.courseNumber === course.courseNumber
             ))
         ) {
           completedCourseCount++;
@@ -179,9 +185,11 @@ const CourseList: React.FC<CourseListProps> = (props) => {
        * and push another modifier
        */
       if (
-        props.approvedSubjectListOfIds &&
-        props.approvedSubjectListOfIds.find(
-          (courseId) => courseId === course.id
+        props.transferedList &&
+        props.transferedList.find(
+          (tCourse) =>
+            tCourse.subject === sSubject.subjectCode &&
+            tCourse.courseNumber === course.courseNumber
         )
       ) {
         canBeSuggestedForNextCourse = false;
@@ -195,9 +203,11 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       ) {
         listItemIndicatormodifiers.push("SELECTED_OPTIONAL");
       } else if (
-        props.completedSubjectListOfIds &&
-        props.completedSubjectListOfIds.find(
-          (courseId) => courseId === course.id
+        props.gradedList &&
+        props.gradedList.find(
+          (gCourse) =>
+            gCourse.subject === sSubject.subjectCode &&
+            gCourse.courseNumber === course.courseNumber
         )
       ) {
         completedCourseCount++;
@@ -206,9 +216,11 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         canBeSelected = false;
         listItemIndicatormodifiers.push("COMPLETED");
       } else if (
-        props.inprogressSubjectListOfIds &&
-        props.inprogressSubjectListOfIds.find(
-          (courseId) => courseId === course.id
+        props.onGoingList &&
+        props.onGoingList.find(
+          (oCourse) =>
+            oCourse.subject === sSubject.subjectCode &&
+            oCourse.courseNumber === course.courseNumber
         )
       ) {
         canBeSuggestedForOptionalCourse = false;
@@ -235,9 +247,11 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       }
 
       if (
-        props.supervisorSuggestedNextListOfIds &&
-        props.supervisorSuggestedNextListOfIds.find(
-          (courseId) => courseId === course.id
+        props.suggestedList &&
+        props.suggestedList.find(
+          (sCourse) =>
+            sCourse.subject === sSubject.subjectCode &&
+            sCourse.courseNumber === course.courseNumber
         )
       ) {
         suggestedForNext = true;

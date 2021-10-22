@@ -1,13 +1,14 @@
 import * as React from "react";
 import promisify from "../../../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
+import { updateSuggestion } from "../../suggestion-list/handlers/handlers";
 import {
   CourseStatus,
   StudentActivityByStatus,
   StudentActivityCourse,
 } from "~/@types/shared";
 
-interface UseStudentActivityState extends StudentActivityByStatus {
+export interface UseStudentActivityState extends StudentActivityByStatus {
   isLoading: boolean;
 }
 
@@ -17,7 +18,13 @@ interface UseStudentActivityState extends StudentActivityByStatus {
  */
 export const useStudentActivity = (studentId: string) => {
   const [studentActivity, setStudentActivity] =
-    React.useState<UseStudentActivityState>(undefined);
+    React.useState<UseStudentActivityState>({
+      isLoading: true,
+      onGoingList: [],
+      transferedList: [],
+      gradedList: [],
+      suggestedList: [],
+    });
 
   React.useEffect(() => {
     const loadStudentActivityListData = async (studentId: string) => {
@@ -45,7 +52,24 @@ export const useStudentActivity = (studentId: string) => {
     loadStudentActivityListData(studentId);
   }, [studentId]);
 
-  return studentActivity;
+  return {
+    studentActivity,
+    updateSuggestion: (
+      goal: "add" | "remove",
+      courseNumber: number,
+      subjectCode: string,
+      suggestionId: number,
+      studentId: string
+    ) =>
+      updateSuggestion(
+        setStudentActivity,
+        goal,
+        courseNumber,
+        subjectCode,
+        suggestionId,
+        studentId
+      ),
+  };
 };
 
 const filterActivity = (

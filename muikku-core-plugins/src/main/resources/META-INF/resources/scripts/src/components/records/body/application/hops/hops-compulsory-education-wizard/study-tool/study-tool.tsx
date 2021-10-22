@@ -12,13 +12,14 @@ import { schoolCourseTable } from "../../../../../../../mock/mock-data";
 import StudyCalculationInfoBox from "./calculation-info-box";
 import OptionalStudiesInfoBox from "./optional-studiess-info-box";
 import { useStudentActivity } from "./hooks/useStudentActivity";
+import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
 /**
  * StudyToolProps
  */
-interface StudyToolProps extends StudiesCourseData {
+interface StudyToolProps {
   user: "supervisor" | "student";
   studentId: string;
   disabled: boolean;
@@ -43,9 +44,7 @@ const defaultProps = {
 const StudyTool: React.FC<StudyToolProps> = (props) => {
   props = { ...defaultProps, ...props };
 
-  const studentActivity = useStudentActivity(props.studentId);
-
-  console.log(studentActivity);
+  const { studentActivity, ...handlers } = useStudentActivity(props.studentId);
 
   /**
    * handleUsedHoursPerWeekChange
@@ -224,19 +223,23 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           continue;
         }
 
-        if (props.completedSubjectListOfIds || props.approvedSubjectListOfIds) {
+        if (studentActivity.gradedList || studentActivity.transferedList) {
           if (
-            props.completedSubjectListOfIds &&
-            props.completedSubjectListOfIds.find(
-              (courseId) => courseId === aCourse.id
+            studentActivity.gradedList &&
+            studentActivity.gradedList.find(
+              (gCourse) =>
+                sSubject.subjectCode === gCourse.subject &&
+                gCourse.courseNumber === aCourse.courseNumber
             )
           ) {
             completed++;
           }
           if (
-            props.approvedSubjectListOfIds &&
-            props.approvedSubjectListOfIds.find(
-              (courseId) => courseId === aCourse.id
+            studentActivity.transferedList &&
+            studentActivity.transferedList.find(
+              (tCourse) =>
+                sSubject.subjectCode === tCourse.subject &&
+                tCourse.courseNumber === aCourse.courseNumber
             )
           ) {
             completed++;
@@ -274,7 +277,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         continue;
       }
 
-      for (const aCourse of sSubject.availableCourses) {
+      /* for (const aCourse of sSubject.availableCourses) {
         if (
           props.approvedSubjectListOfIds &&
           props.approvedSubjectListOfIds.findIndex(
@@ -283,7 +286,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         ) {
           oneSubjectHours += aCourse.length;
         }
-      }
+      } */
 
       hoursCompleted += oneSubjectHours;
     }
@@ -325,10 +328,12 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         /**
          * Check if there is completed optional courses
          */
-        if (props.completedSubjectListOfIds) {
+        if (studentActivity.gradedList) {
           if (
-            props.completedSubjectListOfIds.find(
-              (courseId) => courseId === aCourse.id
+            studentActivity.gradedList.find(
+              (gCourse) =>
+                sSubject.subjectCode === gCourse.subject &&
+                gCourse.courseNumber === aCourse.courseNumber
             )
           ) {
             completed++;
@@ -374,14 +379,14 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           continue;
         }
 
-        if (
+        /* if (
           props.completedSubjectListOfIds &&
           props.completedSubjectListOfIds.findIndex(
             (cSubjectId) => cSubjectId === aCourse.id
           ) !== -1
         ) {
           oneSubjectMandatoryHours += aCourse.length;
-        }
+        } */
       }
 
       hoursCompleted += oneSubjectMandatoryHours;
@@ -423,14 +428,14 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           continue;
         }
 
-        if (
+        /* if (
           props.completedSubjectListOfIds &&
           props.completedSubjectListOfIds.findIndex(
             (cSubjectId) => cSubjectId === aCourse.id
           ) !== -1
         ) {
           oneSubjectOptionalHours += aCourse.length;
-        }
+        } */
       }
 
       hoursCompleted += oneSubjectOptionalHours;
@@ -758,40 +763,30 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               className="hops__form-element-container hops__form-element-container--hops_indicators"
             >
               <h3>Arvioitu opintoaika (kk):</h3>
-              <Dropdown
-                content={
-                  <div>
-                    <h4>Suoritetut kurssit</h4>
-                    <h5>Valinnaiset: {completedOptionalStudies} </h5>
-                  </div>
-                }
-              >
-                <div tabIndex={0}>
-                  <ProgressBarCircle
-                    containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
-                    options={{
-                      strokeWidth: 10,
-                      duration: 1000,
-                      color: "grey",
-                      trailColor: "grey",
-                      easing: "easeInOut",
-                      trailWidth: 10,
-                      svgStyle: {
-                        flexBasis: "100px",
-                        flexGrow: "0",
-                        flexShrink: "0",
-                        height: "100px",
-                      },
-                      text: {
-                        style: null,
-                        className:
-                          "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
-                      },
-                    }}
-                    text={`${totalTime}`}
-                  />
-                </div>
-              </Dropdown>
+
+              <ProgressBarCircle
+                containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                options={{
+                  strokeWidth: 10,
+                  duration: 1000,
+                  color: "grey",
+                  trailColor: "grey",
+                  easing: "easeInOut",
+                  trailWidth: 10,
+                  svgStyle: {
+                    flexBasis: "100px",
+                    flexGrow: "0",
+                    flexShrink: "0",
+                    height: "100px",
+                  },
+                  text: {
+                    style: null,
+                    className:
+                      "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
+                  },
+                }}
+                text={`${totalTime}`}
+              />
             </div>
           </div>
         </div>
@@ -799,42 +794,49 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
       <div className="hops-container__row">
         <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
-          <CourseTable
-            user={props.user}
-            ethicsSelected={props.ethics}
-            finnishAsSecondLanguage={props.finnishAsSecondLanguage}
-            selectedSubjectListOfIds={props.studies.selectedListOfIds}
-            suggestedList={studentActivity.suggestedList}
-            onGoingList={studentActivity.onGoingList}
-            gradedList={studentActivity.gradedList}
-            transferedList={studentActivity.transferedList}
-            /*             approvedSubjectListOfIds={props.approvedSubjectListOfIds}
-            completedSubjectListOfIds={props.completedSubjectListOfIds}
-            inprogressSubjectListOfIds={props.inprogressSubjectListOfIds} */
-            onChangeSelectSubjectList={
-              props.user === "student"
-                ? handleSelectedSubjectListOfIdsChange
-                : undefined
-            }
-          />
+          {studentActivity.isLoading ? (
+            <div className="empty-loader" />
+          ) : (
+            <CourseTable
+              user={props.user}
+              ethicsSelected={props.ethics}
+              finnishAsSecondLanguage={props.finnishAsSecondLanguage}
+              selectedSubjectListOfIds={props.studies.selectedListOfIds}
+              suggestedList={studentActivity.suggestedList}
+              onGoingList={studentActivity.onGoingList}
+              gradedList={studentActivity.gradedList}
+              transferedList={studentActivity.transferedList}
+              onChangeSelectSubjectList={
+                props.user === "student"
+                  ? handleSelectedSubjectListOfIdsChange
+                  : undefined
+              }
+              updateSuggestion={handlers.updateSuggestion}
+            />
+          )}
         </div>
 
         <div className="hops__form-element-container hops__form-element-container--mobile">
-          <CourseList
-            key="jottain"
-            user={props.user}
-            ethicsSelected={props.ethics}
-            finnishAsSecondLanguage={props.finnishAsSecondLanguage}
-            selectedSubjectListOfIds={props.studies.selectedListOfIds}
-            approvedSubjectListOfIds={props.approvedSubjectListOfIds}
-            completedSubjectListOfIds={props.completedSubjectListOfIds}
-            inprogressSubjectListOfIds={props.inprogressSubjectListOfIds}
-            onChangeSelectSubjectList={
-              props.user === "student"
-                ? handleSelectedSubjectListOfIdsChange
-                : undefined
-            }
-          />
+          {studentActivity.isLoading ? (
+            <div className="empty-loader" />
+          ) : (
+            <CourseList
+              key="jottain"
+              user={props.user}
+              ethicsSelected={props.ethics}
+              finnishAsSecondLanguage={props.finnishAsSecondLanguage}
+              selectedSubjectListOfIds={props.studies.selectedListOfIds}
+              suggestedList={studentActivity.suggestedList}
+              onGoingList={studentActivity.onGoingList}
+              gradedList={studentActivity.gradedList}
+              transferedList={studentActivity.transferedList}
+              onChangeSelectSubjectList={
+                props.user === "student"
+                  ? handleSelectedSubjectListOfIdsChange
+                  : undefined
+              }
+            />
+          )}
         </div>
       </div>
 
