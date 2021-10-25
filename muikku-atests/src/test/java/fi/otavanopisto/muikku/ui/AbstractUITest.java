@@ -55,6 +55,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -298,22 +299,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     DesiredCapabilities capabilities = null;
     switch (getBrowser()) {
     case "chrome":
-      capabilities = DesiredCapabilities.chrome();
+      capabilities = new DesiredCapabilities();
+      capabilities.setBrowserName("chrome");
       break;
     case "microsoftedge":
-      capabilities = DesiredCapabilities.edge();
+//      capabilities = DesiredCapabilities.edge();
       break;
     case "firefox":
-      capabilities = DesiredCapabilities.firefox();
+//      capabilities = DesiredCapabilities.firefox();
       break;
     case "internet explorer":
-      capabilities = DesiredCapabilities.internetExplorer();
+//      capabilities = DesiredCapabilities.internetExplorer();
       break;
     case "safari":
-      capabilities = DesiredCapabilities.safari();
+//      capabilities = DesiredCapabilities.safari();
       break;
     default:
-      capabilities = DesiredCapabilities.chrome();
+      capabilities = new DesiredCapabilities();
+      capabilities.setBrowserName("chrome");
   }
   
     final String browserVersion = getBrowserVersion();
