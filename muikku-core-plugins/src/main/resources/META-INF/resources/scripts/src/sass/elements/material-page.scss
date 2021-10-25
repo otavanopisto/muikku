@@ -735,29 +735,6 @@
   display: inline-flex;
   margin: 4px;
   padding: 4px;
-
-  &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
-
-    .material-page__checkbox {
-      border-color: $color-correct-answer;
-
-      &:checked {
-        background-color: $color-correct-answer;
-        border-color: $color-correct-answer;
-      }
-    }
-  }
-
-  &.incorrect-answer { // If the whole taskfield is correct we then mark taskfield items as correct
-
-    .material-page__checkbox {
-      border-color: $color-incorrect-answer;
-
-      &:checked {
-        background-color: $color-incorrect-answer;
-      }
-    }
-  }
 }
 
 .material-page__checkbox-items-wrapper--vertical {

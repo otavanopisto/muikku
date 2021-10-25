@@ -205,7 +205,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }
 
     if (this.props.invisible){
-      return <span className="material-page__checkbox-wrappe">
+      return <span className="material-page__checkbox-wrapper">
         <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"}`}>
           {this.props.content.options.map((o, index)=>{
             return <span key={o.name} className="material-page__checkbox-item-container">
