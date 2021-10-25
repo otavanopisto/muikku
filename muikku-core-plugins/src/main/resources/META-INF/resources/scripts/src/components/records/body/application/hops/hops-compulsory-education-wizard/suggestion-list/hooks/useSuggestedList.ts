@@ -14,7 +14,11 @@ const initialState: UseSuggestion = {
   suggestionsList: [],
 };
 
-export const useSuggestionList = (subjectCode: string, course: Course) => {
+export const useSuggestionList = (
+  subjectCode: string,
+  course: Course,
+  loadData?: boolean
+) => {
   const [suggestions, setSuggestins] =
     React.useState<UseSuggestion>(initialState);
 
@@ -33,15 +37,19 @@ export const useSuggestionList = (subjectCode: string, course: Course) => {
         "callback"
       )()) as Suggestion[];
 
-      setSuggestins({
-        ...suggestions,
-        isLoading: false,
-        suggestionsList: suggestionListForSubject,
-      });
+      setTimeout(() => {
+        setSuggestins({
+          ...suggestions,
+          isLoading: false,
+          suggestionsList: suggestionListForSubject,
+        });
+      }, 1000);
     };
 
-    loadSuggestionListData(subjectCode, course);
-  }, [course, subjectCode]);
+    if (loadData) {
+      loadSuggestionListData(subjectCode, course);
+    }
+  }, [course, subjectCode, loadData]);
 
   return suggestions;
 };

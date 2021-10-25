@@ -8,7 +8,6 @@ import {
   useElementBoundings,
 } from "../suggestion-list/hooks/useElementDimensions";
 import SuggestionList from "../suggestion-list/suggested-list";
-import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 /**
  * TableDataContentProps
  */

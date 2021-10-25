@@ -78,6 +78,18 @@ class MotivationAndStudySkills extends React.Component<
   handleCheckboxElseChanges =
     (name: keyof MotivationAndStudySkillsState) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.checked) {
+        this.props.onMotivationAndStudyChange({
+          ...this.props.motivationAndStudy,
+          [name]: "",
+        });
+      } else {
+        this.props.onMotivationAndStudyChange({
+          ...this.props.motivationAndStudy,
+          [name]: undefined,
+        });
+      }
+
       this.setState({
         ...this.state,
         [name]: e.target.checked,
@@ -165,7 +177,6 @@ class MotivationAndStudySkills extends React.Component<
             <InputGroup>
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Lukemalla"
-                className="group__item"
                 value={byReading}
                 name="byReading"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -174,7 +185,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Kuuntelemalla"
-                className="group__item"
                 value={byListening}
                 name="byListening"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -183,7 +193,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Tekemällä"
-                className="group__item"
                 value={byDoing}
                 name="byDoing"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -192,7 +201,7 @@ class MotivationAndStudySkills extends React.Component<
               />
               <CheckboxGroupItem
                 label="Muu? Mikä?"
-                className="group__item"
+                modifiers={["checkbox"]}
                 checked={this.state.someOtherWay}
                 onChange={this.handleCheckboxElseChanges("someOtherWay")}
                 disabled={this.props.disabled}
@@ -223,7 +232,6 @@ class MotivationAndStudySkills extends React.Component<
             <InputGroup>
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Opettelen asioita ulkoa"
-                className="group__item"
                 value={byMemorizing}
                 name="byMemorizing"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -232,7 +240,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Kirjoitan muistiinpanoja"
-                className="group__item"
                 value={byTakingNotes}
                 name="byTakingNotes"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -241,7 +248,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Piirrän kuvioita"
-                className="group__item"
                 value={byDrawing}
                 name="byDrawing"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -250,7 +256,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Kuuntelen opettaja"
-                className="group__item"
                 value={byListeningTeacher}
                 name="byListeningTeacher"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -259,7 +264,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Katson videoita"
-                className="group__item"
                 value={byWatchingVideos}
                 name="byWatchingVideos"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -268,7 +272,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Seuraan toisen tekemistä"
-                className="group__item"
                 value={byFollowingOthers}
                 name="byFollowingOthers"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -277,7 +280,7 @@ class MotivationAndStudySkills extends React.Component<
               />
               <CheckboxGroupItem
                 label="Muu? Mikä?"
-                className="group__item"
+                modifiers={["checkbox"]}
                 checked={this.state.someOtherMethod}
                 onChange={this.handleCheckboxElseChanges("someOtherMethod")}
                 disabled={this.props.disabled}
@@ -308,7 +311,6 @@ class MotivationAndStudySkills extends React.Component<
             <InputGroup>
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="En saa tukea"
-                className="group__item"
                 value={noSupport}
                 name="noSupport"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -317,7 +319,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Perheenjäseneltä"
-                className="group__item"
                 value={family}
                 name="family"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -326,7 +327,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Ystävältä"
-                className="group__item"
                 value={friend}
                 name="friend"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -335,7 +335,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Tukihenkilöltä"
-                className="group__item"
                 value={supportPerson}
                 name="supportPerson"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -344,7 +343,6 @@ class MotivationAndStudySkills extends React.Component<
               />
               <ScaleInputGroup<HopsMotivationAndStudy>
                 label="Opettajalta"
-                className="group__item"
                 value={teacher}
                 name="teacher"
                 onChangeScaleGroup={this.handleScaleRangeChange}
@@ -353,7 +351,7 @@ class MotivationAndStudySkills extends React.Component<
               />
               <CheckboxGroupItem
                 label="Muu? Kuka?"
-                className="group__item"
+                modifiers={["checkbox"]}
                 checked={this.state.somethingElse}
                 onChange={this.handleCheckboxElseChanges("somethingElse")}
                 disabled={this.props.disabled}

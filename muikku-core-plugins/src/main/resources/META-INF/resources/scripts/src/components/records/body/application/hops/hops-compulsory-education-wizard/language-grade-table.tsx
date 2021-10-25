@@ -33,9 +33,7 @@ export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
           <Th modifiers={["centered"]}>3</Th>
           <Th modifiers={["centered"]}>4</Th>
           <Th modifiers={["centered"]}>5</Th>
-          <Th style={{ maxWidth: "50px" }} modifiers={["centered"]}>
-            Toimin.
-          </Th>
+          <Th style={{ maxWidth: "50px", textAlign: "center" }}>Toimin.</Th>
         </Tr>
       </TableHead>
       <Tbody>{children}</Tbody>
@@ -148,7 +146,10 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           disabled={disabled}
         ></input>
       </Td>
-      <Td modifiers={["centered"]} style={{ maxWidth: "50px" }}>
+      <Td
+        modifiers={["centered"]}
+        style={{ maxWidth: "50px", textAlign: "center" }}
+      >
         {lng.hardCoded ? (
           "-"
         ) : (

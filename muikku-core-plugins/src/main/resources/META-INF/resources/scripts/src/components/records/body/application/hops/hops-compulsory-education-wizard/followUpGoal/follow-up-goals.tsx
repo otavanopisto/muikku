@@ -31,7 +31,6 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
    */
   const handleGoalsSelectsChange =
     (name: keyof FollowUp) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-      console.log("handleGoalsSelectsChange ==> updateFollowUpData()");
       updateFollowUpData({
         ...followUpData,
         [name]: e.currentTarget.value,

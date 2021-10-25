@@ -12,6 +12,5 @@ export const updateFollowUpData = async (
   setFollowUpData: SetFollowUpData,
   dataToUpdate: FollowUp
 ) => {
-  console.log("update follow up goal");
   setFollowUpData({ ...dataToUpdate, isLoading: false });
 };

@@ -157,8 +157,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
       "callback"
     )()) as HopsCompulsory;
 
-    console.log("Tiedot :::>", [hops, studentHopsHistory, studentBasicInfo]);
-
     const loadedHops =
       hops !== undefined
         ? hops
@@ -280,33 +278,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
-   * handleDeleteSuperVisorSelections
+   * handleSaveHops
    */
-  handleDeleteSuperVisorSelections = () => {
-    /* this.setState({
-      hopsCompulsory: {
-        ...this.state.hopsCompulsory,
-        studiesPlanning: {
-          ...this.state.hopsCompulsory.studiesPlanning,
-          supervisorSugestedSubjectListOfIds: [],
-        },
-      },
-    }); */
-  };
+  handleSaveHops = () => {
+    console.log("save hops", this.state.hopsCompulsory);
 
-  /**
-   * handleDeleteSuggestedNextSelections
-   */
-  handleDeleteSuggestedNextSelections = () => {
-    /* this.setState({
-      hopsCompulsory: {
-        ...this.state.hopsCompulsory,
-        studiesPlanning: {
-          ...this.state.hopsCompulsory.studiesPlanning,
-          supervisorSuggestedNextListOfIds: [],
-        },
-      },
-    }); */
+    const parsedHops = { ...this.state.hopsCompulsory };
   };
 
   /**
@@ -360,12 +337,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
               this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage
             }
             onStudiesPlanningChange={this.handleStudiesPlanningChange}
-            onDeleteSelection={
-              this.props.user === "supervisor"
-                ? this.handleDeleteSuperVisorSelections
-                : this.handleDeleteCourseSelections
-            }
-            onDeleteNextSelection={this.handleDeleteSuggestedNextSelections}
           />
         ),
       },

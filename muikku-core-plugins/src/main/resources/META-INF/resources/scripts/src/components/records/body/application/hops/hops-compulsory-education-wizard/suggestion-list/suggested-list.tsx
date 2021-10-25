@@ -16,6 +16,7 @@ interface SuggestionListProps {
   course: Course;
   i18n: i18nType;
   guider: GuiderType;
+  loadData?: boolean;
   onLoad?: () => void;
   updateSuggestion: (
     goal: "add" | "remove",
@@ -26,10 +27,17 @@ interface SuggestionListProps {
   ) => void;
 }
 
+const defaultSuggestionListProps = {
+  loadData: true,
+};
+
 const SuggestionList = (props: SuggestionListProps) => {
+  props = { ...defaultSuggestionListProps, ...props };
+
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
-    props.course
+    props.course,
+    props.loadData
   );
 
   React.useEffect(() => {
@@ -38,10 +46,16 @@ const SuggestionList = (props: SuggestionListProps) => {
     }
   }, [isLoading]);
 
+  /**
+   * handleSuggestOptionalClick
+   */
   const handleSuggestOptionalClick = () => {
     console.log("handleSuggestOptionalClick");
   };
 
+  /**
+   * list of suggestion items
+   */
   const listItems =
     suggestionsList.length > 0 ? (
       suggestionsList.map((suggestion) => {
@@ -61,7 +75,7 @@ const SuggestionList = (props: SuggestionListProps) => {
             style={{ display: "flex", flexFlow: "column", margin: "5px 0px" }}
           >
             {isLoading ? (
-              <div className="empty-loader" />
+              <div className="loader-empty" />
             ) : (
               <>
                 <div style={{ display: "flex", flexFlow: "row" }}>
@@ -116,12 +130,9 @@ const SuggestionList = (props: SuggestionListProps) => {
     );
 
   return (
-    <>
-      <AnimateHeight height={isLoading ? "auto" : 0}>
-        <div className="loader-empty" />
-      </AnimateHeight>
-      <AnimateHeight height={isLoading ? 0 : "auto"}>{listItems}</AnimateHeight>
-    </>
+    <AnimateHeight height="auto">
+      {isLoading ? <div className="loader-empty" /> : listItems}
+    </AnimateHeight>
   );
 };
 

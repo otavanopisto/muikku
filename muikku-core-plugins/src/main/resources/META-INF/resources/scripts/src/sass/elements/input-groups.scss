@@ -15,21 +15,24 @@
   border-radius: 5px;
   display: flex;
   flex-grow: 1;
-  align-items: center;
   background-color: aliceblue;
   flex-flow: column;
   width: 100%;
+  justify-content: space-between;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-mobile-xl) {
     width: calc(50% - 10px);
-    flex-flow: row;
   }
 
   @include breakpoint($breakpoint-pad) {
-    width: calc(50% - 10px);
     flex-grow: 0;
-    flex-flow: row;
   }
+}
+
+.group__item--checkbox {
+  justify-content: flex-start;
+  flex-flow: row;
+  align-items: center;
 }
 
 .group__item--disabled {

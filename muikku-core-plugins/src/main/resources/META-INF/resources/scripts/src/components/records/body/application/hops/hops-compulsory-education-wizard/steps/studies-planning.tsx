@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  HopsPlanningStudies,
-  StudiesCourseData,
-  FollowUpGoal,
-  FollowUpStudies,
-  StudySector,
-} from "../../../../../../../@types/shared";
+import { HopsPlanningStudies } from "../../../../../../../@types/shared";
 import StudyTool from "../study-tool/study-tool";
 import FollowUpGoals from "../followUpGoal/follow-up-goals";
 
@@ -20,8 +14,6 @@ interface StudiesPlanningProps {
   studies: HopsPlanningStudies;
   studentId: string;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
-  onDeleteSelection?: () => void;
-  onDeleteNextSelection?: () => void;
 }
 
 /**

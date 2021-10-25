@@ -795,7 +795,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       <div className="hops-container__row">
         <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
           {studentActivity.isLoading ? (
-            <div className="empty-loader" />
+            <div className="loader-empty" />
           ) : (
             <CourseTable
               user={props.user}
@@ -818,7 +818,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
         <div className="hops__form-element-container hops__form-element-container--mobile">
           {studentActivity.isLoading ? (
-            <div className="empty-loader" />
+            <div className="loader-empty" />
           ) : (
             <CourseList
               key="jottain"
@@ -835,6 +835,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
                   ? handleSelectedSubjectListOfIdsChange
                   : undefined
               }
+              updateSuggestion={handlers.updateSuggestion}
             />
           )}
         </div>

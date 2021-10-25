@@ -49,25 +49,61 @@ interface CheckboxGroupItemProps
     HTMLInputElement
   > {
   label: string;
+  /**
+   * Default: "group__item"
+   */
   className?: string;
   modifiers?: string[];
 }
+
+const defaultGroupItemProps = {
+  className: "group__item",
+};
 
 /**
  * CheckboxGroupItem
  * @param param0
  * @returns
  */
-export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = ({
-  label,
-  className,
-  children,
-  ...inputProps
-}) => {
-  const classModifier = inputProps.disabled ? "group__item--disabled" : "";
+export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = (props) => {
+  props = { ...defaultGroupItemProps, ...props };
+
+  const { label, className, children, modifiers, ...inputProps } = props;
+  /**
+   * Default className value "group__item"
+   */
+  let updatedClassName = "group__item";
+  let updatedClassMods: string[] | string = [];
+
+  /**
+   * If other than default className
+   */
+  if (className) {
+    updatedClassName = className;
+  }
+
+  /**
+   * disabled mod
+   */
+  if (inputProps.disabled) {
+    updatedClassMods.push("disabled");
+  }
+
+  /**
+   * If concat and create modifiers string if there is any modifers
+   */
+  if (updatedClassMods) {
+    if (modifiers) {
+      updatedClassMods = updatedClassMods.concat(modifiers);
+    }
+
+    updatedClassMods = updatedClassMods
+      .map((m) => `${updatedClassName}--${m}`)
+      .join(" ");
+  }
 
   return (
-    <div className={`${className} ${classModifier}`}>
+    <div className={`${updatedClassName} ${updatedClassMods}`}>
       <input className="item__input" {...inputProps} type="checkbox"></input>
       <label className="item__label"> {label} </label>
     </div>
@@ -77,6 +113,7 @@ export const CheckboxGroupItem: React.FC<CheckboxGroupItemProps> = ({
 interface ScaleInputGroupProps<T> {
   name: keyof T | string;
   className?: string;
+  modifiers?: string[];
   disabled: boolean;
   label: string;
   /**
@@ -88,7 +125,13 @@ interface ScaleInputGroupProps<T> {
   onChangeScaleGroup: (name: keyof T | string, scaleValue: number) => void;
 }
 
+const defaultScaleInputGroupProps = {
+  className: "group__item",
+};
+
 export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
+  props = { ...defaultScaleInputGroupProps, ...props };
+
   const {
     scaleSize,
     name,
@@ -97,6 +140,7 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
     disabled,
     className,
     label,
+    modifiers,
   } = props;
   const [scaleValue, setScaleValue] = React.useState(value);
 
@@ -107,6 +151,39 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
   const handleScaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setScaleValue(parseInt(e.target.value));
   };
+
+  /**
+   * Default className value "group__item"
+   */
+  let updatedClassName = "group__item";
+  let updatedClassMods: string[] | string = [];
+
+  /**
+   * If other than default className
+   */
+  if (className) {
+    updatedClassName = className;
+  }
+
+  /**
+   * disabled mod
+   */
+  if (disabled) {
+    updatedClassMods.push("disabled");
+  }
+
+  /**
+   * If concat and create modifiers string if there is any modifers
+   */
+  if (updatedClassMods) {
+    if (modifiers) {
+      updatedClassMods = updatedClassMods.concat(modifiers);
+    }
+
+    updatedClassMods = updatedClassMods
+      .map((m) => `${updatedClassName}--${m}`)
+      .join(" ");
+  }
 
   const items = Array.from(Array(scaleSize)).map((item, index) => {
     return disabled ? (
@@ -133,11 +210,10 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
     );
   });
 
-  const classModifier = disabled ? "group__item--disabled" : "";
   return (
-    <div className={`${className} ${classModifier}`}>
+    <div className={`${updatedClassName} ${updatedClassMods}`}>
       <label className="item__label"> {label} </label>
-      <div style={{ display: "flex" }}>{items}</div>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>{items}</div>
     </div>
   );
 };
