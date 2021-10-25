@@ -1,31 +1,31 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import { i18nType } from "../../../../../../reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import {
   MaterialEvaluationType,
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
-} from "../../../../../../reducers/workspaces/index";
-import { EvaluationState } from "../../../../../../reducers/main-function/evaluation/index";
-import { StatusType } from "../../../../../../reducers/base/status";
+} from "~/reducers/workspaces/index";
+import { EvaluationState } from "~/reducers/main-function/evaluation/index";
+import { StatusType } from "~/reducers/base/status";
 import {
   AudioAssessment,
   AssignmentEvaluationSupplementationRequest,
   AssignmentEvaluationGradeRequest,
   AssignmentEvaluationSaveReturn,
-} from "../../../../../../@types/evaluation";
-import SessionStateComponent from "../../../../../general/session-state-component";
-import CKEditor from "../../../../../general/ckeditor";
-import Button from "../../../../../general/button";
+} from "~/@types/evaluation";
+import SessionStateComponent from "~/components/general/session-state-component";
+import CKEditor from "~/components/general/ckeditor";
+import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "../../../../../../actions/index";
+import { AnyActionType } from "~/actions/index";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import mApi from "~/lib/mApi";
-import promisify from "../../../../../../util/promisify";
+import promisify from "~/util/promisify";
 import { StateType } from "reducers";
 import { displayNotification } from "~/actions/base/notifications";
-import { DisplayNotificationTriggerType } from "../../../../../../actions/base/notifications";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,

@@ -514,7 +514,7 @@ class EvaluationAssessmentAssignment extends React.Component<
         compositeReply.state === "SUBMITTED" &&
         compositeReply.evaluationInfo.type === "INCOMPLETE"
       ) {
-        // Supplemented as in use to be incomplete but user has submitted it aasin
+        // Supplemented as in use to be incomplete but user has submitted it again
         evaluatedFunctionClassMod = "state-SUPPLEMENTED";
       } else {
         // Incomplete
@@ -600,7 +600,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   this.state.showCloseEditorWarning
                 }
                 editorLabel={this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
+                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
                 )}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
@@ -615,7 +615,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   this.state.showCloseEditorWarning
                 }
                 editorLabel={this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
+                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
                 )}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
@@ -630,8 +630,9 @@ class EvaluationAssessmentAssignment extends React.Component<
         <AnimateHeight duration={400} height={contentOpen}>
           {compositeReply &&
             compositeReply.evaluationInfo &&
-            compositeReply.evaluationInfo.text && (
+            (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
               <>
+              {compositeReply.evaluationInfo.text ?
                 <div className="evaluation-modal__item-literal-assessment">
                   <div className="evaluation-modal__item-assessment-literal-label">
                     {this.props.i18n.text.get(
@@ -646,6 +647,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                     )}
                   />
                 </div>
+                : null}
+
                 {recordings.length > 0 ? (
                   <div className="evaluation-modal__item-verbal-assessment">
                     <div className="evaluation-modal__item-assessment-verbal-label">
@@ -659,7 +662,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   </div>
                 ) : null}
               </>
-            )}
+            ): null}
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.props.workspace && this.state.materialNode ? (
