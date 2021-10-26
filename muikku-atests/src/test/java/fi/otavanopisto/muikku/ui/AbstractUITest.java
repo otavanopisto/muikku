@@ -47,15 +47,18 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -296,53 +299,54 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected WebDriver createSauceWebDriver() throws MalformedURLException {
-    DesiredCapabilities capabilities = null;
-    switch (getBrowser()) {
-    case "chrome":
-      capabilities = new DesiredCapabilities();
-      capabilities.setBrowserName("chrome");
-      break;
-    case "microsoftedge":
-//      capabilities = DesiredCapabilities.edge();
-      break;
-    case "firefox":
-//      capabilities = DesiredCapabilities.firefox();
-      break;
-    case "internet explorer":
-//      capabilities = DesiredCapabilities.internetExplorer();
-      break;
-    case "safari":
-//      capabilities = DesiredCapabilities.safari();
-      break;
-    default:
-      capabilities = new DesiredCapabilities();
-      capabilities.setBrowserName("chrome");
-  }
-  
+    
     final String browserVersion = getBrowserVersion();
     final String browserResolution = getBrowserResolution();
     final String platform = getSaucePlatform();
     
-    capabilities.setCapability(CapabilityType.VERSION, browserVersion);
-    capabilities.setCapability(CapabilityType.PLATFORM, platform);
-    capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
-    capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
-    capabilities.setCapability("build", getProjectVersion());
-    capabilities.setCapability("video-upload-on-pass", false);
-    capabilities.setCapability("capture-html", true);
-    capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability("seleniumVersion", System.getProperty("it.selenium.version"));
+    Map<String, Object> sauceOptions = new HashMap<>();
+    sauceOptions.put("name", getClass().getSimpleName() + ':' + testName.getMethodName());
+    sauceOptions.put("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
+    sauceOptions.put("build", getProjectVersion());
+    sauceOptions.put("video-upload-on-pass", false);
+    sauceOptions.put("capture-html", true);
+    sauceOptions.put("timeZone", "Universal");
+    sauceOptions.put("seleniumVersion", System.getProperty("it.selenium.version"));
+    sauceOptions.put("username", getSauceUsername());
+    sauceOptions.put("access_key", getSauceAccessKey());
     
     if (!StringUtils.isBlank(browserResolution)) {
-      capabilities.setCapability("screenResolution", browserResolution);
+      sauceOptions.put("screenResolution", browserResolution);
     }
  
     if (getSauceTunnelId() != null) {
-      capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
+      sauceOptions.put("tunnel-identifier", getSauceTunnelId());
     }
-//    
-    RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
     
+    RemoteWebDriverBuilder driverBuilder = RemoteWebDriver.builder();
+    switch (getBrowser()) {
+    case "chrome":
+      driverBuilder.oneOf(new ChromeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "microsoftedge":
+      driverBuilder.oneOf(new EdgeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "firefox":
+      driverBuilder.oneOf(new FirefoxOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "internet explorer":
+      driverBuilder.oneOf(new InternetExplorerOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "safari":
+      driverBuilder.oneOf(new SafariOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    default:
+      driverBuilder.oneOf(new ChromeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+  }
+
+    driverBuilder.setCapability("sauce:options", sauceOptions);
+    driverBuilder.address(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())));
+    RemoteWebDriver remoteWebDriver = (RemoteWebDriver) driverBuilder.build();
     remoteWebDriver.setFileDetector(new LocalFileDetector());
 
     return remoteWebDriver; 
