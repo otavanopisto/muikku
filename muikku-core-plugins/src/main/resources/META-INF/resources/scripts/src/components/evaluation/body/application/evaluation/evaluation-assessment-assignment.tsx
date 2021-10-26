@@ -315,6 +315,39 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
+   * assignmentFunctionClass
+   * @param compositeReply
+   * @returns Assignment function button class
+   */
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
+    if (
+      compositeReply &&
+      compositeReply.evaluationInfo &&
+      compositeReply.evaluationInfo.date
+    ) {
+      if (
+        (compositeReply.evaluationInfo &&
+          compositeReply.evaluationInfo.grade) ||
+        (compositeReply.evaluationInfo &&
+          this.props.assigment.assignmentType === "EXERCISE" &&
+          compositeReply.evaluationInfo.type === "PASSED")
+      ) {
+        // Evaluated if graded or if assignment type is excercise and info type returns PASSED
+        return "state-EVALUATED";
+      } else if (
+        compositeReply.state === "SUBMITTED" &&
+        compositeReply.evaluationInfo.type === "INCOMPLETE"
+      ) {
+        // Supplemented as in use to be incomplete but user has submitted it again
+        return "state-SUPPLEMENTED";
+      } else {
+        // Incomplete
+        return "state-INCOMPLETE";
+      }
+    }
+  };
+
+  /**
    * assigmentGradeClass
    * @param state
    * @returns classMod
@@ -497,30 +530,9 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     const invisible = contentOpen === 0;
 
-    let evaluatedFunctionClassMod = "";
+    let evaluatedFunctionClassMod =
+      this.assignmentFunctionClass(compositeReply);
     let evaluationTitleClassMod = "";
-    if (
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.date
-    ) {
-      if (
-        compositeReply.evaluationInfo &&
-        compositeReply.evaluationInfo.grade
-      ) {
-        // Evaluated
-        evaluatedFunctionClassMod = "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        compositeReply.evaluationInfo.type === "INCOMPLETE"
-      ) {
-        // Supplemented as in use to be incomplete but user has submitted it again
-        evaluatedFunctionClassMod = "state-SUPPLEMENTED";
-      } else {
-        // Incomplete
-        evaluatedFunctionClassMod = "state-INCOMPLETE";
-      }
-    }
 
     if (
       this.state.openDrawer &&
@@ -629,10 +641,10 @@ class EvaluationAssessmentAssignment extends React.Component<
 
         <AnimateHeight duration={400} height={contentOpen}>
           {compositeReply &&
-            compositeReply.evaluationInfo &&
-            (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
-              <>
-              {compositeReply.evaluationInfo.text ?
+          compositeReply.evaluationInfo &&
+          (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
+            <>
+              {compositeReply.evaluationInfo.text ? (
                 <div className="evaluation-modal__item-literal-assessment">
                   <div className="evaluation-modal__item-assessment-literal-label">
                     {this.props.i18n.text.get(
@@ -647,22 +659,22 @@ class EvaluationAssessmentAssignment extends React.Component<
                     )}
                   />
                 </div>
-                : null}
+              ) : null}
 
-                {recordings.length > 0 ? (
-                  <div className="evaluation-modal__item-verbal-assessment">
-                    <div className="evaluation-modal__item-assessment-verbal-label">
-                      {this.props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.audioAssessments"
-                      )}
-                    </div>
-                    <div className="voice-container">
-                      <RecordingsList records={recordings} noDeleteFunctions />
-                    </div>
+              {recordings.length > 0 ? (
+                <div className="evaluation-modal__item-verbal-assessment">
+                  <div className="evaluation-modal__item-assessment-verbal-label">
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.audioAssessments"
+                    )}
                   </div>
-                ) : null}
-              </>
-            ): null}
+                  <div className="voice-container">
+                    <RecordingsList records={recordings} noDeleteFunctions />
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : null}
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.props.workspace && this.state.materialNode ? (
