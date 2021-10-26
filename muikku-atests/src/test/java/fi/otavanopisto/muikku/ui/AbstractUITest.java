@@ -54,8 +54,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -751,7 +749,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         break;
       }
       i++;
-      WebDriverWait wait = new WebDriverWait(getWebDriver(), 10);
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
       wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
       sleep(interval);
       elements = findElements(elementToAppear);
