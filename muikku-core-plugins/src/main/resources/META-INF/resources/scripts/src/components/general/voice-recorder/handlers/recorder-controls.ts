@@ -14,7 +14,7 @@ export async function startRecording(setRecorderState: SetRecorder) {
       };
     });
   } catch (err) {
-    console.log(err);
+
   }
 }
 

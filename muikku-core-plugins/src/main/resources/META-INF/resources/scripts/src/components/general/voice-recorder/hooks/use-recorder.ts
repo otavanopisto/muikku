@@ -98,11 +98,12 @@ export default function useRecorder(props: UseRecorderProps) {
 
   useEffect(() => {
     setRecorderState((prevState) => {
-      if (prevState.mediaStream)
+      if (prevState.mediaStream) {
         return {
           ...prevState,
           mediaRecorder: new MediaRecorder(prevState.mediaStream),
         };
+      }
       else {
         return prevState;
       }
