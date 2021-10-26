@@ -1,4 +1,4 @@
-import { SetRecorder } from "../../../../@types/recorder";
+import { SetRecorder } from "~/@types/recorder";
 
 export async function startRecording(setRecorderState: SetRecorder) {
   try {

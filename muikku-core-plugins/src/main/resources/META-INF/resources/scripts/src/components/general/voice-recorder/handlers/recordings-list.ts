@@ -1,4 +1,4 @@
-import { SetRecordings } from "../../../../@types/recorder";
+import { SetRecordings } from "~/@types/recorder";
 
 /**
  * deleteAudio
