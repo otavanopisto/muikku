@@ -3,6 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .material-page {
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
@@ -733,29 +735,6 @@
   display: inline-flex;
   margin: 4px;
   padding: 4px;
-
-  &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
-
-    .material-page__checkbox {
-      border-color: $color-correct-answer;
-
-      &:checked {
-        background-color: $color-correct-answer;
-        border-color: $color-correct-answer;
-      }
-    }
-  }
-
-  &.incorrect-answer { // If the whole taskfield is correct we then mark taskfield items as correct
-
-    .material-page__checkbox {
-      border-color: $color-incorrect-answer;
-
-      &:checked {
-        background-color: $color-incorrect-answer;
-      }
-    }
-  }
 }
 
 .material-page__checkbox-items-wrapper--vertical {
@@ -775,6 +754,7 @@
   padding: 2px;
 }
 
+// We compare student's answer to the task fields preset of correct answers and display correnct/incorrect state individually
 .material-page__checkbox {
   align-items: center;
   -moz-appearance: none;
@@ -984,7 +964,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   height: 1.75rem;
-  max-width: calc(100% - 37px);
+  max-width: calc(100% - 74px);
 }
 
 .material-page__audiofield-file--recording,
@@ -1795,7 +1775,8 @@ mark[data-muikku-word-definition] {
   flex-shrink: 0;
 }
 
-.material-page__assignment-assessment-literal-label {
+.material-page__assignment-assessment-literal-label,
+.material-page__assignment-assessment-verbal-label {
   @include assessment-text;
   font-weight: bold;
 }
