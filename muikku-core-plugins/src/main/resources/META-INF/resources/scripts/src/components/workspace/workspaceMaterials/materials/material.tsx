@@ -45,7 +45,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     this.props.setCurrentWorkspace({workspaceId: this.props.workspace.id, refreshActivity: true});
   }
   render(){
-    const isAssignment = this.props.materialContentNode.assignmentType === "EVALUATED";
+    const isAssignment = this.props.materialContentNode.assignmentType === "EVALUATED" || this.props.materialContentNode.assignmentType === "EXERCISE";
     const isEvaluatedAsPassed = this.props.compositeReplies && this.props.compositeReplies.state === "PASSED";
     const hasEvaluation = this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && (this.props.compositeReplies.state === "INCOMPLETE" || this.props.compositeReplies.state === "PASSED" || this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "WITHDRAWN");
     const isBinary = this.props.materialContentNode.type === "binary";

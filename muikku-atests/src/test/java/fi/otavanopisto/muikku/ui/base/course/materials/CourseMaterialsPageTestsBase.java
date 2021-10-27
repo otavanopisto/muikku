@@ -266,7 +266,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         selectFinnishLocale();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".button--muikku-check-exercises");
-        assertTextIgnoreCase(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
+        assertTextIgnoreCase(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         deleteWorkspace(workspace.getId());
@@ -320,8 +320,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
         waitForNotVisible(".material-page__field-answer-synchronizer");
         waitAndClick(".button--muikku-check-exercises");
-        waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
-        assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
+        waitUntilContentChanged(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
+        assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä tarkastettu");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
@@ -385,8 +385,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitAndClick(".button--muikku-check-exercises");
-          waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
-          assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
+          waitUntilContentChanged(".button--muikku-check-exercises", "Tarkasta harjoitustehtävä");
+          assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä tarkastettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");

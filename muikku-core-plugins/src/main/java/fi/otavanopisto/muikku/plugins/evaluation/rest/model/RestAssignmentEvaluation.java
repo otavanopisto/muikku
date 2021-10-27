@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class RestAssignmentEvaluation {
 
@@ -36,9 +38,21 @@ public class RestAssignmentEvaluation {
     this.grade = grade;
   }
 
+  public void addAudioAssessmentAudioClip(RestAssignmentEvaluationAudioClip audioClip) {
+    this.getAudioAssessments().add(audioClip);
+  }
+  
+  public List<RestAssignmentEvaluationAudioClip> getAudioAssessments() {
+    return audioAssessments;
+  }
+
+  public void setAudioAssessments(List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    this.audioAssessments = audioAssessments;
+  }
+
   private RestAssignmentEvaluationType type;
   private String text;
   private Date date;
   private String grade;
-
+  private List<RestAssignmentEvaluationAudioClip> audioAssessments = new ArrayList<>();
 }
