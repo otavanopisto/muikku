@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class WorkspaceMaterialEvaluation {
   
@@ -20,7 +21,8 @@ public class WorkspaceMaterialEvaluation {
       String gradeSchoolDataSource, 
       String gradingScale,
       String verbalAssessment,
-      Boolean passed) {
+      Boolean passed,
+      List<RestAssignmentEvaluationAudioClip> audioAssessments) {
     super();
     this.id = id;
     this.evaluated = evaluated;
@@ -35,6 +37,7 @@ public class WorkspaceMaterialEvaluation {
     this.gradingScale = gradingScale;
     this.verbalAssessment = verbalAssessment;
     this.passed = passed;
+    this.audioAssessments = audioAssessments;
   }
 
   public Long getId() {
@@ -134,11 +137,23 @@ public class WorkspaceMaterialEvaluation {
   }
 
   public String getGradingScale() {
-	return gradingScale;
+    return gradingScale;
   }
 
   public void setGradingScale(String gradingScale) {
-	this.gradingScale = gradingScale;
+    this.gradingScale = gradingScale;
+  }
+
+  public void addAudioAssessment(RestAssignmentEvaluationAudioClip audioAssessment) {
+    this.audioAssessments.add(audioAssessment);
+  }
+
+  public List<RestAssignmentEvaluationAudioClip> getAudioAssessments() {
+    return audioAssessments;
+  }
+
+  public void setAudioAssessments(List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    this.audioAssessments = audioAssessments;
   }
 
   private Long id;
@@ -154,5 +169,5 @@ public class WorkspaceMaterialEvaluation {
   private String gradingScale;
   private String verbalAssessment;
   private Boolean passed;
-
+  private List<RestAssignmentEvaluationAudioClip> audioAssessments;
 }

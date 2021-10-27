@@ -9,7 +9,7 @@ import {
   MaterialEvaluationType,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
-import { AnyActionType } from "../../../../../actions/index";
+import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as moment from "moment";
@@ -26,6 +26,9 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
+import ExcerciseEditor from "./editors/excercise-editor";
+import RecordingsList from "~/components/general/voice-recorder/recordings-list";
+import { RecordValue } from "~/@types/recorder";
 
 /**
  * EvaluationCardProps
@@ -49,9 +52,11 @@ interface EvaluationAssessmentAssignmentState {
   openDrawer: boolean;
   materialNode?: MaterialContentNodeType;
   isLoading: boolean;
+  openAssignmentType?: "EVALUATED" | "EXERCISE";
+  showCloseEditorWarning: boolean;
 }
 /**
- * EvaluationCard
+ * EvaluationAssessmentAssignment
  * @param props
  */
 class EvaluationAssessmentAssignment extends React.Component<
@@ -72,6 +77,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       openContent: false,
       isLoading: false,
       materialNode: undefined,
+      showCloseEditorWarning: false,
     };
   }
 
@@ -162,24 +168,37 @@ class EvaluationAssessmentAssignment extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    let updatedMaterial: MaterialContentNodeType;
+    let updatedMaterial: MaterialContentNodeType = {
+      ...this.state.materialNode,
+    };
 
-    /**
-     * gradeId and source are included in same string, so splittin is required
-     */
-    const gradeIdentifierSplitted =
-      assigmentSaveReturn.gradeIdentifier.split("-");
-    /**
-     * gradeScaleId and source are included in same string, so splittin is required
-     */
-    const gradeScaleIdentifierSplitted =
-      assigmentSaveReturn.gradingScaleIdentifier.split("-");
+    let gradeId = null;
+    let gradeDataSource = null;
 
-    const gradeId = gradeIdentifierSplitted[1];
-    const gradeDataSource = gradeIdentifierSplitted[0];
+    let gradeScaleId = null;
+    let gradeScaleDataSource = null;
 
-    const gradeScaleId = gradeScaleIdentifierSplitted[1];
-    const gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
+    if (assigmentSaveReturn.gradeIdentifier !== null) {
+      /**
+       * gradeId and source are included in same string, so splittin is required
+       */
+      const gradeIdentifierSplitted =
+        assigmentSaveReturn.gradeIdentifier.split("-");
+
+      gradeId = gradeIdentifierSplitted[1];
+      gradeDataSource = gradeIdentifierSplitted[0];
+    }
+    if (assigmentSaveReturn.gradingScaleIdentifier !== null) {
+      /**
+       * gradeScaleId and source are included in same string, so splittin is required
+       */
+      const gradeScaleIdentifierSplitted =
+        assigmentSaveReturn.gradingScaleIdentifier.split("-");
+
+      gradeScaleId = gradeScaleIdentifierSplitted[1];
+
+      gradeScaleDataSource = gradeScaleIdentifierSplitted[0];
+    }
 
     /**
      * Updates founded evaluation items with new values
@@ -222,10 +241,6 @@ class EvaluationAssessmentAssignment extends React.Component<
     }
 
     this.setState({ openContent: !openContent });
-
-    if (this.state.materialNode === undefined) {
-      this.loadMaterialData();
-    }
   };
 
   /**
@@ -236,6 +251,8 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     this.setState({
       openDrawer: false,
+      openAssignmentType: undefined,
+      showCloseEditorWarning: false,
     });
   };
 
@@ -243,7 +260,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * handleOpenSlideDrawer
    */
   handleOpenSlideDrawer =
-    (assignmentId: number) =>
+    (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
@@ -258,6 +275,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       this.setState(
         {
           openDrawer: true,
+          openAssignmentType: assignmentType,
         },
         () => this.handleExecuteScrollToElement()
       );
@@ -277,6 +295,15 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
+   * handleAudioAssessmentChange
+   */
+  handleAudioAssessmentChange = () => {
+    this.setState({
+      showCloseEditorWarning: true,
+    });
+  };
+
+  /**
    * assignmentTypeClass
    * @returns string
    */
@@ -285,6 +312,39 @@ class EvaluationAssessmentAssignment extends React.Component<
       return "assignment";
     }
     return "exercise";
+  };
+
+  /**
+   * assignmentFunctionClass
+   * @param compositeReply
+   * @returns Assignment function button class
+   */
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
+    if (
+      compositeReply &&
+      compositeReply.evaluationInfo &&
+      compositeReply.evaluationInfo.date
+    ) {
+      if (
+        (compositeReply.evaluationInfo &&
+          compositeReply.evaluationInfo.grade) ||
+        (compositeReply.evaluationInfo &&
+          this.props.assigment.assignmentType === "EXERCISE" &&
+          compositeReply.evaluationInfo.type === "PASSED")
+      ) {
+        // Evaluated if graded or if assignment type is excercise and info type returns PASSED
+        return "state-EVALUATED";
+      } else if (
+        compositeReply.state === "SUBMITTED" &&
+        compositeReply.evaluationInfo.type === "INCOMPLETE"
+      ) {
+        // Supplemented as in use to be incomplete but user has submitted it again
+        return "state-SUPPLEMENTED";
+      } else {
+        // Incomplete
+        return "state-INCOMPLETE";
+      }
+    }
   };
 
   /**
@@ -442,6 +502,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         (cReply) => cReply.workspaceMaterialId === this.props.assigment.id
       );
 
+    const recordings =
+      compositeReply &&
+      compositeReply.evaluationInfo &&
+      compositeReply.evaluationInfo.audioAssessments.map(
+        (aAssessment) =>
+          ({
+            ...aAssessment,
+            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+          } as RecordValue)
+      );
+
     let contentOpen: string | number = 0;
 
     if (
@@ -459,30 +530,9 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     const invisible = contentOpen === 0;
 
-    let evaluatedFunctionClassMod = "";
+    let evaluatedFunctionClassMod =
+      this.assignmentFunctionClass(compositeReply);
     let evaluationTitleClassMod = "";
-    if (
-      compositeReply &&
-      compositeReply.evaluationInfo &&
-      compositeReply.evaluationInfo.date
-    ) {
-      if (
-        compositeReply.evaluationInfo &&
-        compositeReply.evaluationInfo.grade
-      ) {
-        // Evaluated
-        evaluatedFunctionClassMod = "state-EVALUATED";
-      } else if (
-        compositeReply.state === "SUBMITTED" &&
-        compositeReply.evaluationInfo.type === "INCOMPLETE"
-      ) {
-        // Supplemented as in use to be incomplete but user has submitted it aasin
-        evaluatedFunctionClassMod = "state-SUPPLEMENTED";
-      } else {
-        // Incomplete
-        evaluatedFunctionClassMod = "state-INCOMPLETE";
-      }
-    }
 
     if (
       this.state.openDrawer &&
@@ -517,7 +567,8 @@ class EvaluationAssessmentAssignment extends React.Component<
             {this.renderAssignmentMeta(compositeReply)}
           </div>
           <div className="evaluation-modal__item-functions">
-            {this.props.assigment.assignmentType === "EVALUATED" ? (
+            {this.props.assigment.assignmentType === "EVALUATED" ||
+            this.props.assigment.assignmentType === "EXERCISE" ? (
               compositeReply &&
               compositeReply.state !== "UNANSWERED" &&
               compositeReply.state !== "WITHDRAWN" ? (
@@ -525,28 +576,25 @@ class EvaluationAssessmentAssignment extends React.Component<
                   aria-label={this.props.i18n.text.get(
                     "plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"
                   )}
-                  onClick={this.handleOpenSlideDrawer(this.props.assigment.id)}
+                  onClick={this.handleOpenSlideDrawer(
+                    this.props.assigment.id,
+                    this.props.assigment.assignmentType
+                  )}
                   buttonModifiers={["evaluate"]}
                   icon="evaluate"
                 />
               ) : null
-            ) : (
-              compositeReply &&
-              compositeReply.state === "SUBMITTED" &&
-              compositeReply.submitted && (
-                <div
-                  className="exercise-done-indicator icon-checkmark"
-                  title={this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.exerciseDoneIndicatorTitle"
-                  )}
-                ></div>
-              )
-            )}
+            ) : null}
           </div>
         </div>
         <SlideDrawer
+          showWarning={this.state.showCloseEditorWarning}
           title={this.props.assigment.title}
-          modifiers={["assignment"]}
+          modifiers={
+            this.props.assigment.assignmentType === "EVALUATED"
+              ? ["assignment"]
+              : ["excercise"]
+          }
           show={
             this.state.openDrawer &&
             this.props.evaluations.openedAssignmentEvaluationId ===
@@ -557,36 +605,76 @@ class EvaluationAssessmentAssignment extends React.Component<
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.state.materialNode ? (
-            <AssignmentEditor
-              editorLabel={this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"
-              )}
-              materialEvaluation={this.state.materialNode.evaluation}
-              materialAssignment={this.state.materialNode.assignment}
-              compositeReplies={compositeReply}
-              updateMaterialEvaluationData={this.updateMaterialEvaluationData}
-              onClose={this.handleCloseSlideDrawer}
-            />
+            this.props.assigment.assignmentType === "EVALUATED" ? (
+              <AssignmentEditor
+                onAudioAssessmentChange={this.handleAudioAssessmentChange}
+                showAudioAssessmentWarningOnClose={
+                  this.state.showCloseEditorWarning
+                }
+                editorLabel={this.props.i18n.text.get(
+                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
+                )}
+                materialEvaluation={this.state.materialNode.evaluation}
+                materialAssignment={this.state.materialNode.assignment}
+                compositeReplies={compositeReply}
+                updateMaterialEvaluationData={this.updateMaterialEvaluationData}
+                onClose={this.handleCloseSlideDrawer}
+              />
+            ) : (
+              <ExcerciseEditor
+                onAudioAssessmentChange={this.handleAudioAssessmentChange}
+                showAudioAssessmentWarningOnClose={
+                  this.state.showCloseEditorWarning
+                }
+                editorLabel={this.props.i18n.text.get(
+                  "plugin.evaluation.assignmentEvaluationDialog.literalAssessment"
+                )}
+                materialEvaluation={this.state.materialNode.evaluation}
+                materialAssignment={this.state.materialNode.assignment}
+                compositeReplies={compositeReply}
+                updateMaterialEvaluationData={this.updateMaterialEvaluationData}
+                onClose={this.handleCloseSlideDrawer}
+              />
+            )
           ) : null}
         </SlideDrawer>
+
         <AnimateHeight duration={400} height={contentOpen}>
           {compositeReply &&
-            compositeReply.evaluationInfo &&
-            compositeReply.evaluationInfo.text && (
-              <div className="evaluation-modal__item-literal-assessment">
-                <div className="evaluation-modal__item-literal-assessment-label">
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
-                  )}
+          compositeReply.evaluationInfo &&
+          (compositeReply.evaluationInfo.text || recordings.length > 0) ? (
+            <>
+              {compositeReply.evaluationInfo.text ? (
+                <div className="evaluation-modal__item-literal-assessment">
+                  <div className="evaluation-modal__item-assessment-literal-label">
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
+                    )}
+                  </div>
+
+                  <div
+                    className="evaluation-modal__item-assessment-literal-data rich-text rich-text--evaluation-literal"
+                    dangerouslySetInnerHTML={this.createHtmlMarkup(
+                      compositeReply.evaluationInfo.text
+                    )}
+                  />
                 </div>
-                <div
-                  className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
-                  dangerouslySetInnerHTML={this.createHtmlMarkup(
-                    compositeReply.evaluationInfo.text
-                  )}
-                />
-              </div>
-            )}
+              ) : null}
+
+              {recordings.length > 0 ? (
+                <div className="evaluation-modal__item-verbal-assessment">
+                  <div className="evaluation-modal__item-assessment-verbal-label">
+                    {this.props.i18n.text.get(
+                      "plugin.evaluation.evaluationModal.audioAssessments"
+                    )}
+                  </div>
+                  <div className="voice-container">
+                    <RecordingsList records={recordings} noDeleteFunctions />
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : null}
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.props.workspace && this.state.materialNode ? (

@@ -163,7 +163,6 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       return null;
     }
 
-    let markcorrectAnswers = false;
     //the summary component if necessary
     let correctAnswersummaryComponent = null;
     //The answer is right if it is not unknown and has no fails in it
@@ -176,8 +175,6 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       let correctAnswersFound = this.props.content.options.filter(a=>a.correct);
       //if we got some in there
       if (correctAnswersFound.length){
-        //we gotta mark those that are correct
-        markcorrectAnswers = true
         //and we make the summary component
         correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
@@ -205,7 +202,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }
 
     if (this.props.invisible){
-      return <span className="material-page__checkbox-wrappe">
+      return <span className="material-page__checkbox-wrapper">
         <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"}`}>
           {this.props.content.options.map((o, index)=>{
             return <span key={o.name} className="material-page__checkbox-item-container">
@@ -228,9 +225,10 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map((o, index)=>{
           //if we are told to mark correct answers
+          const isChecked = this.state.values.includes(o.name);
           let itemStateAfterCheck = "";
-          if (markcorrectAnswers){
-            if (o.correct){
+          if (this.props.displayCorrectAnswers){
+            if ((o.correct && isChecked) || (!o.correct && !isChecked)){
               itemStateAfterCheck = "correct-answer";
             } else {
               itemStateAfterCheck = "incorrect-answer";
@@ -239,7 +237,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
           //lets generate unique id for labels and checkboxes
           let uniqueElementID = "cb-" + uuid.v4();
           return <span key={o.name} className="material-page__checkbox-item-container">
-            <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
+            <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={isChecked} onChange={this.toggleValue} disabled={this.props.readOnly}/>
             <label htmlFor={uniqueElementID} className="material-page__checkable-label"><StrMathJAX>{o.text}</StrMathJAX></label>
           </span>
         })}
