@@ -22,6 +22,7 @@ import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from '~/components/base/material-loader/static/table';
 import MathJAX from '~/components/base/material-loader/static/mathjax';
+import { UsedAs } from '~/@types/shared';
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -70,7 +71,7 @@ interface BaseProps {
   checkAnswers: boolean,
   onAnswerChange: (name: string, status: boolean) => any,
   onAnswerCheckableChange: (status: boolean) => any,
-
+  usedAs: UsedAs;
   invisible: boolean,
 }
 
@@ -324,6 +325,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["i18n"] = props.i18n;
     parameters["status"] = props.status;
     parameters["readOnly"] = props.readOnly;
+
+    /**
+     * Passing used as default value a.k.a "materials or evaluation tool"
+     */
+    parameters["usedAs"] = props.usedAs;
 
     //We set the value if we have one in composite replies
     parameters["initialValue"] = null;

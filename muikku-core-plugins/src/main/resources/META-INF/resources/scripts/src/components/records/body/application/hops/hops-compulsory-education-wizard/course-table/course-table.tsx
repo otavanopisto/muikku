@@ -1,25 +1,37 @@
 import * as React from "react";
-import { SchoolSubject } from "~/@types/shared";
+import {
+  SchoolSubject,
+  StudentActivityByStatus,
+  StudentActivityCourse,
+} from "~/@types/shared";
 import { Table, Tbody, Td, Tr } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { TableDataContent } from "./table-data-content";
 import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
+import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 
-interface CourseTableProps {
+interface CourseTableProps extends Partial<StudentActivityByStatus> {
   user: "supervisor" | "student";
   ethicsSelected: boolean;
   finnishAsSecondLanguage: boolean;
   guider: GuiderType;
   selectedSubjectListOfIds?: number[];
-  completedSubjectListOfIds?: number[];
-  approvedSubjectListOfIds?: number[];
-  inprogressSubjectListOfIds?: number[];
   selectedOptionalListOfIds?: number[];
   supervisorSuggestedNextListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
+  /* completedSubjectListOfIds?: number[];
+  approvedSubjectListOfIds?: number[];
+  inprogressSubjectListOfIds?: number[]; */
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
+  updateSuggestion: (
+    goal: "add" | "remove",
+    courseNumber: number,
+    subjectCode: string,
+    suggestionId: number,
+    studentId: string
+  ) => void;
 }
 
 /**
@@ -153,14 +165,19 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         let canBeSuggestedForNextCourse = true;
         let canBeSuggestedForOptionalCourse = true;
 
+        let suggestedCourseData: StudentActivityCourse[] | undefined =
+          undefined;
+
         /**
          * If any of these list are given, check whether course id is in
          * and push another modifier or change table data content options values
          */
         if (
-          props.approvedSubjectListOfIds &&
-          props.approvedSubjectListOfIds.find(
-            (courseId) => courseId === course.id
+          props.transferedList &&
+          props.transferedList.find(
+            (tCourse) =>
+              tCourse.subject === sSubject.subjectCode &&
+              tCourse.courseNumber === course.courseNumber
           )
         ) {
           canBeSuggestedForNextCourse = false;
@@ -174,9 +191,11 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         ) {
           modifiers.push("SELECTED_OPTIONAL");
         } else if (
-          props.completedSubjectListOfIds &&
-          props.completedSubjectListOfIds.find(
-            (courseId) => courseId === course.id
+          props.gradedList &&
+          props.gradedList.find(
+            (gCourse) =>
+              gCourse.subject === sSubject.subjectCode &&
+              gCourse.courseNumber === course.courseNumber
           )
         ) {
           canBeSuggestedForOptionalCourse = true;
@@ -184,9 +203,11 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           canBeSelected = false;
           modifiers.push("COMPLETED");
         } else if (
-          props.inprogressSubjectListOfIds &&
-          props.inprogressSubjectListOfIds.find(
-            (courseId) => courseId === course.id
+          props.onGoingList &&
+          props.onGoingList.find(
+            (oCourse) =>
+              oCourse.subject === sSubject.subjectCode &&
+              oCourse.courseNumber === course.courseNumber
           )
         ) {
           canBeSuggestedForOptionalCourse = true;
@@ -212,11 +233,16 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         }
 
         if (
-          props.supervisorSuggestedNextListOfIds &&
-          props.supervisorSuggestedNextListOfIds.find(
-            (courseId) => courseId === course.id
+          props.suggestedList &&
+          props.suggestedList.find(
+            (sCourse) =>
+              sCourse.subject === sSubject.subjectCode &&
+              sCourse.courseNumber === course.courseNumber
           )
         ) {
+          suggestedCourseData = props.suggestedList.filter(
+            (sCourse) => sCourse.subject === sSubject.subjectCode
+          );
           modifiers.push("NEXT");
         }
 
@@ -228,10 +254,12 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               tableRef={tableRef}
               subjectCode={sSubject.subjectCode}
               course={course}
+              suggestedActivityCourses={suggestedCourseData}
               canBeSelected={canBeSelected}
               canBeSuggestedForNextCourse={canBeSuggestedForNextCourse}
               canBeSuggestedForOptionalCourse={canBeSuggestedForOptionalCourse}
               onToggleCourseClick={handleToggleCourseClick}
+              updateSuggestion={props.updateSuggestion}
             />
           </Td>
         );

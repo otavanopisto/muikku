@@ -27,15 +27,13 @@ export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
     <Table>
       <TableHead>
         <Tr>
-          <Th style={{ maxWidth: "80px" }}>Kieli</Th>
+          <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
           <Th modifiers={["centered"]}>1</Th>
           <Th modifiers={["centered"]}>2</Th>
           <Th modifiers={["centered"]}>3</Th>
           <Th modifiers={["centered"]}>4</Th>
           <Th modifiers={["centered"]}>5</Th>
-          <Th style={{ maxWidth: "50px" }} modifiers={["centered"]}>
-            Toimin.
-          </Th>
+          <Th style={{ maxWidth: "50px", textAlign: "center" }}>Toimin.</Th>
         </Tr>
       </TableHead>
       <Tbody>{children}</Tbody>
@@ -89,7 +87,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
 
   return (
     <Tr>
-      <Td style={{ maxWidth: "80px" }}>
+      <Td style={{ maxWidth: "80px", textAlign: "center" }}>
         {lng.hardCoded ? (
           <label className="hops-label">{lng.name}</label>
         ) : (
@@ -148,7 +146,10 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
           disabled={disabled}
         ></input>
       </Td>
-      <Td modifiers={["centered"]} style={{ maxWidth: "50px" }}>
+      <Td
+        modifiers={["centered"]}
+        style={{ maxWidth: "50px", textAlign: "center" }}
+      >
         {lng.hardCoded ? (
           "-"
         ) : (

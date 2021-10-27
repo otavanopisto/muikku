@@ -17,6 +17,16 @@
     overflow: hidden;
     padding: 0;
   }
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
 }
 
 .evaluation-modal__close {
@@ -87,7 +97,29 @@
 }
 
 .evaluation-modal__content-title {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
   font-size: 1.375rem;
+  justify-content: space-between;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    flex-flow: row nowrap;
+  }
+}
+
+.evaluation-modal__content-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 10px;
+  }
 }
 
 .evaluation-modal__content-buttonset {
@@ -250,6 +282,15 @@
   // scss-lint:enable SelectorFormat
 }
 
+.evaluation-modal__event-literal-assessment p,
+.evaluation-modal__item-literal-assessment-data p {
+  margin: 0 0 10px;
+
+  &:last-child {
+    margin: 0 0 5px;
+  }
+}
+
 .evaluation-modal__event-literal-assessment {
   background-color: $color-evaluation-modal-meta-background;
   border-radius: 2px;
@@ -262,6 +303,7 @@
   align-items: center;
   display: flex;
   justify-content: flex-end;
+  padding: 0 5px;
 }
 
 // Evaluation item listing

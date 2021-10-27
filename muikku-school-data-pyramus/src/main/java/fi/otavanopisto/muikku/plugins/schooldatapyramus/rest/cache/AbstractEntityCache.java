@@ -2,16 +2,12 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 public abstract class AbstractEntityCache {
-  
-  @Inject
-  private Logger logger;
   
   @Inject
   private CacheConfigs cacheConfigs;
@@ -25,13 +21,11 @@ public abstract class AbstractEntityCache {
   @PostConstruct
   public void init() {
     cache = new HashMap<>();
-    logger.info(String.format("(%s) New cache created", getType()));
     entityCacheEvictor.addCache(this);
   }
   
   @PreDestroy
   public void deinit() {
-    logger.info(String.format("(%s) Cache removed", getType()));
     entityCacheEvictor.removeCache(this);
   }
   
@@ -71,10 +65,7 @@ public abstract class AbstractEntityCache {
   
   public void remove(String path) {
     if (cache.containsKey(path)) {
-      logger.fine(String.format("(%s) Cache cleared for %s", getType(), path));
       cache.remove(path);
-    } else {
-      logger.fine(String.format("(%s) Did not find any cached resources for %s", getType(), path));
     }
   }
   
@@ -96,9 +87,7 @@ public abstract class AbstractEntityCache {
   }
 
   public void clear() {
-    int size = cache.size();
     cache.clear();
-    logger.info(String.format("(%s) cache was cleared. %d cached entities released", getType(), size));
   }
   
   public abstract int getMaxEntries();

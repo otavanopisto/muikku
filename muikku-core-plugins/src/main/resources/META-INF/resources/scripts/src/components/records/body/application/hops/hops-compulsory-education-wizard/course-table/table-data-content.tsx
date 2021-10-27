@@ -1,5 +1,8 @@
 import * as React from "react";
-import { Course } from "../../../../../../../@types/shared";
+import {
+  Course,
+  StudentActivityCourse,
+} from "../../../../../../../@types/shared";
 import {
   useDimensions,
   useElementBoundings,
@@ -16,6 +19,7 @@ interface TableDataContentProps
   user: "supervisor" | "student";
   tableRef: React.MutableRefObject<HTMLTableElement>;
   modifiers?: string[];
+  suggestedActivityCourses?: StudentActivityCourse[];
   subjectCode: string;
   course: Course;
   canBeSelected: boolean;
@@ -24,6 +28,13 @@ interface TableDataContentProps
   onToggleCourseClick: (
     courseId: number
   ) => (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => void;
+  updateSuggestion: (
+    goal: "add" | "remove",
+    courseNumber: number,
+    subjectCode: string,
+    suggestionId: number,
+    studentId: string
+  ) => void;
 }
 
 /**
@@ -119,9 +130,11 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
           <h4>{course.name}</h4>
           {expanded && props.user === "supervisor" ? (
             <SuggestionList
+              suggestedActivityCourses={props.suggestedActivityCourses}
               subjectCode={props.subjectCode}
               course={props.course}
               onLoad={() => setLoadedSuggestionList(!loadedSuggestionList)}
+              updateSuggestion={props.updateSuggestion}
             />
           ) : null}
         </div>
@@ -140,7 +153,7 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
       >
         <span>{course.courseNumber}</span>
         <div ref={contenNameRef} className="table-data-content-course-content">
-          {course.name}
+          <h4>{course.name}</h4>
         </div>
       </div>
     );
@@ -165,9 +178,11 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
           <h4>{course.name}</h4>
           {expanded && props.user === "supervisor" ? (
             <SuggestionList
+              suggestedActivityCourses={props.suggestedActivityCourses}
               subjectCode={props.subjectCode}
               course={props.course}
               onLoad={() => setLoadedSuggestionList(true)}
+              updateSuggestion={props.updateSuggestion}
             />
           ) : null}
         </div>

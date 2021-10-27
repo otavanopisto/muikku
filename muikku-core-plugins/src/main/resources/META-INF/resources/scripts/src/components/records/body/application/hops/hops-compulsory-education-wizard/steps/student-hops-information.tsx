@@ -2,6 +2,7 @@ import * as React from "react";
 import "~/sass/elements/compulsory-education-hops.scss";
 import { TextField } from "../text-field";
 import { BasicInformation } from "../../../../../../../@types/shared";
+import * as moment from "moment";
 
 /**
  * StudentHopsInformationProps
@@ -70,7 +71,7 @@ class StudentHopsInformation extends React.Component<
                   />
                 </div>
               </div>
-              <div className="hops-container__row">
+              {/* <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
                     label="Laatimispäivä:"
@@ -81,20 +82,25 @@ class StudentHopsInformation extends React.Component<
                     className="hops-input"
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className="hops-sub__container--updates">
-              <div className="hops-container__row">
-                <div className="hops__form-element-container">
-                  <label className="hops-label">Päivitykset:</label>
-                  <ul className="hops-updates__list">
-                    <li>25.8.2020</li>
-                    <li>30.9.2020</li>
-                    <li>24.4.2021</li>
-                  </ul>
+            {this.props.basicInformation.updates &&
+            this.props.basicInformation.updates.length ? (
+              <div className="hops-sub__container--updates">
+                <div className="hops-container__row">
+                  <div className="hops__form-element-container">
+                    <label className="hops-label">Päivitykset:</label>
+                    <ul className="hops-updates__list">
+                      {this.props.basicInformation.updates.map((uItem) => (
+                        <li>
+                          {moment(uItem.date).format("l")} - {uItem.modifier}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : null}
           </fieldset>
         )}
       </div>

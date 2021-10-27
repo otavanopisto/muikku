@@ -53,17 +53,17 @@ export default class UserPanel extends React.Component<
 
   getToPage(n: number) {
     let pageStart: number = (n - 1) * this.usersPerPage;
-    let pageEnd: number = n * this.usersPerPage;
+    let maxPerPage: number = this.usersPerPage;
 
     let query: string = this.props.searchString
       ? this.props.searchString
       : null;
     this.setState({ currentPage: n });
-    this.props.pageChange(query, pageStart, pageEnd);
+    this.props.pageChange(query, pageStart, maxPerPage);
   }
 
   componentDidUpdate(prevProps: UserPanelProps) {
-    if (prevProps.searchString !== this.props.searchString) {
+    if (prevProps.searchString !== this.props.searchString && this.props.searchString !== null) {
       if (this.state.currentPage !== 1) {
         this.setState({ currentPage: 1 });
       }
@@ -101,7 +101,7 @@ export default class UserPanel extends React.Component<
                         <span className="icon-pencil"></span>
                       </StudentDialog>
                     </div>
-                  ) : data.role === "ADMINISTRATOR" ? (
+                  ) : data.role === "ADMINISTRATOR" || data.role === "STUDY_PROGRAMME_LEADER" ? (
                     <div title={data.role}>
                       <span className="state-DISABLED icon-pencil"></span>
                     </div>
