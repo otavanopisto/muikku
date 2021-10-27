@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -22,6 +23,10 @@ public class UserController {
   
   @Inject
   private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return userSchoolDataController.createStaffMember(dataSource, staffMember);
@@ -45,6 +50,16 @@ public class UserController {
   
   public User findUserByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String userIdentifier) {
     return userSchoolDataController.findUser(schoolDataSource, userIdentifier);
+  }
+  
+  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      return userSchoolDataController.getUserDefaultEmailAddress(schoolDataSource, userIdentifier);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {

@@ -100,7 +100,7 @@
       <artifactId>commons-io</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <!-- Hibernate -->
 
     <dependency>
@@ -181,7 +181,14 @@
       <artifactId>openfire-rest-client</artifactId>
     </dependency>
     
-    <!--  Multipart (for file uploads) -->
+    <!-- Guava (for Ceepos hashing) -->
+
+    <dependency>
+	  <groupId>com.google.guava</groupId>
+	  <artifactId>guava</artifactId>
+    </dependency>
+
+    <!-- Multipart (for file uploads) -->
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

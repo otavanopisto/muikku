@@ -121,6 +121,14 @@ public class UserSchoolDataController {
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
   }
+  
+  public String getUserDefaultEmailAddress(String schoolDataSource, String userIdentifier) {
+    return getUserBridge(schoolDataSource).getUserDefaultEmailAddress(userIdentifier);
+  }
+  
+  public User increaseStudyTime(String schoolDataSource, String studentIdentifier, Integer months) {
+    return getUserBridge(schoolDataSource).increaseStudyTime(studentIdentifier, months);
+  }
 
   public User findUser(SchoolDataIdentifier userIdentifier) {
     return getUserBridge(userIdentifier.getDataSource()).findUser(userIdentifier.getIdentifier());

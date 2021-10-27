@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', 'server' from PluginSettingKey where plugin = 'ceepos' and name = 'server' having count(*) = 0;</sql>
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', 'source' from PluginSettingKey where plugin = 'ceepos' and name = 'source' having count(*) = 0;</sql>
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', 'key' from PluginSettingKey where plugin = 'ceepos' and name = 'key' having count(*) = 0;</sql>
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', '6MonthCode' from PluginSettingKey where plugin = 'ceepos' and name = '6MonthCode' having count(*) = 0;</sql>
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', '12MonthCode' from PluginSettingKey where plugin = 'ceepos' and name = '12MonthCode' having count(*) = 0;</sql>
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', 'returnAddress' from PluginSettingKey where plugin = 'ceepos' and name = 'returnAddress' having count(*) = 0;</sql>
+  <sql>insert into PluginSettingKey(plugin, name) select 'ceepos', 'notificationAddress' from PluginSettingKey where plugin = 'ceepos' and name = 'notificationAddress' having count(*) = 0;</sql>
+  
+  <sql>drop table if exists CeeposStudyTimeOrder;</sql>
+  <sql>drop table if exists CeeposOrder;</sql>
+  <sql>drop table if exists CeeposProduct;</sql>
+  
+  <sql>create table CeeposOrder (id bigint not null auto_increment, archived bit not null, ceeposOrderNumber varchar(255), ceeposPaymentAddress varchar(255), created datetime not null, email varchar(255) not null, lastModified datetime not null, state varchar(255) not null, userIdentifier varchar(255) not null, product_id bigint, primary key (id));</sql>
+  <sql>create table CeeposProduct (id bigint not null auto_increment, code varchar(255) not null, description varchar(255) not null, price integer not null, primary key (id));</sql>
+  <sql>create table CeeposStudyTimeOrder (postStudyTimeEnd date, preStudyTimeEnd date not null, staffEmail varchar(255) not null, id bigint not null, primary key (id));</sql>
+
+  <sql>alter table CeeposProduct add constraint UK_c5plt5duydpy1e3yfb598nyqw unique (code);</sql>
+  <sql>alter table CeeposOrder add constraint FKdv1j3cj41gxdkhtejwxtvhajw foreign key (product_id) references CeeposProduct (id);</sql>
+  <sql>alter table CeeposStudyTimeOrder add constraint FKjumfl7pnywgcj01g8e7yydhcb foreign key (id) references CeeposOrder (id);</sql>
+
+  <sql>create index ind_co_userIdentifier on CeeposOrder (userIdentifier);</sql>
+
+</update>
