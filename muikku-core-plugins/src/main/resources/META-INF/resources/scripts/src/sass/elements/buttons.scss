@@ -1108,6 +1108,12 @@
   }
 }
 
+.button--load-further {
+  background-color: $color-pager-selected-page-index-background;
+  color: $color-pager-selected-page-index-font;
+  width: 200px;
+}
+
 .button--form-element-next {
   background-color: $color-button-primary-background;
   color: $color-button-primary-text;
