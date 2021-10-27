@@ -167,24 +167,24 @@ public class CeeposRESTService {
       }
     }
     
-    return null;
-  }
-  
-  @Path("/mail")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response testi() {
-    Double d = 123d;
-    String s = userController.getUserDefaultEmailAddress(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-    ObjectMapper paskaa = new ObjectMapper();
-    try {
-      s = paskaa.writeValueAsString(s);
+    // TODO Filter orders that failed or got canceled?
+    
+    List<CeeposOrderRestModel> restOrders = new ArrayList<>();
+    List<CeeposOrder> orders = ceeposController.listOrdersByUserIdentifier(userIdentifier);
+    for (CeeposOrder order : orders) {
+      CeeposOrderRestModel restOrder = new CeeposOrderRestModel();
+      restOrder.setCreated(order.getCreated());
+      restOrder.setId(order.getId());
+      restOrder.setProduct(new CeeposProductRestModel(
+          order.getProduct().getCode(),
+          order.getProduct().getDescription(),
+          order.getProduct().getPrice()));
+      restOrder.setState(order.getState());
+      restOrder.setStudentIdentifier(order.getUserIdentifier());
+      restOrders.add(restOrder);
     }
-    catch (JsonProcessingException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return Response.ok(s).build();
+    
+    return Response.ok(restOrders).build();
   }
   
   /**
