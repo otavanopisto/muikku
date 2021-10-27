@@ -646,14 +646,14 @@ class EvaluationAssessmentAssignment extends React.Component<
             <>
               {compositeReply.evaluationInfo.text ? (
                 <div className="evaluation-modal__item-literal-assessment">
-                  <div className="evaluation-modal__item-assessment-literal-label">
+                  <div className="evaluation-modal__item-literal-assessment-label">
                     {this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"
                     )}
                   </div>
 
                   <div
-                    className="evaluation-modal__item-assessment-literal-data rich-text rich-text--evaluation-literal"
+                    className="evaluation-modal__item-literal-assessment-data rich-text rich-text--evaluation-literal"
                     dangerouslySetInnerHTML={this.createHtmlMarkup(
                       compositeReply.evaluationInfo.text
                     )}
@@ -663,7 +663,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
               {recordings.length > 0 ? (
                 <div className="evaluation-modal__item-verbal-assessment">
-                  <div className="evaluation-modal__item-assessment-verbal-label">
+                  <div className="evaluation-modal__item-verbal-assessment-label">
                     {this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.audioAssessments"
                     )}
