@@ -317,7 +317,7 @@ export default class TextField extends React.Component<
       );
     }
 
-    // Read only version for evaluation tool. PLEASE ADD STYLES
+    // Read only version for evaluation tool.
     else if (this.props.readOnly && this.props.usedAs === "evaluationTool") {
       const component = (
         <span
