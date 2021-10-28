@@ -228,7 +228,7 @@ public class CeeposRESTService {
     
     // Find order
     
-    CeeposOrder order = ceeposController.findOrder(orderId);
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (order == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -396,7 +396,7 @@ public class CeeposRESTService {
     
     // Find the order
     
-    CeeposOrder order = ceeposController.findOrder(payload.getId());
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
     if (order == null) {
       logger.warning(String.format("Order %d not found", payload.getId()));
       return Response.status(Status.NOT_FOUND).build();
@@ -579,6 +579,14 @@ public class CeeposRESTService {
     return Response.ok().build();
   }
   
+  /**
+   * Handles a payment confirmation message from Ceepos by validating it and fulfilling the order
+   * if it went through without any issues.
+   * 
+   * @param paymentConfirmation Ceepos payment confirmation
+   * 
+   * @return Response to be delivered back to Ceepos
+   */
   private Response handlePaymentConfirmation(CeeposPaymentConfirmationRestModel paymentConfirmation) {
     
     // Log the payment confirmation 
@@ -601,12 +609,15 @@ public class CeeposRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid hash").build();
     }
     
-    // Ensure our order exists (
+    // Ensure our order exists (archived is semi-fine since this is a programmatic call)
     
-    CeeposOrder order = ceeposController.findOrder(new Long(paymentConfirmation.getId()));
+    CeeposOrder order = ceeposController.findOrderById(new Long(paymentConfirmation.getId()));
     if (order == null) {
       logger.severe(String.format("Order %s not found", paymentConfirmation.getId()));
       return Response.status(Status.BAD_REQUEST).entity("Source system order not found").build();
+    }
+    if (order.getArchived()) {
+      logger.warning(String.format("Received payment confirmation for an archived order %d", order.getId()));
     }
     if (order.getState() != CeeposOrderState.ONGOING) {
       logger.warning(String.format("Received payment confirmation for order %d in state %s", order.getId(), order.getState()));
@@ -634,59 +645,61 @@ public class CeeposRESTService {
       default:
         break;
       }
-      return Response.ok().build(); // Technically our problem?
+      return Response.ok().build(); // TODO Are all of these technically our problem?
     }
     
     // By now the payment was successful, so mark the order as PAID
 
     order = ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.PAID, paymentConfirmation.getReference());
     
-    // Serve the purchase
-    // TODO support for other products than just study time purchases
+    // Fulfill the order
     
-    int months = 0;
-    String productCode = order.getProduct().getCode();
-    if (StringUtils.equals(productCode, getProductCodeForMonths(6))) {
-      months = 6;
-    }
-    else if (StringUtils.equals(productCode,  getProductCodeForMonths(12))) {
-      months = 12;
-    }
-    else {
-      logger.severe(String.format("Order %d product code %s does not match configured monthly codes", order.getId(), productCode));
-      return Response.ok().build(); // Configuration problem in our end
-    }
-    
-    // Increase study time end
-    
-    Date oldStudyTimeEnd = null;
-    Date newStudyTimeEnd = null;
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      String dataSource = "PYRAMUS";
-      User user = userSchoolDataController.findUser(dataSource, order.getUserIdentifier());
-      if (user == null) {
-        logger.severe(String.format("User %s not found", order.getUserIdentifier()));
-        return Response.ok().build(); // Our problem as well
+    if (order.getProduct().getType() == CeeposProductType.STUDYTIME) {
+      int months = 0;
+      String productCode = order.getProduct().getCode();
+      if (StringUtils.equals(productCode, getProductCodeForMonths(6))) {
+        months = 6;
       }
-      oldStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
-      user = userSchoolDataController.increaseStudyTime(dataSource, order.getUserIdentifier(), months);
-      newStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
-      logger.info(String.format("User %s study time raised from %tF to %tF",  order.getUserIdentifier(), oldStudyTimeEnd, newStudyTimeEnd));
+      else if (StringUtils.equals(productCode,  getProductCodeForMonths(12))) {
+        months = 12;
+      }
+      else {
+        logger.severe(String.format("Order %d product code %s does not match configured monthly codes", order.getId(), productCode));
+        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference());
+        return Response.ok().build(); // Horrible configuration problem in our end
+      }
+
+      // Increase study time end
+
+      Date oldStudyTimeEnd = null;
+      Date newStudyTimeEnd = null;
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        String dataSource = "PYRAMUS";
+        User user = userSchoolDataController.findUser(dataSource, order.getUserIdentifier());
+        if (user == null) {
+          logger.severe(String.format("User %s not found", order.getUserIdentifier()));
+          return Response.ok().build(); // Our problem as well
+        }
+        oldStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
+        user = userSchoolDataController.increaseStudyTime(dataSource, order.getUserIdentifier(), months);
+        newStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
+        logger.info(String.format("User %s study time raised from %tF to %tF",  order.getUserIdentifier(), oldStudyTimeEnd, newStudyTimeEnd));
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+
+      // TODO Mail to user and guider
+
+      // Mark the payment as complete
+
+      ceeposController.updateStudyTimeOrderStateAndStudyDates(
+          (CeeposStudyTimeOrder) order,
+          CeeposOrderState.COMPLETE,
+          oldStudyTimeEnd,
+          newStudyTimeEnd);
     }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-    
-    // TODO Mail to user and guider
-    
-    // Mark the payment as complete
-    
-    ceeposController.updateStudyTimeOrderStateAndStudyDates(
-        (CeeposStudyTimeOrder) order,
-        CeeposOrderState.COMPLETE,
-        oldStudyTimeEnd,
-        newStudyTimeEnd);
     
     return Response.ok().build();
   }

@@ -49,7 +49,7 @@ public class CeeposPayViewBackingBean {
     
     // Order specified by orderId query parameter must exist
     
-    CeeposOrder ceeposOrder = ceeposController.findOrder(orderId);
+    CeeposOrder ceeposOrder = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (ceeposOrder == null) {
       logger.warning(String.format("Order %d not found", orderId));
       return NavigationRules.NOT_FOUND;

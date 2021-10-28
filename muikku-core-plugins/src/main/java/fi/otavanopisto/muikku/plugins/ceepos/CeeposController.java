@@ -29,8 +29,12 @@ public class CeeposController {
     return ceeposStudyTimeOrderDAO.create(studentIdentifier, product, studentEmail, staffEmail);
   }
 
-  public CeeposOrder findOrder(Long id) {
+  public CeeposOrder findOrderById(Long id) {
     return ceeposOrderDAO.findById(id);
+  }
+
+  public CeeposOrder findOrderByIdAndArchived(Long id, boolean archived) {
+    return ceeposOrderDAO.findByIdAndArchived(id, archived);
   }
   
   public CeeposProduct findProductByCode(String code) {

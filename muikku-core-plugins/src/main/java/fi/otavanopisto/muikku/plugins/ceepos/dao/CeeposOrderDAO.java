@@ -17,6 +17,23 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
 
   private static final long serialVersionUID = 7208631769909993803L;
   
+  public CeeposOrder findByIdAndArchived(Long id, boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CeeposOrder> criteria = criteriaBuilder.createQuery(CeeposOrder.class);
+    Root<CeeposOrder> root = criteria.from(CeeposOrder.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(CeeposOrder_.id), id),
+        criteriaBuilder.equal(root.get(CeeposOrder_.archived), archived)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+  
   public List<CeeposOrder> listByUserIdentifierAndArchived(String userIdentifier, boolean archived) {
     EntityManager entityManager = getEntityManager();
     
@@ -32,7 +49,6 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     );
 
     return entityManager.createQuery(criteria).getResultList();
-    
   }
   
   public CeeposOrder updateState(CeeposOrder order, CeeposOrderState state) {
