@@ -196,7 +196,75 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.users.orders.read('STUDENT-123');
+   * mApi().ceepos.user.order.read('STUDENT-123', 123);
+   * 
+   * RESPONSE:
+   * 
+   * {'id': 123, // order id
+   *  'studentIdentifier': 'STUDENT-123',
+   *  'studentEmail': 'student@email.com',
+   *  'product': {
+   *    'code': 'PRODUCT0001',
+   *    'description': 'Product description to be shown in UI',
+   *    'price': 5000 // Product price in cents
+   *  }
+   *  'state': CREATED | ONGOING | PAID | CANCELED | ERRORED | COMPLETE
+   *  'created': 2021-10-28T08:57:57+03:00 
+   * }
+   * 
+   * DESCRIPTION:
+   * 
+   * Returns a single order belonging to the given user.
+   * 
+   * @param userIdentifier User identifier
+   * @param orderId Order id
+   * 
+   * @return Order of the given user
+   */
+  @Path("/user/{USERIDENTIFIER}/order/{ORDERID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getOrder(@PathParam("USERIDENTIFIER") String userIdentifier, @PathParam("ORDERID") Long orderId) {
+    
+    // Find order
+    
+    CeeposOrder order = ceeposController.findOrder(orderId);
+    if (order == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!StringUtils.equals(order.getUserIdentifier(), userIdentifier)) {
+      return Response.status(Status.BAD_REQUEST).entity("Order user mismatch").build();
+    }
+    
+    // Access check
+
+    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.FIND_ORDER)) {
+      if (!StringUtils.equals(userIdentifier, sessionController.getLoggedUserIdentifier())) {
+        logger.severe(String.format("User %s access to order of %s revoked", sessionController.getLoggedUserIdentifier(), userIdentifier));
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Return object
+
+    CeeposOrderRestModel restOrder = new CeeposOrderRestModel();
+    restOrder.setCreated(toOffsetDateTime(order.getCreated()));
+    restOrder.setId(order.getId());
+    restOrder.setProduct(new CeeposProductRestModel(
+        order.getProduct().getCode(),
+        getLocalizedDescription(order.getProduct()),
+        order.getProduct().getPrice()));
+    restOrder.setState(order.getState());
+    restOrder.setStudentIdentifier(order.getUserIdentifier());
+    restOrder.setStudentEmail(order.getEmail());
+    
+    return Response.ok(restOrder).build();
+  }
+
+  /**
+   * REQUEST:
+   * 
+   * mApi().ceepos.user.orders.read('STUDENT-123');
    * 
    * RESPONSE:
    * 
@@ -222,7 +290,7 @@ public class CeeposRESTService {
    * 
    * @return Orders of the given user
    */
-  @Path("/users/{USERIDENTIFIER}/orders")
+  @Path("/user/{USERIDENTIFIER}/orders")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listOrdersByUser(@PathParam("USERIDENTIFIER") String userIdentifier) {
