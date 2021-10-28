@@ -44,8 +44,6 @@ public class CeeposStudyTimeOrder extends CeeposOrder {
   @Column(nullable = false)
   private String staffEmail;
 
-  @NotNull
-  @Column(nullable = false)
   @Temporal (value=TemporalType.DATE)
   private Date preStudyTimeEnd;
 

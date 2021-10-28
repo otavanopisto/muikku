@@ -25,8 +25,8 @@ public class CeeposController {
   @Inject
   private CeeposStudyTimeOrderDAO ceeposStudyTimeOrderDAO;
   
-  public CeeposStudyTimeOrder createStudyTimeOrder(String staffEmail, String studentIdentifier, CeeposProduct product) {
-    return ceeposStudyTimeOrderDAO.create(staffEmail, studentIdentifier, product);
+  public CeeposStudyTimeOrder createStudyTimeOrder(String studentIdentifier, CeeposProduct product, String studentEmail, String staffEmail) {
+    return ceeposStudyTimeOrderDAO.create(studentIdentifier, product, studentEmail, staffEmail);
   }
 
   public CeeposOrder findOrder(Long id) {
@@ -36,6 +36,10 @@ public class CeeposController {
   public CeeposProduct findProductByCode(String code) {
     return ceeposProductDAO.findByCode(code);
   }
+
+  public List<CeeposProduct> listProducts() {
+    return ceeposProductDAO.listAll();
+  }
   
   public List<CeeposOrder> listOrdersByUserIdentifier(String userIdentifier) {
     List<CeeposOrder> payments = ceeposOrderDAO.listByUserIdentifierAndArchived(userIdentifier, false);
@@ -43,16 +47,16 @@ public class CeeposController {
     return payments;
   }
   
-  public CeeposOrder updateOrderEmail(CeeposOrder payment, String email) {
-    return ceeposOrderDAO.updateEmail(payment, email);
+  public CeeposOrder updateOrderState(CeeposOrder order, CeeposOrderState state) {
+    return ceeposOrderDAO.updateState(order, state);
   }
 
-  public CeeposStudyTimeOrder updateStudyTimePaymentState(CeeposStudyTimeOrder payment, CeeposOrderState state) {
-    return ceeposStudyTimeOrderDAO.updateState(payment, state);
+  public CeeposOrder updateOrderEmail(CeeposOrder order, String email) {
+    return ceeposOrderDAO.updateEmail(order, email);
   }
-
-  public CeeposStudyTimeOrder updateStudyTimeOrderStateAndStudyDates(CeeposStudyTimeOrder payment, CeeposOrderState state, Date oldStudyTimeEnd, Date newStudyTimeEnd) {
-    return ceeposStudyTimeOrderDAO.updateStateAndStudyDates(payment, state, oldStudyTimeEnd, newStudyTimeEnd);
+  
+  public CeeposStudyTimeOrder updateStudyTimeOrderStateAndStudyDates(CeeposStudyTimeOrder order, CeeposOrderState state, Date oldStudyTimeEnd, Date newStudyTimeEnd) {
+    return ceeposStudyTimeOrderDAO.updateStateAndStudyDates(order, state, oldStudyTimeEnd, newStudyTimeEnd);
   }
 
   public CeeposOrder updateOrderStateAndOrderNumber(CeeposOrder order, CeeposOrderState state, String orderNumber) {
@@ -60,7 +64,7 @@ public class CeeposController {
   }
 
   public CeeposOrder updateOrderStateAndOrderNumberAndPaymentAddress(CeeposOrder order, CeeposOrderState state, String orderNumber, String address) {
-    return ceeposOrderDAO.updateStateAndOrderNumberAndAddress(order, state, orderNumber, address);
+    return ceeposOrderDAO.updateStateAndOrderNumberAndPaymentAddress(order, state, orderNumber, address);
   }
   
 }

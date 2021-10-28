@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.ceepos.rest;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
 
@@ -38,18 +38,27 @@ public class CeeposOrderRestModel {
     this.state = state;
   }
 
-  public Date getCreated() {
+  public OffsetDateTime getCreated() {
     return created;
   }
 
-  public void setCreated(Date created) {
+  public void setCreated(OffsetDateTime created) {
     this.created = created;
+  }
+
+  public String getStudentEmail() {
+    return studentEmail;
+  }
+
+  public void setStudentEmail(String studentEmail) {
+    this.studentEmail = studentEmail;
   }
 
   private Long id;
   private String studentIdentifier;
+  private String studentEmail;
   private CeeposProductRestModel product;
   private CeeposOrderState state;
-  private Date created;
+  private OffsetDateTime created;
 
 }

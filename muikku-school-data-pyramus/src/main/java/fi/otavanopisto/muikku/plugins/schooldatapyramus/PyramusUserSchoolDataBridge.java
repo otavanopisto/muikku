@@ -1314,7 +1314,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public User increaseStudyTime(String studentIdentifier, int months) {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    if (studentId != null) {
+    if (studentId == null) {
       logger.severe(String.format("Student for identifier %s not found", studentIdentifier));
       return null;
     }

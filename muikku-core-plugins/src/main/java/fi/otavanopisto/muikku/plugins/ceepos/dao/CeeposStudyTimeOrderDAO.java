@@ -11,9 +11,10 @@ public class CeeposStudyTimeOrderDAO extends CorePluginsDAO<CeeposStudyTimeOrder
 
   private static final long serialVersionUID = 1309648327001378444L;
   
-  public CeeposStudyTimeOrder create(String staffEmail, String studentIdentifier, CeeposProduct product) {
+  public CeeposStudyTimeOrder create(String studentIdentifier, CeeposProduct product, String userEmail, String staffEmail) {
     CeeposStudyTimeOrder payment = new CeeposStudyTimeOrder();
     
+    payment.setEmail(userEmail);
     payment.setStaffEmail(staffEmail);
     payment.setUserIdentifier(studentIdentifier);
     payment.setProduct(product);
@@ -21,6 +22,7 @@ public class CeeposStudyTimeOrderDAO extends CorePluginsDAO<CeeposStudyTimeOrder
     Date now = new Date();
     payment.setCreated(now);
     payment.setLastModified(now);
+    payment.setArchived(Boolean.FALSE);
     
     return persist(payment);
   }

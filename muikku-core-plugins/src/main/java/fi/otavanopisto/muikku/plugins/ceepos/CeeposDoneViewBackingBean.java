@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.evaluation;
+package fi.otavanopisto.muikku.plugins.ceepos;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -9,23 +9,22 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/evaluation", to = "/jsf/evaluation/index.jsf") // TODO refactor to /evaluation
+@Join(path = "/ceepos/done", to = "/jsf/ceepos/index.jsf")
 @LoggedIn
-public class EvaluationMainViewBackingBean {
+public class CeeposDoneViewBackingBean {
 
   @Inject
   private SessionController sessionController;
-  
+
   @RequestAction
   public String init() {
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+    if (!sessionController.isLoggedIn()) {
       return NavigationRules.ACCESS_DENIED;
     }
     return null;

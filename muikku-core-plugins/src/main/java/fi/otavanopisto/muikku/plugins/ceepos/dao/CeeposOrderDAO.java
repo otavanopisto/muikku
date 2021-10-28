@@ -11,7 +11,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrder;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposPayment_;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrder_;
 
 public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
 
@@ -26,13 +26,19 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(CeeposPayment_.userIdentifier), userIdentifier),
-        criteriaBuilder.equal(root.get(CeeposPayment_.archived), archived)
+        criteriaBuilder.equal(root.get(CeeposOrder_.userIdentifier), userIdentifier),
+        criteriaBuilder.equal(root.get(CeeposOrder_.archived), archived)
       )
     );
 
     return entityManager.createQuery(criteria).getResultList();
     
+  }
+  
+  public CeeposOrder updateState(CeeposOrder order, CeeposOrderState state) {
+    order.setState(state);
+    order.setLastModified(new Date());
+    return persist(order);
   }
 
   public CeeposOrder updateEmail(CeeposOrder order, String email) {
@@ -40,11 +46,11 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     order.setLastModified(new Date());
     return persist(order);
   }
-  
-  public CeeposOrder updateStateAndOrderNumberAndAddress(CeeposOrder order, CeeposOrderState state, String orderNumber, String address) {
+
+  public CeeposOrder updateStateAndOrderNumberAndPaymentAddress(CeeposOrder order, CeeposOrderState state, String orderNumber, String paymentAddress) {
     order.setState(state);
     order.setCeeposOrderNumber(orderNumber);
-    order.setCeeposPaymentAddress(address);
+    order.setCeeposPaymentAddress(paymentAddress);
     order.setLastModified(new Date());
     return persist(order);
   }

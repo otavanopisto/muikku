@@ -115,6 +115,14 @@ public class CeeposPaymentRestModel {
     Hash = hash;
   }
 
+  public String getLanguage() {
+    return Language;
+  }
+
+  public void setLanguage(String language) {
+    Language = language;
+  }
+
   private String ApiVersion;               // required; always 3.0.0
   private String Source;                   // required; provided by ceepos; plugin setting ceepos.source
   private String Id;                       // required; our internal order number
@@ -125,6 +133,7 @@ public class CeeposPaymentRestModel {
   private String Email;                    // optional; customer's e-mail address
   private String FirstName;                // optional; customer's first name
   private String LastName;                 // optional; customer's last name
+  private String Language;                 // optional; two character language code for online payment interface
   private String ReturnAddress;            // required; redirect address when payment is either completed or canceled
   private String NotificationAddress;      // required; programmatic address called when payment is complete
   private String Hash;                     // required; calculated from the other values of this object

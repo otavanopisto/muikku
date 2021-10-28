@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -200,6 +204,30 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
     return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
+  }
+  
+  @GET
+  @Path("/defaultEmailAddress")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getCurrentUserDefaultEmailAddress() {
+    String email = null;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    if (!StringUtils.isEmpty(email)) {
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+        email = mapper.writeValueAsString(email);
+      }
+      catch (JsonProcessingException e) {
+        logger.log(Level.SEVERE, String.format("Error serializing email %s", email)); 
+      }
+    }
+    return Response.ok(email).build();
   }
 
   @GET
