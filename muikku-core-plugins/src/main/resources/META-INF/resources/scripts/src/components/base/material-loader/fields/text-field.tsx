@@ -48,6 +48,8 @@ interface TextFieldState {
 
   //The text field might have a answer state of unknown pass or fail
   answerState: "UNKNOWN" | "PASS" | "FAIL";
+
+  fieldSavedState: string;
 }
 
 export default class TextField extends React.Component<
@@ -67,9 +69,17 @@ export default class TextField extends React.Component<
 
       //the intial answer state is totally unknown, not UNKNOWN but literally unknown if it's even UNKNOWN
       answerState: null,
+
+      fieldSavedState: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
+    this.getFieldsSavedState = this.getFieldsSavedState.bind(this);
+  }
+  getFieldsSavedState(savedState: string){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState) {
     //So we only update if these props change and any of the state
@@ -282,6 +292,8 @@ export default class TextField extends React.Component<
           : "correct-answer"
         : "";
 
+    let fialdSavedStateClass = this.state.fieldSavedState ? this.state.fieldSavedState : "";
+
     if (this.props.readOnly && this.props.usedAs === "default") {
       const component = this.props.content.autogrow ? (
         <AutosizeInput
@@ -343,7 +355,7 @@ export default class TextField extends React.Component<
           style={wrapperStyle}
           inputStyle={objectStyle}
           placeholderIsMinWidth={true}
-          className={`material-page__textfield ${fieldStateAfterCheck}`}
+          className={`material-page__textfield ${fieldStateAfterCheck} ${fialdSavedStateClass}`}
           type="text"
           value={this.state.value}
           size={
@@ -355,7 +367,7 @@ export default class TextField extends React.Component<
       );
     } else {
       component = (
-        <span className={`material-page__textfield ${fieldStateAfterCheck}`}>
+        <span className={`material-page__textfield ${fialdSavedStateClass} ${fieldStateAfterCheck}`}>
           <input
             type="text"
             value={this.state.value}
@@ -377,6 +389,7 @@ export default class TextField extends React.Component<
           synced={this.state.synced}
           syncError={this.state.syncError}
           i18n={this.props.i18n}
+          getFieldsSavedState={this.getFieldsSavedState.bind(this)}
         />
         {this.props.content.hint ? (
           <Dropdown

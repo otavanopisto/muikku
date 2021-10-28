@@ -5,6 +5,7 @@ interface SynchronizerProps {
   synced: boolean;
   syncError: string;
   i18n: i18nType;
+  getFieldsSavedState?: (savedState: string)=>any;
 }
 
 interface SynchronizerState {
@@ -44,12 +45,18 @@ export default class Synchronizer extends React.PureComponent<SynchronizerProps,
     if (this.props.syncError) {
       message = this.props.i18n.text.get("plugin.workspace.materials.answerSavingFailed", this.props.syncError);
       modifier = "error";
+      this.props.getFieldsSavedState ?
+        this.props.getFieldsSavedState("state-SAVING-FAILED") : null;
     } else if (!this.props.synced) {
       message = this.props.i18n.text.get("plugin.workspace.materials.answerSavingLabel");
       modifier = "saving";
+      this.props.getFieldsSavedState ?
+        this.props.getFieldsSavedState("state-SAVING") : null;
     } else if (this.state.displaySyncedMessage) {
       message = this.props.i18n.text.get("plugin.workspace.materials.answerSavedLabel");
       modifier = "saved";
+      this.props.getFieldsSavedState ?
+        this.props.getFieldsSavedState("state-SAVED") : null;
     }
 
     return (
