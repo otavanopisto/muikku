@@ -681,7 +681,8 @@ public class CeeposRESTService {
    */
   private boolean validateHash(CeeposPaymentConfirmationRestModel paymentConfirmation) {
     if (StringUtils.isEmpty(paymentConfirmation.getHash())) {
-      return true;
+      // Hash may not be empty if status is 1 (Payment successful/action complete)
+      return paymentConfirmation.getStatus() != 1;
     }
     StringBuilder sb = new StringBuilder();
     sb.append(paymentConfirmation.getId());
@@ -704,7 +705,8 @@ public class CeeposRESTService {
    */
   private boolean validateHash(CeeposPaymentResponseRestModel paymentResponse) {
     if (StringUtils.isEmpty(paymentResponse.getHash())) {
-      return true;
+      // Hash may not be empty if status is 2 (Processing of payment in progress)
+      return paymentResponse.getStatus() != 2; 
     }
     StringBuilder sb = new StringBuilder();
     sb.append(paymentResponse.getId());
