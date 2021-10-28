@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.ceepos.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,6 +42,14 @@ public class CeeposProduct {
     this.price = price;
   }
 
+  public CeeposProductType getType() {
+    return type;
+  }
+
+  public void setType(CeeposProductType type) {
+    this.type = type;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -57,5 +67,11 @@ public class CeeposProduct {
   @NotNull
   @Column(nullable = false)
   private Integer price;
+  
+  @NotNull
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private CeeposProductType type;
+
 
 }

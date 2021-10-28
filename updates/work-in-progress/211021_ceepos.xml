@@ -13,8 +13,8 @@
   <sql>drop table if exists CeeposOrder;</sql>
   <sql>drop table if exists CeeposProduct;</sql>
   
+  <sql>create table CeeposProduct (id bigint not null auto_increment, code varchar(255) not null, description varchar(255) not null, price integer not null, type varchar(255) not null, primary key (id));</sql>
   <sql>create table CeeposOrder (id bigint not null auto_increment, archived bit not null, ceeposOrderNumber varchar(255), ceeposPaymentAddress varchar(255), created datetime not null, email varchar(255) not null, lastModified datetime not null, state varchar(255) not null, userIdentifier varchar(255) not null, product_id bigint, primary key (id));</sql>
-  <sql>create table CeeposProduct (id bigint not null auto_increment, code varchar(255) not null, description varchar(255) not null, price integer not null, primary key (id));</sql>
   <sql>create table CeeposStudyTimeOrder (postStudyTimeEnd date, preStudyTimeEnd date, staffEmail varchar(255) not null, id bigint not null, primary key (id));</sql>
 
   <sql>alter table CeeposProduct add constraint UK_c5plt5duydpy1e3yfb598nyqw unique (code);</sql>

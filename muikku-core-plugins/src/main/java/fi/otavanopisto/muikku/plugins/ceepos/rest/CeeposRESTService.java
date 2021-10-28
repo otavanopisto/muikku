@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.plugins.ceepos.CeeposPermissions;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrder;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposStudyTimeOrder;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -171,11 +172,15 @@ public class CeeposRESTService {
       schoolDataBridgeSessionController.endSystemSession();
     }
     
-    // TODO Support for creating orders for other than study time
-    
     // Create order and complement the payload object accordingly
     
-    CeeposStudyTimeOrder order = ceeposController.createStudyTimeOrder(paymentRequest.getStudentIdentifier(), product, studentEmail, staffEmail);
+    CeeposOrder order = null;
+    if (product.getType() == CeeposProductType.STUDYTIME) {
+      order = ceeposController.createStudyTimeOrder(paymentRequest.getStudentIdentifier(), product, studentEmail, staffEmail);
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unknown product type").build();
+    }
     paymentRequest.setCreated(toOffsetDateTime(order.getCreated()));
     paymentRequest.setId(order.getId());
     paymentRequest.getProduct().setDescription(order.getProduct().getDescription());
