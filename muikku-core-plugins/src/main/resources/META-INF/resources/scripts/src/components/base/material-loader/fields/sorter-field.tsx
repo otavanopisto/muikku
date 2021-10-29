@@ -5,7 +5,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface SorterFieldItemType {
   id: string,
@@ -48,6 +48,8 @@ interface SorterFieldState {
   //We have a answer state for each element in the sorter field
   //so we know which ones are messed up
   answerState: Array<"PASS" | "FAIL">
+
+  fieldSavedState: FieldStateStatus;
 }
 
 export default class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
@@ -83,12 +85,20 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       syncError: null,
 
       //initial answer state is not known
-      answerState: null
+      answerState: null,
+
+      fieldSavedState: null,
     }
 
     this.swap = this.swap.bind(this);
     this.selectItem = this.selectItem.bind(this);
     this.cancelSelectedItem = this.cancelSelectedItem.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: SorterFieldProps, nextState: SorterFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -206,6 +216,15 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       </span>
     }
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     if (this.props.invisible){
       let filler = this.state.items.map((i, index)=>{
         let text = i.name;
@@ -233,8 +252,13 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //we use that element and the class to create the field
-    return <span className="material-page__sorterfield-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    return <span className={`material-page__sorterfield-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
