@@ -491,17 +491,10 @@ public class CeeposRESTService {
         ceeposPayloadResponse.getPaymentAddress());
     
     // Return the address to which the user should be redirected to finish the payment
+    // TODO Could be returned as plain text but due to an mApi bug, has to be returned
+    // as json, hence the quotes
     
-    String paymentAddress = order.getCeeposPaymentAddress();
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      paymentAddress = objectMapper.writeValueAsString(order.getCeeposPaymentAddress());
-    }
-    catch (JsonProcessingException e) {
-      logger.severe(String.format("Failure serializing payment address %s", paymentAddress));
-    }
-    
-    return Response.ok(paymentAddress).build();
+    return Response.ok(String.format("\"%s\"", order.getCeeposPaymentAddress())).build();
   }
   
   @Path("/dummyPaymentResponse")
