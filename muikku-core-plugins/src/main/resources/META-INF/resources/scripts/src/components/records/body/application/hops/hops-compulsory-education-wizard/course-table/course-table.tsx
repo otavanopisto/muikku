@@ -14,16 +14,15 @@ import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 
 interface CourseTableProps extends Partial<StudentActivityByStatus> {
   user: "supervisor" | "student";
+  disabled: boolean;
   ethicsSelected: boolean;
+  superVisorModifies: boolean;
   finnishAsSecondLanguage: boolean;
   guider: GuiderType;
   selectedSubjectListOfIds?: number[];
   selectedOptionalListOfIds?: number[];
   supervisorSuggestedNextListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
-  /* completedSubjectListOfIds?: number[];
-  approvedSubjectListOfIds?: number[];
-  inprogressSubjectListOfIds?: number[]; */
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
   updateSuggestion: (
     goal: "add" | "remove",
@@ -250,10 +249,12 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           <Td key={course.id} modifiers={modifiers}>
             <TableDataContent
               user={props.user}
+              superVisorModifies={props.superVisorModifies}
               modifiers={modifiers}
               tableRef={tableRef}
               subjectCode={sSubject.subjectCode}
               course={course}
+              disabled={props.disabled}
               suggestedActivityCourses={suggestedCourseData}
               canBeSelected={canBeSelected}
               canBeSuggestedForNextCourse={canBeSuggestedForNextCourse}

@@ -314,7 +314,6 @@ const CourseList: React.FC<CourseListProps> = (props) => {
                 <ListItemIndicator modifiers={listItemIndicatormodifiers} />
                 {course.courseNumber}. {course.name}
               </div>
-              <div style={{ display: "flex", alignItems: "center" }}></div>
               <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
                 <SuggestionList
                   suggestedActivityCourses={suggestedCourseData}

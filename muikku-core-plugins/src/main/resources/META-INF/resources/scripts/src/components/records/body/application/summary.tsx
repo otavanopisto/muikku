@@ -100,33 +100,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     user="student"
                     hops={1}
                     disabled={false}
-                  >
-                    <Button className="button button--yo-signup">
-                      Opintosuunnitelma
-                    </Button>
-                  </HopsCompulsoryEducationWizardDialog>
-                  <HopsCompulsoryEducationWizardDialog
-                    user="student"
-                    hops={2}
-                    disabled={false}
-                  >
-                    <Button className="button button--yo-signup">
-                      Opintosuunnitelma
-                    </Button>
-                  </HopsCompulsoryEducationWizardDialog>
-                  <HopsCompulsoryEducationWizardDialog
-                    user="student"
-                    hops={3}
-                    disabled={false}
-                  >
-                    <Button className="button button--yo-signup">
-                      Opintosuunnitelma
-                    </Button>
-                  </HopsCompulsoryEducationWizardDialog>
-                  <HopsCompulsoryEducationWizardDialog
-                    user="student"
-                    hops={4}
-                    disabled={false}
+                    superVisorModifies={false}
                   >
                     <Button className="button button--yo-signup">
                       Opintosuunnitelma

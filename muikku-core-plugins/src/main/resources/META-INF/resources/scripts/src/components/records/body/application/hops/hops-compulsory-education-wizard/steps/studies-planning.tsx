@@ -13,6 +13,7 @@ interface StudiesPlanningProps {
   ethics: boolean;
   studies: HopsPlanningStudies;
   studentId: string;
+  superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
 }
 
@@ -148,6 +149,7 @@ class StudiesPlanning extends React.Component<
           finnishAsSecondLanguage={this.props.finnishAsSecondLanguage}
           ethics={this.props.ethics}
           studies={this.props.studies}
+          superVisorModifies={this.props.superVisorModifies}
         />
       </div>
     );

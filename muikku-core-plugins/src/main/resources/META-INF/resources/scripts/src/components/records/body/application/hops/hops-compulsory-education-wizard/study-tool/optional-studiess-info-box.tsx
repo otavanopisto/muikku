@@ -1,4 +1,5 @@
 import * as React from "react";
+import { NEEDED_STUDIES_IN_TOTAL } from "../hops-compulsory-education-wizard";
 
 interface OptionalStudiesInfoBoxProps {
   needMandatoryStudies: number;
@@ -33,7 +34,7 @@ const OptionalStudiesInfoBox: React.FC<OptionalStudiesInfoBoxProps> = (
       >
         <h3>
           Ei tarpeeksi valinnaiskursseja valittuna ({selectedNumberOfOptional}/
-          {needMandatoryStudies})
+          {NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies})
         </h3>
         {graduationGoal === "" ? (
           <h3>Valmistumisaikatavoite valinta on tyhjä</h3>

@@ -17,11 +17,13 @@ interface TableDataContentProps
     HTMLDivElement
   > {
   user: "supervisor" | "student";
+  superVisorModifies: boolean;
   tableRef: React.MutableRefObject<HTMLTableElement>;
   modifiers?: string[];
   suggestedActivityCourses?: StudentActivityCourse[];
   subjectCode: string;
   course: Course;
+  disabled: boolean;
   canBeSelected: boolean;
   canBeSuggestedForNextCourse: boolean;
   canBeSuggestedForOptionalCourse: boolean;
@@ -112,6 +114,10 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
     updatedModifiers.push("from__bottom");
   }
 
+  if (props.disabled) {
+    updatedModifiers.push("disabled");
+  }
+
   if (course.mandatory) {
     return canBeSelected ? (
       <div
@@ -128,7 +134,7 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
         <span>{course.courseNumber}</span>
         <div ref={contenNameRef} className="table-data-content-course-content">
           <h4>{course.name}</h4>
-          {expanded && props.user === "supervisor" ? (
+          {!props.disabled && expanded && props.user === "supervisor" ? (
             <SuggestionList
               suggestedActivityCourses={props.suggestedActivityCourses}
               subjectCode={props.subjectCode}
@@ -170,13 +176,17 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
             : ""
         }`}
         onClick={
-          user === "student" ? onToggleCourseClick(course.id) : undefined
+          !props.disabled &&
+          (user === "student" ||
+            (user === "supervisor" && props.superVisorModifies))
+            ? onToggleCourseClick(course.id)
+            : undefined
         }
       >
         <span>{course.courseNumber}*</span>
         <div ref={contenNameRef} className="table-data-content-course-content">
           <h4>{course.name}</h4>
-          {expanded && props.user === "supervisor" ? (
+          {!props.disabled && expanded && props.user === "supervisor" ? (
             <SuggestionList
               suggestedActivityCourses={props.suggestedActivityCourses}
               subjectCode={props.subjectCode}

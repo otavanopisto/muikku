@@ -317,6 +317,7 @@ class CurrentStudent extends React.Component<
             <HopsCompulsoryEducationWizardDialog
               disabled={true}
               user="supervisor"
+              superVisorModifies={false}
               hops={2}
             >
               <Button className="button button--yo-signup">
@@ -326,6 +327,7 @@ class CurrentStudent extends React.Component<
             <HopsCompulsoryEducationWizardDialog
               disabled={false}
               user="supervisor"
+              superVisorModifies={true}
               hops={2}
             >
               <Button className="button button--yo-signup">

@@ -26,6 +26,7 @@ interface StudyToolProps {
   showIndicators?: boolean;
   finnishAsSecondLanguage: boolean;
   ethics: boolean;
+  superVisorModifies: boolean;
   studies: HopsPlanningStudies;
 }
 
@@ -63,6 +64,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * @param listOfIds
    */
   const handleSelectedSubjectListOfIdsChange = (listOfIds: number[]) => {
+    console.log(listOfIds);
+
     /* this.props.onStudiesPlanningChange({
       ...this.props.studies,
       selectedListOfIds: listOfIds,
@@ -798,7 +801,9 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             <div className="loader-empty" />
           ) : (
             <CourseTable
+              disabled={props.disabled}
               user={props.user}
+              superVisorModifies={props.superVisorModifies}
               ethicsSelected={props.ethics}
               finnishAsSecondLanguage={props.finnishAsSecondLanguage}
               selectedSubjectListOfIds={props.studies.selectedListOfIds}
@@ -807,7 +812,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
               onChangeSelectSubjectList={
-                props.user === "student"
+                props.user === "student" ||
+                (props.user === "supervisor" && props.superVisorModifies)
                   ? handleSelectedSubjectListOfIdsChange
                   : undefined
               }
@@ -831,7 +837,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
               onChangeSelectSubjectList={
-                props.user === "student"
+                props.user === "student" ||
+                (props.user === "supervisor" && props.superVisorModifies)
                   ? handleSelectedSubjectListOfIdsChange
                   : undefined
               }

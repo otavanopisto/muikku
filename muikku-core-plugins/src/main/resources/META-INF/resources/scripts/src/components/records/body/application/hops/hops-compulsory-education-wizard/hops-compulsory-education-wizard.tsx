@@ -21,12 +21,6 @@ import {
   HopsPlanningStudies,
 } from "../../../../../../@types/shared";
 import {
-  hopsMock1,
-  hopsMock2,
-  hopsMock3,
-  hopsMock4,
-} from "../../../../../../mock/mock-data";
-import {
   HopsStudentStartingLevel,
   HopsMotivationAndStudy,
 } from "../../../../../../@types/shared";
@@ -43,6 +37,7 @@ interface CompulsoryEducationHopsWizardProps {
   i18n: i18nType;
   testData?: number;
   disabled: boolean;
+  superVisorModifies: boolean;
   guider: GuiderType;
 }
 
@@ -137,20 +132,24 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loading: true,
     });
 
+    console.log(this.props.user);
+
     const studentId =
       this.props.user === "supervisor"
         ? this.props.guider.currentStudent.basic.id
         : (window as any).MUIKKU_LOGGED_USER;
+
+    console.log(studentId);
 
     const studentHopsHistory = (await promisify(
       mApi().hops.student.history.read(studentId),
       "callback"
     )()) as HopsUpdates[];
 
-    const studentBasicInfo = (await promisify(
+    /* const studentBasicInfo = (await promisify(
       mApi().guider.students.read(studentId),
       "callback"
-    )()) as GuiderStudentType;
+    )()) as GuiderStudentType; */
 
     const hops = (await promisify(
       mApi().hops.student.read(studentId),
@@ -210,10 +209,20 @@ class CompulsoryEducationHopsWizard extends React.Component<
             },
           };
 
-    this.setState({
+    /* this.setState({
       loading: false,
       basicInfo: {
         name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
+        guider: "???Joku ohjaaja???",
+        updates: studentHopsHistory,
+      },
+      hopsCompulsory: loadedHops,
+    }); */
+
+    this.setState({
+      loading: false,
+      basicInfo: {
+        name: ``,
         guider: "???Joku ohjaaja???",
         updates: studentHopsHistory,
       },
@@ -328,10 +337,15 @@ class CompulsoryEducationHopsWizard extends React.Component<
           <Step5
             user={this.props.user}
             disabled={this.props.disabled}
-            studentId={this.props.guider.currentStudent.basic.id}
+            studentId={
+              this.props.user === "supervisor"
+                ? this.props.guider.currentStudent.basic.id
+                : (window as any).MUIKKU_LOGGED_USER
+            }
             studies={{
               ...this.state.hopsCompulsory.studiesPlanning,
             }}
+            superVisorModifies={this.props.superVisorModifies}
             ethics={this.state.hopsCompulsory.studiesPlanning.ethics}
             finnishAsSecondLanguage={
               this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage

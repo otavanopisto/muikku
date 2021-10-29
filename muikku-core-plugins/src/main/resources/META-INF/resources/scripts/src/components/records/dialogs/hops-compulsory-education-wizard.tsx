@@ -5,6 +5,7 @@ import { HopsCompulsory } from "../../../@types/shared";
 
 interface HopsCompulsoruEducationWizardProps {
   user: "supervisor" | "student";
+  superVisorModifies: boolean;
   children?: React.ReactElement<any>;
   hops?: number;
   disabled: boolean;
@@ -27,6 +28,7 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
           user={this.props.user}
           testData={this.props.hops}
           disabled={this.props.disabled}
+          superVisorModifies={this.props.superVisorModifies}
         />
       </div>
     );
