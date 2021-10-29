@@ -5,6 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import AutosizeInput from "react-input-autosize";
 import { UsedAs } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 
 interface TextFieldProps {
   type: string;
@@ -49,7 +50,7 @@ interface TextFieldState {
   //The text field might have a answer state of unknown pass or fail
   answerState: "UNKNOWN" | "PASS" | "FAIL";
 
-  fieldSavedState: string;
+  fieldSavedState: FieldStateStatus;
 }
 
 export default class TextField extends React.Component<
@@ -74,9 +75,9 @@ export default class TextField extends React.Component<
     };
 
     this.onInputChange = this.onInputChange.bind(this);
-    this.getFieldsSavedState = this.getFieldsSavedState.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
-  getFieldsSavedState(savedState: string){
+  onFieldSavedStateChange(savedState: FieldStateStatus){
     this.setState({
       fieldSavedState: savedState
     });
@@ -292,7 +293,14 @@ export default class TextField extends React.Component<
           : "correct-answer"
         : "";
 
-    let fialdSavedStateClass = this.state.fieldSavedState ? this.state.fieldSavedState : "";
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
 
     if (this.props.readOnly && this.props.usedAs === "default") {
       const component = this.props.content.autogrow ? (
@@ -355,7 +363,7 @@ export default class TextField extends React.Component<
           style={wrapperStyle}
           inputStyle={objectStyle}
           placeholderIsMinWidth={true}
-          className={`material-page__textfield ${fieldStateAfterCheck} ${fialdSavedStateClass}`}
+          className={`material-page__textfield ${fieldStateAfterCheck} ${fieldSavedStateClass}`}
           type="text"
           value={this.state.value}
           size={
@@ -367,7 +375,7 @@ export default class TextField extends React.Component<
       );
     } else {
       component = (
-        <span className={`material-page__textfield ${fialdSavedStateClass} ${fieldStateAfterCheck}`}>
+        <span className={`material-page__textfield ${fieldSavedStateClass} ${fieldStateAfterCheck}`}>
           <input
             type="text"
             value={this.state.value}
@@ -389,7 +397,7 @@ export default class TextField extends React.Component<
           synced={this.state.synced}
           syncError={this.state.syncError}
           i18n={this.props.i18n}
-          getFieldsSavedState={this.getFieldsSavedState.bind(this)}
+          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {this.props.content.hint ? (
           <Dropdown

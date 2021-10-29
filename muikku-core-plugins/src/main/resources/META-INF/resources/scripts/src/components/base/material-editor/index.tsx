@@ -37,7 +37,7 @@ import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import Link from "~/components/general/link";
-import { PageLocation, UploadingValue } from "../../../@types/shared";
+import { PageLocation, UploadingValue } from "~/@types/shared";
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
