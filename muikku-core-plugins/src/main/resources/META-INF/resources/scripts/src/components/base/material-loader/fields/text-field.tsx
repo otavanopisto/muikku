@@ -363,7 +363,7 @@ export default class TextField extends React.Component<
           style={wrapperStyle}
           inputStyle={objectStyle}
           placeholderIsMinWidth={true}
-          className={`material-page__textfield ${fieldStateAfterCheck} ${fieldSavedStateClass}`}
+          className={`material-page__textfield ${fieldStateAfterCheck}`}
           type="text"
           value={this.state.value}
           size={
@@ -375,7 +375,7 @@ export default class TextField extends React.Component<
       );
     } else {
       component = (
-        <span className={`material-page__textfield ${fieldSavedStateClass} ${fieldStateAfterCheck}`}>
+        <span className={`material-page__textfield ${fieldStateAfterCheck}`}>
           <input
             type="text"
             value={this.state.value}
@@ -392,7 +392,7 @@ export default class TextField extends React.Component<
 
     //Standard modifiable version
     return (
-      <span className="material-page__textfield-wrapper">
+      <span className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}>
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}

@@ -6,7 +6,7 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
 import { StrMathJAX } from "../static/mathjax";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface MemoFieldProps {
   type: string;
@@ -45,6 +45,8 @@ interface MemoFieldState {
   modified: boolean;
   synced: boolean;
   syncError: string;
+
+  fieldSavedState: FieldStateStatus;
 }
 
 const ckEditorConfig = {
@@ -127,12 +129,19 @@ export default class MemoField extends React.Component<
       modified: false,
       synced: true,
       syncError: null,
+
+      fieldSavedState: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
-
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
+  }
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -242,6 +251,15 @@ export default class MemoField extends React.Component<
         ? Number(this.props.content.rows)
         : 3;
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     if (this.props.usedAs === "default") {
       //if readonly
       if (this.props.readOnly) {
@@ -282,7 +300,7 @@ export default class MemoField extends React.Component<
         );
       }
     } else if (this.props.usedAs === "evaluationTool") {
-      //if readonly. PLEASE ADD STYLES
+      //if readonly.
       if (this.props.readOnly) {
         //here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
         field = !this.props.content.richedit ? (
@@ -303,11 +321,12 @@ export default class MemoField extends React.Component<
 
     //and here the element itself
     return (
-      <span className="material-page__memofield-wrapper">
+      <span className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}>
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
           i18n={this.props.i18n}
+          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {field}
         <span className="material-page__counter-wrapper">
