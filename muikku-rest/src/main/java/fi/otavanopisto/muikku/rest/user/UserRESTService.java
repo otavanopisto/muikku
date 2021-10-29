@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -43,9 +42,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
@@ -218,16 +214,11 @@ public class UserRESTService extends AbstractRESTService {
     finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-    if (!StringUtils.isEmpty(email)) {
-      ObjectMapper mapper = new ObjectMapper();
-      try {
-        email = mapper.writeValueAsString(email);
-      }
-      catch (JsonProcessingException e) {
-        logger.log(Level.SEVERE, String.format("Error serializing email %s", email)); 
-      }
-    }
-    return Response.ok(email).build();
+    
+    // Return value should really be text/plain but due to an mApi bug,
+    // the address has to be returned as a json string, hence the quotes
+    
+    return Response.ok(String.format("\"%s\"", email)).build();
   }
 
   @GET
