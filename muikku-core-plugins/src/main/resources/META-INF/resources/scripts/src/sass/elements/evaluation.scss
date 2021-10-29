@@ -284,12 +284,34 @@
   // scss-lint:enable SelectorFormat
 }
 
-.evaluation-modal__event-literal-assessment p,
-.evaluation-modal__item-literal-assessment-data p {
-  margin: 0 0 10px;
+.evaluation-modal__event-literal-assessment,
+.evaluation-modal__item-literal-assessment-data {
 
-  &:last-child {
-    margin: 0 0 5px;
+  p,
+  ul,
+  table {
+    margin: 10px 0;
+
+    &:first-child {
+      margin: 0 0 10px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  h3,
+  h4 {
+    margin: 15px 0 10px;
+
+    &:first-child {
+      margin: 0 0 10px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
   }
 }
 
@@ -297,7 +319,7 @@
   background-color: $color-evaluation-modal-meta-background;
   border-radius: 2px;
   margin: 5px 10px 0;
-  padding: 5px 10px;
+  padding: 10px;
 }
 
 .evaluation-modal__event-buttonset {
@@ -449,12 +471,12 @@
   }
 }
 
-.evaluation-modal__item-assessment-literal-label,
-.evaluation-modal__item-assessment-verbal-label {
+.evaluation-modal__item-literal-assessment-label,
+.evaluation-modal__item-verbal-assessment-label {
   font-weight: 600;
 }
 
-.evaluation-modal__item-assessment-literal-data {
+.evaluation-modal__item-literal-assessment-data {
   margin: 5px 0;
 }
 
