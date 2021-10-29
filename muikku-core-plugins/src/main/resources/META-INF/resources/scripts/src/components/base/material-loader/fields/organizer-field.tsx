@@ -5,7 +5,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface FieldType {
   name: string,
@@ -76,7 +76,9 @@ interface OrganizerFieldState {
   //contains and object which contains and object saying whether the terms currently in the object passed or failed
   answerState: OrganizerFieldanswerStateType,
   //contains an object with a list with the missing items in each box
-  answerStateMissingTerms: OrganizerFieldanswerStateMissingTermsType
+  answerStateMissingTerms: OrganizerFieldanswerStateMissingTermsType,
+
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class OrganizerField extends React.Component<OrganizerFieldProps, OrganizerFieldState> {
@@ -125,13 +127,21 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       //We don't know any of this
       answerStateOverall: null,
       answerState: null,
-      answerStateMissingTerms: null
+      answerStateMissingTerms: null,
+
+      fieldSavedState: null,
     };
 
     this.cancelSelectedItemId = this.cancelSelectedItemId.bind(this);
     this.selectItemId = this.selectItemId.bind(this);
     this.selectBox = this.selectBox.bind(this);
     this.preventPropagation = this.preventPropagation.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: OrganizerFieldProps, nextState: OrganizerFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -328,9 +338,23 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     //we add that class name in our component
-    return <span className="material-page__organizerfield-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    return <span className={`material-page__organizerfield-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <span className="material-page__organizerfield-terms">
           <span className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</span>

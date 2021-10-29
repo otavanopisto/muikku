@@ -251,15 +251,6 @@ export default class MemoField extends React.Component<
         ? Number(this.props.content.rows)
         : 3;
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
-
     if (this.props.usedAs === "default") {
       //if readonly
       if (this.props.readOnly) {
@@ -317,6 +308,15 @@ export default class MemoField extends React.Component<
           />
         );
       }
+    }
+
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
     }
 
     //and here the element itself

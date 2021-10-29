@@ -47,9 +47,9 @@ interface SorterFieldState {
 
   //We have a answer state for each element in the sorter field
   //so we know which ones are messed up
-  answerState: Array<"PASS" | "FAIL">
+  answerState: Array<"PASS" | "FAIL">,
 
-  fieldSavedState: FieldStateStatus;
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
@@ -216,15 +216,6 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       </span>
     }
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
-
     if (this.props.invisible){
       let filler = this.state.items.map((i, index)=>{
         let text = i.name;
@@ -250,6 +241,15 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
 
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
+
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
 
     //we use that element and the class to create the field
     return <span className={`material-page__sorterfield-wrapper ${fieldSavedStateClass}`}>

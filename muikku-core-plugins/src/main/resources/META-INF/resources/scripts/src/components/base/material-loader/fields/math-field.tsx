@@ -4,7 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/math-field.scss';
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface MathFieldProps {
   type: string,
@@ -27,7 +27,9 @@ interface MathFieldState {
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
-  syncError: string
+  syncError: string,
+
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class TextField extends React.Component<MathFieldProps, MathFieldState> {
@@ -40,10 +42,18 @@ export default class TextField extends React.Component<MathFieldProps, MathField
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
-      syncError: null
+      syncError: null,
+
+      fieldSavedState: null,
     }
 
     this.setValue = this.setValue.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: MathFieldProps, nextState: MathFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -59,24 +69,39 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     // NOTE you cannot change the formula class name unless you want to break backwards compatibility
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
     // this means old formulas will 100% fail to parse
-    return <div>
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
+    return <div className={`material-page__mathfield-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <MathField ref="base" className="material-page__mathfield"
-      userId={this.props.userId}
-      value={this.state.value} onChange={this.setValue}
-      formulaClassName="material-page__mathfield-formula"
-      editorClassName="material-page__mathfield-editor"
-      imageClassName="material-page__mathfield-image"
-      toolbarClassName="material-page__mathfield-toolbar" i18n={{
-        symbols: this.props.i18n.text.get("plugin.workspace.mathField.symbols"),
-        relations: this.props.i18n.text.get("plugin.workspace.mathField.relations"),
-        geometryAndVectors: this.props.i18n.text.get("plugin.workspace.mathField.geometryAndVectors"),
-        setTheoryNotation: this.props.i18n.text.get("plugin.workspace.mathField.setTheoryNotation"),
-        mathFormulas: this.props.i18n.text.get("plugin.workspace.mathField.addMathFormula"),
-        operators: this.props.i18n.text.get("plugin.workspace.mathField.operators"),
-        image: this.props.i18n.text.get("plugin.workspace.mathField.addImage"),
-      }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly}
-      dontLoadMQ={this.props.readOnly}/>
+        userId={this.props.userId}
+        value={this.state.value} onChange={this.setValue}
+        formulaClassName="material-page__mathfield-formula"
+        editorClassName="material-page__mathfield-editor"
+        imageClassName="material-page__mathfield-image"
+        toolbarClassName="material-page__mathfield-toolbar" i18n={{
+          symbols: this.props.i18n.text.get("plugin.workspace.mathField.symbols"),
+          relations: this.props.i18n.text.get("plugin.workspace.mathField.relations"),
+          geometryAndVectors: this.props.i18n.text.get("plugin.workspace.mathField.geometryAndVectors"),
+          setTheoryNotation: this.props.i18n.text.get("plugin.workspace.mathField.setTheoryNotation"),
+          mathFormulas: this.props.i18n.text.get("plugin.workspace.mathField.addMathFormula"),
+          operators: this.props.i18n.text.get("plugin.workspace.mathField.operators"),
+          image: this.props.i18n.text.get("plugin.workspace.mathField.addImage"),
+        }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly}
+        dontLoadMQ={this.props.readOnly}/>
     </div>
   }
 }

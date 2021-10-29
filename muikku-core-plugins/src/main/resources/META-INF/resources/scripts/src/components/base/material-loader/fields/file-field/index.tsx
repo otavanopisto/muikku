@@ -5,7 +5,7 @@ import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface FileFieldProps {
   type: string,
@@ -35,7 +35,9 @@ interface FileFieldState {
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
-  syncError: string
+  syncError: string,
+
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class FileField extends React.Component<FileFieldProps, FileFieldState> {
@@ -48,12 +50,20 @@ export default class FileField extends React.Component<FileFieldProps, FileField
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
-      syncError: null
+      syncError: null,
+
+      fieldSavedState: null,
     }
 
     this.onFileAdded = this.onFileAdded.bind(this);
     this.checkDoneAndRunOnChange = this.checkDoneAndRunOnChange.bind(this);
     this.removeFile = this.removeFile.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: FileFieldProps, nextState: FileFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) || nextProps.invisible !== this.props.invisible;
@@ -114,9 +124,23 @@ export default class FileField extends React.Component<FileFieldProps, FileField
       formData.append("file", file);
     }
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     //and this is the container
-    return <span className="material-page__filefield-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    return <span className={`material-page__filefield-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__filefield ${ElementDisabledState}`}>
         <FileUploader emptyText={this.props.readOnly ? this.props.i18n.text.get("plugin.workspace.fileField.noFiles") : null}
          readOnly={this.props.readOnly} url={this.props.status.contextPath + '/tempFileUploadServlet'}

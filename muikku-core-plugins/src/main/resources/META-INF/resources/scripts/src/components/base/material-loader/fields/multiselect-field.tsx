@@ -5,7 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -43,7 +43,9 @@ interface MultiSelectFieldState {
   syncError: string,
 
   //So a multiselect can have the whole value as unknown or have an array regarding whether each answer was right or not
-  answerState: "UNKNOWN" | Array<"PASS" | "FAIL">
+  answerState: "UNKNOWN" | Array<"PASS" | "FAIL">,
+
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class MultiSelectField extends React.Component<MultiSelectFieldProps, MultiSelectFieldState> {
@@ -52,6 +54,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
 
     this.toggleValue = this.toggleValue.bind(this);
     this.checkAnswers = this.checkAnswers.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
 
     //We get the values and parse it from the initial value which is a string
     let values:Array<string> = ((props.initialValue && JSON.parse(props.initialValue)) || []) as Array<string>;
@@ -64,8 +67,15 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       syncError: null,
 
       //answer state is null
-      answerState: null
+      answerState: null,
+
+      fieldSavedState: null,
     }
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: MultiSelectFieldProps, nextState: MultiSelectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -219,9 +229,23 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     let fieldStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && this.state.answerState && this.state.answerState !== "UNKNOWN"
        ? (this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer") : "" ;
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     //and we render
-    return <span className="material-page__checkbox-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    return <span className={`material-page__checkbox-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map((o, index)=>{
           //if we are told to mark correct answers

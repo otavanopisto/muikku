@@ -9,6 +9,7 @@ import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import Synchronizer from "../base/synchronizer";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
+import { FieldStateStatus } from "~/@types/shared";
 
 //so we use the media recorder
 //the media recorder is polyfilled
@@ -61,7 +62,9 @@ interface AudioFieldState {
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
-  syncError: string
+  syncError: string,
+
+  fieldSavedState: FieldStateStatus,
 }
 
 //this is the maximum recording time in seconds
@@ -91,6 +94,8 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
       synced: true,
       syncError: null,
 
+      fieldSavedState: null,
+
       //so even
       supportsMediaAPI: this.getSupportsMediaAPI
     }
@@ -100,6 +105,12 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     this.removeClipAt = this.removeClipAt.bind(this);
     this.onFileChanged = this.onFileChanged.bind(this);
     this.processFileAt = this.processFileAt.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: AudioFieldProps, nextState: AudioFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) || nextProps.invisible !== this.props.invisible;
@@ -424,9 +435,23 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     //if elements is disabled
     let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     //and this is the container
-    return <span className="material-page__audiofield-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    return <span className={`material-page__audiofield-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__audiofield ${ElementDisabledState}`}>
         {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file" accept="audio/*" onChange={this.onFileChanged} multiple/> : null}
         {!this.props.readOnly && this.state.supportsMediaAPI() ? <span className="material-page__audiofield-controls">

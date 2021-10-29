@@ -5,7 +5,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface FieldType {
   name: string,
@@ -53,7 +53,9 @@ interface ConnectFieldState {
 
   //we check whether each pair passed or failed
   //there is no unknown state here
-  answerState: Array<"PASS" | "FAIL">
+  answerState: Array<"PASS" | "FAIL">,
+
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
@@ -122,7 +124,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       modified: false,
       synced: true,
       syncError: null,
-      answerState: null
+      answerState: null,
+
+      fieldSavedState: null,
     }
 
     this.swapField = this.swapField.bind(this);
@@ -130,6 +134,12 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     this.pickField = this.pickField.bind(this);
     this.cancelPreviousPick = this.cancelPreviousPick.bind(this);
     this.triggerChange = this.triggerChange.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   shouldComponentUpdate(nextProps: ConnectFieldProps, nextState: ConnectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -360,6 +370,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     });
   }
   render(){
+
     if (this.props.invisible){
       return <span className="material-page__connectfield-wrapper">
         <span className="material-page__connectfield">
@@ -381,8 +392,22 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
-    return <span className="material-page__connectfield-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
+    return <span className={`material-page__connectfield-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <span className="material-page__connectfield-terms-container">
           {this.state.fields.map((field, index)=>{

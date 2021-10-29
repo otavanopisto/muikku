@@ -293,15 +293,6 @@ export default class TextField extends React.Component<
           : "correct-answer"
         : "";
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
-
     if (this.props.readOnly && this.props.usedAs === "default") {
       const component = this.props.content.autogrow ? (
         <AutosizeInput
@@ -388,6 +379,15 @@ export default class TextField extends React.Component<
           />
         </span>
       );
+    }
+
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
     }
 
     //Standard modifiable version

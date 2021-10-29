@@ -5,7 +5,7 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
-import { UsedAs } from "~/@types/shared";
+import { UsedAs, FieldStateStatus } from "~/@types/shared";
 
 interface SelectFieldProps {
   type: string,
@@ -43,7 +43,9 @@ interface SelectFieldState {
   syncError: string,
 
   //The answer might be unknown pass or fail, sometimes there's just no right answer
-  answerState: "UNKNOWN" | "PASS" | "FAIL"
+  answerState: "UNKNOWN" | "PASS" | "FAIL",
+
+  fieldSavedState: FieldStateStatus,
 }
 
 export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
@@ -51,6 +53,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     super(props);
 
     this.onSelectChange = this.onSelectChange.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
 
     this.state = {
       value: props.initialValue || '',
@@ -61,8 +64,15 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       syncError: null,
 
       //We dunno what the answer state is
-      answerState: null
+      answerState: null,
+
+      fieldSavedState: null,
     }
+  }
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
   }
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
     //When the select changes, we gotta call it up
@@ -194,6 +204,15 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       }
     }
 
+    let fieldSavedStateClass = "";
+    if (this.state.fieldSavedState === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (this.state.fieldSavedState === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (this.state.fieldSavedState === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
     //The classname that represents the state of the whole field
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers &&
       this.props.checkAnswers ? (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
@@ -201,8 +220,13 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
       let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
-      return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType}`}>
-        <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass}`}>
+        <Synchronizer
+          synced={this.state.synced}
+          syncError={this.state.syncError}
+          i18n={this.props.i18n}
+          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+        />
         <select className={`material-page__selectfield ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
@@ -215,8 +239,13 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     }
 
     //this is for the standard
-    return <span className="material-page__radiobutton-wrapper">
-      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+    return <span className={`material-page__radiobutton-wrapper ${fieldSavedStateClass}`}>
+      <Synchronizer
+        synced={this.state.synced}
+        syncError={this.state.syncError}
+        i18n={this.props.i18n}
+        onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+      />
       <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
           //lets generate unique id for labels and radio buttons
