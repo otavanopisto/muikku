@@ -274,6 +274,20 @@ class WorkspaceEditor extends SessionStateComponent<
           )
         );
       }
+    } else {
+      /**
+       * Else, aka creating "new"
+       */
+      this.setState(
+        this.getRecoverStoredState(
+          {
+            literalEvaluation: "",
+            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+            selectedPriceOption: defaultPrice,
+          },
+          this.state.draftId
+        )
+      );
     }
   };
 
@@ -443,16 +457,6 @@ class WorkspaceEditor extends SessionStateComponent<
       /**
        * So, there is no existing evaluation data, so starting from scratch
        */
-
-      /**
-       * Checking if pricing is enabled
-       */
-      if (this.state.basePriceFromServer) {
-        /**
-         * setting base price if enabled
-         */
-        billingPrice = this.state.basePriceFromServer.toString();
-      }
 
       /**
        * Updating price if "billingPrice" is not undefined
