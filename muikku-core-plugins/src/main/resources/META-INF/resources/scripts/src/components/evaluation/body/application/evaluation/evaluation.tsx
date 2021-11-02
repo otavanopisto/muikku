@@ -125,7 +125,7 @@ export const CKEditorConfig = (locale: string) => ({
     },
     { name: "tools", items: ["Maximize"] },
   ],
-  removePlugins: "image",
+  removePlugins: "image,exportpdf",
   resize_enabled: true,
   extraPlugins: "divarea,image2,muikku-mathjax",
 });
