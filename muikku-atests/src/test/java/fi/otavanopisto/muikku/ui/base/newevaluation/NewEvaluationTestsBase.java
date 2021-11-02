@@ -12,8 +12,7 @@ import java.time.ZoneOffset;
 
 import org.junit.Test;
 
-import com.github.tomakehurst.wiremock.matching.MatchResult;
-import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -120,7 +119,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       addTextToCKEditor("Test evaluation.");
       
       selectOption("#workspaceEvaluationGrade", "PYRAMUS-1");
-      
+      selectOption("#workspaceEvaluationBilling", "37.5");
       mockBuilder
       .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
       .mockStaffCompositeCourseAssessmentRequests()
@@ -130,8 +129,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
       waitAndClick(".button--standard-ok");
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
+      EqualToJsonPattern jsonPattern = new EqualToJsonPattern("{\"price\": 37.5}", true, true);
       verify(putRequestedFor(urlEqualTo("/1/worklist/billedPrice"))
-          .withRequestBody(null)
+          .withRequestBody(jsonPattern)
           .withHeader("Content-Type", equalTo("application/json")));
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

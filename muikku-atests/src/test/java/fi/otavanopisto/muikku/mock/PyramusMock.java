@@ -1201,11 +1201,11 @@ public class PyramusMock {
       
       public Builder mockWorkspaceBilledPriceUpdate(String price) throws JsonProcessingException {
         WorklistItemBilledPriceRestModel billedPrice = new WorklistItemBilledPriceRestModel();
-        billedPrice.setAssessmentIdentifier("PYRAMUS-1");
+        billedPrice.setAssessmentIdentifier("1");
         billedPrice.setPrice(Double.valueOf(price));
         billedPrice.setEditable(true);
-        EqualToJsonPattern jsonPattern = new EqualToJsonPattern("{assessmentIdentifier: \"PYRAMUS-1\", price: 75, editable: true}", true, true);
-        stubFor(put(urlEqualTo("/1/worklist/billedPrice")).withRequestBody(jsonPattern)
+
+        stubFor(put(urlEqualTo("/1/worklist/billedPrice"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(billedPrice))
