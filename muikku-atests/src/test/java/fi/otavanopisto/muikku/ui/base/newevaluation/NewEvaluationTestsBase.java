@@ -1,5 +1,9 @@
 package fi.otavanopisto.muikku.ui.base.newevaluation;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertEquals;
 
@@ -7,6 +11,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.Test;
+
+import com.github.tomakehurst.wiremock.matching.MatchResult;
+import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -44,6 +51,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
       Long courseId = 2l;
+      Double price = new Double(75);
       
       login();
       
@@ -51,7 +59,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      MockCourse mockCourse = new MockCourse(courseId, workspace.getName(), created, "test course", begin, end);
+      
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
@@ -89,7 +98,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
-        .mockStaffCompositeCourseAssessmentRequests();
+        .mockStaffCompositeCourseAssessmentRequests()
+        .mockWorkspaceBasePrice(workspace.getIdentifier(), price)
+        .mockWorkspaceBilledPriceUpdate(String.valueOf(price))
+        .mockWorkspaceBilledPrice(String.valueOf(price));
       
       logout();
       mockBuilder.mockLogin(admin);
@@ -103,7 +115,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       if(getBrowser().equals("chrome_headless")) {
         sleep(500);
       }
-
+      
       waitForPresent(".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents");
       addTextToCKEditor("Test evaluation.");
       
@@ -118,6 +130,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
       waitAndClick(".button--standard-ok");
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
+      verify(putRequestedFor(urlEqualTo("/1/worklist/billedPrice"))
+          .withRequestBody(null)
+          .withHeader("Content-Type", equalTo("application/json")));
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());

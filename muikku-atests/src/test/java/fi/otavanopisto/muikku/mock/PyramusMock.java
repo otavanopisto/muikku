@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -75,6 +76,7 @@ import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.muikku.CredentialResetPayload;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
@@ -1182,6 +1184,46 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(matriculationSubjectJson)
             .withStatus(200)));      
+        return this;
+      }
+      
+      public Builder mockWorkspaceBasePrice(String workspaceIdentifier, Double price) throws JsonProcessingException {
+        String priceJson = pmock.objectMapper.writeValueAsString(price);
+
+        stubFor(get(urlEqualTo(String.format("/1/worklist/basePrice?course=%s", workspaceIdentifier)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(priceJson)
+              .withStatus(200)));
+          return this;
+        
+      }
+      
+      public Builder mockWorkspaceBilledPriceUpdate(String price) throws JsonProcessingException {
+        WorklistItemBilledPriceRestModel billedPrice = new WorklistItemBilledPriceRestModel();
+        billedPrice.setAssessmentIdentifier("PYRAMUS-1");
+        billedPrice.setPrice(Double.valueOf(price));
+        billedPrice.setEditable(true);
+        EqualToJsonPattern jsonPattern = new EqualToJsonPattern("{assessmentIdentifier: \"PYRAMUS-1\", price: 75, editable: true}", true, true);
+        stubFor(put(urlEqualTo("/1/worklist/billedPrice")).withRequestBody(jsonPattern)
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(billedPrice))
+                .withStatus(200)));
+        return this;
+      }
+      
+      public Builder mockWorkspaceBilledPrice(String price) throws JsonProcessingException {
+        WorklistItemBilledPriceRestModel billedPrice = new WorklistItemBilledPriceRestModel();
+        billedPrice.setAssessmentIdentifier("1");
+        billedPrice.setPrice(Double.valueOf(price));
+        billedPrice.setEditable(true);
+        
+        stubFor(get(urlMatching("/1/worklist/billedPrice"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(billedPrice))
+                .withStatus(200)));
         return this;
       }
       
