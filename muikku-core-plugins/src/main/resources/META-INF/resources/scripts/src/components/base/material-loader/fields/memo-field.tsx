@@ -81,7 +81,7 @@ const ckEditorConfig = {
     },
     { name: "tools", items: ["Maximize"] },
   ],
-  removePlugins: "image",
+  removePlugins: "image,exportpdf",
   extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
   resize_enabled: true,
 };
