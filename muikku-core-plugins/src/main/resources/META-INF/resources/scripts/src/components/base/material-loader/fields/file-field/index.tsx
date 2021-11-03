@@ -6,6 +6,7 @@ import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../../base/index";
 
 interface FileFieldProps {
   type: string,
@@ -24,15 +25,15 @@ interface FileFieldProps {
 
 interface FileFieldState {
   values: Array<{
-    //might not be there while uploading
+    // might not be there while uploading
     fileId: string,
     name: string,
     contentType: string,
   }>,
 
-  //This state comes from the context handler in the base
-  //We can use it but it's the parent managing function that modifies them
-  //We only set them up in the initial state
+  // This state comes from the context handler in the base
+  // We can use it but it's the parent managing function that modifies them
+  // We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
@@ -47,7 +48,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     this.state = {
       values: (props.initialValue && (JSON.parse(props.initialValue) || [])) || [],
 
-      //modified synced and syncerror are false, true and null by default
+      // modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
@@ -60,14 +61,32 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     this.removeFile = this.removeFile.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
+
+  /**
+   * onFieldSavedStateChange
+   * @param savedState
+   */
   onFieldSavedStateChange(savedState: FieldStateStatus){
     this.setState({
       fieldSavedState: savedState
     });
   }
+
+  /**
+   * shouldComponentUpdate
+   * @param nextProps
+   * @param nextState
+   * @returns
+   */
   shouldComponentUpdate(nextProps: FileFieldProps, nextState: FileFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) || nextProps.invisible !== this.props.invisible;
   }
+
+  /**
+   * onFileAdded
+   * @param file
+   * @param data
+   */
   onFileAdded(file: File, data: any) {
     const newValues = [...this.state.values, {
       fileId: data.fileId,
@@ -79,13 +98,18 @@ export default class FileField extends React.Component<FileFieldProps, FileField
       values: newValues
     }, this.checkDoneAndRunOnChange);
   }
+
+  /**
+   * checkDoneAndRunOnChange
+   * @returns
+   */
   checkDoneAndRunOnChange(){
     if (!this.props.onChange || !this.props.content){
       return;
     }
 
-    //ok now that all is done we need to filter what failed to upload, and otherwise
-    //set the fileId name and content type from the value as the value for the result
+    // ok now that all is done we need to filter what failed to upload, and otherwise
+    // set the fileId name and content type from the value as the value for the result
     let result = JSON.stringify(this.state.values.map((value)=>{
       let {
         fileId,
@@ -97,43 +121,48 @@ export default class FileField extends React.Component<FileFieldProps, FileField
       }
     }));
 
-    //call onchange
+    // call onchange
     this.props.onChange(this, this.props.content.name, result);
   }
-  //removing file is simple, we just remove it
+
+  /**
+   * removeFileAt
+   * @param index
+   */
   removeFileAt(index: number){
     let newValues = this.state.values.filter((a, i) => i !== index);
     this.setState({
       values: newValues
     }, this.checkDoneAndRunOnChange)
   }
+
+  /**
+   * removeFile
+   * @param data
+   */
   removeFile(data: any) {
     const index = this.state.values.findIndex((f) => f.fileId === data.fileId);
     this.removeFileAt(index);
   }
 
+  /**
+   * render
+   * @returns
+   */
   render(){
-    //rendering things here
-    //this is the data that it has already created
+    // this is the data that it has already created
     let dataInContainer = null;
 
-    //if elements is disabled
+    // if elements is disabled
     let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     let formDataGenerator = (file: File, formData: FormData) => {
       formData.append("file", file);
     }
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
-    //and this is the container
+    // and this is the container
     return <span className={`material-page__filefield-wrapper ${fieldSavedStateClass}`}>
       <Synchronizer
         synced={this.state.synced}
