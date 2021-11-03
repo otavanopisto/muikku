@@ -40,9 +40,9 @@ interface MemoFieldState {
   words: number;
   characters: number;
 
-  //This state comes from the context handler in the base
-  //We can use it but it's the parent managing function that modifies them
-  //We only set them up in the initial state
+  // This state comes from the context handler in the base
+  // We can use it but it's the parent managing function that modifies them
+  // We only set them up in the initial state
   modified: boolean;
   synced: boolean;
   syncError: string;
@@ -89,7 +89,11 @@ const ckEditorConfig = {
   resize_enabled: true,
 };
 
-// Counts the amount of characters
+/**
+ * characterCount - Counts the amount of characters
+ * @param rawText
+ * @returns
+ */
 function characterCount(rawText: string) {
   return rawText === ""
     ? 0
@@ -99,7 +103,11 @@ function characterCount(rawText: string) {
         .split("").length;
 }
 
-// Counts the amount of words
+/**
+ * wordCount - Counts the amount of words
+ * @param rawText
+ * @returns
+ */
 function wordCount(rawText: string) {
   return rawText === "" ? 0 : rawText.trim().split(/\s+/).length;
 }
@@ -113,20 +121,20 @@ export default class MemoField extends React.Component<
 
     //get the initial value
     let value = props.initialValue || "";
-    //and get the raw text if it's richedit
+    // and get the raw text if it's richedit
     let rawText = this.props.content
       ? this.props.content.richedit
         ? $(value).text()
         : value
       : value;
 
-    //set the state with the counts
+    // set the state with the counts
     this.state = {
       value,
       words: wordCount(rawText),
       characters: characterCount(rawText),
 
-      //modified synced and syncerror are false, true and null by default
+      // modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
@@ -138,11 +146,23 @@ export default class MemoField extends React.Component<
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
+
+  /**
+   * onFieldSavedStateChange
+   * @param savedState
+   */
   onFieldSavedStateChange(savedState: FieldStateStatus){
     this.setState({
       fieldSavedState: savedState
     });
   }
+
+  /**
+   * shouldComponentUpdate
+   * @param nextProps
+   * @param nextState
+   * @returns
+   */
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState) {
     return (
       !equals(nextProps.content, this.props.content) ||
@@ -157,9 +177,13 @@ export default class MemoField extends React.Component<
       nextProps.invisible !== this.props.invisible
     );
   }
-  //very simple this one is for only when raw input from the textarea changes
+
+  /**
+   * onInputChange - very simple this one is for only when raw input from the textarea changes
+   * @param e
+   */
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    //and update the count
+    // and update the count
     this.setState({
       value: e.target.value,
       words: wordCount(e.target.value),
@@ -170,11 +194,15 @@ export default class MemoField extends React.Component<
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, e.target.value);
   }
-  //this one is for a ckeditor change
+
+  /**
+   * onCKEditorChange - this one is for a ckeditor change
+   * @param value
+   */
   onCKEditorChange(value: string) {
-    //we need the raw text
+    // we need the raw text
     let rawText = $(value).text();
-    //and update the state
+    // and update the state
     this.setState({
       value,
       words: wordCount(rawText),
@@ -184,12 +212,17 @@ export default class MemoField extends React.Component<
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
   }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
-    //we have a right answer example for when
-    //we are asked for displaying right answer
-    //so we need to set it up
+    // we have a right answer example for when
+    // we are asked for displaying right answer
+    // so we need to set it up
     let answerExampleComponent = null;
-    //it's simply set when we get it
+    // it's simply set when we get it
     if (this.props.displayCorrectAnswers && this.props.content.example) {
       answerExampleComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
@@ -243,7 +276,7 @@ export default class MemoField extends React.Component<
       );
     }
 
-    //now we need the field
+    // now we need the field
     let field;
     let minRows =
       this.props.content.rows &&
@@ -253,9 +286,9 @@ export default class MemoField extends React.Component<
         : 3;
 
     if (this.props.usedAs === "default") {
-      //if readonly
+      // if readonly
       if (this.props.readOnly) {
-        //depending to whether rich edit or not we make it be with the value as inner html or just raw text
+        // depending to whether rich edit or not we make it be with the value as inner html or just raw text
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
@@ -272,8 +305,8 @@ export default class MemoField extends React.Component<
           />
         );
       } else {
-        //here we make it be a simple textarea or a rich text editor
-        //note how somehow numbers come as string...
+        // here we make it be a simple textarea or a rich text editor
+        // note how somehow numbers come as string...
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             className="material-page__memofield"
@@ -292,9 +325,9 @@ export default class MemoField extends React.Component<
         );
       }
     } else if (this.props.usedAs === "evaluationTool") {
-      //if readonly.
+      // if readonly.
       if (this.props.readOnly) {
-        //here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
+        // here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
@@ -313,7 +346,7 @@ export default class MemoField extends React.Component<
 
     let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
-    //and here the element itself
+    // and here the element itself
     return (
       <span className={`material-page__memofield-wrapper ${fieldSavedStateClass}`}>
         <Synchronizer

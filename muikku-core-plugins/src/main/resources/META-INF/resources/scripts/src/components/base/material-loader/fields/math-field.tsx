@@ -23,9 +23,9 @@ interface MathFieldProps {
 interface MathFieldState {
   value: string,
 
-  //This state comes from the context handler in the base
-  //We can use it but it's the parent managing function that modifies them
-  //We only set them up in the initial state
+  // This state comes from the context handler in the base
+  // We can use it but it's the parent managing function that modifies them
+  // We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
@@ -40,7 +40,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     this.state = {
       value: props.initialValue || '',
 
-      //modified synced and syncerror are false, true and null by default
+      // modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
@@ -51,21 +51,43 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     this.setValue = this.setValue.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
+
+  /**
+   * onFieldSavedStateChange
+   * @param savedState
+   */
   onFieldSavedStateChange(savedState: FieldStateStatus){
     this.setState({
       fieldSavedState: savedState
     });
   }
+
+ /**
+  * shouldComponentUpdate
+  * @param nextProps
+  * @param nextState
+  * @returns
+  */
   shouldComponentUpdate(nextProps: MathFieldProps, nextState: MathFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
+
+  /**
+   * setValue
+   * @param newValue
+   */
   setValue(newValue: string){
     this.setState({
       value: newValue
     });
     this.props.onChange && this.props.onChange(this, this.props.content.name, newValue);
   }
+
+  /**
+   * render
+   * @returns
+   */
   render(){
     // NOTE you cannot change the formula class name unless you want to break backwards compatibility
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
