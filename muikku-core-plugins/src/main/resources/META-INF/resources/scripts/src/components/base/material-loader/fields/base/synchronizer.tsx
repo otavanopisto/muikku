@@ -22,6 +22,10 @@ export default class Synchronizer extends React.PureComponent<SynchronizerProps,
     }
   }
 
+  /**
+   * componentWillReceiveProps
+   * @param nextProps
+   */
   componentWillReceiveProps(nextProps: SynchronizerProps) {
     if (nextProps.synced && !this.props.synced && !nextProps.syncError) {
       this.setState({
@@ -36,6 +40,10 @@ export default class Synchronizer extends React.PureComponent<SynchronizerProps,
     }
   }
 
+  /**
+   * render
+   * @returns
+   */
   render() {
     if (this.props.synced && !this.state.displaySyncedMessage && !this.props.syncError) {
       return null;
