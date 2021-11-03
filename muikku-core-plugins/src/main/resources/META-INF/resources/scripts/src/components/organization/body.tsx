@@ -11,15 +11,15 @@ interface OrganizationManagementBodyProps {
 interface OrganizationManagementBodyState {
 }
 
-export default class OrganizationManagementBody extends React.Component<OrganizationManagementBodyProps,OrganizationManagementBodyState> {
+export default class OrganizationManagementBody extends React.Component<OrganizationManagementBodyProps, OrganizationManagementBodyState> {
 
-  render(){
+  render() {
     let aside = <Aside />
     return (<div>
-        <MainFunctionNavbar navigation={aside} activeTrail="organization"/>
-        <ScreenContainer>
-          <Application aside={aside} />
-        </ScreenContainer>
+      <MainFunctionNavbar navigation={aside} activeTrail="organization" />
+      <ScreenContainer>
+        <Application aside={aside} />
+      </ScreenContainer>
     </div>);
   }
 }

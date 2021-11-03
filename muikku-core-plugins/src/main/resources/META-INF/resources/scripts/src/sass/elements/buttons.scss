@@ -1113,6 +1113,12 @@
   }
 }
 
+.button--load-further {
+  background-color: $color-pager-selected-page-index-background;
+  color: $color-pager-selected-page-index-font;
+  width: 200px;
+}
+
 .button--form-element-next {
   background-color: $color-button-primary-background;
   color: $color-button-primary-text;
@@ -1414,6 +1420,11 @@
     width: 2.5rem;
   }
 }
+
+.button-pill--material-page-close-mobile-editor {
+  position: static;
+}
+
 
 .button-pill--material-editor {
   @include prefix(transition, moz o ms webkit, all 0.15s);

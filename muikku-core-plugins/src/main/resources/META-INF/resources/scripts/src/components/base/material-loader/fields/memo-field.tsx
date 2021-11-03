@@ -81,12 +81,12 @@ const ckEditorConfig = {
     },
     { name: "tools", items: ["Maximize"] },
   ],
-  removePlugins: "image",
+  removePlugins: "image,exportpdf",
   extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
   resize_enabled: true,
 };
 
-//Counts the amount of characters, stolen from the old code, no idea how it exactly works
+// Counts the amount of characters
 function characterCount(rawText: string) {
   return rawText === ""
     ? 0
@@ -96,7 +96,7 @@ function characterCount(rawText: string) {
         .split("").length;
 }
 
-//Counts the amount of words, stolen too
+// Counts the amount of words
 function wordCount(rawText: string) {
   return rawText === "" ? 0 : rawText.trim().split(/\s+/).length;
 }
@@ -284,8 +284,15 @@ export default class MemoField extends React.Component<
     } else if (this.props.usedAs === "evaluationTool") {
       //if readonly. PLEASE ADD STYLES
       if (this.props.readOnly) {
-        //depending to whether rich edit or not we make it be with the value as inner html or just raw text
-        field = (
+        //here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
+        field = !this.props.content.richedit ? (
+          <TextareaAutosize
+            readOnly
+            className="material-page__memofield material-page__memofield--evaluation"
+            value={this.state.value}
+            onChange={this.onInputChange}
+          />
+        ) : (
           <div
             className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
