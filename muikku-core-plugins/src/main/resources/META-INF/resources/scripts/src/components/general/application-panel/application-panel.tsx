@@ -28,27 +28,44 @@ export default class ApplicationPanel extends React.Component<
     super(props);
   }
 
+  /**  Creates an array of tabs from given panelTabs
+  *
+  * @returns Tab identifiers as a string array
+  */
+
+  createAllTabs = () => {
+    const panelTabs = this.props.panelTabs;
+    const tabs = []
+    for (let i = 0; i < panelTabs.length; i++) {
+      tabs.push(panelTabs[i].id);
+    }
+
+    return tabs;
+  }
+
   render() {
+
     return (
       <main
-        className={`application-panel ${this.props.modifier? "application-panel--" + this.props.modifier : ""  }`}
+        className={`application-panel ${this.props.modifier ? "application-panel--" + this.props.modifier : ""}`}
         ref="panel"
       >
-        <div className={`application-panel__container ${this.props.modifier? "application-panel__container--" + this.props.modifier : ""  }`}>
-          <h1 className={`application-panel__header   ${this.props.modifier? "application-panel__header--" + this.props.modifier : ""  }`}>
+        <div className={`application-panel__container ${this.props.modifier ? "application-panel__container--" + this.props.modifier : ""}`}>
+          <h1 className={`application-panel__header   ${this.props.modifier ? "application-panel__header--" + this.props.modifier : ""}`}>
             {this.props.title ? (
-              <span className={`application-panel__header-title ${this.props.modifier? "application-panel__header-title--" + this.props.modifier : ""  }`}>
+              <span className={`application-panel__header-title ${this.props.modifier ? "application-panel__header-title--" + this.props.modifier : ""}`}>
                 {this.props.title}
               </span>
             ) : null}
             {this.props.icon ? (
-              <span className={`application-panel__header-actions ${this.props.modifier? "application-panele__header-actions--" + this.props.modifier : ""  }`}>
+              <span className={`application-panel__header-actions ${this.props.modifier ? "application-panele__header-actions--" + this.props.modifier : ""}`}>
                 {this.props.icon}
               </span>
             ) : null}
           </h1>
           {this.props.panelTabs ? (
             <Tabs
+              allTabs={this.createAllTabs()}
               modifier="application-panel"
               tabs={this.props.panelTabs}
               onTabChange={this.props.onTabChange}
