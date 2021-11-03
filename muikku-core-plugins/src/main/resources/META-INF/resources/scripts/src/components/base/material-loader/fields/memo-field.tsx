@@ -7,6 +7,7 @@ import Synchronizer from "./base/synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface MemoFieldProps {
   type: string;
@@ -310,14 +311,7 @@ export default class MemoField extends React.Component<
       }
     }
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     //and here the element itself
     return (

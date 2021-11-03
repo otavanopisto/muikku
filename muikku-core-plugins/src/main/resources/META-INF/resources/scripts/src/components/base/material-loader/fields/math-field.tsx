@@ -5,6 +5,7 @@ import '~/sass/elements/math-field.scss';
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface MathFieldProps {
   type: string,
@@ -70,14 +71,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     // backwards compability has been broken since you changed the class name from muikku-math-exercise-formula to material-page__mathfield-formula
     // this means old formulas will 100% fail to parse
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     return <div className={`material-page__mathfield-wrapper ${fieldSavedStateClass}`}>
       <Synchronizer

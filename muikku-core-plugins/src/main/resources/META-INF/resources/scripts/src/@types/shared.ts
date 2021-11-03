@@ -14,7 +14,7 @@ export type PageLocation = "Home" | "Help" | "Materials";
 export type LoadingState = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
 /**
- * Taksfield saving satet type
+ * Taskfield saving state type
  */
 export type FieldStateStatus = "SAVED" | "SAVING" | "ERROR";
 

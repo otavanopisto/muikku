@@ -6,6 +6,7 @@ import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface SelectFieldProps {
   type: string,
@@ -204,14 +205,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       }
     }
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     //The classname that represents the state of the whole field
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers &&

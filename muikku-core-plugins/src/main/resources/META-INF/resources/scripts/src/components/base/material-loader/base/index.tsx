@@ -22,7 +22,7 @@ import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from '~/components/base/material-loader/static/table';
 import MathJAX from '~/components/base/material-loader/static/mathjax';
-import { UsedAs } from '~/@types/shared';
+import { UsedAs, FieldStateStatus } from '~/@types/shared';
 import { AudioPoolComponent } from '~/components/general/audio-pool-component';
 
 //These are all our supported objects as for now
@@ -159,6 +159,23 @@ function preprocessor($html: any): any {
   });
 
   return $newHTML;
+}
+
+/**
+ * createFieldSavedStateClass
+ * @param state
+ */
+export function createFieldSavedStateClass (state: FieldStateStatus){
+  let fieldSavedStateClass = "";
+    if (state === "ERROR") {
+      fieldSavedStateClass = "state-ERROR";
+    } else if (state === "SAVING") {
+      fieldSavedStateClass = "state-SAVING";
+    } else if (state === "SAVED") {
+      fieldSavedStateClass = "state-SAVED";
+    }
+
+return fieldSavedStateClass
 }
 
 export default class Base extends React.Component<BaseProps, BaseState> {

@@ -6,6 +6,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface FieldType {
   name: string,
@@ -392,14 +393,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     return <span className={`material-page__connectfield-wrapper ${fieldSavedStateClass}`}>
       <Synchronizer

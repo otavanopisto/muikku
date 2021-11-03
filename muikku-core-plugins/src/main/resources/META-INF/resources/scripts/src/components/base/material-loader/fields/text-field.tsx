@@ -6,6 +6,7 @@ import Synchronizer from "./base/synchronizer";
 import AutosizeInput from "react-input-autosize";
 import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface TextFieldProps {
   type: string;
@@ -381,14 +382,7 @@ export default class TextField extends React.Component<
       );
     }
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     //Standard modifiable version
     return (

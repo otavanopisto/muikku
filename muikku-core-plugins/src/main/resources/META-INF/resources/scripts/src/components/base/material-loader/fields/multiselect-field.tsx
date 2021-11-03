@@ -6,6 +6,7 @@ import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -229,14 +230,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     let fieldStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && this.state.answerState && this.state.answerState !== "UNKNOWN"
        ? (this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer") : "" ;
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     //and we render
     return <span className={`material-page__checkbox-wrapper ${fieldSavedStateClass}`}>

@@ -6,6 +6,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface SorterFieldItemType {
   id: string,
@@ -242,14 +243,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
-    let fieldSavedStateClass = "";
-    if (this.state.fieldSavedState === "ERROR") {
-      fieldSavedStateClass = "state-ERROR";
-    } else if (this.state.fieldSavedState === "SAVING") {
-      fieldSavedStateClass = "state-SAVING";
-    } else if (this.state.fieldSavedState === "SAVED") {
-      fieldSavedStateClass = "state-SAVED";
-    }
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
 
     //we use that element and the class to create the field
     return <span className={`material-page__sorterfield-wrapper ${fieldSavedStateClass}`}>

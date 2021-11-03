@@ -6,7 +6,7 @@ interface SynchronizerProps {
   synced: boolean;
   syncError: string;
   i18n: i18nType;
-  onFieldSavedStateChange?: (savedState: FieldStateStatus)=>any;
+  onFieldSavedStateChange?: (savedState: FieldStateStatus) => void;
 }
 
 interface SynchronizerState {
