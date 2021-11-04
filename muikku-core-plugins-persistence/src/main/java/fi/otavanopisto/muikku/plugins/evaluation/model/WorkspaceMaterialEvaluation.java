@@ -14,8 +14,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 @Entity
 @Table(
     uniqueConstraints = {
@@ -125,24 +123,16 @@ public class WorkspaceMaterialEvaluation {
   @NotNull
   private Long workspaceMaterialId;
 
-  @Column(nullable = false)
-  @NotNull
-  @NotEmpty
+  @Column
   private String gradingScaleIdentifier;
 
-  @Column(nullable = false)
-  @NotNull
-  @NotEmpty
+  @Column
   private String gradingScaleSchoolDataSource;
 
-  @Column(nullable = false)
-  @NotNull
-  @NotEmpty
+  @Column
   private String gradeIdentifier;
 
-  @Column(nullable = false)
-  @NotNull
-  @NotEmpty
+  @Column
   private String gradeSchoolDataSource;
 
   @Lob

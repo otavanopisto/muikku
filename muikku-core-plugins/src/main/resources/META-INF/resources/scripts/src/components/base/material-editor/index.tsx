@@ -148,6 +148,7 @@ const CKEditorConfig = (
         "Muikku-mathjax",
         "Table",
         "Iframe",
+        "Smiley",
         "SpecialChar",
         "CreateDiv",
       ],
@@ -189,7 +190,7 @@ const CKEditorConfig = (
     },
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
-  removePlugins: "image",
+  removePlugins: "image,exportpdf",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",

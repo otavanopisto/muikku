@@ -20,6 +20,7 @@ interface EvaluationEventContentCardProps extends EvaluationEvent {
   showDeleteAndModify: boolean;
   evaluations: EvaluationState;
   onClickEdit: (
+    eventId: string,
     supplementation?: boolean
   ) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
@@ -37,7 +38,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
-  const { author, text, date, type, grade } = event;
+  const { author, text, date, type, grade, identifier } = event;
 
   /**
    * arrowClassMod
@@ -241,6 +242,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = ({
             <Link
               className="link link--evaluation-event-edit"
               onClick={onClickEdit(
+                identifier,
                 type === EvaluationEnum.SUPPLEMENTATION_REQUEST
               )}
             >
