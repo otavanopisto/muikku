@@ -57,7 +57,6 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   }
 
   onTabChange(id: OrganizationTabs) {
-    console.log(id);
     this.setState({
       activeTab: id
     });

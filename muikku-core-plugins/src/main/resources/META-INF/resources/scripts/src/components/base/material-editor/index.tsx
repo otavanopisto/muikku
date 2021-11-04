@@ -563,7 +563,6 @@ class MaterialEditor extends React.Component<
     return tabStrings;
   }
 
-
   /**
    * onClickClose
    */

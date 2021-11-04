@@ -36,7 +36,7 @@ interface MobileOnlyTabsProps {
   renderAllComponents?: boolean
 }
 
-const Tabs: React.FC<TabsProps> = (props) => {
+export const Tabs: React.FC<TabsProps> = (props) => {
 
   const { modifier, renderAllComponents, activeTab, onTabChange, tabs, children, allTabs } = props;
 
@@ -85,7 +85,6 @@ const Tabs: React.FC<TabsProps> = (props) => {
     </Swiper>
   </div>
 }
-
 
 export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}>{
   render() {
