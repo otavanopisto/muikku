@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.organizationmanagement.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -224,10 +225,12 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
 
-    // Restrict search to the organizations of the user (except when searching for course templates only)
+    // Restrict search to the organizations of the user
     
-    List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
-    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , publicityRestriction, templateRestriction);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    List<OrganizationEntity> organizations = Arrays.asList(userSchoolDataIdentifier.getOrganization());
+    
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations, publicityRestriction, templateRestriction);
     
     SearchResult searchResult = searchProvider.searchWorkspaces()
         .setSchoolDataSource(schoolDataSourceFilter)
@@ -301,45 +304,43 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   @Path("/overview")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
   public Response getOverview(){
-  
-  SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-  
-  SearchProvider searchProvider = searchProviderInstance.get();
-  if (searchProvider == null) {
-    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-  }
-  
-  SearchResult searchResult = null;
-  
-  // Restrict search to the organizations of the user
-  List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
-  List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES);
-  
-  searchResult = searchProvider.searchWorkspaces()
-      .setOrganizationRestrictions(organizationRestrictions)
-      .setFirstResult(0)
-      .setMaxResults(Integer.MAX_VALUE)
-      .search();
-  
-  OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
-  int unpublishedCount = 0; 
-  int publishedCount = 0; 
-
-  
-  List<Map<String, Object>> results = searchResult.getResults();
-  for (Map<String, Object> result : results) {
-    if ((Boolean) result.get("published")) {
-      publishedCount++;
-    } else {
-      unpublishedCount++;
+    SearchProvider searchProvider = searchProviderInstance.get();
+    if (searchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
+    
+    SearchResult searchResult = null;
+    
+    // Restrict search to the organizations of the user
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    List<OrganizationEntity> organizations = Arrays.asList(userSchoolDataIdentifier.getOrganization());
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES);
+    
+    searchResult = searchProvider.searchWorkspaces()
+        .setOrganizationRestrictions(organizationRestrictions)
+        .setFirstResult(0)
+        .setMaxResults(Integer.MAX_VALUE)
+        .search();
+    
+    OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
+    int unpublishedCount = 0; 
+    int publishedCount = 0; 
+    
+    List<Map<String, Object>> results = searchResult.getResults();
+    for (Map<String, Object> result : results) {
+      if ((Boolean) result.get("published")) {
+        publishedCount++;
+      } else {
+        unpublishedCount++;
+      }
+    }
+    
+    overviewWorkspaces.setPublishedCount(publishedCount);
+    overviewWorkspaces.setUnpublishedCount(unpublishedCount);
+    
+    return Response.ok(overviewWorkspaces).build();
   }
-  
-  overviewWorkspaces.setPublishedCount(publishedCount);
-  overviewWorkspaces.setUnpublishedCount(unpublishedCount);
-  
-  return Response.ok(overviewWorkspaces).build();
-}
   
   @POST
   @Path("/workspaces/{WORKSPACEID}/students")
