@@ -15,7 +15,27 @@
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 9999;
+  z-index: 9990;
+}
+
+.dialog--matriculation {
+
+  .dialog__window {
+
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
 }
 
 .dialog--visible {
@@ -67,16 +87,6 @@
   }
 }
 
-// .dialog__window--edit-user-group {
-//   @include breakpoint($breakpoint-pad) {
-//     max-width: 815px;
-
-//     .dialog__content {
-//       height: 546px;
-//     }
-//   }
-// }
-
 .dialog__window--new-workspace {
   @include breakpoint($breakpoint-pad) {
     max-width: 815px;
@@ -117,10 +127,16 @@
     bottom: 20px;
     display: flex;
     flex-direction: column;
-    left: 20px;
+    left: 5px;
     position: absolute;
-    right: 20px;
-    top: 20px;
+    right: 5px;
+    top: 0;
+
+    @include breakpoint($breakpoint-pad) {
+      left: 20px;
+      right: 20px;
+      top: 20px;
+    }
   }
 
   .wizard__content {
@@ -129,6 +145,7 @@
     flex-direction: column;
     flex-grow: 1;
     flex-shrink: 1;
+    overflow: auto;
   }
 }
 
@@ -289,9 +306,12 @@
 .dialog__content-row--new-workspace,
 .dialog__content-row--edit-workspace {
   display: flex;
+  flex-wrap: wrap;
 
-  .form-element:not(:first-child) {
-    margin-left: 20px;
+  @include breakpoint($breakpoint-pad) {
+    .form-element:not(:first-child) {
+      margin-left: 20px;
+    }
   }
 }
 

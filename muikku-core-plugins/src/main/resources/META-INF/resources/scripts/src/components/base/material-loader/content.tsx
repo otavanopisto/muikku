@@ -56,7 +56,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
     <div className="react-required-container" onClick={stopPropagation}>
       {
         props.loadCompositeReplies && typeof props.compositeReplies === "undefined" ? null :
-          <Base material={props.material} i18n={props.i18n} status={props.status}
+          <Base material={props.material} i18n={props.i18n} status={props.status} usedAs={props.usedAs}
             workspace={props.workspace} websocketState={props.websocket} onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(this, props)}
             onModification={onModification.bind(this, props)}
             readOnly={props.readOnly || (props.answerable && props.stateConfiguration && props.stateConfiguration['fields-read-only'])}
@@ -67,7 +67,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
     </div>
     {
       props.material.type === "binary" ?
-      <BinaryMaterialLoader material={props.material} i18n={props.i18n}/> : null
+      <BinaryMaterialLoader material={props.material} i18n={props.i18n} invisible={props.invisible}/> : null
     }
   </div>);
 }

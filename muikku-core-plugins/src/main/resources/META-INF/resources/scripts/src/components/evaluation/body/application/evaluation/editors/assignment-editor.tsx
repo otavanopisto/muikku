@@ -16,14 +16,24 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import { i18nType } from "~/reducers/base/i18n";
 import {
-  SaveEvaluationAssignmentSupplementation,
-  saveAssignmentEvaluationSupplementationToServer,
-} from "~/actions/main-function/evaluation/evaluationActions";
-import {
-  SaveEvaluationAssignmentGradeEvaluation,
-  saveAssignmentEvaluationGradeToServer,
+  UpdateCurrentStudentEvaluationCompositeRepliesData,
+  updateCurrentStudentCompositeRepliesData,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form-elements.scss";
+import Recorder from "~/components/general/voice-recorder/recorder";
+import { AudioAssessment } from "~/@types/evaluation";
+import AnimateHeight from "react-animate-height";
+import { LocaleListType } from "~/reducers/base/locales";
+import { CKEditorConfig } from "../evaluation";
+import mApi from "~/lib/mApi";
+import notificationActions from "~/actions/base/notifications";
+import {
+  AssignmentEvaluationGradeRequest,
+  AssignmentEvaluationSaveReturn,
+  AssignmentEvaluationSupplementationRequest,
+} from "~/@types/evaluation";
+import promisify from "~/util/promisify";
+import WarningDialog from "../../../../dialogs/close-warning";
 
 /**
  * AssignmentEditorProps
@@ -35,11 +45,17 @@ interface AssignmentEditorProps {
   compositeReplies: MaterialCompositeRepliesType;
   evaluations: EvaluationState;
   status: StatusType;
+  locale: LocaleListType;
   editorLabel?: string;
   modifiers?: string[];
-  saveAssignmentEvaluationGradeToServer: SaveEvaluationAssignmentGradeEvaluation;
-  saveAssignmentEvaluationSupplementationToServer: SaveEvaluationAssignmentSupplementation;
+  showAudioAssessmentWarningOnClose: boolean;
+  onAudioAssessmentChange: () => void;
+  updateMaterialEvaluationData: (
+    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+  ) => void;
+  updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   onClose?: () => void;
+  onAssigmentSave?: (materialId: number) => void;
 }
 
 /**
@@ -48,6 +64,7 @@ interface AssignmentEditorProps {
 interface AssignmentEditorState {
   literalEvaluation: string;
   assignmentEvaluationType: string;
+  audioAssessments: AudioAssessment[];
   grade: string;
   draftId: string;
 }
@@ -80,23 +97,31 @@ class AssignmentEditor extends SessionStateComponent<
 
     let draftId = `${evaluationSelectedAssessmentId.userEntityId}-${props.materialAssignment.id}`;
 
-    this.state = this.getRecoverStoredState(
-      {
-        literalEvaluation:
-          compositeReplies && compositeReplies.evaluationInfo
-            ? compositeReplies.evaluationInfo.text
-            : "",
-        assignmentEvaluationType:
-          compositeReplies &&
-          compositeReplies.evaluationInfo &&
-          compositeReplies.evaluationInfo.type === "INCOMPLETE"
-            ? "INCOMPLETE"
-            : "GRADED",
-        grade: grade,
-        draftId,
-      },
-      draftId
-    );
+    this.state = {
+      ...this.getRecoverStoredState(
+        {
+          literalEvaluation:
+            compositeReplies && compositeReplies.evaluationInfo
+              ? compositeReplies.evaluationInfo.text
+              : "",
+          assignmentEvaluationType:
+            compositeReplies &&
+            compositeReplies.evaluationInfo &&
+            compositeReplies.evaluationInfo.type === "INCOMPLETE"
+              ? "INCOMPLETE"
+              : "GRADED",
+          grade: grade,
+          draftId,
+        },
+        draftId
+      ),
+      audioAssessments:
+        compositeReplies.evaluationInfo &&
+        compositeReplies.evaluationInfo.audioAssessments &&
+        compositeReplies.evaluationInfo.audioAssessments !== null
+          ? compositeReplies.evaluationInfo.audioAssessments
+          : [],
+    };
   }
 
   /**
@@ -135,8 +160,8 @@ class AssignmentEditor extends SessionStateComponent<
       ? ""
       : defaultGrade;
 
-    this.setState(
-      this.getRecoverStoredState(
+    this.setState({
+      ...this.getRecoverStoredState(
         {
           literalEvaluation:
             compositeReplies && compositeReplies.evaluationInfo
@@ -151,15 +176,155 @@ class AssignmentEditor extends SessionStateComponent<
           grade: grade,
         },
         this.state.draftId
-      )
-    );
+      ),
+      audioAssessments:
+        compositeReplies.evaluationInfo &&
+        compositeReplies.evaluationInfo.audioAssessments &&
+        compositeReplies.evaluationInfo.audioAssessments !== null
+          ? compositeReplies.evaluationInfo.audioAssessments
+          : [],
+    });
+  };
+
+  componentDidUpdate = (
+    prevProps: AssignmentEditorProps,
+    prevState: AssignmentEditorState
+  ) => {
+    if (
+      this.state.audioAssessments.length !== prevState.audioAssessments.length
+    ) {
+      this.props.onAudioAssessmentChange();
+    }
+  };
+
+  /**
+   * saveAssignmentEvaluationGradeToServer
+   */
+  saveAssignmentEvaluationGradeToServer = async (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+    dataToSave: AssignmentEvaluationGradeRequest;
+    materialId: number;
+    defaultGrade: string;
+  }) => {
+    const {
+      workspaceEntityId,
+      userEntityId,
+      workspaceMaterialId,
+      dataToSave,
+      defaultGrade,
+    } = data;
+
+    try {
+      await promisify(
+        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
+          workspaceEntityId,
+          userEntityId,
+          workspaceMaterialId,
+          {
+            ...dataToSave,
+          }
+        ),
+        "callback"
+      )().then(async (data: AssignmentEvaluationSaveReturn) => {
+        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+
+        this.props.updateCurrentStudentCompositeRepliesData({
+          workspaceId: workspaceEntityId,
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+        });
+
+        this.props.updateMaterialEvaluationData(data);
+
+        if (this.props.onAssigmentSave) {
+          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+        }
+
+        if (this.props.onClose) {
+          this.props.onClose();
+        }
+      });
+    } catch (error) {
+      notificationActions.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.evaluation.notifications.saveAssigmentGrade.error",
+          error.message
+        ),
+        "error"
+      );
+    }
+  };
+
+  /**
+   * saveAssignmentEvaluationSupplementationToServer
+   * @param data
+   */
+  saveAssignmentEvaluationSupplementationToServer = async (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    workspaceMaterialId: number;
+    dataToSave: AssignmentEvaluationSupplementationRequest;
+    materialId: number;
+    defaultGrade: string;
+  }) => {
+    const {
+      workspaceEntityId,
+      userEntityId,
+      workspaceMaterialId,
+      dataToSave,
+      defaultGrade,
+    } = data;
+    try {
+      await promisify(
+        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
+          workspaceEntityId,
+          userEntityId,
+          workspaceMaterialId,
+          {
+            ...dataToSave,
+          }
+        ),
+        "callback"
+      )().then(async () => {
+        await mApi().workspace.workspaces.compositeReplies.cacheClear();
+
+        /**
+         * Compositereplies needs to be updated by loading new values from server, just for
+         * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list
+         */
+
+        this.props.updateCurrentStudentCompositeRepliesData({
+          workspaceId: workspaceEntityId,
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+        });
+
+        if (this.props.onAssigmentSave) {
+          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+        }
+
+        if (this.props.onClose) {
+          this.props.onClose();
+        }
+      });
+    } catch (error) {
+      notificationActions.displayNotification(
+        this.props.i18n.text.get(
+          "plugin.evaluation.notifications.saveAssigmentSupplementation.error",
+          error.message
+        ),
+        "error"
+      );
+    }
   };
 
   /**
    * handleSaveAssignment
    * @param e
    */
-  handleSaveAssignment = (
+  handleSaveAssignment = async (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     const { evaluationGradeSystem } = this.props.evaluations;
@@ -168,11 +333,13 @@ class AssignmentEditor extends SessionStateComponent<
     const usedGradeSystem = this.getUsedGradingScaleByGradeId(grade);
     const defaultGrade = `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`;
 
+    /**
+     * Backend endpoint is different for normal grade evalution and supplementation
+     */
     if (this.state.assignmentEvaluationType === "GRADED") {
       const gradingScaleIdentifier = `${usedGradeSystem.dataSource}-${usedGradeSystem.id}`;
 
-      this.props.onClose();
-      this.props.saveAssignmentEvaluationGradeToServer({
+      await this.saveAssignmentEvaluationGradeToServer({
         workspaceEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId
             .workspaceEntityId,
@@ -185,24 +352,16 @@ class AssignmentEditor extends SessionStateComponent<
           gradeIdentifier: this.state.grade,
           verbalAssessment: this.state.literalEvaluation,
           assessmentDate: new Date().getTime(),
+          audioAssessments: this.state.audioAssessments,
         },
-        onSuccess: () => {
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-              grade: defaultGrade,
-              assignmentEvaluationType: "GRADED",
-            },
-            this.state.draftId
-          );
-        },
-        onFail: () => this.props.onClose(),
+        materialId: this.props.materialAssignment.materialId,
+        defaultGrade,
       });
     } else if (this.state.assignmentEvaluationType === "INCOMPLETE") {
-      this.props.onClose();
-
-      this.props.saveAssignmentEvaluationSupplementationToServer({
-        workspaceEntityId: this.props.evaluations.selectedWorkspaceId,
+      this.saveAssignmentEvaluationSupplementationToServer({
+        workspaceEntityId:
+          this.props.evaluations.evaluationSelectedAssessmentId
+            .workspaceEntityId,
         userEntityId:
           this.props.evaluations.evaluationSelectedAssessmentId.userEntityId,
         workspaceMaterialId: this.props.materialAssignment.id,
@@ -214,17 +373,8 @@ class AssignmentEditor extends SessionStateComponent<
           requestDate: new Date().getTime(),
           requestText: this.state.literalEvaluation,
         },
-        onSuccess: () => {
-          this.setStateAndClear(
-            {
-              literalEvaluation: "",
-              grade: defaultGrade,
-              assignmentEvaluationType: "INCOMPLETE",
-            },
-            this.state.draftId
-          );
-        },
-        onFail: () => this.props.onClose(),
+        materialId: this.props.materialAssignment.materialId,
+        defaultGrade,
       });
     }
   };
@@ -313,6 +463,16 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
+   * handleAudioAssessmentChange
+   * @param audioAssessments
+   */
+  handleAudioAssessmentChange = (audioAssessments: AudioAssessment[]) => {
+    this.setState({
+      audioAssessments: audioAssessments,
+    });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -347,9 +507,33 @@ class AssignmentEditor extends SessionStateComponent<
             </label>
           )}
 
-          <CKEditor onChange={this.handleCKEditorChange}>
+          <CKEditor
+            onChange={this.handleCKEditorChange}
+            configuration={CKEditorConfig(this.props.locale.current)}
+          >
             {this.state.literalEvaluation}
           </CKEditor>
+        </div>
+
+        <div className="evaluation-modal__evaluate-drawer-row  form-element">
+          <AnimateHeight
+            height={
+              this.state.assignmentEvaluationType !== "INCOMPLETE" ? "auto" : 0
+            }
+          >
+            <label
+              htmlFor="assignmentEvaluationGrade"
+              className="evaluation-modal__evaluate-drawer-row-label"
+            >
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.audioAssessments"
+              )}
+            </label>
+            <Recorder
+              onChange={this.handleAudioAssessmentChange}
+              values={this.state.audioAssessments}
+            />
+          </AnimateHeight>
         </div>
 
         <div className="evaluation-modal__evaluate-drawer-row form-element">
@@ -400,6 +584,7 @@ class AssignmentEditor extends SessionStateComponent<
               "plugin.evaluation.evaluationModal.assignmentGradeLabel"
             )}
           </label>
+
           <div className="evaluation-modal__evaluate-drawer-row-data">
             <select
               id="assignmentEvaluationGrade"
@@ -422,14 +607,25 @@ class AssignmentEditor extends SessionStateComponent<
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
             )}
           </Button>
-          <Button
-            onClick={this.props.onClose}
-            buttonModifiers="evaluate-cancel"
-          >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
-          </Button>
+          {this.props.showAudioAssessmentWarningOnClose ? (
+            <WarningDialog onContinueClick={this.props.onClose}>
+              <Button buttonModifiers="evaluate-cancel">
+                {this.props.i18n.text.get(
+                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+                )}
+              </Button>
+            </WarningDialog>
+          ) : (
+            <Button
+              onClick={this.props.onClose}
+              buttonModifiers="evaluate-cancel"
+            >
+              {this.props.i18n.text.get(
+                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
+              )}
+            </Button>
+          )}
+
           {this.recovered && (
             <Button
               buttonModifiers="evaluate-remove-draft"
@@ -455,6 +651,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
+    locale: state.locales,
   };
 }
 
@@ -465,8 +662,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      saveAssignmentEvaluationGradeToServer,
-      saveAssignmentEvaluationSupplementationToServer,
+      updateCurrentStudentCompositeRepliesData,
     },
     dispatch
   );

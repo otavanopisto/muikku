@@ -132,6 +132,8 @@ $color-evaluation-card-header-background: #f8f8f8;
 $color-evaluation-modal-meta-background: #f8f8f8;
 $color-evaluation-item-border: #ebebeb;
 
+$color-evaluation-readonly-taskfield-background: #ebf7ff;
+
 // Wizard
 $color-wizard-todo: $color-grade-not-assessed;
 $color-wizard-doing: $color-incomplete;
@@ -443,7 +445,6 @@ $color-form-element-selected: #29b0c4;
 
 $color-form-element-autocomplete-highlight: #ffc200;
 
-
 // Form field input tag
 $color-form-element-selected-item-background:  $color-label-background;
 $color-form-element-tag-input-tag-border: #b1e8fe;
@@ -452,6 +453,9 @@ $color-form-element-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
 
 // Environment dialog form elements
 $color-env-dialog-form-element-border: #f8a1ce;
+
+// Matriculation Exam form elements
+$color-matriculation-dialog-form-element-border: #f8a1ce;
 
 // Autocomplete
 $color-autocomplete-list-border: #dcdcdc;

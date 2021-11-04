@@ -52,6 +52,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -454,16 +455,23 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Student not found").build();
     }
     
+    StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
+    
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
-    int coursesCompleted = transcriptOfRecordsController.countMandatoryCoursesForStudent(identifier);
+    int coursesCompleted = studentCourseStats.getNumMandatoryCompletedCourses();
     int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
-
-    if (coursesCompleted >= coursesRequired) {
+    
+    double creditPoints = studentCourseStats.getSumMandatoryCompletedCreditPoints();
+    double creditPointsRequired = transcriptOfRecordsController.getMandatoryCreditPointsRequiredForMatriculation();
+    
+    if ((coursesCompleted >= coursesRequired) || (creditPoints >= creditPointsRequired)) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
       result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);
       result.setCoursesCompleted(coursesCompleted);
       result.setCoursesRequired(coursesRequired);
+      result.setCreditPoints(creditPoints);
+      result.setCreditPointsRequired(creditPointsRequired);
     }
 
     return Response.ok(result).build();

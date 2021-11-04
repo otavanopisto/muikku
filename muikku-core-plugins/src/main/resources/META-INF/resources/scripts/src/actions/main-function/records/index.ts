@@ -316,7 +316,8 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
           return materials.map((material, index) => {
             return <MaterialContentNodeType>Object.assign(material, {
               evaluation: evaluations[index],
-              assignment: assignments[index]
+              assignment: assignments[index],
+              path: assignments[index].path,
             });
           });
         })()

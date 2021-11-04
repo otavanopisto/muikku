@@ -28,6 +28,7 @@
     "@types/redux-thunk": "^2.1.0",
     "@types/strophe.js": "^1.2.2",
     "@types/uuid": "^3.4.4",
+    "@types/dom-mediacapture-record": "^1.0.10",
     "audio-recorder-polyfill": "^0.1.2",
     "babel-polyfill": "^6.26.0",
     "brace": "^0.10.0",

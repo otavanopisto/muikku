@@ -7,7 +7,11 @@ import { StateType } from "~/reducers/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/evaluation.scss";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
-import { AssessmentRequest, EvaluationEnum } from "~/@types/evaluation";
+import {
+  AssessmentRequest,
+  EvaluationEnum,
+  EvaluationWorkspace,
+} from "~/@types/evaluation";
 import EvaluationDiaryEvent from "./evaluation-diary-event";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
@@ -24,12 +28,15 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
+import { WorkspaceType } from "~/reducers/workspaces";
+import Link from "~/components/general/link";
 
 interface EvaluationDrawerProps {
   i18n: i18nType;
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
+  currentWorkspace: WorkspaceType;
   selectedAssessment: AssessmentRequest;
   loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
@@ -39,9 +46,89 @@ interface EvaluationDrawerState {
   archiveStudentDialog: boolean;
   showWorkspaceEvaluationDrawer: boolean;
   showWorkspaceSupplemenationDrawer: boolean;
+  eventByIdOpened?: string;
+  openAllDiaryEntries: boolean;
+  openAllMaterialContent: boolean;
   edit?: boolean;
   showContent: boolean;
+  listOfDiaryIds: number[];
+  listOfAssignmentIds: number[];
+  diaryFetched: boolean;
 }
+
+export const CKEditorConfig = (locale: string) => ({
+  linkShowTargetTab: true,
+  allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
+  entities: false,
+  entities_latin: false,
+  entities_greek: false,
+  language: locale,
+  format_tags: "p;h3;h4",
+  colorButton_colors:
+    "000000,800000,8B4513,2F4F4F,008080,000080,4B0082,B22222,A52A2A,DAA520,006400,40E0D0,0000CD,800080,808080,FF0000,FF8C00,FFD700,008000,00FFFF,0000FF,EE82EE,A9A9A9,FFA07A,FFA500,FFFF00,00FF00,AFEEEE,ADD8E6,DDA0DD,D3D3D3,FFF0F5,FAEBD7,FFFFE0,F0FFF0,F0FFFF,F0F8FF,E6E6FA,FFFFFF",
+  height: 400,
+  mathJaxLib:
+    "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG",
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [
+    {
+      name: "clipboard",
+      items: ["Cut", "Copy", "Paste", "-", "Undo", "Redo"],
+    },
+    {
+      name: "basicstyles",
+      items: [
+        "Bold",
+        "Italic",
+        "Underline",
+        "Strike",
+        "Subscript",
+        "Superscript",
+        "-",
+        "RemoveFormat",
+      ],
+    },
+    "/",
+    {
+      name: "insert",
+      items: [
+        "Image",
+        "Audio",
+        "oembed",
+        "Muikku-mathjax",
+        "Table",
+        "Smiley",
+        "SpecialChar",
+      ],
+    },
+    { name: "links", items: ["Link", "Unlink"] },
+    { name: "colors", items: ["TextColor", "BGColor"] },
+    "/",
+    { name: "styles", items: ["Format"] },
+    {
+      name: "paragraph",
+      items: [
+        "NumberedList",
+        "BulletedList",
+        "-",
+        "Outdent",
+        "Indent",
+        "-",
+        "JustifyLeft",
+        "JustifyCenter",
+        "JustifyRight",
+        "JustifyBlock",
+        "-",
+        "BidiLtr",
+        "BidiRtl",
+      ],
+    },
+    { name: "tools", items: ["Maximize"] },
+  ],
+  removePlugins: "image,exportpdf",
+  resize_enabled: true,
+  extraPlugins: "divarea,image2,muikku-mathjax",
+});
 
 export class Evaluation extends React.Component<
   EvaluationDrawerProps,
@@ -59,7 +146,38 @@ export class Evaluation extends React.Component<
       showWorkspaceEvaluationDrawer: false,
       showWorkspaceSupplemenationDrawer: false,
       showContent: false,
+      openAllDiaryEntries: true,
+      openAllMaterialContent: false,
+      listOfDiaryIds: [],
+      listOfAssignmentIds: [],
+      diaryFetched: false,
     };
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   */
+  componentDidUpdate(
+    prevProps: EvaluationDrawerProps,
+    prevState: EvaluationDrawerState
+  ) {
+    if (
+      !this.state.diaryFetched &&
+      this.props.evaluation.evaluationDiaryEntries &&
+      this.props.evaluation.evaluationDiaryEntries.data &&
+      this.props.evaluation.evaluationDiaryEntries.state === "READY"
+    ) {
+      const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
+        (item) => item.id
+      );
+
+      this.setState({
+        diaryFetched: true,
+        listOfDiaryIds: numberList,
+      });
+    }
   }
 
   /**
@@ -132,6 +250,7 @@ export class Evaluation extends React.Component<
   handleWorkspaceEvaluationCloseDrawer = () => {
     if (this.state.edit) {
       this.setState({
+        eventByIdOpened: undefined,
         edit: false,
         showWorkspaceEvaluationDrawer: false,
       });
@@ -157,6 +276,7 @@ export class Evaluation extends React.Component<
   handleWorkspaceSupplementationEvaluationCloseDrawer = () => {
     if (this.state.edit) {
       this.setState({
+        eventByIdOpened: undefined,
         edit: false,
         showWorkspaceSupplemenationDrawer: false,
       });
@@ -202,20 +322,131 @@ export class Evaluation extends React.Component<
    * @param supplementation
    */
   handleClickEdit =
-    (supplementation?: boolean) =>
+    (eventId: string, supplementation?: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       if (supplementation) {
         this.setState({
           edit: true,
           showWorkspaceSupplemenationDrawer: true,
+          eventByIdOpened: eventId,
         });
       } else {
         this.setState({
           edit: true,
           showWorkspaceEvaluationDrawer: true,
+          eventByIdOpened: eventId,
         });
       }
     };
+
+  /**
+   * handleCloseAllDiaryEntries
+   */
+  handleCloseAllDiaryEntriesClick = () => {
+    this.setState({
+      listOfDiaryIds: [],
+    });
+  };
+
+  /**
+   * handleOpenAllDiaryEntries
+   */
+  handleOpenAllDiaryEntriesClick = () => {
+    if (
+      this.props.evaluation.evaluationDiaryEntries &&
+      this.props.evaluation.evaluationDiaryEntries.data
+    ) {
+      const numberList = this.props.evaluation.evaluationDiaryEntries.data.map(
+        (item) => item.id
+      );
+
+      this.setState({
+        listOfDiaryIds: numberList,
+      });
+    }
+  };
+
+  /**
+   * handleCloseAllMaterialContentEntriesClick
+   */
+  handleCloseAllMaterialContentClick = () => {
+    this.setState({
+      listOfAssignmentIds: [],
+    });
+  };
+
+  /**
+   * handleOpenAllMaterialContentClick
+   */
+  handleOpenAllMaterialContentClick = () => {
+    if (
+      this.props.evaluation.evaluationCurrentStudentAssigments &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data
+    ) {
+      const numberList =
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
+          (item) => item.id
+        );
+
+      this.setState({
+        listOfAssignmentIds: numberList,
+      });
+    }
+  };
+
+  /**
+   * handleCloseSpecificMaterialContent
+   * @param materialId
+   */
+  handleCloseSpecificMaterialContent = (materialId: number) => {
+    const listOfAssignmentIds = this.state.listOfAssignmentIds.filter(
+      (id) => id !== materialId
+    );
+
+    this.setState({
+      listOfAssignmentIds,
+    });
+  };
+
+  /**
+   * handleOpenDiaryEntryClick
+   * @param id
+   */
+  handleOpenDiaryEntryClick = (id: number) => {
+    let updatedList = [...this.state.listOfDiaryIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
+    this.setState({
+      listOfDiaryIds: updatedList,
+    });
+  };
+
+  /**
+   * handleOpenDiaryEntryClick
+   * @param id
+   */
+  handleOpenMaterialClick = (id: number) => {
+    let updatedList = [...this.state.listOfAssignmentIds];
+
+    const index = updatedList.findIndex((itemId) => itemId === id);
+
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
+
+    this.setState({
+      listOfAssignmentIds: updatedList,
+    });
+  };
 
   /**
    * Component render method
@@ -227,9 +458,18 @@ export class Evaluation extends React.Component<
     const evaluationDiaryEvents =
       this.props.evaluation.evaluationDiaryEntries.data &&
       this.props.evaluation.evaluationDiaryEntries.data.length > 0 ? (
-        this.props.evaluation.evaluationDiaryEntries.data.map((item) => (
-          <EvaluationDiaryEvent key={item.id} {...item} />
-        ))
+        this.props.evaluation.evaluationDiaryEntries.data.map((item) => {
+          const isOpen = this.state.listOfDiaryIds.includes(item.id);
+
+          return (
+            <EvaluationDiaryEvent
+              key={item.id}
+              open={isOpen}
+              {...item}
+              onClickOpen={this.handleOpenDiaryEntryClick}
+            />
+          );
+        })
       ) : (
         <div className="empty">
           <span>
@@ -286,27 +526,51 @@ export class Evaluation extends React.Component<
         </div>
       );
 
+    const workspaces = [...this.props.evaluation.evaluationWorkspaces];
+
+    /**
+     * This is because, when admin goes to workspace where he/she is not
+     * workspace teacher, the select list will be missing that current active workspace.
+     * So here we check if its not in the list and push currentWorkspace as temporary option
+     */
+    if (
+      this.props.currentWorkspace &&
+      !this.props.evaluation.evaluationWorkspaces.some(
+        (eWorkspace) => eWorkspace.id === this.props.currentWorkspace.id
+      )
+    ) {
+      workspaces.push({
+        ...this.props.currentWorkspace,
+      } as EvaluationWorkspace);
+    }
+
     /**
      * renderEvaluationAssessmentAssignments
      */
     const renderEvaluationAssessmentAssignments =
-      this.props.evaluation.evaluationCurrentSelectedRecords.data &&
-      this.props.evaluation.evaluationCurrentSelectedRecords.data.materials
+      this.props.evaluation.evaluationCurrentStudentAssigments.data &&
+      this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments
         .length > 0 ? (
-        this.props.evaluation.evaluationCurrentSelectedRecords.data.materials.map(
-          (item, i) => (
-            <EvaluationAssessmentAssignment
-              key={i}
-              workspace={this.props.evaluation.evaluationWorkspaces.find(
-                (eWorkspace) =>
-                  eWorkspace.id ===
-                  this.props.evaluation.evaluationSelectedAssessmentId
-                    .workspaceEntityId
-              )}
-              material={item}
-              gradeSystem={this.props.evaluation.evaluationGradeSystem[0]}
-            />
-          )
+        this.props.evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
+          (item, i) => {
+            const open = this.state.listOfAssignmentIds.includes(item.id);
+
+            return (
+              <EvaluationAssessmentAssignment
+                key={i}
+                workspace={workspaces.find(
+                  (eWorkspace) =>
+                    eWorkspace.id ===
+                    this.props.evaluation.evaluationSelectedAssessmentId
+                      .workspaceEntityId
+                )}
+                open={open}
+                onClickOpen={this.handleOpenMaterialClick}
+                assigment={item}
+                onSave={this.handleCloseSpecificMaterialContent}
+              />
+            );
+          }
         )
       ) : (
         <div className="empty">
@@ -333,12 +597,37 @@ export class Evaluation extends React.Component<
           <div className="evaluation-modal__content-wrapper">
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.assignmentsTitle"
-                )}
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.assignmentsTitle"
+                  )}
+                  {this.props.evaluation.evaluationCurrentStudentAssigments
+                    .state === "READY" &&
+                  this.props.evaluation.evaluationCompositeReplies.state ===
+                    "READY" ? (
+                    <div className="evaluation-modal__content-actions">
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleCloseAllMaterialContentClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.closeAll"
+                        )}
+                      </Link>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleOpenAllMaterialContentClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.openAll"
+                        )}
+                      </Link>
+                    </div>
+                  ) : null}
+                </>
               </div>
               <div className="evaluation-modal__content-body">
-                {this.props.evaluation.evaluationCurrentSelectedRecords
+                {this.props.evaluation.evaluationCurrentStudentAssigments
                   .state === "READY" &&
                 this.props.evaluation.evaluationCompositeReplies.state ===
                   "READY" ? (
@@ -350,9 +639,32 @@ export class Evaluation extends React.Component<
             </div>
             <div className="evaluation-modal__content">
               <div className="evaluation-modal__content-title">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalTitle"
-                )}
+                <>
+                  {this.props.i18n.text.get(
+                    "plugin.evaluation.evaluationModal.journalTitle"
+                  )}
+                  {this.props.evaluation.evaluationDiaryEntries.state ===
+                  "READY" ? (
+                    <div className="evaluation-modal__content-actions">
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleCloseAllDiaryEntriesClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.closeAll"
+                        )}
+                      </Link>
+                      <Link
+                        className="link link--evaluation-close-open"
+                        onClick={this.handleOpenAllDiaryEntriesClick}
+                      >
+                        {this.props.i18n.text.get(
+                          "plugin.evaluation.evaluationModal.openAll"
+                        )}
+                      </Link>
+                    </div>
+                  ) : null}
+                </>
               </div>
               <div className="evaluation-modal__content-body">
                 {this.props.evaluation.evaluationDiaryEntries.state ===
@@ -395,6 +707,7 @@ export class Evaluation extends React.Component<
                   onClose={this.handleWorkspaceEvaluationCloseDrawer}
                 >
                   <WorkspaceEditor
+                    eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"
                     )}
@@ -415,6 +728,7 @@ export class Evaluation extends React.Component<
                   }
                 >
                   <SupplementationEditor
+                    eventId={this.state.eventByIdOpened}
                     editorLabel={this.props.i18n.text.get(
                       "plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalSupplementationLabel"
                     )}
@@ -483,6 +797,7 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     status: state.status,
     evaluation: state.evaluations,
+    currentWorkspace: state.workspaces.currentWorkspace,
   };
 }
 

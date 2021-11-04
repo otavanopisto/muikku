@@ -51,6 +51,11 @@ public class WorkspaceMaterialRewriteRules extends HttpConfigurationProvider {
       .addRule(Join.path("/workspace/{workspaceUrlName}/materials.binary/{materialPath}").to("/workspaceBinaryMaterialsServlet?workspaceUrlname={workspaceUrlName}&workspaceMaterialUrlName={materialPath}")).where("materialPath")
         .matches("[a-zA-Z0-9/_.\\-]*");
 
+    configuration
+      .addRule(Join.path("/rest/workspace/audioanswer/{clipId}").to("/workspaceAudioAnswerServlet?clipId={clipId}"));
+    configuration
+      .addRule(Join.path("/rest/workspace/materialevaluationaudioassessment/{clipId}").to("/workspaceMaterialAudioEvaluationServlet?clipId={clipId}"));
+
     return configuration;
   }
 

@@ -57,10 +57,20 @@ public class PyramusMatriculationExam implements MatriculationExam {
     this.enrollmentDate = enrollmentDate;
   }
 
+  @Override
+  public boolean isCompulsoryEducationEligible() {
+    return compulsoryEducationEligible;
+  }
+
+  public void setCompulsoryEducationEligible(boolean compulsoryEducationEligible) {
+    this.compulsoryEducationEligible = compulsoryEducationEligible;
+  }
+
   private long id;
   private long startTime;
   private long endTime;
   private boolean eligible; 
   private boolean enrolled; 
   private long enrollmentDate;
+  private boolean compulsoryEducationEligible;
 }

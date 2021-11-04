@@ -3,6 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .evaluation-modal {
   background: $color-evaluation-modal-background;
   display: flex;
@@ -16,6 +18,16 @@
     flex-direction: row;
     overflow: hidden;
     padding: 0;
+  }
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
   }
 }
 
@@ -76,10 +88,9 @@
 }
 
 .evaluation-modal__content-wrapper {
-
   @include breakpoint($breakpoint-desktop) {
     height: calc(100vh - 55px);
-    overflow: auto;
+    overflow-y: scroll;
   }
 }
 
@@ -88,7 +99,29 @@
 }
 
 .evaluation-modal__content-title {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
   font-size: 1.375rem;
+  justify-content: space-between;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    flex-flow: row nowrap;
+  }
+}
+
+.evaluation-modal__content-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 10px;
+  }
 }
 
 .evaluation-modal__content-buttonset {
@@ -251,18 +284,49 @@
   // scss-lint:enable SelectorFormat
 }
 
+.evaluation-modal__event-literal-assessment,
+.evaluation-modal__item-literal-assessment-data {
+
+  p,
+  ul,
+  table {
+    margin: 10px 0;
+
+    &:first-child {
+      margin: 0 0 10px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  h3,
+  h4 {
+    margin: 15px 0 10px;
+
+    &:first-child {
+      margin: 0 0 10px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
+
 .evaluation-modal__event-literal-assessment {
   background-color: $color-evaluation-modal-meta-background;
   border-radius: 2px;
-  font-size: 13px;
   margin: 5px 10px 0;
-  padding: 5px 10px;
+  padding: 10px;
 }
 
 .evaluation-modal__event-buttonset {
   align-items: center;
   display: flex;
   justify-content: flex-end;
+  padding: 0 5px;
 }
 
 // Evaluation item listing
@@ -281,21 +345,18 @@
 
   // scss-lint:disable SelectorFormat
   &.state-EVALUATED {
-
     .button-pill--evaluate {
       background: $color-passed;
     }
   }
 
   &.state-SUPPLEMENTED {
-
     .button-pill--evaluate {
       background: $color-pending;
     }
   }
 
   &.state-INCOMPLETE {
-
     .button-pill--evaluate {
       background: $color-incomplete;
     }
@@ -399,13 +460,19 @@
   margin: 0 10px;
 }
 
-.evaluation-modal__item-literal-assessment {
+.evaluation-modal__item-literal-assessment,
+.evaluation-modal__item-verbal-assessment {
   background: $color-evaluation-modal-meta-background;
   font-size: 0.825rem;
   padding: 10px;
+
+  .voice-recorder__remove-button {
+    display: none;
+  }
 }
 
-.evaluation-modal__item-literal-assessment-label {
+.evaluation-modal__item-literal-assessment-label,
+.evaluation-modal__item-verbal-assessment-label {
   font-weight: 600;
 }
 
@@ -456,7 +523,6 @@
 }
 
 .evaluation-modal__evaluate-drawer-header--assignment {
-
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-assignment;
   }
@@ -467,7 +533,6 @@
 }
 
 .evaluation-modal__evaluate-drawer-header--workspace {
-
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-info;
   }
@@ -478,7 +543,6 @@
 }
 
 .evaluation-modal__evaluate-drawer-header--supplementation {
-
   .evaluation-modal__evaluate-drawer-header-title {
     color: $color-incomplete;
   }
@@ -516,7 +580,7 @@
 }
 
 .evaluation-modal__evaluate-drawer-row {
-  margin: 10px 0;
+  margin: 10px 0 15px;
 }
 
 .evaluation-modal__evaluate-drawer-row--buttons {
