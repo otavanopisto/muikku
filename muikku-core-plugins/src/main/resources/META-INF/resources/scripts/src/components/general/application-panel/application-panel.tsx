@@ -3,6 +3,7 @@ import Tabs, { TabType } from "~/components/general/tabs";
 import ApplicationPanelBody from "./components/application-panel-body";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
+import { createAllTabs } from "~/helper-functions/tabs"
 
 interface ApplicationPanelProps {
   modifier?: string;
@@ -28,21 +29,6 @@ export default class ApplicationPanel extends React.Component<
     super(props);
   }
 
-  /**  Creates an array of tabs from given panelTabs
-  *
-  * @returns Tab identifiers as a string array
-  */
-
-  createAllTabs = () => {
-    const panelTabs = this.props.panelTabs;
-    const tabs = []
-    for (let i = 0; i < panelTabs.length; i++) {
-      tabs.push(panelTabs[i].id);
-    }
-
-    return tabs;
-  }
-
   render() {
 
     return (
@@ -65,7 +51,7 @@ export default class ApplicationPanel extends React.Component<
           </h1>
           {this.props.panelTabs ? (
             <Tabs
-              allTabs={this.createAllTabs()}
+              allTabs={createAllTabs(this.props.panelTabs)}
               modifier="application-panel"
               tabs={this.props.panelTabs}
               onTabChange={this.props.onTabChange}
