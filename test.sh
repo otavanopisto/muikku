@@ -30,7 +30,7 @@ else
   if [ "$DEBUG" == "true" ] ; then 
     mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug ${@:5}
   else
-    mvn clean verify -Pui-it -Dit.test=$TEST ${@:4}
+    mvn clean verify -Pui-it -Dit.test=$TEST ${@:5}
   fi;
 fi;
 popd
