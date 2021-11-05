@@ -78,7 +78,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
       waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
       waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-      waitForVisible(".material-page__field-answer-synchronizer--saved");
+      waitForPresent(".material-page__textfield-wrapper.state-SAVED");
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -182,7 +182,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
@@ -446,7 +446,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
