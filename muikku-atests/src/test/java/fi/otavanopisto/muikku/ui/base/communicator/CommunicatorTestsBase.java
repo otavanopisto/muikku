@@ -30,19 +30,24 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick("a.button.button--primary-function");
         waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
+        waitAndClick(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
         sendKeys(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input", "Test");
         waitAndClick(".autocomplete__recipient");
+
         waitForVisible(".env-dialog__input--new-message-title");
-//      TODO: Recipient input hijacks input after first letter. What do?
-        sendKeys(".env-dialog__input--new-message-title", "T");
-        waitAndClick("#cke_1_contents");
+        waitAndClickWithAction(".env-dialog__input--new-message-title");
+        waitUntilElementGoesAway(".autocomplete__list", 5);
+        waitAndClickWithAction(".env-dialog__input--new-message-title");
+        sendKeys(".env-dialog__input--new-message-title", "Test message");
+        
+        waitForCKReady();
         addTextToCKEditor("Communicator test");
         waitAndClick(".button--dialog-execute");
         waitForNotVisible(".env-dialog__wrapper");
         getWebDriver().get("about:blank");
         navigate("/communicator#sent", false);
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
-        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test message");
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -50,11 +55,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
-        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test message");
         
         waitAndClick("div.application-list__item.message");
         waitForPresent(".application-list__item-content-header");
-        assertText(".application-list__item-content-header", "T");
+        assertText(".application-list__item-content-header", "Test message");
         waitForPresent(".application-list__item-content-body");
         assertText(".application-list__item-content-body", "Communicator test");
       }finally{

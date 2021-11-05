@@ -757,6 +757,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
+  protected void waitAndClickWithAction(String selector) {
+    new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
+  }
+
   
   protected void scrollToEnd() {
     ((JavascriptExecutor) getWebDriver()).executeScript("window.scrollTo(0, document.body.scrollHeight)");
@@ -992,6 +996,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         int elementCount = countElements(selector);
         if (elementCount > size) {
           return true;
+        }
+        return false;
+      }
+    });
+  }
+
+  protected void waitUntilElementGoesAway(String selector, long timeOut) {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(timeOut)).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          if (elements.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
         }
         return false;
       }
@@ -1746,7 +1765,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     } else {
       waitAndClick(".cke_contents");
       sendKeys(".cke_wysiwyg_div", text);
-      getWebDriver().switchTo().defaultContent();
     }
   }
     
@@ -1754,6 +1772,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
     String jsString = String.format("$('%s').html('%s');", selector, value );
     js.executeScript(jsString);
+  }
+
+  protected void waitForCKReady() {
+    String instanceName = getAttributeValue("textarea.cke", "name");
+    waitForCKReady(instanceName);
   }
   
   protected void waitForCKReady(final String instanceName) {

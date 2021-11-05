@@ -2,6 +2,10 @@
 BUILD=$1
 TEST=$2
 DEBUG=$3
+FULL=$4
+TESTS=("AnnouncerTestsIT" "CommunicatorTestsIT" "CourseAnnouncerTestsIT" "CourseJournalPageTestsIT" "CourseManagementTestsIT" 
+  "CourseAccessTestsIT" "CourseTestsIT" "CourseMaterialsPageTestsIT" "CourseMaterialsManagementTestsIT" "CoursePickerTestsIT" "CourseUsersTestsIT" "DiscussionTestsIT" 
+  "FlagTestsIT" "GuiderTestsIT" "IndexPageTestsIT" "NewEvaluationTestsIT" "ToRTestsIT" "UserTestsIT")
 
 if [ "$BUILD" == "true" ] ; then 
   echo "-------------------------"
@@ -13,13 +17,20 @@ fi;
 echo "-------------------------"
 echo "Running tests"
 echo "-------------------------"
-
-pushd .
-cd muikku-atests
-if [ "$DEBUG" == "true" ] ; then 
-  mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug ${@:4}
+if [ "$FULL" = "true" ] ; then
+  pushd .
+  cd muikku-atests
+  for i in "${TESTS[@]}"
+  do
+    mvn clean verify -Pui-it -Dit.test=$i ${@:5} || exit 1
+  done
 else
-  mvn clean verify -Pui-it -Dit.test=$TEST ${@:4}
+  pushd .
+  cd muikku-atests
+  if [ "$DEBUG" == "true" ] ; then 
+    mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug ${@:5}
+  else
+    mvn clean verify -Pui-it -Dit.test=$TEST ${@:4}
+  fi;
 fi;
-
 popd
