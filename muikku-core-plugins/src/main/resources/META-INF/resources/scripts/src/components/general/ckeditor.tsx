@@ -76,6 +76,7 @@ const extraConfig = (props: CKEditorProps) => ({
   resize_enabled: false,
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins: "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
+  removePlugins: 'exportpdf',
 });
 
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {

@@ -31,18 +31,16 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (props) =>
   if (userGroupsState === "LOADING") {
     return null;
   } else if (userGroupsState === "ERROR") {
-    //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-    //message but here we got to put something
     return (
       <div className="empty">
-        <span>{"ERROR"}</span>
+        <span>{props.i18n.text.get("plugin.organization.userGroups.error.loadError")}</span>
       </div>
     );
   } else if (userGroups.length === 0) {
     return (
       <div className="empty">
         <span>
-          {i18n.text.get("plugin.coursepicker.searchResult.empty")}
+          {props.i18n.text.get("plugin.organization.userGroups.searchResult.empty")}
         </span>
       </div>
     );

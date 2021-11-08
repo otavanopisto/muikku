@@ -8,6 +8,7 @@ import Workspace from './workspaces/workspace';
 import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/ref-wrapper.scss'
 import { loadMoreOrganizationWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
+import Button from '~/components/general/button';
 
 import { WorkspacesStateType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
 
@@ -20,20 +21,15 @@ interface OrganizationWorkspacesProps {
 }
 
 const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (props) => {
-
   const { i18n, workspacesState, workspacesHasMore, loadMoreOrganizationWorkspacesFromServer, workspaces } = props;
   const loadMoreWorkspacesRef = useInfinityScroll(workspacesHasMore, workspacesState, loadMoreOrganizationWorkspacesFromServer);
-
   if (workspacesState === "LOADING") {
     return null;
   } else if (workspacesState === "ERROR") {
-    //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-    //message but here we got to put something
-    return <div className="empty"><span>{"ERROR"}</span></div>
+    return <div className="empty"><span>{props.i18n.text.get("plugin.organization.workspaces.error.loadError")}</span></div>
   } else if (workspaces.length === 0) {
-    return <div className="empty"><span>{i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
+    return <div className="empty"><span>{props.i18n.text.get("plugin.organization.workspaces.searchResult.empty")}</span></div>
   }
-
   return (
     <ApplicationList>
       {workspaces.map((workspace: WorkspaceType, index) => {
