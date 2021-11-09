@@ -16,7 +16,7 @@ interface CourseProps {
   i18n: i18nType,
   status: StatusType,
   workspace: WorkspaceType,
-  activeFilters: WorkspacesActiveFiltersType
+  activeFilters: WorkspacesActiveFiltersType,
 }
 
 interface CourseState {

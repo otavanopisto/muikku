@@ -5,6 +5,8 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import AutosizeInput from "react-input-autosize";
 import { UsedAs } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
+import { createFieldSavedStateClass } from "../base/index";
 
 interface TextFieldProps {
   type: string;
@@ -39,15 +41,17 @@ interface TextFieldProps {
 interface TextFieldState {
   value: string;
 
-  //This state comes from the context handler in the base
-  //We can use it but it's the parent managing function that modifies them
-  //We only set them up in the initial state
+  // This state comes from the context handler in the base
+  // We can use it but it's the parent managing function that modifies them
+  // We only set them up in the initial state
   modified: boolean;
   synced: boolean;
   syncError: string;
 
-  //The text field might have a answer state of unknown pass or fail
+  // The text field might have a answer state of unknown pass or fail
   answerState: "UNKNOWN" | "PASS" | "FAIL";
+
+  fieldSavedState: FieldStateStatus;
 }
 
 export default class TextField extends React.Component<
@@ -58,21 +62,40 @@ export default class TextField extends React.Component<
     super(props);
 
     this.state = {
-      //Set the initial value
+      // Set the initial value
       value: props.initialValue || "",
-      //modified synced and syncerror are false, true and null by default
+      // modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
 
-      //the intial answer state is totally unknown, not UNKNOWN but literally unknown if it's even UNKNOWN
+      // the intial answer state is totally unknown, not UNKNOWN but literally unknown if it's even UNKNOWN
       answerState: null,
+
+      fieldSavedState: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
+    this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
+
+  /**
+   * onFieldSavedStateChange
+   * @param savedState
+   */
+  onFieldSavedStateChange(savedState: FieldStateStatus){
+    this.setState({
+      fieldSavedState: savedState
+    });
+  }
+
+  /**
+   * shouldComponentUpdate
+   * @param nextProps
+   * @param nextState
+   */
   shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState) {
-    //So we only update if these props change and any of the state
+    // So we only update if these props change and any of the state
     return (
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
@@ -86,12 +109,16 @@ export default class TextField extends React.Component<
       nextProps.invisible !== this.props.invisible
     );
   }
-  //when the input change
+
+  /**
+   * onInputChange - when the input change
+   * @param e
+   */
   onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!this.props.content) {
       return;
     }
-    //we call the on change function with the context and the name
+    // we call the on change function with the context and the name
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState(
@@ -101,37 +128,42 @@ export default class TextField extends React.Component<
       this.checkAnswers
     );
   }
+
+  /**
+   * checkAnswers
+   * @param param0
+   */
   checkAnswers() {
-    //if the property is not there we cancel
+    // if the property is not there we cancel
     if (!this.props.checkAnswers || !this.props.content) {
       return;
     }
 
-    //Check for all the correct answers and filter which ones are set to be correct
+    // Check for all the correct answers and filter which ones are set to be correct
     let actuallyCorrectAnswers = this.props.content
       ? this.props.content.rightAnswers.filter((a) => a.correct)
       : [];
 
-    //If there's not a single one that has the flag of being the correct answer
+    // If there's not a single one that has the flag of being the correct answer
     if (!actuallyCorrectAnswers.length) {
-      //the answer state is UNKNOWN
+      // the answer state is UNKNOWN
       if (this.state.answerState !== "UNKNOWN") {
         this.setState({
           answerState: "UNKNOWN",
         });
-        //The rightness is sent as unknown to the function
+        // The rightness is sent as unknown to the function
         this.props.onAnswerChange(this.props.content.name, null);
       }
       return;
     }
 
-    //Otherwise we gotta check each
+    // Otherwise we gotta check each
     let isCorrect: boolean;
     let answer;
 
-    //We loop in the correct answers
+    // We loop in the correct answers
     for (answer of actuallyCorrectAnswers) {
-      //And compare them according to the rules
+      // And compare them according to the rules
       let comparerAnswer = answer.text;
       let comparerValue = this.state.value;
       if (!answer.caseSensitive) {
@@ -144,13 +176,13 @@ export default class TextField extends React.Component<
       }
 
       isCorrect = comparerValue === comparerAnswer;
-      //if we get a match we break
+      // if we get a match we break
       if (isCorrect) {
         break;
       }
     }
 
-    //Now we compare and call the rightness change function
+    // Now we compare and call the rightness change function
     if (isCorrect && this.state.answerState !== "PASS") {
       this.setState({
         answerState: "PASS",
@@ -163,43 +195,57 @@ export default class TextField extends React.Component<
       this.props.onAnswerChange(this.props.content.name, false);
     }
   }
-  //We check for rightness on mount and update
+
+  /**
+   * componentDidMount
+   */
   componentDidMount() {
     this.checkAnswers();
   }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   */
   componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState) {
     this.checkAnswers();
   }
+
+  /**
+   * render
+   * @returns
+   */
   render() {
     if (!this.props.content) {
       return null;
     }
-    //This is the component that provides the summary of the correct answers
+    // This is the component that provides the summary of the correct answers
     let correctAnswersummaryComponent = null;
-    //a boolean representing whether the answer is correct and we are actually checking for it
+    // a boolean representing whether the answer is correct and we are actually checking for it
     let checkAnswersAndAnswerIsCorrect =
       this.props.checkAnswers && this.state.answerState === "PASS";
-    //If we are told to display the correct answers (we don't do that if the answer is checked and right because it's pointless)
-    //UNKNOWN also gets there, so the correct answers will be shown even if the state is unknown
+    // If we are told to display the correct answers (we don't do that if the answer is checked and right because it's pointless)
+    // UNKNOWN also gets there, so the correct answers will be shown even if the state is unknown
     if (
       this.props.displayCorrectAnswers &&
       this.props.content &&
       this.props.content.rightAnswers &&
       !checkAnswersAndAnswerIsCorrect
     ) {
-      //find the actually correct answers
+      // find the actually correct answers
       let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(
         (a) => a.correct
       );
-      //answers are example is for language, this happens if we have no correct answers
+      // answers are example is for language, this happens if we have no correct answers
       let answersAreExample = false;
-      //if we don't have correct answers
+      // if we don't have correct answers
       if (!actuallyCorrectAnswers.length) {
-        //We just set them all as right and make it be an example, this happens for example when the answer state is UNKNOWN
+        // We just set them all as right and make it be an example, this happens for example when the answer state is UNKNOWN
         answersAreExample = true;
         actuallyCorrectAnswers = this.props.content.rightAnswers;
       }
-      //We create the component
+      // We create the component
       correctAnswersummaryComponent = actuallyCorrectAnswers.length ? (
         <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
@@ -317,7 +363,7 @@ export default class TextField extends React.Component<
       );
     }
 
-    // Read only version for evaluation tool. PLEASE ADD STYLES
+    // Read only version for evaluation tool.
     else if (this.props.readOnly && this.props.usedAs === "evaluationTool") {
       const component = (
         <span
@@ -370,13 +416,16 @@ export default class TextField extends React.Component<
       );
     }
 
-    //Standard modifiable version
+    let fieldSavedStateClass = createFieldSavedStateClass(this.state.fieldSavedState);
+
+    // Standard modifiable version
     return (
-      <span className="material-page__textfield-wrapper">
+      <span className={`material-page__textfield-wrapper ${fieldSavedStateClass}`}>
         <Synchronizer
           synced={this.state.synced}
           syncError={this.state.syncError}
           i18n={this.props.i18n}
+          onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         {this.props.content.hint ? (
           <Dropdown

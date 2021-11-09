@@ -32,12 +32,12 @@ import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
 
 import equals = require("deep-equal");
-import Tabs from "~/components/general/tabs";
+import Tabs, {TabType} from "~/components/general/tabs";
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import Link from "~/components/general/link";
-import { PageLocation, UploadingValue } from "../../../@types/shared";
+import { PageLocation, UploadingValue } from "~/@types/shared";
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
@@ -148,6 +148,7 @@ const CKEditorConfig = (
         "Muikku-mathjax",
         "Table",
         "Iframe",
+        "Smiley",
         "SpecialChar",
         "CreateDiv",
       ],
@@ -189,7 +190,7 @@ const CKEditorConfig = (
     },
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
-  removePlugins: "image",
+  removePlugins: "image,exportpdf",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
@@ -851,10 +852,17 @@ class MaterialEditor extends React.Component<
       </div>
     );
 
-    const allTabs = [
+    const closeDialog =  <ButtonPill
+      buttonModifiers={["material-page-close-editor", "material-page-close-mobile-editor" ]}
+      onClick={this.onClickClose}
+      icon="arrow-left"
+  />;
+
+    const allTabs: TabType[] = [
       {
         id: "content",
         type: "material-editor",
+        mobileAction: closeDialog,
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
@@ -906,6 +914,7 @@ class MaterialEditor extends React.Component<
       allTabs.push({
         id: "metadata",
         type: "material-editor",
+        mobileAction: closeDialog,
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
@@ -966,6 +975,7 @@ class MaterialEditor extends React.Component<
       allTabs.push({
         id: "attachments",
         type: "material-editor",
+        mobileAction: closeDialog,
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),

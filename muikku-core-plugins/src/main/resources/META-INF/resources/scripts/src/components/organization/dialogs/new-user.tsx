@@ -163,9 +163,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       }
     }
   }
-  // componentDidMount() {
-  //   this.setState({user: {role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier}});
-  // }
 
   render() {
     let content = (closePortal: () => any) =>

@@ -140,7 +140,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -162,7 +162,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitUntilAnimationIsDone(".rah-static");
         waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
         assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
-        waitAndClick(".evaluation-modal .material-page--evaluation-material-page.material-page--SUBMITTED .button-pill--evaluate");
+        waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
         waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
         addTextToCKEditor("Test evaluation.");

@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.165-SNAPSHOT</version>
+    <version>1.1.171-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -290,7 +290,7 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <nodeVersion>v14.15.4</nodeVersion>
+              <nodeVersion>v14.18.1</nodeVersion>
             </configuration>
           </execution>
           <execution>
