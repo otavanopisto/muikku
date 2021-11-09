@@ -454,6 +454,14 @@ public class CeeposRESTService {
     ceeposPayload.setNotificationAddress(getSetting("notificationAddress"));
     ceeposPayload.setHash(calculateHash(ceeposPayload));
     
+    try {
+      String json = new ObjectMapper().writeValueAsString(ceeposPayload);
+      logger.info("Ceepos payment request: " + json);
+    }
+    catch (JsonProcessingException e) {
+      logger.log(Level.SEVERE, "Unable to deserialize Ceepos payment request", e);
+    }
+    
     // Call Ceepos
     
     Client client = ClientBuilder.newClient();
@@ -472,6 +480,13 @@ public class CeeposRESTService {
     // Check payment being in progress
     
     CeeposPaymentResponseRestModel ceeposPayloadResponse = response.readEntity(CeeposPaymentResponseRestModel.class);
+    try {
+      String json = new ObjectMapper().writeValueAsString(ceeposPayloadResponse);
+      logger.info("Ceepos payment response: " + json);
+    }
+    catch (JsonProcessingException e) {
+      logger.log(Level.SEVERE, "Unable to deserialize Ceepos payment request", e);
+    }
     if (ceeposPayloadResponse.getStatus() != PAYMENT_PROCESSING) {
       logger.severe(String.format("Unexpected payment response state %d", ceeposPayloadResponse.getStatus()));
       // TODO Figure out what went wrong
@@ -479,7 +494,7 @@ public class CeeposRESTService {
     }
     boolean validHash = validateHash(ceeposPayloadResponse);
     if (!validHash) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response hash fail").build();
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response hash failure").build();
     }
     
     // Update order payment address
@@ -588,11 +603,11 @@ public class CeeposRESTService {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       json = objectMapper.writeValueAsString(paymentConfirmation);
+      logger.info(String.format("Received payment confirmation: %s", json));
     }
     catch (JsonProcessingException e) {
-      logger.log(Level.SEVERE, "Received payment confirmation but cannot parse", e);
+      logger.log(Level.SEVERE, "Unable to deserialize payment response", e);
     }
-    logger.info(String.format("Received payment confirmation: %s", json));
 
     // Validate payload
     
@@ -724,7 +739,7 @@ public class CeeposRESTService {
     for (CeeposProductRestModel ceeposProduct : ceeposPayment.getProducts()) {
       sb.append(ceeposProduct.getCode());
       sb.append("&");
-      sb.append(ceeposProduct.getPrice() == null || ceeposProduct.getPrice() <= 0 ? "" : ceeposProduct.getPrice());
+      sb.append(ceeposProduct.getPrice() == null ? "" : ceeposProduct.getPrice());
       sb.append("&");
       sb.append(StringUtils.defaultIfEmpty(ceeposProduct.getDescription(), ""));
       sb.append("&");
