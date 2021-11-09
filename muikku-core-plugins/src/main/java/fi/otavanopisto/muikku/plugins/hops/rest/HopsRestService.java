@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -140,6 +141,59 @@ public class HopsRestService {
     }
 
     return Response.ok(formData).build();
+  }
+  
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/hopsGoals")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    HopsGoals hops = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
+    return hops == null ? Response.noContent().build() : Response.ok(hops.getGoals()).build();  
+  }
+  
+  @POST
+  @Path("/student/{STUDENTIDENTIFIER}/hopsGoals")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createOrUpdateHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String goals) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Validate JSON
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      objectMapper.readTree(goals);
+    }
+    catch (IOException e) {
+      logger.log(Level.WARNING, String.format("Failed to deserialize %s", goals));
+    }
+    
+    // Create or update
+    
+    HopsGoals hopsGoals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
+    if (hopsGoals == null) {
+      hopsGoals = hopsController.createHopsGoals(studentIdentifier, goals);
+    }
+    else {
+      hopsGoals = hopsController.updateHopsGoals(hopsGoals, studentIdentifier, goals);
+    }
+
+    return Response.ok(goals).build();
   }
 
   @GET

@@ -7,9 +7,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsDAO;
+import fi.otavanopisto.muikku.plugins.hops.dao.HopsGoalsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -21,6 +23,9 @@ public class HopsController {
 
   @Inject
   private HopsDAO hopsDAO;
+  
+  @Inject
+  private HopsGoalsDAO hopsGoalsDAO;
 
   @Inject
   private HopsHistoryDAO hopsHistoryDAO;
@@ -42,6 +47,22 @@ public class HopsController {
   
   public Hops findHopsByStudentIdentifier(String studentIdentifier) {
     return hopsDAO.findByStudentIdentifier(studentIdentifier);
+  }
+  
+  public HopsGoals findHopsGoalsByStudentIdentifier(String studentIdentifier) {
+    return hopsGoalsDAO.findByStudentIdentifier(studentIdentifier);
+  }
+  
+  public HopsGoals createHopsGoals(String studentIdentifier, String data) {
+    HopsGoals hopsGoals = hopsGoalsDAO.create(studentIdentifier, data);
+    hopsGoalsDAO.create(studentIdentifier, sessionController.getLoggedUser().toId());
+    return hopsGoals;
+  }
+
+  public HopsGoals updateHopsGoals(HopsGoals hopsGoals, String studentIdentifier, String goals) {
+    hopsGoalsDAO.updateGoalsData(hopsGoals, goals);
+    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId());
+    return hopsGoals;
   }
   
   public List<HopsHistory> listHistoryByStudentIdentifier(String studentIdentifier) {
