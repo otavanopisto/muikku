@@ -115,7 +115,7 @@ public class CeeposRESTService {
    * mApi().ceepos.order.create({
    *   'studentIdentifier': 'STUDENT-123',
    *   'product': {
-   *     'code': 'PRODUCT0001'
+   *     'Code': 'PRODUCT0001'
    *   }
    * });
    * 
@@ -126,9 +126,9 @@ public class CeeposRESTService {
    *   'studentIdentifier': 'STUDENT-123',
    *   'studentEmail': 'student@email.com',
    *   'product': {
-   *     'code': 'PRODUCT0001',
-   *     'description': 'Product description to be shown in UI',
-   *     'price': 5000 // Product price in cents
+   *     'Code': 'PRODUCT0001',
+   *     'Description': 'Product description to be shown in UI',
+   *     'Price': 5000 // Product price in cents
    *   }
    *   'state': CREATED
    *   'created': 2021-10-28T08:57:57+03:00 
@@ -204,9 +204,9 @@ public class CeeposRESTService {
    *  'studentIdentifier': 'STUDENT-123',
    *  'studentEmail': 'student@email.com',
    *  'product': {
-   *    'code': 'PRODUCT0001',
-   *    'description': 'Product description to be shown in UI',
-   *    'price': 5000 // Product price in cents
+   *    'Code': 'PRODUCT0001',
+   *    'Description': 'Product description to be shown in UI',
+   *    'Price': 5000 // Product price in cents
    *  }
    *  'state': CREATED | ONGOING | PAID | CANCELED | ERRORED | COMPLETE
    *  'created': 2021-10-28T08:57:57+03:00 
@@ -273,9 +273,9 @@ public class CeeposRESTService {
    *   'studentIdentifier': 'STUDENT-123',
    *   'studentEmail': 'student@email.com',
    *   'product': {
-   *     'code': 'PRODUCT0001',
-   *     'description': 'Product description to be shown in UI',
-   *     'price': 5000 // Product price in cents
+   *     'Code': 'PRODUCT0001',
+   *     'Description': 'Product description to be shown in UI',
+   *     'Price': 5000 // Product price in cents
    *   }
    *   'state': CREATED | ONGOING | PAID | CANCELED | ERRORED | COMPLETE
    *   'created': 2021-10-28T08:57:57+03:00 
@@ -333,9 +333,9 @@ public class CeeposRESTService {
    * RESPONSE:
    * 
    * [{
-   *   'code': 'XXXX',
-   *   'description': 'Some product to buy',
-   *   'price': 5000, // price in cents
+   *   'Code': 'XXXX',
+   *   'Description': 'Some product to buy',
+   *   'Price': 5000, // price in cents
    * },
    * ...]
    * 
@@ -473,6 +473,12 @@ public class CeeposRESTService {
     // Check success response
     
     if (response.getStatus() != 200) {
+      logger.severe(String.format("Ceepos payment request response: %d", response.getStatus()));
+      logger.severe("Ceepos payment request response entity: " + response.getEntity());
+      if (response.getEntity() != null) {
+        logger.severe("Ceepos payment request response entity: " + response.getEntity().toString());
+      }
+      logger.severe("Ceepos payment request response: " + response.toString());
       // TODO Figure out what went wrong
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
