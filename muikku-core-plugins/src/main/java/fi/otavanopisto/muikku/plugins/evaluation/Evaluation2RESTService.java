@@ -1100,11 +1100,12 @@ public class Evaluation2RESTService {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
+
     List<RestAssessmentRequest> restAssessmentRequests = new ArrayList<RestAssessmentRequest>();
     if (workspaceEntityId == null) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
 
       // List assessment requests by staff member
       
@@ -1115,11 +1116,18 @@ public class Evaluation2RESTService {
       }
     }
     else {
-      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       // List assessment requests by workspace
       
       List<String> workspaceStudentIdentifiers = new ArrayList<String>();
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
 
       List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
