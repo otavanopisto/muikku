@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2016,7 +2017,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    
     byte[] content = answerFile.getContent();
     if (content == null) {
       Long userEntityId = workspaceMaterialReply.getUserEntityId();
@@ -2038,15 +2038,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
+    String filename = new String(answerFile.getFileName().getBytes(Charset.forName("US-ASCII")));
     if (StringUtils.isEmpty(answerFile.getContentType())) {
       return Response.ok(content)
-        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .header("Content-Disposition", "attachment; filename=\"" + filename.replaceAll("\"", "\\\"") + "\"")
         .build();
     }
     else {
       return Response.ok(content)
         .type(answerFile.getContentType())
-        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+        .header("Content-Disposition", "attachment; filename=\"" + filename.replaceAll("\"", "\\\"") + "\"")
         .build();
     }
   }
