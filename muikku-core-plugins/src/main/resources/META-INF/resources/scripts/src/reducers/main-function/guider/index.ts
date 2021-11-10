@@ -4,6 +4,7 @@ import { WorkspaceType, WorkspaceListType, ActivityLogType } from "~/reducers/wo
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
 
+
 export interface GuiderUserLabelType {
   id: number,
   name: string,
@@ -13,12 +14,13 @@ export interface GuiderUserLabelType {
 }
 
 export type GuiderUserLabelListType = Array<GuiderUserLabelType>;
-
+export type GuiderUserGroupListType = Array<UserGroupType>;
 export type GuiderWorkspaceType = WorkspaceType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
 export interface GuiderFiltersType {
   labels: GuiderUserLabelListType,
+  userGroups: GuiderUserGroupListType,
   workspaces: GuiderWorkspaceListType
 }
 
@@ -27,6 +29,7 @@ export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 export interface GuiderActiveFiltersType {
   workspaceFilters: Array<number>,
   labelFilters: Array<number>,
+  userGroupFilters: Array<number>
   query: string
 }
 export interface GuiderStudentType extends UserWithSchoolDataType {
@@ -105,11 +108,13 @@ export default function guider(state: GuiderType = {
   currentState: "READY",
   availableFilters: {
     labels: [],
-    workspaces: []
+    workspaces: [],
+    userGroups: []
   },
   activeFilters: {
     workspaceFilters: [],
     labelFilters: [],
+    userGroupFilters: [],
     query: ""
   },
   students: [],
@@ -273,6 +278,10 @@ export default function guider(state: GuiderType = {
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, { workspaces: action.payload })
+    });
+  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS") {
+    return Object.assign({}, state, {
+      availableFilters: Object.assign({}, state.availableFilters, { userGroups: action.payload })
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL") {
     return Object.assign({}, state, {
