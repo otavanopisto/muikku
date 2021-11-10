@@ -2,21 +2,24 @@ package fi.otavanopisto.muikku.plugins.ceepos.rest;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Single product within a Ceepos payment (see API documentation chapter 3.2.1).
  * Some optional fields have been omitted as they are (for now) irrelevant for our purposes.
  */
+@JsonPropertyOrder({ "Code", "Amount", "Price", "Description" })
 public class CeeposProductRestModel {
   
   public CeeposProductRestModel() {
   }
 
-  public CeeposProductRestModel(String code, String description, Integer price) {
+  public CeeposProductRestModel(String code, Integer amount, Integer price, String description) {
     Code = code;
-    Description = description;
+    Amount = amount;
     Price = price;
+    Description = description;
   }
 
   @JsonGetter("Code")
@@ -49,8 +52,21 @@ public class CeeposProductRestModel {
     Price = price;
   }
 
+  @JsonGetter("Amount")
+  public Integer getAmount() {
+    return Amount;
+  }
+
+  @JsonSetter("Amount")
+  public void setAmount(Integer amount) {
+    Amount = amount;
+  }
+
   @JsonProperty("Code")
   private String Code;                 // required; product code in Ceepos webstore
+
+  @JsonProperty("Amount")
+  private Integer Amount;               // optional; number of products to buy
 
   @JsonProperty("Description")
   private String Description;          // optional; 100 characters of free-form data to describe the product

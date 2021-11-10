@@ -2,11 +2,13 @@ package fi.otavanopisto.muikku.plugins.ceepos.rest;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Response object to a payment request to Ceepos (see API documentation chapter 3.2.4).
  */
+@JsonPropertyOrder({ "Id", "Status", "Reference", "Action", "PaymentAddress", "Hash" })
 public class CeeposPaymentResponseRestModel {
 
   public CeeposPaymentResponseRestModel() {

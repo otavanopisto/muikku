@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposStudyTimeOrder;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -113,7 +114,7 @@ public class CeeposRESTService {
    * REQUEST:
    * 
    * mApi().ceepos.order.create({
-   *   'studentIdentifier': 'STUDENT-123',
+   *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
    *   'product': {
    *     'Code': 'PRODUCT0001'
    *   }
@@ -123,10 +124,11 @@ public class CeeposRESTService {
    * 
    * {
    *   'id': 123, // order id
-   *   'studentIdentifier': 'STUDENT-123',
+   *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
    *   'studentEmail': 'student@email.com',
    *   'product': {
    *     'Code': 'PRODUCT0001',
+   *     'Amount': 1, // Irrelevant, always defaults to one
    *     'Description': 'Product description to be shown in UI',
    *     'Price': 5000 // Product price in cents
    *   }
@@ -149,7 +151,8 @@ public class CeeposRESTService {
     
     // Validate payload
     
-    User student = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), paymentRequest.getStudentIdentifier());
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(paymentRequest.getStudentIdentifier());
+    User student = userController.findUserByIdentifier(sdi);
     if (student == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid student %s", paymentRequest.getStudentIdentifier())).build();
     }
@@ -164,9 +167,8 @@ public class CeeposRESTService {
     String studentEmail = null;
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      String dataSource = sessionController.getLoggedUserSchoolDataSource();
-      staffEmail = userController.getUserDefaultEmailAddress(dataSource, sessionController.getLoggedUserIdentifier());
-      studentEmail = userController.getUserDefaultEmailAddress(dataSource, paymentRequest.getStudentIdentifier());
+      staffEmail = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
+      studentEmail = userController.getUserDefaultEmailAddress(sdi);
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -196,17 +198,18 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.user.order.read('STUDENT-123', 123);
+   * mApi().ceepos.user.order.read('PYRAMUS-STUDENT-123', 123);
    * 
    * RESPONSE:
    * 
    * {'id': 123, // order id
-   *  'studentIdentifier': 'STUDENT-123',
+   *  'studentIdentifier': 'PYRAMUS-STUDENT-123',
    *  'studentEmail': 'student@email.com',
    *  'product': {
    *    'Code': 'PRODUCT0001',
-   *    'Description': 'Product description to be shown in UI',
-   *    'Price': 5000 // Product price in cents
+   *    'Amount': 1, // Irrelevant, always defaults to one
+   *    'Price': 5000, // Product price in cents
+   *    'Description': 'Product description to be shown in UI'
    *  }
    *  'state': CREATED | ONGOING | PAID | CANCELED | ERRORED | COMPLETE
    *  'created': 2021-10-28T08:57:57+03:00 
@@ -239,10 +242,10 @@ public class CeeposRESTService {
     // Access check
 
     if (!sessionController.hasEnvironmentPermission(CeeposPermissions.FIND_ORDER)) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-          sessionController.getLoggedUserSchoolDataSource(), userIdentifier);
+      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(userIdentifier);
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
       if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("User %s access to order of %s revoked", sessionController.getLoggedUserIdentifier(), userIdentifier));
+        logger.severe(String.format("User %s access to order of %s revoked", sessionController.getLoggedUser().toId(), userIdentifier));
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -254,8 +257,9 @@ public class CeeposRESTService {
     restOrder.setId(order.getId());
     restOrder.setProduct(new CeeposProductRestModel(
         order.getProduct().getCode(),
-        getLocalizedDescription(order.getProduct()),
-        order.getProduct().getPrice()));
+        1,
+        order.getProduct().getPrice(),
+        getLocalizedDescription(order.getProduct())));
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
     restOrder.setStudentEmail(order.getEmail());
@@ -266,13 +270,13 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.user.orders.read('STUDENT-123');
+   * mApi().ceepos.user.orders.read('PYRAMUS-STUDENT-123');
    * 
    * RESPONSE:
    * 
    * [{
    *   'id': 123, // order id
-   *   'studentIdentifier': 'STUDENT-123',
+   *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
    *   'studentEmail': 'student@email.com',
    *   'product': {
    *     'Code': 'PRODUCT0001',
@@ -300,10 +304,10 @@ public class CeeposRESTService {
     // Access check
 
     if (!sessionController.hasEnvironmentPermission(CeeposPermissions.LIST_USER_ORDERS)) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-          sessionController.getLoggedUserSchoolDataSource(), userIdentifier);
+      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(userIdentifier);
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
       if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("User %s access to list orders of %s revoked", sessionController.getLoggedUserIdentifier(), userIdentifier));
+        logger.severe(String.format("User %s access to list orders of %s revoked", sessionController.getLoggedUser().toId(), userIdentifier));
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -318,8 +322,9 @@ public class CeeposRESTService {
       restOrder.setId(order.getId());
       restOrder.setProduct(new CeeposProductRestModel(
           order.getProduct().getCode(),
-          getLocalizedDescription(order.getProduct()),
-          order.getProduct().getPrice()));
+          1,
+          order.getProduct().getPrice(),
+          getLocalizedDescription(order.getProduct())));
       restOrder.setState(order.getState());
       restOrder.setStudentIdentifier(order.getUserIdentifier());
       restOrder.setStudentEmail(order.getEmail());
@@ -338,8 +343,9 @@ public class CeeposRESTService {
    * 
    * [{
    *   'Code': 'XXXX',
-   *   'Description': 'Some product to buy',
+   *   'Amount': 1, // irrelevant, always defaults to one
    *   'Price': 5000, // price in cents
+   *   'Description': 'Some product to buy',
    * },
    * ...]
    * 
@@ -358,8 +364,9 @@ public class CeeposRESTService {
     for (CeeposProduct product : products) {
       restProducts.add(new CeeposProductRestModel(
           product.getCode(),
-          getLocalizedDescription(product),
-          product.getPrice()));
+          1,
+          product.getPrice(),
+          getLocalizedDescription(product)));
     }
     return Response.ok(restProducts).build();
   }
@@ -409,10 +416,10 @@ public class CeeposRESTService {
     // Ensure order ownership
 
     if (!sessionController.hasEnvironmentPermission(CeeposPermissions.PAY_ORDER)) {
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-          sessionController.getLoggedUserSchoolDataSource(), order.getUserIdentifier());
+      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
       if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("User %s access to order %d revoked", sessionController.getLoggedUserIdentifier(), order.getId()));
+        logger.severe(String.format("User %s access to order %d revoked", sessionController.getLoggedUser().toId(), order.getId()));
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -449,8 +456,9 @@ public class CeeposRESTService {
     List<CeeposProductRestModel> products = new ArrayList<>();
     products.add(new CeeposProductRestModel(
         order.getProduct().getCode(),
-        getLocalizedDescription(order.getProduct()),
-        order.getProduct().getPrice()));
+        1,
+        order.getProduct().getPrice(),
+        getLocalizedDescription(order.getProduct())));
     ceeposPayload.setProducts(products);
     ceeposPayload.setEmail(payload.getStudentEmail());
     ceeposPayload.setFirstName(userEntityName.getFirstName());

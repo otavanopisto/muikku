@@ -2,8 +2,10 @@ package fi.otavanopisto.muikku.plugins.ceepos.rest;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+@JsonPropertyOrder({ "Id", "Status", "Reference", "Hash" })
 public class CeeposPaymentConfirmationRestModel {
 
   @JsonGetter("Id")

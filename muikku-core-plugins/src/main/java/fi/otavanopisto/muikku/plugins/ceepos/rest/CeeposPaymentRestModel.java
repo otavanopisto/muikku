@@ -4,12 +4,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Payload for a purchase order to Ceepos (see API documentation chapter 3.2.1).
  * Some optional fields have been omitted as they are (for now) irrelevant for our purposes.
  */
+@JsonPropertyOrder({ "ApiVersion", "Source", "Id", "Mode", "Action", "Description", "Products", "Email", "FirstName", "LastName", "Language", "ReturnAddress", "NotificationAddress", "Hash" })
 public class CeeposPaymentRestModel {
   
   public CeeposPaymentRestModel() {
