@@ -239,7 +239,9 @@ public class CeeposRESTService {
     // Access check
 
     if (!sessionController.hasEnvironmentPermission(CeeposPermissions.FIND_ORDER)) {
-      if (!StringUtils.equals(userIdentifier, sessionController.getLoggedUserIdentifier())) {
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
+          sessionController.getLoggedUserSchoolDataSource(), userIdentifier);
+      if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
         logger.severe(String.format("User %s access to order of %s revoked", sessionController.getLoggedUserIdentifier(), userIdentifier));
         return Response.status(Status.FORBIDDEN).build();
       }
@@ -298,7 +300,9 @@ public class CeeposRESTService {
     // Access check
 
     if (!sessionController.hasEnvironmentPermission(CeeposPermissions.LIST_USER_ORDERS)) {
-      if (!StringUtils.equals(userIdentifier, sessionController.getLoggedUserIdentifier())) {
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
+          sessionController.getLoggedUserSchoolDataSource(), userIdentifier);
+      if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
         logger.severe(String.format("User %s access to list orders of %s revoked", sessionController.getLoggedUserIdentifier(), userIdentifier));
         return Response.status(Status.FORBIDDEN).build();
       }
@@ -405,7 +409,9 @@ public class CeeposRESTService {
     // Ensure order ownership
 
     if (!sessionController.hasEnvironmentPermission(CeeposPermissions.PAY_ORDER)) {
-      if (!StringUtils.equals(order.getUserIdentifier(), sessionController.getLoggedUserIdentifier())) {
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
+          sessionController.getLoggedUserSchoolDataSource(), order.getUserIdentifier());
+      if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
         logger.severe(String.format("User %s access to order %d revoked", sessionController.getLoggedUserIdentifier(), order.getId()));
         return Response.status(Status.FORBIDDEN).build();
       }
@@ -494,7 +500,7 @@ public class CeeposRESTService {
       logger.log(Level.SEVERE, "Unable to deserialize Ceepos payment request", e);
     }
     if (ceeposPayloadResponse.getStatus() != PAYMENT_PROCESSING) {
-      logger.severe(String.format("Unexpected payment response state %d", ceeposPayloadResponse.getStatus()));
+      logger.severe(String.format("Unexpected payment response status %d", ceeposPayloadResponse.getStatus()));
       // TODO Figure out what went wrong
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -745,7 +751,7 @@ public class CeeposRESTService {
     for (CeeposProductRestModel ceeposProduct : ceeposPayment.getProducts()) {
       sb.append(ceeposProduct.getCode());
       sb.append("&");
-      sb.append(ceeposProduct.getPrice() == null ? "" : ceeposProduct.getPrice());
+      sb.append(ceeposProduct.getPrice() == null || ceeposProduct.getPrice() <= 0 ? "" : ceeposProduct.getPrice());
       sb.append("&");
       sb.append(StringUtils.defaultIfEmpty(ceeposProduct.getDescription(), ""));
       sb.append("&");
