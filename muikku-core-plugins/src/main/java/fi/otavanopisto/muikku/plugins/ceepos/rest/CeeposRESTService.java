@@ -211,7 +211,7 @@ public class CeeposRESTService {
    *    'Price': 5000, // Product price in cents
    *    'Description': 'Product description to be shown in UI'
    *  }
-   *  'state': CREATED | ONGOING | PAID | CANCELED | ERRORED | COMPLETE
+   *  'state': CREATED | ONGOING | PAID | CANCELLED | ERRORED | COMPLETE
    *  'created': 2021-10-28T08:57:57+03:00 
    * }
    * 
@@ -283,7 +283,7 @@ public class CeeposRESTService {
    *     'Description': 'Product description to be shown in UI',
    *     'Price': 5000 // Product price in cents
    *   }
-   *   'state': CREATED | ONGOING | PAID | CANCELED | ERRORED | COMPLETE
+   *   'state': CREATED | ONGOING | PAID | CANCELLED | ERRORED | COMPLETE
    *   'created': 2021-10-28T08:57:57+03:00 
    * },
    * ...]
@@ -312,7 +312,7 @@ public class CeeposRESTService {
       }
     }
     
-    // TODO Filter orders that failed or got canceled?
+    // TODO Filter orders that failed or got cancelled?
     
     List<CeeposOrderRestModel> restOrders = new ArrayList<>();
     List<CeeposOrder> orders = ceeposController.listOrdersByUserIdentifier(userIdentifier);
@@ -436,7 +436,7 @@ public class CeeposRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserEntityName userEntityName = userEntityController.getName(userEntity);
     
-    // TODO Can we retry payments that are CANCELED or ERRORED?
+    // TODO Can we retry payments that are CANCELLED or ERRORED?
     
     // Set the payment user email
     
@@ -658,8 +658,8 @@ public class CeeposRESTService {
       switch (paymentConfirmation.getStatus()) {
       case PAYMENT_FAILED_OR_CANCELLED:
       case PAYMENT_ALREADY_DELETED:
-        logger.warning(String.format("Updating CeeposPayment %d to CANCELED", order.getId()));
-        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELED, paymentConfirmation.getReference());
+        logger.warning(String.format("Updating CeeposPayment %d to CANCELLED", order.getId()));
+        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference());
         break;
       case DOUBLE_ID:
       case SYSTEM_ERROR:

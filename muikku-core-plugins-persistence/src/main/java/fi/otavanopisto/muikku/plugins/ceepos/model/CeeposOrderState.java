@@ -5,7 +5,7 @@ public enum CeeposOrderState {
   CREATED,                // payment is created
   ONGOING,                // payment is in progress
   PAID,                   // payment complete, order not yet fulfilled
-  CANCELED,               // payment canceled
+  CANCELLED,              // payment cancelled
   ERRORED,                // something unexpected happened
   COMPLETE                // order fulfilled
   
