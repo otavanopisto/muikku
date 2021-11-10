@@ -4,7 +4,6 @@ import { WorkspaceType, WorkspaceListType, ActivityLogType } from "~/reducers/wo
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
 
-
 export interface GuiderUserLabelType {
   id: number,
   name: string,

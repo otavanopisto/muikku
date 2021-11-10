@@ -431,7 +431,6 @@ let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType = function updateW
   }
 }
 
-
 let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType = function updateUserGroupFilters() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let currentUser = getState().status.userSchoolDataIdentifier;
