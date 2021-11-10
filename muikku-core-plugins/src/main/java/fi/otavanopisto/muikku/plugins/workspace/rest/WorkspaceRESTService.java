@@ -2040,8 +2040,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    String filename = new String(answerFile.getFileName().getBytes(Charset.forName("US-ASCII"))).replaceAll("\"", "\\\"");
     try {
+      String filename = new String(answerFile.getFileName().getBytes(Charset.forName("US-ASCII"))).replaceAll("\"", "\\\"");
       String encFilename = URLEncoder.encode(answerFile.getFileName(), "utf-8").replaceAll("\\+", "%20").replaceAll("\"", "\\\"");
       if (StringUtils.isEmpty(answerFile.getContentType())) {
         return Response.ok(content)
