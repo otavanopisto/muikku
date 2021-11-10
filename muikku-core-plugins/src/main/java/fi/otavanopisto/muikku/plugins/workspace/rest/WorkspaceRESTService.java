@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -2038,18 +2040,23 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    String filename = new String(answerFile.getFileName().getBytes(Charset.forName("US-ASCII")));
-    if (StringUtils.isEmpty(answerFile.getContentType())) {
-      return Response.ok(content)
-        .header("Content-Disposition", "attachment; filename=\"" + filename.replaceAll("\"", "\\\"") + "\"")
-        .build();
-    }
-    else {
-      return Response.ok(content)
-        .type(answerFile.getContentType())
-        .header("Content-Disposition", "attachment; filename=\"" + filename.replaceAll("\"", "\\\"") + "\"")
-        .build();
+    String filename = new String(answerFile.getFileName().getBytes(Charset.forName("US-ASCII"))).replaceAll("\"", "\\\"");
+    try {
+      String encFilename = URLEncoder.encode(answerFile.getFileName(), "utf-8").replaceAll("\\+", "%20").replaceAll("\"", "\\\"");
+      if (StringUtils.isEmpty(answerFile.getContentType())) {
+        return Response.ok(content)
+          .header("Content-Disposition", "attachment; filename=\"" + filename + "\"; filename*=utf-8\"" + encFilename + "\"")
+          .build();
+      }
+      else {
+        return Response.ok(content)
+          .type(answerFile.getContentType())
+          .header("Content-Disposition", "attachment; filename=\"" + filename + "\"; filename*=utf-8''\"" + encFilename + "\"")
+          .build();
+      }
+    } catch (UnsupportedEncodingException e) {
+      logger.warning("Unsupported character encoding: " + e.getMessage());
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
   }
 
