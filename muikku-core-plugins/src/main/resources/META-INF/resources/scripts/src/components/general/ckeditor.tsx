@@ -73,7 +73,7 @@ const extraConfig = (props: CKEditorProps) => ({
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  resize_enabled: false,
+  resize_enabled: true,
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins: "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
   removePlugins: 'exportpdf',
