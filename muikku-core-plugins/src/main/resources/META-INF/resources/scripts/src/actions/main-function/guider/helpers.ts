@@ -4,33 +4,33 @@ import equals = require("deep-equal");
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 
-import {AnyActionType} from '~/actions';
+import { AnyActionType } from '~/actions';
 import { GuiderType, GuiderActiveFiltersType, GuiderStudentsStateType, GuiderStudentListType, GuiderPatchType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
 
-export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadStudentsHelper(filters: GuiderActiveFiltersType | null, initial: boolean, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   dispatch({
     type: "SET_CURRENT_GUIDER_STUDENT",
     payload: null
   });
 
   let state = getState();
-  let guider:GuiderType = state.guider;
-  let flagOwnerIdentifier:string = state.status.userSchoolDataIdentifier;
+  let guider: GuiderType = state.guider;
+  let flagOwnerIdentifier: string = state.status.userSchoolDataIdentifier;
 
   //Avoid loading courses again for the first time if it's the same location
-  if (initial && equals(filters, guider.activeFilters) && guider.state === "READY"){
+  if (initial && equals(filters, guider.activeFilters) && guider.state === "READY") {
     return;
   }
 
   let actualFilters = filters || guider.activeFilters;
 
-  let guiderStudentsNextState:GuiderStudentsStateType;
+  let guiderStudentsNextState: GuiderStudentsStateType;
   //If it's for the first time
-  if (initial){
+  if (initial) {
     //We set this state to loading
     guiderStudentsNextState = "LOADING";
   } else {
@@ -57,31 +57,32 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
     maxResults,
     flags: actualFilters.labelFilters,
     workspaceIds: actualFilters.workspaceFilters,
+    userGroupIds: actualFilters.userGroupFilters,
     flagOwnerIdentifier
   }
 
-  if (actualFilters.query){
+  if (actualFilters.query) {
     (params as any).q = actualFilters.query;
   }
 
   try {
-    let students:GuiderStudentListType = <GuiderStudentListType>await promisify(mApi().guider.students.cacheClear().read(params), 'callback')();
+    let students: GuiderStudentListType = <GuiderStudentListType>await promisify(mApi().guider.students.cacheClear().read(params), 'callback')();
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
     students = students || [];
-    let hasMore:boolean = students.length === MAX_LOADED_AT_ONCE + 1;
+    let hasMore: boolean = students.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
     let actualStudents = students.concat([]);
-    if (hasMore){
+    if (hasMore) {
       //we got to get rid of that extra loaded message
       actualStudents.pop();
     }
 
     //Create the payload for updating all the communicator properties
-    let payload:GuiderPatchType = {
+    let payload: GuiderPatchType = {
       state: "READY",
       students: (concat ? guider.students.concat(actualStudents) : actualStudents),
       hasMore
@@ -92,8 +93,8 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
       type: "UPDATE_GUIDER_ALL_PROPS",
       payload
     });
-  } catch (err){
-    if (!(err instanceof MApiError)){
+  } catch (err) {
+    if (!(err instanceof MApiError)) {
       throw err;
     }
     //Error :(
