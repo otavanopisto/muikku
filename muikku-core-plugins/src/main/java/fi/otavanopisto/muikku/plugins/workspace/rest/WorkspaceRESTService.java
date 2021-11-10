@@ -2045,7 +2045,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       String encFilename = URLEncoder.encode(answerFile.getFileName(), "utf-8").replaceAll("\\+", "%20").replaceAll("\"", "\\\"");
       if (StringUtils.isEmpty(answerFile.getContentType())) {
         return Response.ok(content)
-          .header("Content-Disposition", "attachment; filename=\"" + filename + "\"; filename*=utf-8\"" + encFilename + "\"")
+          .header("Content-Disposition", "attachment; filename=\"" + filename + "\"; filename*=utf-8''\"" + encFilename + "\"")
           .build();
       }
       else {
