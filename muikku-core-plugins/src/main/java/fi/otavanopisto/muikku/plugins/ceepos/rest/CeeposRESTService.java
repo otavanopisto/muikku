@@ -442,7 +442,14 @@ public class CeeposRESTService {
     
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserEntityName userEntityName = userEntityController.getName(userEntity);
-    String email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
+    String email = "";
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
     
     // Create payload to Ceepos
     
@@ -463,7 +470,7 @@ public class CeeposRESTService {
     ceeposPayload.setEmail(email);
     ceeposPayload.setFirstName(userEntityName.getFirstName());
     ceeposPayload.setLastName(userEntityName.getLastName());
-    ceeposPayload.setLanguage("fi"); // sessionController.getLocale().getLanguage() if store supports English
+    ceeposPayload.setLanguage(""); // sessionController.getLocale().getLanguage() if store supports English
     ceeposPayload.setReturnAddress(getSetting("returnAddress"));
     ceeposPayload.setNotificationAddress(getSetting("notificationAddress"));
     ceeposPayload.setHash(calculateHash(ceeposPayload));
