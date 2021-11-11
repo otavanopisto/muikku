@@ -66,6 +66,10 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         name: this.props.i18n.text.get("plugin.profile.category.work"),
         hash: "work"
       },
+      {
+        name: this.props.i18n.text.get("plugin.profile.category.purchases"),
+        hash: "purchases"
+      },
     ]
 
     return (

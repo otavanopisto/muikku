@@ -11,6 +11,7 @@ import {VOPSDataType} from '~/reducers/main-function/vops';
 import {HOPSDataType} from '~/reducers/main-function/hops';
 import {StateType} from '~/reducers';
 import {colorIntToHex} from '~/util/modifiers';
+import { PurchaseProductType, PurchaseType } from '~/reducers/main-function/profile';
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<"UPDATE_GUIDER_ACTIVE_FILTERS", GuiderActiveFiltersType>
 export type UPDATE_GUIDER_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_ALL_PROPS", GuiderPatchType>
@@ -25,6 +26,7 @@ export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CUR
 
 export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", UserFileType>
 export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", UserFileType>
+export type UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS", PurchaseProductType[]>;
 
 export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_USER", {
   studentId: string,
@@ -131,6 +133,10 @@ export interface RemoveGuiderFilterLabelTriggerType {
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
+}
+
+export interface UpdateAvailablePurchaseProductsTriggerType {
+  (): AnyActionType
 }
 
 let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
@@ -269,7 +275,10 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
           promisify(mApi().activitylogs.user.workspace.read(id, {from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')()
           .then((activityLogs:ActivityLogType[])=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "activityLogs", value: activityLogs}});
-        })
+        }),
+        promisify(mApi().ceepos.user.orders.read(id), "callback")().then((pOrders: PurchaseType[]) => {
+          dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "purchases", value: pOrders}})
+        }),
       ]);
 
       dispatch({
@@ -521,10 +530,28 @@ let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function remove
   }
 }
 
+const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType = function updateAvailablePurchaseProducts() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      const value: PurchaseProductType[] = await promisify(mApi().ceepos.products.read(), 'callback')() as any;
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS",
+        payload: value,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.purchaseproducts"), 'error'));
+    }
+  }
+}
+
 export {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
   addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
   updateWorkspaceFilters, createGuiderFilterLabel,
-  updateGuiderFilterLabel, removeGuiderFilterLabel};
+  updateGuiderFilterLabel, removeGuiderFilterLabel,
+  updateAvailablePurchaseProducts};

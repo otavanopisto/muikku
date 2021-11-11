@@ -6,7 +6,7 @@ import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType} f
 import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
-import { StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
+import { PurchaseType, StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
 import moment from '~/lib/moment';
 
 export interface LoadProfilePropertiesSetTriggerType {
@@ -27,6 +27,10 @@ export interface LoadProfileUsernameTriggerType {
 }
 
 export interface LoadProfileAddressTriggerType {
+  ():AnyActionType
+}
+
+export interface LoadProfilePurchasesTriggerType {
   ():AnyActionType
 }
 
@@ -141,6 +145,7 @@ export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STU
 export interface SET_PROFILE_CHAT_SETTINGS extends SpecificActionType<"SET_PROFILE_CHAT_SETTINGS", UserChatSettingsType>{}
 export interface SET_WORKLIST_TEMPLATES extends SpecificActionType<"SET_WORKLIST_TEMPLATES", Array<WorklistTemplate>>{}
 export interface SET_WORKLIST extends SpecificActionType<"SET_WORKLIST", Array<WorklistSection>>{}
+export interface SET_PURCHASE_HISTORY  extends SpecificActionType<"SET_PURCHASE_HISTORY", Array<PurchaseType>>{};
 
 let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -750,6 +755,28 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType = functi
   }
 }
 
+const loadProfilePurchases: LoadProfilePurchasesTriggerType = function loadProfilePurchases() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+    try {
+
+      const studentId = state.status.userSchoolDataIdentifier.replace("PYRAMUS-", "");
+      const historia: PurchaseType[] = await promisify(mApi().ceepos.user.orders.read(studentId), 'callback')() as any;
+
+      dispatch({
+        type: "SET_PURCHASE_HISTORY",
+        payload: historia,
+      });
+
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.purchases"), 'error'));
+    }
+  }
+}
+
 const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType = function updateProfileWorklistItemsState(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
@@ -800,5 +827,5 @@ export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, load
   updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage,
   deleteProfileImage, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections,
   loadProfileWorklistSection, insertProfileWorklistItem, deleteProfileWorklistItem, editProfileWorklistItem,
-  updateProfileWorklistItemsState};
+  updateProfileWorklistItemsState, loadProfilePurchases};
 
