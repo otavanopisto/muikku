@@ -257,7 +257,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
           )}
           selectedItems={this.state.selectedItems}
           onChange={this.setSelectedItems}
-          //autofocus={!this.props.initialSelectedItems}
+          autofocus={!this.props.initialSelectedItems}
           showFullNames={!this.props.status.isStudent}
         />
         <div className="env-dialog__row" key="new-message-2">
@@ -273,7 +273,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
               className="env-dialog__input env-dialog__input--new-message-title"
               value={this.state.subject}
               onChange={this.onSubjectChange}
-              //autoFocus={!!this.props.initialSelectedItems}
+              autoFocus={!!this.props.initialSelectedItems}
             />
           </div>
           <div

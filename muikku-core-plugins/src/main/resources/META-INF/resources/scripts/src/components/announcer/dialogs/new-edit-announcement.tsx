@@ -292,7 +292,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
         selectedItems={this.state.currentTarget}
         onChange={this.setTargetItems}
-        //autofocus={!this.props.announcement}
+        autofocus={!this.props.announcement}
         showFullNames={false}
         placeholder={this.props.i18n.text.get('plugin.announcer.createannouncement.target.placeholder')}
         label={this.props.i18n.text.get('plugin.announcer.createannouncement.target.label')} />),
