@@ -1662,8 +1662,10 @@ public class UserRESTService extends AbstractRESTService {
         long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
         now = now.plusMonths(studyTimeLeftMonths);
         if (studyTimeLeftMonths > 0) {
-          if (studyTimeLeftStr.length() > 0)
-            studyTimeLeftStr += " ";
+          if (studyTimeLeftStr != null) {
+            if (studyTimeLeftStr.length() > 0)
+              studyTimeLeftStr += " ";
+          }
           studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
         }
         
