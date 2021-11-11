@@ -26,10 +26,6 @@
   
   <script type="text/javascript">
     var CONTEXTPATH = "#{request.contextPath}";
-    var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
-    var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
-    var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
-    var MUIKKU_IS_ACTIVE_USER = #{sessionBackingBean.isActiveUser};
     var MUIKKU_IS_STUDENT = #{sessionBackingBean.isStudent};
     var PROFILE_DATA = {
       displayName: '#{sessionBackingBean.displayName}' || null,
