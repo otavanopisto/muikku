@@ -64,7 +64,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Produces(MediaType.APPLICATION_JSON)
 public class CeeposRESTService {
   
-  private static final String API_VERSION = "3.0.0";
+  private static final String API_VERSION = "2.1.2";
   
   private static final int PAYMENT_FAILED_OR_CANCELLED = 0;
   private static final int PAYMENT_SUCCESSFUL = 1;
@@ -375,8 +375,7 @@ public class CeeposRESTService {
    * REQUEST:
    * 
    * mApi().ceepos.pay.create({
-   *   'id': '123', // order id
-   *   'studentEmail': 'student@email.com' // email confirmed by user in pay page
+   *   'id': '123' // order id
    * });
    * 
    * RESPONSE:
@@ -460,10 +459,9 @@ public class CeeposRESTService {
         order.getProduct().getPrice(),
         getLocalizedDescription(order.getProduct())));
     ceeposPayload.setProducts(products);
-    ceeposPayload.setEmail(payload.getStudentEmail());
     ceeposPayload.setFirstName(userEntityName.getFirstName());
     ceeposPayload.setLastName(userEntityName.getLastName());
-    ceeposPayload.setLanguage(sessionController.getLocale().getLanguage());
+    ceeposPayload.setLanguage("fi"); // sessionController.getLocale().getLanguage() if store supports English
     ceeposPayload.setReturnAddress(getSetting("returnAddress"));
     ceeposPayload.setNotificationAddress(getSetting("notificationAddress"));
     ceeposPayload.setHash(calculateHash(ceeposPayload));
@@ -617,13 +615,15 @@ public class CeeposRESTService {
    */
   private Response handlePaymentConfirmation(CeeposPaymentConfirmationRestModel paymentConfirmation) {
     
+    logger.info(String.format("Received payment confirmation for order %s", paymentConfirmation.getId()));
+    
     // Log the payment confirmation 
 
     String json = null;
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       json = objectMapper.writeValueAsString(paymentConfirmation);
-      logger.info(String.format("Received payment confirmation: %s", json));
+      logger.info(json);
     }
     catch (JsonProcessingException e) {
       logger.log(Level.SEVERE, "Unable to deserialize payment response", e);
@@ -633,7 +633,7 @@ public class CeeposRESTService {
     
     boolean validHash = validateHash(paymentConfirmation);
     if (!validHash) {
-      logger.severe(String.format("Invalid hash for confirmed payment %s", paymentConfirmation.getId()));
+      logger.severe("Payment confirmation hash check failure");
       return Response.status(Status.BAD_REQUEST).entity("Invalid hash").build();
     }
     
@@ -651,6 +651,13 @@ public class CeeposRESTService {
       logger.warning(String.format("Received payment confirmation for order %d in state %s", order.getId(), order.getState()));
     }
     
+    // If the order has been marked as complete at our end, ignore the confirmation
+    
+    if (order.getState() == CeeposOrderState.COMPLETE) {
+      logger.info(String.format("Ignoring payment confirmation for order %d; already complete", order.getId()));
+      return Response.ok().build();
+    }
+    
     // Handle various errors
 
     if (paymentConfirmation.getStatus() != PAYMENT_SUCCESSFUL) {
@@ -658,14 +665,18 @@ public class CeeposRESTService {
       switch (paymentConfirmation.getStatus()) {
       case PAYMENT_FAILED_OR_CANCELLED:
       case PAYMENT_ALREADY_DELETED:
-        logger.warning(String.format("Updating CeeposPayment %d to CANCELLED", order.getId()));
-        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference());
+        if (order.getState() != CeeposOrderState.CANCELLED) {
+          logger.warning(String.format("Updating order %d from %s to CANCELLED", order.getState(), order.getId()));
+          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference());
+        }
         break;
       case DOUBLE_ID:
       case SYSTEM_ERROR:
       case FAULTY_PAYMENT_REQUEST:
-        logger.warning(String.format("Updating CeeposPayment %d to ERRORED", order.getId()));
-        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference());
+        if (order.getState() != CeeposOrderState.ERRORED) {
+          logger.warning(String.format("Updating order %d from %s to ERRORED", order.getState(), order.getId()));
+          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference());
+        }
         break;
       case PAYMENT_ALREADY_COMPLETED_CANNOT_DELETE:
         // We definitely shouldn't get this but if a payment is complete, let's not touch our payment object at all
@@ -673,7 +684,7 @@ public class CeeposRESTService {
       default:
         break;
       }
-      return Response.ok().build(); // TODO Are all of these technically our problem?
+      return Response.ok().build();
     }
     
     // By now the payment was successful, so mark the order as PAID
@@ -703,22 +714,20 @@ public class CeeposRESTService {
       Date newStudyTimeEnd = null;
       schoolDataBridgeSessionController.startSystemSession();
       try {
-        String dataSource = "PYRAMUS";
-        User user = userSchoolDataController.findUser(dataSource, order.getUserIdentifier());
+        SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
+        User user = userSchoolDataController.findUser(sdi);
         if (user == null) {
           logger.severe(String.format("User %s not found", order.getUserIdentifier()));
           return Response.ok().build(); // Our problem as well
         }
         oldStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
-        user = userSchoolDataController.increaseStudyTime(dataSource, order.getUserIdentifier(), months);
+        user = userSchoolDataController.increaseStudyTime(sdi, months);
         newStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
         logger.info(String.format("User %s study time raised from %tF to %tF",  order.getUserIdentifier(), oldStudyTimeEnd, newStudyTimeEnd));
       }
       finally {
         schoolDataBridgeSessionController.endSystemSession();
       }
-
-      // TODO Mail to user and guider
 
       // Mark the payment as complete
 
@@ -727,6 +736,8 @@ public class CeeposRESTService {
           CeeposOrderState.COMPLETE,
           oldStudyTimeEnd,
           newStudyTimeEnd);
+
+      // TODO Mail to user and guider
     }
     
     return Response.ok().build();
@@ -759,13 +770,13 @@ public class CeeposRESTService {
     for (CeeposProductRestModel ceeposProduct : ceeposPayment.getProducts()) {
       sb.append(ceeposProduct.getCode());
       sb.append("&");
+      sb.append(ceeposProduct.getAmount());
+      sb.append("&");
       sb.append(ceeposProduct.getPrice() == null || ceeposProduct.getPrice() <= 0 ? "" : ceeposProduct.getPrice());
       sb.append("&");
       sb.append(StringUtils.defaultIfEmpty(ceeposProduct.getDescription(), ""));
       sb.append("&");
     }
-    sb.append(ceeposPayment.getEmail());
-    sb.append("&");
     sb.append(ceeposPayment.getFirstName());
     sb.append("&");
     sb.append(ceeposPayment.getLastName());
