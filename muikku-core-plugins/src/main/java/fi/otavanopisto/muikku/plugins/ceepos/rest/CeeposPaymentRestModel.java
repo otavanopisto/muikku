@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
  * Payload for a purchase order to Ceepos (see API documentation chapter 3.2.1).
  * Some optional fields have been omitted as they are (for now) irrelevant for our purposes.
  */
-@JsonPropertyOrder({ "ApiVersion", "Source", "Id", "Mode", "Action", "Description", "Products", "FirstName", "LastName", "Language", "ReturnAddress", "NotificationAddress", "Hash" })
+@JsonPropertyOrder({ "ApiVersion", "Source", "Id", "Mode", "Action", "Description", "Products", "Email", "FirstName", "LastName", "Language", "ReturnAddress", "NotificationAddress", "Hash" })
 public class CeeposPaymentRestModel {
   
   public CeeposPaymentRestModel() {
@@ -85,6 +85,16 @@ public class CeeposPaymentRestModel {
   @JsonSetter("Products")
   public void setProducts(List<CeeposProductRestModel> products) {
     Products = products;
+  }
+
+  @JsonGetter("Email")
+  public String getEmail() {
+    return Email;
+  }
+
+  @JsonSetter("Email")
+  public void setEmail(String email) {
+    Email = email;
   }
 
   @JsonGetter("FirstName")
@@ -167,6 +177,9 @@ public class CeeposPaymentRestModel {
 
   @JsonProperty("Products")
   private List<CeeposProductRestModel> Products;    // required; list of products to buy
+
+  @JsonProperty("Email")
+  private String Email;                    // optional; customer's email address
 
   @JsonProperty("FirstName")
   private String FirstName;                // optional; customer's first name

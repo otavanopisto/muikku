@@ -400,9 +400,6 @@ public class CeeposRESTService {
     if (payload.getId() == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
     }
-    if (StringUtils.isEmpty(payload.getStudentEmail())) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing studentEmail").build();
-    }
     
     // Find the order
     
@@ -423,25 +420,29 @@ public class CeeposRESTService {
       }
     }
     
-    // Ensure order hasn't been paid yet
+    // Ensure order hasn't been handled yet
     
-    if (order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
+    if (order.getState() != CeeposOrderState.CREATED && order.getState() != CeeposOrderState.ONGOING) {
       logger.warning(String.format("Unable to pay order %d. State is already %s", payload.getId(), order.getState()));
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid order state %s", order.getState())).build();
+      switch (order.getState()) {
+      case CANCELLED:
+        return Response.status(Status.BAD_REQUEST).entity(localeController.getText(sessionController.getLocale(), "ceepos.error.cancelled")).build();
+      case COMPLETE:
+      case PAID:
+        return Response.status(Status.BAD_REQUEST).entity(localeController.getText(sessionController.getLocale(), "ceepos.error.paid")).build();
+      default:
+        return Response.status(Status.BAD_REQUEST).entity(localeController.getText(
+            sessionController.getLocale(),
+            "ceepos.error.errored",
+            new String[] {"999"})).build(); // just a random error code; endpoint should only be called for CREATED/ONGOING orders 
+      }
     }
     
-    // Resolve name
+    // Resolve name and email
     
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserEntityName userEntityName = userEntityController.getName(userEntity);
-    
-    // TODO Can we retry payments that are CANCELLED or ERRORED?
-    
-    // Set the payment user email
-    
-    if (!StringUtils.equals(payload.getStudentEmail(), order.getEmail())) {
-      order = ceeposController.updateOrderEmail(order, payload.getStudentEmail());
-    }
+    String email = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
     
     // Create payload to Ceepos
     
@@ -457,8 +458,9 @@ public class CeeposRESTService {
         order.getProduct().getCode(),
         1,
         order.getProduct().getPrice(),
-        getLocalizedDescription(order.getProduct())));
+        "")); // getLocalizedDescription(order.getProduct()) if store supports English
     ceeposPayload.setProducts(products);
+    ceeposPayload.setEmail(email);
     ceeposPayload.setFirstName(userEntityName.getFirstName());
     ceeposPayload.setLastName(userEntityName.getLastName());
     ceeposPayload.setLanguage("fi"); // sessionController.getLocale().getLanguage() if store supports English
@@ -482,40 +484,49 @@ public class CeeposRESTService {
     Entity<CeeposPaymentRestModel> entity = Entity.entity(ceeposPayload, MediaType.APPLICATION_JSON);
     Response response = request.post(entity);
     
-    // Check success response
+    // Ensure the call went through (200 OK)
     
     if (response.getStatus() != 200) {
-      logger.severe(String.format("Ceepos payment request response: %d", response.getStatus()));
-      logger.severe("Ceepos payment request response entity: " + response.getEntity());
-      if (response.getEntity() != null) {
-        logger.severe("Ceepos payment request response entity: " + response.getEntity().toString());
-      }
-      logger.severe("Ceepos payment request response: " + response.toString());
-      // TODO Figure out what went wrong
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED);
+      logger.severe(String.format("Ceepos payment request response: %d %s", response.getStatus(), response.toString()));
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Payment response status failure: %d", response.getStatus())).build();
     }
     
-    // Check payment being in progress
+    // Deserialize the response json
     
-    CeeposPaymentResponseRestModel ceeposPayloadResponse = response.readEntity(CeeposPaymentResponseRestModel.class);
+    CeeposPaymentResponseRestModel ceeposPayloadResponse = null;
     try {
+      ceeposPayloadResponse = response.readEntity(CeeposPaymentResponseRestModel.class);
       String json = new ObjectMapper().writeValueAsString(ceeposPayloadResponse);
       logger.info("Ceepos payment response: " + json);
     }
-    catch (JsonProcessingException e) {
+    catch (Exception e) {
       logger.log(Level.SEVERE, "Unable to deserialize Ceepos payment request", e);
     }
-    if (ceeposPayloadResponse.getStatus() != PAYMENT_PROCESSING) {
-      logger.severe(String.format("Unexpected payment response status %d", ceeposPayloadResponse.getStatus()));
-      // TODO Figure out what went wrong
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    
+    // Ensure we got a proper response with status being PAYMENT_PROCESSING as expected
+    
+    if (ceeposPayloadResponse == null) {
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response deserialization failure").build();
     }
+    else if (ceeposPayloadResponse.getStatus() != PAYMENT_PROCESSING) {
+      logger.severe(String.format("Unexpected payment response status %d", ceeposPayloadResponse.getStatus()));
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(localeController.getText(
+          sessionController.getLocale(),
+          "ceepos.error.errored",
+          new String[] {ceeposPayloadResponse.getStatus() + ""})).build();
+    }
+    
+    // Validate response hash
+    
     boolean validHash = validateHash(ceeposPayloadResponse);
     if (!validHash) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response hash failure").build();
     }
     
-    // Update order payment address
+    // Update order payment address and set its state to ONGOING
     
     order = ceeposController.updateOrderStateAndOrderNumberAndPaymentAddress(
         order,
@@ -777,11 +788,13 @@ public class CeeposRESTService {
       sb.append(StringUtils.defaultIfEmpty(ceeposProduct.getDescription(), ""));
       sb.append("&");
     }
-    sb.append(ceeposPayment.getFirstName());
+    sb.append(StringUtils.defaultIfEmpty(ceeposPayment.getEmail(), ""));
     sb.append("&");
-    sb.append(ceeposPayment.getLastName());
+    sb.append(StringUtils.defaultIfEmpty(ceeposPayment.getFirstName(), ""));
     sb.append("&");
-    sb.append(ceeposPayment.getLanguage());
+    sb.append(StringUtils.defaultIfEmpty(ceeposPayment.getLastName(), ""));
+    sb.append("&");
+    sb.append(StringUtils.defaultIfEmpty(ceeposPayment.getLanguage(), ""));
     sb.append("&");
     sb.append(ceeposPayment.getReturnAddress());
     sb.append("&");
