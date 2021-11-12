@@ -34,6 +34,11 @@
   padding: 2px 4px;
 }
 
+.label--ENDING {
+  background-color: $color-label-background-highlight;
+
+}
+
 .label--folder {
   background-color: $color-label-background;
   color: $color-default-contrast;
@@ -44,6 +49,12 @@
   display: flex;
   font-size: 0.8125rem;
   padding: 0 5px 0 0;
+
+  &.state-ENDING,
+  &.state-ENDED {
+      color: $color-label-alert;
+  }
+
 }
 
 .label__icon--announcement-workspace {

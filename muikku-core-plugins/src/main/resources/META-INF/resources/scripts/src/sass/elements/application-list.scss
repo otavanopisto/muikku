@@ -293,6 +293,10 @@
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
+
+  &.state-ENDED {
+    color: $color-disabled;
+  }
 }
 
 .application-list__item-content-wrapper--workspace-user,
