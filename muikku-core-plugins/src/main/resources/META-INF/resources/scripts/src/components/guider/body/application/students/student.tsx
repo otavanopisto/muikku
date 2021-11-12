@@ -71,7 +71,7 @@ class Student extends React.Component<StudentProps, StudentState> {
           {studyTimeEndState !== "ONGOING" ?
             <div className={`label label--${studyTimeEndState}`} >
               <span className={`label__icon icon-clock state-${studyTimeEndState}`}></span>
-              <span className="label__text">{this.props.i18n.text.get("plugin.guider.user.state." + studyTimeEndState)} {moment(this.props.student.studyTimeEnd).format("LL")}</span>
+              <span className="label__text">{this.props.i18n.text.get("plugin.guider.user.state." + studyTimeEndState, moment(this.props.student.studyTimeEnd).format("LL"))} </span>
             </div> : null}
           {this.props.student.flags.length ?
             this.props.student.flags.map((flag: GuiderStudentUserProfileLabelType) => {
