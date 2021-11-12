@@ -108,7 +108,7 @@
   right: 0;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 99;
 
   .content-panel__navigation-content {
     right: -90%;
@@ -147,7 +147,7 @@
     // scss-lint:enable VendorPrefix
     position: sticky;
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
-    z-index: 99;
+    z-index: 1; // This does not need high z-index as ToC in desktop mode will never overlap with anything. Setting lower z-index also fixes possible stack order issues with zoomed images
 
     &:hover {
       background: $color-default;
@@ -217,7 +217,6 @@
     max-width: 700px;
     min-width: 650px;
     order: 1;
-    z-index: 100;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
