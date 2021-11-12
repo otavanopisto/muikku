@@ -193,6 +193,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        waitForPresent("input[name=\"workspace-name-extension\"]");
         scrollIntoView("input[name=\"workspace-name-extension\"]");
         waitAndClick("input[name=\"workspace-name-extension\"]");
         clearElement("input[name=\"workspace-name-extension\"]");
