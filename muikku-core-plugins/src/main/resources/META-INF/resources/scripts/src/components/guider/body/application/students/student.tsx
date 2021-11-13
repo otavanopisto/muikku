@@ -24,9 +24,7 @@ interface StudentProps {
 }
 
 interface StudentState {
-
 }
-
 
 class Student extends React.Component<StudentProps, StudentState> {
 
