@@ -293,10 +293,11 @@
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
+
   // scss-lint:disable SelectorFormat
-    &.state-ENDED {
-      color: $color-disabled;
-    }
+  &.state-ENDED {
+    color: $color-disabled;
+  }
   // scss-lint:enable SelectorFormat
 }
 
