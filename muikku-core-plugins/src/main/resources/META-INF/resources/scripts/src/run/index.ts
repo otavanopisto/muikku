@@ -13,7 +13,7 @@ import 'babel-polyfill';
 export default function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?: (store: Store<StateType>)=>any): Store<StateType> {
   let store: Store<StateType>;
   if (process.env["NODE_ENV"] !== "production"){
-    store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk, logger)));
+    store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
   } else {
     store = createStore(reducer, applyMiddleware(thunk));
   }

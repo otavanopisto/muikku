@@ -50,6 +50,7 @@ import Chat from '../components/chat/chat';
 import EvaluationBody from '../components/evaluation/body';
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
+import RecordsBody2 from '~/components/records2/body';
 
 moment.locale("fi");
 
@@ -616,7 +617,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadChatSettings();
     }
 
-    return <RecordsBody />
+    return <RecordsBody2 />
   }
 
   /**

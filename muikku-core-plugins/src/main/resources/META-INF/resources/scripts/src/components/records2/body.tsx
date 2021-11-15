@@ -5,7 +5,7 @@ import Aside from "./body/aside";
 import * as React from "react";
 import ScreenContainer from "../general/screen-container";
 
-export default class RecordsBody extends React.Component<{}, {}> {
+export default class RecordsBody2 extends React.Component<{}, {}> {
   render() {
     let aside = <Aside />;
     return (

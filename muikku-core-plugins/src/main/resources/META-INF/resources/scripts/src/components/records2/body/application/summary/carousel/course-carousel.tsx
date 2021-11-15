@@ -1,0 +1,125 @@
+import "~/sass/elements/empty.scss";
+import "~/sass/elements/loaders.scss";
+import "~/sass/elements/glyph.scss";
+import "~/sass/elements/item-list.scss";
+import "~/sass/elements/application-sub-panel.scss";
+import "react-multi-carousel/lib/styles.css";
+import "~/sass/elements/carousel.scss";
+import * as React from "react";
+import Carousel from "react-multi-carousel";
+
+import Button from "~/components/general/button";
+
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+    slidesToSlide: 3, // optional, default to 1.
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+    slidesToSlide: 2, // optional, default to 1.
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    slidesToSlide: 1, // optional, default to 1.
+  },
+};
+
+/**
+ * CarouselProps
+ */
+interface CourseCarouselProps {
+  courses: Course[];
+}
+
+/**
+ * Carousel
+ * @param props
+ * @returns JSX.Element
+ */
+const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
+  const carouselItems = props.courses.map((cItem) => (
+    <CourseCarouselItem key={cItem.id} course={cItem} />
+  ));
+
+  return (
+    <Carousel
+      swipeable={true}
+      draggable={true}
+      showDots={false}
+      responsive={responsive}
+      infinite={true}
+      autoPlaySpeed={2000}
+      keyBoardControl={true}
+      transitionDuration={2000}
+      containerClass="carousel-container"
+      removeArrowOnDeviceType={["tablet", "mobile"]}
+      dotListClass="custom-dot-list-style"
+      itemClass="carousel-item--courses"
+    >
+      {carouselItems}
+    </Carousel>
+  );
+};
+
+/**
+ * Course
+ */
+export interface Course {
+  id: number;
+  subject: string;
+  courseIndex: number;
+  name: string;
+  description: string;
+  imageSrc?: string;
+}
+
+/**
+ * CourseCarouselItemProps
+ */
+interface CourseCarouselItemProps {
+  course: Course;
+}
+
+/**
+ * CourseCarouselItem
+ * @param props
+ * @returns JSX.Element
+ */
+const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
+  const { course } = props;
+
+  return (
+    <div className="carousel-itemV2--courses">
+      <div className="carousel-itemV2__image-section--courses">
+        <img
+          src={course.imageSrc}
+          alt="no-image"
+          className="image-section__img"
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexFlow: "column",
+          textAlign: "initial",
+          margin: "5px 0",
+        }}
+      >
+        <span style={{ margin: "5px" }}>
+          {course.subject} - {course.courseIndex}{" "}
+        </span>
+        <h3 style={{ margin: "5px" }}>{course.name}</h3>
+        <p style={{ margin: "5px" }}>{course.description}</p>
+      </div>
+      <div style={{ margin: "5px 0" }}>
+        <Button>Kurssille</Button>{" "}
+      </div>
+    </div>
+  );
+};
+
+export default CourseCarousel;

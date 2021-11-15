@@ -1,0 +1,150 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.agenda-notes {
+  display: flex;
+}
+
+.agenda-notes-list {
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+}
+
+.agenda-notes-list-header {
+  font-weight: bold;
+  margin: 5px;
+}
+
+.agenda-notes-list-items {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  overflow-y: scroll;
+  height: 260px;
+}
+
+.agenda-note-pinned {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+}
+
+.agenda-note-pinned-header {
+  font-weight: bold;
+  margin: 5px;
+}
+
+.agenda-note-pinned-item {
+  display: flex;
+  justify-content: center;
+
+  .agenda__note {
+    width: 100%;
+  }
+}
+
+.agenda__note {
+  display: flex;
+  height: 250px;
+  width: calc((100% / 3) - 10px);
+  background-color: antiquewhite;
+
+  margin: 5px;
+  box-shadow: 10px 1px 15px -5px grey;
+  flex-direction: column;
+
+  .agenda__note-header {
+    background-color: #e6d7c3;
+  }
+}
+
+.agenda__note--pinned {
+  .agenda__note-header .agenda__note-header-pin {
+    background-color: lightblue;
+  }
+}
+
+.agenda__note--important {
+  background-color: red;
+
+  .agenda__note-header {
+    background-color: #f66161;
+  }
+}
+
+.agenda__note--semi-important {
+  background-color: yellow;
+
+  .agenda__note-header {
+    background-color: #f2f200;
+  }
+}
+
+.agenda__note--not-important {
+  background-color: lightgreen;
+
+  .agenda__note-header {
+    background-color: #a4ffa4;
+  }
+}
+
+.agenda__note-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.agenda__note-header-name {
+  border-bottom: 2px solid black;
+  font-weight: bold;
+}
+
+.agenda__note-header-pin {
+  width: 25px;
+  height: 25px;
+  border-radius: 50px;
+  background-color: green;
+  cursor: pointer;
+}
+
+.agenda__note-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 15px;
+}
+
+.agenda__note-content-text {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+.agenda__note-content-tasks {
+  display: flex;
+  flex-direction: column;
+}
+
+.agenda__note-content-tasks-item {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+  font-size: 1rem;
+}
+
+.agenda__note-content-tasks-item-check {
+  transform: scale(1.5);
+}
+
+.agenda__note-content-tasks-item-description {
+  margin: 0 5px;
+}
+
+.agenda__note-content-sender {
+  display: flex;
+  justify-content: flex-end;
+  font-style: italic;
+}
