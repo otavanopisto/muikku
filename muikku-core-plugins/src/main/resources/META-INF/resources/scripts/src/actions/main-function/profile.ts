@@ -7,8 +7,7 @@ import { StateType } from '~/reducers';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
 import { StoredWorklistItem, WorklistBillingState, WorklistItemsSummary, WorklistSection, WorklistTemplate } from '~/reducers/main-function/profile';
-//import moment from '~/lib/moment';
-import * as moment from "moment";
+import moment from '~/lib/moment';
 
 export interface LoadProfilePropertiesSetTriggerType {
   ():AnyActionType
