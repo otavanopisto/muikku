@@ -15,6 +15,7 @@ import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from '../../dialogs/file-delete';
 import Workspaces from './current-student/workspaces';
+import Ceepos from "./current-student/ceepos";
 import FileUploader from '~/components/general/file-uploader';
 import MainChart from '~/components/general/graph/main-chart'
 import {
@@ -192,6 +193,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
       <div className="application-sub-panel">
         {studentBasicInfo}
+      </div>
+      <div className="application-sub-panel">
+        <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.purchases")}</h3>
+        <div className="application-sub-panel__body">
+          <Ceepos />
+        </div>
       </div>
       {studentHops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>

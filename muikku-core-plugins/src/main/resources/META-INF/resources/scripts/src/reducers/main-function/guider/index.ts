@@ -3,6 +3,7 @@ import { UserWithSchoolDataType, UserFileType, StudentUserProfileEmailType, Stud
 import { WorkspaceType, WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
+import { PurchaseType, PurchaseProductType } from '../profile';
 
 export interface GuiderUserLabelType {
   id: number,
@@ -57,12 +58,14 @@ export interface GuiderStudentUserProfileType {
   hops: HOPSDataType,
   notifications: GuiderNotificationStudentsDataType,
   workspaces: WorkspaceListType,
-  activityLogs: ActivityLogType[]
+  activityLogs: ActivityLogType[],
+  purchases: PurchaseType[],
 }
 
 export interface GuiderType {
   state: GuiderStudentsStateType,
   activeFilters: GuiderActiveFiltersType,
+  availablePurchaseProducts: PurchaseProductType[],
   availableFilters: GuiderFiltersType,
   students: GuiderStudentListType,
   hasMore: boolean,
@@ -112,6 +115,7 @@ export default function guider(state: GuiderType = {
     labelFilters: [],
     query: ""
   },
+  availablePurchaseProducts: [],
   students: [],
   hasMore: false,
   toolbarLock: false,
@@ -296,6 +300,18 @@ export default function guider(state: GuiderType = {
           return (label.id !== action.payload);
         })
       })
+    });
+  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS") {
+    return Object.assign({}, state, {
+      availablePurchaseProducts: action.payload,
+    });
+  } else if (action.type === "UPDATE_GUIDER_INSERT_PURCHASE_ORDER") {
+    const newOrders = [...state.currentStudent.purchases, action.payload];
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: newOrders,
+      },
     });
   }
   return state;

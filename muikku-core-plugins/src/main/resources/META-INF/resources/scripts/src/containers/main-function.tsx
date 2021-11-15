@@ -27,12 +27,12 @@ import { loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
 import { AnnouncementListType } from '~/reducers/announcements';
 import AnnouncerBody from '../components/announcer/body';
-import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
+import { updateAvailablePurchaseProducts, updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections, loadProfilePurchases } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
@@ -48,6 +48,7 @@ import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
 import EvaluationBody from '../components/evaluation/body';
+import CeeposBody from "../components/ceepos/body";
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
 
@@ -217,6 +218,10 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     if (location === "work") {
       this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
       this.props.store.dispatch(loadProfileWorklistSections() as Action);
+    }
+
+    if (location === "purchases") {
+      this.props.store.dispatch(loadProfilePurchases() as Action);
     }
   }
 
@@ -560,6 +565,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
+      this.props.store.dispatch(updateAvailablePurchaseProducts() as Action);
 
       this.loadGuiderData();
 
@@ -643,6 +649,21 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <EvaluationBody/>
   }
 
+  renderCeeposPayBody() {
+    this.updateFirstTime();
+
+    if(this.itsFirstTime){
+      const locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+      if (locationData.order) {
+
+      } else if (locationData.Status) {
+        
+      }
+    }
+
+    return <CeeposBody/>
+  }
+
   /**
    * Component render method
    */
@@ -660,6 +681,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       <Route path="/profile" render={this.renderProfileBody} />
       <Route path="/records" render={this.renderRecordsBody} />
       <Route path="/evaluation" render={this.renderEvaluationBody} />
+      <Route path="/ceepos" render={this.renderCeeposPayBody} />
       <Chat />
     </div></BrowserRouter>);
   }
