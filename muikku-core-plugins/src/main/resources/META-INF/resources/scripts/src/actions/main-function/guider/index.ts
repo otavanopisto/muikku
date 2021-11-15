@@ -23,6 +23,7 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_
 export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", {property: string, value: any}>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
+export type UPDATE_GUIDER_INSERT_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_INSERT_PURCHASE_ORDER", PurchaseType>
 
 export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", UserFileType>
 export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", UserFileType>
@@ -137,6 +138,10 @@ export interface RemoveGuiderFilterLabelTriggerType {
 
 export interface UpdateAvailablePurchaseProductsTriggerType {
   (): AnyActionType
+}
+
+export interface DoPurchaseForCurrentStudentTriggerType {
+  (order: PurchaseProductType): AnyActionType
 }
 
 let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
@@ -547,6 +552,27 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
   }
 }
 
+const doPurchaseForCurrentStudent: DoPurchaseForCurrentStudentTriggerType = function doPurchaseForCurrentStudent(order: PurchaseProductType) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      const state = getState();
+      const value: PurchaseType = await promisify(mApi().ceepos.order.create({
+        studentIdentifier: state.guider.currentStudent.basic.id,
+        product: order,
+      }), 'callback')() as any;
+      dispatch({
+        type: "UPDATE_GUIDER_INSERT_PURCHASE_ORDER",
+        payload: value,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.purchasefailed"), 'error'));
+    }
+  }
+}
+
 export {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
@@ -554,4 +580,4 @@ export {loadStudents, loadMoreStudents, loadStudent,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
   updateWorkspaceFilters, createGuiderFilterLabel,
   updateGuiderFilterLabel, removeGuiderFilterLabel,
-  updateAvailablePurchaseProducts};
+  updateAvailablePurchaseProducts, doPurchaseForCurrentStudent};

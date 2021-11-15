@@ -48,6 +48,7 @@ import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
 import EvaluationBody from '../components/evaluation/body';
+import CeeposBody from "../components/ceepos/body";
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
 
@@ -648,6 +649,21 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <EvaluationBody/>
   }
 
+  renderCeeposPayBody() {
+    this.updateFirstTime();
+
+    if(this.itsFirstTime){
+      const locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+      if (locationData.order) {
+
+      } else if (locationData.Status) {
+        
+      }
+    }
+
+    return <CeeposBody/>
+  }
+
   /**
    * Component render method
    */
@@ -665,6 +681,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       <Route path="/profile" render={this.renderProfileBody} />
       <Route path="/records" render={this.renderRecordsBody} />
       <Route path="/evaluation" render={this.renderEvaluationBody} />
+      <Route path="/ceepos" render={this.renderCeeposPayBody} />
       <Chat />
     </div></BrowserRouter>);
   }

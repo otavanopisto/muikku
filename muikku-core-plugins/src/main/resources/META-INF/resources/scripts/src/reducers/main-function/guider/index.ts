@@ -305,6 +305,14 @@ export default function guider(state: GuiderType = {
     return Object.assign({}, state, {
       availablePurchaseProducts: action.payload,
     });
+  } else if (action.type === "UPDATE_GUIDER_INSERT_PURCHASE_ORDER") {
+    const newOrders = [...state.currentStudent.purchases, action.payload];
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: newOrders,
+      },
+    });
   }
   return state;
 }

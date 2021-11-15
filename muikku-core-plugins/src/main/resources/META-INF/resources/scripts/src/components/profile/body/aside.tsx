@@ -35,6 +35,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         return this.props.status.permissions.CHAT_AVAILABLE
       case "work":
         return !this.props.status.isStudent && this.props.status.permissions.WORKLIST_AVAILABLE;
+      case "purchases":
+        return this.props.status.isStudent;
       default:
         return true;
     }
