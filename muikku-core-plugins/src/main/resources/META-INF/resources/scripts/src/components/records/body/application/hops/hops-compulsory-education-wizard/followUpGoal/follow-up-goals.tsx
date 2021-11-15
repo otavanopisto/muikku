@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useFollowUpGoal } from "./hooks/useFollowUp";
 import { StudySector, FollowUp } from "../../../../../../../@types/shared";
 import {
   FollowUpGoal,
@@ -11,6 +10,8 @@ import {
  */
 interface FollowUpGoalsProps {
   disabled: boolean;
+  followUpData: FollowUp;
+  onChange?: (followUp: FollowUp) => void;
 }
 
 /**
@@ -21,9 +22,8 @@ interface FollowUpGoalsProps {
 const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
   const { disabled } = props;
 
-  const { followUpData, updateFollowUpData } = useFollowUpGoal();
-
-  const { followUpGoal, followUpStudies, studySector } = followUpData;
+  const { followUpGoal, followUpStudies, studySector, graduationGoal } =
+    props.followUpData;
 
   /**
    * handleGoalsSelectsChange
@@ -31,14 +31,34 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
    */
   const handleGoalsSelectsChange =
     (name: keyof FollowUp) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-      updateFollowUpData({
-        ...followUpData,
+      const updatedFollowUpData: FollowUp = {
+        ...props.followUpData,
         [name]: e.currentTarget.value,
-      });
+      };
+
+      props.onChange && props.onChange(updatedFollowUpData);
     };
 
   return (
     <>
+      <div className="hops-container__row">
+        <div className="hops__form-element-container">
+          <label className="hops-label">Valmistumisaikatavoite:</label>
+          <select
+            value={graduationGoal}
+            onChange={handleGoalsSelectsChange("graduationGoal")}
+            className="hops-select"
+            disabled={disabled}
+          >
+            <option value="">Valitse...</option>
+            <option value="6">6kk</option>
+            <option value="12">1v.</option>
+            <option value="18">1,5v.</option>
+            <option value="24">2v.</option>
+          </select>
+        </div>
+      </div>
+
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <label className="hops-label">Jatkotavoitteet:</label>

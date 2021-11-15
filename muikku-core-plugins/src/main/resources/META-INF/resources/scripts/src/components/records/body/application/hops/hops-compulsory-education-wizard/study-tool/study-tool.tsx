@@ -13,6 +13,7 @@ import StudyCalculationInfoBox from "./calculation-info-box";
 import OptionalStudiesInfoBox from "./optional-studiess-info-box";
 import { useStudentActivity } from "./hooks/useStudentActivity";
 import { updateSuggestion } from "../suggestion-list/handlers/handlers";
+import { FollowUp } from "../../../../../../../@types/shared";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -28,6 +29,7 @@ interface StudyToolProps {
   ethics: boolean;
   superVisorModifies: boolean;
   studies: HopsPlanningStudies;
+  followUp: FollowUp;
 }
 
 /**
@@ -90,12 +92,12 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
     let selectedOptionalHours = 0;
 
-    if (props.studies.selectedListOfIds.length > 0) {
+    /* if (props.studies.selectedListOfIds.length > 0) {
       selectedOptionalHours =
         calculateSelectedOptionalHours() - optionalHoursCompleted;
-    }
+    } */
 
-    const weekFactor = parseInt(props.studies.graduationGoal) / 12;
+    const weekFactor = parseInt(props.followUp.graduationGoal) / 12;
 
     const hoursNeededToMatchGoal = Math.round(
       (updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours) /
@@ -113,19 +115,19 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     if (hoursNeededToMatchGoal > props.studies.usedHoursPerWeek) {
       return StudyCalculationInfoBox({
         state: "notenough",
-        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${props.studies.graduationGoal}kk).`,
+        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${props.followUp.graduationGoal}kk).`,
       });
     }
     if (hoursNeededToMatchGoal < props.studies.usedHoursPerWeek) {
       return StudyCalculationInfoBox({
         state: "toomuch",
-        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${props.studies.graduationGoal}kk).`,
+        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${props.followUp.graduationGoal}kk).`,
       });
     }
     if (hoursNeededToMatchGoal === props.studies.usedHoursPerWeek) {
       return StudyCalculationInfoBox({
         state: "enough",
-        message: `Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${props.studies.graduationGoal}kk).`,
+        message: `Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${props.followUp.graduationGoal}kk).`,
       });
     }
   };
@@ -134,7 +136,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * calculateSelectedOptionalHours
    * @returns selected optional hours
    */
-  const calculateSelectedOptionalHours = (): number => {
+  /* const calculateSelectedOptionalHours = (): number => {
     let hoursSelected = 0;
 
     if (props.studies.selectedListOfIds) {
@@ -156,7 +158,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     return hoursSelected;
-  };
+  }; */
 
   /**
    * calculateMandatoryHoursNeeded
@@ -540,10 +542,10 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   let selectedOptionalHours = 0;
 
-  if (props.studies.selectedListOfIds.length > 0) {
+  /* if (props.studies.selectedListOfIds.length > 0) {
     selectedOptionalHours =
       calculateSelectedOptionalHours() - optionalHoursCompleted;
-  }
+  } */
 
   const hoursInTotalToComplete =
     updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
@@ -562,12 +564,12 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   let jotain = 0;
 
-  if (
+  /* if (
     props.studies.selectedListOfIds &&
     props.studies.selectedListOfIds.length > neededOptionalStudies
   ) {
     jotain = props.studies.selectedListOfIds.length;
-  }
+  } */
 
   let calculationDivider1 =
     (completedMandatoryStudies + completedOptionalStudies) /
@@ -585,9 +587,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     <fieldset className="hops-container__fieldset">
       <legend className="hops__step-container__subheader">Opintolaskuri</legend>
 
-      {props.studies.graduationGoal !== "" &&
-      props.studies.selectedListOfIds &&
-      props.studies.selectedListOfIds.length === neededOptionalStudies ? (
+      {props.followUp.graduationGoal !== "" ? (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
@@ -605,17 +605,17 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       <div className="hops-container__row">
         <OptionalStudiesInfoBox
           needMandatoryStudies={needMandatoryStudies}
-          selectedNumberOfOptional={props.studies.selectedListOfIds.length}
-          graduationGoal={props.studies.graduationGoal}
+          selectedNumberOfOptional={0}
+          graduationGoal={props.followUp.graduationGoal}
         />
       </div>
 
-      {props.studies.selectedListOfIds &&
+      {/* {props.studies.selectedListOfIds &&
       props.studies.selectedListOfIds.length === neededOptionalStudies ? (
         <div className="hops-container__row">
           {compareGraduationGoalToNeededForMandatoryStudies()}
         </div>
-      ) : null}
+      ) : null} */}
 
       {props.showIndicators && (
         <div
@@ -806,7 +806,6 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               superVisorModifies={props.superVisorModifies}
               ethicsSelected={props.ethics}
               finnishAsSecondLanguage={props.finnishAsSecondLanguage}
-              selectedSubjectListOfIds={props.studies.selectedListOfIds}
               suggestedList={studentActivity.suggestedList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
@@ -831,7 +830,6 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               user={props.user}
               ethicsSelected={props.ethics}
               finnishAsSecondLanguage={props.finnishAsSecondLanguage}
-              selectedSubjectListOfIds={props.studies.selectedListOfIds}
               suggestedList={studentActivity.suggestedList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}

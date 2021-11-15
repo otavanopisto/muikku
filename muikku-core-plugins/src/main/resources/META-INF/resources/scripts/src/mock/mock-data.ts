@@ -899,17 +899,14 @@ export const hopsMock1: HopsCompulsory = {
     friend: 0,
     supportPerson: 0,
     teacher: 0,
-    graduationGoal: "",
     scaleSize: 5,
     scaleName: "0-5",
   },
 
   studiesPlanning: {
     usedHoursPerWeek: 0,
-    graduationGoal: "",
     ethics: false,
     finnishAsSecondLanguage: false,
-    selectedListOfIds: [],
   },
 };
 
@@ -948,17 +945,14 @@ export const hopsMock2: HopsCompulsory = {
     friend: 3,
     supportPerson: 0,
     teacher: 0,
-    graduationGoal: "",
     scaleSize: 5,
     scaleName: "0-5",
   },
 
   studiesPlanning: {
     usedHoursPerWeek: 25,
-    graduationGoal: "",
     ethics: false,
     finnishAsSecondLanguage: false,
-    selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
   },
 };
 
@@ -997,17 +991,14 @@ export const hopsMock3: HopsCompulsory = {
     friend: 3,
     supportPerson: 0,
     teacher: 0,
-    graduationGoal: "",
     scaleSize: 5,
     scaleName: "0-5",
   },
 
   studiesPlanning: {
     usedHoursPerWeek: 25,
-    graduationGoal: "6",
     ethics: false,
     finnishAsSecondLanguage: false,
-    selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
   },
 };
 
@@ -1046,16 +1037,13 @@ export const hopsMock4: HopsCompulsory = {
     friend: 3,
     supportPerson: 0,
     teacher: 0,
-    graduationGoal: "",
     scaleSize: 5,
     scaleName: "0-5",
   },
 
   studiesPlanning: {
     usedHoursPerWeek: 25,
-    graduationGoal: "6",
     ethics: false,
     finnishAsSecondLanguage: false,
-    selectedListOfIds: [5, 6, 19, 20, 29, 46, 47, 64, 65],
   },
 };

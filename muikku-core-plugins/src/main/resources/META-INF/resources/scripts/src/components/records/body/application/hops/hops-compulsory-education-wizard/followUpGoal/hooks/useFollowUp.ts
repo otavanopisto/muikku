@@ -7,6 +7,7 @@ import { FollowUp } from "../../../../../../../../@types/shared";
  */
 export interface UseFollowUpGoalsState {
   isLoading: boolean;
+  graduationGoal: string;
   followUpGoal: string;
   followUpStudies?: string;
   studySector?: string;
@@ -17,6 +18,7 @@ export interface UseFollowUpGoalsState {
  */
 const initialState: UseFollowUpGoalsState = {
   isLoading: false,
+  graduationGoal: "",
   followUpGoal: "",
   followUpStudies: "",
   studySector: "",

@@ -92,7 +92,7 @@ class StudentHopsInformation extends React.Component<
                     <label className="hops-label">Päivitykset:</label>
                     <ul className="hops-updates__list">
                       {this.props.basicInformation.updates.map((uItem) => (
-                        <li>
+                        <li key={uItem.modifier}>
                           {moment(uItem.date).format("l")} - {uItem.modifier}
                         </li>
                       ))}

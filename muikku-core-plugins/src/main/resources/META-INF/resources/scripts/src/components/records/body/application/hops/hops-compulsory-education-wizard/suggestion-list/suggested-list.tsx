@@ -60,6 +60,7 @@ const SuggestionList = (props: SuggestionListProps) => {
     suggestionsList.length > 0 ? (
       suggestionsList.map((suggestion) => {
         let isSuggested = false;
+        let isSuggestedToHops = false;
         if (
           props.suggestedActivityCourses &&
           props.suggestedActivityCourses.findIndex(
@@ -110,7 +111,15 @@ const SuggestionList = (props: SuggestionListProps) => {
                         cursor: "pointer",
                         zIndex: 40,
                       }}
-                      onClick={handleSuggestOptionalClick}
+                      onClick={() =>
+                        props.updateSuggestion(
+                          isSuggested ? "remove" : "add",
+                          props.course.courseNumber,
+                          props.subjectCode,
+                          suggestion.id,
+                          props.guider.currentStudent.basic.id
+                        )
+                      }
                     >
                       Valinnaiseksi?
                     </button>

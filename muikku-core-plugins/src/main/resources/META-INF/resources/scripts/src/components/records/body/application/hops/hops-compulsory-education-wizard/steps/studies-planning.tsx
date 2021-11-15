@@ -1,5 +1,8 @@
 import * as React from "react";
-import { HopsPlanningStudies } from "../../../../../../../@types/shared";
+import {
+  HopsPlanningStudies,
+  FollowUp,
+} from "../../../../../../../@types/shared";
 import StudyTool from "../study-tool/study-tool";
 import FollowUpGoals from "../followUpGoal/follow-up-goals";
 
@@ -11,10 +14,12 @@ interface StudiesPlanningProps {
   disabled: boolean;
   finnishAsSecondLanguage: boolean;
   ethics: boolean;
+  followUp: FollowUp;
   studies: HopsPlanningStudies;
   studentId: string;
   superVisorModifies: boolean;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
+  onStudiesGoalsChange: (followUp: FollowUp) => void;
 }
 
 /**
@@ -82,31 +87,16 @@ class StudiesPlanning extends React.Component<
     };
 
   renderDemo2 = () => {
-    const { graduationGoal } = this.props.studies;
-
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">Tavoitteet</legend>
 
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <label className="hops-label">Valmistumisaikatavoite:</label>
-              <select
-                value={graduationGoal}
-                onChange={this.handleGoalsSelectsChange("graduationGoal")}
-                className="hops-select"
-                disabled={this.props.disabled}
-              >
-                <option value="">Valitse...</option>
-                <option value="6">6kk</option>
-                <option value="12">1v.</option>
-                <option value="18">1,5v.</option>
-                <option value="24">2v.</option>
-              </select>
-            </div>
-          </div>
-          <FollowUpGoals disabled={this.props.disabled} />
+          <FollowUpGoals
+            disabled={this.props.disabled}
+            followUpData={this.props.followUp}
+            onChange={this.props.onStudiesGoalsChange}
+          />
         </fieldset>
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
@@ -149,6 +139,7 @@ class StudiesPlanning extends React.Component<
           finnishAsSecondLanguage={this.props.finnishAsSecondLanguage}
           ethics={this.props.ethics}
           studies={this.props.studies}
+          followUp={this.props.followUp}
           superVisorModifies={this.props.superVisorModifies}
         />
       </div>

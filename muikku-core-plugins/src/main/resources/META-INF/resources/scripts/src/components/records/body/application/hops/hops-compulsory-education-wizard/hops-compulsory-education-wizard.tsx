@@ -7,14 +7,18 @@ import { StateType } from "~/reducers";
 const StepZilla = require("react-stepzilla").default;
 
 import "~/sass/elements/wizard.scss";
-import { Step1, Step2, Step3, Step5 } from "./steps";
+import { Step1, Step2, Step3, Step5, Step6 } from "./steps";
 import {
   GuiderType,
   GuiderStudentType,
 } from "../../../../../../reducers/main-function/guider/index";
 import promisify from "../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
-import { BasicInformation, HopsUpdates } from "../../../../../../@types/shared";
+import {
+  BasicInformation,
+  HopsUpdates,
+  FollowUp,
+} from "../../../../../../@types/shared";
 import {
   HopsCompulsory,
   Education,
@@ -47,6 +51,7 @@ interface CompulsoryEducationHopsWizardProps {
 interface CompulsoryEducationHopsWizardState {
   basicInfo: BasicInformation;
   hopsCompulsory: HopsCompulsory;
+  hopsFollowUp?: FollowUp;
   loading: boolean;
 }
 
@@ -107,16 +112,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
           supportPerson: 0,
           teacher: 0,
           somethingElse: "",
-          graduationGoal: "",
           scaleSize: 5,
           scaleName: "0-5",
         },
         studiesPlanning: {
           usedHoursPerWeek: 0,
-          graduationGoal: "",
           ethics: false,
           finnishAsSecondLanguage: false,
-          selectedListOfIds: [],
         },
       },
     };
@@ -132,14 +134,14 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loading: true,
     });
 
-    console.log(this.props.user);
+    /* console.log(this.props.user); */
 
     const studentId =
       this.props.user === "supervisor"
         ? this.props.guider.currentStudent.basic.id
         : (window as any).MUIKKU_LOGGED_USER;
 
-    console.log(studentId);
+    /* console.log(studentId); */
 
     const studentHopsHistory = (await promisify(
       mApi().hops.student.history.read(studentId),
@@ -155,6 +157,11 @@ class CompulsoryEducationHopsWizard extends React.Component<
       mApi().hops.student.read(studentId),
       "callback"
     )()) as HopsCompulsory;
+
+    const followUp = await promisify(
+      mApi().hops.student.hopsGoals.read(studentId),
+      "callback"
+    )().catch((err) => console.log(err));
 
     const loadedHops =
       hops !== undefined
@@ -182,21 +189,17 @@ class CompulsoryEducationHopsWizard extends React.Component<
               byReading: 0,
               byListening: 0,
               byDoing: 0,
-              someOtherWay: undefined,
               byMemorizing: 0,
               byTakingNotes: 0,
               byDrawing: 0,
               byListeningTeacher: 0,
               byWatchingVideos: 0,
               byFollowingOthers: 0,
-              someOtherMethod: undefined,
               noSupport: 0,
               family: 0,
               friend: 0,
               supportPerson: 0,
               teacher: 0,
-              somethingElse: undefined,
-              graduationGoal: "",
               scaleSize: 5,
               scaleName: "0-5",
             },
@@ -205,8 +208,15 @@ class CompulsoryEducationHopsWizard extends React.Component<
               graduationGoal: "",
               ethics: false,
               finnishAsSecondLanguage: false,
-              selectedListOfIds: [],
             },
+          };
+
+    const loadedFollowUp =
+      followUp !== undefined
+        ? followUp
+        : {
+            graduationGoal: "",
+            followUpGoal: "",
           };
 
     /* this.setState({
@@ -227,6 +237,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         updates: studentHopsHistory,
       },
       hopsCompulsory: loadedHops,
+      hopsFollowUp: loadedFollowUp as FollowUp,
     });
   };
 
@@ -272,6 +283,16 @@ class CompulsoryEducationHopsWizard extends React.Component<
   };
 
   /**
+   * handleFollowUpChange
+   * @param followUp
+   */
+  handleFollowUpChange = (followUp: FollowUp) => {
+    this.setState({
+      hopsFollowUp: followUp,
+    });
+  };
+
+  /**
    * handleDeleteCourseSelections
    */
   handleDeleteCourseSelections = () => {
@@ -280,7 +301,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ...this.state.hopsCompulsory,
         studiesPlanning: {
           ...this.state.hopsCompulsory.studiesPlanning,
-          selectedListOfIds: [],
         },
       },
     });
@@ -289,10 +309,54 @@ class CompulsoryEducationHopsWizard extends React.Component<
   /**
    * handleSaveHops
    */
-  handleSaveHops = () => {
-    console.log("save hops", this.state.hopsCompulsory);
+  handleSaveHops = async () => {
+    console.log("save hops", [
+      this.state.hopsCompulsory,
+      this.state.hopsFollowUp,
+    ]);
+
+    this.setState({
+      loading: true,
+    });
+
+    const studentId =
+      this.props.user === "supervisor"
+        ? this.props.guider.currentStudent.basic.id
+        : (window as any).MUIKKU_LOGGED_USER;
+
+    Promise.all([
+      promisify(
+        mApi().hops.student.create(studentId, this.state.hopsCompulsory),
+        "callback"
+      )().then((hops: any) => {
+        console.log(hops);
+      }),
+      promisify(
+        mApi().hops.student.hopsGoals.create(
+          studentId,
+          this.state.hopsFollowUp
+        ),
+        "callback"
+      )().then((followUp: any) => {
+        console.log(followUp);
+      }),
+    ]).then(() => {
+      this.setState({ loading: false });
+    });
 
     const parsedHops = { ...this.state.hopsCompulsory };
+  };
+
+  /**
+   * handles when wizard step changes and here check when last step before complete happens,
+   * kick offs form submit
+   * @param steps
+   * @returns
+   */
+  handleStepChange = (steps: object[]) => (step: any) => {
+    if (step === steps.length - 1) {
+      this.handleSaveHops();
+    }
   };
 
   /**
@@ -342,6 +406,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
                 ? this.props.guider.currentStudent.basic.id
                 : (window as any).MUIKKU_LOGGED_USER
             }
+            followUp={this.state.hopsFollowUp}
             studies={{
               ...this.state.hopsCompulsory.studiesPlanning,
             }}
@@ -351,8 +416,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
               this.state.hopsCompulsory.studiesPlanning.finnishAsSecondLanguage
             }
             onStudiesPlanningChange={this.handleStudiesPlanningChange}
+            onStudiesGoalsChange={this.handleFollowUpChange}
           />
         ),
+      },
+      {
+        name: "Tallennus",
+        component: <Step6 />,
       },
     ];
 
@@ -365,15 +435,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
             showSteps={true}
             preventEnterSubmission={true}
             prevBtnOnLastStep={true}
-            nextTextOnFinalActionStep="Jatka"
+            nextTextOnFinalActionStep="Tallenna"
             nextButtonCls="button button--wizard"
             backButtonCls="button button--wizard"
-            nextButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.next"
-            )}
-            backButtonText={this.props.i18n.text.get(
-              "plugin.workspace.management.wizard.button.last"
-            )}
+            nextButtonText="Seuraava"
+            backButtonText="Edellinen"
+            onStepChange={this.handleStepChange(steps)}
           />
         </div>
       </div>

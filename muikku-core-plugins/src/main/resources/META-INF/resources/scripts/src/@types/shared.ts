@@ -71,7 +71,7 @@ export interface ExaminationSubject {
  */
 export interface ExaminationInformation
   extends MatriculationStudent,
-  MatriculationStudentExamination {
+    MatriculationStudentExamination {
   date: string;
 }
 
@@ -306,8 +306,7 @@ export interface HopsStudentStartingLevel {
 export interface HopsMotivationAndStudy
   extends WayToLearn,
     StudentLearningMethod,
-    StudentSupportive,
-    StudentsGoal {
+    StudentSupportive {
   scaleSize: number;
   scaleName: string;
   hardOrEasyInStudies?: string;
@@ -320,30 +319,19 @@ export interface HopsStudies {
   usedHoursPerWeek: number;
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
-  selectedSubjects: SchoolSubject[];
 }
 
-export interface HopsPlanningStudies extends StudentsGoal {
+export interface HopsPlanningStudies {
   usedHoursPerWeek: number;
-  selectedListOfIds: number[];
   ethics: boolean;
   finnishAsSecondLanguage: boolean;
-}
-
-/**
- * HopsGoal
- */
-export interface StudentsGoal {
-  graduationGoal: string;
-  /* followUpGoal: string;
-  followUpStudies?: string;
-  studySector?: string; */
 }
 
 /**
  * FollowUpGoal
  */
 export interface FollowUp {
+  graduationGoal: string;
   followUpGoal: string;
   followUpStudies?: string;
   studySector?: string;
