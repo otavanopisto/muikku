@@ -373,12 +373,14 @@ public class HopsRestService {
         studentIdentifier,
         payload.getSubject(),
         payload.getCourseNumber());
+        payload.getUrlName();
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
+
     if (hopsSuggestion == null) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
       if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
-      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber(), payload.getId());
+      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getUrlName(), payload.getCourseNumber(), payload.getId());
       StudyActivityItemRestModel item = new StudyActivityItemRestModel();
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
       item.setCourseName(workspaceEntityController.getName(workspaceEntity));
@@ -387,6 +389,10 @@ public class HopsRestService {
       item.setStatus(StudyActivityItemStatus.SUGGESTED);
       item.setSubject(hopsSuggestion.getSubject());
       return Response.ok(item).build();
+    }
+    else if (hopsSuggestion.getWorkspaceEntityId() != payload.getId()){
+      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getUrlName(), payload.getCourseNumber(), workspaceEntity.getId());
+      return Response.noContent().build();
     }
     else {
       hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber());

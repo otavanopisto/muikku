@@ -25,6 +25,14 @@ public class SuggestedWorkspace {
   public void setSubject(String subject) {
     this.subject = subject;
   }
+  
+  public String getUrlName() {
+    return urlName;
+  }
+  
+  public void setUrlName(String urlName) {
+    this.urlName = urlName;
+  }
 
   public Integer getCourseNumber() {
     return courseNumber;
@@ -37,6 +45,7 @@ public class SuggestedWorkspace {
   private Long id;
   private String name;
   private String subject;
+  private String urlName;
   private Integer courseNumber;
 
 }

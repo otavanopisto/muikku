@@ -16,11 +16,12 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
 
   private static final long serialVersionUID = 5746392088055973392L;
   
-  public HopsSuggestion create(String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
+  public HopsSuggestion create(String studentIdentifier, String subject, String urlName, Integer courseNumber, Long workspaceEntityId) {
     HopsSuggestion hopsSuggestion = new HopsSuggestion();
 
     hopsSuggestion.setStudentIdentifier(studentIdentifier);
     hopsSuggestion.setSubject(subject);
+    hopsSuggestion.setUrlName(urlName);
     hopsSuggestion.setCourseNumber(courseNumber);
     hopsSuggestion.setWorkspaceEntityId(workspaceEntityId);
     hopsSuggestion.setCreated(new Date());
@@ -28,9 +29,10 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
     return persist(hopsSuggestion);
   }
   
-  public HopsSuggestion update(HopsSuggestion hopsSuggestion, String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
+  public HopsSuggestion update(HopsSuggestion hopsSuggestion, String studentIdentifier, String subject, String urlName, Integer courseNumber, Long workspaceEntityId) {
     hopsSuggestion.setStudentIdentifier(studentIdentifier);
     hopsSuggestion.setSubject(subject);
+    hopsSuggestion.setUrlName(urlName);
     hopsSuggestion.setCourseNumber(courseNumber);
     hopsSuggestion.setWorkspaceEntityId(workspaceEntityId);
     hopsSuggestion.setCreated(new Date());

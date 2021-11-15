@@ -35,6 +35,14 @@ public class HopsSuggestion {
   public void setSubject(String subject) {
     this.subject = subject;
   }
+  
+  public String getUrlName() {
+    return urlName;
+  }
+  
+  public void setUrlName(String urlName) {
+    this.urlName = urlName;
+  }
 
   public Integer getCourseNumber() {
     return courseNumber;
@@ -73,6 +81,11 @@ public class HopsSuggestion {
   @NotEmpty
   @Column (nullable = false)
   private String subject;
+  
+  @NotNull
+  @NotEmpty
+  @Column (nullable = false)
+  private String urlName;
   
   @Column
   private Integer courseNumber;
