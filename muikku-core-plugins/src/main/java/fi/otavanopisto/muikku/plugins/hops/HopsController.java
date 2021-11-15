@@ -55,7 +55,8 @@ public class HopsController {
   
   public HopsGoals createHopsGoals(String studentIdentifier, String data) {
     HopsGoals hopsGoals = hopsGoalsDAO.create(studentIdentifier, data);
-    hopsGoalsDAO.create(studentIdentifier, sessionController.getLoggedUser().toId());
+    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId());
+
     return hopsGoals;
   }
 

@@ -82,9 +82,7 @@ public class HopsSuggestion {
   @Column (nullable = false)
   private String subject;
   
-  @NotNull
-  @NotEmpty
-  @Column (nullable = false)
+  @Column
   private String urlName;
   
   @Column
