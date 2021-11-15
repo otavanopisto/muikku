@@ -31,7 +31,7 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
       )
     );
 
-    return entityManager.createQuery(criteria).getSingleResult();
+    return getSingleResult(entityManager.createQuery(criteria));
   }
   
   public List<CeeposOrder> listByUserIdentifierAndArchived(String userIdentifier, boolean archived) {

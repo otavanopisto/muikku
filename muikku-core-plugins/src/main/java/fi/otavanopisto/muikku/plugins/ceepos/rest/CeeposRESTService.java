@@ -110,6 +110,24 @@ public class CeeposRESTService {
     return Response.ok().build();
   }
   
+  @Path("/doneViewParams")
+  @GET
+  @RESTPermit(handling = Handling.INLINE)
+  public Response doneViewParams(@QueryParam("orderId") Long orderId, @QueryParam("status") Integer status) {
+    // Debug endpoint for development purposes
+    StringBuilder sb = new StringBuilder();
+    sb.append(orderId);
+    sb.append("&");
+    sb.append(status);
+    sb.append("&");
+    sb.append("123456"); // Reference
+    sb.append("&");
+    sb.append(getSetting("key"));
+    String hash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+    String params = String.format("Id=%s&Status=%d&Reference=123456&Hash=%s", orderId, status, hash);
+    return Response.ok(params).build();
+  }
+  
   /**
    * REQUEST:
    * 

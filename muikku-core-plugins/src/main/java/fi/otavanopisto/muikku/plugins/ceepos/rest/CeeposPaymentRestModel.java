@@ -158,7 +158,7 @@ public class CeeposPaymentRestModel {
   }
 
   @JsonProperty("ApiVersion")
-  private String ApiVersion;               // required; always 3.0.0
+  private String ApiVersion;               // required; always 2.1.2
 
   @JsonProperty("Source")
   private String Source;                   // required; provided by ceepos; plugin setting ceepos.source
