@@ -51,6 +51,7 @@ import EvaluationBody from '../components/evaluation/body';
 import CeeposBody from "../components/ceepos/body";
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
+import { loadCeeposPurchase, loadCeeposPurchaseAndPay } from '~/actions/main-function/ceepos';
 
 moment.locale("fi");
 
@@ -82,6 +83,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
+    this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
+    this.renderCeeposPayBody = this.renderCeeposPayBody.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
 
@@ -649,19 +652,31 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     return <EvaluationBody/>
   }
 
+  renderCeeposDoneBody() {
+    this.updateFirstTime();
+
+    const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
+    if (this.itsFirstTime){
+      const id = parseInt(locationData.Id);
+      if (id) {
+        this.props.store.dispatch(loadCeeposPurchase(id) as Action);
+      }
+    }
+
+    return <CeeposBody done={true} status={parseInt(locationData.Status)}/>
+  }
+
   renderCeeposPayBody() {
     this.updateFirstTime();
 
     if(this.itsFirstTime){
-      const locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+      const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
       if (locationData.order) {
-
-      } else if (locationData.Status) {
-        
+        this.props.store.dispatch(loadCeeposPurchaseAndPay(parseInt(locationData.order)) as Action);
       }
     }
 
-    return <CeeposBody/>
+    return <CeeposBody pay={true}/>
   }
 
   /**
@@ -681,7 +696,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       <Route path="/profile" render={this.renderProfileBody} />
       <Route path="/records" render={this.renderRecordsBody} />
       <Route path="/evaluation" render={this.renderEvaluationBody} />
-      <Route path="/ceepos" render={this.renderCeeposPayBody} />
+      <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+      <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
       <Chat />
     </div></BrowserRouter>);
   }

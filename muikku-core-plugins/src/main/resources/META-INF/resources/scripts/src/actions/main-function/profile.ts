@@ -760,7 +760,7 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType = function loadProfi
     let state = getState();
     try {
 
-      const studentId = state.status.userSchoolDataIdentifier.replace("PYRAMUS-", "");
+      const studentId = state.status.userSchoolDataIdentifier;
       const historia: PurchaseType[] = await promisify(mApi().ceepos.user.orders.read(studentId), 'callback')() as any;
 
       dispatch({

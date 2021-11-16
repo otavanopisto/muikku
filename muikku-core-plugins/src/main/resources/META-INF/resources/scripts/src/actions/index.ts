@@ -262,6 +262,7 @@ import {
   WEBSOCKET_EVENT,
   INITIALIZE_WEBSOCKET,
 } from "~/reducers/util/websocket";
+import { UPDATE_CEEPOS_PURCHASE, UPDATE_CEEPOS_STATE } from "./main-function/ceepos";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -457,6 +458,8 @@ export type ActionType =
   | UPDATE_BASE_PRICE_STATE
   | SET_PURCHASE_HISTORY
   | UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS
-  | UPDATE_GUIDER_INSERT_PURCHASE_ORDER;
+  | UPDATE_GUIDER_INSERT_PURCHASE_ORDER
+  | UPDATE_CEEPOS_STATE
+  | UPDATE_CEEPOS_PURCHASE;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

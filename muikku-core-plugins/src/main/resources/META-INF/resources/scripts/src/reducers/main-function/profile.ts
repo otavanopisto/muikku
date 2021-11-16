@@ -37,7 +37,10 @@ export interface WorklistItem {
 export enum PurchaseStateType {
   CREATED = "CREATED",
   CANCELLED = "CANCELLED",
-  FAILED = "FAILED",
+  ERRORED = "ERRORED",
+  ONGOING = "ONGOING",
+  PAID = "PAID",
+  COMPLETE = "COMPLETE"
 }
 
 export interface PurchaseProductType {
