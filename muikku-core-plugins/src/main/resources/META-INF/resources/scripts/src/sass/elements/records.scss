@@ -58,7 +58,7 @@
   flex-direction: column;
 }
 
-.studies-records__section--latest-excercise-evaluations {
+.studies-records__section--subject-evaluations {
   /* .study-credits__section-header {
   } */
 
@@ -73,9 +73,9 @@
     box-shadow: 5px 5px 5px grey;
   }
 
-  .studies-records__section-content-course-list {
-    text-align: center;
+  .studies-records__section-content-subject-list {
     display: flex;
+    flex-direction: column;
   }
 }
 
@@ -167,4 +167,108 @@
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+.studies-records__section-content-course-list-subject {
+  font-weight: bold;
+  font-size: 1.25rem;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  text-decoration: underline;
+}
+
+.studies-records__section-content-course-list-item {
+  display: flex;
+  flex-shrink: 1;
+  margin: 10px 0;
+}
+
+.studies-records__section-content-course-list-item--header {
+  margin-bottom: 0;
+}
+
+.studies-records__section-content-course-list-item-cell {
+  width: 100%;
+  flex-grow: 1;
+}
+
+.studies-records__section-content-course-list-item-cell-box {
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+  border: 1px solid black;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.studies-records__section-content-course-list-item-cell-box--asessor {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  .name {
+    font-weight: bold;
+  }
+
+  .title {
+    font-weight: lighter;
+  }
+}
+
+.studies-records__section-content-course-list-item-cell-box--course-name {
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: #dadada;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.studies-records__section-content-course-list-item-cell-box--status-evaluated {
+  background-color: rgb(104, 184, 104);
+}
+
+.studies-records__section-content-course-list-item-cell-box--status-supplementation {
+  background-color: orange;
+}
+
+.studies-records__section-content-course-list-item-cell-box--status-ongoing {
+  background-color: yellow;
+}
+
+.studies-records__section-content-course-list-item-cell-box--asessor .avatar,
+.studies-records__section-content-course-list-item-cell-box--asessor .asessor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.studies-records__section-content-course-list-item-cell-label {
+  font-weight: bold;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.arrow-right {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  margin-left: 10px;
+  transform: rotate(0deg);
+  transition: transform 0.4s ease-in;
+  border-left: 20px solid black;
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  margin-left: 10px;
+  transform: rotate(90deg);
+  transition: transform 0.4s ease-in;
+  border-left: 20px solid black;
 }

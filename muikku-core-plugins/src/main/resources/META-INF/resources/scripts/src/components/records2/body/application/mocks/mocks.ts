@@ -1,5 +1,6 @@
 import { Course } from "../summary/carousel/course-carousel";
 import { Achievement } from "../summary/carousel/achievements-carousel";
+import { RecordSubject } from "../records/records-list";
 
 export const courses: Course[] = [
   {
@@ -184,5 +185,92 @@ export const achievementsDone: Achievement[] = [
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",
     imageSrc:
       "https://cdn.ebs.newsner.com/wp-content/uploads/sites/15/2019/05/MIKAONOIKEIN_KUVA.jpg",
+  },
+];
+
+export const recordsMock: RecordSubject[] = [
+  {
+    name: "Äidinkieli",
+    courses: [
+      {
+        name: "Lauseet ja pisteet",
+        evaluationDate: "12.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "EVALUATED",
+        grade: "8",
+      },
+      {
+        name: "Lauseet ja kirjaimet",
+        evaluationDate: "13.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "ONGOING",
+      },
+      {
+        name: "Lauseet ja Verbit",
+        evaluationDate: "15.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "SUPPLEMENTATION",
+      },
+    ],
+  },
+  {
+    name: "Matematiikka",
+    courses: [
+      {
+        name: "Plus laskut",
+        evaluationDate: "12.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "EVALUATED",
+        grade: "10",
+      },
+      {
+        name: "Miinus laskut",
+        evaluationDate: "1.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "EVALUATED",
+      },
+      {
+        name: "Yhtälöt",
+        evaluationDate: "2.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "EVALUATED",
+      },
+    ],
   },
 ];

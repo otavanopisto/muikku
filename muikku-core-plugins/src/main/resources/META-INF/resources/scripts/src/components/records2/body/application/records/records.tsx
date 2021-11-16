@@ -9,6 +9,8 @@ import {
 import { StateType } from "~/reducers";
 import Button from "../../../../general/button";
 import Avatar from "~/components/general/avatar";
+import { RecordsList, RecordsListItem } from "./records-list";
+import { recordsMock } from "../mocks/mocks";
 
 /**
  * RecordsProps
@@ -45,58 +47,54 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   render() {
     return (
       <div className="records">
-        {/* <div className="studies-records__section studies-records__section--latest-excercise-evaluations">
-          <h2 className="studies-records__section-header">
-            Viimeisimmät tehtävä arvioinnit
-          </h2>
-          <div className="studies-records__section-content">
-            <div className="studies-records__section-content-filters">
-              <h1>FILTTERIT</h1>
-            </div>
-            <div className="studies-records__section-content-course-list">
-              {Array.from(Array(5)).map((item, index) => (
-                <div className="course-list__item">
-                  <div className="course-list__item-header">
-                    <div className="course-list__item-header-name">
-                      Matikka 1. Kaavat ja laskut
-                    </div>
-                    <div className="course-list__item-header-evaluation-date">
-                      9.11.2021 - Tehtävä {index + 1}
-                    </div>
-                  </div>
-                  <div className="course-list__item-content">
-                    <div className="course-list__item-content-asessor">
-                      <Avatar hasImage={false} id={1} firstName="Eka" />
-                      <div className="course-list__item-content-asessor-info">
-                        <h3>Nimi</h3>
-                        <span>Titteli</span>
-                      </div>
-                    </div>
-                    <div className="course-list__item-content-data">
-                      <div className="course-list__item-content-data-grade">
-                        arvosana
-                      </div>
-                      <div className="course-list__item-content-data-functions">
-                        <Button style={{ backgroundColor: "#009FE3" }}>
-                          Arviointi
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div> */}
-
-        <div className="studies-records__section studies-records__section--latest-excercise-evaluations">
+        <div className="studies-records__section studies-records__section--subject-evaluations">
           <h2 className="studies-records__section-header">Kurssisuoritukset</h2>
           <div className="studies-records__section-content">
             <div className="studies-records__section-content-filters">
               <h1>FILTTERIT</h1>
             </div>
-            <div className="studies-records__section-content-course-list">
-              <h1>KURSSILISTA</h1>
+            <div className="studies-records__section-content-subject-list">
+              {recordsMock.map((rItem) => (
+                <RecordsList name={rItem.name}>
+                  <div className="studies-records__section-content-course-list-item .studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Nimi
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Suorituspvm
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arvioija
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Tehtävät
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Status
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arvosana
+                      </div>
+                    </div>
+                  </div>
+                  {rItem.courses.map((cItem, index) => (
+                    <RecordsListItem index={index} {...cItem} />
+                  ))}
+
+                  <div className="studies-records__divider studies-records__divider--transparent" />
+                </RecordsList>
+              ))}
             </div>
           </div>
         </div>

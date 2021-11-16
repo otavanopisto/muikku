@@ -51,14 +51,22 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       <div className="studies-summary">
         <div className="studies-summary__section studies-summary__section--agenda">
           <h2 className="studies-summary__section-header">Päivän agenda</h2>
-          <div className="studies-summary__section-content">
+          <div
+            className="studies-summary__section-content"
+            style={{ marginBottom: "10px" }}
+          >
             <div className="studies-summary__section-content-header">
               <h1>KALENTERI</h1>
             </div>
             <div className="studies-summary__section-content-calendar"></div>
           </div>
           <div
-            style={{ padding: "10px 0", boxShadow: "none" }}
+            style={{
+              padding: "10px 0",
+              backgroundColor: "#fccc8d",
+              border: "10px solid orange",
+              borderStyle: "ridge",
+            }}
             className="studies-summary__section-content"
           >
             <AgendaNotes />
@@ -105,7 +113,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="studies-summary__section-content">
             <div className="studies-summary__section-content-study-values">
-              <div className="basic__info">
+              <div className="basic__info" style={{ marginBottom: "10px" }}>
                 <div className="basic__info-content basic__info-content--completed-studies">
                   <div className="basic__info-content-header">
                     Suoritetut opinnot
@@ -173,7 +181,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   <h3>Suoritettuja kursseja/opintoja yhteensä</h3>
                 </div>
               </div>
-              <div className="basic__info-content basic__info-content--completed-studies-sum">
+              <div className="basic__info basic__info--study-time">
                 <div className="basic__info-content-header">
                   Arvioitu opintoaika
                 </div>

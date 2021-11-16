@@ -23,7 +23,8 @@
   flex-wrap: wrap;
   position: relative;
   overflow-y: scroll;
-  height: 260px;
+  height: 360px;
+  padding: 15px;
 }
 
 .agenda-note-pinned {
@@ -49,16 +50,36 @@
 .agenda__note {
   display: flex;
   height: 250px;
-  width: calc((100% / 3) - 10px);
+  width: calc((100% / 3) - 20px);
   background-color: antiquewhite;
 
-  margin: 5px;
-  box-shadow: 10px 1px 15px -5px grey;
+  margin: 10px;
+  box-shadow: 3px 3px 3px #525252;
   flex-direction: column;
+  transform: scale(1) rotate(-6deg);
+  transition: transform 0.4s ease-in;
 
   .agenda__note-header {
     background-color: #e6d7c3;
   }
+}
+
+.agenda__note:nth-child(even) {
+  transform: rotate(4deg);
+}
+
+.agenda__note:nth-child(3n) {
+  transform: rotate(-3deg);
+}
+
+.agenda__note:nth-child(5n) {
+  transform: rotate(5deg);
+}
+
+.agenda__note:hover {
+  transform: scale(1.15);
+  position: relative;
+  transition: transform 0.4s ease-in;
 }
 
 .agenda__note--pinned {
