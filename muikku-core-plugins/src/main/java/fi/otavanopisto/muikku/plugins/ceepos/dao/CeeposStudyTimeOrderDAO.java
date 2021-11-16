@@ -11,33 +11,28 @@ public class CeeposStudyTimeOrderDAO extends CorePluginsDAO<CeeposStudyTimeOrder
 
   private static final long serialVersionUID = 1309648327001378444L;
   
-  public CeeposStudyTimeOrder create(String studentIdentifier, CeeposProduct product, String userEmail, String staffEmail) {
-    CeeposStudyTimeOrder payment = new CeeposStudyTimeOrder();
+  public CeeposStudyTimeOrder create(String studentIdentifier, CeeposProduct product, String userEmail, Long userEntityId) {
+    CeeposStudyTimeOrder order = new CeeposStudyTimeOrder();
     
-    payment.setEmail(userEmail);
-    payment.setStaffEmail(staffEmail);
-    payment.setUserIdentifier(studentIdentifier);
-    payment.setProduct(product);
-    payment.setState(CeeposOrderState.CREATED);
+    order.setUserIdentifier(studentIdentifier);
+    order.setProduct(product);
+    order.setState(CeeposOrderState.CREATED);
     Date now = new Date();
-    payment.setCreated(now);
-    payment.setLastModified(now);
-    payment.setArchived(Boolean.FALSE);
+    order.setCreated(now);
+    order.setCreator(userEntityId);
+    order.setLastModified(now);
+    order.setLastModifier(userEntityId);
+    order.setArchived(Boolean.FALSE);
     
-    return persist(payment);
+    return persist(order);
   }
   
-  public CeeposStudyTimeOrder updateState(CeeposStudyTimeOrder payment, CeeposOrderState state) {
-    payment.setState(state);
-    payment.setLastModified(new Date());
-    return persist(payment);
-  }
-
-  public CeeposStudyTimeOrder updateStateAndStudyDates(CeeposStudyTimeOrder payment, CeeposOrderState state, Date oldStudyTimeEnd, Date newStudyTimeEnd) {
+  public CeeposStudyTimeOrder updateStateAndStudyDates(CeeposStudyTimeOrder payment, CeeposOrderState state, Date oldStudyTimeEnd, Date newStudyTimeEnd, Long userEntityId) {
     payment.setState(state);
     payment.setPreStudyTimeEnd(oldStudyTimeEnd);
     payment.setPostStudyTimeEnd(newStudyTimeEnd);
     payment.setLastModified(new Date());
+    payment.setLastModifier(userEntityId);
     return persist(payment);
   }
 

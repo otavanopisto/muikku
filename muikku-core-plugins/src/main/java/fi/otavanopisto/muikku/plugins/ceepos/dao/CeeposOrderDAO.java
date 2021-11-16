@@ -51,30 +51,27 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public CeeposOrder updateState(CeeposOrder order, CeeposOrderState state) {
+  public CeeposOrder updateState(CeeposOrder order, CeeposOrderState state, Long userEntityId) {
     order.setState(state);
     order.setLastModified(new Date());
+    order.setLastModifier(userEntityId);
     return persist(order);
   }
 
-  public CeeposOrder updateEmail(CeeposOrder order, String email) {
-    order.setEmail(email);
-    order.setLastModified(new Date());
-    return persist(order);
-  }
-
-  public CeeposOrder updateStateAndOrderNumberAndPaymentAddress(CeeposOrder order, CeeposOrderState state, String orderNumber, String paymentAddress) {
+  public CeeposOrder updateStateAndOrderNumberAndPaymentAddress(CeeposOrder order, CeeposOrderState state, String orderNumber, String paymentAddress, Long userEntityId) {
     order.setState(state);
     order.setCeeposOrderNumber(orderNumber);
     order.setCeeposPaymentAddress(paymentAddress);
     order.setLastModified(new Date());
+    order.setLastModifier(userEntityId);
     return persist(order);
   }
 
-  public CeeposOrder updateStateAndOrderNumber(CeeposOrder order, CeeposOrderState state, String orderNumber) {
+  public CeeposOrder updateStateAndOrderNumber(CeeposOrder order, CeeposOrderState state, String orderNumber, Long userEntityId) {
     order.setState(state);
     order.setCeeposOrderNumber(orderNumber);
     order.setLastModified(new Date());
+    order.setLastModifier(userEntityId);
     return persist(order);
   }
 

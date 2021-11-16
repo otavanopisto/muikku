@@ -41,6 +41,81 @@
         $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
       }
       
+      $('#testipostailua').on('click', function() {
+        
+//        mApi().ceepos.user.orders.read('PYRAMUS-STUDENT-123');
+
+        mApi().ceepos.pay.create({
+          'id': '2'
+        }).callback(function(err, data) {
+          console.log(err + ' ja ' + JSON.stringify(data));
+        });
+
+//        mApi().ceepos.order.create({
+//          'studentIdentifier': 'PYRAMUS-STUDENT-124',
+//          'product': {
+//            'Code': 'demo_004'
+//           }}).callback(function(err, data) {
+//          console.log('no se on ' + err + ' ja ' + data);
+//        });
+        
+//        var object = {
+//          'Id': '123',
+//          'Status': 2,
+//          'Reference': '10000578239',
+//          'Hash': 'cf4868d68e5e9ef1b00d7c18e65819027189d1b611a3f7bae90fe5036a195517'
+//        };
+//        var jsonData = JSON.stringify(object);
+//        $.ajax({
+//          url: "https://dev.muikkuverkko.fi/rest/ceepos/paymentConfirmationDebug",
+//          type: "POST",
+//          data: jsonData,
+//          dataType: "json",
+//          contentType: "application/json; charset=utf-8",
+//          success: function(result) {
+//            console.log(result);
+//          }
+//        });
+        
+        /*
+        console.log('simple debug test');
+        mApi().ceepos.paymentConfirmationDebug.create({
+          'id': '123',
+          'status': 2,
+          'reference': '10000578239',
+          'hash': 'cf4868d68e5e9ef1b00d7c18e65819027189d1b611a3f7bae90fe5036a195517'
+        }).callback($.proxy(function (err, data) {
+          console.log(err + ' and ' + JSON.stringify(data));
+        }, this));
+        */
+        
+        
+      });
+
+      /*
+      mApi().user.defaultEmailAddress.read().callback(function(err, data) {
+        console.log(err + ' and ' + data);
+      });
+      */
+      
+      /*
+      mApi().ceepos.pay.create({
+        'id': '2',
+        'studentEmail': 'student@email.com'
+      });
+      */
+
+      /*
+      mApi().ceepos.order.create({
+        'studentIdentifier': 'STUDENT-124',
+        'product': {
+          'code': 'demo_004'
+         }}).callback(function(err, data) {
+        console.log('no se on ' + err + ' ja ' + data);
+      });
+      */
+
+      
       // Important requests
       mApi().user.property.read('important-evaluation-requests').callback($.proxy(function (err, property) {
         this._importantRequests = property.value ? property.value.split(',') : [];

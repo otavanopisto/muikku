@@ -17,9 +17,12 @@ import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrder;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.security.LoggedInWithQueryParams;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Named
 @Stateful
@@ -50,6 +53,9 @@ public class CeeposDoneViewBackingBean {
   private CeeposController ceeposController;
 
   @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
   private PluginSettingsController pluginSettingsController;
 
   @RequestAction
@@ -60,40 +66,43 @@ public class CeeposDoneViewBackingBean {
     if (!sessionController.isLoggedIn()) {
       return NavigationRules.ACCESS_DENIED;
     }
+    
+    logger.info(String.format("Ceepos order %s: Status %d reference %s", id, status, reference));
 
     // Hash validation (TODO restore)
     
-//    StringBuilder sb = new StringBuilder();
-//    sb.append(StringUtils.defaultIfEmpty(id, ""));
-//    sb.append("&");
-//    sb.append(status == null ? "" : status);
-//    sb.append("&");
-//    sb.append(StringUtils.defaultIfEmpty(reference, ""));
-//    sb.append("&");
-//    sb.append(getSetting("key"));
-//    String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-//    if (!StringUtils.equals(expectedHash, hash)) {
-//      logger.severe(String.format("Hash validation failure with order %s (%s) for user %s", id, reference, sessionController.getLoggedUserIdentifier()));
-//      return NavigationRules.INTERNAL_ERROR;
-//    }
+    StringBuilder sb = new StringBuilder();
+    sb.append(StringUtils.defaultIfEmpty(id, ""));
+    sb.append("&");
+    sb.append(status == null ? "" : status);
+    sb.append("&");
+    sb.append(StringUtils.defaultIfEmpty(reference, ""));
+    sb.append("&");
+    sb.append(getSetting("key"));
+    String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+    if (!StringUtils.equals(expectedHash, hash)) {
+      logger.severe(String.format("Ceepos order %s: Hash validation failure (reference %s) for user %s", id, reference, sessionController.getLoggedUserIdentifier()));
+      return NavigationRules.INTERNAL_ERROR;
+    }
 
     // Order specified by order query parameter must exist
     
     CeeposOrder ceeposOrder = ceeposController.findOrderByIdAndArchived(new Long(id), false);
     if (ceeposOrder == null) {
-      logger.warning(String.format("Order %s not found", id));
+      logger.warning(String.format("Ceepos order %s: Not found", id));
       return NavigationRules.NOT_FOUND;
     }
     
-    // Order must bwlong to the current user (TODO restore)
+    // Order must bwlong to the current user
     
-//    if (!StringUtils.equals(sessionController.getLoggedUserIdentifier(), ceeposOrder.getUserIdentifier())) {
-//      logger.severe(String.format("User %s trying to access order %s belonging to %s",
-//          sessionController.getLoggedUserIdentifier(),
-//          id,
-//          ceeposOrder.getUserIdentifier()));
-//      return NavigationRules.ACCESS_DENIED;
-//    }
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(ceeposOrder.getUserIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+    if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      logger.severe(String.format("Ceepos order %d: User %s access revoked",
+          ceeposOrder.getId(),
+          sessionController.getLoggedUserIdentifier()));
+      return NavigationRules.ACCESS_DENIED;
+    }
     
     return null;
   }

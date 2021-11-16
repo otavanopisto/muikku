@@ -1,13 +1,17 @@
 package fi.otavanopisto.muikku.plugins.ceepos.rest;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -16,6 +20,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,6 +44,8 @@ import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposController;
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposPermissions;
@@ -79,6 +86,12 @@ public class CeeposRESTService {
   private Logger logger;
   
   @Inject
+  private HttpServletRequest httpRequest;
+
+  @Inject
+  private Mailer mailer;
+
+  @Inject
   private SessionController sessionController;
 
   @Inject
@@ -110,13 +123,35 @@ public class CeeposRESTService {
     return Response.ok().build();
   }
   
-  @Path("/doneViewParams")
+  @Path("/payViewUrl")
   @GET
   @RESTPermit(handling = Handling.INLINE)
-  public Response doneViewParams(@QueryParam("orderId") Long orderId, @QueryParam("status") Integer status) {
+  public Response payViewUrl(@QueryParam("order") Long order) {
+    CeeposOrder ceeposOrder = ceeposController.findOrderById(order);
     // Debug endpoint for development purposes
     StringBuilder sb = new StringBuilder();
-    sb.append(orderId);
+    sb.append(ceeposOrder.getId());
+    sb.append("&");
+    sb.append(ceeposOrder.getUserIdentifier());
+    sb.append("&");
+    sb.append(getSetting("key"));
+    String hash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+    sb.setLength(0);
+    sb.append(httpRequest.getScheme());
+    sb.append("://");
+    sb.append(httpRequest.getServerName());
+    sb.append("/ceepos/pay?");
+    sb.append(String.format("order=%d&hash=%s", order, hash));
+    return Response.ok(sb.toString()).build();
+  }
+
+  @Path("/doneViewUrl")
+  @GET
+  @RESTPermit(handling = Handling.INLINE)
+  public Response doneViewUrl(@QueryParam("order") Long order, @QueryParam("status") Integer status) {
+    // Debug endpoint for development purposes
+    StringBuilder sb = new StringBuilder();
+    sb.append(order);
     sb.append("&");
     sb.append(status);
     sb.append("&");
@@ -124,8 +159,13 @@ public class CeeposRESTService {
     sb.append("&");
     sb.append(getSetting("key"));
     String hash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-    String params = String.format("Id=%s&Status=%d&Reference=123456&Hash=%s", orderId, status, hash);
-    return Response.ok(params).build();
+    sb.setLength(0);
+    sb.append(httpRequest.getScheme());
+    sb.append("://");
+    sb.append(httpRequest.getServerName());
+    sb.append("/ceepos/done?");
+    sb.append(String.format("Id=%s&Status=%d&Reference=123456&Hash=%s", order, status, hash));
+    return Response.ok(sb.toString()).build();
   }
   
   /**
@@ -143,7 +183,6 @@ public class CeeposRESTService {
    * {
    *   'id': 123, // order id
    *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
-   *   'studentEmail': 'student@email.com',
    *   'product': {
    *     'Code': 'PRODUCT0001',
    *     'Amount': 1, // Irrelevant, always defaults to one
@@ -169,9 +208,9 @@ public class CeeposRESTService {
     
     // Validate payload
     
-    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(paymentRequest.getStudentIdentifier());
-    User student = userController.findUserByIdentifier(sdi);
-    if (student == null) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(paymentRequest.getStudentIdentifier());
+    UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentUserEntity == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid student %s", paymentRequest.getStudentIdentifier())).build();
     }
     CeeposProduct product = ceeposController.findProductByCode(paymentRequest.getProduct().getCode());
@@ -186,7 +225,7 @@ public class CeeposRESTService {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       staffEmail = userController.getUserDefaultEmailAddress(sessionController.getLoggedUser());
-      studentEmail = userController.getUserDefaultEmailAddress(sdi);
+      studentEmail = userController.getUserDefaultEmailAddress(studentIdentifier);
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -196,7 +235,10 @@ public class CeeposRESTService {
     
     CeeposOrder order = null;
     if (product.getType() == CeeposProductType.STUDYTIME) {
-      order = ceeposController.createStudyTimeOrder(paymentRequest.getStudentIdentifier(), product, studentEmail, staffEmail);
+      order = ceeposController.createStudyTimeOrder(paymentRequest.getStudentIdentifier(),
+          product,
+          studentEmail,
+          sessionController.getLoggedUserEntity().getId());
     }
     else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unknown product type").build();
@@ -206,9 +248,40 @@ public class CeeposRESTService {
     paymentRequest.getProduct().setDescription(order.getProduct().getDescription());
     paymentRequest.getProduct().setPrice(order.getProduct().getPrice());
     paymentRequest.setState(order.getState());
-    paymentRequest.setStudentEmail(studentEmail);
     
-    // TODO Email student about the order
+    // Email student and guidance counselor about the order
+
+    String hash = Hashing.sha256().hashString(
+        String.format("%d&%s&%s",
+            order.getId(),
+            order.getUserIdentifier(),
+            getSetting("key")), StandardCharsets.UTF_8).toString();
+    StringBuffer paymentUrl = new StringBuffer();
+    paymentUrl.append(httpRequest.getScheme());
+    paymentUrl.append("://");
+    paymentUrl.append(httpRequest.getServerName());
+    paymentUrl.append("/ceepos/pay?order=");
+    paymentUrl.append(order.getId());
+    paymentUrl.append("&hash=");
+    paymentUrl.append(hash);
+
+    UserEntityName userEntityName = userEntityController.getName(studentUserEntity);
+    String mailSubject = localeController.getText(sessionController.getLocale(), "ceepos.mail.orderCreated.subject", new String[] {
+        order.getId().toString()
+    });
+    String mailContent = localeController.getText(sessionController.getLocale(), "ceepos.mail.orderCreated.content", new String[] {
+        userEntityName.getDisplayNameWithLine(),
+        order.getProduct().getDescription(),
+        String.format("%.2f", (double) order.getProduct().getPrice() / 100),
+        paymentUrl.toString(),
+        staffEmail
+    });
+    mailer.sendMail(MailType.HTML,
+        Arrays.asList(studentEmail),
+        Arrays.asList(staffEmail),
+        Collections.emptyList(),
+        mailSubject,
+        mailContent);
     
     return Response.ok(paymentRequest).build();
   }
@@ -263,7 +336,7 @@ public class CeeposRESTService {
       SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(userIdentifier);
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
       if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("User %s access to order of %s revoked", sessionController.getLoggedUser().toId(), userIdentifier));
+        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -280,7 +353,6 @@ public class CeeposRESTService {
         getLocalizedDescription(order.getProduct())));
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
-    restOrder.setStudentEmail(order.getEmail());
     
     return Response.ok(restOrder).build();
   }
@@ -295,7 +367,6 @@ public class CeeposRESTService {
    * [{
    *   'id': 123, // order id
    *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
-   *   'studentEmail': 'student@email.com',
    *   'product': {
    *     'Code': 'PRODUCT0001',
    *     'Description': 'Product description to be shown in UI',
@@ -330,8 +401,6 @@ public class CeeposRESTService {
       }
     }
     
-    // TODO Filter orders that failed or got cancelled?
-    
     List<CeeposOrderRestModel> restOrders = new ArrayList<>();
     List<CeeposOrder> orders = ceeposController.listOrdersByUserIdentifier(userIdentifier);
     for (CeeposOrder order : orders) {
@@ -345,7 +414,6 @@ public class CeeposRESTService {
           getLocalizedDescription(order.getProduct())));
       restOrder.setState(order.getState());
       restOrder.setStudentIdentifier(order.getUserIdentifier());
-      restOrder.setStudentEmail(order.getEmail());
       restOrders.add(restOrder);
     }
     
@@ -423,7 +491,7 @@ public class CeeposRESTService {
     
     CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
     if (order == null) {
-      logger.warning(String.format("Order %d not found", payload.getId()));
+      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -433,7 +501,7 @@ public class CeeposRESTService {
       SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
       if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("User %s access to order %d revoked", sessionController.getLoggedUser().toId(), order.getId()));
+        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -441,7 +509,7 @@ public class CeeposRESTService {
     // Ensure order hasn't been handled yet
     
     if (order.getState() != CeeposOrderState.CREATED && order.getState() != CeeposOrderState.ONGOING) {
-      logger.warning(String.format("Unable to pay order %d. State is already %s", payload.getId(), order.getState()));
+      logger.warning(String.format("Ceepos order %d: Unable to pay as state is already %s", payload.getId(), order.getState()));
       switch (order.getState()) {
       case CANCELLED:
         return Response.status(Status.BAD_REQUEST).entity(localeController.getText(sessionController.getLocale(), "ceepos.error.cancelled")).build();
@@ -495,10 +563,10 @@ public class CeeposRESTService {
     
     try {
       String json = new ObjectMapper().writeValueAsString(ceeposPayload);
-      logger.info("Ceepos payment request: " + json);
+      logger.info(String.format("Ceepos order %d: Payment request %s", order.getId(), json));
     }
     catch (JsonProcessingException e) {
-      logger.log(Level.SEVERE, "Unable to deserialize Ceepos payment request", e);
+      logger.log(Level.SEVERE, String.format("Ceepos order %d: Unable to deserialize Ceepos payment request", order.getId()), e);
     }
     
     // Call Ceepos
@@ -512,8 +580,8 @@ public class CeeposRESTService {
     // Ensure the call went through (200 OK)
     
     if (response.getStatus() != 200) {
-      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED);
-      logger.severe(String.format("Ceepos payment request response: %d %s", response.getStatus(), response.toString()));
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
+      logger.severe(String.format("Ceepos order %d: Invalid payment request response: %d %s", order.getId(), response.getStatus(), response.toString()));
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Payment response status failure: %d", response.getStatus())).build();
     }
     
@@ -523,21 +591,21 @@ public class CeeposRESTService {
     try {
       ceeposPayloadResponse = response.readEntity(CeeposPaymentResponseRestModel.class);
       String json = new ObjectMapper().writeValueAsString(ceeposPayloadResponse);
-      logger.info("Ceepos payment response: " + json);
+      logger.info(String.format("Ceepos order %d: Payment request response %s", order.getId(), json));
     }
     catch (Exception e) {
-      logger.log(Level.SEVERE, "Unable to deserialize Ceepos payment request", e);
+      logger.log(Level.SEVERE, String.format("Ceepos order %d: Unable to deserialize Ceepos payment response", order.getId()), e);
     }
     
     // Ensure we got a proper response with status being PAYMENT_PROCESSING as expected
     
     if (ceeposPayloadResponse == null) {
-      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED);
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Payment response deserialization failure").build();
     }
     else if (ceeposPayloadResponse.getStatus() != PAYMENT_PROCESSING) {
-      logger.severe(String.format("Unexpected payment response status %d", ceeposPayloadResponse.getStatus()));
-      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED);
+      logger.severe(String.format("Ceepos order %d: Unexpected payment response status %d", order.getId(), ceeposPayloadResponse.getStatus()));
+      ceeposController.updateOrderState(order, CeeposOrderState.ERRORED, sessionController.getLoggedUserEntity().getId());
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(localeController.getText(
           sessionController.getLocale(),
           "ceepos.error.errored",
@@ -557,7 +625,8 @@ public class CeeposRESTService {
         order,
         CeeposOrderState.ONGOING,
         ceeposPayloadResponse.getReference(),
-        ceeposPayloadResponse.getPaymentAddress());
+        ceeposPayloadResponse.getPaymentAddress(),
+        sessionController.getLoggedUserEntity().getId());
     
     // Return the address to which the user should be redirected to finish the payment
     // TODO Could be returned as plain text but due to an mApi bug, has to be returned
@@ -651,25 +720,23 @@ public class CeeposRESTService {
    */
   private Response handlePaymentConfirmation(CeeposPaymentConfirmationRestModel paymentConfirmation) {
     
-    logger.info(String.format("Received payment confirmation for order %s", paymentConfirmation.getId()));
-    
     // Log the payment confirmation 
 
     String json = null;
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       json = objectMapper.writeValueAsString(paymentConfirmation);
-      logger.info(json);
+      logger.info(String.format("Ceepos order %s: Programmatic payment confirmation %s", paymentConfirmation.getId(), json));
     }
     catch (JsonProcessingException e) {
-      logger.log(Level.SEVERE, "Unable to deserialize payment response", e);
+      logger.log(Level.SEVERE, String.format("Ceepos order %s: Unable to deserialize programmatic payment response", paymentConfirmation.getId()), e);
     }
 
     // Validate payload
     
     boolean validHash = validateHash(paymentConfirmation);
     if (!validHash) {
-      logger.severe("Payment confirmation hash check failure");
+      logger.severe(String.format("Ceepos order %s: Payment confirmation hash check failure", paymentConfirmation.getId()));
       return Response.status(Status.BAD_REQUEST).entity("Invalid hash").build();
     }
     
@@ -677,41 +744,41 @@ public class CeeposRESTService {
     
     CeeposOrder order = ceeposController.findOrderById(new Long(paymentConfirmation.getId()));
     if (order == null) {
-      logger.severe(String.format("Order %s not found", paymentConfirmation.getId()));
+      logger.severe(String.format("Ceepos order %s: Not found", paymentConfirmation.getId()));
       return Response.status(Status.BAD_REQUEST).entity("Source system order not found").build();
     }
     if (order.getArchived()) {
-      logger.warning(String.format("Received payment confirmation for an archived order %d", order.getId()));
+      logger.warning(String.format("Ceepos order %d: Received programmatic payment confirmation for an archived order", order.getId()));
     }
     if (order.getState() != CeeposOrderState.ONGOING) {
-      logger.warning(String.format("Received payment confirmation for order %d in state %s", order.getId(), order.getState()));
+      logger.warning(String.format("Ceepos order %d: Received programmatic payment confirmation with order in state %s", order.getId(), order.getState()));
     }
     
     // If the order has been marked as complete at our end, ignore the confirmation
     
     if (order.getState() == CeeposOrderState.COMPLETE) {
-      logger.info(String.format("Ignoring payment confirmation for order %d; already complete", order.getId()));
+      logger.info(String.format("Ceepos order %d: Ignoring programmatic payment confirmation as it is already complete", order.getId()));
       return Response.ok().build();
     }
     
     // Handle various errors
 
     if (paymentConfirmation.getStatus() != PAYMENT_SUCCESSFUL) {
-      logger.warning(String.format("Unexpected payment confirmation status %d", paymentConfirmation.getStatus()));
+      logger.warning(String.format("Ceepos order %d: Unexpected payment confirmation status %d", order.getId(), paymentConfirmation.getStatus()));
       switch (paymentConfirmation.getStatus()) {
       case PAYMENT_FAILED_OR_CANCELLED:
       case PAYMENT_ALREADY_DELETED:
         if (order.getState() != CeeposOrderState.CANCELLED) {
-          logger.warning(String.format("Updating order %d from %s to CANCELLED", order.getState(), order.getId()));
-          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference());
+          logger.warning(String.format("Ceepos order %d: Updating from %s to CANCELLED", order.getId(), order.getState()));
+          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference(), order.getLastModifier());
         }
         break;
       case DOUBLE_ID:
       case SYSTEM_ERROR:
       case FAULTY_PAYMENT_REQUEST:
         if (order.getState() != CeeposOrderState.ERRORED) {
-          logger.warning(String.format("Updating order %d from %s to ERRORED", order.getState(), order.getId()));
-          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference());
+          logger.warning(String.format("Ceepos order %d: Updating from %s to ERRORED", order.getId(), order.getState()));
+          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifier());
         }
         break;
       case PAYMENT_ALREADY_COMPLETED_CANNOT_DELETE:
@@ -725,7 +792,7 @@ public class CeeposRESTService {
     
     // By now the payment was successful, so mark the order as PAID
 
-    order = ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.PAID, paymentConfirmation.getReference());
+    order = ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.PAID, paymentConfirmation.getReference(), order.getLastModifier());
     
     // Fulfill the order
     
@@ -739,9 +806,9 @@ public class CeeposRESTService {
         months = 12;
       }
       else {
-        logger.severe(String.format("Order %d product code %s does not match configured monthly codes", order.getId(), productCode));
-        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference());
-        return Response.ok().build(); // Horrible configuration problem in our end
+        logger.severe(String.format("Ceepos order %d: Product code %s does not match configured monthly codes", order.getId(), productCode));
+        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifier());
+        return Response.ok().build(); // Our configuration problem
       }
 
       // Increase study time end
@@ -759,7 +826,11 @@ public class CeeposRESTService {
         oldStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
         user = userSchoolDataController.increaseStudyTime(sdi, months);
         newStudyTimeEnd = user.getStudyTimeEnd() == null ? null : Date.from(user.getStudyTimeEnd().toInstant());
-        logger.info(String.format("User %s study time raised from %tF to %tF",  order.getUserIdentifier(), oldStudyTimeEnd, newStudyTimeEnd));
+        logger.info(String.format("Ceepos order %d: User %s study time raised from %tF to %tF",
+            order.getId(),
+            order.getUserIdentifier(),
+            oldStudyTimeEnd,
+            newStudyTimeEnd));
       }
       finally {
         schoolDataBridgeSessionController.endSystemSession();
@@ -771,9 +842,45 @@ public class CeeposRESTService {
           (CeeposStudyTimeOrder) order,
           CeeposOrderState.COMPLETE,
           oldStudyTimeEnd,
-          newStudyTimeEnd);
+          newStudyTimeEnd,
+          order.getLastModifier());
 
-      // TODO Mail to user and guider
+      // Mail to user and guider
+      
+      String staffEmail = null;
+      String studentEmail = null;
+      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(order.getUserIdentifier());
+      UserEntity staffMember = userEntityController.findUserEntityById(order.getCreator());
+      SchoolDataIdentifier staffIdentifier = new SchoolDataIdentifier(
+          staffMember.getDefaultIdentifier(),
+          staffMember.getDefaultSchoolDataSource().getIdentifier());
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        staffEmail = userController.getUserDefaultEmailAddress(staffIdentifier);
+        studentEmail = userController.getUserDefaultEmailAddress(studentIdentifier);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+      UserEntityName userEntityName = userEntityController.getName(userEntity);
+      Locale locale = new Locale(StringUtils.defaultIfEmpty(userEntity.getLocale(), "fi"));
+      String mailSubject = localeController.getText(locale, "ceepos.mail.orderDelivered.subject", new String[] {
+          paymentConfirmation.getId()
+      });
+      String mailContent = localeController.getText(locale, "ceepos.mail.orderDelivered.content", new String[] {
+          userEntityName.getDisplayNameWithLine(),
+          new SimpleDateFormat("d.M.yyyy").format(newStudyTimeEnd),
+          staffEmail
+      });
+      
+      mailer.sendMail(MailType.HTML,
+          Arrays.asList(studentEmail),
+          Arrays.asList(staffEmail),
+          Collections.emptyList(),
+          mailSubject,
+          mailContent);
     }
     
     return Response.ok().build();

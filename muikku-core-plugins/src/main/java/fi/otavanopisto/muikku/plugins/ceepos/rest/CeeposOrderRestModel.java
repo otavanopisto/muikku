@@ -46,17 +46,8 @@ public class CeeposOrderRestModel {
     this.created = created;
   }
 
-  public String getStudentEmail() {
-    return studentEmail;
-  }
-
-  public void setStudentEmail(String studentEmail) {
-    this.studentEmail = studentEmail;
-  }
-
   private Long id;
   private String studentIdentifier;
-  private String studentEmail;
   private CeeposProductRestModel product;
   private CeeposOrderState state;
   private OffsetDateTime created;

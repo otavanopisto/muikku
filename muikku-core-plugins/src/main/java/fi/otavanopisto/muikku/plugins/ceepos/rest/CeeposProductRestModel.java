@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
- * Single product within a Ceepos payment (see API documentation chapter 3.2.1).
+ * Single product within a Ceepos order (see API documentation chapter 3.2.1).
  * Some optional fields have been omitted as they are (for now) irrelevant for our purposes.
  */
 @JsonPropertyOrder({ "Code", "Amount", "Price", "Description" })

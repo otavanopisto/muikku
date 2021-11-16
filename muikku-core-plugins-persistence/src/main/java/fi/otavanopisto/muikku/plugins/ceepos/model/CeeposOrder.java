@@ -90,12 +90,20 @@ public class CeeposOrder {
     this.archived = archived;
   }
 
-  public String getEmail() {
-    return email;
+  public Long getCreator() {
+    return creator;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setCreator(Long creator) {
+    this.creator = creator;
+  }
+
+  public Long getLastModifier() {
+    return lastModifier;
+  }
+
+  public void setLastModifier(Long lastModifier) {
+    this.lastModifier = lastModifier;
   }
 
   @Id
@@ -107,11 +115,6 @@ public class CeeposOrder {
   @Column(nullable = false)
   private String userIdentifier;
   
-  @NotEmpty
-  @NotNull
-  @Column(nullable = false)
-  private String email;
-
   @Column
   private String ceeposOrderNumber;
 
@@ -132,9 +135,17 @@ public class CeeposOrder {
   private Date created;
 
   @NotNull
+  @Column(nullable = false, name = "creator_id")
+  private Long creator;
+
+  @NotNull
   @Column(nullable = false)
   @Temporal(value = TemporalType.TIMESTAMP)
   private Date lastModified;
+
+  @NotNull
+  @Column(nullable = false, name = "lastModifier_id")
+  private Long lastModifier;
 
   @NotNull
   @Column(nullable = false)
