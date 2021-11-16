@@ -793,6 +793,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     selectField.selectByValue(value);
   }
   
+  
   protected boolean isInSelection(String selector, String compare) {
     Select selectField = new Select(findElementByCssSelector(selector));
     List<WebElement> options = selectField.getOptions();
@@ -803,7 +804,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
     return false;
   }
-
+  
   protected void waitUntilCountOfElements(String selector, int count) {
     new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(selector), count));
   }
@@ -1015,6 +1016,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         return false;
       }
     });
+  }
+  
+  protected void tabOutOfElement(String elementToTabOutOf) {
+    getWebDriver().findElement(By.cssSelector(elementToTabOutOf)).sendKeys(Keys.TAB);
   }
   
   protected void waitForValue(String selector) {

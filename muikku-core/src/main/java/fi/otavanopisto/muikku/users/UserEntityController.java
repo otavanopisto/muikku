@@ -123,14 +123,17 @@ public class UserEntityController implements Serializable {
     UserEntityProperty userEntityProperty = getUserEntityPropertyByKey(userEntity, key);
     if (userEntityProperty == null) {
       if (StringUtils.isNotEmpty(value)) {
+        logger.severe("Creating userEntityProperty! UserEntityDefaultId: " + userEntity.getId() + " avain: " + key + " value: " + value);
         userEntityPropertyDAO.create(userEntity, key, value);
       }
     }
     else {
       if (StringUtils.isEmpty(value)) {
+        logger.severe("Delete userEntityProperty! UserEntityDefaultId: " + userEntity.getId() + " avain: " + key + " value: " + value);
         userEntityPropertyDAO.delete(userEntityProperty);
       }
       else {
+        logger.severe("Update userEntityProperty! UserEntityId: " + userEntity.getId() + " avain: " + key + " value: " + value);
         userEntityPropertyDAO.updateValue(userEntityProperty, value);
       }
     }
