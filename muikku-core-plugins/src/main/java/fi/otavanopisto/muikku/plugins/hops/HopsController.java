@@ -55,14 +55,12 @@ public class HopsController {
   
   public HopsGoals createHopsGoals(String studentIdentifier, String data) {
     HopsGoals hopsGoals = hopsGoalsDAO.create(studentIdentifier, data);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId());
 
     return hopsGoals;
   }
 
   public HopsGoals updateHopsGoals(HopsGoals hopsGoals, String studentIdentifier, String goals) {
     hopsGoalsDAO.updateGoalsData(hopsGoals, goals);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId());
     return hopsGoals;
   }
   
