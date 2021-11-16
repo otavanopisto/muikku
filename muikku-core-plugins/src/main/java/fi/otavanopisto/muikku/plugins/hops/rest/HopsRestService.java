@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
@@ -43,6 +44,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -50,6 +52,7 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -89,6 +92,7 @@ public class HopsRestService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
   
   @GET
   @Path("/student/{STUDENTIDENTIFIER}")
@@ -347,6 +351,7 @@ public class HopsRestService {
               suggestedWorkspace.setName(name);
               suggestedWorkspace.setSubject(subjectObject.getCode());
               suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
+              suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
               suggestedWorkspaces.add(suggestedWorkspace);
             }
           }
@@ -373,14 +378,13 @@ public class HopsRestService {
         studentIdentifier,
         payload.getSubject(),
         payload.getCourseNumber());
-        payload.getUrlName();
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
 
     if (hopsSuggestion == null) {
       if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
-      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getUrlName(), payload.getCourseNumber(), payload.getId());
+      hopsSuggestion = hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber(), payload.getId());
       StudyActivityItemRestModel item = new StudyActivityItemRestModel();
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
       item.setCourseName(workspaceEntityController.getName(workspaceEntity));
@@ -391,7 +395,7 @@ public class HopsRestService {
       return Response.ok(item).build();
     }
     else if (hopsSuggestion.getWorkspaceEntityId() != payload.getId()){
-      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getUrlName(), payload.getCourseNumber(), workspaceEntity.getId());
+      hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber(), workspaceEntity.getId());
       return Response.noContent().build();
     }
     else {
@@ -409,4 +413,25 @@ public class HopsRestService {
     return null;
   }
 
+  
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/student")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getStudentData(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    
+    User student = userSchoolDataController.findUser(schoolDataIdentifier);
+    UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
+    Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
+    return hops == null ? Response.noContent().build() : Response.ok(hops.getFormData()).build();  
+  }
 }
