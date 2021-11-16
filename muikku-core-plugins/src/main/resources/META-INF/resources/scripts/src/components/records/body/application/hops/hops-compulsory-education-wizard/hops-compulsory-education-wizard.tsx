@@ -141,7 +141,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ? this.props.guider.currentStudent.basic.id
         : (window as any).MUIKKU_LOGGED_USER;
 
-    /* console.log(studentId); */
+    console.log(studentId);
 
     const studentHopsHistory = (await promisify(
       mApi().hops.student.history.read(studentId),
