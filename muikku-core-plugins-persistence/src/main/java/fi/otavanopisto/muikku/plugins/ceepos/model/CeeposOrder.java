@@ -74,14 +74,6 @@ public class CeeposOrder {
     this.lastModified = lastModified;
   }
 
-  public CeeposProduct getProduct() {
-    return product;
-  }
-
-  public void setProduct(CeeposProduct product) {
-    this.product = product;
-  }
-
   public Boolean getArchived() {
     return archived;
   }
@@ -90,20 +82,52 @@ public class CeeposOrder {
     this.archived = archived;
   }
 
-  public Long getCreator() {
-    return creator;
+  public Long getCreatorId() {
+    return creatorId;
   }
 
-  public void setCreator(Long creator) {
-    this.creator = creator;
+  public void setCreatorId(Long creatorId) {
+    this.creatorId = creatorId;
   }
 
-  public Long getLastModifier() {
-    return lastModifier;
+  public Long getLastModifierId() {
+    return lastModifierId;
   }
 
-  public void setLastModifier(Long lastModifier) {
-    this.lastModifier = lastModifier;
+  public void setLastModifierId(Long lastModifierId) {
+    this.lastModifierId = lastModifierId;
+  }
+
+  public String getProductDescription() {
+    return productDescription;
+  }
+
+  public void setProductDescription(String productDescription) {
+    this.productDescription = productDescription;
+  }
+
+  public Integer getProductPrice() {
+    return productPrice;
+  }
+
+  public void setProductPrice(Integer productPrice) {
+    this.productPrice = productPrice;
+  }
+
+  public String getProductCode() {
+    return productCode;
+  }
+
+  public void setProductCode(String productCode) {
+    this.productCode = productCode;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Long productId) {
+    this.productId = productId;
   }
 
   @Id
@@ -121,8 +145,23 @@ public class CeeposOrder {
   @Column
   private String ceeposPaymentAddress;
 
-  @ManyToOne
-  private CeeposProduct product;
+  @NotNull
+  @Column(nullable = false)
+  private Long productId;
+
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String productCode;
+
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String productDescription;
+
+  @NotNull
+  @Column(nullable = false)
+  private Integer productPrice;
 
   @NotNull
   @Column(nullable = false)
@@ -135,8 +174,8 @@ public class CeeposOrder {
   private Date created;
 
   @NotNull
-  @Column(nullable = false, name = "creator_id")
-  private Long creator;
+  @Column(nullable = false)
+  private Long creatorId;
 
   @NotNull
   @Column(nullable = false)
@@ -144,8 +183,8 @@ public class CeeposOrder {
   private Date lastModified;
 
   @NotNull
-  @Column(nullable = false, name = "lastModifier_id")
-  private Long lastModifier;
+  @Column(nullable = false)
+  private Long lastModifierId;
 
   @NotNull
   @Column(nullable = false)

@@ -54,7 +54,7 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
   public CeeposOrder updateState(CeeposOrder order, CeeposOrderState state, Long userEntityId) {
     order.setState(state);
     order.setLastModified(new Date());
-    order.setLastModifier(userEntityId);
+    order.setLastModifierId(userEntityId);
     return persist(order);
   }
 
@@ -63,7 +63,7 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     order.setCeeposOrderNumber(orderNumber);
     order.setCeeposPaymentAddress(paymentAddress);
     order.setLastModified(new Date());
-    order.setLastModifier(userEntityId);
+    order.setLastModifierId(userEntityId);
     return persist(order);
   }
 
@@ -71,7 +71,7 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     order.setState(state);
     order.setCeeposOrderNumber(orderNumber);
     order.setLastModified(new Date());
-    order.setLastModifier(userEntityId);
+    order.setLastModifierId(userEntityId);
     return persist(order);
   }
 

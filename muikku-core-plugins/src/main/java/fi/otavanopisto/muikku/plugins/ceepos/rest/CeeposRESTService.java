@@ -245,8 +245,9 @@ public class CeeposRESTService {
     }
     paymentRequest.setCreated(toOffsetDateTime(order.getCreated()));
     paymentRequest.setId(order.getId());
-    paymentRequest.getProduct().setDescription(order.getProduct().getDescription());
-    paymentRequest.getProduct().setPrice(order.getProduct().getPrice());
+    paymentRequest.getProduct().setCode(order.getProductCode());
+    paymentRequest.getProduct().setDescription(order.getProductDescription());
+    paymentRequest.getProduct().setPrice(order.getProductPrice());
     paymentRequest.setState(order.getState());
     
     // Email student and guidance counselor about the order
@@ -271,8 +272,8 @@ public class CeeposRESTService {
     });
     String mailContent = localeController.getText(sessionController.getLocale(), "ceepos.mail.orderCreated.content", new String[] {
         userEntityName.getDisplayNameWithLine(),
-        order.getProduct().getDescription(),
-        String.format("%.2f", (double) order.getProduct().getPrice() / 100),
+        order.getProductDescription(),
+        String.format("%.2f", (double) order.getProductPrice() / 100),
         paymentUrl.toString(),
         staffEmail
     });
@@ -347,10 +348,10 @@ public class CeeposRESTService {
     restOrder.setCreated(toOffsetDateTime(order.getCreated()));
     restOrder.setId(order.getId());
     restOrder.setProduct(new CeeposProductRestModel(
-        order.getProduct().getCode(),
+        order.getProductCode(),
         1,
-        order.getProduct().getPrice(),
-        getLocalizedDescription(order.getProduct())));
+        order.getProductPrice(),
+        order.getProductDescription()));
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
     
@@ -408,10 +409,10 @@ public class CeeposRESTService {
       restOrder.setCreated(toOffsetDateTime(order.getCreated()));
       restOrder.setId(order.getId());
       restOrder.setProduct(new CeeposProductRestModel(
-          order.getProduct().getCode(),
+          order.getProductCode(),
           1,
-          order.getProduct().getPrice(),
-          getLocalizedDescription(order.getProduct())));
+          order.getProductPrice(),
+          order.getProductDescription()));
       restOrder.setState(order.getState());
       restOrder.setStudentIdentifier(order.getUserIdentifier());
       restOrders.add(restOrder);
@@ -452,7 +453,7 @@ public class CeeposRESTService {
           product.getCode(),
           1,
           product.getPrice(),
-          getLocalizedDescription(product)));
+          getLocalizedDescription(product.getCode(), product.getDescription())));
     }
     return Response.ok(restProducts).build();
   }
@@ -548,10 +549,10 @@ public class CeeposRESTService {
     ceeposPayload.setDescription(userEntityName.getDisplayNameWithLine());
     List<CeeposProductRestModel> products = new ArrayList<>();
     products.add(new CeeposProductRestModel(
-        order.getProduct().getCode(),
+        order.getProductCode(),
         1,
-        order.getProduct().getPrice(),
-        "")); // getLocalizedDescription(order.getProduct()) if store supports English
+        order.getProductPrice(),
+        "")); // getLocalizedDescription(order.getProductCode(), order.getProductDescription()) if store supports English
     ceeposPayload.setProducts(products);
     ceeposPayload.setEmail(email);
     ceeposPayload.setFirstName(userEntityName.getFirstName());
@@ -770,7 +771,7 @@ public class CeeposRESTService {
       case PAYMENT_ALREADY_DELETED:
         if (order.getState() != CeeposOrderState.CANCELLED) {
           logger.warning(String.format("Ceepos order %d: Updating from %s to CANCELLED", order.getId(), order.getState()));
-          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference(), order.getLastModifier());
+          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference(), order.getLastModifierId());
         }
         break;
       case DOUBLE_ID:
@@ -778,7 +779,7 @@ public class CeeposRESTService {
       case FAULTY_PAYMENT_REQUEST:
         if (order.getState() != CeeposOrderState.ERRORED) {
           logger.warning(String.format("Ceepos order %d: Updating from %s to ERRORED", order.getId(), order.getState()));
-          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifier());
+          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifierId());
         }
         break;
       case PAYMENT_ALREADY_COMPLETED_CANNOT_DELETE:
@@ -792,13 +793,14 @@ public class CeeposRESTService {
     
     // By now the payment was successful, so mark the order as PAID
 
-    order = ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.PAID, paymentConfirmation.getReference(), order.getLastModifier());
+    order = ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.PAID, paymentConfirmation.getReference(), order.getLastModifierId());
     
     // Fulfill the order
     
-    if (order.getProduct().getType() == CeeposProductType.STUDYTIME) {
+    CeeposProduct product = ceeposController.findProductById(order.getProductId());
+    if (product != null && product.getType() == CeeposProductType.STUDYTIME) {
       int months = 0;
-      String productCode = order.getProduct().getCode();
+      String productCode = order.getProductCode();
       if (StringUtils.equals(productCode, getProductCodeForMonths(6))) {
         months = 6;
       }
@@ -807,7 +809,7 @@ public class CeeposRESTService {
       }
       else {
         logger.severe(String.format("Ceepos order %d: Product code %s does not match configured monthly codes", order.getId(), productCode));
-        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifier());
+        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifierId());
         return Response.ok().build(); // Our configuration problem
       }
 
@@ -843,14 +845,14 @@ public class CeeposRESTService {
           CeeposOrderState.COMPLETE,
           oldStudyTimeEnd,
           newStudyTimeEnd,
-          order.getLastModifier());
+          order.getLastModifierId());
 
       // Mail to user and guider
       
       String staffEmail = null;
       String studentEmail = null;
       SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(order.getUserIdentifier());
-      UserEntity staffMember = userEntityController.findUserEntityById(order.getCreator());
+      UserEntity staffMember = userEntityController.findUserEntityById(order.getCreatorId());
       SchoolDataIdentifier staffIdentifier = new SchoolDataIdentifier(
           staffMember.getDefaultIdentifier(),
           staffMember.getDefaultSchoolDataSource().getIdentifier());
@@ -989,9 +991,9 @@ public class CeeposRESTService {
     return StringUtils.equals(expectedHash, paymentResponse.getHash());
   }
   
-  private String getLocalizedDescription(CeeposProduct product) {
-    String desc = localeController.getText(sessionController.getLocale(), String.format("ceepos.productDescription.%s", product.getCode()));
-    return StringUtils.isEmpty(desc) ? product.getDescription() : desc;
+  private String getLocalizedDescription(String productCode, String defaultDescription) {
+    String desc = localeController.getText(sessionController.getLocale(), String.format("ceepos.productDescription.%s", productCode));
+    return StringUtils.isEmpty(desc) ? defaultDescription : desc;
   }
 
   private String getProductCodeForMonths(int months) {

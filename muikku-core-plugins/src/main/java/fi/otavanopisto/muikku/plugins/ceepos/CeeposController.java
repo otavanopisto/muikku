@@ -26,7 +26,7 @@ public class CeeposController {
   private CeeposStudyTimeOrderDAO ceeposStudyTimeOrderDAO;
   
   public CeeposStudyTimeOrder createStudyTimeOrder(String studentIdentifier, CeeposProduct product, String studentEmail, Long userEntityId) {
-    return ceeposStudyTimeOrderDAO.create(studentIdentifier, product, studentEmail, userEntityId);
+    return ceeposStudyTimeOrderDAO.create(studentIdentifier, product.getId(), product.getCode(), product.getDescription(), product.getPrice(), studentEmail, userEntityId);
   }
 
   public CeeposOrder findOrderById(Long id) {
@@ -37,6 +37,10 @@ public class CeeposController {
     return ceeposOrderDAO.findByIdAndArchived(id, archived);
   }
   
+  public CeeposProduct findProductById(Long productId) {
+    return ceeposProductDAO.findById(productId);
+  }
+
   public CeeposProduct findProductByCode(String code) {
     return ceeposProductDAO.findByCode(code);
   }
