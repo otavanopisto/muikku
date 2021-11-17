@@ -124,7 +124,6 @@ public class HopsController {
   
   public UserEntity getStudyCounselor(SchoolDataIdentifier studentIdentifier){
     UserEntity guidanceCounselor = null;
-    String guidanceCounselorEmail = null;
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
     
     // #3089: An awkward workaround to use the latest guidance group based on its identifier. Assumes a larger

@@ -52,7 +52,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -415,9 +414,9 @@ public class HopsRestService {
 
   
   @GET
-  @Path("/student/{STUDENTIDENTIFIER}/student")
+  @Path("/student/{STUDENTIDENTIFIER}/studentInfo")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudentData(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response getStudentInformation(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
     // Access check
     
@@ -431,7 +430,25 @@ public class HopsRestService {
     
     User student = userSchoolDataController.findUser(schoolDataIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
-    Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
-    return hops == null ? Response.noContent().build() : Response.ok(hops.getFormData()).build();  
+    UserEntity counselorEntity = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
+    User counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+    return Response.ok(createRestModel(
+        studentEntity.getId(),
+        student.getFirstName(),
+        student.getLastName(),
+        counselor.getDisplayName()
+    )).build(); 
+  }
+  
+  private fi.otavanopisto.muikku.plugins.hops.rest.StudentInformation createRestModel(
+      Long studentIdentifier,
+      String firstName,
+      String lastName,
+      String counselorName) {
+    return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformation(
+        studentIdentifier,
+        firstName, 
+        lastName,
+        counselorName);
   }
 }
