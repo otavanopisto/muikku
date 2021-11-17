@@ -219,8 +219,14 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         <div className="env-dialog__row" key="new-message-2">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
-            <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
-              value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems} />
+            <input
+              id="messageTitle"
+              type="text"
+              className="env-dialog__input env-dialog__input--new-message-title"
+              value={this.state.subject}
+              onChange={this.onSubjectChange}
+              autoFocus={!!this.props.initialSelectedItems}
+              />
           </div>
         </div>
       ),
