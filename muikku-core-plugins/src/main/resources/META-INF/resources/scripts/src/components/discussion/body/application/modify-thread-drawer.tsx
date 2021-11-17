@@ -44,9 +44,9 @@ interface ModifyThreadDrawerState {
 }
 
 /**
- * ModifyThread
+ * ModifyThreadDrawer
  */
-class ModifyThread extends SessionStateComponent<
+class ModifyThreadDrawer extends SessionStateComponent<
   ModifyThreadDrawerProps,
   ModifyThreadDrawerState
 > {
@@ -278,7 +278,7 @@ class ModifyThread extends SessionStateComponent<
           </div>
         ) : null}
 
-        <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
+        <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
               {this.props.i18n.text.get(
@@ -287,7 +287,6 @@ class ModifyThread extends SessionStateComponent<
             </label>
             <CKEditor
               editorTitle={editorTitle}
-              key="3"
               onChange={this.onCKEditorChange}
             >
               {this.state.text}
@@ -352,4 +351,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyThread);
+export default connect(mapStateToProps, mapDispatchToProps)(ModifyThreadDrawer);
