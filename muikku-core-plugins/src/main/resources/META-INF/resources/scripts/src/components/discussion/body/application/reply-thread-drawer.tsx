@@ -161,7 +161,7 @@ class ReplyThreadDrawer extends SessionStateComponent<
    */
   render() {
     let editorTitle =
-      this.props.i18n.text.get("plugin.discussion.reply.topic") +
+      this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
       " - " +
       this.props.i18n.text.get("plugin.discussion.createmessage.content");
 
@@ -215,10 +215,20 @@ class ReplyThreadDrawer extends SessionStateComponent<
     );
 
     return (
-      <div>
-        {editorTitle}
-        {content}
-        {footer}
+      <div className="env-dialog env-dialog--mainfunction env-dialog--reply-message">
+        <section className="env-dialog__wrapper">
+          <div className="env-dialog__content">
+            <header className="env-dialog__header">
+              {this.props.i18n.text.get("plugin.discussion.answertomessage.topic")}
+            </header>
+            <section className="env-dialog__body">
+              {content}
+            </section>
+            <footer className="env-dialog__footer">
+              {footer}
+            </footer>
+          </div>
+        </section>
       </div>
     );
   }

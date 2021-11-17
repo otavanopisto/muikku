@@ -2,21 +2,25 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
-import { AnyActionType } from "../../../../../../actions/index";
+import { AnyActionType } from "~/actions/index";
 import {
   SendMessageTriggerType,
   sendMessage,
-} from "../../../../../../actions/main-function/messages/index";
-import { MessageSignatureType } from "../../../../../../reducers/main-function/messages";
-import { ContactRecepientType } from "../../../../../../reducers/user-index";
-import { i18nType } from "../../../../../../reducers/base/i18n";
-import { StatusType } from "../../../../../../reducers/base/status";
+} from "~/actions/main-function/messages/index";
+import { MessageSignatureType } from "~/reducers/main-function/messages";
+import { ContactRecepientType } from "~/reducers/user-index";
+import { i18nType } from "~/reducers/base/i18n";
+import { StatusType } from "~/reducers/base/status";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
-import CKEditor from "../../../../../general/ckeditor";
+import CKEditor from "~/components/general/ckeditor";
 import Button from "~/components/general/button";
-import SessionStateComponent from "../../../../../general/session-state-component";
-import promisify from "../../../../../../util/promisify";
+import SessionStateComponent from "~/components/general/session-state-component";
+import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
+
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
+import '~/sass/elements/environment-dialog.scss';
 
 interface AnswerMessageDrawerProps {
   replyThreadId?: number;
@@ -227,12 +231,11 @@ class AnswerMessageDrawer extends SessionStateComponent<
 
   render() {
     let editorTitle =
-      this.props.i18n.text.get("plugin.communicator.createmessage.label") +
+      this.props.i18n.text.get("plugin.communicator.answertomessage.label") +
       " - " +
       this.props.i18n.text.get(
         "plugin.communicator.createmessage.title.content"
       );
-
     let content = (
       <>
         <InputContactsAutofill
@@ -359,10 +362,20 @@ class AnswerMessageDrawer extends SessionStateComponent<
     );
 
     return (
-      <div>
-        <h3>{editorTitle}</h3>
-        <div>{content}</div>
-        <div>{footer}</div>
+      <div className="env-dialog env-dialog--mainfunction env-dialog--reply-message">
+        <section className="env-dialog__wrapper">
+          <div className="env-dialog__content">
+            <header className="env-dialog__header">
+              {this.props.i18n.text.get("plugin.communicator.answertomessage.label")}
+            </header>
+            <section className="env-dialog__body">
+              {content}
+            </section>
+            <footer className="env-dialog__footer">
+              {footer}
+            </footer>
+          </div>
+        </section>
       </div>
     );
   }
