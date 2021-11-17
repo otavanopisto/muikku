@@ -96,7 +96,6 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
       //user
       let workspaces: Array<Array<WorkspaceType>> = await Promise.all(users.map((user) => promisify(mApi().workspace.workspaces.read({
         userIdentifier: user.id,
-        publicity: "LIST_ALL",
         includeInactiveWorkspaces: true,
         orderBy: "alphabet",
         maxResults: 500
