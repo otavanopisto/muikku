@@ -347,18 +347,16 @@ public class CourseTestsBase extends AbstractUITest {
     try {
       navigate("/profile#vacation", false);
       waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart");
-      click(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart");
       sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart", "21.12.2010");
       tabOutOfElement(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart");
       waitAndClick(".application-panel__content-header");
       waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
-      click(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
       sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd", "21.12.2025");
       tabOutOfElement(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
-      //      waitAndClick(".application-panel__content-header");
-//      waitAndClick("#profileVacationAutoReply");
-//      waitAndSendKeys("#profileVacationAutoReplySubject", "Lomalla");
-//      waitAndSendKeys("#profileVacationAutoReplyMsg", "Olen lomalla!");
+      waitAndClick(".application-panel__content-header");
+      waitAndClick("#profileVacationAutoReply");
+      waitAndSendKeys("#profileVacationAutoReplySubject", "Lomalla");
+      waitAndSendKeys("#profileVacationAutoReplyMsg", "Olen lomalla!");
       waitAndClick(".application-sub-panel__item-actions .button--primary-function-save");
       sleep(1500);
       navigate("/profile", false);      
