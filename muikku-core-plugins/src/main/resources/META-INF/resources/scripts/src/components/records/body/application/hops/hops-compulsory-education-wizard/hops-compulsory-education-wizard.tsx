@@ -18,6 +18,7 @@ import {
   BasicInformation,
   HopsUpdates,
   FollowUp,
+  StudentInfo,
 } from "../../../../../../@types/shared";
 import {
   HopsCompulsory,
@@ -148,10 +149,12 @@ class CompulsoryEducationHopsWizard extends React.Component<
       "callback"
     )()) as HopsUpdates[];
 
-    /* const studentBasicInfo = (await promisify(
-      mApi().guider.students.read(studentId),
+    const studentBasicInfo = (await promisify(
+      mApi().hops.student.studentInfo.read(studentId),
       "callback"
-    )()) as GuiderStudentType; */
+    )()) as StudentInfo;
+
+    console.log("studentInfo", studentBasicInfo);
 
     const hops = (await promisify(
       mApi().hops.student.read(studentId),
@@ -232,8 +235,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
     this.setState({
       loading: false,
       basicInfo: {
-        name: ``,
-        guider: "???Joku ohjaaja???",
+        name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
+        guider: `${studentBasicInfo.counselorName}`,
         updates: studentHopsHistory,
       },
       hopsCompulsory: loadedHops,

@@ -283,6 +283,13 @@ export interface BasicInformation {
   updates?: HopsUpdates[];
 }
 
+export interface StudentInfo {
+  id: number;
+  firstName: string;
+  lastName: string;
+  counselorName: string;
+}
+
 export interface HopsUpdates {
   date: Date;
   modifier: string;

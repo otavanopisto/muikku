@@ -43,6 +43,7 @@ export const updateSuggestion = async (
     try {
       await promisify(
         mApi().hops.student.toggleSuggestion.create(studentId, {
+          id: suggestionId,
           subject: subjectCode,
           courseNumber: courseNumber,
         }),
