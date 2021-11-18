@@ -167,6 +167,7 @@ class StartingLevel extends React.Component<
                   label="Mikä?"
                   className="hops-input"
                   onChange={this.handleTextAreaChange("previousEducationElse")}
+                  value={this.props.studentStartingLevel.previousEducationElse}
                   disabled={this.props.disabled}
                 />
               </div>
@@ -181,6 +182,9 @@ class StartingLevel extends React.Component<
                 onChange={this.handleTextAreaChange(
                   "previousYearsUsedInStudies"
                 )}
+                value={
+                  this.props.studentStartingLevel.previousYearsUsedInStudies
+                }
                 disabled={this.props.disabled}
               />
             </div>
