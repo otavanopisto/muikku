@@ -47,6 +47,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   render() {
     return (
       <div className="records">
+        <h1>Opintosuoritukset</h1>
         <div className="studies-records__section studies-records__section--subject-evaluations">
           <h2 className="studies-records__section-header">Kurssisuoritukset</h2>
           <div className="studies-records__section-content">
@@ -58,7 +59,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 <RecordsList name={rItem.name}>
                   <div className="studies-records__section-content-course-list-item .studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell">
-                      <div className="studies-records__section-content-course-list-item-cell-label">
+                      <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                         Nimi
                       </div>
                     </div>
@@ -89,7 +90,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </div>
                   </div>
                   {rItem.courses.map((cItem, index) => (
-                    <RecordsListItem index={index} {...cItem} />
+                    <RecordsListItem
+                      userEntityId={0}
+                      index={index}
+                      {...cItem}
+                    />
                   ))}
 
                   <div className="studies-records__divider studies-records__divider--transparent" />

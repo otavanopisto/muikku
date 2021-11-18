@@ -206,7 +206,7 @@
 .studies-records__section-content-course-list-item-cell-box--asessor {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
 
   .name {
     font-weight: bold;
@@ -237,18 +237,33 @@
   background-color: yellow;
 }
 
-.studies-records__section-content-course-list-item-cell-box--asessor .avatar,
-.studies-records__section-content-course-list-item-cell-box--asessor .asessor {
+.asessor-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.asessor-data .avatar,
+.asessor-data .asessor {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+.asessor {
+  margin-left: 5px;
+}
+
 .studies-records__section-content-course-list-item-cell-label {
   font-weight: bold;
   font-size: 1rem;
   width: 100%;
+  text-align: center;
+}
+
+.studies-records__section-content-course-list-item-cell-label--name {
+  visibility: hidden;
 }
 
 .arrow-right {

@@ -13,6 +13,7 @@ import {
 } from "../../../reducers/main-function/records/index";
 import { HOPSType } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
+import StudyInfo from "./application/study-info/study-info";
 
 /**
  * StudiesApplicationProps
@@ -29,7 +30,13 @@ interface StudiesApplicationProps {
 /**
  * StudiesTab
  */
-type StudiesTab = "RECORDS" | "CURRENT_RECORD" | "HOPS" | "SUMMARY" | "YO";
+type StudiesTab =
+  | "RECORDS"
+  | "CURRENT_RECORD"
+  | "HOPS"
+  | "SUMMARY"
+  | "YO"
+  | "STUDY_INFO";
 
 /**
  * StudiesApplicationState
@@ -148,6 +155,17 @@ class StudiesApplication extends React.Component<
           return (
             <ApplicationPanelBody modifier="tabs">
               <YO />
+            </ApplicationPanelBody>
+          );
+        },
+      },
+      {
+        id: "STUDY_INFO",
+        name: "Opintojen tiedot",
+        component: () => {
+          return (
+            <ApplicationPanelBody modifier="tabs">
+              <StudyInfo />
             </ApplicationPanelBody>
           );
         },

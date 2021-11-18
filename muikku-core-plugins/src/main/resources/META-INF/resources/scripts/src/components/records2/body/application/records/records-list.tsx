@@ -2,6 +2,7 @@ import Button from "~/components/general/button";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import Avatar from "~/components/general/avatar";
+import RecordsAssignmentsListDialog from "~/components/records2/dialogs/records-assignments-list-dialog";
 
 export interface RecordSubject {
   name: string;
@@ -10,6 +11,7 @@ export interface RecordSubject {
 
 export interface RecordSubjectCourse {
   name: string;
+
   evaluationDate: string;
   asessor: string;
   studies: {
@@ -54,10 +56,12 @@ export const RecordsList: React.FC<RecordsListProps> = ({ children, name }) => {
 
 interface RecordsListItemProps extends RecordSubjectCourse {
   index: number;
+  userEntityId: number;
 }
 
 export const RecordsListItem: React.FC<RecordsListItemProps> = ({
   index,
+  userEntityId,
   ...course
 }) => {
   const statusClassMod = () => {
@@ -87,25 +91,23 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
       </div>
       <div className="studies-records__section-content-course-list-item-cell">
         <div className="studies-records__section-content-course-list-item-cell-box studies-records__section-content-course-list-item-cell-box--asessor">
-          <div className="avatar">
-            <Avatar hasImage={false} id={1} firstName="Eka" />
-          </div>
-          <div className="asessor">
-            <div className="name">{course.asessor}</div>
-            <div className="title">titteli</div>
+          <div className="asessor-data">
+            <div className="avatar">
+              <Avatar hasImage={false} id={1} firstName="Eka" />
+            </div>
+            <div className="asessor">
+              <div className="name">{course.asessor}</div>
+              <div className="title">titteli</div>
+            </div>
           </div>
         </div>
       </div>
       <div className="studies-records__section-content-course-list-item-cell">
         <div className="studies-records__section-content-course-list-item-cell-box">
-          {/* <div>
-            {`${course.studies.assigmentCount}/${course.studies.maxAssigment} arvioitavaa`}
-          </div>
           <div>
-            {`${course.studies.excerciseCount}/${course.studies.maxExcercise} harjoitus`}
-          </div> */}
-          <div>
-            <Button>Näytä</Button>
+            <RecordsAssignmentsListDialog userEntityId={userEntityId}>
+              <Button style={{ backgroundColor: "green" }}>Näytä</Button>
+            </RecordsAssignmentsListDialog>
           </div>
         </div>
       </div>

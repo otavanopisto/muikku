@@ -206,18 +206,6 @@ export const recordsMock: RecordSubject[] = [
         grade: "8",
       },
       {
-        name: "Lauseet ja kirjaimet",
-        evaluationDate: "13.11.2021",
-        asessor: "Eka Vekara",
-        studies: {
-          excerciseCount: 23,
-          maxExcercise: 23,
-          assigmentCount: 10,
-          maxAssigment: 10,
-        },
-        status: "ONGOING",
-      },
-      {
         name: "Lauseet ja Verbit",
         evaluationDate: "15.11.2021",
         asessor: "Eka Vekara",
@@ -258,6 +246,7 @@ export const recordsMock: RecordSubject[] = [
           maxAssigment: 10,
         },
         status: "EVALUATED",
+        grade: "7",
       },
       {
         name: "Yhtälöt",
@@ -270,6 +259,7 @@ export const recordsMock: RecordSubject[] = [
           maxAssigment: 10,
         },
         status: "EVALUATED",
+        grade: "9",
       },
     ],
   },

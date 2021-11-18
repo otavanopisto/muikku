@@ -49,6 +49,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
   render() {
     return (
       <div className="studies-summary">
+        <h1>Opintojen yhteenveto</h1>
         <div className="studies-summary__section studies-summary__section--agenda">
           <h2 className="studies-summary__section-header">Päivän agenda</h2>
           <div
