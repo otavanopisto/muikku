@@ -10,7 +10,7 @@ import { WorkspacesActiveFiltersType, WorkspaceType } from '~/reducers/workspace
 import WorkspaceDialog from '~/components/organization/dialogs/edit-workspace';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 import Button from '~/components/general/button';
-
+import Draggable from "~/components/general/draggable"
 
 interface CourseProps {
   i18n: i18nType,
