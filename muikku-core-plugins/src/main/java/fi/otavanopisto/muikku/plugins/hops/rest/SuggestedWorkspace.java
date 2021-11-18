@@ -41,11 +41,20 @@ public class SuggestedWorkspace {
   public void setCourseNumber(Integer courseNumber) {
     this.courseNumber = courseNumber;
   }
+  
+  public String getType() {
+    return type;
+  }
+  
+  public void setType(String type) {
+    this.type = type;
+  }
 
   private Long id;
   private String name;
   private String subject;
   private String urlName;
   private Integer courseNumber;
+  private String type;
 
 }

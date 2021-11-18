@@ -5,6 +5,7 @@ public enum StudyActivityItemStatus {
   ONGOING,
   GRADED,
   TRANSFERRED,
-  SUGGESTED
+  SUGGESTED_NEXT,
+  SUGGESTED_OPTIONAL
 
 }

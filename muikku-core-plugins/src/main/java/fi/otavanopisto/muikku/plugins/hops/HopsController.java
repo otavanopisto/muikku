@@ -104,13 +104,13 @@ public class HopsController {
     return hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
   }
   
-  public HopsSuggestion suggestWorkspace(String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
+  public HopsSuggestion suggestWorkspace(String studentIdentifier, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
     HopsSuggestion hopsSuggestion = hopsSuggestionDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
     if (hopsSuggestion != null) {
-      hopsSuggestion = hopsSuggestionDAO.update(hopsSuggestion, studentIdentifier, subject, courseNumber, workspaceEntityId);
+      hopsSuggestion = hopsSuggestionDAO.update(hopsSuggestion, studentIdentifier, subject, type, courseNumber, workspaceEntityId);
     }
     else {
-      hopsSuggestion = hopsSuggestionDAO.create(studentIdentifier, subject, courseNumber, workspaceEntityId);
+      hopsSuggestion = hopsSuggestionDAO.create(studentIdentifier, subject, type, courseNumber, workspaceEntityId);
     }
     return hopsSuggestion;
   }
