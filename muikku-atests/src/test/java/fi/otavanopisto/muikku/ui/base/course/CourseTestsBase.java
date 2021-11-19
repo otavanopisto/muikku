@@ -13,11 +13,13 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -324,33 +326,40 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    long courseId = 1l;
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
-    MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-    
-    mockBuilder
-    .addStudent(student)
-    .addStaffMember(admin)
-    .mockLogin(admin)
-    .build();
-    
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", Long.toString(courseId), Boolean.TRUE);
-    
-    mockBuilder
-    .addCourseStaffMember(courseId, courseStaffMember)
-    .addCourseStudent(courseId, courseStudent)
-    .build();
-    try{
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addStudent(student)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), mockCourseStudent)
+        .build();
+    try {
       navigate("/profile#vacation", false);
       waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart");
       sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart", "21.12.2010");
+      tabOutOfElement(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationStart");
       waitAndClick(".application-panel__content-header");
       waitForPresent(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
       sendKeys(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd", "21.12.2025");
+      tabOutOfElement(".application-panel__main-container .application-sub-panel__item--profile input#profileVacationEnd");
       waitAndClick(".application-panel__content-header");
+      waitAndClick("#profileVacationAutoReply");
+      waitAndSendKeys("#profileVacationAutoReplySubject", "Lomalla");
+      waitAndSendKeys("#profileVacationAutoReplyMsg", "Olen lomalla!");
       waitAndClick(".application-sub-panel__item-actions .button--primary-function-save");
-      sleep(500);
+      sleep(1500);
+      navigate("/profile", false);      
       logout();
       mockBuilder.mockLogin(student);
       login();
@@ -359,8 +368,10 @@ public class CourseTestsBase extends AbstractUITest {
       waitForPresent(".item-list__item--teacher .item-list__user-vacation-period");
       assertTextIgnoreCase(".item-list__item--teacher .item-list__user-vacation-period", "Poissa 21.12.2010–21.12.2025");      
     }finally{
-      WireMock.reset();
       deleteWorkspace(workspace.getId());  
+    }
+    }finally {
+      WireMock.reset();      
     }
   }
 

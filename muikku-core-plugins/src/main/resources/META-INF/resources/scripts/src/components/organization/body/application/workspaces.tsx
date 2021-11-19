@@ -34,7 +34,6 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (props) =>
     <ApplicationList>
       {workspaces.map((workspace: WorkspaceType, index) => {
         if (workspaces.length === index + 1) {
-
           // This div wrapper exists because callback ref must return
           // an element and a class component returns a mounted instance
           return <div className="ref-wrapper ref-wrapper--last-organization-item" key={workspace.id} ref={loadMoreWorkspacesRef}>

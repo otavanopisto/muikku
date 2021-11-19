@@ -64,7 +64,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     if (props.initialValue){
       value = JSON.parse(props.initialValue);
       // We set it up properly
-      items = value.map((v:string)=>this.props.content && this.props.content.items.find(i=>i.id === v));
+      items = value.map((v:string)=>this.props.content && this.props.content.items.find(i=>i.id === v)).filter((v: any) => !!v);
       let itemsSuffled = shuffle(props.content.items) || [];
       itemsSuffled.forEach((i) => {
         if (!items.find((si) => si.id === i.id)) {
@@ -124,9 +124,10 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
    * swap - Swaps two items
    * @param itemA
    * @param itemB
+   * @param triggerChange
    * @returns
    */
-  swap(itemA: SorterFieldItemType, itemB: SorterFieldItemType){
+  swap(triggerChange: boolean, itemA: SorterFieldItemType, itemB: SorterFieldItemType){
     if (itemA.id === itemB.id){
       return;
     }
@@ -140,6 +141,10 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       }
       return item;
     });
+
+    if (triggerChange && this.props.onChange) {
+      this.props.onChange(this, this.props.content.name, JSON.stringify(items.map(item=>item.id)));
+    }
 
     // items are update with the swapped version, and after that's done we check for rightness
     this.setState({
@@ -215,7 +220,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
    */
   selectItem(item: SorterFieldItemType){
     if (this.state.selectedItem){
-      this.swap(item, this.state.selectedItem);
+      this.swap(true, item, this.state.selectedItem);
       this.setState({
         selectedItem: null
       });
@@ -330,7 +335,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
          return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as="span" parentContainerSelector=".material-page__sorterfield"
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "material-page__sorterfield-item--selected" : ""} ${itemStateAfterCheck}`} key={item.id} interactionGroup={this.props.content.name}
-           interactionData={item} onInteractionWith={this.swap.bind(this, item)}
+           interactionData={item} onInteractionWith={this.swap.bind(this, false, item)}
            onClick={this.selectItem.bind(this, item)} onDrag={this.selectItem.bind(this, item)}
            onDropInto={this.cancelSelectedItem}>
            <span className="material-page__sorterfield-item-icon icon-move"></span>
