@@ -26,7 +26,7 @@ import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { SearchFormElement } from '~/components/general/form-element';
-import { ToggleSelectAllMessageThreadsTriggerType, toggleAllMessageItems } from '../../../../actions/main-function/messages/index';
+import { ToggleSelectAllMessageThreadsTriggerType, toggleAllMessageItems } from '~/actions/main-function/messages/index';
 
 interface CommunicatorToolbarProps {
   messages: MessagesType;

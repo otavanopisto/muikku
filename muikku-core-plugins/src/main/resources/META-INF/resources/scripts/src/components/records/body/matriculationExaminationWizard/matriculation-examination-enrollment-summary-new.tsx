@@ -9,6 +9,7 @@ import { MatriculationExaminationPlannedAttendesList } from "./matriculationExam
 import { SavingDraftError } from "./saving-draft-error";
 import { SavingDraftInfo } from "./saving-draft-info";
 import { HOPSType } from "../../../../reducers/main-function/hops";
+import { resolveCurrentTerm } from "../../../../helper-functions/matriculation-functions";
 import {
   getNextTermOptions,
   getPastTermOptions,
@@ -276,7 +277,10 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<Matriculatio
 
         <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
-            Ilmoittaudun suorittamaan kokeen seuraavissa aineissa syksyllä 2021
+            {`Ilmoittaudun suorittamaan kokeen seuraavissa aineissa `}
+            <b>
+              {resolveCurrentTerm() ? resolveCurrentTerm().adessive : "Virhe"}
+            </b>
           </legend>
 
           {enrolledAttendances.length > 0 ? (

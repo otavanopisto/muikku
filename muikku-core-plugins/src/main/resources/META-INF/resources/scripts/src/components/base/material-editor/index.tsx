@@ -37,7 +37,7 @@ import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import Link from "~/components/general/link";
-import { PageLocation, UploadingValue } from "../../../@types/shared";
+import { PageLocation, UploadingValue } from "~/@types/shared";
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
@@ -190,6 +190,7 @@ const CKEditorConfig = (
     },
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
+  resize_enabled: false,
   removePlugins: "image,exportpdf",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"

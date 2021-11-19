@@ -839,7 +839,6 @@
 }
 
 // Discussion
-
 .application-list__header-container--discussion {
   padding: 10px;
 
@@ -854,6 +853,10 @@
   @include breakpoint($breakpoint-pad) {
     padding: 20px 0;
   }
+}
+
+.application-list__item-header--discussion {
+  margin: 0 0 10px;
 }
 
 .application-list__item-text-body--discussion-message {
@@ -924,7 +927,7 @@
 
 .application-list__item-footer--discussion-message {
   flex-flow: row wrap;
-  margin: 10px 0 0;
+  padding: 10px 0;
 }
 
 // Announcer
