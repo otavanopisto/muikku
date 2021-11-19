@@ -281,11 +281,12 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
           <span className="glyph glyph--autocomplete-recipient icon-books"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
+
       }
 
       return {
         value: item,
-        selected: !!this.state.selectedItems.find(selectedItem => selectedItem.type === item.type && selectedItem.value.id === item.value.id || selectedItem.value),
+        selected: !!this.state.selectedItems.find(selectedItem => selectedItem.type === item.type && selectedItem.value.id === item.value.id),
         node
       }
     });
