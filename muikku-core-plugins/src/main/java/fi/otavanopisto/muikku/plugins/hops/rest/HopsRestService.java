@@ -246,7 +246,7 @@ public class HopsRestService {
             item.setDate(suggestion.getCreated());
             item.setSubject(suggestion.getSubject());
             
-            if (suggestion.getType().equals(StudyActivityItemStatus.SUGGESTED_OPTIONAL.toString())) {
+            if (suggestion.getType().toLowerCase().contains("optional")) {
               item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL);
             } else {
               item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
