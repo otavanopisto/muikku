@@ -237,7 +237,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <h2.version>1.4.177</h2.version>
+        <h2.version>1.4.197</h2.version>
         <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
