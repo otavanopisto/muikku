@@ -7,16 +7,20 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import { GuiderType } from '~/reducers/main-function/guider';
+import { GuiderType, GuiderStudentListType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { SearchFormElement } from '~/components/general/form-element';
-
+import NewMessage from '~/components/communicator/dialogs/new-message';
+import { ContactRecipientType } from '~/reducers/user-index';
+import { getName } from '~/util/modifiers';
+import { StatusType } from '~/reducers/base/status';
 
 interface GuiderToolbarProps {
   i18n: i18nType,
   guider: GuiderType
+  status: StatusType
 }
 
 interface GuiderToolbarState {
@@ -88,11 +92,33 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     this.setState({ focused: false });
   }
 
+  /**
+   * turnSelectedUsersToContacts
+   * @param users array of GuiderStudents
+   * @returns {Array} array of UserRecepientGuiderStudentType
+   */
+
+  turnSelectedUsersToContacts = (users: GuiderStudentListType): ContactRecipientType[] => {
+    let contacts: ContactRecipientType[] = [];
+    users.map((user) => {
+      contacts.push({
+        type: "user",
+        value: {
+          id: user.userEntityId,
+          name: getName(user, !this.props.status.isStudent),
+          email: user.email
+        }
+      })
+    });
+    return contacts;
+  }
+
   render() {
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
-          {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock} /> : null}
+          {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock} /> :
+            <NewMessage initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
           <GuiderToolbarLabels />
           {this.props.guider.currentStudent ? null :
             <ApplicationPanelToolsContainer>
@@ -115,7 +141,8 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guider: state.guider
+    guider: state.guider,
+    status: state.status
   }
 };
 

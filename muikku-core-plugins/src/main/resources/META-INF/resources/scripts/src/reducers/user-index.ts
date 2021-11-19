@@ -1,6 +1,7 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { PagingUserListType } from '~/reducers/main-function/users';
+import { GuiderStudentType } from "./main-function/guider/index"
 export type ManipulateType = "UPDATE" | "CREATE";
 
 export interface CreateUserType {
@@ -130,14 +131,27 @@ export interface UserBaseIndexType {
   [index: number]: UserType
 }
 
-export type ContactRecepientType = WorkspaceRecepientType | UserRecepientType | UserGroupRecepientType | StaffRecepientType;
+export interface ContactRecipientType {
+  type: "workspace" | "user" | "usergroup" | "staff",
+  value: {
+    id: number,
+    name: string,
+    organization?: OrganizationType,
+    email?: string,
+    archived?: boolean,
+    studiesEnded?: boolean,
+    identifier?: string,
+  }
+}
+
+export type ContactRecepientType = WorkspaceRecepientType | UserRecepientUserType | UserGroupRecepientType | StaffRecepientType;
 
 export interface WorkspaceRecepientType {
   type: "workspace",
   value: WorkspaceType
 }
 
-export interface UserRecepientType {
+export interface UserRecepientUserType {
   type: "user",
   value: UserType
 }

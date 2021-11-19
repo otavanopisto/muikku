@@ -5,10 +5,9 @@ import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserType } from '~/reducers/user-index';
+import { UserRecepientUserType, ContactRecipientType, UserGroupRecepientType, WorkspaceRecepientType, UserType } from '~/reducers/user-index';
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex, getName } from '~/util/modifiers';
-
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
@@ -92,9 +91,12 @@ class Message extends React.Component<MessageProps, MessageState> {
     /**
      * This is the sender of the message
      */
-    const senderObject: UserRecepientType = {
+    const senderObject: ContactRecipientType = {
       type: "user",
-      value: this.props.message.sender
+      value: {
+        id: this.props.message.sender.id,
+        name: getName(this.props.message.sender, true)
+      }
     };
 
     /**
@@ -102,13 +104,12 @@ class Message extends React.Component<MessageProps, MessageState> {
      * Then filtering the logged sender away from the recepients,
      * recipient who has ended his studies and recipient who has been archived
      */
-    const recipientsList: Array<UserRecepientType> = this.props.message.recipients.map(( r ): UserRecepientType => ( {
+
+    const recipientsList: Array<ContactRecipientType> = this.props.message.recipients.map((r): ContactRecipientType => ({
       type: "user",
       value: {
         id: r.userEntityId,
-        firstName: r.firstName,
-        lastName: r.lastName,
-        nickName: r.nickName,
+        name: getName(r, true),
         studiesEnded: r.studiesEnded,
         archived: r.archived
       }
@@ -117,24 +118,24 @@ class Message extends React.Component<MessageProps, MessageState> {
     /**
      * These are the usergroup recepients
      */
-    const userGroupList: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug): UserGroupRecepientType => ({
+    const userGroupList: Array<ContactRecipientType> = this.props.message.userGroupRecipients.map((ug): ContactRecipientType => ({
       type: "usergroup",
       value: ug
     }));
 
-    const workspaceRecepientsFiltered = this.props.message.workspaceRecipients.filter((w, pos, self)=>{
-      return self.findIndex((w2)=>w2.workspaceEntityId === w.workspaceEntityId) === pos;
+    const workspaceRecepientsFiltered = this.props.message.workspaceRecipients.filter((w, pos, self) => {
+      return self.findIndex((w2) => w2.workspaceEntityId === w.workspaceEntityId) === pos;
     });
 
     /**
      * And the workspace recepients, sadly has to force it
      */
-    const workspaceList: Array<WorkspaceRecepientType> = workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
+    const workspaceList: Array<ContactRecipientType> = workspaceRecepientsFiltered.map((w): ContactRecipientType => ({
       type: "workspace",
       value: {
         id: w.workspaceEntityId,
         name: w.workspaceName,
-      } as WorkspaceType
+      }
     }));
 
     /**
@@ -153,11 +154,11 @@ class Message extends React.Component<MessageProps, MessageState> {
      * The last filter will filter out currently logged in user from userGroupList and workspaceList so
      * user cannot send messages to him self.
      */
-    if (senderObject.value.userEntityId === this.props.status.userId) {
+    if (senderObject.value.id === this.props.status.userId) {
       replyTarget = [senderObject].concat(recipientsList as any)
-      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupList as any : [])
-      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceList as any : [])
-        .filter((t) => t.value.userEntityId !== this.props.status.userId);
+        .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupList as any : [])
+        .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceList as any : [])
+        .filter((t) => t.value.id !== this.props.status.userId);
     }
 
     /**
@@ -165,10 +166,10 @@ class Message extends React.Component<MessageProps, MessageState> {
      * permissions
      */
     const replyAllTarget = [senderObject].concat(recipientsList as any)
-    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupList as any : [])
-    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceList as any : [])
-      .filter((t) => t.value.userEntityId !== senderObject.value.userEntityId)
-      .concat(senderObject as any).filter((t) => t.value.userEntityId !== this.props.status.userId);
+      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupList as any : [])
+      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceList as any : [])
+      .filter((t) => t.value.id !== senderObject.value.id)
+      .concat(senderObject as any).filter((t) => t.value.id !== this.props.status.userId);
 
     return <div className="application-list__item application-list__item--communicator-message">
       <div className="application-list__item-header application-list__item-header--communicator-message-thread">
@@ -186,9 +187,9 @@ class Message extends React.Component<MessageProps, MessageState> {
           </div>
         </div>
         {this.props.labels && this.props.labels.length ? <div className="labels labels--communicator-message">
-          {this.props.labels && this.props.labels.map((label)=>{
+          {this.props.labels && this.props.labels.map((label) => {
             return <span className="label" key={label.id} aria-label={this.props.i18n.text.get("plugin.wcag.messageLabel.aria.label")}>
-              <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+              <span className="label__icon icon-tag" style={{ color: colorIntToHex(label.labelColor) }}></span>
               <span className="label__text">{label.labelName}</span>
             </span>
           })}
@@ -196,7 +197,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message-thread" aria-label={this.props.i18n.text.get("plugin.wcag.messageContent.aria.label")}>
         <header className="application-list__item-content-header">{this.props.message.caption}</header>
-        <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
+        <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{ __html: this.props.message.content }}></section>
         <footer className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
           {this.props.message.sender.studiesEnded || this.props.message.sender.archived ? null :
             <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
@@ -223,7 +224,7 @@ class Message extends React.Component<MessageProps, MessageState> {
  * @param state
  * @returns
  */
-function mapStateToProps( state: StateType ) {
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     status: state.status
@@ -235,7 +236,7 @@ function mapStateToProps( state: StateType ) {
  * @param dispatch
  * @returns
  */
-function mapDispatchToProps( dispatch: Dispatch<any> ) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
 

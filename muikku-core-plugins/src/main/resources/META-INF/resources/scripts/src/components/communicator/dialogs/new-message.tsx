@@ -10,7 +10,7 @@ import { sendMessage, SendMessageTriggerType } from '~/actions/main-function/mes
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
 import { MessageSignatureType } from '~/reducers/main-function/messages';
-import { ContactRecepientType } from '~/reducers/user-index';
+import { ContactRecipientType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
@@ -25,7 +25,7 @@ interface CommunicatorNewMessageProps {
   replyToAll?: boolean,
   messageId?: number,
   extraNamespace?: string,
-  initialSelectedItems?: Array<ContactRecepientType>,
+  initialSelectedItems?: Array<ContactRecipientType>,
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
@@ -39,7 +39,7 @@ interface CommunicatorNewMessageProps {
 
 interface CommunicatorNewMessageState {
   text: string,
-  selectedItems: Array<ContactRecepientType>,
+  selectedItems: Array<ContactRecipientType>,
   subject: string,
   locked: boolean,
   includesSignature: boolean
@@ -112,7 +112,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
    * setSelectedItems
    * @param selectedItems
    */
-  setSelectedItems(selectedItems: Array<ContactRecepientType>) {
+  setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
   }
 
@@ -198,6 +198,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     }
   }
 
+  componentDidUpdate(prevProps: CommunicatorNewMessageProps) {
+    if (prevProps.initialSelectedItems && prevProps.initialSelectedItems.length !== this.props.initialSelectedItems.length) {
+      this.setState({ selectedItems: this.props.initialSelectedItems });
+    }
+  }
+
   /**
    * render
    * @returns
@@ -207,6 +213,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
     let content = (closeDialog: () => any) => [
       (<InputContactsAutofill identifier="communicatorRecipients" modifier="new-message" key="new-message-1"
+        showFullNames={!this.props.status.isStudent}
         loaders={this.inputContactsAutofillLoaders()}
         hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
         hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
@@ -214,7 +221,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems}
         autofocus={!this.props.initialSelectedItems}
-        showFullNames={!this.props.status.isStudent} />),
+      />),
       (
         <div className="env-dialog__row" key="new-message-2">
           <div className="env-dialog__form-element-container">
