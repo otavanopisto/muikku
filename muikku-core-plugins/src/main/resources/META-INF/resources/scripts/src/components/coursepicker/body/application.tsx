@@ -41,7 +41,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     let filterTranslationString = {
       "ALL_COURSES": "plugin.coursepicker.allcourses",
       "MY_COURSES": "plugin.coursepicker.owncourses",
-      "AS_TEACHER": "plugin.coursepicker.teachercourses"
+      "UNPUBLISHED": "plugin.coursepicker.unpublished"
     }
 
     let title = this.props.i18n.text.get('plugin.coursepicker.pageTitle')
@@ -51,7 +51,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
       {this.props.status.loggedIn ?
         <select id="selectCourses" className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
         {this.props.workspaces.availableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
-          if (this.props.status.isStudent && filter === "AS_TEACHER"){
+          if (this.props.status.isStudent && filter === "UNPUBLISHED"){
             return false
           }
           return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option>
