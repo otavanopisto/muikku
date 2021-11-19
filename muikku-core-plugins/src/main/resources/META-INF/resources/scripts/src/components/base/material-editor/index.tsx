@@ -551,19 +551,6 @@ class MaterialEditor extends React.Component<
     )} ${percent}%`;
   };
 
-  /**  Creates an array of tabs from given panelTabs
-  *
-  * @returns Tab identifiers as a string array
-  */
-
-  createAllTabs = (tabs: TabType[]) => {
-    const tabStrings: string[] = []
-    for (let i = 0; i < tabs.length; i++) {
-      tabStrings.push(tabs[i].id);
-    }
-    return tabStrings;
-  }
-
   /**
    * onClickClose
    */
