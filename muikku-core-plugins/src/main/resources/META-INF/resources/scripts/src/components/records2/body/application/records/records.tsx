@@ -55,8 +55,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               <h1>FILTTERIT</h1>
             </div>
             <div className="studies-records__section-content-subject-list">
-              {recordsMock.map((rItem) => (
-                <RecordsList name={rItem.name}>
+              {recordsMock.map((rItem, index) => (
+                <RecordsList key={index} name={rItem.name}>
                   <div className="studies-records__section-content-course-list-item .studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell">
                       <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
@@ -91,6 +91,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   </div>
                   {rItem.courses.map((cItem, index) => (
                     <RecordsListItem
+                      key={index}
                       userEntityId={0}
                       index={index}
                       {...cItem}

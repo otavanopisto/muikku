@@ -4,12 +4,15 @@ import { EvaluationStudyDiaryEvent } from "../../../../../@types/evaluation";
 import { WorkspaceJournalType } from "../../../../../reducers/workspaces/index";
 import AnimateHeight from "react-animate-height";
 import { i18nType } from "~/reducers/base/i18n";
+import { useDiary } from "./hooks/use-diary";
+import "~/sass/elements/records.scss";
 
 /**
  * DiaryListProps
  */
 interface DiaryListProps {
-  diaryEvents: EvaluationStudyDiaryEvent[];
+  userEntityId: number;
+  workspaceEntityId: number;
   i18n: i18nType;
 }
 
@@ -17,22 +20,42 @@ interface DiaryListProps {
  * DiaryList
  * @returns JSX.Element
  */
-export const DiaryList: React.FC<DiaryListProps> = ({ diaryEvents, i18n }) => {
-  return (
-    <div>
-      {diaryEvents.length > 0 ? (
-        diaryEvents.map((item) => {
-          return <DiaryListItem key={item.id} i18n={i18n} {...item} />;
-        })
-      ) : (
-        <div className="empty">
-          <span>
-            {i18n.text.get("plugin.evaluation.evaluationModal.noJournals")}
-          </span>
-        </div>
-      )}
+export const DiaryList: React.FC<DiaryListProps> = ({
+  i18n,
+  userEntityId,
+  workspaceEntityId,
+}) => {
+  const { loadingDiary, diaryData, serverError } = useDiary(
+    userEntityId,
+    workspaceEntityId
+  );
+
+  /**
+   * Renders content depending of state of useDiary hook
+   */
+  let renderContent: JSX.Element | JSX.Element[] = (
+    <div className="empty">
+      <span>
+        {i18n.text.get("plugin.evaluation.evaluationModal.noJournals")}
+      </span>
     </div>
   );
+
+  if (loadingDiary) {
+    renderContent = <div className="loader-empty" />;
+  } else if (serverError) {
+    renderContent = (
+      <div className="empty">
+        <span>Error</span>
+      </div>
+    );
+  } else if (diaryData.length > 0) {
+    renderContent = diaryData.map((item) => {
+      return <DiaryListItem key={item.id} i18n={i18n} {...item} />;
+    });
+  }
+
+  return <div>{renderContent}</div>;
 };
 
 /**

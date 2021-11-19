@@ -16,6 +16,10 @@ import {
 import AnimateHeight from "react-animate-height";
 import EvaluationMaterial from "~/components/evaluation/body/application/evaluation/evaluation-material";
 import { RecordValue } from "~/@types/recorder";
+import { useAssignments } from "./hooks/use-assignment";
+import { useCompositeReplies } from "./hooks/use-composite-replies";
+import { useWorkspace } from "./hooks/use-workspace";
+import "~/sass/elements/records.scss";
 
 /**
  * StudyAssignmentsListProps
@@ -23,9 +27,7 @@ import { RecordValue } from "~/@types/recorder";
 interface StudyAssignmentsListProps {
   i18n: i18nType;
   userEntityId: number;
-  workspace?: WorkspaceType;
-  assignments: MaterialAssignmentType[];
-  compositeReplies: MaterialCompositeRepliesType[];
+  workspaceId: number;
 }
 
 /**
@@ -33,42 +35,64 @@ interface StudyAssignmentsListProps {
  * @returns JSX.Element
  */
 export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
-  assignments,
-  compositeReplies,
-  workspace,
   userEntityId,
   i18n,
+  workspaceId,
 }) => {
-  return (
-    <div>
-      {assignments.length > 0 ? (
-        assignments.map((aItem, i) => {
-          const compositeReply = compositeReplies.find(
-            (cItem) => cItem.workspaceMaterialId === aItem.id
-          );
+  const { loadingAssignments, assignmentsData, serverError } =
+    useAssignments(4);
 
-          return (
-            <StudyAssignmentsListItem
-              key={i}
-              i18n={i18n}
-              userEntityId={userEntityId}
-              workspace={workspace}
-              assigment={aItem}
-              compositeReply={compositeReply}
-            />
-          );
-        })
-      ) : (
-        <div className="empty">
-          <span>
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.noAssignmentsTitle"
-            )}
-          </span>
-        </div>
-      )}
+  const {
+    loadingCompositeReplies,
+    compositeRepliesData,
+    serverErrorCompositeReplies,
+  } = useCompositeReplies(23, 4);
+
+  const { loadingWorkspace, workspaceData, serverErrorWorkspace } =
+    useWorkspace(4);
+
+  let renderContent: JSX.Element | JSX.Element[] = (
+    <div className="empty">
+      <span>
+        {i18n.text.get("plugin.evaluation.evaluationModal.noAssignmentsTitle")}
+      </span>
     </div>
   );
+
+  if (loadingAssignments || loadingCompositeReplies || loadingWorkspace) {
+    renderContent = <div className="loader-empty" />;
+  } else if (
+    serverError ||
+    serverErrorCompositeReplies ||
+    serverErrorWorkspace
+  ) {
+    renderContent = (
+      <div className="empty">
+        <span>Error</span>
+      </div>
+    );
+  } else if (assignmentsData.length > 0) {
+    renderContent = assignmentsData.map((aItem, i) => {
+      const compositeReply = compositeRepliesData.find(
+        (cItem) => cItem.workspaceMaterialId === aItem.id
+      );
+
+      console.log(workspaceData);
+
+      return (
+        <StudyAssignmentsListItem
+          key={i}
+          i18n={i18n}
+          userEntityId={userEntityId}
+          workspace={workspaceData}
+          assigment={aItem}
+          compositeReply={compositeReply}
+        />
+      );
+    });
+  }
+
+  return <div>{renderContent}</div>;
 };
 
 /**
@@ -96,11 +120,9 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
       React.useState<MaterialContentNodeType>(undefined);
 
     React.useEffect(() => {
-      if (materialNode) {
-        return;
+      if (materialNode !== undefined && openContent) {
+        loadMaterialData();
       }
-
-      loadMaterialData();
     }, [openContent]);
 
     /**
@@ -117,6 +139,8 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
             mApi().materials.html.read(assigment.materialId),
             "callback"
           )()) as MaterialContentNodeType;
+
+          console.log(workspace);
 
           let evaluation = (await promisify(
             mApi().workspace.workspaces.materials.evaluations.read(
@@ -282,7 +306,10 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
 
     const materialTypeClassMod = materialTypeClass(assigment);
 
-    const evaluatedFunctionClassMod = assignmentFunctionClass(compositeReply);
+    const evaluatedFunctionClassMod = assignmentFunctionClass(
+      compositeReply,
+      assigment
+    );
 
     const recordings =
       compositeReply &&

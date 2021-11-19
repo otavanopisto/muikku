@@ -16,6 +16,7 @@ import { DiaryList } from "../body/application/records/diary-list";
 interface RecordsAssigmentsListDialogProps {
   i18n: i18nType;
   userEntityId: number;
+  workspaceEntityId: number;
   children?: React.ReactElement<any>;
 }
 
@@ -38,12 +39,15 @@ class RecordsAssigmentsListDialog extends React.Component<
           <StudyAssignmentsList
             i18n={this.props.i18n}
             userEntityId={this.props.userEntityId}
-            assignments={[]}
-            compositeReplies={[]}
+            workspaceId={4}
           />
         </div>
         <div>
-          <DiaryList i18n={this.props.i18n} diaryEvents={[]} />
+          <DiaryList
+            i18n={this.props.i18n}
+            userEntityId={this.props.userEntityId}
+            workspaceEntityId={this.props.workspaceEntityId}
+          />
         </div>
       </div>
     );

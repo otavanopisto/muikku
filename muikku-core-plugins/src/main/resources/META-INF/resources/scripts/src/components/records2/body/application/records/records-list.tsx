@@ -105,7 +105,10 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
       <div className="studies-records__section-content-course-list-item-cell">
         <div className="studies-records__section-content-course-list-item-cell-box">
           <div>
-            <RecordsAssignmentsListDialog userEntityId={userEntityId}>
+            <RecordsAssignmentsListDialog
+              userEntityId={userEntityId}
+              workspaceEntityId={0}
+            >
               <Button style={{ backgroundColor: "green" }}>Näytä</Button>
             </RecordsAssignmentsListDialog>
           </div>
