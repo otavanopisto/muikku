@@ -109,26 +109,6 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public List<SchoolDataIdentifier> getOrganizationIdentifiers() {
-    return organizationIdentifiers;
-  }
-  
-  @Override
-  public WorkspaceSearchBuilder addOrganizationIdentifier(SchoolDataIdentifier organizationIdentifier) {
-    if (this.organizationIdentifiers == null) {
-      this.organizationIdentifiers = new ArrayList<>();
-    }
-    this.organizationIdentifiers.add(organizationIdentifier);
-    return this;
-  }
-  
-  @Override
-  public WorkspaceSearchBuilder setOrganizationIdentifiers(List<SchoolDataIdentifier> organizationIdentifiers) {
-    this.organizationIdentifiers = organizationIdentifiers;
-    return this;
-  }
-  
-  @Override
   public String getFreeText() {
     return freeText;
   }
@@ -167,17 +147,6 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   @Override
   public WorkspaceSearchBuilder setAccessUser(SchoolDataIdentifier accessUser) {
     this.accessUser = accessUser;
-    return this;
-  }
-  
-  @Override
-  public boolean isIncludeUnpublished() {
-    return includeUnpublished;
-  }
-  
-  @Override
-  public WorkspaceSearchBuilder setIncludeUnpublished(boolean includeUnpublished) {
-    this.includeUnpublished = includeUnpublished;
     return this;
   }
   
@@ -224,14 +193,23 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public TemplateRestriction getTemplateRestriction() {
-    return templateRestriction;
-  }
-  
-  @Override
-  public WorkspaceSearchBuilder setTemplateRestriction(TemplateRestriction templateRestriction) {
-    this.templateRestriction = templateRestriction;
+  public WorkspaceSearchBuilder addOrganizationRestriction(OrganizationRestriction organizationRestriction) {
+    if (this.organizationRestrictions == null) {
+      this.organizationRestrictions = new ArrayList<>();
+    }
+    this.organizationRestrictions.add(organizationRestriction);
     return this;
+  }
+
+  @Override
+  public WorkspaceSearchBuilder setOrganizationRestrictions(List<OrganizationRestriction> organizationRestrictions) {
+    this.organizationRestrictions = organizationRestrictions;
+    return this;
+  }
+
+  @Override
+  public List<OrganizationRestriction> getOrganizationRestrictions() {
+    return organizationRestrictions;
   }
   
   private String freeText;
@@ -240,12 +218,10 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   private List<String> subjects = null;
   private List<SchoolDataIdentifier> educationTypeIdentifiers = null; 
   private List<SchoolDataIdentifier> curriculumIdentifiers = null;
-  private List<SchoolDataIdentifier> organizationIdentifiers = null;
+  private List<OrganizationRestriction> organizationRestrictions;
   private EnumSet<WorkspaceAccess> accesses = EnumSet.noneOf(WorkspaceAccess.class);
   private SchoolDataIdentifier accessUser; 
-  private boolean includeUnpublished;
   private int firstResult;
   private int maxResults;
   private List<Sort> sorts = null;
-  private TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
 }
