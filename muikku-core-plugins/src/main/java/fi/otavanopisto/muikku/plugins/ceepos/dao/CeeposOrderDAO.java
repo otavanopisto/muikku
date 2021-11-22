@@ -74,5 +74,12 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     order.setLastModifierId(userEntityId);
     return persist(order);
   }
+  
+  public CeeposOrder updateArchived(CeeposOrder order, Boolean archived, Long userEntityId) {
+    order.setArchived(archived);
+    order.setLastModified(new Date());
+    order.setLastModifierId(userEntityId);
+    return persist(order);
+  }
 
 }

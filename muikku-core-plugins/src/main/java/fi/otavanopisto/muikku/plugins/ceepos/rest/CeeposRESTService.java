@@ -21,6 +21,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -634,6 +635,149 @@ public class CeeposRESTService {
     // as json, hence the quotes
     
     return Response.ok(String.format("\"%s\"", order.getCeeposPaymentAddress())).build();
+  }
+  
+  /**
+   * REQUEST:
+   * 
+   * mApi().ceepos.manualCompletion.create({
+   *   'id': '123' // order id
+   * });
+   * 
+   * RESPONSE:
+   * 
+   * 200, no object
+   * 
+   * DESCRIPTION:
+   * 
+   * Forces the completion of an order in progress. The order may NOT be in state
+   * COMPLETE. Forced order completion is only available for admins or the staff
+   * member who originally created the order.
+   * 
+   * @param payload Payload object  
+   * 
+   * @return 200, no objcect
+   */
+  @Path("/manualCompletion")
+  @POST
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response completeOrder(CeeposOrderRestModel payload) {
+
+    // Validate payload
+    
+    if (payload.getId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
+    }
+    
+    // Find the order
+    
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    if (order == null) {
+      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Ensure order ownership
+
+    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.COMPLETE_ORDER)) {
+      if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
+        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
+        return Response.status(Status.FORBIDDEN).build();
+        
+      }
+    }
+    
+    // Ensure order sate
+    
+    if (order.getState() == CeeposOrderState.COMPLETE) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid order state").build();
+    }
+
+    // Manual completion
+
+    logger.warning(String.format("Ceepos order %d: User %s triggered manual completion", order.getId(), sessionController.getLoggedUser().toId()));
+    
+    String reference = StringUtils.defaultIfEmpty(order.getCeeposOrderNumber(), "MANUAL");
+    
+    StringBuffer sb = new StringBuffer();
+    sb.append(order.getId().toString());
+    sb.append("&");
+    sb.append(PAYMENT_SUCCESSFUL);
+    sb.append("&");
+    sb.append(reference);
+    sb.append("&");
+    sb.append(getSetting("key"));
+    String hash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+    
+    CeeposPaymentConfirmationRestModel paymentConfirmation = new CeeposPaymentConfirmationRestModel();
+    paymentConfirmation.setId(order.getId().toString());
+    paymentConfirmation.setStatus(PAYMENT_SUCCESSFUL);
+    paymentConfirmation.setReference(reference);
+    paymentConfirmation.setHash(hash);
+    return handlePaymentConfirmation(paymentConfirmation);
+  }
+  
+  /**
+   * REQUEST:
+   * 
+   * mApi().ceepos.order.del({
+   *   'id': '123' // order id
+   * });
+   * 
+   * RESPONSE:
+   * 
+   * 204 No content
+   * 
+   * DESCRIPTION:
+   * 
+   * Removes the given order. The order may NOT be in state PAID or COMPLETE.
+   * Order removal is only available for admins or the staff member who originally
+   * created the order.
+   * 
+   * @param payload Payload object  
+   * 
+   * @return 204 No content
+   */
+  @Path("/order")
+  @DELETE
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response removeeOrder(CeeposOrderRestModel payload) {
+
+    // Validate payload
+    
+    if (payload.getId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
+    }
+    
+    // Find the order
+    
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    if (order == null) {
+      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Ensure order ownership
+
+    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.REMOVE_ORDER)) {
+      if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
+        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
+        return Response.status(Status.FORBIDDEN).build();
+        
+      }
+    }
+    
+    // Ensure order sate
+    
+    if (order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid order state").build();
+    }
+    
+    // Archive the order
+    
+    ceeposController.archiveOrder(order, sessionController.getLoggedUserEntity().getId());
+    
+    return Response.noContent().build();
   }
   
   @Path("/dummyPaymentResponse")

@@ -37,6 +37,10 @@ public class CeeposController {
     return ceeposOrderDAO.findByIdAndArchived(id, archived);
   }
   
+  public CeeposOrder archiveOrder(CeeposOrder ceeposOrder, Long userEntityId) {
+    return ceeposOrderDAO.updateArchived(ceeposOrder, Boolean.TRUE, userEntityId);
+  }
+  
   public CeeposProduct findProductById(Long productId) {
     return ceeposProductDAO.findById(productId);
   }

@@ -11,16 +11,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.otavanopisto.muikku.model.util.ArchivableEntity;
+
 @Entity
 @Inheritance (strategy = InheritanceType.JOINED)
-public class CeeposOrder {
+public class CeeposOrder implements ArchivableEntity {
 
   public Long getId() {
     return id;
