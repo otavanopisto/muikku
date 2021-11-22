@@ -51,7 +51,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
           let hash = isActive ?
             queryString.stringify(Object.assign({}, locationData, { c: "", u: (locationData.u || []).filter((u: string) => parseInt(u) !== userGroup.id) }), { arrayFormat: 'bracket' }) :
             queryString.stringify(Object.assign({}, locationData, { c: "", u: (locationData.u || []).concat(userGroup.id) }), { arrayFormat: 'bracket' });
-          return <NavigationElement modifiers="aside-navigation-guider-userGroup" icon="users" key={userGroup.id} isActive={isActive} hash={"?" + hash}>
+          return <NavigationElement modifiers="aside-navigation-guider-user-group" icon="users" key={userGroup.id} isActive={isActive} hash={"?" + hash}>
             {userGroup.name}
           </NavigationElement>
         })}
