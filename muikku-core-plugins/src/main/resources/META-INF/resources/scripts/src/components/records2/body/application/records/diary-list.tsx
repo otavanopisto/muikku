@@ -55,7 +55,11 @@ export const DiaryList: React.FC<DiaryListProps> = ({
     });
   }
 
-  return <div>{renderContent}</div>;
+  return (
+    <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
+      {renderContent}
+    </div>
+  );
 };
 
 /**
@@ -76,13 +80,6 @@ export const DiaryListItem: React.FC<DiaryListItemProps> = ({
   id,
 }) => {
   const [height, setHeight] = React.useState<0 | "auto">(0);
-
-  React.useEffect(() => {
-    const openAsHeight = open ? "auto" : 0;
-    if (openAsHeight !== height) {
-      setHeight(openAsHeight);
-    }
-  }, [open]);
 
   /**
    * handleOpenContentClick

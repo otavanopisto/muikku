@@ -35,14 +35,34 @@ class RecordsAssigmentsListDialog extends React.Component<
   render() {
     let content = (closeDialog: () => any) => (
       <div style={{ display: "flex" }}>
-        <div>
+        <div
+          style={{
+            width: "50%",
+            display: "flex",
+            flexDirection: "column",
+            padding: "0 10px",
+          }}
+        >
+          <div>
+            <h2>Tehtävät</h2>
+          </div>
           <StudyAssignmentsList
             i18n={this.props.i18n}
             userEntityId={this.props.userEntityId}
             workspaceId={4}
           />
         </div>
-        <div>
+        <div
+          style={{
+            width: "50%",
+            display: "flex",
+            flexDirection: "column",
+            padding: "0 10px",
+          }}
+        >
+          <div>
+            <h2>Päiväkirjamerkinnät</h2>
+          </div>
           <DiaryList
             i18n={this.props.i18n}
             userEntityId={this.props.userEntityId}

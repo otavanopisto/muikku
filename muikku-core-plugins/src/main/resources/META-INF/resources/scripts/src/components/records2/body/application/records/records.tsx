@@ -56,7 +56,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             </div>
             <div className="studies-records__section-content-subject-list">
               {recordsMock.map((rItem, index) => (
-                <RecordsList key={index} name={rItem.name}>
+                <RecordsList
+                  key={index}
+                  name={rItem.name}
+                  courseCount={rItem.courses.length + 1}
+                >
                   <div className="studies-records__section-content-course-list-item .studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell">
                       <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">

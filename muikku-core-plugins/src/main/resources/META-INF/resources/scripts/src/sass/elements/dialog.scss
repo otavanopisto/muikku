@@ -38,6 +38,8 @@
 
 .dialog--assignments {
   .dialog__window {
+    max-width: 100%;
+
     @include breakpoint($breakpoint-pad) {
       left: auto;
       right: auto;

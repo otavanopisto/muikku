@@ -92,7 +92,11 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
     });
   }
 
-  return <div>{renderContent}</div>;
+  return (
+    <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
+      {renderContent}
+    </div>
+  );
 };
 
 /**
