@@ -40,6 +40,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -87,6 +88,9 @@ public class HopsRestService {
   
   @Inject
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   @Any
@@ -440,8 +444,16 @@ public class HopsRestService {
     
     User student = userSchoolDataController.findUser(schoolDataIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
-    UserEntity counselorEntity = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
-    User counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+    User counselor;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity counselorEntity = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
+      counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
     return Response.ok(createRestModel(
         studentEntity.getId(),
         student.getFirstName(),
