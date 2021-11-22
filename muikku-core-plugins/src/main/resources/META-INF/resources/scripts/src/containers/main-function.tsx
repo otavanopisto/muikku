@@ -27,7 +27,7 @@ import { loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
 import { AnnouncementListType } from '~/reducers/announcements';
 import AnnouncerBody from '../components/announcer/body';
-import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
+import { updateLabelFilters, updateWorkspaceFilters, updateUserGroupFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
@@ -161,6 +161,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       let filters: GuiderActiveFiltersType = {
         "workspaceFilters": (originalData.w || []).map((num: string) => parseInt(num)),
         "labelFilters": (originalData.l || []).map((num: string) => parseInt(num)),
+        "userGroupFilters": (originalData.u || []).map((num: string) => parseInt(num)),
         "query": originalData.q || ""
       }
       this.props.store.dispatch(loadStudents(filters) as Action);
@@ -558,6 +559,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
+      this.props.store.dispatch(updateUserGroupFilters() as Action);
 
       this.loadGuiderData();
 
