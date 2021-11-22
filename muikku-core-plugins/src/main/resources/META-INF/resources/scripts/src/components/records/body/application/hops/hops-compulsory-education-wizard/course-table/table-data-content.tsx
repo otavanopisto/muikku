@@ -35,7 +35,8 @@ interface TableDataContentProps
     courseNumber: number,
     subjectCode: string,
     suggestionId: number,
-    studentId: string
+    studentId: string,
+    type: "NEXT" | "OPTIONAL"
   ) => void;
 }
 

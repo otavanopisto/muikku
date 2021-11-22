@@ -31,7 +31,8 @@ interface CourseListProps extends Partial<StudentActivityByStatus> {
     courseNumber: number,
     subjectCode: string,
     suggestionId: number,
-    studentId: string
+    studentId: string,
+    type: "NEXT" | "OPTIONAL"
   ) => void;
 }
 
@@ -269,9 +270,11 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         canBeSelected = false;
         listItemIndicatormodifiers.push("INPROGRESS");
       } else if (
-        props.supervisorSugestedSubjectListOfIds &&
-        props.supervisorSugestedSubjectListOfIds.find(
-          (courseId) => courseId === course.id
+        props.suggestedOptionalList &&
+        props.suggestedOptionalList.find(
+          (sOCourse) =>
+            sOCourse.subject === sSubject.subjectCode &&
+            sOCourse.courseNumber === course.courseNumber
         )
       ) {
         listItemModifiers.push("SUGGESTED");
@@ -287,14 +290,14 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       }
 
       if (
-        props.suggestedList &&
-        props.suggestedList.find(
+        props.suggestedNextList &&
+        props.suggestedNextList.find(
           (sCourse) =>
             sCourse.subject === sSubject.subjectCode &&
             sCourse.courseNumber === course.courseNumber
         )
       ) {
-        suggestedCourseData = props.suggestedList.filter(
+        suggestedCourseData = props.suggestedNextList.filter(
           (sCourse) => sCourse.subject === sSubject.subjectCode
         );
 

@@ -13,7 +13,8 @@ export const updateSuggestion = async (
   courseNumber: number,
   subjectCode: string,
   suggestionId: number,
-  studentId: string
+  studentId: string,
+  type: "OPTIONAL" | "NEXT"
 ) => {
   if (goal === "add") {
     try {
@@ -22,19 +23,30 @@ export const updateSuggestion = async (
           id: suggestionId,
           subject: subjectCode,
           courseNumber: courseNumber,
+          type: type,
         }),
         "callback"
       )()) as StudentActivityCourse;
 
       setSuggestedList((prevState) => {
-        let updatedList = [...prevState.suggestedList];
+        let updatedList =
+          type === "NEXT"
+            ? [...prevState.suggestedNextList]
+            : [...prevState.suggestedOptionalList];
 
         updatedList.push(savedValues);
 
-        return {
-          ...prevState,
-          suggestedList: updatedList,
-        };
+        if (type === "NEXT") {
+          return {
+            ...prevState,
+            suggestedNextList: updatedList,
+          };
+        } else {
+          return {
+            ...prevState,
+            suggestedOptionalList: updatedList,
+          };
+        }
       });
     } catch (error) {
       console.error(error);
@@ -46,21 +58,32 @@ export const updateSuggestion = async (
           id: suggestionId,
           subject: subjectCode,
           courseNumber: courseNumber,
+          type: type,
         }),
         "callback"
       )();
 
       setSuggestedList((prevState) => {
-        let updatedList = [...prevState.suggestedList];
+        let updatedList =
+          type === "NEXT"
+            ? [...prevState.suggestedNextList]
+            : [...prevState.suggestedOptionalList];
 
         updatedList = updatedList.filter(
           (item) => item.courseNumber !== courseNumber
         );
 
-        return {
-          ...prevState,
-          studentActivitySuggestionList: updatedList,
-        };
+        if (type === "NEXT") {
+          return {
+            ...prevState,
+            suggestedNextList: updatedList,
+          };
+        } else {
+          return {
+            ...prevState,
+            suggestedOptionalList: updatedList,
+          };
+        }
       });
     } catch (error) {
       console.error(error);

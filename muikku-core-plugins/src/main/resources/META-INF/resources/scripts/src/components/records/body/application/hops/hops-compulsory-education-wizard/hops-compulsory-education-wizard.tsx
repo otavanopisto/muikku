@@ -129,120 +129,75 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * componentDidMount
    */
   componentDidMount = async () => {
-    const { testData } = this.props;
-
     this.setState({
       loading: true,
     });
 
-    /* console.log(this.props.user); */
-
+    /**
+     * Student id get from guider or logged in student
+     */
     const studentId =
       this.props.user === "supervisor"
         ? this.props.guider.currentStudent.basic.id
         : (window as any).MUIKKU_LOGGED_USER;
 
-    console.log(studentId);
+    /**
+     * Sleeper to delay data fetching if it happens faster than 1s
+     */
+    const sleep = await this.sleep(1000);
 
-    const studentHopsHistory = (await promisify(
-      mApi().hops.student.history.read(studentId),
-      "callback"
-    )()) as HopsUpdates[];
+    /**
+     * loaded hops data
+     */
+    const [loadedHops] = await Promise.all([
+      (async () => {
+        const studentHopsHistory = (await promisify(
+          mApi().hops.student.history.read(studentId),
+          "callback"
+        )()) as HopsUpdates[];
 
-    const studentBasicInfo = (await promisify(
-      mApi().hops.student.studentInfo.read(studentId),
-      "callback"
-    )()) as StudentInfo;
+        const studentBasicInfo = (await promisify(
+          mApi().hops.student.studentInfo.read(studentId),
+          "callback"
+        )()) as StudentInfo;
 
-    console.log("studentInfo", studentBasicInfo);
+        const hops = (await promisify(
+          mApi().hops.student.read(studentId),
+          "callback"
+        )()) as HopsCompulsory;
 
-    const hops = (await promisify(
-      mApi().hops.student.read(studentId),
-      "callback"
-    )()) as HopsCompulsory;
+        const followUp = (await promisify(
+          mApi().hops.student.hopsGoals.read(studentId),
+          "callback"
+        )()) as FollowUp;
 
-    const followUp = await promisify(
-      mApi().hops.student.hopsGoals.read(studentId),
-      "callback"
-    )().catch((err) => console.log(err));
+        let loadedHops = {
+          basicInfo: {
+            name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
+            guider: `${studentBasicInfo.counselorName}`,
+            updates: studentHopsHistory,
+          },
+          hopsCompulsory: hops !== undefined ? hops : initializeHops(),
+          hopsFollowUp: followUp,
+        };
 
-    const loadedHops =
-      hops !== undefined
-        ? hops
-        : {
-            startingLevel: {
-              previousEducation: Education.COMPULSORY_SCHOOL,
-              previousWorkExperience: "0-6",
-              previousYearsUsedInStudies: "",
-              finnishAsMainOrSecondaryLng: false,
-              previousLanguageExperience: [
-                {
-                  name: "Englanti",
-                  grade: 1,
-                  hardCoded: true,
-                },
-                {
-                  name: "Ruotsi",
-                  grade: 1,
-                  hardCoded: true,
-                },
-              ],
-            },
-            motivationAndStudy: {
-              byReading: 0,
-              byListening: 0,
-              byDoing: 0,
-              byMemorizing: 0,
-              byTakingNotes: 0,
-              byDrawing: 0,
-              byListeningTeacher: 0,
-              byWatchingVideos: 0,
-              byFollowingOthers: 0,
-              noSupport: 0,
-              family: 0,
-              friend: 0,
-              supportPerson: 0,
-              teacher: 0,
-              scaleSize: 5,
-              scaleName: "0-5",
-            },
-            studiesPlanning: {
-              usedHoursPerWeek: 0,
-              graduationGoal: "",
-              ethics: false,
-              finnishAsSecondLanguage: false,
-            },
-          };
-
-    const loadedFollowUp =
-      followUp !== undefined
-        ? followUp
-        : {
-            graduationGoal: "",
-            followUpGoal: "",
-          };
-
-    /* this.setState({
-      loading: false,
-      basicInfo: {
-        name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
-        guider: "???Joku ohjaaja???",
-        updates: studentHopsHistory,
-      },
-      hopsCompulsory: loadedHops,
-    }); */
+        return loadedHops;
+      })(),
+      sleep,
+    ]);
 
     this.setState({
       loading: false,
-      basicInfo: {
-        name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
-        guider: `${studentBasicInfo.counselorName}`,
-        updates: studentHopsHistory,
-      },
-      hopsCompulsory: loadedHops,
-      hopsFollowUp: loadedFollowUp as FollowUp,
+      ...loadedHops,
     });
   };
+
+  /**
+   * sleep
+   * @param m milliseconds
+   * @returns Promise
+   */
+  sleep = (m: number) => new Promise((r) => setTimeout(r, m));
 
   /**
    * handleStartingLevelChange
@@ -313,11 +268,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * handleSaveHops
    */
   handleSaveHops = async () => {
-    console.log("save hops", [
-      this.state.hopsCompulsory,
-      this.state.hopsFollowUp,
-    ]);
-
     this.setState({
       loading: true,
     });
@@ -332,7 +282,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
         mApi().hops.student.create(studentId, this.state.hopsCompulsory),
         "callback"
       )().then((hops: any) => {
-        console.log(hops);
+        console.log("tallennettu", hops);
       }),
       promisify(
         mApi().hops.student.hopsGoals.create(
@@ -341,13 +291,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ),
         "callback"
       )().then((followUp: any) => {
-        console.log(followUp);
+        console.log("tallennettu", followUp);
       }),
     ]).then(() => {
       this.setState({ loading: false });
     });
 
-    const parsedHops = { ...this.state.hopsCompulsory };
+    /* const parsedHops = { ...this.state.hopsCompulsory }; */
   };
 
   /**
@@ -474,3 +424,47 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CompulsoryEducationHopsWizard);
+
+const initializeHops = (): HopsCompulsory => ({
+  startingLevel: {
+    previousEducation: Education.COMPULSORY_SCHOOL,
+    previousWorkExperience: "0-6",
+    previousYearsUsedInStudies: "",
+    finnishAsMainOrSecondaryLng: false,
+    previousLanguageExperience: [
+      {
+        name: "Englanti",
+        grade: 1,
+        hardCoded: true,
+      },
+      {
+        name: "Ruotsi",
+        grade: 1,
+        hardCoded: true,
+      },
+    ],
+  },
+  motivationAndStudy: {
+    byReading: 0,
+    byListening: 0,
+    byDoing: 0,
+    byMemorizing: 0,
+    byTakingNotes: 0,
+    byDrawing: 0,
+    byListeningTeacher: 0,
+    byWatchingVideos: 0,
+    byFollowingOthers: 0,
+    noSupport: 0,
+    family: 0,
+    friend: 0,
+    supportPerson: 0,
+    teacher: 0,
+    scaleSize: 5,
+    scaleName: "0-5",
+  },
+  studiesPlanning: {
+    usedHoursPerWeek: 0,
+    ethics: false,
+    finnishAsSecondLanguage: false,
+  },
+});

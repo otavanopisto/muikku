@@ -23,7 +23,8 @@ export const useStudentActivity = (studentId: string) => {
       onGoingList: [],
       transferedList: [],
       gradedList: [],
-      suggestedList: [],
+      suggestedNextList: [],
+      suggestedOptionalList: [],
     });
 
   React.useEffect(() => {
@@ -41,7 +42,8 @@ export const useStudentActivity = (studentId: string) => {
         setStudentActivity({
           ...studentActivity,
           isLoading: false,
-          suggestedList: studentActivityByStatus.suggestedList,
+          suggestedNextList: studentActivityByStatus.suggestedNextList,
+          suggestedOptionalList: studentActivityByStatus.suggestedOptionalList,
           onGoingList: studentActivityByStatus.onGoingList,
           gradedList: studentActivityByStatus.gradedList,
           transferedList: studentActivityByStatus.transferedList,
@@ -59,7 +61,8 @@ export const useStudentActivity = (studentId: string) => {
       courseNumber: number,
       subjectCode: string,
       suggestionId: number,
-      studentId: string
+      studentId: string,
+      type: "NEXT" | "OPTIONAL"
     ) =>
       updateSuggestion(
         setStudentActivity,
@@ -67,7 +70,8 @@ export const useStudentActivity = (studentId: string) => {
         courseNumber,
         subjectCode,
         suggestionId,
-        studentId
+        studentId,
+        type
       ),
   };
 };
@@ -78,9 +82,13 @@ const filterActivity = (
   const onGoingList = list.filter(
     (item) => item.status === CourseStatus.ONGOING
   );
-  const suggestedList = list.filter(
-    (item) => item.status === CourseStatus.SUGGESTED
+  const suggestedNextList = list.filter(
+    (item) => item.status === CourseStatus.SUGGESTED_NEXT
   );
+  const suggestedOptionalList = list.filter(
+    (item) => item.status === CourseStatus.SUGGESTED_OPTIONAL
+  );
+
   const transferedList = list.filter(
     (item) => item.status === CourseStatus.TRANSFERRED
   );
@@ -88,7 +96,8 @@ const filterActivity = (
 
   return {
     onGoingList,
-    suggestedList,
+    suggestedNextList,
+    suggestedOptionalList,
     transferedList,
     gradedList,
   };

@@ -255,7 +255,8 @@ export enum CourseStatus {
   ONGOING = "ONGOING",
   GRADED = "GRADED",
   TRANSFERRED = "TRANSFERRED",
-  SUGGESTED = "SUGGESTED",
+  SUGGESTED_NEXT = "SUGGESTED_NEXT",
+  SUGGESTED_OPTIONAL = "SUGGESTED_OPTIONAL",
 }
 
 /**
@@ -428,7 +429,8 @@ export interface Suggestion {
 
 export interface StudentActivityByStatus {
   onGoingList: StudentActivityCourse[];
-  suggestedList: StudentActivityCourse[];
+  suggestedNextList: StudentActivityCourse[];
+  suggestedOptionalList: StudentActivityCourse[];
   transferedList: StudentActivityCourse[];
   gradedList: StudentActivityCourse[];
 }

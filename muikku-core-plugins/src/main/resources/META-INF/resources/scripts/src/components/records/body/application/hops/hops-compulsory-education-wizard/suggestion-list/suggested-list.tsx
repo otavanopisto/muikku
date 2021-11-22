@@ -23,7 +23,8 @@ interface SuggestionListProps {
     courseNumber: number,
     subjectCode: string,
     suggestionId: number,
-    studentId: string
+    studentId: string,
+    type: "NEXT" | "OPTIONAL"
   ) => void;
 }
 
@@ -61,13 +62,19 @@ const SuggestionList = (props: SuggestionListProps) => {
       suggestionsList.map((suggestion) => {
         let isSuggested = false;
         let isSuggestedToHops = false;
-        if (
-          props.suggestedActivityCourses &&
-          props.suggestedActivityCourses.findIndex(
+        if (props.suggestedActivityCourses) {
+          const suggestedCourse = props.suggestedActivityCourses.find(
             (item) => item.courseId === suggestion.id
-          ) !== -1
-        ) {
-          isSuggested = true;
+          );
+
+          if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
+            isSuggested = true;
+          } else if (
+            suggestedCourse &&
+            suggestedCourse.status === "SUGGESTED_OPTIONAL"
+          ) {
+            isSuggestedToHops = true;
+          }
         }
 
         return (
@@ -98,7 +105,8 @@ const SuggestionList = (props: SuggestionListProps) => {
                         props.course.courseNumber,
                         props.subjectCode,
                         suggestion.id,
-                        props.guider.currentStudent.basic.id
+                        props.guider.currentStudent.basic.id,
+                        "NEXT"
                       )
                     }
                   >
@@ -113,15 +121,16 @@ const SuggestionList = (props: SuggestionListProps) => {
                       }}
                       onClick={() =>
                         props.updateSuggestion(
-                          isSuggested ? "remove" : "add",
+                          isSuggestedToHops ? "remove" : "add",
                           props.course.courseNumber,
                           props.subjectCode,
                           suggestion.id,
-                          props.guider.currentStudent.basic.id
+                          props.guider.currentStudent.basic.id,
+                          "OPTIONAL"
                         )
                       }
                     >
-                      Valinnaiseksi?
+                      {isSuggestedToHops ? "Ehdotettu" : "Valinnaiseksi?"}
                     </button>
                   ) : null}
                 </div>{" "}

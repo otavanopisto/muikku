@@ -806,7 +806,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               superVisorModifies={props.superVisorModifies}
               ethicsSelected={props.ethics}
               finnishAsSecondLanguage={props.finnishAsSecondLanguage}
-              suggestedList={studentActivity.suggestedList}
+              suggestedNextList={studentActivity.suggestedNextList}
+              suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
@@ -830,7 +831,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               user={props.user}
               ethicsSelected={props.ethics}
               finnishAsSecondLanguage={props.finnishAsSecondLanguage}
-              suggestedList={studentActivity.suggestedList}
+              suggestedNextList={studentActivity.suggestedNextList}
+              suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
