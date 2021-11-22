@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.hops;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -122,10 +123,10 @@ public class HopsController {
     }
   }
   
-  public UserEntity getStudyCounselor(SchoolDataIdentifier studentIdentifier){
+  public List<UserEntity> getStudyCounselor(SchoolDataIdentifier studentIdentifier){
     UserEntity guidanceCounselor = null;
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
-    
+    List<UserEntity> counselorList = new ArrayList<>();
     // #3089: An awkward workaround to use the latest guidance group based on its identifier. Assumes a larger
     // identifier means a more recent entity. A more proper fix would be to sync group creation dates from
     // Pyramus and include them in the Elastic index. Then again, user groups would have to be refactored
@@ -140,9 +141,6 @@ public class HopsController {
       }
     });
     
-    // Choose the first staff member of the first guidance group as CC recipient for the notification
-
-    userGroupEntities:
     for (UserGroupEntity userGroupEntity : userGroupEntities) {
       UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
 
@@ -152,14 +150,13 @@ public class HopsController {
         for (GroupUser groupUser : groupUsers) {
           User user = userGroupController.findUserByGroupUser(groupUser);
           guidanceCounselor = userEntityController.findUserEntityByUser(user);
-          break userGroupEntities;
+           counselorList.add(guidanceCounselor);
+          
         }
       }
     }
-    if (guidanceCounselor != null) {
-      }
     
-    return guidanceCounselor;
+    return counselorList;
   }
 
 }

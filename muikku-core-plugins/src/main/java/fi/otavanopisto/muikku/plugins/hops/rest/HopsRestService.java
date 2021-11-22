@@ -446,9 +446,14 @@ public class HopsRestService {
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     User counselor;
     schoolDataBridgeSessionController.startSystemSession();
+    List<String> counselorList = new ArrayList<>();
+
     try {
-      UserEntity counselorEntity = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
-      counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+      List<UserEntity> counselorEntities = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
+      for (UserEntity counselorEntity : counselorEntities) {
+        counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+        counselorList.add(counselor.getDisplayName());
+      }
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -458,7 +463,7 @@ public class HopsRestService {
         studentEntity.getId(),
         student.getFirstName(),
         student.getLastName(),
-        counselor.getDisplayName()
+        counselorList
     )).build(); 
   }
   
@@ -466,11 +471,11 @@ public class HopsRestService {
       Long studentIdentifier,
       String firstName,
       String lastName,
-      String counselorName) {
+      List<String> counselorList) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformation(
         studentIdentifier,
         firstName, 
         lastName,
-        counselorName);
+        counselorList);
   }
 }
