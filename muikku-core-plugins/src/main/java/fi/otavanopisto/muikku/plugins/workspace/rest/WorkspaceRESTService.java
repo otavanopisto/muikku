@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,6 +149,8 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -416,7 +421,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("curriculums") List<String> curriculumIds,
         @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
-        @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
         @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
@@ -441,6 +446,20 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
         return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+    
+    publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
+    if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_UNPUBLISHED_WORKSPACES)) {
+        if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES)) {
+          // List only from workspaces the user is member of
+          workspaceIdentifierFilters = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream()
+              .map(WorkspaceEntity::getIdentifier)
+              .collect(Collectors.toList());
+        } else {
+          return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
+        }
       }
     }
     
@@ -472,10 +491,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
       }
       else {
-        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_UNPUBLISHED_WORKSPACES)) {
           return Response.status(Status.FORBIDDEN).build();
         }
-        workspaceEntities = Boolean.TRUE.equals(includeUnpublished) ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
+        workspaceEntities = publicityRestriction != PublicityRestriction.ONLY_PUBLISHED ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
       }
    
       // When querying workspaces of a student, plain teachers are limited to workspaces they are teaching
@@ -551,6 +570,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       // TODO: Limit to organizations the logged user has access to (how though?)
 
+      List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+      
       List<SchoolDataIdentifier> organizations = null;
       if (organizationIds != null) {
         organizations = new ArrayList<>(organizationIds.size());
@@ -564,8 +585,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
-          curriculums, organizations, searchString, null, null, includeUnpublished, templateRestriction, firstResult, maxResults, sorts);
+          curriculums, organizationRestrictions, searchString, null, null, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -2016,7 +2039,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    
     byte[] content = answerFile.getContent();
     if (content == null) {
       Long userEntityId = workspaceMaterialReply.getUserEntityId();
@@ -2038,16 +2060,23 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    if (StringUtils.isEmpty(answerFile.getContentType())) {
-      return Response.ok(content)
-        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
-        .build();
-    }
-    else {
-      return Response.ok(content)
-        .type(answerFile.getContentType())
-        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
-        .build();
+    try {
+      String filename = new String(answerFile.getFileName().getBytes(Charset.forName("US-ASCII"))).replaceAll("\"", "\\\"");
+      String encFilename = URLEncoder.encode(answerFile.getFileName(), "utf-8").replaceAll("\\+", "%20").replaceAll("\"", "\\\"");
+      if (StringUtils.isEmpty(answerFile.getContentType())) {
+        return Response.ok(content)
+          .header("Content-Disposition", "attachment; filename=\"" + filename + "\"; filename*=utf-8''\"" + encFilename + "\"")
+          .build();
+      }
+      else {
+        return Response.ok(content)
+          .type(answerFile.getContentType())
+          .header("Content-Disposition", "attachment; filename=\"" + filename + "\"; filename*=utf-8''\"" + encFilename + "\"")
+          .build();
+      }
+    } catch (UnsupportedEncodingException e) {
+      logger.warning("Unsupported character encoding: " + e.getMessage());
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
   }
 

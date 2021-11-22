@@ -11,6 +11,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.muikku.CredentialResetPayload;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
@@ -854,18 +856,22 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date) {
+      public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled,
+          Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date, boolean passing) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-
         CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
         
         CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
 
         assessmentRequest.setCourseStudentId(courseStudentId);
         assessmentRequest.setAssessmentRequestDate(Date.from(courseAssessmentRequest.getCreated().toInstant()));
-        assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));        
-        assessmentRequest.setEvaluationDate(null);
-        assessmentRequest.setPassing(null);
+        assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));
+        if(handled) {
+          assessmentRequest.setEvaluationDate(Date.from(date.toInstant()));          
+        }else {
+          assessmentRequest.setEvaluationDate(null);
+        }
+        assessmentRequest.setPassing(passing);
         assessmentRequest.setCourseId(courseId);
         assessmentRequest.setCourseName(course.getName());
         assessmentRequest.setCourseNameExtension(course.getNameExtension());
@@ -873,14 +879,27 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(courseStudent.getId());
-                
-        if(pmock.compositeStaffAssessmentRequests.containsKey(staffMemberId)){
+        List<CompositeAssessmentRequest> existingRequests = pmock.compositeStaffAssessmentRequests.get(staffMemberId);
+        List<CompositeAssessmentRequest> toRemove = new ArrayList<>();
+        if(existingRequests != null) {
+          for (CompositeAssessmentRequest compositeAssessmentRequest : existingRequests) {
+            Long cStudentId = compositeAssessmentRequest.getCourseStudentId();
+            if(cStudentId.equals(courseStudentId)) {
+              toRemove.add(compositeAssessmentRequest);
+            }
+          }
+          if(!toRemove.isEmpty()) {
+            for (CompositeAssessmentRequest compositeAssessmentRequest : toRemove) {
+              pmock.compositeStaffAssessmentRequests.get(staffMemberId).remove(compositeAssessmentRequest);
+            }            
+          }
           pmock.compositeStaffAssessmentRequests.get(staffMemberId).add(assessmentRequest);
-        }else{
+        }else {
           ArrayList<CompositeAssessmentRequest> assessmentRequests = new ArrayList<>();
           assessmentRequests.add(assessmentRequest);
-          pmock.compositeStaffAssessmentRequests.put(staffMemberId, assessmentRequests);
+          pmock.compositeStaffAssessmentRequests.put(staffMemberId, assessmentRequests);          
         }
+
         return this;
       }
       
@@ -896,7 +915,7 @@ public class PyramusMock {
       }
       
       public Builder mockCourseAssessments(MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
-        OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime assessmentCreated = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
         CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
         
         stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
@@ -1182,6 +1201,46 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(matriculationSubjectJson)
             .withStatus(200)));      
+        return this;
+      }
+      
+      public Builder mockWorkspaceBasePrice(String workspaceIdentifier, Double price) throws JsonProcessingException {
+        String priceJson = pmock.objectMapper.writeValueAsString(price);
+
+        stubFor(get(urlEqualTo(String.format("/1/worklist/basePrice?course=%s", workspaceIdentifier)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(priceJson)
+              .withStatus(200)));
+          return this;
+        
+      }
+      
+      public Builder mockWorkspaceBilledPriceUpdate(String price) throws JsonProcessingException {
+        WorklistItemBilledPriceRestModel billedPrice = new WorklistItemBilledPriceRestModel();
+        billedPrice.setAssessmentIdentifier("1");
+        billedPrice.setPrice(Double.valueOf(price));
+        billedPrice.setEditable(true);
+
+        stubFor(put(urlEqualTo("/1/worklist/billedPrice"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(billedPrice))
+                .withStatus(200)));
+        return this;
+      }
+      
+      public Builder mockWorkspaceBilledPrice(String price) throws JsonProcessingException {
+        WorklistItemBilledPriceRestModel billedPrice = new WorklistItemBilledPriceRestModel();
+        billedPrice.setAssessmentIdentifier("1");
+        billedPrice.setPrice(Double.valueOf(price));
+        billedPrice.setEditable(true);
+        
+        stubFor(get(urlMatching("/1/worklist/billedPrice"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(billedPrice))
+                .withStatus(200)));
         return this;
       }
       

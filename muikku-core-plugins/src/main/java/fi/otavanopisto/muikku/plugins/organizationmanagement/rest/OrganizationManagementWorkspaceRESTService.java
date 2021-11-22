@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.organizationmanagement.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,8 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -142,7 +145,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
-        @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("publicity") @DefaultValue ("ONLY_PUBLISHED") PublicityRestriction publicityRestriction,
         @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
@@ -158,12 +161,30 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     
-    SearchResult searchResult = null;
+    // If searching for course templates only, enforce the non-public to be listed too
     
+    if (templateRestriction == TemplateRestriction.ONLY_TEMPLATES && publicityRestriction == PublicityRestriction.ONLY_PUBLISHED) {
+      publicityRestriction = PublicityRestriction.LIST_ALL;
+    }
+
     templateRestriction = templateRestriction != null ? templateRestriction : TemplateRestriction.ONLY_WORKSPACES;
     if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
         return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+    
+    publicityRestriction = publicityRestriction != null ? publicityRestriction : PublicityRestriction.ONLY_PUBLISHED;
+    if (publicityRestriction != PublicityRestriction.ONLY_PUBLISHED) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_UNPUBLISHED_WORKSPACES)) {
+        if (sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_UNPUBLISHED_WORKSPACES)) {
+          // List only from workspaces the user is member of
+          workspaceIdentifierFilters = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream()
+              .map(WorkspaceEntity::getIdentifier)
+              .collect(Collectors.toList());
+        } else {
+          return Response.status(Status.FORBIDDEN).entity("You have no permission to list unpublished workspaces.").build();
+        }
       }
     }
     
@@ -204,34 +225,23 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       }
     }
 
-    // Restrict search to the organizations of the user (except when searching for course templates only)
+    // Restrict search to the organizations of the user
     
-    List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
-    if (templateRestriction != TemplateRestriction.ONLY_TEMPLATES) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
-      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
-        organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
-      }
-    }
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    List<OrganizationEntity> organizations = Arrays.asList(userSchoolDataIdentifier.getOrganization());
     
-    // If searching for course templates only, enforce the includeUnpblished rule
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations, publicityRestriction, templateRestriction);
     
-    if (templateRestriction == TemplateRestriction.ONLY_TEMPLATES && !includeUnpublished) {
-      includeUnpublished = true;
-    }
-    
-    searchResult = searchProvider.searchWorkspaces()
+    SearchResult searchResult = searchProvider.searchWorkspaces()
         .setSchoolDataSource(schoolDataSourceFilter)
         .setSubjects(subjects)
         .setWorkspaceIdentifiers(workspaceIdentifierFilters)
         .setEducationTypeIdentifiers(educationTypes)
         .setCurriculumIdentifiers(curriculumIdentifiers)
-        .setOrganizationIdentifiers(organizationIdentifiers)
+        .setOrganizationRestrictions(organizationRestrictions)
         .setFreeText(searchString)
         .setAccesses(accesses)
         .setAccessUser(loggedUser)
-        .setIncludeUnpublished(includeUnpublished)
-        .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
         .setSorts(sorts)
@@ -294,36 +304,30 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   @Path("/overview")
   @RESTPermit(OrganizationManagementPermissions.ORGANIZATION_VIEW)
   public Response getOverview(){
-  
-  SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-  
-  SearchProvider searchProvider = searchProviderInstance.get();
-  if (searchProvider == null) {
-    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-  }
-  
-  SearchResult searchResult = null;
-  
-  // Restrict search to the organizations of the user
-  List<SchoolDataIdentifier> organizationIdentifiers = new ArrayList<>();
-  UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
-  if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) {
-    organizationIdentifiers.add(userSchoolDataIdentifier.getOrganization().schoolDataIdentifier());
-  }
-  
-  searchResult = searchProvider.searchWorkspaces()
-      .setOrganizationIdentifiers(organizationIdentifiers) // get this from logged in user, I guess
-      .setIncludeUnpublished(true)
-      .setFirstResult(0)
-      .setMaxResults(Integer.MAX_VALUE)
-      .search();
-  
-  OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
-  int unpublishedCount = 0; 
-  int publishedCount = 0; 
+    SearchProvider searchProvider = searchProviderInstance.get();
+    if (searchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    SearchResult searchResult = null;
+    
+    // Restrict search to the organizations of the user
 
-  
-  List<Map<String, Object>> results = searchResult.getResults();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    List<OrganizationEntity> organizations = Arrays.asList(userSchoolDataIdentifier.getOrganization());
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(organizations , PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES);
+    
+    searchResult = searchProvider.searchWorkspaces()
+        .setOrganizationRestrictions(organizationRestrictions)
+        .setFirstResult(0)
+        .setMaxResults(Integer.MAX_VALUE)
+        .search();
+    
+    OrganizationOverviewWorkspaces overviewWorkspaces = new OrganizationOverviewWorkspaces();
+    int unpublishedCount = 0; 
+    int publishedCount = 0; 
+    
+    List<Map<String, Object>> results = searchResult.getResults();
     for (Map<String, Object> result : results) {
       if ((Boolean) result.get("published")) {
         publishedCount++;
@@ -331,12 +335,12 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
         unpublishedCount++;
       }
     }
-  
-  overviewWorkspaces.setPublishedCount(publishedCount);
-  overviewWorkspaces.setUnpublishedCount(unpublishedCount);
-  
-  return Response.ok(overviewWorkspaces).build();
-}
+    
+    overviewWorkspaces.setPublishedCount(publishedCount);
+    overviewWorkspaces.setUnpublishedCount(unpublishedCount);
+    
+    return Response.ok(overviewWorkspaces).build();
+  }
   
   @POST
   @Path("/workspaces/{WORKSPACEID}/students")
