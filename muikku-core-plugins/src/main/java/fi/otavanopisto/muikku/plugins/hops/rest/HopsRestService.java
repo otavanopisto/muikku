@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
+import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -91,6 +93,9 @@ public class HopsRestService {
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
 
   @Inject
   @Any
@@ -405,6 +410,11 @@ public class HopsRestService {
       } else {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
       }
+      SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+      UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+      UserEntity counselorEntity = sessionController.getLoggedUserEntity();
+      
+      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
       return Response.ok(item).build();
     }
     else if (hopsSuggestion.getWorkspaceEntityId() != payload.getId()){
@@ -446,9 +456,14 @@ public class HopsRestService {
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     User counselor;
     schoolDataBridgeSessionController.startSystemSession();
+    List<String> counselorList = new ArrayList<>();
+
     try {
-      UserEntity counselorEntity = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
-      counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+      List<UserEntity> counselorEntities = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
+      for (UserEntity counselorEntity : counselorEntities) {
+        counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
+        counselorList.add(counselor.getDisplayName());
+      }
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -458,7 +473,7 @@ public class HopsRestService {
         studentEntity.getId(),
         student.getFirstName(),
         student.getLastName(),
-        counselor.getDisplayName()
+        counselorList
     )).build(); 
   }
   
@@ -466,11 +481,11 @@ public class HopsRestService {
       Long studentIdentifier,
       String firstName,
       String lastName,
-      String counselorName) {
+      List<String> counselorList) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformation(
         studentIdentifier,
         firstName, 
         lastName,
-        counselorName);
+        counselorList);
   }
 }

@@ -1,17 +1,19 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
+import java.util.List;
+
 public class StudentInformation {
   
   public StudentInformation(
       Long id,
       String firstName,
       String lastName,
-      String counselorName) {
+      List<String> counselorList) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.counselorName = counselorName;
+    this.counselorList = counselorList;
   }
 
   public Long getId() {
@@ -38,16 +40,16 @@ public class StudentInformation {
     this.lastName = lastName;
   }
 
-  public String getCounselorName() {
-    return counselorName;
+  public List<String> getCounselorList() {
+    return counselorList;
   }
 
-  public void setCounselorName(String counselorName) {
-    this.counselorName = counselorName;
+  public void setCounselorList(List<String> counselorList) {
+    this.counselorList = counselorList;
   }
   
   private Long id;
   private String firstName;
   private String lastName;
-  private String counselorName;
+  private List<String> counselorList;
 }
