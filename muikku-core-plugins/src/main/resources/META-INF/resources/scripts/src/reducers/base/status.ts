@@ -82,7 +82,7 @@ const roleNode = document.querySelector('meta[name="muikku:role"]');
 export default function status(state: StatusType = {
   loggedIn: JSON.parse(document.querySelector('meta[name="muikku:loggedIn"]').getAttribute("value")),    //whoami.id
   userId: parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value")) || null,     // whoami.id
-  permissions: {},    
+  permissions: {},
   contextPath: "",   // always empty
   userSchoolDataIdentifier: document.querySelector('meta[name="muikku:loggedUser"]').getAttribute("value"), // missing
   isActiveUser: JSON.parse(document.querySelector('meta[name="muikku:activeUser"]').getAttribute("value")), // missing
