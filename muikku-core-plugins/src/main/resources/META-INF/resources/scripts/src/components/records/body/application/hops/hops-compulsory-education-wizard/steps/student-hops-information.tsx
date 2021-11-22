@@ -65,7 +65,12 @@ class StudentHopsInformation extends React.Component<
                     label="Ohjaaja:"
                     type="text"
                     placeholder="Ohjaaja"
-                    value={this.props.basicInformation.guider}
+                    value={
+                      this.props.basicInformation.counselorList !== undefined &&
+                      this.props.basicInformation.counselorList.length > 0
+                        ? this.props.basicInformation.counselorList.join(", ")
+                        : "Ei ohjaaja"
+                    }
                     disabled
                     className="hops-input"
                   />

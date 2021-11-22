@@ -2,6 +2,7 @@ import * as React from "react";
 import promisify from "../../../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
 import { updateSuggestion } from "../../suggestion-list/handlers/handlers";
+import { WebsocketStateType } from "../../../../../../../../reducers/util/websocket";
 import {
   CourseStatus,
   StudentActivityByStatus,
@@ -16,7 +17,10 @@ export interface UseStudentActivityState extends StudentActivityByStatus {
  * useStudentActivity
  * Custom hook to return student activity data
  */
-export const useStudentActivity = (studentId: string) => {
+export const useStudentActivity = (
+  studentId: string,
+  websocketState: WebsocketStateType
+) => {
   const [studentActivity, setStudentActivity] =
     React.useState<UseStudentActivityState>({
       isLoading: true,
@@ -26,6 +30,20 @@ export const useStudentActivity = (studentId: string) => {
       suggestedNextList: [],
       suggestedOptionalList: [],
     });
+
+  React.useEffect(() => {
+    websocketState.websocket.addEventCallback(
+      "hops:workspace-suggested",
+      onAnswerSavedAtServer
+    );
+
+    return () => {
+      websocketState.websocket.removeEventCallback(
+        "hops:workspace-suggested",
+        onAnswerSavedAtServer
+      );
+    };
+  }, []);
 
   React.useEffect(() => {
     const loadStudentActivityListData = async (studentId: string) => {
@@ -53,6 +71,14 @@ export const useStudentActivity = (studentId: string) => {
 
     loadStudentActivityListData(studentId);
   }, [studentId]);
+
+  const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
+    console.log(data);
+
+    /*  let actualData = JSON.parse(data);
+
+    console.log(actualData); */
+  };
 
   return {
     studentActivity,

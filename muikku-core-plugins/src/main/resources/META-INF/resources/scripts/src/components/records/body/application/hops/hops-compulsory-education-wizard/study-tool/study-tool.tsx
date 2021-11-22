@@ -14,6 +14,9 @@ import OptionalStudiesInfoBox from "./optional-studiess-info-box";
 import { useStudentActivity } from "./hooks/useStudentActivity";
 import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 import { FollowUp } from "../../../../../../../@types/shared";
+import { StateType } from "reducers";
+import { connect, Dispatch } from "react-redux";
+import { WebsocketStateType } from "../../../../../../../reducers/util/websocket";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -30,6 +33,7 @@ interface StudyToolProps {
   superVisorModifies: boolean;
   studies: HopsPlanningStudies;
   followUp: FollowUp;
+  websocketState: WebsocketStateType;
 }
 
 /**
@@ -47,7 +51,10 @@ const defaultProps = {
 const StudyTool: React.FC<StudyToolProps> = (props) => {
   props = { ...defaultProps, ...props };
 
-  const { studentActivity, ...handlers } = useStudentActivity(props.studentId);
+  const { studentActivity, ...handlers } = useStudentActivity(
+    props.studentId,
+    props.websocketState
+  );
 
   /**
    * handleUsedHoursPerWeekChange
@@ -882,4 +889,22 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   );
 };
 
-export default StudyTool;
+/**
+ * mapStateToProps
+ * @param state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    websocketState: state.websocket,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudyTool);

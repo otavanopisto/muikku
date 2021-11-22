@@ -74,7 +74,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
       loading: false,
       basicInfo: {
         name: "",
-        guider: "",
       },
       hopsCompulsory: {
         startingLevel: {
@@ -174,8 +173,8 @@ class CompulsoryEducationHopsWizard extends React.Component<
         let loadedHops = {
           basicInfo: {
             name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
-            guider: `${studentBasicInfo.counselorName}`,
             updates: studentHopsHistory,
+            counselorList: studentBasicInfo.counselorList,
           },
           hopsCompulsory: hops !== undefined ? hops : initializeHops(),
           hopsFollowUp: followUp,

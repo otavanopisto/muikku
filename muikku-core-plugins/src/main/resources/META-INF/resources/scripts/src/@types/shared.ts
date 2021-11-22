@@ -279,16 +279,16 @@ export interface HopsCompulsory {
  */
 export interface BasicInformation {
   name: string;
-  guider: string;
   dateOfIssue?: Date;
   updates?: HopsUpdates[];
+  counselorList?: string[];
 }
 
 export interface StudentInfo {
   id: number;
   firstName: string;
   lastName: string;
-  counselorName: string;
+  counselorList?: string[];
 }
 
 export interface HopsUpdates {

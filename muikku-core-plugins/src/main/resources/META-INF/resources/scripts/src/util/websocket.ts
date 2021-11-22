@@ -147,7 +147,9 @@ export default class MuikkuWebsocket {
       callbacks: []
     };
     evtListeners.callbacks.push(action);
+    console.log(evtListeners);
     this.listeners[event] = evtListeners;
+    console.log(this.listeners);
     return this;
   }
 
