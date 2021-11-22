@@ -163,6 +163,7 @@ export class ApplicationListItemContentContainer extends React.Component<Applica
 
 interface ApplicationListItemContentWrapperProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>,
+  customClassName?: string,
   actionModifiers?: string | Array<string>,
   asideModifiers?: string | Array<string>,
   mainModifiers?: string | Array<string>,
@@ -175,11 +176,11 @@ interface ApplicationListItemContentWrapperState {
 
 export class ApplicationListItemContentWrapper extends React.Component<ApplicationListItemContentWrapperProps, ApplicationListItemContentWrapperState> {
   render() {
-    let newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    let asideModifiers = this.props.asideModifiers && this.props.asideModifiers instanceof Array ? this.props.asideModifiers : [this.props.asideModifiers];
-    let mainModifiers = this.props.mainModifiers && this.props.mainModifiers instanceof Array ? this.props.mainModifiers : [this.props.mainModifiers];
-    let actionModifiers = this.props.actionModifiers && this.props.actionModifiers instanceof Array ? this.props.actionModifiers : [this.props.actionModifiers];
+    const newProps: ApplicationListItemHeaderProps = Object.assign({}, this.props);
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const asideModifiers = this.props.asideModifiers && this.props.asideModifiers instanceof Array ? this.props.asideModifiers : [this.props.asideModifiers];
+    const mainModifiers = this.props.mainModifiers && this.props.mainModifiers instanceof Array ? this.props.mainModifiers : [this.props.mainModifiers];
+    const actionModifiers = this.props.actionModifiers && this.props.actionModifiers instanceof Array ? this.props.actionModifiers : [this.props.actionModifiers];
 
     delete (newProps as any)["modifiers"];
     delete (newProps as any)["asideModifiers"];
