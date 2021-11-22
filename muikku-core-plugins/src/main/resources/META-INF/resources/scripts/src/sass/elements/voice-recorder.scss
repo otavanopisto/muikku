@@ -144,6 +144,7 @@
   flex-shrink: 1;
   height: 1.75rem;
   max-width: 100%;
+  min-width: 0; // This overrides browser's min-width value for <audio> tags. Without it, download and delete recording icons would overflow browser's viewport with narrow screens
 }
 
 .voice-recorder__file--recording,

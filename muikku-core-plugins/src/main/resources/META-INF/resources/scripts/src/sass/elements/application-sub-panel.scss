@@ -387,7 +387,6 @@
 }
 
 // Subpanel container for single item inside multiple-items wrapper
-
 .application-sub-panel__multiple-item-container {
   display: flex;
   flex-basis: auto;
@@ -452,6 +451,7 @@
 .application-sub-panel__multiple-item-container--worklist-description {
   align-items: center;
   flex-basis: 100%;
+  flex-flow: row nowrap;
   margin: 2px 0;
 
   .application-sub-panel__item-title--worklist-list-mode {
