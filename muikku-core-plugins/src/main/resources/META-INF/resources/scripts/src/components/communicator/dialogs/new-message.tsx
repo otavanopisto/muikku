@@ -34,6 +34,7 @@ interface CommunicatorNewMessageProps {
   status: StatusType,
   onOpen?: () => any,
   onClose?: () => any,
+  onRecipientChange: (recipientId: number) => void,
   isOpen?: boolean
 }
 
@@ -233,7 +234,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
               value={this.state.subject}
               onChange={this.onSubjectChange}
               autoFocus={!!this.props.initialSelectedItems}
-              />
+            />
           </div>
         </div>
       ),
