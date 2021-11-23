@@ -392,7 +392,11 @@ public class HopsRestService {
         payload.getSubject(),
         payload.getCourseNumber());
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
-
+        
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+    UserEntity counselorEntity = sessionController.getLoggedUserEntity();
+    
     if (hopsSuggestion == null) {
       if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
@@ -410,21 +414,40 @@ public class HopsRestService {
       } else {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
       }
-      SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-      UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-      UserEntity counselorEntity = sessionController.getLoggedUserEntity();
-      
       webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
+
       return Response.ok(item).build();
     }
     else if (hopsSuggestion.getWorkspaceEntityId() != payload.getId()){
       hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getType(), payload.getCourseNumber(), workspaceEntity.getId());
+      
+      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+      item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
+      item.setCourseName(workspaceEntityController.getName(workspaceEntity));
+      item.setCourseNumber(hopsSuggestion.getCourseNumber());
+      item.setDate(hopsSuggestion.getCreated());
+      item.setSubject(hopsSuggestion.getSubject());
+      
+      if (payload.getType().toLowerCase().contains("optional")) {
+        item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL);
+      } else {
+        item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
+      }
+      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
+
       return Response.noContent().build();
     }
     else {
       hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      
+      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+      item.setSubject(hopsSuggestion.getSubject());
+      item.setCourseNumber(hopsSuggestion.getCourseNumber());
+      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
+
       return Response.noContent().build();
     }
+
   }
 
   private SearchProvider getProvider(String name) {
