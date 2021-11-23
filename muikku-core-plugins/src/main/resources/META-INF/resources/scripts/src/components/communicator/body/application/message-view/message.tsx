@@ -163,7 +163,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     const senderObject: ContactRecipientType = {
       type: "user",
       value: {
-        id: this.props.message.sender.id,
+        id: this.props.message.sender.userEntityId,
         name: getName(this.props.message.sender, true)
       }
     };
