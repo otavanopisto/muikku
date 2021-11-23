@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +25,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -116,59 +113,6 @@ public class CeeposRESTService {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
-  @Path("/test")
-  @GET
-  @RESTPermit(handling = Handling.INLINE)
-  public Response test() {
-    // For quick debug purposes
-    return Response.ok().build();
-  }
-  
-  @Path("/payViewUrl")
-  @GET
-  @RESTPermit(handling = Handling.INLINE)
-  public Response payViewUrl(@QueryParam("order") Long order) {
-    CeeposOrder ceeposOrder = ceeposController.findOrderById(order);
-    // Debug endpoint for development purposes
-    StringBuilder sb = new StringBuilder();
-    sb.append(ceeposOrder.getId());
-    sb.append("&");
-    sb.append(ceeposOrder.getUserIdentifier());
-    sb.append("&");
-    sb.append(getSetting("key"));
-    String hash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-    sb.setLength(0);
-    sb.append(httpRequest.getScheme());
-    sb.append("://");
-    sb.append(httpRequest.getServerName());
-    sb.append("/ceepos/pay?");
-    sb.append(String.format("order=%d&hash=%s", order, hash));
-    return Response.ok(sb.toString()).build();
-  }
-
-  @Path("/doneViewUrl")
-  @GET
-  @RESTPermit(handling = Handling.INLINE)
-  public Response doneViewUrl(@QueryParam("order") Long order, @QueryParam("status") Integer status) {
-    // Debug endpoint for development purposes
-    StringBuilder sb = new StringBuilder();
-    sb.append(order);
-    sb.append("&");
-    sb.append(status);
-    sb.append("&");
-    sb.append("123456"); // Reference
-    sb.append("&");
-    sb.append(getSetting("key"));
-    String hash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
-    sb.setLength(0);
-    sb.append(httpRequest.getScheme());
-    sb.append("://");
-    sb.append(httpRequest.getServerName());
-    sb.append("/ceepos/done?");
-    sb.append(String.format("Id=%s&Status=%d&Reference=123456&Hash=%s", order, status, hash));
-    return Response.ok(sb.toString()).build();
-  }
-  
   /**
    * REQUEST:
    * 
@@ -190,7 +134,7 @@ public class CeeposRESTService {
    *     'Description': 'Product description to be shown in UI',
    *     'Price': 5000 // Product price in cents
    *   }
-   *   'state': CREATED
+   *   'state': 'CREATED',
    *   'created': 2021-10-28T08:57:57+03:00 
    * }
    * 
@@ -198,25 +142,25 @@ public class CeeposRESTService {
    * 
    * Creates a new order for a student.
    * 
-   * @param paymentRequest Payload object
+   * @param payload Payload object
    * 
-   * @return Created payment request
+   * @return Created order
    */
   @Path("/order")
   @POST
   @RESTPermit(CeeposPermissions.CREATE_ORDER)
-  public Response createPaymentRequest(CeeposOrderRestModel paymentRequest) {
+  public Response createOrder(CeeposOrderRestModel payload) {
     
     // Validate payload
     
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(paymentRequest.getStudentIdentifier());
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(payload.getStudentIdentifier());
     UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
     if (studentUserEntity == null) {
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid student %s", paymentRequest.getStudentIdentifier())).build();
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid student %s", payload.getStudentIdentifier())).build();
     }
-    CeeposProduct product = ceeposController.findProductByCode(paymentRequest.getProduct().getCode());
+    CeeposProduct product = ceeposController.findProductByCode(payload.getProduct().getCode());
     if (product == null) {
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid product %s", paymentRequest.getProduct().getCode())).build();
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid product %s", payload.getProduct().getCode())).build();
     }
     
     // Contact emails for this order
@@ -236,7 +180,7 @@ public class CeeposRESTService {
     
     CeeposOrder order = null;
     if (product.getType() == CeeposProductType.STUDYTIME) {
-      order = ceeposController.createStudyTimeOrder(paymentRequest.getStudentIdentifier(),
+      order = ceeposController.createStudyTimeOrder(payload.getStudentIdentifier(),
           product,
           studentEmail,
           sessionController.getLoggedUserEntity().getId());
@@ -244,12 +188,7 @@ public class CeeposRESTService {
     else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unknown product type").build();
     }
-    paymentRequest.setCreated(toOffsetDateTime(order.getCreated()));
-    paymentRequest.setId(order.getId());
-    paymentRequest.getProduct().setCode(order.getProductCode());
-    paymentRequest.getProduct().setDescription(order.getProductDescription());
-    paymentRequest.getProduct().setPrice(order.getProductPrice());
-    paymentRequest.setState(order.getState());
+    payload = toRestModel(order);
     
     // Email student and guidance counselor about the order
 
@@ -285,7 +224,7 @@ public class CeeposRESTService {
         mailSubject,
         mailContent);
     
-    return Response.ok(paymentRequest).build();
+    return Response.ok(payload).build();
   }
   
   /**
@@ -304,7 +243,7 @@ public class CeeposRESTService {
    *    'Price': 5000, // Product price in cents
    *    'Description': 'Product description to be shown in UI'
    *  }
-   *  'state': CREATED | ONGOING | PAID | CANCELLED | ERRORED | COMPLETE
+   *  'state': 'CREATED' | 'ONGOING' | 'PAID' | 'CANCELLED' | 'ERRORED' | 'COMPLETE',
    *  'created': 2021-10-28T08:57:57+03:00 
    * }
    * 
@@ -344,19 +283,8 @@ public class CeeposRESTService {
     }
     
     // Return object
-
-    CeeposOrderRestModel restOrder = new CeeposOrderRestModel();
-    restOrder.setCreated(toOffsetDateTime(order.getCreated()));
-    restOrder.setId(order.getId());
-    restOrder.setProduct(new CeeposProductRestModel(
-        order.getProductCode(),
-        1,
-        order.getProductPrice(),
-        order.getProductDescription()));
-    restOrder.setState(order.getState());
-    restOrder.setStudentIdentifier(order.getUserIdentifier());
     
-    return Response.ok(restOrder).build();
+    return Response.ok(toRestModel(order)).build();
   }
 
   /**
@@ -374,7 +302,7 @@ public class CeeposRESTService {
    *     'Description': 'Product description to be shown in UI',
    *     'Price': 5000 // Product price in cents
    *   }
-   *   'state': CREATED | ONGOING | PAID | CANCELLED | ERRORED | COMPLETE
+   *   'state': 'CREATED' | 'ONGOING' | 'PAID' | 'CANCELLED' | 'ERRORED' | 'COMPLETE',
    *   'created': 2021-10-28T08:57:57+03:00 
    * },
    * ...]
@@ -406,17 +334,7 @@ public class CeeposRESTService {
     List<CeeposOrderRestModel> restOrders = new ArrayList<>();
     List<CeeposOrder> orders = ceeposController.listOrdersByUserIdentifier(userIdentifier);
     for (CeeposOrder order : orders) {
-      CeeposOrderRestModel restOrder = new CeeposOrderRestModel();
-      restOrder.setCreated(toOffsetDateTime(order.getCreated()));
-      restOrder.setId(order.getId());
-      restOrder.setProduct(new CeeposProductRestModel(
-          order.getProductCode(),
-          1,
-          order.getProductPrice(),
-          order.getProductDescription()));
-      restOrder.setState(order.getState());
-      restOrder.setStudentIdentifier(order.getUserIdentifier());
-      restOrders.add(restOrder);
+      restOrders.add(toRestModel(order));
     }
     
     return Response.ok(restOrders).build();
@@ -623,18 +541,17 @@ public class CeeposRESTService {
     
     // Update order payment address and set its state to ONGOING
     
-    order = ceeposController.updateOrderStateAndOrderNumberAndPaymentAddress(
+    order = ceeposController.updateOrderStateAndOrderNumber(
         order,
         CeeposOrderState.ONGOING,
         ceeposPayloadResponse.getReference(),
-        ceeposPayloadResponse.getPaymentAddress(),
         sessionController.getLoggedUserEntity().getId());
     
     // Return the address to which the user should be redirected to finish the payment
     // TODO Could be returned as plain text but due to an mApi bug, has to be returned
     // as json, hence the quotes
     
-    return Response.ok(String.format("\"%s\"", order.getCeeposPaymentAddress())).build();
+    return Response.ok(String.format("\"%s\"", ceeposPayloadResponse.getPaymentAddress())).build();
   }
   
   /**
@@ -646,7 +563,18 @@ public class CeeposRESTService {
    * 
    * RESPONSE:
    * 
-   * 200, no object
+   * {
+   *   'id': 123, // order id
+   *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
+   *   'product': {
+   *     'Code': 'PRODUCT0001',
+   *     'Amount': 1, // Irrelevant, always defaults to one
+   *     'Description': 'Product description to be shown in UI',
+   *     'Price': 5000 // Product price in cents
+   *   }
+   *   'state': 'COMPLETE',
+   *   'created': 2021-10-28T08:57:57+03:00 
+   * }
    * 
    * DESCRIPTION:
    * 
@@ -714,7 +642,15 @@ public class CeeposRESTService {
     paymentConfirmation.setStatus(PAYMENT_SUCCESSFUL);
     paymentConfirmation.setReference(reference);
     paymentConfirmation.setHash(hash);
-    return handlePaymentConfirmation(paymentConfirmation);
+    
+    Response response = handlePaymentConfirmation(paymentConfirmation);
+    if (response.getStatusInfo() == Status.OK) {
+      order = ceeposController.findOrderById(payload.getId());
+      return Response.ok(toRestModel(order)).build();
+    }
+    else {
+      return response; // Confirmation failed, return original response
+    }
   }
   
   /**
@@ -780,79 +716,11 @@ public class CeeposRESTService {
     return Response.noContent().build();
   }
   
-  @Path("/dummyPaymentResponse")
-  @POST
-  @RESTPermit(handling = Handling.INLINE)
-  public Response dummyPaymentAddress(CeeposPaymentRestModel payload) {
-    logger.info("dummyPaymentResponse"); 
-
-    CeeposPaymentResponseRestModel r = new CeeposPaymentResponseRestModel();
-    r.setId(payload.getId());
-    r.setStatus(2);
-    r.setReference("123");
-    r.setAction("new payment");
-    String retu = getSetting("returnAddress");
-    r.setPaymentAddress(retu);
-    String s = payload.getId() + "&2&123&new payment&" + getSetting("returnAddress") + "&" + getSetting("key");
-    s = Hashing.sha256().hashString(s, StandardCharsets.UTF_8).toString();
-    r.setHash(s);
-
-    Timer timer = new Timer();
-    timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        CeeposPaymentConfirmationRestModel dummyConfirmation = new CeeposPaymentConfirmationRestModel();
-        dummyConfirmation.setId(payload.getId());
-        dummyConfirmation.setStatus(1);
-        dummyConfirmation.setReference("123");
-        String s = payload.getId() + "&1&123&" + getSetting("key");
-        s = Hashing.sha256().hashString(s, StandardCharsets.UTF_8).toString();
-        dummyConfirmation.setHash(s);
-        Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("https://dev.muikkuverkko.fi/rest/ceepos/paymentConfirmation");
-        Builder request = target.request().header("Content-Type", MediaType.APPLICATION_JSON);
-        Entity<CeeposPaymentConfirmationRestModel> entity = Entity.entity(dummyConfirmation, MediaType.APPLICATION_JSON);
-        request.post(entity);
-      }
-    }, 3000);
-    
-    
-    return Response.ok(r).build();
-  }
-  
   @Path("/paymentConfirmation")
   @POST
   @RESTPermit(handling = Handling.INLINE)
   public Response paymentConfirmation(CeeposPaymentConfirmationRestModel paymentConfirmation) {
     return handlePaymentConfirmation(paymentConfirmation);
-  }
-  
-  @Path("/paymentConfirmationManual")
-  @GET
-  @RESTPermit(handling = Handling.INLINE)
-  public Response paymentConfirmationManual(@QueryParam("id") String id, @QueryParam("status") Integer status, @QueryParam("reference") String reference, @QueryParam("hash") String hash) {
-    CeeposPaymentConfirmationRestModel paymentConfirmation = new CeeposPaymentConfirmationRestModel();
-    paymentConfirmation.setId(id);
-    paymentConfirmation.setStatus(status);
-    paymentConfirmation.setReference(reference);
-    paymentConfirmation.setHash(hash);
-    return handlePaymentConfirmation(paymentConfirmation);
-  }
-  
-  @Path("/paymentConfirmationDebug")
-  @POST
-  @RESTPermit(handling = Handling.INLINE)
-  public Response paymentConfirmationDebug(Object object) {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      String json = objectMapper.writeValueAsString(object);
-      logger.info("---------- Payment confirmation debug ----------");
-      logger.info(json);
-    }
-    catch (JsonProcessingException e) {
-      logger.log(Level.SEVERE, "Payment confirmation debug", e);
-    }
-    return Response.ok().build();
   }
   
   /**
@@ -982,7 +850,7 @@ public class CeeposRESTService {
         schoolDataBridgeSessionController.endSystemSession();
       }
 
-      // Mark the payment as complete
+      // Mark the order as complete
 
       ceeposController.updateStudyTimeOrderStateAndStudyDates(
           (CeeposStudyTimeOrder) order,
@@ -1153,6 +1021,21 @@ public class CeeposRESTService {
     ZoneId systemId = ZoneId.systemDefault();
     ZoneOffset offset = systemId.getRules().getOffset(instant);
     return date.toInstant().atOffset(offset);
+  }
+  
+  private CeeposOrderRestModel toRestModel(CeeposOrder order) {
+    CeeposOrderRestModel restOrder = new CeeposOrderRestModel();
+    restOrder.setCreated(toOffsetDateTime(order.getCreated()));
+    restOrder.setId(order.getId());
+    CeeposProductRestModel restProduct = new CeeposProductRestModel();
+    restProduct.setAmount(1);
+    restProduct.setCode(order.getProductCode());
+    restProduct.setDescription(order.getProductDescription());
+    restProduct.setPrice(order.getProductPrice());
+    restOrder.setProduct(restProduct);
+    restOrder.setState(order.getState());
+    restOrder.setStudentIdentifier(order.getUserIdentifier());
+    return restOrder;
   }
 
 }

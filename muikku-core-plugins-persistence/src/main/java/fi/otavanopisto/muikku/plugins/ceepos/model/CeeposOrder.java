@@ -43,14 +43,6 @@ public class CeeposOrder implements ArchivableEntity {
     this.ceeposOrderNumber = ceeposOrderNumber;
   }
 
-  public String getCeeposPaymentAddress() {
-    return ceeposPaymentAddress;
-  }
-
-  public void setCeeposPaymentAddress(String ceeposPaymentAddress) {
-    this.ceeposPaymentAddress = ceeposPaymentAddress;
-  }
-
   public CeeposOrderState getState() {
     return state;
   }
@@ -142,9 +134,6 @@ public class CeeposOrder implements ArchivableEntity {
   
   @Column
   private String ceeposOrderNumber;
-
-  @Column
-  private String ceeposPaymentAddress;
 
   @NotNull
   @Column(nullable = false)

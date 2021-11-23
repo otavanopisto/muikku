@@ -70,9 +70,5 @@ public class CeeposController {
   public CeeposOrder updateOrderStateAndOrderNumber(CeeposOrder order, CeeposOrderState state, String orderNumber, Long userEntityId) {
     return ceeposOrderDAO.updateStateAndOrderNumber(order, state, orderNumber, userEntityId);
   }
-
-  public CeeposOrder updateOrderStateAndOrderNumberAndPaymentAddress(CeeposOrder order, CeeposOrderState state, String orderNumber, String address, Long userEntityId) {
-    return ceeposOrderDAO.updateStateAndOrderNumberAndPaymentAddress(order, state, orderNumber, address, userEntityId);
-  }
   
 }
