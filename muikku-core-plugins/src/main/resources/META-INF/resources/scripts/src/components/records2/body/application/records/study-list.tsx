@@ -77,8 +77,6 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
         (cItem) => cItem.workspaceMaterialId === aItem.id
       );
 
-      console.log(workspaceData);
-
       return (
         <StudyAssignmentsListItem
           key={i}
@@ -124,7 +122,8 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
       React.useState<MaterialContentNodeType>(undefined);
 
     React.useEffect(() => {
-      if (materialNode !== undefined && openContent) {
+      if (materialNode === undefined && openContent) {
+        console.log("tapahtuu");
         loadMaterialData();
       }
     }, [openContent]);
@@ -143,8 +142,6 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
             mApi().materials.html.read(assigment.materialId),
             "callback"
           )()) as MaterialContentNodeType;
-
-          console.log(workspace);
 
           let evaluation = (await promisify(
             mApi().workspace.workspaces.materials.evaluations.read(

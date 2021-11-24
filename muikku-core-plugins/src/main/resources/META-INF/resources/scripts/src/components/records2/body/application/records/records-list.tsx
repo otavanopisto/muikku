@@ -13,9 +13,9 @@ export interface RecordSubject {
 
 export interface RecordSubjectCourse {
   name: string;
-
-  evaluationDate: string;
-  asessor: string;
+  subjectCode: string;
+  evaluationDate?: string;
+  asessor?: string;
   studies: {
     excerciseCount: number;
     maxExcercise: number;
@@ -46,19 +46,31 @@ export const RecordsList: React.FC<RecordsListProps> = ({
     <div className="studies-records__section-content-course-list">
       <div
         className="studies-records__section-content-course-list-container"
-        style={{ display: "flex", alignItems: "center" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: "1px solid black",
+          paddingTop: "10px",
+        }}
       >
-        <div
-          className="studies-records__section-content-course-list-subject"
-          onClick={() => setOpen(!open)}
-        >
-          {`${name} (${courseCount}) `}
+        <div style={{ display: "flex" }}>
+          <div
+            className="studies-records__section-content-course-list-subject"
+            onClick={() => setOpen(!open)}
+          >
+            {`${name} (${courseCount}) `}
+          </div>
+
+          <div className={arrowClass}></div>
         </div>
+
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            margin: "0 10px",
           }}
         >
           <ProgressBarCircle
@@ -96,7 +108,6 @@ export const RecordsList: React.FC<RecordsListProps> = ({
             progress={0.5}
           />
         </div>
-        <div className={arrowClass}></div>
       </div>
 
       <AnimateHeight
@@ -111,12 +122,14 @@ export const RecordsList: React.FC<RecordsListProps> = ({
 
 interface RecordsListItemProps extends RecordSubjectCourse {
   index: number;
+  courseName: string;
   userEntityId: number;
 }
 
 export const RecordsListItem: React.FC<RecordsListItemProps> = ({
   index,
   userEntityId,
+  courseName,
   ...course
 }) => {
   const [height, setHeight] = React.useState<"auto" | 0>(0);
@@ -128,13 +141,13 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
   const statusClassMod = () => {
     switch (course.status) {
       case "EVALUATED":
-        return "studies-records__section-content-course-list-item-cell-box--status-evaluated";
+        return "studies-records__section-content-course-list-item-container--status-evaluated";
 
       case "SUPPLEMENTATION":
-        return "studies-records__section-content-course-list-item-cell-box--status-supplementation";
+        return "studies-records__section-content-course-list-item-container--status-supplementation";
 
       case "ONGOING":
-        return "studies-records__section-content-course-list-item-cell-box--status-ongoing";
+        return "studies-records__section-content-course-list-item-container--status-ongoing";
     }
   };
 
@@ -146,34 +159,47 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
   };
 
   return (
-    <>
+    <div
+      className={`studies-records__section-content-course-list-item-container ${statusClassMod()}`}
+    >
       <div className="studies-records__section-content-course-list-item">
         <div
           className="studies-records__section-content-course-list-item-cell"
           onClick={handleCourseClickName}
         >
           <div className="studies-records__section-content-course-list-item-cell-box studies-records__section-content-course-list-item-cell-box--course-name">
-            {course.name}
+            {courseName}
           </div>
         </div>
         <div className="studies-records__section-content-course-list-item-cell">
           <div className="studies-records__section-content-course-list-item-cell-box">
-            {course.evaluationDate}
+            {course.evaluationDate ? course.evaluationDate : "-"}
           </div>
         </div>
         <div className="studies-records__section-content-course-list-item-cell">
           <div className="studies-records__section-content-course-list-item-cell-box studies-records__section-content-course-list-item-cell-box--asessor">
-            <div className="asessor-data">
-              <div className="avatar">
-                <Avatar hasImage={false} id={1} firstName="Eka" />
+            {course.asessor ? (
+              <div className="asessor-data">
+                <div className="avatar">
+                  <Avatar hasImage={false} id={1} firstName="Eka" />
+                </div>
+                <div className="asessor">
+                  <div className="name">{course.asessor}</div>
+                  <div className="title">titteli</div>
+                </div>
               </div>
-              <div className="asessor">
-                <div className="name">{course.asessor}</div>
-                <div className="title">titteli</div>
-              </div>
-            </div>
+            ) : (
+              "-"
+            )}
           </div>
         </div>
+
+        <div className="studies-records__section-content-course-list-item-cell">
+          <div className="studies-records__section-content-course-list-item-cell-box">
+            {course.grade ? course.grade : "-"}
+          </div>
+        </div>
+
         <div className="studies-records__section-content-course-list-item-cell">
           <div className="studies-records__section-content-course-list-item-cell-box">
             <div>
@@ -184,18 +210,6 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                 <Button style={{ backgroundColor: "green" }}>Näytä</Button>
               </RecordsAssignmentsListDialog>
             </div>
-          </div>
-        </div>
-        <div
-          className={`studies-records__section-content-course-list-item-cell ${statusClassMod()}`}
-        >
-          <div className="studies-records__section-content-course-list-item-cell-box">
-            {course.status}
-          </div>
-        </div>
-        <div className="studies-records__section-content-course-list-item-cell">
-          <div className="studies-records__section-content-course-list-item-cell-box">
-            {course.grade ? course.grade : "-"}
           </div>
         </div>
       </div>
@@ -241,6 +255,6 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
           </div>
         </div>
       </AnimateHeight>
-    </>
+    </div>
   );
 };

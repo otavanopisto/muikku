@@ -194,6 +194,7 @@ export const recordsMock: RecordSubject[] = [
     courses: [
       {
         name: "Lauseet ja pisteet",
+        subjectCode: "ai",
         evaluationDate: "12.11.2021",
         asessor: "Eka Vekara",
         studies: {
@@ -207,6 +208,7 @@ export const recordsMock: RecordSubject[] = [
       },
       {
         name: "Lauseet ja Verbit",
+        subjectCode: "ai",
         evaluationDate: "15.11.2021",
         asessor: "Eka Vekara",
         studies: {
@@ -224,6 +226,7 @@ export const recordsMock: RecordSubject[] = [
     courses: [
       {
         name: "Plus laskut",
+        subjectCode: "mab",
         evaluationDate: "12.11.2021",
         asessor: "Eka Vekara",
         studies: {
@@ -237,6 +240,7 @@ export const recordsMock: RecordSubject[] = [
       },
       {
         name: "Miinus laskut",
+        subjectCode: "mab",
         evaluationDate: "1.11.2021",
         asessor: "Eka Vekara",
         studies: {
@@ -250,6 +254,7 @@ export const recordsMock: RecordSubject[] = [
       },
       {
         name: "Yhtälöt",
+        subjectCode: "mab",
         evaluationDate: "2.11.2021",
         asessor: "Eka Vekara",
         studies: {
@@ -260,6 +265,54 @@ export const recordsMock: RecordSubject[] = [
         },
         status: "EVALUATED",
         grade: "9",
+      },
+    ],
+  },
+  {
+    name: "Englanti",
+    courses: [
+      {
+        name: "Kieli on hieno asia",
+        subjectCode: "ena",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "ONGOING",
+      },
+      {
+        name: "Kieli ja persoona",
+        subjectCode: "ena",
+        evaluationDate: "1.11.2021",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "EVALUATED",
+        grade: "7",
+      },
+    ],
+  },
+  {
+    name: "Maantieto",
+    courses: [
+      {
+        name: "Maailma on kaunis ja hyvä",
+        subjectCode: "mab",
+        asessor: "Eka Vekara",
+        studies: {
+          excerciseCount: 23,
+          maxExcercise: 23,
+          assigmentCount: 10,
+          maxAssigment: 10,
+        },
+        status: "ONGOING",
       },
     ],
   },

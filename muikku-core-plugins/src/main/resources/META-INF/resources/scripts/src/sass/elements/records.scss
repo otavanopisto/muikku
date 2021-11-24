@@ -63,14 +63,10 @@
   } */
 
   .studies-records__section-content-filters {
-    background-color: lightblue;
-    text-align: center;
-    min-height: 100px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px 0;
-    box-shadow: 5px 5px 5px grey;
+    padding: 10px 0;
+    border-bottom: 3px solid black;
+    flex-direction: column;
   }
 
   .studies-records__section-content-subject-list {
@@ -178,13 +174,32 @@
   text-decoration: underline;
 }
 
+.studies-records__section-content-course-list-item-container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+  padding-left: 5px;
+}
+
+.studies-records__section-content-course-list-item-container--status-evaluated {
+  border-left: 5px solid green;
+}
+
+.studies-records__section-content-course-list-item-container--status-supplementation {
+  border-left: 5px solid orange;
+}
+
+.studies-records__section-content-course-list-item-container--status-ongoing {
+  border-left: 5px solid yellow;
+}
+
 .studies-records__section-content-course-list-item {
   display: flex;
   flex-shrink: 1;
-  margin: 10px 0;
 }
 
 .studies-records__section-content-course-list-item--header {
+  margin-top: 5px;
   margin-bottom: 0;
 }
 
@@ -197,7 +212,6 @@
   height: 100%;
   flex-direction: column;
   display: flex;
-  border: 1px solid black;
   justify-content: center;
   align-items: center;
   padding: 5px 0;
@@ -223,18 +237,6 @@
   background-color: #dadada;
   flex-wrap: wrap;
   text-align: center;
-}
-
-.studies-records__section-content-course-list-item-cell-box--status-evaluated {
-  background-color: rgb(104, 184, 104);
-}
-
-.studies-records__section-content-course-list-item-cell-box--status-supplementation {
-  background-color: orange;
-}
-
-.studies-records__section-content-course-list-item-cell-box--status-ongoing {
-  background-color: yellow;
 }
 
 .asessor-data {

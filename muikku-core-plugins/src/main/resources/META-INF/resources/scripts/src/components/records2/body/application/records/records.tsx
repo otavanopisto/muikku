@@ -9,7 +9,12 @@ import {
 import { StateType } from "~/reducers";
 import Button from "../../../../general/button";
 import Avatar from "~/components/general/avatar";
-import { RecordsList, RecordsListItem } from "./records-list";
+import {
+  RecordsList,
+  RecordsListItem,
+  RecordSubject,
+  RecordSubjectCourse,
+} from "./records-list";
 import { recordsMock } from "../mocks/mocks";
 
 /**
@@ -40,69 +45,185 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     this.state = {};
   }
 
+  filterOnGoingStatusCourses = (records: RecordSubject[]) => {
+    const ongoingList: RecordSubjectCourse[] = [];
+
+    records.map((rItem) => {
+      rItem.courses.map((cItem) => {
+        if (cItem.status === "ONGOING") {
+          ongoingList.push(cItem);
+        }
+      });
+    });
+
+    return ongoingList;
+  };
+
   /**
    * render
    * @returns JSX.Element
    */
   render() {
+    const ongoingList = this.filterOnGoingStatusCourses(recordsMock);
+
     return (
       <div className="records">
         <h1>Opintosuoritukset</h1>
         <div className="studies-records__section studies-records__section--subject-evaluations">
-          <h2 className="studies-records__section-header">Kurssisuoritukset</h2>
           <div className="studies-records__section-content">
             <div className="studies-records__section-content-filters">
-              <h1>FILTTERIT</h1>
+              <div
+                style={{
+                  display: "flex",
+                  flexGrow: 1,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginRight: "5px",
+                  }}
+                >
+                  <label>Arviointiaika (alk):</label>
+                  <input type="date" />
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "5px",
+                  }}
+                >
+                  <label>Arviointiaika (lop):</label>
+                  <input type="date" />
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "5px",
+                  }}
+                >
+                  <label>Ryhmä:</label>
+                  <select>
+                    <option>Kaikki</option>
+                    <option>Työnalla</option>
+                    <optgroup label="Oppiaine">
+                      <option>Äidinkieli</option>
+                      <option>Matematiikka</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: "flex", flexGrow: 1 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
+                  }}
+                >
+                  <label>Haku:</label>
+                  <input />
+                </div>
+              </div>
             </div>
             <div className="studies-records__section-content-subject-list">
+              <RecordsList
+                key="ongoing"
+                name="Työnalla"
+                courseCount={ongoingList.length}
+              >
+                <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
+                  <div className="studies-records__section-content-course-list-item-cell">
+                    <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
+                      Nimi
+                    </div>
+                  </div>
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Suorituspvm
+                    </div>
+                  </div>
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Opettaja
+                    </div>
+                  </div>
+
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Arvosana
+                    </div>
+                  </div>
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Tehtävät
+                    </div>
+                  </div>
+                </div>
+                {ongoingList.map((cItem, index) => (
+                  <RecordsListItem
+                    key={index}
+                    userEntityId={4}
+                    courseName={`${cItem.name} (${cItem.subjectCode})`}
+                    index={index}
+                    {...cItem}
+                  />
+                ))}
+              </RecordsList>
+
               {recordsMock.map((rItem, index) => (
                 <RecordsList
                   key={index}
                   name={rItem.name}
-                  courseCount={rItem.courses.length + 1}
+                  courseCount={rItem.courses.length}
                 >
-                  <div className="studies-records__section-content-course-list-item .studies-records__section-content-course-list-item--header">
+                  <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell">
                       <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                         Nimi
                       </div>
                     </div>
-                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
                         Suorituspvm
                       </div>
                     </div>
-                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
                         Arvioija
                       </div>
                     </div>
-                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
-                      <div className="studies-records__section-content-course-list-item-cell-label">
-                        Tehtävät
-                      </div>
-                    </div>
-                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
-                      <div className="studies-records__section-content-course-list-item-cell-label">
-                        Status
-                      </div>
-                    </div>
-                    <div className="studies-records__section-content-course-list-item-cell .studies-records__section-content-course-list-item--header">
+
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
                         Arvosana
                       </div>
                     </div>
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Tehtävät
+                      </div>
+                    </div>
                   </div>
-                  {rItem.courses.map((cItem, index) => (
-                    <RecordsListItem
-                      key={index}
-                      userEntityId={0}
-                      index={index}
-                      {...cItem}
-                    />
-                  ))}
+                  {rItem.courses.map((cItem, index) => {
+                    if (cItem.status === "ONGOING") {
+                      return;
+                    }
 
-                  <div className="studies-records__divider studies-records__divider--transparent" />
+                    return (
+                      <RecordsListItem
+                        key={index}
+                        userEntityId={4}
+                        courseName={cItem.name}
+                        index={index}
+                        {...cItem}
+                      />
+                    );
+                  })}
                 </RecordsList>
               ))}
             </div>
