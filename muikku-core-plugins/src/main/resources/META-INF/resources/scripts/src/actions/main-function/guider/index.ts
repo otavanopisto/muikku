@@ -1,11 +1,21 @@
-import mApi, {MApiError} from '~/lib/mApi';
-import {AnyActionType, SpecificActionType} from '~/actions';
-import {GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType} from '~/reducers/main-function/guider';
-import {loadStudentsHelper} from './helpers';
+import mApi, { MApiError } from '~/lib/mApi';
+import { AnyActionType, SpecificActionType } from '~/actions';
+import {
+  GuiderActiveFiltersType,
+  GuiderPatchType,
+  GuiderStudentsStateType,
+  GuiderStudentType,
+  GuiderStudentUserProfileLabelType,
+  GuiderNotificationStudentsDataType,
+  GuiderStudentUserProfileType,
+  GuiderCurrentStudentStateType,
+  GuiderType
+} from '~/reducers/main-function/guider';
+import { loadStudentsHelper } from './helpers';
 import promisify from '~/util/promisify';
-import {UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, UserGroupType} from 'reducers/user-index';
+import { UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, UserGroupType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
-import {GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType} from '~/reducers/main-function/guider';
+import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType, GuiderUserGroupListType } from '~/reducers/main-function/guider';
 import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/workspaces';
 import {VOPSDataType} from '~/reducers/main-function/vops';
 import {HOPSDataType} from '~/reducers/main-function/hops';
@@ -21,7 +31,7 @@ export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<"REMOVE_FR
 
 export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT", GuiderStudentUserProfileType>
 export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
-export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", {property: string, value: any}>
+export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", { property: string, value: any }>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
 export type UPDATE_GUIDER_INSERT_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_INSERT_PURCHASE_ORDER", PurchaseType>
 
@@ -41,6 +51,7 @@ export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LA
 
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS", GuiderUserLabelListType>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES", GuiderWorkspaceListType>
+export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS", GuiderUserGroupListType>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL", GuiderUserLabelType>
 export type UPDATE_GUIDER_AVAILABLE_FILTER_LABEL = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTER_LABEL", {
   labelId: number,
@@ -106,15 +117,15 @@ export interface RemoveFileFromCurrentStudentTriggerType {
 }
 
 export interface UpdateLabelFiltersTriggerType {
-  ():AnyActionType
+  (): AnyActionType
 }
 
 export interface UpdateWorkspaceFiltersTriggerType {
-  ():AnyActionType
+  (): AnyActionType
 }
 
 export interface CreateGuiderFilterLabelTriggerType {
-  (name: string):AnyActionType
+  (name: string): AnyActionType
 }
 
 export interface UpdateGuiderFilterLabelTriggerType {
@@ -123,17 +134,17 @@ export interface UpdateGuiderFilterLabelTriggerType {
     name: string,
     description: string,
     color: string,
-    success?: ()=>any,
-    fail?: ()=>any
-  }):AnyActionType
+    success?: () => any,
+    fail?: () => any
+  }): AnyActionType
 }
 
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
     label: GuiderUserLabelType,
-    success?: ()=>any,
-    fail?: ()=>any
-  }):AnyActionType
+    success?: () => any,
+    fail?: () => any
+  }): AnyActionType
 }
 
 export interface UpdateAvailablePurchaseProductsTriggerType {
@@ -151,16 +162,16 @@ let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFil
   }
 }
 
-let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = function removeFileFromCurrentStudent(file){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+let removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType = function removeFileFromCurrentStudent(file) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().guider.files.del(file.id), 'callback')();
       dispatch({
         type: "REMOVE_FILE_FROM_CURRENT_STUDENT",
         payload: file
       });
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.fileRemoveFailed"), 'error'));
@@ -168,30 +179,30 @@ let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = funct
   }
 }
 
-let loadStudents:LoadStudentsTriggerType = function loadStudents(filters){
+let loadStudents: LoadStudentsTriggerType = function loadStudents(filters) {
   return loadStudentsHelper.bind(this, filters, true);
 }
 
-let loadMoreStudents:LoadMoreStudentsTriggerType = function loadMoreStudents(){
+let loadMoreStudents: LoadMoreStudentsTriggerType = function loadMoreStudents() {
   return loadStudentsHelper.bind(this, null, false);
 }
 
-let addToGuiderSelectedStudents:AddToGuiderSelectedStudentsTriggerType = function addToGuiderSelectedStudents(student){
+let addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType = function addToGuiderSelectedStudents(student) {
   return {
     type: "ADD_TO_GUIDER_SELECTED_STUDENTS",
     payload: student
   }
 }
 
-let removeFromGuiderSelectedStudents:RemoveFromGuiderSelectedStudentsTriggerType = function removeFromGuiderSelectedStudents(student){
+let removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType = function removeFromGuiderSelectedStudents(student) {
   return {
     type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
     payload: student
   }
 }
 
-let loadStudent:LoadStudentTriggerType = function loadStudent(id){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
 
@@ -207,75 +218,75 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
 
       await Promise.all([
         promisify(mApi().guider.students.read(id), 'callback')()
-          .then((basic:GuiderStudentType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "basic", value: basic}})
+          .then((basic: GuiderStudentType) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "basic", value: basic } })
           }),
-        promisify(mApi().usergroup.groups.read({userIdentifier: id}), 'callback')()
-          .then((usergroups:UserGroupType[])=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "usergroups", value: usergroups}})
+        promisify(mApi().usergroup.groups.read({ userIdentifier: id }), 'callback')()
+          .then((usergroups: UserGroupType[]) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "usergroups", value: usergroups } })
           }),
         promisify(mApi().user.students.flags.read(id, {
-            ownerIdentifier: currentUserSchoolDataIdentifier
-          }), 'callback')()
-          .then((labels:Array<GuiderStudentUserProfileLabelType>)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "labels", value: labels}})
+          ownerIdentifier: currentUserSchoolDataIdentifier
+        }), 'callback')()
+          .then((labels: Array<GuiderStudentUserProfileLabelType>) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "labels", value: labels } })
           }),
         promisify(mApi().user.students.phoneNumbers.read(id), 'callback')()
-          .then((phoneNumbers:Array<StudentUserProfilePhoneType>)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "phoneNumbers", value: phoneNumbers}})
+          .then((phoneNumbers: Array<StudentUserProfilePhoneType>) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "phoneNumbers", value: phoneNumbers } })
           }),
         promisify(mApi().user.students.emails.read(id), 'callback')()
-          .then((emails:Array<StudentUserProfileEmailType>)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "emails", value: emails}})
+          .then((emails: Array<StudentUserProfileEmailType>) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "emails", value: emails } })
           }),
         promisify(mApi().user.students.addresses.read(id), 'callback')()
-          .then((addresses:Array<StudentUserAddressType>)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "addresses", value: addresses}})
+          .then((addresses: Array<StudentUserAddressType>) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "addresses", value: addresses } })
           }),
         promisify(mApi().guider.users.files.read(id), 'callback')()
-          .then((files:Array<UserFileType>)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
+          .then((files: Array<UserFileType>) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "files", value: files } })
           }),
-// Removed until it works correctly
-          // VOPS disabled until studies view redesign
+        // Removed until it works correctly
+        // VOPS disabled until studies view redesign
 
-//        promisify(mApi().records.vops.read(id), 'callback')()
-//          .then((vops:VOPSDataType)=>{
-//            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
-//          }),
+        //        promisify(mApi().records.vops.read(id), 'callback')()
+        //          .then((vops:VOPSDataType)=>{
+        //            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
+        //          }),
         promisify(mApi().records.hops.read(id), 'callback')()
-          .then((hops:HOPSDataType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})
+          .then((hops: HOPSDataType) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "hops", value: hops } })
           }),
         promisify(mApi().guider.users.latestNotifications.read(id), 'callback')()
-          .then((notifications:GuiderNotificationStudentsDataType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "notifications", value: notifications}})
+          .then((notifications: GuiderNotificationStudentsDataType) => {
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "notifications", value: notifications } })
           }),
-        promisify(mApi().workspace.workspaces.read({userIdentifier: id, includeInactiveWorkspaces: true}), 'callback')()
-          .then(async (workspaces:WorkspaceListType)=>{
-            if (workspaces && workspaces.length){
+        promisify(mApi().workspace.workspaces.read({ userIdentifier: id, includeInactiveWorkspaces: true }), 'callback')()
+          .then(async (workspaces: WorkspaceListType) => {
+            if (workspaces && workspaces.length) {
               await Promise.all([
-                Promise.all(workspaces.map(async (workspace, index)=>{
-                  let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
-                      .read(workspace.id, id), 'callback')();
-                    workspaces[index].studentActivity = activity;
-                  })
+                Promise.all(workspaces.map(async (workspace, index) => {
+                  let activity: WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
+                    .read(workspace.id, id), 'callback')();
+                  workspaces[index].studentActivity = activity;
+                })
                 ),
-                Promise.all(workspaces.map(async (workspace, index)=>{
-                  let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
-                      .read(workspace.id, {userIdentifier: id}), 'callback')();
-                    workspaces[index].forumStatistics = statistics;
-                  })
+                Promise.all(workspaces.map(async (workspace, index) => {
+                  let statistics: WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
+                    .read(workspace.id, { userIdentifier: id }), 'callback')();
+                  workspaces[index].forumStatistics = statistics;
+                })
                 ),
-                Promise.all(workspaces.map(async (workspace, index)=>{
-                  let activityLogs:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
-                      .read(id, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
-                    workspaces[index].activityLogs = activityLogs;
-                  })
+                Promise.all(workspaces.map(async (workspace, index) => {
+                  let activityLogs: ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
+                    .read(id, { workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear() - 2, 0), to: new Date() }), 'callback')();
+                  workspaces[index].activityLogs = activityLogs;
+                })
                 )
               ]);
             }
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
+            dispatch({ type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: { property: "workspaces", value: workspaces } })
           }),
           promisify(mApi().activitylogs.user.workspace.read(id, {from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')()
           .then((activityLogs:ActivityLogType[])=>{
@@ -295,8 +306,8 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         type: "UNLOCK_TOOLBAR",
         payload: null
       });
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
@@ -310,14 +321,14 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         type: "UNLOCK_TOOLBAR",
         payload: null
       });
-     }
+    }
   }
 }
 
-async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   try {
-    let relationLabel:GuiderStudentUserProfileLabelType = flags.find((flag)=>flag.flagId === label.id);
-    if (relationLabel){
+    let relationLabel: GuiderStudentUserProfileLabelType = flags.find((flag) => flag.flagId === label.id);
+    if (relationLabel) {
       await promisify(mApi().user.students.flags.del(student.id, relationLabel.id), 'callback')();
       dispatch({
         type: "REMOVE_GUIDER_LABEL_FROM_USER",
@@ -327,19 +338,19 @@ async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<
         }
       });
     }
-  } catch (err){
-    if (!(err instanceof MApiError)){
+  } catch (err) {
+    if (!(err instanceof MApiError)) {
       throw err;
     }
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.remove"), 'error'));
   }
 }
 
-async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch: (arg: AnyActionType) => any, getState: () => StateType) {
   try {
-    let relationLabel:GuiderStudentUserProfileLabelType = flags.find((flag)=>flag.flagId === label.id);
-    if (!relationLabel){
-      let createdLabelRelation:GuiderStudentUserProfileLabelType = <GuiderStudentUserProfileLabelType>await promisify(mApi().user.students.flags.create(student.id, {
+    let relationLabel: GuiderStudentUserProfileLabelType = flags.find((flag) => flag.flagId === label.id);
+    if (!relationLabel) {
+      let createdLabelRelation: GuiderStudentUserProfileLabelType = <GuiderStudentUserProfileLabelType>await promisify(mApi().user.students.flags.create(student.id, {
         flagId: label.id,
         studentIdentifier: student.id
       }), 'callback')();
@@ -351,50 +362,50 @@ async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<Guide
         }
       });
     }
-  } catch (err){
-    if (!(err instanceof MApiError)){
+  } catch (err) {
+    if (!(err instanceof MApiError)) {
       throw err;
     }
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.add"), 'error'));
   }
 }
 
-let addGuiderLabelToCurrentUser:AddGuiderLabelToCurrentUserTriggerType = function addGuiderLabelToCurrentUser(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let guider:GuiderType = getState().guider;
+let addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType = function addGuiderLabelToCurrentUser(label) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let guider: GuiderType = getState().guider;
     let student = guider.currentStudent;
     addLabelToUserUtil(student.basic, student.labels, label, dispatch, getState);
   }
 }
 
-let removeGuiderLabelFromCurrentUser:RemoveGuiderLabelFromCurrentUserTriggerType = function removeGuiderLabelFromCurrentUser(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let guider:GuiderType = getState().guider;
+let removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType = function removeGuiderLabelFromCurrentUser(label) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let guider: GuiderType = getState().guider;
     let student = guider.currentStudent;
     removeLabelFromUserUtil(student.basic, student.labels, label, dispatch, getState);
   }
 }
 
-let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = function addGuiderLabelToSelectedUsers(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let guider:GuiderType = getState().guider;
-    guider.selectedStudents.forEach((student:GuiderStudentType)=>{
+let addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType = function addGuiderLabelToSelectedUsers(label) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let guider: GuiderType = getState().guider;
+    guider.selectedStudents.forEach((student: GuiderStudentType) => {
       addLabelToUserUtil(student, student.flags, label, dispatch, getState);
     });
   }
 }
 
-let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTriggerType = function removeGuiderLabelFromSelectedUsers(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let guider:GuiderType = getState().guider;
-    guider.selectedStudents.forEach((student:GuiderStudentType)=>{
+let removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType = function removeGuiderLabelFromSelectedUsers(label) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let guider: GuiderType = getState().guider;
+    guider.selectedStudents.forEach((student: GuiderStudentType) => {
       removeLabelFromUserUtil(student, student.flags, label, dispatch, getState);
     });
   }
 }
 
-let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilters(){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+let updateLabelFilters: UpdateLabelFiltersTriggerType = function updateLabelFilters() {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let currentUser = getState().status.userSchoolDataIdentifier;
     try {
       dispatch({
@@ -403,8 +414,8 @@ let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilte
           ownerIdentifier: currentUser
         }), 'callback')()) || []
       });
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.labels"), 'error'));
@@ -412,8 +423,8 @@ let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilte
   }
 }
 
-let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWorkspaceFilters(){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType = function updateWorkspaceFilters() {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let currentUser = getState().status.userSchoolDataIdentifier;
     try {
       dispatch({
@@ -425,8 +436,8 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
           orderBy: "alphabet"
         }), 'callback')()) || []
       });
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.workspaces"), 'error'));
@@ -434,15 +445,35 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
   }
 }
 
-let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    if (!name){
+let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType = function updateUserGroupFilters() {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let currentUser = getState().status.userSchoolDataIdentifier;
+    try {
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
+        payload: <GuiderUserGroupListType>(await promisify(mApi().usergroup.groups.read({
+          userIdentifier: currentUser,
+          maxResults: 500,
+        }), 'callback')()) || []
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.userGroups"), 'error'));
+    }
+  }
+}
+
+let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    if (!name) {
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
 
     let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
 
-    let color:number = Math.round(Math.random() * 16777215);
+    let color: number = Math.round(Math.random() * 16777215);
     let label = {
       name,
       color: colorIntToHex(color),
@@ -451,13 +482,13 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
     };
 
     try {
-      let newLabel:GuiderUserLabelType = <GuiderUserLabelType>await promisify(mApi().user.flags.create(label), 'callback')();
+      let newLabel: GuiderUserLabelType = <GuiderUserLabelType>await promisify(mApi().user.flags.create(label), 'callback')();
       dispatch({
         type: "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL",
         payload: newLabel
       });
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.create"), 'error'));
@@ -465,14 +496,14 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
   }
 }
 
-let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    if (!data.name){
+let updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(data) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    if (!data.name) {
       data.fail && data.fail();
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
 
-    let newLabel:GuiderUserLabelType = Object.assign({}, data.label, {
+    let newLabel: GuiderUserLabelType = Object.assign({}, data.label, {
       name: data.name,
       description: data.description,
       color: data.color
@@ -502,8 +533,8 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
         }
       });
       data.success && data.success();
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       data.fail && data.fail();
@@ -512,8 +543,8 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
   }
 }
 
-let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(data) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.flags.del(data.label.id), 'callback')();
       dispatch({
@@ -525,8 +556,8 @@ let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function remove
         payload: data.label.id
       });
       data.success && data.success();
-    } catch (err){
-      if (!(err instanceof MApiError)){
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
         throw err;
       }
       data.fail && data.fail();

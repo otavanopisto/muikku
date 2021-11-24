@@ -292,7 +292,7 @@ export type WorkspaceListType = Array<WorkspaceType>;
 export type WorkspaceBaseFilterType =
   | "ALL_COURSES"
   | "MY_COURSES"
-  | "AS_TEACHER";
+  | "UNPUBLISHED";
 
 export interface WorkspaceEducationFilterType {
   identifier: string;
@@ -600,7 +600,7 @@ export default function workspaces(
       educationTypes: [],
       curriculums: [],
       organizations: [],
-      baseFilters: ["ALL_COURSES", "MY_COURSES", "AS_TEACHER"],
+      baseFilters: ["ALL_COURSES", "MY_COURSES", "UNPUBLISHED"],
     },
     state: "LOADING",
     activeFilters: {
