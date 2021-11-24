@@ -146,6 +146,15 @@
   word-wrap: break-word;
 }
 
+.application-list__header-primary-description {
+  font-size: 0.825rem;
+  font-style: italic;
+}
+
+.application-list__header-primary--product {
+  flex-flow: column wrap;
+}
+
 .application-list__header-primary--announcement-meta {
   margin: 0 10px 10px;
 }
@@ -1012,6 +1021,24 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 15px;
+  }
+}
+
+// Guider product
+.application-list__item--product {
+  border-top: 1px solid $color-message-border;
+
+  &:first-child {
+    border-color: transparent;
+  }
+}
+
+.application-list__item-header--product {
+  align-items: flex-start;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 10px;
   }
 }
 

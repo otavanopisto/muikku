@@ -140,7 +140,7 @@ export interface UpdateAvailablePurchaseProductsTriggerType {
   (): AnyActionType
 }
 
-export interface DoPurchaseForCurrentStudentTriggerType {
+export interface DoOrderForCurrentStudentTriggerType {
   (order: PurchaseProductType): AnyActionType
 }
 
@@ -552,7 +552,7 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
   }
 }
 
-const doPurchaseForCurrentStudent: DoPurchaseForCurrentStudentTriggerType = function doPurchaseForCurrentStudent(order: PurchaseProductType) {
+const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType = function doOrderForCurrentStudent(order: PurchaseProductType) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       const state = getState();
@@ -580,4 +580,4 @@ export {loadStudents, loadMoreStudents, loadStudent,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
   updateWorkspaceFilters, createGuiderFilterLabel,
   updateGuiderFilterLabel, removeGuiderFilterLabel,
-  updateAvailablePurchaseProducts, doPurchaseForCurrentStudent};
+  updateAvailablePurchaseProducts, doOrderForCurrentStudent};

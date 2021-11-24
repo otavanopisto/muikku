@@ -486,7 +486,7 @@ export class DialogRemoveUsers extends React.Component<
                           );
                         })
                       ) : (
-                        <div className="empty">{this.props.onEmptyTitle}</div>
+                        <div className="empty"><span>{this.props.onEmptyTitle}</span></div>
                       )}
                     </ApplicationList>
                   </DialogRow>
@@ -560,7 +560,7 @@ export class DialogRemoveUsers extends React.Component<
                           );
                         })
                       ) : (
-                        <div className="empty">{this.props.onEmptyTitle}</div>
+                        <div className="empty"><span>{this.props.onEmptyTitle}</span></div>
                       )}
                     </ApplicationList>
                   </DialogRow>

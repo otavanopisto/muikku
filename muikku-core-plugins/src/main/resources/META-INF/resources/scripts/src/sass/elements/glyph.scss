@@ -63,3 +63,31 @@
   padding: 4px;
   width: 1rem;
 }
+
+.glyph--product-state-indicator {
+  font-size: 1.25rem;
+  height: 1.25rem;
+  margin: 0 10px 0 0;
+  width: 1.25rem;
+
+  // scss-lint:disable SelectorFormat
+
+  &.state-CANCELLED {
+    color: $color-disabled;
+  }
+
+  &.state-ERRORED {
+    color: $color-fatal;
+  }
+
+  &.state-CREATED,
+  &.state-ONGOING {
+    color: $color-info;
+  }
+
+  &.state-PAID,
+  &.state-COMPLETE {
+    color: $color-success;
+  }
+  // scss-lint:enable SelectorFormat
+}
