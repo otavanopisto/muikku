@@ -29,6 +29,7 @@ import {
   HopsStudentStartingLevel,
   HopsMotivationAndStudy,
 } from "../../../../../../@types/shared";
+import { sleep } from "~/helper-functions/shared";
 
 export const NEEDED_OPTIONAL_COURSES = 9;
 export const NEEDED_STUDIES_IN_TOTAL = 46;
@@ -143,7 +144,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
     /**
      * Sleeper to delay data fetching if it happens faster than 1s
      */
-    const sleep = await this.sleep(1000);
+    const sleepPromise = await sleep(1000);
 
     /**
      * loaded hops data
@@ -182,7 +183,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
         return loadedHops;
       })(),
-      sleep,
+      sleepPromise,
     ]);
 
     this.setState({
@@ -190,13 +191,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
       ...loadedHops,
     });
   };
-
-  /**
-   * sleep
-   * @param m milliseconds
-   * @returns Promise
-   */
-  sleep = (m: number) => new Promise((r) => setTimeout(r, m));
 
   /**
    * handleStartingLevelChange

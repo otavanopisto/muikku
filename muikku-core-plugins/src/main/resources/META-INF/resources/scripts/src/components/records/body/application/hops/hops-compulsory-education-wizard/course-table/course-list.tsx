@@ -11,6 +11,7 @@ import {
   ListItem,
   ListItemIndicator,
 } from "~/components/general/list";
+import { UpdateSuggestionParams } from "../suggestion-list/handlers/handlers";
 
 /**
  * CourseListProps
@@ -26,14 +27,7 @@ interface CourseListProps extends Partial<StudentActivityByStatus> {
   supervisorSugestedSubjectListOfIds?: number[];
 
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
-  updateSuggestion: (
-    goal: "add" | "remove",
-    courseNumber: number,
-    subjectCode: string,
-    suggestionId: number,
-    studentId: string,
-    type: "NEXT" | "OPTIONAL"
-  ) => void;
+  updateSuggestion: (params: UpdateSuggestionParams) => void;
 }
 
 /**

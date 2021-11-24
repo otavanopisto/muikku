@@ -10,7 +10,10 @@ import { TableDataContent } from "./table-data-content";
 import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
-import { updateSuggestion } from "../suggestion-list/handlers/handlers";
+import {
+  updateSuggestion,
+  UpdateSuggestionParams,
+} from "../suggestion-list/handlers/handlers";
 
 interface CourseTableProps extends Partial<StudentActivityByStatus> {
   user: "supervisor" | "student";
@@ -24,14 +27,7 @@ interface CourseTableProps extends Partial<StudentActivityByStatus> {
   supervisorSuggestedNextListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
-  updateSuggestion: (
-    goal: "add" | "remove",
-    courseNumber: number,
-    subjectCode: string,
-    suggestionId: number,
-    studentId: string,
-    type: "NEXT" | "OPTIONAL"
-  ) => void;
+  updateSuggestion: (params: UpdateSuggestionParams) => void;
 }
 
 /**

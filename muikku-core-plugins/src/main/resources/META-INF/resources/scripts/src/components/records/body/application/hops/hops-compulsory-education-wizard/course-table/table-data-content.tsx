@@ -3,6 +3,7 @@ import {
   Course,
   StudentActivityCourse,
 } from "../../../../../../../@types/shared";
+import { UpdateSuggestionParams } from "../suggestion-list/handlers/handlers";
 import {
   useDimensions,
   useElementBoundings,
@@ -30,14 +31,7 @@ interface TableDataContentProps
   onToggleCourseClick: (
     courseId: number
   ) => (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => void;
-  updateSuggestion: (
-    goal: "add" | "remove",
-    courseNumber: number,
-    subjectCode: string,
-    suggestionId: number,
-    studentId: string,
-    type: "NEXT" | "OPTIONAL"
-  ) => void;
+  updateSuggestion: (params: UpdateSuggestionParams) => void;
 }
 
 /**

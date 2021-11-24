@@ -9,7 +9,11 @@ import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
 import { i18nType } from "../../../../../../../reducers/base/i18n";
+import { UpdateSuggestionParams } from "./handlers/handlers";
 
+/**
+ * SuggestionListProps
+ */
 interface SuggestionListProps {
   subjectCode: string;
   suggestedActivityCourses?: StudentActivityCourse[];
@@ -18,20 +22,21 @@ interface SuggestionListProps {
   guider: GuiderType;
   loadData?: boolean;
   onLoad?: () => void;
-  updateSuggestion: (
-    goal: "add" | "remove",
-    courseNumber: number,
-    subjectCode: string,
-    suggestionId: number,
-    studentId: string,
-    type: "NEXT" | "OPTIONAL"
-  ) => void;
+  updateSuggestion: (params: UpdateSuggestionParams) => void;
 }
 
+/**
+ * defaultSuggestionListProps
+ */
 const defaultSuggestionListProps = {
   loadData: true,
 };
 
+/**
+ * SuggestionList
+ * @param props
+ * @returns JSX.Element
+ */
 const SuggestionList = (props: SuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };
 
@@ -100,14 +105,14 @@ const SuggestionList = (props: SuggestionListProps) => {
                   <button
                     style={{ margin: "5px 5px", cursor: "pointer", zIndex: 40 }}
                     onClick={() =>
-                      props.updateSuggestion(
-                        isSuggested ? "remove" : "add",
-                        props.course.courseNumber,
-                        props.subjectCode,
-                        suggestion.id,
-                        props.guider.currentStudent.basic.id,
-                        "NEXT"
-                      )
+                      props.updateSuggestion({
+                        goal: isSuggested ? "remove" : "add",
+                        courseNumber: props.course.courseNumber,
+                        subjectCode: props.subjectCode,
+                        suggestionId: suggestion.id,
+                        studentId: props.guider.currentStudent.basic.id,
+                        type: "NEXT",
+                      })
                     }
                   >
                     {isSuggested ? "Ehdotettu" : "Seuraavaksi?"}
@@ -120,14 +125,14 @@ const SuggestionList = (props: SuggestionListProps) => {
                         zIndex: 40,
                       }}
                       onClick={() =>
-                        props.updateSuggestion(
-                          isSuggestedToHops ? "remove" : "add",
-                          props.course.courseNumber,
-                          props.subjectCode,
-                          suggestion.id,
-                          props.guider.currentStudent.basic.id,
-                          "OPTIONAL"
-                        )
+                        props.updateSuggestion({
+                          goal: isSuggestedToHops ? "remove" : "add",
+                          courseNumber: props.course.courseNumber,
+                          subjectCode: props.subjectCode,
+                          suggestionId: suggestion.id,
+                          studentId: props.guider.currentStudent.basic.id,
+                          type: "OPTIONAL",
+                        })
                       }
                     >
                       {isSuggestedToHops ? "Ehdotettu" : "Valinnaiseksi?"}

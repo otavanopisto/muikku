@@ -76,18 +76,6 @@ class StudentHopsInformation extends React.Component<
                   />
                 </div>
               </div>
-              {/* <div className="hops-container__row">
-                <div className="hops__form-element-container">
-                  <TextField
-                    label="Laatimispäivä:"
-                    type="text"
-                    placeholder="Laatimispäivä"
-                    defaultValue="16.8.2020"
-                    disabled
-                    className="hops-input"
-                  />
-                </div>
-              </div> */}
             </div>
             {this.props.basicInformation.updates &&
             this.props.basicInformation.updates.length ? (

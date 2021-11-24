@@ -12,7 +12,6 @@ import { schoolCourseTable } from "../../../../../../../mock/mock-data";
 import StudyCalculationInfoBox from "./calculation-info-box";
 import OptionalStudiesInfoBox from "./optional-studiess-info-box";
 import { useStudentActivity } from "./hooks/useStudentActivity";
-import { updateSuggestion } from "../suggestion-list/handlers/handlers";
 import { FollowUp } from "../../../../../../../@types/shared";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
