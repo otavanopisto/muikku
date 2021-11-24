@@ -72,18 +72,21 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
     return (
       <section>
-        <div>
-          <div>{currentPurchase.product.Description}</div>
-          <div>{this.props.i18n.time.format(currentPurchase.created)}</div>
-          <div>{currentPurchase.state}</div>
-          <div>{currentPurchase.id}</div>
-          <div>{currentPurchase.studentEmail}</div>
-          {/* <input type="text" value={this.state.email} onChange={this.onEmailChange}/> */}
-          {
-            currentPurchase.state === "CREATED" ?
-            <button onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.pay")}</button> :
-            null
-          }
+        <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.purchases')}</h2>
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__body">
+            <div>{currentPurchase.product.Description}</div>
+            <div>{this.props.i18n.time.format(currentPurchase.created)}</div>
+            <div>{currentPurchase.state}</div>
+            <div>{currentPurchase.id}</div>
+            <div>{currentPurchase.studentEmail}</div>
+            {/* <input type="text" value={this.state.email} onChange={this.onEmailChange}/> */}
+            {
+              currentPurchase.state === "CREATED" ?
+              <button onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.pay")}</button> :
+              null
+            }
+          </div>
         </div>
 
         {remainingPurchases.length ? <div>

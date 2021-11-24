@@ -56,6 +56,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
       <object
         className="avatar-container"
+        role="img"
+        aria-label={this.props.i18n.text.get("plugin.wcag.userAvatar.label")}
         data={getUserImageUrl(this.props.guider.currentStudent.basic.userEntityId)}
         type="image/jpeg">
         <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>

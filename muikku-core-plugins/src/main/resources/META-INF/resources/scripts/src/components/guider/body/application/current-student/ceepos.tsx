@@ -81,11 +81,11 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     return this.props.i18n.text.get(text);
   }
   render() {
-    let content = (closeDialog: ()=>any) => <div>
+    let content = (closeDialog: () => any) => <div>
       <span>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</span>
     </div>
 
-    let footer = (closeDialog: ()=>any)=>{
+    let footer = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "success"]} onClick={this.acceptOrderCreation}>
@@ -98,6 +98,11 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       )
     }
 
+    const canOrderBeCreated = this.props.guider.currentStudent.purchases &&
+      this.props.guider.currentStudent.purchases.find((param) =>
+        param["state"] === "CREATED" || param["state"] === "ONGOING" ? true : false
+      );
+
     return (
       <div>
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
@@ -107,7 +112,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
               <span>{p.Description}</span>
             </Link>
           ))}>
-            <Link className="link link--create-student-order">{this.props.i18n.text.get("plugin.guider.createStudentOrder")}</Link>
+            <Link
+            disabled={canOrderBeCreated ? true : false}
+              className="link link--create-student-order">{this.props.i18n.text.get("plugin.guider.createStudentOrder")}</Link>
           </Dropdown> : <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}</span>
           </div>}

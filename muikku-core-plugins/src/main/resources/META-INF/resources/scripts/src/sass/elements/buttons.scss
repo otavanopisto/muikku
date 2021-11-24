@@ -10,7 +10,7 @@
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
   background-color: $color-button-default-background;
-  border-radius: 2px;
+  border-radius: 20px;
   color: $color-button-default-text;
   cursor: pointer;
   display: flex;
@@ -18,7 +18,7 @@
   font-size: $button-mobile-font-size;
   justify-content: center;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 5px 15px;
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
