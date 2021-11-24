@@ -43,6 +43,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -57,6 +58,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -331,8 +333,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       driverBuilder.oneOf(new EdgeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
       break;
     case "firefox":
-      driverBuilder.oneOf(new FirefoxOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
-      break;
+//  TODO: When RemoteWebDriverBuilder starts to work with firefox start using this. Augmentation that builder does to the connection somehow breaks it right now for firefox.
+//      driverBuilder.oneOf(new FirefoxOptions().setPlatformName(platform).setBrowserVersion(browserVersion).setAcceptInsecureCerts(true));
+      FirefoxOptions browserOptions = new FirefoxOptions();
+      browserOptions.setPlatformName(getSaucePlatform());
+      browserOptions.setBrowserVersion(getBrowserVersion());
+      browserOptions.setAcceptInsecureCerts(true);
+      browserOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE);
+      browserOptions.setCapability("sauce:options", sauceOptions);
+      RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), browserOptions);
+      remoteWebDriver.setFileDetector(new LocalFileDetector());
+      return remoteWebDriver;
     case "internet explorer":
       driverBuilder.oneOf(new InternetExplorerOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
       break;
@@ -344,7 +355,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
     driverBuilder.setCapability("sauce:options", sauceOptions);
-    driverBuilder.address(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())));
+    driverBuilder.address(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey()));
     RemoteWebDriver remoteWebDriver = (RemoteWebDriver) driverBuilder.build();
     remoteWebDriver.setFileDetector(new LocalFileDetector());
 
