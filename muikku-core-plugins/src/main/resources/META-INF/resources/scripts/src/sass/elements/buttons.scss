@@ -3,8 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// TODO: communicator color variables removing from main function styles
-
 .button {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
@@ -32,13 +30,17 @@
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   > [class^="icon-"],
   > [class*=" icon-"] {
     margin-right: 5px;
   }
+}
+
+.button__icon {
+  font-size: 1.25rem;
 }
 
 .button-image {
@@ -55,6 +57,14 @@
     margin: 0;
     width: 100%;
   }
+}
+
+.button--button-has-icon {
+  padding: 5px 15px 5px 10px;
+}
+
+.button--create-student-order {
+  display: inline-flex;
 }
 
 .button--coursepicker-course-action {
@@ -517,7 +527,6 @@
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
-    cursor: default;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -579,7 +588,7 @@
   &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   input {
@@ -642,7 +651,7 @@
   &.disabled:hover {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
-    cursor: default;
+    cursor: not-allowed;
   }
 
   input {

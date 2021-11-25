@@ -9,6 +9,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/glyph.scss';
 import { doOrderForCurrentStudent, DoOrderForCurrentStudentTriggerType } from '~/actions/main-function/guider';
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemBody, ApplicationListItemDate } from '~/components/general/application-list'
 import { PurchaseProductType } from '~/reducers/main-function/profile';
 import Dialog from '~/components/general/dialog';
 import Dropdown from '~/components/general/dropdown';
@@ -108,31 +109,32 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
           <Dropdown items={this.props.guider.availablePurchaseProducts.map((p) => (
             <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p)}>
-              <span className="link__icon icon-cart-plus"></span>
+              <span className="link__icon icon-plus"></span>
               <span>{p.Description}</span>
             </Link>
           ))}>
-            <Link
-            disabled={canOrderBeCreated ? true : false}
-              className="link link--create-student-order">{this.props.i18n.text.get("plugin.guider.createStudentOrder")}</Link>
+            <Button
+              icon="cart-plus"
+              buttonModifiers={["create-student-order", "info"]}
+              disabled={canOrderBeCreated ? true : false}>{this.props.i18n.text.get("plugin.guider.createStudentOrder")}</Button>
           </Dropdown> : <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}</span>
           </div>}
 
-        {this.props.guider.currentStudent.purchases && this.props.guider.currentStudent.purchases.length ? <div className="application-list">
+        {this.props.guider.currentStudent.purchases && this.props.guider.currentStudent.purchases.length ? <ApplicationList>
           {this.props.guider.currentStudent.purchases.map((p) => (
-            <div className="application-list__item application-list__item--product">
-              <div className="application-list__item-header application-list__item-header--product">
+            <ApplicationListItem modifiers="product">
+              <ApplicationListItemHeader modifiers="product">
                 <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
                 <span className="application-list__header-primary application-list__header-primary--product">
                   <span>{p.product.Description}</span>
                   <span className="application-list__header-primary-description">{this.getProductStateDescription(p.state)}</span>
                 </span>
                 <span className="application-list__header-secondary">{this.props.i18n.time.format(p.created)}</span>
-              </div>
-            </div>
+              </ApplicationListItemHeader>
+            </ApplicationListItem>
           ))}
-          </div> : <div className="empty">
+          </ApplicationList> : <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchases")}</span>
           </div>}
 

@@ -15,16 +15,17 @@ function reactivationDelayWrapper(onClickFn: (...args: any[]) => any, ...args: a
 }
 
 interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
-  buttonAs?: any,
-  buttonModifiers?: string | Array<string>,
-  className?: string,
-  title? : string,
-  disabled?: boolean,
-  disablePropagation?: boolean,
-  as?: string,
-  href?: string,
-  to?: string,
-  openInNewTab?: string,
+  buttonAs?: any;
+  buttonModifiers?: string | Array<string>;
+  className?: string;
+  title? : string;
+  disabled?: boolean;
+  disablePropagation?: boolean;
+  as?: string;
+  href?: string;
+  to?: string;
+  openInNewTab?: string;
+  icon?: string;
 }
 
 interface ButtonState {
@@ -41,7 +42,10 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
 
     return <Element tabIndex={!this.props.disabled ? 0 : null} {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
-    className={`button ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button--${s}`).join(" ")}`}/>
+    className={`button ${this.props.icon ? "button--button-has-icon" : ""} ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button--${s}`).join(" ")}`}>
+      {this.props.icon && <span className={`button__icon icon-${this.props.icon}`}></span>}
+      {this.props.children}
+    </Element>
   }
 }
 
