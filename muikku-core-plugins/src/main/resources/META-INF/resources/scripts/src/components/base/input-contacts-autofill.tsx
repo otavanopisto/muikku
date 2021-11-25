@@ -5,10 +5,10 @@ import promisify from '~/util/promisify';
 import { filterHighlight, getName } from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/workspaces';
-import { ContactRecepientType, WorkspaceStaffListType, ContactRecipientType, UserRecepientUserType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
+import { WorkspaceStaffListType, ContactRecipientType, UserGroupType, UserType, UserStaffType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
-import { GuiderStudentType } from '~/reducers/main-function/guider';
+
 
 export interface InputContactsAutofillLoaders {
   studentsLoader?: (searchString: string) => any,
@@ -162,7 +162,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       value: {
         id: item.id,
         name: getName(item, this.props.showFullNames),
-        email: item.email
+        email: item.email,
       }
     }));
     let userGroupItems: ContactRecipientType[] = searchResults[1].map((item: UserGroupType): ContactRecipientType => ({

@@ -16,11 +16,17 @@ import NewMessage from '~/components/communicator/dialogs/new-message';
 import { ContactRecipientType } from '~/reducers/user-index';
 import { getName } from '~/util/modifiers';
 import { StatusType } from '~/reducers/base/status';
+import {
+  removeFromGuiderSelectedStudents,
+  RemoveFromGuiderSelectedStudentsTriggerType
+} from "~/actions/main-function/guider";
+import { bindActionCreators } from "redux";
 
 interface GuiderToolbarProps {
   i18n: i18nType,
   guider: GuiderType
   status: StatusType
+  removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
 interface GuiderToolbarState {
@@ -95,7 +101,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   /**
    * turnSelectedUsersToContacts
    * @param users array of GuiderStudents
-   * @returns {Array} array of UserRecepientGuiderStudentType
+   * @returns {Array} an Array of ContactRecipientType
    */
 
   turnSelectedUsersToContacts = (users: GuiderStudentListType): ContactRecipientType[] => {
@@ -106,6 +112,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
         value: {
           id: user.userEntityId,
           name: getName(user, !this.props.status.isStudent),
+          identifier: user.id,
           email: user.email
         }
       })
@@ -113,12 +120,31 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     return contacts;
   }
 
+  onContactsChange = (selectedUsers: ContactRecipientType[]) => {
+    const selectedUserIds: string[] = selectedUsers.map((student) => student.value.identifier);
+    const guiderSelectedStudentsIds = this.props.guider.selectedStudentsIds;
+    let remainingStudentsId: string;
+
+    if (selectedUserIds.length < guiderSelectedStudentsIds.length) {
+      for (let i = 0; i < guiderSelectedStudentsIds.length; i++) {
+        if (!selectedUserIds.find((id) => id === guiderSelectedStudentsIds[i])) {
+          remainingStudentsId = guiderSelectedStudentsIds[i];
+        }
+      }
+      let guiderSelectedStudent = this.props.guider.selectedStudents.find(user => user.id === remainingStudentsId);
+
+      if (!!guiderSelectedStudent) {
+        this.props.removeFromGuiderSelectedStudents(this.props.guider.selectedStudents.find(user => user.id === remainingStudentsId));
+      }
+    }
+  }
+
   render() {
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock} /> :
-            <NewMessage initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
+            <NewMessage onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
           <GuiderToolbarLabels />
           {this.props.guider.currentStudent ? null :
             <ApplicationPanelToolsContainer>
@@ -147,8 +173,13 @@ function mapStateToProps(state: StateType) {
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
-};
+  return bindActionCreators(
+    {
+      removeFromGuiderSelectedStudents
+    },
+    dispatch
+  );
+}
 
 export default connect(
   mapStateToProps,

@@ -34,7 +34,7 @@ interface CommunicatorNewMessageProps {
   status: StatusType,
   onOpen?: () => any,
   onClose?: () => any,
-  onRecipientChange: (recipientId: number) => void,
+  onRecipientChange?: (selectedItems: ContactRecipientType[]) => void,
   isOpen?: boolean
 }
 
@@ -115,6 +115,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
    */
   setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
+    this.props.onRecipientChange(selectedItems);
   }
 
   /**
