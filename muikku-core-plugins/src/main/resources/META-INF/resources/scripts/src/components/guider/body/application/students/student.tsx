@@ -38,13 +38,14 @@ class Student extends React.Component<StudentProps, StudentState> {
   getSudentStudyTimeState = (student: GuiderStudentType): StudentStudyTimeState => {
     if (student.studyTimeEnd) {
       const studyTimeEnd = moment(student.studyTimeEnd);
-      const now = moment();
+      const difference = studyTimeEnd.diff(moment(), "days");
 
-      if (moment(studyTimeEnd).isBefore(now)) {
+      if (moment(studyTimeEnd).isBefore(moment())) {
         return "ENDED"
-      } else if (moment.duration(studyTimeEnd.diff(now)).days() < 7) {
+      } else if (difference < 7) {
         return "ENDING"
       }
+      return "ONGOING"
     }
     return "ONGOING"
   }
