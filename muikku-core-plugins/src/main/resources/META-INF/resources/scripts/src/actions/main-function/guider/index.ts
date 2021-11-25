@@ -611,4 +611,4 @@ export {loadStudents, loadMoreStudents, loadStudent,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
   updateWorkspaceFilters, createGuiderFilterLabel,
   updateGuiderFilterLabel, removeGuiderFilterLabel,
-  updateAvailablePurchaseProducts, doOrderForCurrentStudent};
+  updateAvailablePurchaseProducts, updateUserGroupFilters, doOrderForCurrentStudent};
