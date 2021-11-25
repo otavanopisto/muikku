@@ -1,21 +1,18 @@
 import mApi from "~/lib/mApi";
 import promisify from "../../../../../../../../util/promisify";
-import { UseStudentActivityState } from "../../study-tool/hooks/use-student-activity";
 
 /**
  * UpdateSuggestionParams
  */
-export interface UpdateSuggestionParams {
+export interface UpdateStudentChoicesParams {
   goal: "add" | "remove";
   courseNumber: number;
-  subjectCode: string;
-  suggestionId: number;
+  subject: string;
   studentId: string;
-  type: "OPTIONAL" | "NEXT";
 }
 
 /**
- * updateSuggestion
+ * updateStudentChoice
  * @param goal
  * @param courseNumber
  * @param subjectCode
@@ -23,18 +20,19 @@ export interface UpdateSuggestionParams {
  * @param studentId
  * @param type
  */
-export const updateSuggestion = async (params: UpdateSuggestionParams) => {
-  const { goal, type, suggestionId, subjectCode, courseNumber, studentId } =
-    params;
+export const updateStudentChoice = async (
+  params: UpdateStudentChoicesParams
+) => {
+  const { goal, subject, courseNumber, studentId } = params;
+
+  console.log(goal);
 
   if (goal === "add") {
     try {
       await promisify(
-        mApi().hops.student.toggleSuggestion.create(studentId, {
-          id: suggestionId,
-          subject: subjectCode,
+        mApi().hops.student.studentChoices.create(studentId, {
+          subject: subject,
           courseNumber: courseNumber,
-          type: type,
         }),
         "callback"
       )();
@@ -44,11 +42,9 @@ export const updateSuggestion = async (params: UpdateSuggestionParams) => {
   } else {
     try {
       await promisify(
-        mApi().hops.student.toggleSuggestion.create(studentId, {
-          id: suggestionId,
-          subject: subjectCode,
+        mApi().hops.student.studentChoices.create(studentId, {
+          subject: subject,
           courseNumber: courseNumber,
-          type: type,
         }),
         "callback"
       )();

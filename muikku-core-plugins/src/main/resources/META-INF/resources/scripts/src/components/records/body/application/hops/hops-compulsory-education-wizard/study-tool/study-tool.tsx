@@ -11,11 +11,12 @@ import CourseList from "../course-table/course-list";
 import { schoolCourseTable } from "../../../../../../../mock/mock-data";
 import StudyCalculationInfoBox from "./calculation-info-box";
 import OptionalStudiesInfoBox from "./optional-studiess-info-box";
-import { useStudentActivity } from "./hooks/useStudentActivity";
+import { useStudentActivity } from "./hooks/use-student-activity";
 import { FollowUp } from "../../../../../../../@types/shared";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
 import { WebsocketStateType } from "../../../../../../../reducers/util/websocket";
+import { useStudentChoices } from "./hooks/use-student-choices";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -33,6 +34,7 @@ interface StudyToolProps {
   studies: HopsPlanningStudies;
   followUp: FollowUp;
   websocketState: WebsocketStateType;
+  onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
 }
 
 /**
@@ -50,7 +52,12 @@ const defaultProps = {
 const StudyTool: React.FC<StudyToolProps> = (props) => {
   props = { ...defaultProps, ...props };
 
-  const { studentActivity, ...handlers } = useStudentActivity(
+  const { studentActivity, ...studentActivityHandlers } = useStudentActivity(
+    props.studentId,
+    props.websocketState
+  );
+
+  const { studentChoices, ...studentChoiceHandlers } = useStudentChoices(
     props.studentId,
     props.websocketState
   );
@@ -61,23 +68,10 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   const handleUsedHoursPerWeekChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    /* props.onStudiesPlanningChange({
-      ...this.props.studies,
+    props.onStudiesPlanningChange({
+      ...props.studies,
       usedHoursPerWeek: parseInt(e.currentTarget.value),
-    }); */
-  };
-
-  /**
-   * handleSelectedSubjectListOfIdsChange
-   * @param listOfIds
-   */
-  const handleSelectedSubjectListOfIdsChange = (listOfIds: number[]) => {
-    console.log(listOfIds);
-
-    /* this.props.onStudiesPlanningChange({
-      ...this.props.studies,
-      selectedListOfIds: listOfIds,
-    }); */
+    });
   };
 
   /**
@@ -98,10 +92,10 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
     let selectedOptionalHours = 0;
 
-    /* if (props.studies.selectedListOfIds.length > 0) {
+    if (studentChoices.studentChoices.length > 0) {
       selectedOptionalHours =
         calculateSelectedOptionalHours() - optionalHoursCompleted;
-    } */
+    }
 
     const weekFactor = parseInt(props.followUp.graduationGoal) / 12;
 
@@ -142,17 +136,19 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
    * calculateSelectedOptionalHours
    * @returns selected optional hours
    */
-  /* const calculateSelectedOptionalHours = (): number => {
+  const calculateSelectedOptionalHours = (): number => {
     let hoursSelected = 0;
 
-    if (props.studies.selectedListOfIds) {
+    if (studentChoices.studentChoices.length > 0) {
       for (const sSubject of schoolCourseTable) {
         let oneSubjectHours = 0;
 
         for (const aCourse of sSubject.availableCourses) {
           if (
-            props.studies.selectedListOfIds.find(
-              (courseId) => courseId === aCourse.id
+            studentChoices.studentChoices.find(
+              (sItem) =>
+                sItem.subject === sSubject.subjectCode &&
+                sItem.courseNumber === aCourse.courseNumber
             )
           ) {
             oneSubjectHours += aCourse.length;
@@ -164,7 +160,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     return hoursSelected;
-  }; */
+  };
 
   /**
    * calculateMandatoryHoursNeeded
@@ -390,14 +386,16 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           continue;
         }
 
-        /* if (
-          props.completedSubjectListOfIds &&
-          props.completedSubjectListOfIds.findIndex(
-            (cSubjectId) => cSubjectId === aCourse.id
+        if (
+          studentActivity.gradedList &&
+          studentActivity.gradedList.findIndex(
+            (gItem) =>
+              gItem.subject === sSubject.subjectCode &&
+              gItem.courseNumber === aCourse.courseNumber
           ) !== -1
         ) {
           oneSubjectMandatoryHours += aCourse.length;
-        } */
+        }
       }
 
       hoursCompleted += oneSubjectMandatoryHours;
@@ -439,14 +437,16 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           continue;
         }
 
-        /* if (
-          props.completedSubjectListOfIds &&
-          props.completedSubjectListOfIds.findIndex(
-            (cSubjectId) => cSubjectId === aCourse.id
+        if (
+          studentActivity.gradedList &&
+          studentActivity.gradedList.findIndex(
+            (gItem) =>
+              gItem.subject === sSubject.subjectCode &&
+              gItem.courseNumber === aCourse.courseNumber
           ) !== -1
         ) {
           oneSubjectOptionalHours += aCourse.length;
-        } */
+        }
       }
 
       hoursCompleted += oneSubjectOptionalHours;
@@ -548,10 +548,10 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   let selectedOptionalHours = 0;
 
-  /* if (props.studies.selectedListOfIds.length > 0) {
+  if (studentChoices.studentChoices.length > 0) {
     selectedOptionalHours =
       calculateSelectedOptionalHours() - optionalHoursCompleted;
-  } */
+  }
 
   const hoursInTotalToComplete =
     updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours;
@@ -570,12 +570,12 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   let jotain = 0;
 
-  /* if (
-    props.studies.selectedListOfIds &&
-    props.studies.selectedListOfIds.length > neededOptionalStudies
+  if (
+    studentChoices.studentChoices &&
+    studentChoices.studentChoices.length > neededOptionalStudies
   ) {
-    jotain = props.studies.selectedListOfIds.length;
-  } */
+    jotain = studentChoices.studentChoices.length;
+  }
 
   let calculationDivider1 =
     (completedMandatoryStudies + completedOptionalStudies) /
@@ -611,17 +611,17 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       <div className="hops-container__row">
         <OptionalStudiesInfoBox
           needMandatoryStudies={needMandatoryStudies}
-          selectedNumberOfOptional={0}
+          selectedNumberOfOptional={studentChoices.studentChoices.length}
           graduationGoal={props.followUp.graduationGoal}
         />
       </div>
 
-      {/* {props.studies.selectedListOfIds &&
-      props.studies.selectedListOfIds.length === neededOptionalStudies ? (
+      {studentChoices.studentChoices &&
+      studentChoices.studentChoices.length === neededOptionalStudies ? (
         <div className="hops-container__row">
           {compareGraduationGoalToNeededForMandatoryStudies()}
         </div>
-      ) : null} */}
+      ) : null}
 
       {props.showIndicators && (
         <div
@@ -803,11 +803,12 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
       <div className="hops-container__row">
         <div className="hops__form-element-container hops__form-element-container--pad__upforwards">
-          {studentActivity.isLoading ? (
+          {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
             <CourseTable
               disabled={props.disabled}
+              studentId={props.studentId}
               user={props.user}
               superVisorModifies={props.superVisorModifies}
               ethicsSelected={props.ethics}
@@ -817,19 +818,15 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
-              onChangeSelectSubjectList={
-                props.user === "student" ||
-                (props.user === "supervisor" && props.superVisorModifies)
-                  ? handleSelectedSubjectListOfIdsChange
-                  : undefined
-              }
-              updateSuggestion={handlers.updateSuggestion}
+              studentChoiceList={studentChoices.studentChoices}
+              updateSuggestion={studentActivityHandlers.updateSuggestion}
+              updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
             />
           )}
         </div>
 
         <div className="hops__form-element-container hops__form-element-container--mobile">
-          {studentActivity.isLoading ? (
+          {studentActivity.isLoading || studentChoices.isLoading ? (
             <div className="loader-empty" />
           ) : (
             <CourseList
@@ -842,13 +839,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
-              onChangeSelectSubjectList={
-                props.user === "student" ||
-                (props.user === "supervisor" && props.superVisorModifies)
-                  ? handleSelectedSubjectListOfIdsChange
-                  : undefined
-              }
-              updateSuggestion={handlers.updateSuggestion}
+              updateSuggestion={studentActivityHandlers.updateSuggestion}
             />
           )}
         </div>

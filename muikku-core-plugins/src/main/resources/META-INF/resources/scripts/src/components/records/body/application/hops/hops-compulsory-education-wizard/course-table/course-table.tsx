@@ -3,6 +3,7 @@ import {
   SchoolSubject,
   StudentActivityByStatus,
   StudentActivityCourse,
+  StudentCourseChoice,
 } from "~/@types/shared";
 import { Table, Tbody, Td, Tr } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
@@ -10,6 +11,7 @@ import { TableDataContent } from "./table-data-content";
 import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
+import { UpdateStudentChoicesParams } from "../study-tool/handlers/handlers";
 import {
   updateSuggestion,
   UpdateSuggestionParams,
@@ -17,17 +19,18 @@ import {
 
 interface CourseTableProps extends Partial<StudentActivityByStatus> {
   user: "supervisor" | "student";
+  studentId: string;
   disabled: boolean;
   ethicsSelected: boolean;
   superVisorModifies: boolean;
   finnishAsSecondLanguage: boolean;
   guider: GuiderType;
-  selectedSubjectListOfIds?: number[];
-  selectedOptionalListOfIds?: number[];
+  studentChoiceList?: StudentCourseChoice[];
   supervisorSuggestedNextListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
+  updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
 }
 
 /**
@@ -40,44 +43,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
    * Table ref
    */
   const tableRef = React.useRef(null);
-
-  /**
-   * handleTableDataChange
-   */
-  const handleToggleCourseClick =
-    (courseId: number) =>
-    (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
-      if (props.onChangeSelectSubjectList && props.selectedSubjectListOfIds) {
-        /**
-         * Old values
-         */
-        const selectedOptionalCourseListOfIds = [
-          ...props.selectedSubjectListOfIds,
-        ];
-
-        /**
-         * Find index
-         */
-        const index = selectedOptionalCourseListOfIds.findIndex(
-          (sCourseId) => sCourseId === courseId
-        );
-
-        /**
-         * If index is found, then splice it away, otherwise push id to updated list
-         */
-        if (index !== -1) {
-          selectedOptionalCourseListOfIds.splice(index, 1);
-        } else {
-          selectedOptionalCourseListOfIds.push(courseId);
-        }
-
-        /**
-         * Handle it to onChange method
-         */
-        props.onChangeSelectSubjectList &&
-          props.onChangeSelectSubjectList(selectedOptionalCourseListOfIds);
-      }
-    };
 
   /**
    * currentMaxCourses
@@ -163,6 +128,8 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
 
         let courseSuggestions: StudentActivityCourse[] = [];
 
+        let selectedByStudent = false;
+
         /**
          * If any of these list are given, check whether course id is in
          * and push another modifier or change table data content options values
@@ -179,11 +146,14 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           canBeSelected = false;
           modifiers.push("APPROVAL");
         } else if (
-          props.selectedOptionalListOfIds &&
-          props.selectedOptionalListOfIds.find(
-            (courseId) => courseId === course.id
+          props.studentChoiceList &&
+          props.studentChoiceList.find(
+            (sCourse) =>
+              sCourse.subject === sSubject.subjectCode &&
+              sCourse.courseNumber === course.courseNumber
           )
         ) {
+          selectedByStudent = true;
           modifiers.push("SELECTED_OPTIONAL");
         } else if (
           props.gradedList &&
@@ -229,15 +199,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         }
 
         if (
-          props.selectedSubjectListOfIds &&
-          props.selectedSubjectListOfIds.find(
-            (courseId) => courseId === course.id
-          )
-        ) {
-          modifiers.push("SELECTED");
-        }
-
-        if (
           props.suggestedNextList &&
           props.suggestedNextList.find(
             (sCourse) =>
@@ -255,7 +216,18 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         }
 
         return (
-          <Td key={course.id} modifiers={modifiers}>
+          <Td
+            key={course.id}
+            modifiers={modifiers}
+            onClick={() =>
+              props.updateStudentChoice({
+                goal: selectedByStudent ? "remove" : "add",
+                studentId: props.studentId,
+                courseNumber: course.courseNumber,
+                subject: sSubject.subjectCode,
+              })
+            }
+          >
             <TableDataContent
               user={props.user}
               superVisorModifies={props.superVisorModifies}
@@ -268,7 +240,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               canBeSelected={canBeSelected}
               canBeSuggestedForNextCourse={canBeSuggestedForNextCourse}
               canBeSuggestedForOptionalCourse={canBeSuggestedForOptionalCourse}
-              onToggleCourseClick={handleToggleCourseClick}
               updateSuggestion={props.updateSuggestion}
             />
           </Td>

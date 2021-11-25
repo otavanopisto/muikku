@@ -427,6 +427,11 @@ export interface Suggestion {
   courseNumber: number;
 }
 
+export interface StudentCourseChoice {
+  subject: string;
+  courseNumber: number;
+}
+
 export interface StudentActivityByStatus {
   onGoingList: StudentActivityCourse[];
   suggestedNextList: StudentActivityCourse[];

@@ -19,8 +19,10 @@ const OptionalStudiesInfoBox: React.FC<OptionalStudiesInfoBoxProps> = (
     props;
 
   if (
-    selectedNumberOfOptional < needMandatoryStudies ||
-    (selectedNumberOfOptional < needMandatoryStudies && graduationGoal === "")
+    selectedNumberOfOptional < NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies ||
+    (selectedNumberOfOptional <
+      NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies &&
+      graduationGoal === "")
   ) {
     return (
       <div
@@ -41,7 +43,10 @@ const OptionalStudiesInfoBox: React.FC<OptionalStudiesInfoBoxProps> = (
         ) : null}
       </div>
     );
-  } else if (selectedNumberOfOptional > needMandatoryStudies) {
+  } else if (
+    selectedNumberOfOptional >
+    NEEDED_STUDIES_IN_TOTAL - needMandatoryStudies
+  ) {
     return (
       <div
         style={{
@@ -58,6 +63,8 @@ const OptionalStudiesInfoBox: React.FC<OptionalStudiesInfoBoxProps> = (
         </h3>
       </div>
     );
+  } else {
+    return null;
   }
 };
 

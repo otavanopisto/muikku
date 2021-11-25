@@ -28,9 +28,6 @@ interface TableDataContentProps
   canBeSelected: boolean;
   canBeSuggestedForNextCourse: boolean;
   canBeSuggestedForOptionalCourse: boolean;
-  onToggleCourseClick: (
-    courseId: number
-  ) => (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => void;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
 }
 
@@ -41,14 +38,7 @@ interface TableDataContentProps
  * @returns JSX.Element
  */
 export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
-  const {
-    user,
-    tableRef,
-    modifiers,
-    course,
-    canBeSelected,
-    onToggleCourseClick,
-  } = props;
+  const { user, tableRef, modifiers, course, canBeSelected } = props;
 
   /**
    * Default modifiers
@@ -170,13 +160,6 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
             ? updatedModifiers.map((m) => `table-data-content--${m}`).join(" ")
             : ""
         }`}
-        onClick={
-          !props.disabled &&
-          (user === "student" ||
-            (user === "supervisor" && props.superVisorModifies))
-            ? onToggleCourseClick(course.id)
-            : undefined
-        }
       >
         <span>{course.courseNumber}*</span>
         <div ref={contenNameRef} className="table-data-content-course-content">

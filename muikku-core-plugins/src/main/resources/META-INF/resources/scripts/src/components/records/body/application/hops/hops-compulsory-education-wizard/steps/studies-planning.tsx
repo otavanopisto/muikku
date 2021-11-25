@@ -141,6 +141,7 @@ class StudiesPlanning extends React.Component<
           studies={this.props.studies}
           followUp={this.props.followUp}
           superVisorModifies={this.props.superVisorModifies}
+          onStudiesPlanningChange={this.props.onStudiesPlanningChange}
         />
       </div>
     );
