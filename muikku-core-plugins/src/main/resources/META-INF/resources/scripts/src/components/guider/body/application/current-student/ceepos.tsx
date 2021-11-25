@@ -147,11 +147,11 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
               <ApplicationListItemHeader modifiers="product">
                 <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
                 <span className="application-list__header-primary application-list__header-primary--product">
-                  <span>{p.product.Description}</span>
+                  <span><b>{p.product.Description}</b></span>
                   <span className="application-list__header-primary-description">{this.getProductStateDescription(p.state)}</span>
                   <span className="application-list__header-primary-actions">
-                    <Link disabled={orderDeleteLinkDisabledState(p.state)} className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Link>
-                    <Link disabled={orderFinishLinkDisabledState(p.state)} className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.guider.purchase.finishOrderLink")}</Link>
+                    <Button disabled={orderDeleteLinkDisabledState(p.state)} icon="trash" buttonModifiers={["delete-student-order", "fatal"]}>{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
+                    <Button disabled={orderFinishLinkDisabledState(p.state)} icon="forward" buttonModifiers={["finish-student-order", "execute"]}>{this.props.i18n.text.get("plugin.guider.purchase.finishOrderLink")}</Button>
                   </span>
                 </span>
                 <span className="application-list__header-secondary">{this.props.i18n.time.format(p.created)}</span>

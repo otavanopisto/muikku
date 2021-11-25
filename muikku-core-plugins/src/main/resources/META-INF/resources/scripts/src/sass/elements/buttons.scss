@@ -63,8 +63,21 @@
   padding: 5px 15px 5px 10px;
 }
 
-.button--create-student-order {
+.button--create-student-order,
+.button--delete-student-order ,
+.button--finish-student-order{
   display: inline-flex;
+  margin: 0 10px 0 0;
+}
+
+.button--delete-student-order ,
+.button--finish-student-order{
+  font-size: 0.7rem;
+  padding: 4px 12px 4px 8px;
+
+  .button__icon {
+    font-size: 0.7rem;
+  }
 }
 
 .button--coursepicker-course-action {
@@ -80,7 +93,6 @@
     order: 1;
   }
 }
-
 
 .button--branded {
   font-family: $button-branded-font-family;
