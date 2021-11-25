@@ -76,6 +76,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 style={{
                   display: "flex",
                   flexGrow: 1,
+                  alignItems: "center",
                 }}
               >
                 <div
@@ -88,6 +89,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   <label>Arviointiaika (alk):</label>
                   <input type="date" />
                 </div>
+                <div>-</div>
                 <div
                   style={{
                     display: "flex",
@@ -98,7 +100,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   <label>Arviointiaika (lop):</label>
                   <input type="date" />
                 </div>
-
                 <div
                   style={{
                     display: "flex",
@@ -135,6 +136,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 key="ongoing"
                 name="Työnalla"
                 courseCount={ongoingList.length}
+                studiesListType="ongoing"
               >
                 <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
                   <div className="studies-records__section-content-course-list-item-cell">
@@ -149,7 +151,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   </div>
                   <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell-label">
-                      Opettaja
+                      Arvioija / Opettaja
                     </div>
                   </div>
 
@@ -180,6 +182,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   key={index}
                   name={rItem.name}
                   courseCount={rItem.courses.length}
+                  studiesListType="normal"
                 >
                   <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell">
@@ -194,7 +197,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </div>
                     <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
-                        Arvioija
+                        Arvioija / Opettaja
                       </div>
                     </div>
 

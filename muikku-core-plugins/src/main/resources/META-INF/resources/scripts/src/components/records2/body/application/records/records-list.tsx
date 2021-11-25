@@ -5,6 +5,7 @@ import Avatar from "~/components/general/avatar";
 import RecordsAssignmentsListDialog from "~/components/records2/dialogs/records-assignments-list-dialog";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
+let ProgressBarLine = require("react-progress-bar.js").Line;
 
 export interface RecordSubject {
   name: string;
@@ -29,12 +30,14 @@ export interface RecordSubjectCourse {
 interface RecordsListProps {
   name: string;
   courseCount: number;
+  studiesListType: "ongoing" | "normal";
 }
 
 export const RecordsList: React.FC<RecordsListProps> = ({
   children,
   name,
   courseCount,
+  studiesListType,
 }) => {
   const [open, setOpen] = React.useState(false);
 
@@ -65,49 +68,51 @@ export const RecordsList: React.FC<RecordsListProps> = ({
           <div className={arrowClass}></div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 10px",
-          }}
-        >
-          <ProgressBarCircle
-            containerClassName="summary-page__study-file-progresscircle"
-            options={{
-              strokeWidth: 10,
-              duration: 1000,
-              color: "#ce01bd",
-              trailColor: "#ebebeb",
-              easing: "easeInOut",
-              trailWidth: 10,
-              svgStyle: { width: "40px", height: "40px", margin: "10px 5px" },
-              text: {
-                style: null,
-                value: "2/8",
-              },
+        {studiesListType === "normal" ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 10px",
             }}
-            progress={0.1}
-          />
-          <ProgressBarCircle
-            containerClassName="summary-page__study-file-progresscircle"
-            options={{
-              strokeWidth: 10,
-              duration: 1000,
-              color: "#ce01bd",
-              trailColor: "#ebebeb",
-              easing: "easeInOut",
-              trailWidth: 10,
-              svgStyle: { width: "40px", height: "40px", margin: "10px 5px" },
-              text: {
-                style: null,
-                value: "0/3",
-              },
-            }}
-            progress={0.5}
-          />
-        </div>
+          >
+            <ProgressBarCircle
+              containerClassName="summary-page__study-file-progresscircle"
+              options={{
+                strokeWidth: 10,
+                duration: 1000,
+                color: "#ce01bd",
+                trailColor: "#ebebeb",
+                easing: "easeInOut",
+                trailWidth: 10,
+                svgStyle: { width: "40px", height: "40px", margin: "10px 5px" },
+                text: {
+                  style: null,
+                  value: "2/8",
+                },
+              }}
+              progress={0.1}
+            />
+            <ProgressBarCircle
+              containerClassName="summary-page__study-file-progresscircle"
+              options={{
+                strokeWidth: 10,
+                duration: 1000,
+                color: "#ce01bd",
+                trailColor: "#ebebeb",
+                easing: "easeInOut",
+                trailWidth: 10,
+                svgStyle: { width: "40px", height: "40px", margin: "10px 5px" },
+                text: {
+                  style: null,
+                  value: "0/3",
+                },
+              }}
+              progress={0.5}
+            />
+          </div>
+        ) : null}
       </div>
 
       <AnimateHeight
@@ -214,46 +219,114 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
         </div>
       </div>
       <AnimateHeight height={height}>
-        <div style={{ display: "flex", width: "100%" }}>
-          <div
-            style={{
-              display: "flex",
-              width: "50%",
-              backgroundColor: "antiquewhite",
-              flexDirection: "column",
-              padding: "10px",
-              marginRight: "5px",
-            }}
-          >
-            <div style={{ fontWeight: "bold", margin: "5px 0" }}>
-              Sanallinen arviointi
+        {course.status !== "ONGOING" ? (
+          <div style={{ display: "flex", width: "100%" }}>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                backgroundColor: "antiquewhite",
+                flexDirection: "column",
+                padding: "10px",
+                marginRight: "5px",
+              }}
+            >
+              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
+                Sanallinen arviointi
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Maecenas et facilisis risus. Mauris fringilla nec tortor sed
+                egestas. Nam posuere sem et luctus tincidunt. Suspendisse
+                elementum odio ex, ut vehicula enim porta a. Integer dictum,
+                purus ac dapibus elementum, neque urna pellentesque magna, nec
+                eleifend ex ligula id diam. Vivamus lobortis nec mauris porta
+                porttitor. Vestibulum luctus sapien velit, eget ullamcorper
+                neque maximus ut.
+              </div>
             </div>
-            <div>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas
-              et facilisis risus. Mauris fringilla nec tortor sed egestas. Nam
-              posuere sem et luctus tincidunt. Suspendisse elementum odio ex, ut
-              vehicula enim porta a. Integer dictum, purus ac dapibus elementum,
-              neque urna pellentesque magna, nec eleifend ex ligula id diam.
-              Vivamus lobortis nec mauris porta porttitor. Vestibulum luctus
-              sapien velit, eget ullamcorper neque maximus ut.{" "}
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                flexDirection: "column",
+                padding: "10px",
+                backgroundColor: "#f8f8f8",
+                marginLeft: "5px",
+              }}
+            >
+              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
+                Suullinen palaute
+              </div>
+              <RecordingsList records={[]} />
             </div>
           </div>
+        ) : (
           <div
-            style={{
-              display: "flex",
-              width: "50%",
-              flexDirection: "column",
-              padding: "10px",
-              backgroundColor: "#f8f8f8",
-              marginLeft: "5px",
-            }}
+            style={{ display: "flex", width: "100%", flexDirection: "column" }}
           >
-            <div style={{ fontWeight: "bold", margin: "5px 0" }}>
-              Suullinen palaute
+            <div style={{ margin: "5px 0" }}>
+              <ProgressBarLine
+                containerClassName="summary-page__study-file-progressbar"
+                options={{
+                  strokeWidth: 1,
+                  duration: 1000,
+                  color: "#FFA500",
+                  trailColor: "#e3e3e3",
+                  trailWidth: 1,
+                  svgStyle: { width: "100%", height: "35px" },
+                  text: {
+                    className:
+                      "material-page__audiofield-file-upload-percentage",
+                    style: {
+                      position: "absolute",
+                      color: "white",
+                    },
+                  },
+                }}
+                strokeWidth={1}
+                easing="easeInOut"
+                duration={1000}
+                color="#72d200"
+                trailColor="#f5f5f5"
+                trailWidth={1}
+                svgStyle={{ width: "100%", height: "25px" }}
+                text={`Harjoitustehtävät`}
+                progress={0.5}
+              />
             </div>
-            <RecordingsList records={[]} />
+            <div style={{ margin: "5px 0" }}>
+              <ProgressBarLine
+                containerClassName="summary-page__study-file-progressbar"
+                options={{
+                  strokeWidth: 1,
+                  duration: 1000,
+                  color: "#CE01BD",
+                  trailColor: "#e3e3e3",
+                  trailWidth: 1,
+                  svgStyle: { width: "100%", height: "35px" },
+                  text: {
+                    className:
+                      "material-page__audiofield-file-upload-percentage",
+                    style: {
+                      position: "absolute",
+                      color: "white",
+                    },
+                  },
+                }}
+                strokeWidth={1}
+                easing="easeInOut"
+                duration={1000}
+                color="#72d200"
+                trailColor="#f5f5f5"
+                trailWidth={1}
+                svgStyle={{ width: "100%", height: "25px" }}
+                text={`Arvioitavat tehtävät`}
+                progress={0.5}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </AnimateHeight>
     </div>
   );
