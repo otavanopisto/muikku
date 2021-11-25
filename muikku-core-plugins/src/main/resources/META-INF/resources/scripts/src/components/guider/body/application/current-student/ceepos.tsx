@@ -9,7 +9,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/glyph.scss';
 import { doOrderForCurrentStudent, DoOrderForCurrentStudentTriggerType } from '~/actions/main-function/guider';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemBody, ApplicationListItemDate } from '~/components/general/application-list'
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemFooter, ApplicationListItemDate } from '~/components/general/application-list'
 import { PurchaseProductType } from '~/reducers/main-function/profile';
 import Dialog from '~/components/general/dialog';
 import Dropdown from '~/components/general/dropdown';
@@ -104,6 +104,26 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         param["state"] === "CREATED" || param["state"] === "ONGOING" ? true : false
       );
 
+    const orderDeleteLinkDisabledState = (state: string) => {
+      switch (state) {
+        case "ONGOING":
+        case "COMPLETE":
+        case "PAID":
+          return true;
+        default:
+          return false;
+      }
+    };
+
+    const orderFinishLinkDisabledState = (state: string) => {
+      switch (state) {
+        case "ERRORED":
+          return false;
+        default:
+          return true;
+      }
+    };
+
     return (
       <div>
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
@@ -129,6 +149,10 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                 <span className="application-list__header-primary application-list__header-primary--product">
                   <span>{p.product.Description}</span>
                   <span className="application-list__header-primary-description">{this.getProductStateDescription(p.state)}</span>
+                  <span className="application-list__header-primary-actions">
+                    <Link disabled={orderDeleteLinkDisabledState(p.state)} className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Link>
+                    <Link disabled={orderFinishLinkDisabledState(p.state)} className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.guider.purchase.finishOrderLink")}</Link>
+                  </span>
                 </span>
                 <span className="application-list__header-secondary">{this.props.i18n.time.format(p.created)}</span>
               </ApplicationListItemHeader>
