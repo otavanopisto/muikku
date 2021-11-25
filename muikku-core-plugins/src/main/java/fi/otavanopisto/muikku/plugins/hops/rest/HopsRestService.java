@@ -477,7 +477,17 @@ public class HopsRestService {
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-    List<UserEntity> recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    List<UserEntity> recipients = new ArrayList<>();
+
+    try {
+      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
     recipients.add(studentEntity);
     HopsStudentChoice hopsStudentChoice = hopsController.findStudentChoiceByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
     
