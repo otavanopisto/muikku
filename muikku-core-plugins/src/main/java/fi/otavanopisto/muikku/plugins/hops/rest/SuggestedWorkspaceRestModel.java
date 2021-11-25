@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
-public class SuggestedWorkspace {
+public class SuggestedWorkspaceRestModel {
 
   public Long getId() {
     return id;

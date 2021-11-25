@@ -37,6 +37,7 @@ import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -329,7 +330,7 @@ public class HopsRestService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    List<SuggestedWorkspace> suggestedWorkspaces = new ArrayList<>();
+    List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
     
     // Turn code into a Pyramus subject identifier because Elastic index only has that :(
     
@@ -355,7 +356,7 @@ public class HopsRestService {
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
-              SuggestedWorkspace suggestedWorkspace = new SuggestedWorkspace();
+              SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
               String name = (String) result.get("name");
               if (result.get("nameExtension") != null) {
@@ -377,7 +378,7 @@ public class HopsRestService {
   @POST
   @Path("/student/{STUDENTIDENTIFIER}/toggleSuggestion")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, SuggestedWorkspace payload) {
+  public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, SuggestedWorkspaceRestModel payload) {
 
     // Access check
     
@@ -459,6 +460,61 @@ public class HopsRestService {
     return null;
   }
 
+  @POST
+  @Path("/student/{STUDENTIDENTIFIER}/studentChoices")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleStudentChoices(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudentChoiceRestModel payload) {
+    
+    // Create or remove
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+    List<UserEntity> recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+    recipients.add(studentEntity);
+    HopsStudentChoice hopsStudentChoice = hopsController.findStudentChoiceByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+    
+    
+    if (hopsStudentChoice == null) {
+      hopsStudentChoice = hopsController.createStudentChoice(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      
+      StudentChoiceRestModel studentChoiceRestModel = new StudentChoiceRestModel();
+      studentChoiceRestModel.setCourseNumber(hopsStudentChoice.getCourseNumber());
+      studentChoiceRestModel.setSubject(hopsStudentChoice.getSubject());
+      webSocketMessenger.sendMessage("hops:studentchoice-updated", studentChoiceRestModel, recipients);
+
+      return Response.ok(hopsStudentChoice).build();
+    }
+    else {
+      hopsController.removeStudentChoice(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      StudentChoiceRestModel studentChoiceRestModel = new StudentChoiceRestModel();
+      studentChoiceRestModel.setCourseNumber(hopsStudentChoice.getCourseNumber());
+      studentChoiceRestModel.setSubject(hopsStudentChoice.getSubject());
+      webSocketMessenger.sendMessage("hops:studentchoice-updated", studentChoiceRestModel, recipients);
+
+      return Response.noContent().build();
+    }
+  }
+  
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/studentChoices")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentChoices(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    List<StudentChoiceRestModel> studentChoices = new ArrayList<>();
+    List<HopsStudentChoice> studentChoicesFromDB = hopsController.listStudentChoiceByStudentIdentifier(studentIdentifier);
+    
+    if (studentChoicesFromDB != null) {
+      for (HopsStudentChoice studentChoice : studentChoicesFromDB) {
+        StudentChoiceRestModel studentChoiceRestModel = new StudentChoiceRestModel();
+        
+        studentChoiceRestModel.setCourseNumber(studentChoice.getCourseNumber());
+        studentChoiceRestModel.setSubject(studentChoice.getSubject());
+        
+        studentChoices.add(studentChoiceRestModel);
+      }
+    }
+    return Response.ok(studentChoices).build();
+  }
   
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studentInfo")
@@ -482,7 +538,7 @@ public class HopsRestService {
     List<String> counselorList = new ArrayList<>();
 
     try {
-      List<UserEntity> counselorEntities = hopsController.getStudyCounselor(studentEntity.defaultSchoolDataIdentifier());
+      List<UserEntity> counselorEntities = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
       for (UserEntity counselorEntity : counselorEntities) {
         counselor = userSchoolDataController.findUser(counselorEntity.defaultSchoolDataIdentifier());
         counselorList.add(counselor.getDisplayName());
@@ -500,12 +556,12 @@ public class HopsRestService {
     )).build(); 
   }
   
-  private fi.otavanopisto.muikku.plugins.hops.rest.StudentInformation createRestModel(
+  private fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel createRestModel(
       Long studentIdentifier,
       String firstName,
       String lastName,
       List<String> counselorList) {
-    return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformation(
+    return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName, 
         lastName,

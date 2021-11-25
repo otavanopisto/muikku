@@ -15,10 +15,12 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsGoalsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
+import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
@@ -45,6 +47,9 @@ public class HopsController {
   
   @Inject
   private HopsSuggestionDAO hopsSuggestionDAO;
+  
+  @Inject
+  private HopsStudentChoiceDAO hopsStudentChoiceDAO;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -87,6 +92,32 @@ public class HopsController {
     return hopsGoals;
   }
   
+  public List<HopsStudentChoice> listStudentChoiceByStudentIdentifier(String studentIdentifeir) {
+    return hopsStudentChoiceDAO.listByStudentIdentifier(studentIdentifeir);
+  }
+  
+  public HopsStudentChoice findStudentChoiceByStudentIdentifier(String studentIdentifier, String subject, Integer courseNumber) {
+    return hopsStudentChoiceDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+  }
+  
+  public HopsStudentChoice createStudentChoice(String studentIdentifier, String subject, Integer courseNumber) {
+    HopsStudentChoice hopsStudentChoice = hopsStudentChoiceDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+    if (hopsStudentChoice != null) {
+      hopsStudentChoice = hopsStudentChoiceDAO.update(hopsStudentChoice, studentIdentifier, subject, courseNumber);
+    }
+    else {
+      hopsStudentChoice = hopsStudentChoiceDAO.create(studentIdentifier, subject, courseNumber);
+    }
+    return hopsStudentChoice;
+  }
+  
+  public void removeStudentChoice(String studentIdentifier, String subject, Integer courseNumber) {
+    HopsStudentChoice hopsStudentChoice = hopsStudentChoiceDAO.findByStudentIdentifierAndSubjectAndCourseNumber(studentIdentifier, subject, courseNumber);
+    if (hopsStudentChoice != null) {
+      hopsStudentChoiceDAO.delete(hopsStudentChoice);
+    }
+  }
+  
   public List<HopsHistory> listHistoryByStudentIdentifier(String studentIdentifier) {
     List<HopsHistory> history = hopsHistoryDAO.listByStudentIdentifier(studentIdentifier);
     history.sort(Comparator.comparing(HopsHistory::getDate));
@@ -123,7 +154,7 @@ public class HopsController {
     }
   }
   
-  public List<UserEntity> getStudyCounselor(SchoolDataIdentifier studentIdentifier){
+  public List<UserEntity> getGuidanceCouncelors(SchoolDataIdentifier studentIdentifier){
     UserEntity guidanceCounselor = null;
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
     List<UserEntity> counselorList = new ArrayList<>();

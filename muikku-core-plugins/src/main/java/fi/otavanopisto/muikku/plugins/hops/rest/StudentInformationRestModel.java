@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.util.List;
 
-public class StudentInformation {
+public class StudentInformationRestModel {
   
-  public StudentInformation(
+  public StudentInformationRestModel(
       Long id,
       String firstName,
       String lastName,
