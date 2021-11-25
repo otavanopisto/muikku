@@ -387,18 +387,22 @@ public class HopsRestService {
     }
     
     // Find a previous suggestion with subject + course number and toggle accordingly
-    
     HopsSuggestion hopsSuggestion = hopsController.findSuggestionByStudentIdentifierAndSubjectAndCourseNumber(
         studentIdentifier,
         payload.getSubject(),
         payload.getCourseNumber());
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
-        
+    
+    WorkspaceEntity workspaceEntity = null;
+    
+    if (payload.getId() != null) {
+      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getId());
+    }
+    
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
     UserEntity counselorEntity = sessionController.getLoggedUserEntity();
     
-    if (hopsSuggestion == null) {
+    if (hopsSuggestion == null && payload.getId() != null) { // create new suggestion
       if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
       }
@@ -419,7 +423,21 @@ public class HopsRestService {
 
       return Response.ok(item).build();
     }
-    else if (hopsSuggestion.getWorkspaceEntityId() != payload.getId()){
+    else if (hopsSuggestion != null && payload.getId() == null){ // remove suggestion
+      hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
+      
+      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+      item.setSubject(hopsSuggestion.getSubject());
+      item.setCourseNumber(hopsSuggestion.getCourseNumber());
+      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
+
+      return Response.noContent().build();
+    }else { // update suggestion
+      
+      if (hopsSuggestion == null || payload.getCourseNumber() == null || payload.getId() == null || payload.getSubject() == null) {
+        logger.log(Level.WARNING, String.format("Can not update suggestion", payload));
+        return Response.noContent().build();
+      }
       hopsController.suggestWorkspace(studentIdentifier, payload.getSubject(), payload.getType(), payload.getCourseNumber(), workspaceEntity.getId());
       
       StudyActivityItemRestModel item = new StudyActivityItemRestModel();
@@ -434,16 +452,6 @@ public class HopsRestService {
       } else {
         item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
       }
-      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
-
-      return Response.noContent().build();
-    }
-    else {
-      hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
-      
-      StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-      item.setSubject(hopsSuggestion.getSubject());
-      item.setCourseNumber(hopsSuggestion.getCourseNumber());
       webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
 
       return Response.noContent().build();
