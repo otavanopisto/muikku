@@ -666,7 +666,7 @@ public class CeeposRESTService {
    * 
    * DESCRIPTION:
    * 
-   * Removes the given order. The order may NOT be in state PAID or COMPLETE.
+   * Removes the given order. The order may NOT be in state ONGOING, PAID, or COMPLETE.
    * Order removal is only available for admins or the staff member who originally
    * created the order.
    * 
@@ -705,7 +705,7 @@ public class CeeposRESTService {
     
     // Ensure order sate
     
-    if (order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
+    if (order.getState() == CeeposOrderState.ONGOING || order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid order state").build();
     }
     
