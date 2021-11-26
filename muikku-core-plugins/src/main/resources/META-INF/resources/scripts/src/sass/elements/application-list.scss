@@ -1050,10 +1050,6 @@
 .application-list__item-header--product {
   align-items: flex-start;
   padding: 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 15px 10px;
-  }
 }
 
 .application-list__item-body-meta-content {
