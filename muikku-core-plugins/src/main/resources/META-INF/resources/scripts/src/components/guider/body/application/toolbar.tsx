@@ -146,7 +146,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       }
     }
 
-    // Check if the leftover id is actually in the redux state and if it is, remove it
+    // Check if the leftover id is actually a user in the redux state and if it is, remove it
 
     const selectedUser = this.props.guider.selectedStudents.find(user => user.userEntityId === remainingStudentsId);
     const isGuiderSelectedStudent = !!selectedUser;
