@@ -123,6 +123,14 @@ public class CeeposOrder implements ArchivableEntity {
     this.productId = productId;
   }
 
+  public Date getPaid() {
+    return paid;
+  }
+
+  public void setPaid(Date paid) {
+    this.paid = paid;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -157,6 +165,10 @@ public class CeeposOrder implements ArchivableEntity {
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private CeeposOrderState state;
+
+  @Column
+  @Temporal(value = TemporalType.TIMESTAMP)
+  private Date paid;
 
   @NotNull
   @Column(nullable = false)

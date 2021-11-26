@@ -135,6 +135,7 @@ public class CeeposRESTService {
    *     'Price': 5000 // Product price in cents
    *   }
    *   'state': 'CREATED',
+   *   'paid': null, 
    *   'created': 2021-10-28T08:57:57+03:00 
    * }
    * 
@@ -541,10 +542,11 @@ public class CeeposRESTService {
     
     // Update order payment address and set its state to ONGOING
     
-    order = ceeposController.updateOrderStateAndOrderNumber(
+    order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
         order,
         CeeposOrderState.ONGOING,
         ceeposPayloadResponse.getReference(),
+        order.getPaid(),
         sessionController.getLoggedUserEntity().getId());
     
     // Return the address to which the user should be redirected to finish the payment
@@ -573,6 +575,7 @@ public class CeeposRESTService {
    *     'Price': 5000 // Product price in cents
    *   }
    *   'state': 'COMPLETE',
+   *   'paid': 2021-10-28T08:57:57+03:00,
    *   'created': 2021-10-28T08:57:57+03:00 
    * }
    * 
@@ -783,7 +786,12 @@ public class CeeposRESTService {
       case PAYMENT_ALREADY_DELETED:
         if (order.getState() != CeeposOrderState.CANCELLED) {
           logger.warning(String.format("Ceepos order %d: Updating from %s to CANCELLED", order.getId(), order.getState()));
-          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.CANCELLED, paymentConfirmation.getReference(), order.getLastModifierId());
+          ceeposController.updateOrderStateAndOrderNumberAndPaid(
+              order,
+              CeeposOrderState.CANCELLED,
+              paymentConfirmation.getReference(),
+              order.getPaid(),
+              order.getLastModifierId());
         }
         break;
       case DOUBLE_ID:
@@ -791,7 +799,12 @@ public class CeeposRESTService {
       case FAULTY_PAYMENT_REQUEST:
         if (order.getState() != CeeposOrderState.ERRORED) {
           logger.warning(String.format("Ceepos order %d: Updating from %s to ERRORED", order.getId(), order.getState()));
-          ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifierId());
+          ceeposController.updateOrderStateAndOrderNumberAndPaid(
+              order,
+              CeeposOrderState.ERRORED,
+              paymentConfirmation.getReference(),
+              order.getPaid(),
+              order.getLastModifierId());
         }
         break;
       case PAYMENT_ALREADY_COMPLETED_CANNOT_DELETE:
@@ -805,7 +818,12 @@ public class CeeposRESTService {
     
     // By now the payment was successful, so mark the order as PAID
 
-    order = ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.PAID, paymentConfirmation.getReference(), order.getLastModifierId());
+    order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+        order,
+        CeeposOrderState.PAID,
+        paymentConfirmation.getReference(),
+        new Date(),
+        order.getLastModifierId());
     
     // Fulfill the order
     
@@ -821,7 +839,12 @@ public class CeeposRESTService {
       }
       else {
         logger.severe(String.format("Ceepos order %d: Product code %s does not match configured monthly codes", order.getId(), productCode));
-        ceeposController.updateOrderStateAndOrderNumber(order, CeeposOrderState.ERRORED, paymentConfirmation.getReference(), order.getLastModifierId());
+        order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+            order,
+            CeeposOrderState.ERRORED,
+            paymentConfirmation.getReference(),
+            order.getPaid(),
+            order.getLastModifierId());
         return Response.ok().build(); // Our configuration problem
       }
 
@@ -1025,6 +1048,7 @@ public class CeeposRESTService {
   
   private CeeposOrderRestModel toRestModel(CeeposOrder order) {
     CeeposOrderRestModel restOrder = new CeeposOrderRestModel();
+    restOrder.setPaid(order.getPaid() == null ? null : toOffsetDateTime(order.getPaid()));
     restOrder.setCreated(toOffsetDateTime(order.getCreated()));
     restOrder.setId(order.getId());
     CeeposProductRestModel restProduct = new CeeposProductRestModel();

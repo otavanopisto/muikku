@@ -46,10 +46,19 @@ public class CeeposOrderRestModel {
     this.created = created;
   }
 
+  public OffsetDateTime getPaid() {
+    return paid;
+  }
+
+  public void setPaid(OffsetDateTime paid) {
+    this.paid = paid;
+  }
+
   private Long id;
   private String studentIdentifier;
   private CeeposProductRestModel product;
   private CeeposOrderState state;
+  private OffsetDateTime paid;
   private OffsetDateTime created;
 
 }
