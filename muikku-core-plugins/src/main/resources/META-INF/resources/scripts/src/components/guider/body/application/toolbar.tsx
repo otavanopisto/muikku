@@ -120,22 +120,35 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     return contacts;
   }
 
-  onContactsChange = (selectedUsers: ContactRecipientType[]) => {
-    const selectedUserIds: string[] = selectedUsers.map((student) => student.value.identifier);
-    const guiderSelectedStudentsIds = this.props.guider.selectedStudentsIds;
-    let remainingStudentsId: string;
+  /**
+   * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
+   * @param selectedUsers is an Array of ContactRecipientType
+   */
 
-    if (selectedUserIds.length < guiderSelectedStudentsIds.length) {
-      for (let i = 0; i < guiderSelectedStudentsIds.length; i++) {
-        if (!selectedUserIds.find((id) => id === guiderSelectedStudentsIds[i])) {
-          remainingStudentsId = guiderSelectedStudentsIds[i];
-        }
-      }
-      let guiderSelectedStudent = this.props.guider.selectedStudents.find(user => user.id === remainingStudentsId);
+  onContactsChange = (selectedUsers: ContactRecipientType[]): void => {
 
-      if (!!guiderSelectedStudent) {
-        this.props.removeFromGuiderSelectedStudents(this.props.guider.selectedStudents.find(user => user.id === remainingStudentsId));
+    // We need the arrays of ids for comparison from the dialog and the redux state
+
+    const selectedUserIds: number[] = selectedUsers.map((student) => student.value.id);
+    const guiderSelectedStudentsIds: number[] = this.props.guider.selectedStudents.map(student => student.userEntityId);
+
+    // whatever id will be left from the iteration, will be stored here
+
+    let remainingStudentsId: number;
+
+    for (let i = 0; i < guiderSelectedStudentsIds.length; i++) {
+      if (!selectedUserIds.find((id) => id === guiderSelectedStudentsIds[i])) {
+        remainingStudentsId = guiderSelectedStudentsIds[i];
       }
+    }
+
+    // Check if the leftover id is actually in the redux state and if it is, remove it
+
+    const selectedUser = this.props.guider.selectedStudents.find(user => user.userEntityId === remainingStudentsId);
+    const isGuiderSelectedStudent = !!selectedUser;
+
+    if (isGuiderSelectedStudent) {
+      this.props.removeFromGuiderSelectedStudents(selectedUser);
     }
   }
 
@@ -144,7 +157,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock} /> :
-            <NewMessage onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
+            <NewMessage refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
           <GuiderToolbarLabels />
           {this.props.guider.currentStudent ? null :
             <ApplicationPanelToolsContainer>

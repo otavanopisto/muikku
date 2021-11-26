@@ -26,6 +26,7 @@ interface CommunicatorNewMessageProps {
   messageId?: number,
   extraNamespace?: string,
   initialSelectedItems?: Array<ContactRecipientType>,
+  refreshInitialSelectedItemsOnOpen?: boolean,
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
@@ -43,7 +44,8 @@ interface CommunicatorNewMessageState {
   selectedItems: Array<ContactRecipientType>,
   subject: string,
   locked: boolean,
-  includesSignature: boolean
+  includesSignature: boolean,
+  receivedSelectedItems?: boolean,
 }
 
 /**
@@ -62,7 +64,7 @@ function getStateIdentifier(props: CommunicatorNewMessageProps) {
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
   constructor(props: CommunicatorNewMessageProps) {
-    super(props, "communicator-new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
+    super(props, "new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setSelectedItems = this.setSelectedItems.bind(this);
@@ -92,6 +94,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       locked: false,
       includesSignature: true
     }, getStateIdentifier(this.props));
+
+
+    if (this.props.refreshInitialSelectedItemsOnOpen) {
+      this.setState({ selectedItems: this.props.initialSelectedItems })
+    }
 
     this.props.onOpen && this.props.onOpen();
   }
@@ -181,7 +188,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",
-      locked: false
+      locked: false,
+      receivedSelectedItems: false,
     }, getStateIdentifier(this.props));
   }
 
@@ -197,12 +205,6 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       workspacesLoader: (searchString: string) => promisify(mApi().communicator.recipientsWorkspacesSearch.read({
         q: searchString
       }), 'callback')
-    }
-  }
-
-  componentDidUpdate(prevProps: CommunicatorNewMessageProps) {
-    if (prevProps.initialSelectedItems && prevProps.initialSelectedItems.length !== this.props.initialSelectedItems.length) {
-      this.setState({ selectedItems: this.props.initialSelectedItems });
     }
   }
 
