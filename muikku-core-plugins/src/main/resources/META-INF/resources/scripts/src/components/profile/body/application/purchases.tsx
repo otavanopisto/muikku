@@ -79,23 +79,26 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     }
 
     const sectionLabels = (<div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--item-labels">
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
           {this.props.i18n.text.get("plugin.profile.purchases.description.label")}
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
           {this.props.i18n.text.get("plugin.profile.purchases.date.label")}
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-id">
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-id">
         <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
           {this.props.i18n.text.get("plugin.profile.purchases.id.label")}
         </label>
-      </div>
-      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-actions">
-      </div>
+      </span>
+      <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-actions">
+        <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
+          {this.props.i18n.text.get("plugin.profile.purchases.status.label")}
+        </label>
+      </span>
     </div>);
 
     return (
@@ -109,7 +112,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
               <span title={currentPurchase.state} className={`glyph glyph--product-state-indicator state-${currentPurchase.state} icon-shopping-cart`}></span>
               <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
                 <span className="application-sub-panel__multiple-item-container-title"><b>{currentPurchase.product.Description}</b></span>
-                <span className="application-sub-panel__multiple-item-container-description">{this.props.i18n.text.get("plugin.profile.purchases.states." + currentPurchase.state)}</span>
+                <span className="application-sub-panel__multiple-item-container-description">{this.props.i18n.text.get("plugin.profile.purchases.description." + currentPurchase.state)}</span>
               </span>
               <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
                 {this.props.i18n.time.format(currentPurchase.created)}
@@ -122,8 +125,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                   <Button
                     icon="forward"
                     buttonModifiers={["pay-student-order", "execute"]}
-                    onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.purchases.pay.label")}
-                  </Button> : null}
+                    onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.purchases.payButton.label")}
+                  </Button> : this.props.i18n.text.get("plugin.profile.purchases.status." + currentPurchase.state)}
               </span>
             </div>
           </div> : <div className="empty"><span>{this.props.i18n.text.get('plugin.profile.purchases.activeOrder.empty')}</span></div>}
@@ -139,7 +142,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                 <span title={p.state} className={`glyph glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
                 <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
                   <span className="application-sub-panel__multiple-item-container-title"><b>{p.product.Description}</b></span>
-                  <span className="application-sub-panel__multiple-item-container-description">{this.props.i18n.text.get("plugin.profile.purchases.states." + p.state)}</span>
+                  <span className="application-sub-panel__multiple-item-container-description">{this.props.i18n.text.get("plugin.profile.purchases.description." + p.state)}</span>
                 </span>
                 <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
                   {this.props.i18n.time.format(p.created)}
@@ -148,7 +151,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                   {p.id}
                 </span>
                 <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-actions">
-
+                  {this.props.i18n.text.get("plugin.profile.purchases.status." + p.state)}
                 </span>
               </div>
 

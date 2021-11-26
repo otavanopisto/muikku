@@ -590,14 +590,10 @@
 }
 
 .application-sub-panel__multiple-item-container--product-actions {
-  align-items: center;
-  display: flex;
   flex-basis: 200px;
-  flex-flow: row nowrap;
   flex-grow: 0;
   flex-shrink: 0;
-  justify-content: flex-end;
-  margin: 2px 0;
+  justify-content: center;
 
   .application-sub-panel__item-title--product {
     flex-basis: auto;
