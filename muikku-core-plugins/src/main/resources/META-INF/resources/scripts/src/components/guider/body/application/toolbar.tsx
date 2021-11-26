@@ -16,9 +16,12 @@ import NewMessage from '~/components/communicator/dialogs/new-message';
 import { ContactRecipientType } from '~/reducers/user-index';
 import { getName } from '~/util/modifiers';
 import { StatusType } from '~/reducers/base/status';
+
 import {
   removeFromGuiderSelectedStudents,
-  RemoveFromGuiderSelectedStudentsTriggerType
+  RemoveFromGuiderSelectedStudentsTriggerType,
+  toggleAllStudents,
+  ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
 
@@ -26,6 +29,7 @@ interface GuiderToolbarProps {
   i18n: i18nType,
   guider: GuiderType
   status: StatusType
+  toggleAllStudents: ToggleAllStudentsTriggerType
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
@@ -152,12 +156,25 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     }
   }
 
+  toggleAllStudents = () => { }
+
   render() {
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock} /> :
-            <NewMessage extraNamespace="guider" refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
+            <>
+              <NewMessage extraNamespace="guider" refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}>
+                <ButtonPill disabled={this.props.guider.selectedStudentsIds.length < 1} icon="envelope" buttonModifiers="new-message" />
+              </NewMessage>
+              <ButtonPill
+                buttonModifiers="toggle"
+                icon="check"
+                disabled={this.props.guider.students.length < 1}
+                onClick={this.props.toggleAllStudents}
+              />
+            </>
+          }
           <GuiderToolbarLabels />
           {this.props.guider.currentStudent ? null :
             <ApplicationPanelToolsContainer>
@@ -188,7 +205,8 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
-      removeFromGuiderSelectedStudents
+      removeFromGuiderSelectedStudents,
+      toggleAllStudents
     },
     dispatch
   );
