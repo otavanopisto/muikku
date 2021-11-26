@@ -431,7 +431,7 @@ public class HopsRestService {
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
 
-      return Response.noContent().build();
+      return Response.ok(item).build();
     }else { // update suggestion
       
       if (hopsSuggestion == null || payload.getCourseNumber() == null || payload.getId() == null || payload.getSubject() == null) {
@@ -454,7 +454,7 @@ public class HopsRestService {
       }
       webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
 
-      return Response.noContent().build();
+      return Response.ok(item).build();
     }
 
   }
@@ -473,6 +473,12 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleStudentChoices(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudentChoiceRestModel payload) {
     
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_CREATE_STUDENT_CHOICES)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.noContent().build();
+      }
+    }
     // Create or remove
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
