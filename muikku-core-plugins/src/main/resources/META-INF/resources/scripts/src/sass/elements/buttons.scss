@@ -65,9 +65,14 @@
 
 .button--create-student-order,
 .button--delete-student-order ,
-.button--finish-student-order{
+.button--finish-student-order,
+.button--pay-student-order {
   display: inline-flex;
   margin: 0 10px 0 0;
+
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .button--delete-student-order ,

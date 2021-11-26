@@ -26,10 +26,11 @@
 }
 
 .glyph--worklist-state-indicator {
-  font-size: 0.7rem;
-  height: 0.7rem;
-  margin: 0 5px 0 0;
-  width: 0.7rem;
+  align-self: flex-start;
+  font-size: 1rem;
+  height: 1rem;
+  margin: 4px 10px 0 0;
+  width: 1rem;
 
   // scss-lint:disable SelectorFormat
   &.state-ENTERED {
@@ -65,10 +66,11 @@
 }
 
 .glyph--product-state-indicator {
-  font-size: 1.25rem;
-  height: 1.25rem;
-  margin: 0 10px 0 0;
-  width: 1.25rem;
+  align-self: flex-start;
+  font-size: 1rem;
+  height: 1rem;
+  margin: 4px 10px 0 0;
+  width: 1rem;
 
   // scss-lint:disable SelectorFormat
 

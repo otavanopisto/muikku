@@ -6,6 +6,7 @@ import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType } from "~/reducers/main-function/profile";
 import promisify from "~/util/promisify";
+import Button from "~/components/general/button";
 
 interface IPurchasesProps {
   i18n: i18nType,
@@ -47,6 +48,9 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
   //   });
   // }
 
+  /**
+   * performPayment
+   */
   public async performPayment() {
     const currentPurchase = this.props.profile.purchases[0];
     const value: string = await promisify(mApi().ceepos.pay.create({'id': currentPurchase.id}), "callback")() as string;
@@ -54,6 +58,10 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     location.href = value;
   }
 
+  /**
+   * render
+   * @returns
+   */
   public render() {
     if (this.props.profile.location !== "purchases" || !this.props.profile.purchases) {
       return null;
@@ -70,36 +78,86 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
       );
     }
 
+    const sectionLabels = (<div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--item-labels">
+      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
+        <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
+          {this.props.i18n.text.get("plugin.profile.purchases.description.label")}
+        </label>
+      </div>
+      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
+        <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
+          {this.props.i18n.text.get("plugin.profile.purchases.date.label")}
+        </label>
+      </div>
+      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-id">
+        <label className="application-sub-panel__item-title application-sub-panel__item-title--product">
+          {this.props.i18n.text.get("plugin.profile.purchases.id.label")}
+        </label>
+      </div>
+      <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-actions">
+      </div>
+    </div>);
+
     return (
       <section>
         <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.purchases')}</h2>
         <div className="application-sub-panel">
-          <div className="application-sub-panel__body">
-            <div>{currentPurchase.product.Description}</div>
-            <div>{this.props.i18n.time.format(currentPurchase.created)}</div>
-            <div>{currentPurchase.state}</div>
-            <div>{currentPurchase.id}</div>
-            <div>{currentPurchase.studentEmail}</div>
-            {/* <input type="text" value={this.state.email} onChange={this.onEmailChange}/> */}
-            {
-              currentPurchase.state === "CREATED" ?
-              <button onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.pay")}</button> :
-              null
-            }
-          </div>
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.purchases.activeOrder')}</h3>
+          {currentPurchase ? <div className="application-sub-panel__body">
+            {sectionLabels}
+            <div className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
+              <span title={currentPurchase.state} className={`glyph glyph--product-state-indicator state-${currentPurchase.state} icon-shopping-cart`}></span>
+              <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
+                <span className="application-sub-panel__multiple-item-container-title"><b>{currentPurchase.product.Description}</b></span>
+                <span className="application-sub-panel__multiple-item-container-description">{this.props.i18n.text.get("plugin.profile.purchases.states." + currentPurchase.state)}</span>
+              </span>
+              <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
+                {this.props.i18n.time.format(currentPurchase.created)}
+              </span>
+              <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-id">
+                {currentPurchase.id}
+              </span>
+              <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-actions">
+                {currentPurchase.state === "CREATED" || currentPurchase.state === "ONGOING" ?
+                  <Button
+                    icon="forward"
+                    buttonModifiers={["pay-student-order", "execute"]}
+                    onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.purchases.pay.label")}
+                  </Button> : null}
+              </span>
+            </div>
+          </div> : <div className="empty"><span>{this.props.i18n.text.get('plugin.profile.purchases.activeOrder.empty')}</span></div>}
         </div>
 
-        {remainingPurchases.length ? <div>
-          {remainingPurchases.map((p) => {
-            return (
-              <div key={p.id}>
-                <span>{this.props.i18n.time.format(currentPurchase.created)}</span>
-                <span>{p.product.Description}</span>
-                <span>{p.state}</span>
+        <div className="application-sub-panel">
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.purchases.orderHistory')}</h3>
+          {remainingPurchases.length ? <div className="application-sub-panel__body">
+            {sectionLabels}
+            {remainingPurchases.map((p) => {
+              return (
+              <div key={p.id} className="application-sub-panel__multiple-items application-sub-panel__multiple-items--list-mode">
+                <span title={p.state} className={`glyph glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
+                <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-details">
+                  <span className="application-sub-panel__multiple-item-container-title"><b>{p.product.Description}</b></span>
+                  <span className="application-sub-panel__multiple-item-container-description">{this.props.i18n.text.get("plugin.profile.purchases.states." + p.state)}</span>
+                </span>
+                <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-date">
+                  {this.props.i18n.time.format(p.created)}
+                </span>
+                <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-id">
+                  {p.id}
+                </span>
+                <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--product-actions">
+
+                </span>
               </div>
-            );
-          })}
-        </div> : null}
+
+              );
+            })}
+          </div> : <div className="empty"><span>{this.props.i18n.text.get('plugin.profile.purchases.orderHistory.empty')}</span></div>}
+        </div>
+
+
       </section>
     );
   }

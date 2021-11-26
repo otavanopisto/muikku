@@ -38,49 +38,37 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     this.beginOrderCreationProcess = this.beginOrderCreationProcess.bind(this);
     this.acceptOrderCreation = this.acceptOrderCreation.bind(this);
     this.declineOrderCreation = this.declineOrderCreation.bind(this);
-    this.getProductStateDescription = this.getProductStateDescription.bind(this);
   }
+
+  /**
+   * beginOrderCreationProcess
+   * @param p
+   */
   beginOrderCreationProcess(p: PurchaseProductType) {
     this.setState({
       isConfirmDialogOpenFor: p,
     });
   }
+
+  /**
+   * acceptOrderCreation
+   */
   acceptOrderCreation() {
     this.props.doOrderForCurrentStudent(this.state.isConfirmDialogOpenFor);
     this.setState({
       isConfirmDialogOpenFor: null,
     });
   }
+
+  /**
+   * declineOrderCreation
+   */
   declineOrderCreation() {
     this.setState({
       isConfirmDialogOpenFor: null,
     });
   }
-  getProductStateDescription(state: string) {
-    let text;
-    switch (state) {
-      case "CREATED":
-        text = "plugin.guider.purchaseStateIndicator.created";
-        break;
-      case "CANCELLED":
-        text = "plugin.guider.purchaseStateIndicator.cancelled";
-        break;
-      case "ERRORED":
-        text = "plugin.guider.purchaseStateIndicator.errored";
-        break;
-      case "ONGOING":
-        text = "plugin.";
-        break;
-      case "PAID":
-        text = "plugin.guider.purchaseStateIndicator.paid";
-        break;
-      case "COMPLETE":
-        text = "plugin.guider.purchaseStateIndicator.complete";
-        break;
-    }
 
-    return this.props.i18n.text.get(text);
-  }
   render() {
     let content = (closeDialog: () => any) => <div>
       <span>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</span>
@@ -148,7 +136,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                 <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
                 <span className="application-list__header-primary application-list__header-primary--product">
                   <span><b>{p.product.Description}</b></span>
-                  <span className="application-list__header-primary-description">{this.getProductStateDescription(p.state)}</span>
+                  <span className="application-list__header-primary-description">{this.props.i18n.text.get("plugin.guider.purchases.state." + p.state)}</span>
                   <span className="application-list__header-primary-actions">
                     <Button disabled={orderDeleteLinkDisabledState(p.state)} icon="trash" buttonModifiers={["delete-student-order", "fatal"]}>{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
                     <Button disabled={orderFinishLinkDisabledState(p.state)} icon="forward" buttonModifiers={["finish-student-order", "execute"]}>{this.props.i18n.text.get("plugin.guider.purchase.finishOrderLink")}</Button>
