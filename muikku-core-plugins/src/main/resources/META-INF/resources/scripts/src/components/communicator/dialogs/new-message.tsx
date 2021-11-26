@@ -64,7 +64,7 @@ function getStateIdentifier(props: CommunicatorNewMessageProps) {
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
   private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
   constructor(props: CommunicatorNewMessageProps) {
-    super(props, "new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
+    super(props, "communicator-new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
 
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setSelectedItems = this.setSelectedItems.bind(this);

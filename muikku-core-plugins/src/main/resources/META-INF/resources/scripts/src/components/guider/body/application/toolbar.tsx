@@ -157,7 +157,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
           {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock} /> :
-            <NewMessage refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
+            <NewMessage extraNamespace="guider" refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}><ButtonPill icon="envelope" buttonModifiers="new-message" disabled={false} /></NewMessage>}
           <GuiderToolbarLabels />
           {this.props.guider.currentStudent ? null :
             <ApplicationPanelToolsContainer>
