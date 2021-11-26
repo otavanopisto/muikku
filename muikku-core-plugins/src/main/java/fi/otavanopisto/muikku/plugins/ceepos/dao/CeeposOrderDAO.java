@@ -58,8 +58,9 @@ public class CeeposOrderDAO extends CorePluginsDAO<CeeposOrder> {
     return persist(order);
   }
 
-  public CeeposOrder updateStateAndOrderNumber(CeeposOrder order, CeeposOrderState state, String orderNumber, Long userEntityId) {
+  public CeeposOrder updateStateAndOrderNumberAndPaid(CeeposOrder order, CeeposOrderState state, String orderNumber, Date paid, Long userEntityId) {
     order.setState(state);
+    order.setPaid(paid);
     order.setCeeposOrderNumber(orderNumber);
     order.setLastModified(new Date());
     order.setLastModifierId(userEntityId);

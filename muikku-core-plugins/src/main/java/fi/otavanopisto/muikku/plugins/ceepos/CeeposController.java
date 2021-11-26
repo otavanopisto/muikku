@@ -67,8 +67,8 @@ public class CeeposController {
     return ceeposStudyTimeOrderDAO.updateStateAndStudyDates(order, state, oldStudyTimeEnd, newStudyTimeEnd, userEntityId);
   }
 
-  public CeeposOrder updateOrderStateAndOrderNumber(CeeposOrder order, CeeposOrderState state, String orderNumber, Long userEntityId) {
-    return ceeposOrderDAO.updateStateAndOrderNumber(order, state, orderNumber, userEntityId);
+  public CeeposOrder updateOrderStateAndOrderNumberAndPaid(CeeposOrder order, CeeposOrderState state, String orderNumber, Date paid, Long userEntityId) {
+    return ceeposOrderDAO.updateStateAndOrderNumberAndPaid(order, state, orderNumber, paid, userEntityId);
   }
   
 }
