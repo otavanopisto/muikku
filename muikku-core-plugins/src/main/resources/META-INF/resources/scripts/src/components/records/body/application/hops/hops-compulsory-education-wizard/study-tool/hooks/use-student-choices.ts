@@ -1,13 +1,16 @@
 import * as React from "react";
-import promisify from "../../../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
-import { WebsocketStateType } from "../../../../../../../../reducers/util/websocket";
 import { sleep } from "~/helper-functions/shared";
-import { StudentActivityCourse, StudentCourseChoice } from "~/@types/shared";
-import {
-  UpdateStudentChoicesParams,
-  updateStudentChoice,
-} from "../handlers/handlers";
+import { StudentCourseChoice } from "~/@types/shared";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import promisify from "~/util/promisify";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+
+export interface UpdateStudentChoicesParams {
+  courseNumber: number;
+  subject: string;
+  studentId: string;
+}
 
 /**
  * UseStudentActivityState
@@ -23,13 +26,16 @@ export interface UseStudentActivityState {
  */
 export const useStudentChoices = (
   studentId: string,
-  websocketState: WebsocketStateType
+  websocketState: WebsocketStateType,
+  displayNotification: DisplayNotificationTriggerType
 ) => {
   const [studentChoices, setStudentChoices] =
     React.useState<UseStudentActivityState>({
       isLoading: true,
       studentChoices: [],
     });
+
+  const componentMounted = React.useRef(true);
 
   /**
    * State ref to containging studentChoices state data
@@ -45,38 +51,57 @@ export const useStudentChoices = (
 
   React.useEffect(() => {
     /**
-     * loadStudentActivityListData
-     * Loads student activity data
-     * @param studentId
+     * loadStudentChoiceData
+     * Loads student choice data
+     * @param studentId of student
      */
-    const loadStudentActivityListData = async (studentId: string) => {
+    const loadStudentChoiceData = async (studentId: string) => {
       setStudentChoices({ ...studentChoices, isLoading: true });
 
-      /**
-       * Sleeper to delay data fetching if it happens faster than 1s
-       */
-      const sleepPromise = await sleep(1000);
+      try {
+        /**
+         * Sleeper to delay data fetching if it happens faster than 1s
+         */
+        const sleepPromise = await sleep(1000);
 
-      const [loadedStudentActivity] = await Promise.all([
-        (async () => {
-          const studentActivityList = (await promisify(
-            mApi().hops.student.studentChoices.read(studentId),
-            "callback"
-          )()) as StudentCourseChoice[];
+        /**
+         * Loaded student choises
+         */
+        const [loadedStudentChoices] = await Promise.all([
+          (async () => {
+            const studentChoicesList = (await promisify(
+              mApi().hops.student.studentChoices.read(studentId),
+              "callback"
+            )()) as StudentCourseChoice[];
 
-          return studentActivityList;
-        })(),
-        sleepPromise,
-      ]);
+            return studentChoicesList;
+          })(),
+          sleepPromise,
+        ]);
 
-      setStudentChoices({
-        ...studentChoices,
-        isLoading: false,
-        studentChoices: loadedStudentActivity,
-      });
+        if (componentMounted.current) {
+          setStudentChoices({
+            ...studentChoices,
+            isLoading: false,
+            studentChoices: loadedStudentChoices,
+          });
+        }
+      } catch (err) {
+        if (componentMounted.current) {
+          displayNotification(`Hups errori, ${err.message}`, "error");
+          setStudentChoices({
+            ...studentChoices,
+            isLoading: false,
+          });
+        }
+      }
     };
 
-    loadStudentActivityListData(studentId);
+    loadStudentChoiceData(studentId);
+
+    return () => {
+      componentMounted.current = false;
+    };
   }, [studentId]);
 
   React.useEffect(() => {
@@ -107,19 +132,22 @@ export const useStudentChoices = (
    * @param data Websocket data
    */
   const onAnswerSavedAtServer = (data: StudentCourseChoice) => {
-    console.log("stateref", ref.current);
-    console.log("data", data);
-
     const { studentChoices } = ref.current;
 
     let arrayOfStudentChoices = studentChoices;
 
+    /**
+     * Finding possible existing selection
+     */
     const indexOfCourse = studentChoices.findIndex(
       (sItem) =>
         sItem.subject === data.subject &&
         sItem.courseNumber === data.courseNumber
     );
 
+    /**
+     * If found, then delete it otherwise add it
+     */
     if (indexOfCourse !== -1) {
       arrayOfStudentChoices.splice(indexOfCourse, 1);
     } else {
@@ -131,6 +159,26 @@ export const useStudentChoices = (
       isLoading: false,
       studentChoices: arrayOfStudentChoices,
     });
+  };
+
+  /**
+   * updateStudentChoice
+   * @param params
+   */
+  const updateStudentChoice = async (params: UpdateStudentChoicesParams) => {
+    const { subject, courseNumber, studentId } = params;
+
+    try {
+      await promisify(
+        mApi().hops.student.studentChoices.create(studentId, {
+          subject: subject,
+          courseNumber: courseNumber,
+        }),
+        "callback"
+      )();
+    } catch (err) {
+      displayNotification(`Hups päivitys errori, ${err.message}`, "error");
+    }
   };
 
   return {

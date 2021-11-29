@@ -1,17 +1,26 @@
 import * as React from "react";
-import promisify from "../../../../../../../../util/promisify";
 import mApi from "~/lib/mApi";
-import {
-  updateSuggestion,
-  UpdateSuggestionParams,
-} from "../../suggestion-list/handlers/handlers";
-import { WebsocketStateType } from "../../../../../../../../reducers/util/websocket";
 import { sleep } from "~/helper-functions/shared";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import promisify from "~/util/promisify";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   CourseStatus,
   StudentActivityByStatus,
   StudentActivityCourse,
 } from "~/@types/shared";
+
+/**
+ * UpdateSuggestionParams
+ */
+export interface UpdateSuggestionParams {
+  goal: "add" | "remove";
+  courseNumber: number;
+  subjectCode: string;
+  suggestionId?: number;
+  studentId: string;
+  type: "OPTIONAL" | "NEXT";
+}
 
 /**
  * UseStudentActivityState
@@ -26,7 +35,8 @@ export interface UseStudentActivityState extends StudentActivityByStatus {
  */
 export const useStudentActivity = (
   studentId: string,
-  websocketState: WebsocketStateType
+  websocketState: WebsocketStateType,
+  displayNotification: DisplayNotificationTriggerType
 ) => {
   const [studentActivity, setStudentActivity] =
     React.useState<UseStudentActivityState>({
@@ -37,6 +47,8 @@ export const useStudentActivity = (
       suggestedNextList: [],
       suggestedOptionalList: [],
     });
+
+  const componentMounted = React.useRef(true);
 
   /**
    * State ref to containging studentActivity state data
@@ -54,47 +66,64 @@ export const useStudentActivity = (
     /**
      * loadStudentActivityListData
      * Loads student activity data
-     * @param studentId
+     * @param studentId of student
      */
     const loadStudentActivityListData = async (studentId: string) => {
       setStudentActivity({ ...studentActivity, isLoading: true });
 
-      /**
-       * Sleeper to delay data fetching if it happens faster than 1s
-       */
-      const sleepPromise = await sleep(1000);
+      try {
+        /**
+         * Sleeper to delay data fetching if it happens faster than 1s
+         */
+        const sleepPromise = await sleep(1000);
 
-      const [loadedStudentActivity] = await Promise.all([
-        (async () => {
-          const studentActivityList = (await promisify(
-            mApi().hops.student.studyActivity.read(studentId),
-            "callback"
-          )()) as StudentActivityCourse[];
+        /**
+         * Loaded and filtered student activity
+         */
+        const [loadedStudentActivity] = await Promise.all([
+          (async () => {
+            const studentActivityList = (await promisify(
+              mApi().hops.student.studyActivity.read(studentId),
+              "callback"
+            )()) as StudentActivityCourse[];
 
-          const studentActivityByStatus = filterActivity(studentActivityList);
+            const studentActivityByStatus = filterActivity(studentActivityList);
 
-          return studentActivityByStatus;
-        })(),
-        sleepPromise,
-      ]);
+            return studentActivityByStatus;
+          })(),
+          sleepPromise,
+        ]);
 
-      setStudentActivity({
-        ...studentActivity,
-        isLoading: false,
-        suggestedNextList: loadedStudentActivity.suggestedNextList,
-        suggestedOptionalList: loadedStudentActivity.suggestedOptionalList,
-        onGoingList: loadedStudentActivity.onGoingList,
-        gradedList: loadedStudentActivity.gradedList,
-        transferedList: loadedStudentActivity.transferedList,
-      });
+        if (componentMounted.current) {
+          setStudentActivity({
+            ...studentActivity,
+            isLoading: false,
+            suggestedNextList: loadedStudentActivity.suggestedNextList,
+            suggestedOptionalList: loadedStudentActivity.suggestedOptionalList,
+            onGoingList: loadedStudentActivity.onGoingList,
+            gradedList: loadedStudentActivity.gradedList,
+            transferedList: loadedStudentActivity.transferedList,
+          });
+        }
+      } catch (err) {
+        if (componentMounted.current) {
+          displayNotification(`Hups errori, ${err.message}`, "error");
+          setStudentActivity({
+            ...studentActivity,
+            isLoading: false,
+          });
+        }
+      }
     };
 
     loadStudentActivityListData(studentId);
+
+    return () => {
+      componentMounted.current = false;
+    };
   }, [studentId]);
 
   React.useEffect(() => {
-    console.log(studentActivity);
-
     /**
      * Adding event callback to handle changes when ever
      * there has happened some changes with that message
@@ -122,9 +151,6 @@ export const useStudentActivity = (
    * @param data Websocket data
    */
   const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
-    console.log("stateref", ref.current);
-    console.log("data", data);
-
     const {
       suggestedNextList,
       suggestedOptionalList,
@@ -146,14 +172,18 @@ export const useStudentActivity = (
 
     /**
      * If course id is null, meaning that delete existing activity course by
-     * filtering everything else out which subject and courseNumber don't match
+     * finding that specific course with subject code and course number and splice it out
      */
     if (data.courseId === null) {
-      arrayOfStudentActivityCourses = arrayOfStudentActivityCourses.filter(
-        (aCourse) =>
-          aCourse.subject !== data.subject &&
-          aCourse.courseNumber !== data.courseNumber
+      const indexOfCourse = arrayOfStudentActivityCourses.findIndex(
+        (item) =>
+          item.subject === data.subject &&
+          item.courseNumber === data.courseNumber
       );
+
+      if (indexOfCourse !== -1) {
+        arrayOfStudentActivityCourses.splice(indexOfCourse, 1);
+      }
     } else {
       /**
        * Else we are replacing suggestion with another or just adding new alltogether
@@ -197,6 +227,46 @@ export const useStudentActivity = (
       gradedList: studentActivityByStatus.gradedList,
       transferedList: studentActivityByStatus.transferedList,
     });
+  };
+
+  /**
+   * updateSuggestion
+   * @param params
+   */
+  const updateSuggestion = async (params: UpdateSuggestionParams) => {
+    const { goal, type, suggestionId, subjectCode, courseNumber, studentId } =
+      params;
+
+    if (goal === "add") {
+      console.log("lisätään");
+      try {
+        await promisify(
+          mApi().hops.student.toggleSuggestion.create(studentId, {
+            id: suggestionId,
+            subject: subjectCode,
+            courseNumber: courseNumber,
+            type: type,
+          }),
+          "callback"
+        )();
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log("poistetaan");
+      try {
+        await promisify(
+          mApi().hops.student.toggleSuggestion.create(studentId, {
+            subject: subjectCode,
+            courseNumber: courseNumber,
+            type: type,
+          }),
+          "callback"
+        )();
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
   return {

@@ -29,22 +29,40 @@ import {
   HopsStudentStartingLevel,
   HopsMotivationAndStudy,
 } from "../../../../../../@types/shared";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
+import { SaveState } from "~/@types/shared";
 
+/**
+ * Total needed optional studies without modifiers to graduate
+ */
 export const NEEDED_OPTIONAL_COURSES = 9;
+/**
+ * Default total studies to graduate
+ */
 export const NEEDED_STUDIES_IN_TOTAL = 46;
+
+/**
+ * User of hops. Can only be supervisor or student
+ * and depending of that there is different amount
+ * functionalities in study tool for example
+ */
+export type HopsUser = "supervisor" | "student";
 
 /**
  * CompulsoryEducationHopsWizardProps
  */
 interface CompulsoryEducationHopsWizardProps {
-  user: "supervisor" | "student";
+  user: HopsUser;
   onHopsChange?: (hops: HOPSDataType) => any;
   i18n: i18nType;
-  testData?: number;
   disabled: boolean;
   superVisorModifies: boolean;
   guider: GuiderType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -55,6 +73,7 @@ interface CompulsoryEducationHopsWizardState {
   hopsCompulsory: HopsCompulsory;
   hopsFollowUp?: FollowUp;
   loading: boolean;
+  savingStatus?: SaveState;
 }
 
 /**
@@ -73,6 +92,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
 
     this.state = {
       loading: false,
+      savingStatus: undefined,
       basicInfo: {
         name: "",
       },
@@ -129,6 +149,13 @@ class CompulsoryEducationHopsWizard extends React.Component<
    * componentDidMount
    */
   componentDidMount = async () => {
+    this.loadHopsData();
+  };
+
+  /**
+   * loadHopsData
+   */
+  loadHopsData = async () => {
     this.setState({
       loading: true,
     });
@@ -141,55 +168,60 @@ class CompulsoryEducationHopsWizard extends React.Component<
         ? this.props.guider.currentStudent.basic.id
         : (window as any).MUIKKU_LOGGED_USER;
 
-    /**
-     * Sleeper to delay data fetching if it happens faster than 1s
-     */
-    const sleepPromise = await sleep(1000);
+    try {
+      /**
+       * Sleeper to delay data fetching if it happens faster than 1s
+       */
+      const sleepPromise = await sleep(1000);
 
-    /**
-     * loaded hops data
-     */
-    const [loadedHops] = await Promise.all([
-      (async () => {
-        const studentHopsHistory = (await promisify(
-          mApi().hops.student.history.read(studentId),
-          "callback"
-        )()) as HopsUpdates[];
+      /**
+       * loaded hops data
+       */
+      const [loadedHops] = await Promise.all([
+        (async () => {
+          const studentHopsHistory = (await promisify(
+            mApi().hops.student.history.read(studentId),
+            "callback"
+          )()) as HopsUpdates[];
 
-        const studentBasicInfo = (await promisify(
-          mApi().hops.student.studentInfo.read(studentId),
-          "callback"
-        )()) as StudentInfo;
+          const studentBasicInfo = (await promisify(
+            mApi().hops.student.studentInfo.read(studentId),
+            "callback"
+          )()) as StudentInfo;
 
-        const hops = (await promisify(
-          mApi().hops.student.read(studentId),
-          "callback"
-        )()) as HopsCompulsory;
+          const hops = (await promisify(
+            mApi().hops.student.read(studentId),
+            "callback"
+          )()) as HopsCompulsory;
 
-        const followUp = (await promisify(
-          mApi().hops.student.hopsGoals.read(studentId),
-          "callback"
-        )()) as FollowUp;
+          const followUp = (await promisify(
+            mApi().hops.student.hopsGoals.read(studentId),
+            "callback"
+          )()) as FollowUp;
 
-        let loadedHops = {
-          basicInfo: {
-            name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
-            updates: studentHopsHistory,
-            counselorList: studentBasicInfo.counselorList,
-          },
-          hopsCompulsory: hops !== undefined ? hops : initializeHops(),
-          hopsFollowUp: followUp,
-        };
+          let loadedHops = {
+            basicInfo: {
+              name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
+              updates: studentHopsHistory,
+              counselorList: studentBasicInfo.counselorList,
+            },
+            hopsCompulsory: hops !== undefined ? hops : initializeHops(),
+            hopsFollowUp: followUp,
+          };
 
-        return loadedHops;
-      })(),
-      sleepPromise,
-    ]);
+          return loadedHops;
+        })(),
+        sleepPromise,
+      ]);
 
-    this.setState({
-      loading: false,
-      ...loadedHops,
-    });
+      this.setState({
+        loading: false,
+        ...loadedHops,
+      });
+    } catch (err) {
+      this.props.displayNotification(`Hups errori ${err}`, "error");
+      this.setState({ loading: false });
+    }
   };
 
   /**
@@ -263,34 +295,46 @@ class CompulsoryEducationHopsWizard extends React.Component<
   handleSaveHops = async () => {
     this.setState({
       loading: true,
+      savingStatus: "IN_PROGRESS",
     });
 
+    /**
+     * Student id get from guider or logged in student
+     */
     const studentId =
       this.props.user === "supervisor"
         ? this.props.guider.currentStudent.basic.id
         : (window as any).MUIKKU_LOGGED_USER;
 
-    Promise.all([
-      promisify(
-        mApi().hops.student.create(studentId, this.state.hopsCompulsory),
-        "callback"
-      )().then((hops: any) => {
-        console.log("tallennettu", hops);
-      }),
-      promisify(
-        mApi().hops.student.hopsGoals.create(
-          studentId,
-          this.state.hopsFollowUp
-        ),
-        "callback"
-      )().then((followUp: any) => {
-        console.log("tallennettu", followUp);
-      }),
-    ]).then(() => {
-      this.setState({ loading: false });
-    });
+    /**
+     * Sleeper to delay data fetching if it happens faster than 1s
+     */
+    const sleepPromise = sleep(1000);
 
-    /* const parsedHops = { ...this.state.hopsCompulsory }; */
+    try {
+      Promise.all([
+        (async () => {
+          await promisify(
+            mApi().hops.student.create(studentId, this.state.hopsCompulsory),
+            "callback"
+          )();
+
+          await promisify(
+            mApi().hops.student.hopsGoals.create(
+              studentId,
+              this.state.hopsFollowUp
+            ),
+            "callback"
+          )();
+        })(),
+        sleepPromise,
+      ]).then(() => {
+        this.setState({ loading: false, savingStatus: "SUCCESS" });
+      });
+    } catch (err) {
+      this.props.displayNotification(`Hups errori ${err}`, "error");
+      this.setState({ loading: false, savingStatus: "FAILED" });
+    }
   };
 
   /**
@@ -368,7 +412,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       },
       {
         name: "Tallennus",
-        component: <Step6 />,
+        component: <Step6 saveState={this.state.savingStatus} />,
       },
     ];
 
@@ -410,7 +454,9 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+  return {
+    displayNotification,
+  };
 }
 
 export default connect(
@@ -418,6 +464,10 @@ export default connect(
   mapDispatchToProps
 )(CompulsoryEducationHopsWizard);
 
+/**
+ * initializeHops
+ * @returns object of initial hops state
+ */
 const initializeHops = (): HopsCompulsory => ({
   startingLevel: {
     previousEducation: Education.COMPULSORY_SCHOOL,

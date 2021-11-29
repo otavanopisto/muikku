@@ -3,7 +3,9 @@ import {
   Course,
   StudentActivityCourse,
 } from "../../../../../../../@types/shared";
-import { UpdateSuggestionParams } from "../suggestion-list/handlers/handlers";
+import { HopsUser } from "../hops-compulsory-education-wizard";
+import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
+import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
 import {
   useDimensions,
   useElementBoundings,
@@ -17,18 +19,21 @@ interface TableDataContentProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  user: "supervisor" | "student";
+  user: HopsUser;
   superVisorModifies: boolean;
   tableRef: React.MutableRefObject<HTMLTableElement>;
   modifiers?: string[];
   suggestedActivityCourses?: StudentActivityCourse[];
   subjectCode: string;
+  studentId: string;
   course: Course;
+  selectedByStudent: boolean;
   disabled: boolean;
   canBeSelected: boolean;
   canBeSuggestedForNextCourse: boolean;
   canBeSuggestedForOptionalCourse: boolean;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
+  updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
 }
 
 /**
@@ -75,6 +80,15 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
   }, [contentRef, contenNameRef, expanded, loadedSuggestionList]);
 
   /**
+   * handleToggleChoiceClick
+   */
+  const handleToggleChoiceClick =
+    (choiceParams: UpdateStudentChoicesParams) =>
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      props.updateStudentChoice(choiceParams);
+    };
+
+  /**
    * Checking if table cell with animated width change will overflow over table
    * if so, change animation direction opposite direction
    * Element bounding left value - table bounding left value + animated width length
@@ -119,8 +133,9 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
         <span>{course.courseNumber}</span>
         <div ref={contenNameRef} className="table-data-content-course-content">
           <h4>{course.name}</h4>
-          {!props.disabled && expanded && props.user === "supervisor" ? (
+          {!props.disabled && expanded && user === "supervisor" ? (
             <SuggestionList
+              studentId={props.studentId}
               suggestedActivityCourses={props.suggestedActivityCourses}
               subjectCode={props.subjectCode}
               course={props.course}
@@ -162,10 +177,26 @@ export const TableDataContent: React.FC<TableDataContentProps> = (props) => {
         }`}
       >
         <span>{course.courseNumber}*</span>
+
         <div ref={contenNameRef} className="table-data-content-course-content">
           <h4>{course.name}</h4>
-          {!props.disabled && expanded && props.user === "supervisor" ? (
+          {user === "supervisor" && props.superVisorModifies && expanded ? (
+            <button
+              onClick={handleToggleChoiceClick({
+                studentId: props.studentId,
+                courseNumber: course.courseNumber,
+                subject: props.subjectCode,
+              })}
+              style={{ zIndex: 2 }}
+            >
+              {props.selectedByStudent
+                ? "Peru valinta"
+                : "Valitse osaksi hopsia"}
+            </button>
+          ) : undefined}
+          {!props.disabled && expanded && user === "supervisor" ? (
             <SuggestionList
+              studentId={props.studentId}
               suggestedActivityCourses={props.suggestedActivityCourses}
               subjectCode={props.subjectCode}
               course={props.course}

@@ -6,7 +6,10 @@ import {
 } from "../../../../../../../@types/shared";
 import { TextField } from "../text-field";
 import Dropdown from "../../../../../../general/dropdown";
-import { NEEDED_STUDIES_IN_TOTAL } from "../hops-compulsory-education-wizard";
+import {
+  HopsUser,
+  NEEDED_STUDIES_IN_TOTAL,
+} from "../hops-compulsory-education-wizard";
 import CourseList from "../course-table/course-list";
 import { schoolCourseTable } from "../../../../../../../mock/mock-data";
 import StudyCalculationInfoBox from "./calculation-info-box";
@@ -17,6 +20,11 @@ import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
 import { WebsocketStateType } from "../../../../../../../reducers/util/websocket";
 import { useStudentChoices } from "./hooks/use-student-choices";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
@@ -24,7 +32,7 @@ let ProgressBarLine = require("react-progress-bar.js").Line;
  * StudyToolProps
  */
 interface StudyToolProps {
-  user: "supervisor" | "student";
+  user: HopsUser;
   studentId: string;
   disabled: boolean;
   showIndicators?: boolean;
@@ -34,6 +42,7 @@ interface StudyToolProps {
   studies: HopsPlanningStudies;
   followUp: FollowUp;
   websocketState: WebsocketStateType;
+  displayNotification: DisplayNotificationTriggerType;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
 }
 
@@ -54,12 +63,14 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   const { studentActivity, ...studentActivityHandlers } = useStudentActivity(
     props.studentId,
-    props.websocketState
+    props.websocketState,
+    props.displayNotification
   );
 
   const { studentChoices, ...studentChoiceHandlers } = useStudentChoices(
     props.studentId,
-    props.websocketState
+    props.websocketState,
+    props.displayNotification
   );
 
   /**
@@ -284,16 +295,18 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         continue;
       }
 
-      /* for (const aCourse of sSubject.availableCourses) {
+      for (const aCourse of sSubject.availableCourses) {
         if (
-          props.approvedSubjectListOfIds &&
-          props.approvedSubjectListOfIds.findIndex(
-            (cSubjectId) => cSubjectId === aCourse.id
+          studentActivity &&
+          studentActivity.transferedList.findIndex(
+            (tCourse) =>
+              sSubject.subjectCode === tCourse.subject &&
+              tCourse.courseNumber === aCourse.courseNumber
           ) !== -1
         ) {
           oneSubjectHours += aCourse.length;
         }
-      } */
+      }
 
       hoursCompleted += oneSubjectHours;
     }
@@ -608,16 +621,19 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         </div>
       ) : null}
 
-      <div className="hops-container__row">
-        <OptionalStudiesInfoBox
-          needMandatoryStudies={needMandatoryStudies}
-          selectedNumberOfOptional={studentChoices.studentChoices.length}
-          graduationGoal={props.followUp.graduationGoal}
-        />
-      </div>
+      {studentActivity.isLoading || studentChoices.isLoading ? null : (
+        <div className="hops-container__row">
+          <OptionalStudiesInfoBox
+            needMandatoryStudies={needMandatoryStudies}
+            selectedNumberOfOptional={studentChoices.studentChoices.length}
+            graduationGoal={props.followUp.graduationGoal}
+          />
+        </div>
+      )}
 
-      {studentChoices.studentChoices &&
-      studentChoices.studentChoices.length === neededOptionalStudies ? (
+      {studentActivity.isLoading ||
+      studentChoices.isLoading ? null : studentChoices.studentChoices &&
+        studentChoices.studentChoices.length >= neededOptionalStudies ? (
         <div className="hops-container__row">
           {compareGraduationGoalToNeededForMandatoryStudies()}
         </div>
@@ -832,6 +848,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             <CourseList
               key="jottain"
               user={props.user}
+              studentId={props.studentId}
               ethicsSelected={props.ethics}
               finnishAsSecondLanguage={props.finnishAsSecondLanguage}
               suggestedNextList={studentActivity.suggestedNextList}
@@ -839,6 +856,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               onGoingList={studentActivity.onGoingList}
               gradedList={studentActivity.gradedList}
               transferedList={studentActivity.transferedList}
+              studentChoiceList={studentChoices.studentChoices}
+              updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
               updateSuggestion={studentActivityHandlers.updateSuggestion}
             />
           )}
@@ -894,7 +913,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+  return { displayNotification };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudyTool);

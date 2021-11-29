@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   StudentActivityByStatus,
   StudentActivityCourse,
+  StudentCourseChoice,
 } from "~/@types/shared";
 import { schoolCourseTable } from "~/mock/mock-data";
 import AnimateHeight from "react-animate-height";
@@ -11,13 +12,16 @@ import {
   ListItem,
   ListItemIndicator,
 } from "~/components/general/list";
-import { UpdateSuggestionParams } from "../suggestion-list/handlers/handlers";
+import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
+import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
+import { HopsUser } from "../hops-compulsory-education-wizard";
 
 /**
  * CourseListProps
  */
 interface CourseListProps extends Partial<StudentActivityByStatus> {
-  user: "supervisor" | "student";
+  user: HopsUser;
+  studentId: string;
   ethicsSelected: boolean;
   finnishAsSecondLanguage: boolean;
   selectedSubjectListOfIds?: number[];
@@ -25,9 +29,11 @@ interface CourseListProps extends Partial<StudentActivityByStatus> {
   selectedOptionalListOfIds?: number[];
   supervisorSuggestedNextListOfIds?: number[];
   supervisorSugestedSubjectListOfIds?: number[];
+  studentChoiceList?: StudentCourseChoice[];
 
   onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
+  updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
 }
 
 /**
@@ -48,41 +54,12 @@ const CourseList: React.FC<CourseListProps> = (props) => {
   ]);
 
   /**
-   * handleTableDataChange
+   * handleToggleChoiceClick
    */
-  const handleToggleCourseClick =
-    (courseId: number) =>
+  const handleToggleChoiceClick =
+    (choiceParams: UpdateStudentChoicesParams) =>
     (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
-      if (props.onChangeSelectSubjectList && props.selectedSubjectListOfIds) {
-        /**
-         * Old values
-         */
-        const selectedOptionalCourseListOfIds = [
-          ...props.selectedSubjectListOfIds,
-        ];
-
-        /**
-         * Find index
-         */
-        const index = selectedOptionalCourseListOfIds.findIndex(
-          (sCourseId) => sCourseId === courseId
-        );
-
-        /**
-         * If index is found, then splice it away, otherwise push id to updated list
-         */
-        if (index !== -1) {
-          selectedOptionalCourseListOfIds.splice(index, 1);
-        } else {
-          selectedOptionalCourseListOfIds.push(courseId);
-        }
-
-        /**
-         * Handle it to onChange method
-         */
-        props.onChangeSelectSubjectList &&
-          props.onChangeSelectSubjectList(selectedOptionalCourseListOfIds);
-      }
+      props.updateStudentChoice(choiceParams);
     };
 
   /**
@@ -211,15 +188,43 @@ const CourseList: React.FC<CourseListProps> = (props) => {
 
       // List item options with default values
       let canBeSelected = true;
-      let canBeSuggestedForNextCourse = true;
-      let canBeSuggestedForOptionalCourse = true;
+      let courseSuggestions: StudentActivityCourse[] = [];
 
-      let suggestedCourseData: StudentActivityCourse[] | undefined = undefined;
+      let selectedByStudent = false;
 
       /**
        * If any of these list are given, check whether course id is in
        * and push another modifier
        */
+
+      if (
+        props.suggestedNextList &&
+        props.suggestedNextList.find(
+          (sCourse) =>
+            sCourse.subject === sSubject.subjectCode &&
+            sCourse.courseNumber === course.courseNumber
+        )
+      ) {
+        let suggestedCourseDataNext = props.suggestedNextList.filter(
+          (sCourse) => sCourse.subject === sSubject.subjectCode
+        );
+
+        courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
+
+        listItemModifiers.push("NEXT");
+      }
+
+      if (
+        props.studentChoiceList &&
+        props.studentChoiceList.find(
+          (sCourse) =>
+            sCourse.subject === sSubject.subjectCode &&
+            sCourse.courseNumber === course.courseNumber
+        )
+      ) {
+        listItemIndicatormodifiers.push("SELECTED_OPTIONAL");
+      }
+
       if (
         props.transferedList &&
         props.transferedList.find(
@@ -228,16 +233,8 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             tCourse.courseNumber === course.courseNumber
         )
       ) {
-        canBeSuggestedForNextCourse = false;
         canBeSelected = false;
         listItemIndicatormodifiers.push("APPROVAL");
-      } else if (
-        props.selectedOptionalListOfIds &&
-        props.selectedOptionalListOfIds.find(
-          (courseId) => courseId === course.id
-        )
-      ) {
-        listItemIndicatormodifiers.push("SELECTED_OPTIONAL");
       } else if (
         props.gradedList &&
         props.gradedList.find(
@@ -247,8 +244,6 @@ const CourseList: React.FC<CourseListProps> = (props) => {
         )
       ) {
         completedCourseCount++;
-        canBeSuggestedForOptionalCourse = false;
-        canBeSuggestedForNextCourse = false;
         canBeSelected = false;
         listItemIndicatormodifiers.push("COMPLETED");
       } else if (
@@ -259,8 +254,6 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             oCourse.courseNumber === course.courseNumber
         )
       ) {
-        canBeSuggestedForOptionalCourse = false;
-        canBeSuggestedForNextCourse = false;
         canBeSelected = false;
         listItemIndicatormodifiers.push("INPROGRESS");
       } else if (
@@ -271,49 +264,44 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             sOCourse.courseNumber === course.courseNumber
         )
       ) {
+        let suggestedCourseDataOptional = props.suggestedOptionalList.filter(
+          (oCourse) => oCourse.subject === sSubject.subjectCode
+        );
+
+        courseSuggestions = courseSuggestions.concat(
+          suggestedCourseDataOptional
+        );
+
         listItemModifiers.push("SUGGESTED");
       }
 
-      if (
-        props.selectedSubjectListOfIds &&
-        props.selectedSubjectListOfIds.find(
-          (courseId) => courseId === course.id
-        )
-      ) {
-        listItemIndicatormodifiers.push("SELECTED");
-      }
-
-      if (
-        props.suggestedNextList &&
-        props.suggestedNextList.find(
-          (sCourse) =>
-            sCourse.subject === sSubject.subjectCode &&
-            sCourse.courseNumber === course.courseNumber
-        )
-      ) {
-        suggestedCourseData = props.suggestedNextList.filter(
-          (sCourse) => sCourse.subject === sSubject.subjectCode
-        );
-
-        listItemModifiers.push("NEXT");
-      }
       const suggestionsOpen = openedSubjectSuggestions.includes(course.id);
 
       if (course.mandatory) {
         if (canBeSelected) {
           return (
-            <ListItem
-              key={course.id}
-              modifiers={listItemModifiers}
-              onClick={handleOpenSuggestionList(course.id)}
-            >
+            <ListItem key={course.id} modifiers={listItemModifiers}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                {course.courseNumber}. {course.name}
+                <div
+                  onClick={
+                    props.user === "supervisor"
+                      ? handleOpenSuggestionList(course.id)
+                      : undefined
+                  }
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  {course.courseNumber}. {course.name}
+                </div>
               </div>
               <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
                 <SuggestionList
-                  suggestedActivityCourses={suggestedCourseData}
+                  studentId={props.studentId}
+                  suggestedActivityCourses={courseSuggestions}
                   course={course}
                   subjectCode={sSubject.subjectCode}
                   updateSuggestion={props.updateSuggestion}
@@ -327,7 +315,15 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             <ListItem key={course.id} modifiers={listItemModifiers}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                {course.courseNumber}. {course.name}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  {course.courseNumber}. {course.name}
+                </div>
               </div>
             </ListItem>
           );
@@ -335,22 +331,35 @@ const CourseList: React.FC<CourseListProps> = (props) => {
       } else {
         if (canBeSelected) {
           return (
-            <ListItem
-              key={course.id}
-              onClick={
-                props.user === "student"
-                  ? handleToggleCourseClick(course.id)
-                  : handleOpenSuggestionList(course.id)
-              }
-              modifiers={listItemModifiers}
-            >
+            <ListItem key={course.id} modifiers={listItemModifiers}>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                {course.courseNumber}*. {course.name}
+                <ListItemIndicator
+                  modifiers={listItemIndicatormodifiers}
+                  onClick={handleToggleChoiceClick({
+                    studentId: props.studentId,
+                    courseNumber: course.courseNumber,
+                    subject: sSubject.subjectCode,
+                  })}
+                />
+                <div
+                  onClick={
+                    props.user === "supervisor"
+                      ? handleOpenSuggestionList(course.id)
+                      : undefined
+                  }
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  {course.courseNumber}*. {course.name}
+                </div>
               </div>
               <AnimateHeight height={suggestionsOpen ? "auto" : 0}>
                 <SuggestionList
-                  suggestedActivityCourses={suggestedCourseData}
+                  studentId={props.studentId}
+                  suggestedActivityCourses={courseSuggestions}
                   course={course}
                   subjectCode={sSubject.subjectCode}
                   updateSuggestion={props.updateSuggestion}
@@ -364,7 +373,15 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             <ListItem key={course.id} modifiers={listItemModifiers}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <ListItemIndicator modifiers={listItemIndicatormodifiers} />
-                {course.courseNumber}*. {course.name}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  {course.courseNumber}*. {course.name}
+                </div>
               </div>
             </ListItem>
           );

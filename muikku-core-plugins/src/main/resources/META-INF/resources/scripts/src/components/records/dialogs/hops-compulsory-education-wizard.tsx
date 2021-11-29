@@ -1,10 +1,12 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import CompulsoryEducationHopsWizard from "~/components/records/body/application/hops/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
+import CompulsoryEducationHopsWizard, {
+  HopsUser,
+} from "~/components/records/body/application/hops/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
 import { HopsCompulsory } from "../../../@types/shared";
 
 interface HopsCompulsoruEducationWizardProps {
-  user: "supervisor" | "student";
+  user: HopsUser;
   superVisorModifies: boolean;
   children?: React.ReactElement<any>;
   hops?: number;
@@ -26,7 +28,6 @@ class HopsCompulsoryEducationWizardDialog extends React.Component<
       <div>
         <CompulsoryEducationHopsWizard
           user={this.props.user}
-          testData={this.props.hops}
           disabled={this.props.disabled}
           superVisorModifies={this.props.superVisorModifies}
         />

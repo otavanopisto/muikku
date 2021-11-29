@@ -5,12 +5,13 @@ import {
 } from "../../../../../../../@types/shared";
 import StudyTool from "../study-tool/study-tool";
 import FollowUpGoals from "../followUpGoal/follow-up-goals";
+import { HopsUser } from "../hops-compulsory-education-wizard";
 
 /**
  * StudiesPlanningProps
  */
 interface StudiesPlanningProps {
-  user: "supervisor" | "student";
+  user: HopsUser;
   disabled: boolean;
   finnishAsSecondLanguage: boolean;
   ethics: boolean;

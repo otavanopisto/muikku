@@ -21,15 +21,7 @@ const StudyCalculationInfoBox: React.FC<CalculationInfoBoxProps> = ({
   switch (state) {
     case "notenough":
       return (
-        <div
-          style={{
-            border: "1px solid orange",
-            borderLeftWidth: "2px",
-            padding: "10px",
-            fontStyle: "italic",
-          }}
-          className="hops__form-element-container"
-        >
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--notenough">
           <div>
             <h3
               style={{
@@ -60,15 +52,7 @@ const StudyCalculationInfoBox: React.FC<CalculationInfoBoxProps> = ({
 
     case "enough":
       return (
-        <div
-          style={{
-            border: "2px solid lightblue",
-            borderLeftWidth: "2px",
-            padding: "10px",
-            fontStyle: "italic",
-          }}
-          className="hops__form-element-container"
-        >
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--enough">
           <div>
             <h3
               style={{
@@ -99,15 +83,7 @@ const StudyCalculationInfoBox: React.FC<CalculationInfoBoxProps> = ({
 
     case "toomuch":
       return (
-        <div
-          style={{
-            border: "2px solid green",
-            borderLeftWidth: "2px",
-            padding: "10px",
-            fontStyle: "italic",
-          }}
-          className="hops__form-element-container"
-        >
+        <div className="hops__form-element-container hops__form-element-container--info hops__form-element-container--toomuch">
           <div>
             <h3
               style={{

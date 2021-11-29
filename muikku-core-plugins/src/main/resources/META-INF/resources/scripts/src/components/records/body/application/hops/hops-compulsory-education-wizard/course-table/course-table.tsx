@@ -11,14 +11,12 @@ import { TableDataContent } from "./table-data-content";
 import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
-import { UpdateStudentChoicesParams } from "../study-tool/handlers/handlers";
-import {
-  updateSuggestion,
-  UpdateSuggestionParams,
-} from "../suggestion-list/handlers/handlers";
+import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
+import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
+import { HopsUser } from "../hops-compulsory-education-wizard";
 
 interface CourseTableProps extends Partial<StudentActivityByStatus> {
-  user: "supervisor" | "student";
+  user: HopsUser;
   studentId: string;
   disabled: boolean;
   ethicsSelected: boolean;
@@ -43,6 +41,15 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
    * Table ref
    */
   const tableRef = React.useRef(null);
+
+  /**
+   * handleToggleChoiceClick
+   */
+  const handleToggleChoiceClick =
+    (choiceParams: UpdateStudentChoicesParams) =>
+    (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
+      props.updateStudentChoice(choiceParams);
+    };
 
   /**
    * currentMaxCourses
@@ -134,6 +141,40 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
          * If any of these list are given, check whether course id is in
          * and push another modifier or change table data content options values
          */
+
+        if (
+          props.studentChoiceList &&
+          props.studentChoiceList.find(
+            (sCourse) =>
+              sCourse.subject === sSubject.subjectCode &&
+              sCourse.courseNumber === course.courseNumber
+          )
+        ) {
+          selectedByStudent = true;
+          modifiers.push("SELECTED_OPTIONAL");
+        }
+
+        if (
+          props.user === "supervisor" &&
+          props.suggestedNextList &&
+          props.suggestedNextList.find(
+            (sCourse) =>
+              sCourse.subject === sSubject.subjectCode &&
+              sCourse.courseNumber === course.courseNumber
+          )
+        ) {
+          let suggestedCourseDataNext = props.suggestedNextList.filter(
+            (sCourse) => sCourse.subject === sSubject.subjectCode
+          );
+
+          courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
+
+          modifiers.push("NEXT");
+        }
+
+        /**
+         * Only one of these can happen
+         */
         if (
           props.transferedList &&
           props.transferedList.find(
@@ -145,16 +186,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("APPROVAL");
-        } else if (
-          props.studentChoiceList &&
-          props.studentChoiceList.find(
-            (sCourse) =>
-              sCourse.subject === sSubject.subjectCode &&
-              sCourse.courseNumber === course.courseNumber
-          )
-        ) {
-          selectedByStudent = true;
-          modifiers.push("SELECTED_OPTIONAL");
         } else if (
           props.gradedList &&
           props.gradedList.find(
@@ -198,34 +229,18 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           modifiers.push("SUGGESTED");
         }
 
-        if (
-          props.suggestedNextList &&
-          props.suggestedNextList.find(
-            (sCourse) =>
-              sCourse.subject === sSubject.subjectCode &&
-              sCourse.courseNumber === course.courseNumber
-          )
-        ) {
-          let suggestedCourseDataNext = props.suggestedNextList.filter(
-            (sCourse) => sCourse.subject === sSubject.subjectCode
-          );
-
-          courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
-
-          modifiers.push("NEXT");
-        }
-
         return (
           <Td
             key={course.id}
             modifiers={modifiers}
             onClick={() =>
-              props.updateStudentChoice({
-                goal: selectedByStudent ? "remove" : "add",
-                studentId: props.studentId,
-                courseNumber: course.courseNumber,
-                subject: sSubject.subjectCode,
-              })
+              props.user === "student"
+                ? handleToggleChoiceClick({
+                    studentId: props.studentId,
+                    courseNumber: course.courseNumber,
+                    subject: sSubject.subjectCode,
+                  })
+                : undefined
             }
           >
             <TableDataContent
@@ -235,12 +250,15 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               tableRef={tableRef}
               subjectCode={sSubject.subjectCode}
               course={course}
+              studentId={props.studentId}
+              selectedByStudent={selectedByStudent}
               disabled={props.disabled}
               suggestedActivityCourses={courseSuggestions}
               canBeSelected={canBeSelected}
               canBeSuggestedForNextCourse={canBeSuggestedForNextCourse}
               canBeSuggestedForOptionalCourse={canBeSuggestedForOptionalCourse}
               updateSuggestion={props.updateSuggestion}
+              updateStudentChoice={props.updateStudentChoice}
             />
           </Td>
         );

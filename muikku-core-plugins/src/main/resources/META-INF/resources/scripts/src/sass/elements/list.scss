@@ -91,15 +91,8 @@
   justify-content: space-between;
 }
 
-.list-item--SUGGESTED::before {
+.list-item--SUGGESTED {
   border: 2px solid pink;
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
 }
 
 .list-item--MANDATORY {

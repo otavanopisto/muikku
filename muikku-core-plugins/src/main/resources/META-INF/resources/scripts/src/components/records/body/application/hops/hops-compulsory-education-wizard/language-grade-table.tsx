@@ -98,6 +98,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
             placeholder="Kieli"
             className="hops-input"
             disabled={disabled}
+            style={{ textAlign: "center" }}
           ></input>
         )}
       </Td>

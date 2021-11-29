@@ -1,15 +1,15 @@
 import * as React from "react";
-import {
-  Course,
-  StudentActivityCourse,
-} from "../../../../../../../@types/shared";
 import AnimateHeight from "react-animate-height";
 import { useSuggestionList } from "./hooks/useSuggestedList";
-import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
-import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
-import { i18nType } from "../../../../../../../reducers/base/i18n";
-import { UpdateSuggestionParams } from "./handlers/handlers";
+import { Course, StudentActivityCourse } from "~/@types/shared";
+import { i18nType } from "~/reducers/base/i18n";
+import { StateType } from "~/reducers";
+import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 
 /**
  * SuggestionListProps
@@ -19,7 +19,8 @@ interface SuggestionListProps {
   suggestedActivityCourses?: StudentActivityCourse[];
   course: Course;
   i18n: i18nType;
-  guider: GuiderType;
+  studentId: string;
+  displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
   onLoad?: () => void;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
@@ -43,6 +44,7 @@ const SuggestionList = (props: SuggestionListProps) => {
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
     props.course,
+    props.displayNotification,
     props.loadData
   );
 
@@ -53,11 +55,38 @@ const SuggestionList = (props: SuggestionListProps) => {
   }, [isLoading]);
 
   /**
-   * handleSuggestOptionalClick
+   * handleSuggestionClick
+   * @param type Suggestion type
+   * @param actionType Action type aka "delete" or "add"
+   * @param suggestionId Suggestion id
    */
-  const handleSuggestOptionalClick = () => {
-    console.log("handleSuggestOptionalClick");
-  };
+  const handleSuggestionClick =
+    (
+      type: "NEXT" | "OPTIONAL",
+      actionType: "remove" | "add",
+      suggestionId: number
+    ) =>
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (type === "NEXT") {
+        props.updateSuggestion({
+          goal: actionType,
+          courseNumber: props.course.courseNumber,
+          subjectCode: props.subjectCode,
+          suggestionId: suggestionId,
+          studentId: props.studentId,
+          type: type,
+        });
+      } else {
+        props.updateSuggestion({
+          goal: actionType,
+          courseNumber: props.course.courseNumber,
+          subjectCode: props.subjectCode,
+          suggestionId: suggestionId,
+          studentId: props.studentId,
+          type: type,
+        });
+      }
+    };
 
   /**
    * list of suggestion items
@@ -65,20 +94,28 @@ const SuggestionList = (props: SuggestionListProps) => {
   const listItems =
     suggestionsList.length > 0 ? (
       suggestionsList.map((suggestion) => {
-        let isSuggested = false;
-        let isSuggestedToHops = false;
+        // By default action type is always add
+        let suggestionNextActionType: "add" | "remove" = "add";
+        let suggestionOptionalActionType: "add" | "remove" = "add";
+
+        /**
+         * If there is suggested activity courses
+         */
         if (props.suggestedActivityCourses) {
           const suggestedCourse = props.suggestedActivityCourses.find(
             (item) => item.courseId === suggestion.id
           );
 
+          /**
+           * If any of these condition happens, changes respectivily action type
+           */
           if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
-            isSuggested = true;
+            suggestionNextActionType = "remove";
           } else if (
             suggestedCourse &&
             suggestedCourse.status === "SUGGESTED_OPTIONAL"
           ) {
-            isSuggestedToHops = true;
+            suggestionOptionalActionType = "remove";
           }
         }
 
@@ -104,18 +141,15 @@ const SuggestionList = (props: SuggestionListProps) => {
                   <p style={{ fontSize: "1rem" }}>Ehdota:</p>
                   <button
                     style={{ margin: "5px 5px", cursor: "pointer", zIndex: 40 }}
-                    onClick={() =>
-                      props.updateSuggestion({
-                        goal: isSuggested ? "remove" : "add",
-                        courseNumber: props.course.courseNumber,
-                        subjectCode: props.subjectCode,
-                        suggestionId: suggestion.id,
-                        studentId: props.guider.currentStudent.basic.id,
-                        type: "NEXT",
-                      })
-                    }
+                    onClick={handleSuggestionClick(
+                      "NEXT",
+                      suggestionNextActionType,
+                      suggestion.id
+                    )}
                   >
-                    {isSuggested ? "Ehdotettu" : "Seuraavaksi?"}
+                    {suggestionNextActionType === "remove"
+                      ? "Ehdotettu"
+                      : "Seuraavaksi?"}
                   </button>
                   {!props.course.mandatory ? (
                     <button
@@ -124,21 +158,18 @@ const SuggestionList = (props: SuggestionListProps) => {
                         cursor: "pointer",
                         zIndex: 40,
                       }}
-                      onClick={() =>
-                        props.updateSuggestion({
-                          goal: isSuggestedToHops ? "remove" : "add",
-                          courseNumber: props.course.courseNumber,
-                          subjectCode: props.subjectCode,
-                          suggestionId: suggestion.id,
-                          studentId: props.guider.currentStudent.basic.id,
-                          type: "OPTIONAL",
-                        })
-                      }
+                      onClick={handleSuggestionClick(
+                        "OPTIONAL",
+                        suggestionOptionalActionType,
+                        suggestion.id
+                      )}
                     >
-                      {isSuggestedToHops ? "Ehdotettu" : "Valinnaiseksi?"}
+                      {suggestionOptionalActionType === "remove"
+                        ? "Ehdotettu"
+                        : "Valinnaiseksi?"}
                     </button>
                   ) : null}
-                </div>{" "}
+                </div>
               </>
             )}
           </div>
@@ -166,7 +197,6 @@ const SuggestionList = (props: SuggestionListProps) => {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    guider: state.guider,
   };
 }
 
@@ -175,7 +205,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+  return { displayNotification };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SuggestionList);

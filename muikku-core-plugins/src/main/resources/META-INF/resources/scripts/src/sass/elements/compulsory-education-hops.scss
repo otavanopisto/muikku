@@ -108,6 +108,25 @@
   }
 }
 
+.hops__form-element-container--info {
+  border: 2px solid;
+  border-left-width: 5px;
+  padding: 10px;
+  font-style: italic;
+}
+
+.hops__form-element-container--toomuch {
+  border-color: green;
+}
+
+.hops__form-element-container--enough {
+  border-color: lightblue;
+}
+
+.hops__form-element-container--notenough {
+  border-color: orange;
+}
+
 .hops-label {
   display: block;
   font-weight: 600;
