@@ -429,6 +429,11 @@
 .application-sub-panel__multiple-items--list-mode {
   border-top: 1px solid $color-default-separator-border;
   padding: 5px 0 5px 12px;
+
+  .application-sub-panel__multiple-item-container--worklist-description {
+    align-items: flex-start;
+    flex-flow: row nowrap;
+  }
 }
 
 .application-sub-panel__multiple-items--edit-mode {
@@ -451,7 +456,7 @@
 .application-sub-panel__multiple-item-container--worklist-description {
   align-items: center;
   flex-basis: 100%;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   margin: 2px 0;
 
   .application-sub-panel__item-title--worklist-list-mode {
