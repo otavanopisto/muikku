@@ -16,6 +16,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -38,6 +39,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -584,5 +586,67 @@ public class HopsRestService {
         firstName, 
         lastName,
         counselorList);
+  }
+  
+  @POST
+  @Path("/student/{STUDENTIDENTIFIER}/studyHours")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createOrUpdateStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudyHoursRestModel payload) {
+    
+    Integer hours = null;
+    
+    if (payload.getStudyHours() != null) {
+      hours = payload.getStudyHours();
+    }
+    // Create or update
+    HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifier);
+    if (hopsStudyHours == null) {
+      hopsStudyHours = hopsController.createHopsStudyHours(studentIdentifier, hours);
+    }
+    else {
+      hopsStudyHours = hopsController.updateHopsStudyHours(hopsStudyHours, studentIdentifier, hours);
+    }
+    
+    // Recipients for websocket
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    List<UserEntity> recipients = new ArrayList<>();
+
+    try {
+      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+    recipients.add(studentEntity);
+    
+    StudyHoursRestModel studyHoursRestModel = new StudyHoursRestModel();
+    studyHoursRestModel.setId(hopsStudyHours.getId());
+    studyHoursRestModel.setStudentIdentifier(hopsStudyHours.getStudentIdentifier());
+    studyHoursRestModel.setStudyHours(hopsStudyHours.getStudyHours());
+    
+    webSocketMessenger.sendMessage("hops:studentchoice-updated", studyHoursRestModel, recipients);
+    return Response.ok(hopsStudyHours).build();
+  }
+  
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/studyHours")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifier);
+    return hopsStudyHours == null ? Response.noContent().build() : Response.ok(hopsStudyHours.getStudyHours()).build();  
   }
 }
