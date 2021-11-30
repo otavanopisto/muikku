@@ -143,7 +143,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
    */
   setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
-    this.props.onRecipientChange(selectedItems);
+    this.props.onRecipientChange && this.props.onRecipientChange(selectedItems);
   }
 
   /**
