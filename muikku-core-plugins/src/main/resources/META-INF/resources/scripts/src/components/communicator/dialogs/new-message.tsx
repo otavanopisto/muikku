@@ -15,7 +15,6 @@ import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
 import { StatusType } from '~/reducers/base/status';
-
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 
@@ -97,7 +96,29 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
 
     if (this.props.refreshInitialSelectedItemsOnOpen) {
-      this.setState({ selectedItems: this.props.initialSelectedItems })
+
+      // Get selectedItems from the stored state
+      const storedSelectedItemsState = this.getRecoverStoredState({ selectedItems: [] }, getStateIdentifier(this.props));
+
+      // Combine stored items with the newly selected
+      const combinedSelectedItems = [...storedSelectedItemsState.selectedItems, ...this.props.initialSelectedItems];
+
+      // Remove duplicates through Set
+      const combinedSelectedUniqueIds = new Set(combinedSelectedItems.map(item => item.value.id));
+
+      // Convert the Set to an Array
+      const newCombinedSelectedIds = Array.from(combinedSelectedUniqueIds);
+
+      let newSelectedItems = [];
+
+      // Iterate through the ids and find a counterpart from the combined selected items
+
+      for (let i = 0; i < newCombinedSelectedIds.length; i++) {
+        newSelectedItems.push(combinedSelectedItems.find((item) => item.value.id === newCombinedSelectedIds[i]));
+      }
+
+      // Boom! New selected items to state
+      this.setState({ selectedItems: newSelectedItems })
     }
 
     this.props.onOpen && this.props.onOpen();
