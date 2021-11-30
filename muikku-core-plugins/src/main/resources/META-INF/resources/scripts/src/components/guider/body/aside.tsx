@@ -4,6 +4,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 import '~/sass/elements/item-list.scss';
 import { GuiderUserLabelType, GuiderWorkspaceType, GuiderType } from '~/reducers/main-function/guider';
+import { UserGroupType } from "~/reducers/user-index"
 import LabelUpdateDialog from '../dialogs/label-update';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
@@ -38,6 +39,19 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
             queryString.stringify(Object.assign({}, locationData, { c: "", w: (locationData.w || []).concat(workspace.id) }), { arrayFormat: 'bracket' });
           return <NavigationElement modifiers="aside-navigation-guider-course" icon="books" key={workspace.id} isActive={isActive} hash={"?" + hash}>
             {workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "")}
+          </NavigationElement>
+        })}
+      </NavigationTopic>
+      <NavigationTopic
+        name={this.props.i18n.text.get("plugin.guider.filters.userGroups")}
+      >
+        {this.props.guider.availableFilters.userGroups.map((userGroup: UserGroupType) => {
+          let isActive = this.props.guider.activeFilters.userGroupFilters.includes(userGroup.id);
+          let hash = isActive ?
+            queryString.stringify(Object.assign({}, locationData, { c: "", u: (locationData.u || []).filter((u: string) => parseInt(u) !== userGroup.id) }), { arrayFormat: 'bracket' }) :
+            queryString.stringify(Object.assign({}, locationData, { c: "", u: (locationData.u || []).concat(userGroup.id) }), { arrayFormat: 'bracket' });
+          return <NavigationElement modifiers="aside-navigation-guider-user-group" icon="users" key={userGroup.id} isActive={isActive} hash={"?" + hash}>
+            {userGroup.name}
           </NavigationElement>
         })}
       </NavigationTopic>

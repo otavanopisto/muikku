@@ -1,13 +1,22 @@
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
-import { GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType } from '~/reducers/main-function/guider';
+import {
+  GuiderActiveFiltersType,
+  GuiderPatchType,
+  GuiderStudentsStateType,
+  GuiderStudentType,
+  GuiderStudentUserProfileLabelType,
+  GuiderNotificationStudentsDataType,
+  GuiderStudentUserProfileType,
+  GuiderCurrentStudentStateType,
+  GuiderType
+} from '~/reducers/main-function/guider';
 import { loadStudentsHelper } from './helpers';
 import promisify from '~/util/promisify';
 import { UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, UserGroupType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
-import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType } from '~/reducers/main-function/guider';
+import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType, GuiderUserGroupListType } from '~/reducers/main-function/guider';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType } from '~/reducers/workspaces';
-import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
 import { colorIntToHex } from '~/util/modifiers';
@@ -33,6 +42,7 @@ export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LA
 }>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS", GuiderUserLabelListType>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES", GuiderWorkspaceListType>
+export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS", GuiderUserGroupListType>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL", GuiderUserLabelType>
 export type UPDATE_GUIDER_AVAILABLE_FILTER_LABEL = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTER_LABEL", {
   labelId: number,
@@ -427,6 +437,27 @@ let updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType = function updateW
   }
 }
 
+let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType = function updateUserGroupFilters() {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    let currentUser = getState().status.userSchoolDataIdentifier;
+    try {
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
+        payload: <GuiderUserGroupListType>(await promisify(mApi().usergroup.groups.read({
+          userIdentifier: currentUser,
+          maxResults: 500,
+        }), 'callback')()) || []
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.userGroups"), 'error'));
+    }
+  }
+}
+
+
 let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     if (!name) {
@@ -534,6 +565,6 @@ export {
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
   addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
-  updateWorkspaceFilters, createGuiderFilterLabel,
-  updateGuiderFilterLabel, removeGuiderFilterLabel, toggleAllStudents
+  updateWorkspaceFilters, updateUserGroupFilters, toggleAllStudents, createGuiderFilterLabel,
+  updateGuiderFilterLabel, removeGuiderFilterLabel
 };
