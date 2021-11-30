@@ -629,7 +629,7 @@ public class HopsRestService {
     studyHoursRestModel.setStudentIdentifier(hopsStudyHours.getStudentIdentifier());
     studyHoursRestModel.setStudyHours(hopsStudyHours.getStudyHours());
     
-    webSocketMessenger.sendMessage("hops:studentchoice-updated", studyHoursRestModel, recipients);
+    webSocketMessenger.sendMessage("hops:studyhours", studyHoursRestModel, recipients);
     return Response.ok(hopsStudyHours).build();
   }
   
