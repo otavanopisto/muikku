@@ -12,6 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.plugins.hops.dao.HopsAlternativeStudyOptionsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsGoalsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
@@ -19,6 +20,7 @@ import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudyHoursDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsAlternativeStudyOptions;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
@@ -57,9 +59,11 @@ public class HopsController {
   private HopsStudyHoursDAO hopsStudyHoursDAO;
   
   @Inject
+  private HopsAlternativeStudyOptionsDAO hopsAlternativeStudyOptionsDAO;
+  
+  @Inject
   private UserGroupEntityController userGroupEntityController;
   
-
   @Inject
   private UserEntityController userEntityController;
   
@@ -110,6 +114,21 @@ public class HopsController {
   public HopsStudyHours updateHopsStudyHours(HopsStudyHours hopsStudyHours, String studentIdentifier, Integer hours) {
     hopsStudyHoursDAO.updateStudyHours(hopsStudyHours, hours);
     return hopsStudyHours;
+  }
+  
+  public HopsAlternativeStudyOptions findHopsAlternativeStudyOptionsByStudentIdentifier(String studentIdentifier) {
+    return hopsAlternativeStudyOptionsDAO.findByStudentIdentifier(studentIdentifier);
+  }
+  
+  public HopsAlternativeStudyOptions createHopsAlternativeStudyOptions(String studentIdentifier, Boolean finnishAsLanguage, Boolean religionAsEthics) {
+    HopsAlternativeStudyOptions hopsAlternativeStudyOptions = hopsAlternativeStudyOptionsDAO.create(studentIdentifier, finnishAsLanguage, religionAsEthics);
+
+    return hopsAlternativeStudyOptions;
+  }
+
+  public HopsAlternativeStudyOptions updateHopsAlternativeStudyOptions(HopsAlternativeStudyOptions hopsAlternativeStudyOptions, String studentIdentifier, Boolean finnishAsLanguage, Boolean religionAsEthics) {
+    hopsAlternativeStudyOptionsDAO.updateHopsAlternativeStudyOptions(hopsAlternativeStudyOptions, finnishAsLanguage, religionAsEthics);
+    return hopsAlternativeStudyOptions;
   }
   
   public List<HopsStudentChoice> listStudentChoiceByStudentIdentifier(String studentIdentifeir) {
