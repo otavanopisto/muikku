@@ -30,8 +30,6 @@ interface TableDataContentProps
   selectedByStudent: boolean;
   disabled: boolean;
   canBeSelected: boolean;
-  canBeSuggestedForNextCourse: boolean;
-  canBeSuggestedForOptionalCourse: boolean;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
   updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
 }

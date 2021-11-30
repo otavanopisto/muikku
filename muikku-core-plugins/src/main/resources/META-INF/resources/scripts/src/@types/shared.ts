@@ -433,9 +433,24 @@ export interface StudentCourseChoice {
 }
 
 export interface StudentActivityByStatus {
+  /**
+   * List of ongoing courses
+   */
   onGoingList: StudentActivityCourse[];
+  /**
+   * List of suggested courses for next
+   */
   suggestedNextList: StudentActivityCourse[];
+  /**
+   * List of suggested optional courses
+   */
   suggestedOptionalList: StudentActivityCourse[];
+  /**
+   * List of transfered courses
+   */
   transferedList: StudentActivityCourse[];
+  /**
+   * List of graded courses
+   */
   gradedList: StudentActivityCourse[];
 }

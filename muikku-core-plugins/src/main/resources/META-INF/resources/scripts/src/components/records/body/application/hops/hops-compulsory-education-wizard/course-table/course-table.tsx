@@ -8,25 +8,35 @@ import {
 import { Table, Tbody, Td, Tr } from "~/components/general/table";
 import { schoolCourseTable } from "~/mock/mock-data";
 import { TableDataContent } from "./table-data-content";
-import { StateType } from "../../../../../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
-import { GuiderType } from "../../../../../../../reducers/main-function/guider/index";
 import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
 import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
 import { HopsUser } from "../hops-compulsory-education-wizard";
+import { StateType } from "~/reducers";
 
+/**
+ * CourseTableProps
+ */
 interface CourseTableProps extends Partial<StudentActivityByStatus> {
   user: HopsUser;
   studentId: string;
   disabled: boolean;
-  ethicsSelected: boolean;
+  /**
+   * Boolean indicating that supervisor can modify values
+   */
   superVisorModifies: boolean;
+  /**
+   * If ethic is selected besides religion
+   */
+  ethicsSelected: boolean;
+  /**
+   * If finnish is selected as secondary languages
+   */
   finnishAsSecondLanguage: boolean;
-  guider: GuiderType;
+  /**
+   * List of student choices
+   */
   studentChoiceList?: StudentCourseChoice[];
-  supervisorSuggestedNextListOfIds?: number[];
-  supervisorSugestedSubjectListOfIds?: number[];
-  onChangeSelectSubjectList?: (selectSubjects: number[]) => void;
   updateSuggestion: (params: UpdateSuggestionParams) => void;
   updateStudentChoice: (params: UpdateStudentChoicesParams) => void;
 }
@@ -46,9 +56,11 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
    * handleToggleChoiceClick
    */
   const handleToggleChoiceClick =
-    (choiceParams: UpdateStudentChoicesParams) =>
+    (user: HopsUser, choiceParams: UpdateStudentChoicesParams) =>
     (e: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>) => {
-      props.updateStudentChoice(choiceParams);
+      if (user === "student") {
+        props.updateStudentChoice(choiceParams);
+      }
     };
 
   /**
@@ -138,10 +150,9 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         let selectedByStudent = false;
 
         /**
-         * If any of these list are given, check whether course id is in
+         * If any of these list are given, check whether course is in
          * and push another modifier or change table data content options values
          */
-
         if (
           props.studentChoiceList &&
           props.studentChoiceList.find(
@@ -154,6 +165,9 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           modifiers.push("SELECTED_OPTIONAL");
         }
 
+        /**
+         * Only one of these can happen
+         */
         if (
           props.user === "supervisor" &&
           props.suggestedNextList &&
@@ -170,12 +184,24 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
 
           modifiers.push("NEXT");
-        }
+        } else if (
+          props.suggestedOptionalList &&
+          props.suggestedOptionalList.find(
+            (sOCourse) =>
+              sOCourse.subject === sSubject.subjectCode &&
+              sOCourse.courseNumber === course.courseNumber
+          )
+        ) {
+          let suggestedCourseDataOptional = props.suggestedOptionalList.filter(
+            (oCourse) => oCourse.subject === sSubject.subjectCode
+          );
 
-        /**
-         * Only one of these can happen
-         */
-        if (
+          courseSuggestions = courseSuggestions.concat(
+            suggestedCourseDataOptional
+          );
+
+          modifiers.push("SUGGESTED");
+        } else if (
           props.transferedList &&
           props.transferedList.find(
             (tCourse) =>
@@ -210,38 +236,17 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
           canBeSuggestedForNextCourse = false;
           canBeSelected = false;
           modifiers.push("INPROGRESS");
-        } else if (
-          props.suggestedOptionalList &&
-          props.suggestedOptionalList.find(
-            (sOCourse) =>
-              sOCourse.subject === sSubject.subjectCode &&
-              sOCourse.courseNumber === course.courseNumber
-          )
-        ) {
-          let suggestedCourseDataOptional = props.suggestedOptionalList.filter(
-            (oCourse) => oCourse.subject === sSubject.subjectCode
-          );
-
-          courseSuggestions = courseSuggestions.concat(
-            suggestedCourseDataOptional
-          );
-
-          modifiers.push("SUGGESTED");
         }
 
         return (
           <Td
             key={course.id}
             modifiers={modifiers}
-            onClick={() =>
-              props.user === "student"
-                ? handleToggleChoiceClick({
-                    studentId: props.studentId,
-                    courseNumber: course.courseNumber,
-                    subject: sSubject.subjectCode,
-                  })
-                : undefined
-            }
+            onClick={handleToggleChoiceClick(props.user, {
+              studentId: props.studentId,
+              courseNumber: course.courseNumber,
+              subject: sSubject.subjectCode,
+            })}
           >
             <TableDataContent
               user={props.user}
@@ -255,8 +260,6 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
               disabled={props.disabled}
               suggestedActivityCourses={courseSuggestions}
               canBeSelected={canBeSelected}
-              canBeSuggestedForNextCourse={canBeSuggestedForNextCourse}
-              canBeSuggestedForOptionalCourse={canBeSuggestedForOptionalCourse}
               updateSuggestion={props.updateSuggestion}
               updateStudentChoice={props.updateStudentChoice}
             />
@@ -321,9 +324,7 @@ const getHighestCourseNumber = (schoolSubjects: SchoolSubject[]): number => {
  * @param state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    guider: state.guider,
-  };
+  return {};
 }
 
 /**

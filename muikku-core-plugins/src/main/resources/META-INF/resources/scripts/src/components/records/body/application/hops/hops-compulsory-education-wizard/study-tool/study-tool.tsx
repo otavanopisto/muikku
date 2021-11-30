@@ -24,6 +24,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { useStudentStudyHour } from "./hooks/use-student-study-hours";
 
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
@@ -68,6 +69,12 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   );
 
   const { studentChoices, ...studentChoiceHandlers } = useStudentChoices(
+    props.studentId,
+    props.websocketState,
+    props.displayNotification
+  );
+
+  const { studyHours, ...studyHourHandlers } = useStudentStudyHour(
     props.studentId,
     props.websocketState,
     props.displayNotification
@@ -846,7 +853,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
             <div className="loader-empty" />
           ) : (
             <CourseList
-              key="jottain"
+              disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
               ethicsSelected={props.ethics}
