@@ -198,6 +198,23 @@ public class HopsRestService {
       logger.log(Level.WARNING, String.format("Failed to deserialize %s", goals));
     }
     
+    // Get recipients for websocket
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    List<UserEntity> recipients = new ArrayList<>();
+
+    try {
+      recipients = hopsController.getGuidanceCouncelors(schoolDataIdentifier);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+    recipients.add(studentEntity);
+    
     // Create or update
     
     HopsGoals hopsGoals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
@@ -207,7 +224,7 @@ public class HopsRestService {
     else {
       hopsGoals = hopsController.updateHopsGoals(hopsGoals, studentIdentifier, goals);
     }
-
+    webSocketMessenger.sendMessage("hops:hops-goals", hopsGoals, recipients);
     return Response.ok(goals).build();
   }
 
