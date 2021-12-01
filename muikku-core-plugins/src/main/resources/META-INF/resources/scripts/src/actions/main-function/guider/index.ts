@@ -457,7 +457,6 @@ let updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType = function updateU
   }
 }
 
-
 let createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     if (!name) {

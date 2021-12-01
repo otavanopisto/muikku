@@ -94,7 +94,6 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       includesSignature: true
     }, getStateIdentifier(this.props));
 
-
     if (this.props.refreshInitialSelectedItemsOnOpen) {
 
       // Get selectedItems from the stored state

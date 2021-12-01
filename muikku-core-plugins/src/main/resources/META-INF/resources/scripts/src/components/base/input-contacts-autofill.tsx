@@ -9,7 +9,6 @@ import { WorkspaceStaffListType, ContactRecipientType, UserGroupType, UserType, 
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
-
 export interface InputContactsAutofillLoaders {
   studentsLoader?: (searchString: string) => any,
   staffLoader?: (searchString: string) => any,

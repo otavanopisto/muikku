@@ -156,8 +156,6 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     }
   }
 
-  toggleAllStudents = () => { }
-
   render() {
     return (
       <ApplicationPanelToolbar>
