@@ -5,6 +5,8 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 
+$color-default-generic-background: #f2f2f2;
+
 $color-yo-sign-up: #75ce41;
 $color-yo-sign-up-contrast: $color-default;
 
@@ -71,7 +73,9 @@ $color-search-clear-background: #f1f1f1;
 
 // Labels
 $color-label-background: #f5f5f5;
+$color-label-background-highlight: #f9f1c8;
 $color-label-mobile-selected-background: #97e1ef;
+$color-label-alert: $color-fatal;
 
 // Workspace
 $color-workspace: #2fd4af;

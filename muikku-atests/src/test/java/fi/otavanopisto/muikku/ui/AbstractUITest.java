@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,19 +43,23 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -295,51 +300,63 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected WebDriver createSauceWebDriver() throws MalformedURLException {
-    DesiredCapabilities capabilities = null;
-    switch (getBrowser()) {
-    case "chrome":
-      capabilities = DesiredCapabilities.chrome();
-      break;
-    case "microsoftedge":
-      capabilities = DesiredCapabilities.edge();
-      break;
-    case "firefox":
-      capabilities = DesiredCapabilities.firefox();
-      break;
-    case "internet explorer":
-      capabilities = DesiredCapabilities.internetExplorer();
-      break;
-    case "safari":
-      capabilities = DesiredCapabilities.safari();
-      break;
-    default:
-      capabilities = DesiredCapabilities.chrome();
-  }
-  
+    
     final String browserVersion = getBrowserVersion();
     final String browserResolution = getBrowserResolution();
     final String platform = getSaucePlatform();
     
-    capabilities.setCapability(CapabilityType.VERSION, browserVersion);
-    capabilities.setCapability(CapabilityType.PLATFORM, platform);
-    capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
-    capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
-    capabilities.setCapability("build", getProjectVersion());
-    capabilities.setCapability("video-upload-on-pass", false);
-    capabilities.setCapability("capture-html", true);
-    capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability("seleniumVersion", System.getProperty("it.selenium.version"));
+    Map<String, Object> sauceOptions = new HashMap<>();
+    sauceOptions.put("name", getClass().getSimpleName() + ':' + testName.getMethodName());
+    sauceOptions.put("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
+    sauceOptions.put("build", getProjectVersion());
+    sauceOptions.put("video-upload-on-pass", false);
+    sauceOptions.put("capture-html", true);
+    sauceOptions.put("timeZone", "Universal");
+    sauceOptions.put("seleniumVersion", System.getProperty("it.selenium.version"));
+    sauceOptions.put("username", getSauceUsername());
+    sauceOptions.put("access_key", getSauceAccessKey());
     
     if (!StringUtils.isBlank(browserResolution)) {
-      capabilities.setCapability("screenResolution", browserResolution);
+      sauceOptions.put("screenResolution", browserResolution);
     }
  
     if (getSauceTunnelId() != null) {
-      capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
+      sauceOptions.put("tunnel-identifier", getSauceTunnelId());
     }
-//    
-    RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
     
+    RemoteWebDriverBuilder driverBuilder = RemoteWebDriver.builder();
+    switch (getBrowser()) {
+    case "chrome":
+      driverBuilder.oneOf(new ChromeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "microsoftedge":
+      driverBuilder.oneOf(new EdgeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "firefox":
+//  TODO: When RemoteWebDriverBuilder starts to work with firefox start using this. Augmentation that builder does to the connection somehow breaks it right now for firefox.
+//      driverBuilder.oneOf(new FirefoxOptions().setPlatformName(platform).setBrowserVersion(browserVersion).setAcceptInsecureCerts(true));
+      FirefoxOptions browserOptions = new FirefoxOptions();
+      browserOptions.setPlatformName(getSaucePlatform());
+      browserOptions.setBrowserVersion(getBrowserVersion());
+      browserOptions.setAcceptInsecureCerts(true);
+      browserOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE);
+      browserOptions.setCapability("sauce:options", sauceOptions);
+      RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), browserOptions);
+      remoteWebDriver.setFileDetector(new LocalFileDetector());
+      return remoteWebDriver;
+    case "internet explorer":
+      driverBuilder.oneOf(new InternetExplorerOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    case "safari":
+      driverBuilder.oneOf(new SafariOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+      break;
+    default:
+      driverBuilder.oneOf(new ChromeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
+  }
+
+    driverBuilder.setCapability("sauce:options", sauceOptions);
+    driverBuilder.address(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey()));
+    RemoteWebDriver remoteWebDriver = (RemoteWebDriver) driverBuilder.build();
     remoteWebDriver.setFileDetector(new LocalFileDetector());
 
     return remoteWebDriver; 
@@ -413,15 +430,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForElementToBeClickable(By locator) {
-    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.elementToBeClickable(locator));
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.elementToBeClickable(locator));
   }
 
   protected void waitForElementToBePresent(By locator) {
-    new WebDriverWait(getWebDriver(), 30).until(ExpectedConditions.presenceOfElementLocated(locator));
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(30)).until(ExpectedConditions.presenceOfElementLocated(locator));
   }
   
   protected void waitForVisible(String selector) {
-    new WebDriverWait(getWebDriver(), 30).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(30)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           WebElement element = findElement(selector);
@@ -438,7 +455,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     int attempts = 0;
     while (attempts < 2) {
       try{
-        new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.xpath(XPath))));          
+        new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.xpath(XPath))));          
       }catch (StaleElementReferenceException e) {
       }      
       attempts++;
@@ -447,7 +464,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void waitForUrlNotMatches(final String regex) {
     WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(driver, Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         return !driver.getCurrentUrl().matches(regex);
       }
@@ -456,7 +473,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitForUrl(final String url) {
     WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(driver, Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         return url.equals(driver.getCurrentUrl());
       }
@@ -465,7 +482,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitForUrlMatches(final String regex) {
     WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(driver, Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         return driver.getCurrentUrl().matches(regex);
       }
@@ -549,7 +566,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertGoesAway(String selector, long timeOut) {
-    assertTrue(new WebDriverWait(getWebDriver(), timeOut).until(new ExpectedCondition<Boolean>() {
+    assertTrue(new WebDriverWait(getWebDriver(), Duration.ofSeconds(timeOut)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElements(selector);
@@ -596,7 +613,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForPresent(final String selector) {
-    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElements(selector);
@@ -610,7 +627,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitForPresent(final String selector, int timeOut) {
-    new WebDriverWait(getWebDriver(), timeOut).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(timeOut)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElements(selector);
@@ -624,7 +641,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForPresentXPath(final String xpath) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElementsXPath(xpath);
@@ -638,7 +655,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitForNotPresent(final String selector) {
-    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElements(selector);
@@ -652,7 +669,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForNotVisible(String selector) {
-    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
   }
   
   protected boolean isElementPresent(String selector) {
@@ -678,7 +695,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForClickable(final String selector) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElements(selector);
@@ -694,7 +711,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForClickableXPath(final String xpath) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElementsXPath(xpath);
@@ -715,7 +732,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitAndClick(String selector, int timeout) {
-    WebDriverWait wait = new WebDriverWait(getWebDriver(), timeout);
+    WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(timeout));
     wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector))).click();
   }
   
@@ -743,7 +760,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         break;
       }
       i++;
-      WebDriverWait wait = new WebDriverWait(getWebDriver(), 10);
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
       wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
       sleep(interval);
       elements = findElements(elementToAppear);
@@ -751,6 +768,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
+  protected void waitAndClickWithAction(String selector) {
+    new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
+  }
+
   
   protected void scrollToEnd() {
     ((JavascriptExecutor) getWebDriver()).executeScript("window.scrollTo(0, document.body.scrollHeight)");
@@ -783,6 +804,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     selectField.selectByValue(value);
   }
   
+  
   protected boolean isInSelection(String selector, String compare) {
     Select selectField = new Select(findElementByCssSelector(selector));
     List<WebElement> options = selectField.getOptions();
@@ -793,9 +815,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
     return false;
   }
-
+  
   protected void waitUntilCountOfElements(String selector, int count) {
-    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(selector), count));
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(selector), count));
   }
   
   protected void selectFinnishLocale() {
@@ -864,7 +886,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitUntilTextChanged(final String selector, String originalText) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           String text = getWebDriver().findElement(By.cssSelector(selector)).getText();
@@ -878,7 +900,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitUntilHasText(final String selector) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           waitForVisible(selector);
@@ -895,7 +917,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitUntilAnimationIsDone(final String selector) {
-    WebDriverWait wdw = new WebDriverWait(getWebDriver(), 20);
+    WebDriverWait wdw = new WebDriverWait(getWebDriver(), Duration.ofSeconds(20));
     ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
@@ -913,7 +935,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitUntilParentAnimationIsDone(final String selector) {
-    WebDriverWait wdw = new WebDriverWait(getWebDriver(), 20);
+    WebDriverWait wdw = new WebDriverWait(getWebDriver(), Duration.ofSeconds(20));
     ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
@@ -932,7 +954,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void waitUntilContentChanged(final String selector, final String original) {
     WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 30).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(driver, Duration.ofSeconds(30)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
         if (!actual.equalsIgnoreCase(original)) {
@@ -950,7 +972,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected void waitClassPresent(final String selector, final String className) {
     WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(driver, Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
         if (!elements.isEmpty()) {
@@ -964,7 +986,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitForAttributeToHaveValue(final String selector, final String attribute) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           String attributeValue = getAttributeValue(selector, attribute);
@@ -981,7 +1003,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected boolean waitForMoreThanSize(final String selector, final int size) {
     WebDriver driver = getWebDriver();
-    return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    return new WebDriverWait(driver, Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         int elementCount = countElements(selector);
         if (elementCount > size) {
@@ -991,9 +1013,28 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+
+  protected void waitUntilElementGoesAway(String selector, long timeOut) {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(timeOut)).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElements(selector);
+          if (elements.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
+        }
+        return false;
+      }
+    });
+  }
+  
+  protected void tabOutOfElement(String elementToTabOutOf) {
+    getWebDriver().findElement(By.cssSelector(elementToTabOutOf)).sendKeys(Keys.TAB);
+  }
   
   protected void waitForValue(String selector) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           String value = getAttributeValue(selector, "value");
@@ -1016,7 +1057,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected boolean waitUntilElementCount(final String selector, final int count) {
     WebDriver driver = getWebDriver();
-    return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    return new WebDriverWait(driver, Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         int elementCount = countElements(selector);
         if (elementCount == count) {
@@ -1642,7 +1683,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitUntilValueChanges(String selector, String attribute, String originalValue){
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getAttribute(attribute));
         if (!actual.equalsIgnoreCase(originalValue)) {
@@ -1740,7 +1781,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     } else {
       waitAndClick(".cke_contents");
       sendKeys(".cke_wysiwyg_div", text);
-      getWebDriver().switchTo().defaultContent();
     }
   }
     
@@ -1749,9 +1789,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String jsString = String.format("$('%s').html('%s');", selector, value );
     js.executeScript(jsString);
   }
+
+  protected void waitForCKReady() {
+    String instanceName = getAttributeValue("textarea.cke", "name");
+    waitForCKReady(instanceName);
+  }
   
   protected void waitForCKReady(final String instanceName) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           return ((JavascriptExecutor) driver)

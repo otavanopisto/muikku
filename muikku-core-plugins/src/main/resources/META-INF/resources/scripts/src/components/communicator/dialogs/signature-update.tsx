@@ -17,10 +17,6 @@ const KEYCODES = {
   ENTER: 13
 }
 
-const CKEDITOR_CONFIG = {
-  extraPlugins: "divarea"
-}
-
 interface CommunicatorSignatureUpdateDialogProps {
   children?: React.ReactElement<any>,
   isOpen: boolean,
@@ -79,7 +75,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
     let content = (closeDialog: ()=>any)=>{
       return <div className="env-dialog__row">
         <div className="env-dialog__form-element-container">
-          <CKEditor configuration={CKEDITOR_CONFIG}
+          <CKEditor
             onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
           </div>
         </div>
