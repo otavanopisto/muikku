@@ -24,7 +24,7 @@ import "~/sass/elements/color-picker.scss";
 import * as queryString from "query-string";
 import promisify from "../../../util/promisify";
 import mApi from "~/lib/mApi";
-import { StaffRecepientType, ContactRecipientType } from "../../../reducers/user-index";
+import { ContactRecipientType } from "../../../reducers/user-index";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";

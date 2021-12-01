@@ -12,10 +12,8 @@ import "~/sass/elements/form.scss";
 import { GuiderUserLabelType } from "~/reducers/main-function/guider";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import {
-  StaffRecepientType,
   UserIndexType,
   ContactRecipientType,
-  UserType,
 } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
 import {

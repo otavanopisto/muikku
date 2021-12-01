@@ -144,28 +144,6 @@ export interface ContactRecipientType {
   }
 }
 
-export type ContactRecepientType = WorkspaceRecepientType | UserRecepientUserType | UserGroupRecepientType | StaffRecepientType;
-
-export interface WorkspaceRecepientType {
-  type: "workspace",
-  value: WorkspaceType
-}
-
-export interface UserRecepientUserType {
-  type: "user",
-  value: UserType
-}
-
-export interface UserGroupRecepientType {
-  type: "usergroup",
-  value: UserGroupType
-}
-
-export interface StaffRecepientType {
-  type: "staff",
-  value: UserStaffType
-}
-
 export interface UserGroupBaseIndexType {
   [index: number]: UserGroupType
 }
