@@ -145,11 +145,12 @@
 .card__text-row {
   align-items: flex-start;
   display: flex;
+  flex-flow: column nowrap;
   padding: 5px 0;
 }
 
 .card__subtitle {
-  flex-basis: 150px;
+  flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
   font-size: 1rem;
@@ -192,6 +193,7 @@
 .card--ceepos {
   box-shadow: 0 0 20px $color-default-separator-border;
   height: auto;
+  margin: 10px;
   max-width: 400px;
 }
 
@@ -199,20 +201,28 @@
   align-items: center;
   border-bottom: 1px dashed $color-default-separator-border;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 }
 
 .card__hero-image--ceepos {
-  height: 60px;
+  height: 50px;
   width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 60px;
+  }
 }
 
 .card__hero-text--ceepos {
   color: $color-info;
   font-family: "Exo 2", Arial, sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 900;
   padding: 0 1rem;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2.5rem;
+  }
 }
 
 .card__title--ceepos {
