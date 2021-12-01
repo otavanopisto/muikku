@@ -49,8 +49,8 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     modifierClass: "tabs__pagination-container--"
   }
 
-  let nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
-  let prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
+  const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
+  const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 
   return <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
     <div className={`tabs__tab-labels ${modifier ? "tabs__tab-labels--" + modifier : ""}`}>
