@@ -833,7 +833,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               }}
               className="hops__form-element-container hops__form-element-container--hops_indicators"
             >
-              <h3>Suoritetut valinnais opinnot:</h3>
+              <h3>Suoritetut valinnaisopinnot:</h3>
               <Dropdown
                 content={
                   <div>
