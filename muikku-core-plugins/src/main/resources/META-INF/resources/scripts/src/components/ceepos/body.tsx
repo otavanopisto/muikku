@@ -168,7 +168,7 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
                   <Button
                     icon="envelope"
                     buttonModifiers={["ceepos-back-to-muikku", "info"]}
-                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
+                  >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
                   </Button>
                 </footer>
               </>
@@ -183,7 +183,7 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
                   <Button
                     icon="envelope"
                     buttonModifiers={["ceepos-back-to-muikku", "info"]}
-                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
+                  >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
                   </Button>
                 </footer>
               </>
