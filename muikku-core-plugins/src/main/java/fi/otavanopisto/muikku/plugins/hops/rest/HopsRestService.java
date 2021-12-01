@@ -224,7 +224,7 @@ public class HopsRestService {
     else {
       hopsGoals = hopsController.updateHopsGoals(hopsGoals, studentIdentifier, goals);
     }
-    webSocketMessenger.sendMessage("hops:hops-goals", hopsGoals, recipients);
+    webSocketMessenger.sendMessage("hops:hops-goals", goals, recipients);
     return Response.ok(goals).build();
   }
 
