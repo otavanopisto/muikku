@@ -423,7 +423,6 @@
 }
 
 .button--frontpage-bubble {
-  border-radius: 5px;
   height: auto;
   letter-spacing: 1px;
   overflow-wrap: break-word;
@@ -1770,7 +1769,6 @@
 .button--add-matriculation-row {
   background: $color-default;
   border: 1px solid $color-default;
-  border-radius: 2px;
   color: $color-info;
   padding: 4px 6px;
 }
@@ -1778,7 +1776,6 @@
 .button--remove-matriculation-row {
   align-items: center;
   background: transparent;
-  border-radius: 2px;
   color: $color-fatal;
   display: flex;
   font-size: 1.25rem;
