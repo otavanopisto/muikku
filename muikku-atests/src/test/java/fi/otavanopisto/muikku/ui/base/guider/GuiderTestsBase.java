@@ -43,7 +43,7 @@ public class GuiderTestsBase extends AbstractUITest {
     Long courseId = 2l;
     login();
     Workspace workspace = createWorkspace("testscourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    Workspace workspace2 = createWorkspace("diffentscourse", "Second test course", "4", Boolean.TRUE);
+    Workspace workspace2 = createWorkspace("diffentscourse", "Second test course", "3", Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
     MockCourseStudent mcs2 = new MockCourseStudent(3l, courseId, student2.getId());
 
@@ -77,36 +77,40 @@ public class GuiderTestsBase extends AbstractUITest {
   @Test
   public void filterByWorkspaceTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(4l, 4l, "Second", "User", "teststuerdenert@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    MockStudent student2 = new MockStudent(5l, 5l, "Test", "Student", "teststudqweerntos@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(4l, 4l, "Second", "User", "testuerdenert@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(5l, 5l, "Test", "Student", "testtudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111210-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
-    Long courseId = 2l;
-    login();
-    Workspace workspace = createWorkspace("testscourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    Workspace workspace2 = createWorkspace("diffentscourse", "Second test course", "4", Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(4l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(5l, workspace2.getId(), student2.getId());
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
-    mockBuilder
-      .addCourseStudent(workspace.getId(), mcs)
-      .addCourseStudent(workspace.getId(), mcs2)
-      .addCourseStaffMember(courseId, courseStaffMember)
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Testaa").id((long) 4).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
       .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(4l, course1.getId(), student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
     try {
       navigate("/guider", false);
       waitAndClick("div.application-panel__helper-container a.menu__item-link");
       waitUntilElementCount(".application-list .user--guider", 1);
       waitForPresent(".application-list__item-header .application-list__header-primary span");
-      assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Test Student");
+      assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Second User");
       assertCount(".application-list__item-header .application-list__header-primary", 1);
-    } finally {
+    }finally {
       archiveUserByEmail(student.getEmail());
       archiveUserByEmail(student2.getEmail());
-      deleteWorkspace(workspace2.getId());
-      deleteWorkspace(workspace.getId());
-      mockBuilder.wiremockReset();
+      deleteWorkspace(workspace1.getId());      
     }
+  } finally {
+    mockBuilder.wiremockReset();
+  }
   }
   
   @Test
@@ -116,7 +120,7 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "5", Boolean.TRUE);
     MockCourseStudent mcs = new MockCourseStudent(6l, workspace.getId(), student.getId());
     
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), 1l);
@@ -161,12 +165,12 @@ public class GuiderTestsBase extends AbstractUITest {
   )
   public void gradeShownInGuiderTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(7l, 7l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
-      Long courseId = 2l;
+      Long courseId = 6l;
       
       login();
       
@@ -176,7 +180,7 @@ public class GuiderTestsBase extends AbstractUITest {
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      MockCourseStudent courseStudent = new MockCourseStudent(7l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
@@ -237,16 +241,17 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();  
     }
   }
-      
+
+  @Test
   public void studentsWorkspacesInAlphabeticalOrderTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(4l, 4l, "Second", "User", "teststuerdenert@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(8l, 8l, "Second", "User", "tesrdenert@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-      Course course1 = new CourseBuilder().name("agz").id((long) 3).description("test course for testing").buildCourse();
-      Course course2 = new CourseBuilder().name("aa").id((long) 4).description("wiener course for testing").buildCourse();
-      Course course3 = new CourseBuilder().name("baz").id((long) 5).description("potato course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("agz").id((long) 7).description("test course for testing").buildCourse();
+      Course course2 = new CourseBuilder().name("aa").id((long) 8).description("wiener course for testing").buildCourse();
+      Course course3 = new CourseBuilder().name("baz").id((long) 9).description("potato course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
@@ -258,9 +263,9 @@ public class GuiderTestsBase extends AbstractUITest {
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
       Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
       Workspace workspace3 = createWorkspace(course3, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
-      MockCourseStudent mcs2 = new MockCourseStudent(2l, course2.getId(), student.getId());
-      MockCourseStudent mcs3 = new MockCourseStudent(3l, course3.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(8l, course1.getId(), student.getId());
+      MockCourseStudent mcs2 = new MockCourseStudent(9l, course2.getId(), student.getId());
+      MockCourseStudent mcs3 = new MockCourseStudent(10l, course3.getId(), student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       CourseStaffMember courseStaffMember2 = new CourseStaffMember(2l, course2.getId(), admin.getId(), 1l);
       CourseStaffMember courseStaffMember3 = new CourseStaffMember(3l, course3.getId(), admin.getId(), 1l);
@@ -289,7 +294,45 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-
-
+  
+  @Test
+  public void studentStudiesEndDateWarningTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(9l, 9l, "Arctic", "Fox", "arcticfox@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(9l, course1.getId(), student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        selectFinnishLocale();
+        navigate("/guider", false);
+        waitForPresent(".application-list__item-footer--student .label--ENDING");
+        assertTextStartsWith(".application-list__item-footer--student .label--ENDING span.label__text", "Opintoaika päättymässä");
+        student = new MockStudent(9l, 9l, "Arctic", "Fox", "arcticfox@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+        mockBuilder.updateStudent(student).build();
+        navigate("", false);
+        navigate("/guider", false);
+        assertNotPresent(".application-list__item-footer--student .label--ENDING");
+      }finally {
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace1.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }

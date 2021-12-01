@@ -434,7 +434,8 @@
   padding: 10px 0 10px 12px;
 
   .application-sub-panel__multiple-item-container--worklist-description {
-    flex-flow: column nowrap;
+    align-items: flex-start;
+    flex-flow: row nowrap;
   }
 }
 

@@ -150,6 +150,31 @@ public class PyramusMock {
         pmock.students.add(mockStudent);
         return this;
       }
+
+      public Builder updateStudent(MockStudent mockStudent) {
+        Person person = new Person(mockStudent.getPersonId(), mockStudent.getBirthday(), mockStudent.getSocialSecurityNumber(), mockStudent.getSex(), false, "empty", mockStudent.getPersonId());
+        if (!pmock.persons.isEmpty()) {
+          Iterator<Person> persons = pmock.persons.iterator();
+          while (persons.hasNext()) {
+            Person person2 = (Person) persons.next();
+            if(person2.getId().equals(person.getId())) {
+              persons.remove();
+            }
+          }
+        }
+        if (!pmock.students.isEmpty()) {
+          Iterator<MockStudent> mStudents = pmock.students.iterator();
+          while (mStudents.hasNext()) {
+            MockStudent mockStudent2 = (MockStudent) mStudents.next();
+            if(mockStudent2.getId().equals(mockStudent.getId())) {
+              mStudents.remove();
+            }
+          }
+        }
+        pmock.persons.add(person);
+        pmock.students.add(mockStudent);
+        return this;
+      }
       
       public Builder addCourseStaffMembers(HashMap<Long, List<CourseStaffMember>> courseStaffMembers){
         pmock.courseStaffMembers = courseStaffMembers;
@@ -1344,7 +1369,7 @@ public class PyramusMock {
         WireMock.reset();
         return this;
       }
-      
+
   }
   
   public List<MockStudent> getStudents() {
