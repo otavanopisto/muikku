@@ -54,7 +54,7 @@ let loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType = function loadCeepo
       const studentId = getState().status.userSchoolDataIdentifier;
       const purchase = await promisify(mApi().ceepos.user.order.read(studentId, purchaseId), "callback")() as PurchaseType;
 
-      if (purchase.state === "CREATED") {
+      if (purchase.state === "CREATED" || purchase.state === "ONGOING") {
         const value: string = await promisify(mApi().ceepos.pay.create({ 'id': purchaseId }), "callback")() as string;
         location.href = value;
       }

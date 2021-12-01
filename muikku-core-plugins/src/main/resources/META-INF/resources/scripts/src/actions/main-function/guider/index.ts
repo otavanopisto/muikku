@@ -34,6 +34,8 @@ export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURR
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", { property: string, value: any }>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
 export type UPDATE_GUIDER_INSERT_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_INSERT_PURCHASE_ORDER", PurchaseType>
+export type UPDATE_GUIDER_DELETE_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_DELETE_PURCHASE_ORDER", number>
+export type UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER", number>
 
 export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", UserFileType>
 export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", UserFileType>
@@ -153,6 +155,14 @@ export interface UpdateAvailablePurchaseProductsTriggerType {
 
 export interface DoOrderForCurrentStudentTriggerType {
   (order: PurchaseProductType): AnyActionType
+}
+
+export interface DeleteOrderFromCurrentStudentTriggerType {
+  (order: PurchaseType): AnyActionType
+}
+
+export interface CompleteOrderFromCurrentStudentTriggerType {
+  (order: PurchaseType): AnyActionType
 }
 
 let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
@@ -567,7 +577,7 @@ let removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType = function remov
 }
 
 const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType = function updateAvailablePurchaseProducts() {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       const value: PurchaseProductType[] = await promisify(mApi().ceepos.products.read(), 'callback')() as any;
       dispatch({
@@ -584,7 +594,7 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
 }
 
 const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType = function doOrderForCurrentStudent(order: PurchaseProductType) {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       const state = getState();
       const value: PurchaseType = await promisify(mApi().ceepos.order.create({
@@ -604,6 +614,41 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType = function d
   }
 }
 
+const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType = function deleteOrderFromCurrentStudent(order: PurchaseType) {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+    try {
+      await promisify(mApi().ceepos.order.del(order.id), 'callback')();
+      dispatch({
+        type: "UPDATE_GUIDER_DELETE_PURCHASE_ORDER",
+        payload: order.id,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.deletefailed"), 'error'));
+    }
+  }
+}
+
+const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType = function completeOrderFromCurrentStudent(order: PurchaseType) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().ceepos.manualCompletion.create(order.id), 'callback')();
+      dispatch({
+        type: "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER",
+        payload: order.id,
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.completefailed"), 'error'));
+    }
+  }
+}
+
+
 export {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
@@ -611,4 +656,5 @@ export {loadStudents, loadMoreStudents, loadStudent,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
   updateWorkspaceFilters, createGuiderFilterLabel,
   updateGuiderFilterLabel, removeGuiderFilterLabel,
-  updateAvailablePurchaseProducts, updateUserGroupFilters, doOrderForCurrentStudent};
+  updateAvailablePurchaseProducts, updateUserGroupFilters,
+  doOrderForCurrentStudent, deleteOrderFromCurrentStudent, completeOrderFromCurrentStudent};

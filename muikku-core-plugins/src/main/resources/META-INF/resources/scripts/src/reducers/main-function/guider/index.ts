@@ -321,6 +321,22 @@ export default function guider(state: GuiderType = {
         purchases: newOrders,
       },
     });
+  } else if (action.type === "UPDATE_GUIDER_DELETE_PURCHASE_ORDER") {
+    const orders = [...state.currentStudent.purchases, action.payload];
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: orders,
+      },
+    });
+  } else if (action.type === "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER") {
+    const orders = [...state.currentStudent.purchases, action.payload];
+    return Object.assign({}, state, {
+      currentStudent: {
+        ...state.currentStudent,
+        purchases: orders,
+      },
+    });
   }
   return state;
 }

@@ -65,7 +65,7 @@
 
 .button--create-student-order,
 .button--delete-student-order ,
-.button--finish-student-order,
+.button--complete-student-order,
 .button--pay-student-order {
   display: inline-flex;
   margin: 0 10px 0 0;
@@ -76,7 +76,7 @@
 }
 
 .button--delete-student-order ,
-.button--finish-student-order{
+.button--complete-student-order {
   font-size: 0.7rem;
   padding: 4px 12px 4px 8px;
 

@@ -96,15 +96,22 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
    * @param url
    * @returns
    */
-  loadlib(url: string) {
+  loadlib(url: string, type?: string) {
     if (this.loadedLibs.indexOf(url) !== -1) {
       return;
     }
     this.loadedLibs.push(url);
 
-    let script = document.createElement("script");
-    script.src = url;
-    document.head.appendChild(script);
+    if(type === "styleSheet") {
+      let styleSheet = document.createElement("link");
+      styleSheet.href = url;
+      styleSheet.rel = "styleSheet";
+      document.head.appendChild(styleSheet);
+    } else {
+      let script = document.createElement("script");
+      script.src = url;
+      document.head.appendChild(script);
+    }
   }
 
   /**
@@ -657,6 +664,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
     const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
     if (this.itsFirstTime){
+      this.loadlib("//fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900", "styleSheet");
       const id = parseInt(locationData.Id);
       if (id) {
         this.props.store.dispatch(loadCeeposPurchase(id) as Action);
@@ -670,6 +678,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     this.updateFirstTime();
 
     if(this.itsFirstTime){
+      this.loadlib("//fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900", "styleSheet");
       const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
       if (locationData.order) {
         this.props.store.dispatch(loadCeeposPurchaseAndPay(parseInt(locationData.order)) as Action);
