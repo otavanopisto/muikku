@@ -25,6 +25,8 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { useStudentStudyHour } from "./hooks/use-student-study-hours";
+import { useStudentAlternativeOptions } from "./hooks/use-student-alternative-options";
+import { useFollowUpGoal } from "../followUpGoal/hooks/useFollowUp";
 
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
@@ -37,11 +39,8 @@ interface StudyToolProps {
   studentId: string;
   disabled: boolean;
   showIndicators?: boolean;
-  finnishAsSecondLanguage: boolean;
-  ethics: boolean;
   superVisorModifies: boolean;
   studies: HopsPlanningStudies;
-  followUp: FollowUp;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
   onStudiesPlanningChange: (studies: HopsPlanningStudies) => void;
@@ -80,17 +79,17 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     props.displayNotification
   );
 
-  /**
-   * handleUsedHoursPerWeekChange
-   */
-  const handleUsedHoursPerWeekChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    props.onStudiesPlanningChange({
-      ...props.studies,
-      usedHoursPerWeek: parseInt(e.currentTarget.value),
-    });
-  };
+  const { studyOptions, ...studyOptionHandlers } = useStudentAlternativeOptions(
+    props.studentId,
+    props.websocketState,
+    props.displayNotification
+  );
+
+  const { followUpData, ...followUpHandlers } = useFollowUpGoal(
+    props.studentId,
+    props.websocketState,
+    props.displayNotification
+  );
 
   /**
    * compareGraduationGoalToNeededForMandatoryStudies
@@ -115,7 +114,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
         calculateSelectedOptionalHours() - optionalHoursCompleted;
     }
 
-    const weekFactor = parseInt(props.followUp.graduationGoal) / 12;
+    const weekFactor = parseInt(followUpData.followUp.graduationGoal) / 12;
 
     const hoursNeededToMatchGoal = Math.round(
       (updatedMandatoryHoursNeeded + selectedOptionalHours - allApprovedHours) /
@@ -127,25 +126,25 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
     let totalTime = getTotalTime(
       hoursInTotalToComplete,
-      props.studies.usedHoursPerWeek
+      studyHours.studyHourValue
     );
 
-    if (hoursNeededToMatchGoal > props.studies.usedHoursPerWeek) {
+    if (hoursNeededToMatchGoal > studyHours.studyHourValue) {
       return StudyCalculationInfoBox({
         state: "notenough",
-        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${props.followUp.graduationGoal}kk).`,
+        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) pessimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`,
       });
     }
-    if (hoursNeededToMatchGoal < props.studies.usedHoursPerWeek) {
+    if (hoursNeededToMatchGoal < studyHours.studyHourValue) {
       return StudyCalculationInfoBox({
         state: "toomuch",
-        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${props.followUp.graduationGoal}kk).`,
+        message: `Pohdi onko arvioitu opiskeluaika (${totalTime}) optimistinen valmistumistavoitteeseen nähden (${followUpData.followUp.graduationGoal}kk).`,
       });
     }
-    if (hoursNeededToMatchGoal === props.studies.usedHoursPerWeek) {
+    if (hoursNeededToMatchGoal === studyHours.studyHourValue) {
       return StudyCalculationInfoBox({
         state: "enough",
-        message: `Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${props.followUp.graduationGoal}kk).`,
+        message: `Arvioitu opiskeluaika (${totalTime}) on linjassa valmistumistavoitteesi kanssa (${followUpData.followUp.graduationGoal}kk).`,
       });
     }
   };
@@ -193,16 +192,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -230,16 +241,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -289,16 +312,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -331,16 +366,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -385,16 +432,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -436,16 +495,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -487,16 +558,28 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
       /**
        * Taking account of options for "special" subjects
        */
-      if (props.finnishAsSecondLanguage && sSubject.subjectCode === "ai") {
+      if (
+        studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "ai"
+      ) {
         continue;
       }
-      if (!props.finnishAsSecondLanguage && sSubject.subjectCode === "s2") {
+      if (
+        !studyOptions.options.finnishAsLanguage &&
+        sSubject.subjectCode === "s2"
+      ) {
         continue;
       }
-      if (props.ethics && sSubject.subjectCode === "ua") {
+      if (
+        studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ua"
+      ) {
         continue;
       }
-      if (!props.ethics && sSubject.subjectCode === "ea") {
+      if (
+        !studyOptions.options.religionAsEthics &&
+        sSubject.subjectCode === "ea"
+      ) {
         continue;
       }
 
@@ -532,6 +615,18 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
     }
 
     return totalTimeValue;
+  };
+
+  /**
+   * handleUsedHoursPerWeekChange
+   */
+  const handleUsedHoursPerWeekChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    studyHourHandlers.updateStudyHours(
+      props.studentId,
+      parseInt(e.currentTarget.value)
+    );
   };
 
   /**
@@ -578,7 +673,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
 
   let totalTime = getTotalTime(
     hoursInTotalToComplete,
-    props.studies.usedHoursPerWeek
+    studyHours.studyHourValue
   );
 
   const completedMandatoryStudies =
@@ -610,17 +705,15 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
   const proggressOfStudies = calculationDivider1;
 
   return (
-    <fieldset className="hops-container__fieldset">
-      <legend className="hops__step-container__subheader">Opintolaskuri</legend>
-
-      {props.followUp.graduationGoal !== "" ? (
+    <>
+      {!studyHours.isLoading && followUpData.followUp.graduationGoal !== "" ? (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
               type="number"
               label="Paljonko tunteja käytettävissä viikossa"
               onChange={handleUsedHoursPerWeekChange}
-              value={props.studies.usedHoursPerWeek}
+              value={studyHours.studyHourValue}
               className="hops-input"
               disabled={props.disabled}
             />
@@ -633,7 +726,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           <OptionalStudiesInfoBox
             needMandatoryStudies={needMandatoryStudies}
             selectedNumberOfOptional={studentChoices.studentChoices.length}
-            graduationGoal={props.followUp.graduationGoal}
+            graduationGoal={followUpData.followUp.graduationGoal}
           />
         </div>
       )}
@@ -834,8 +927,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               studentId={props.studentId}
               user={props.user}
               superVisorModifies={props.superVisorModifies}
-              ethicsSelected={props.ethics}
-              finnishAsSecondLanguage={props.finnishAsSecondLanguage}
+              ethicsSelected={studyOptions.options.religionAsEthics}
+              finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
               suggestedNextList={studentActivity.suggestedNextList}
               suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
@@ -856,8 +949,8 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
               disabled={props.disabled}
               user={props.user}
               studentId={props.studentId}
-              ethicsSelected={props.ethics}
-              finnishAsSecondLanguage={props.finnishAsSecondLanguage}
+              ethicsSelected={studyOptions.options.religionAsEthics}
+              finnishAsSecondLanguage={studyOptions.options.finnishAsLanguage}
               suggestedNextList={studentActivity.suggestedNextList}
               suggestedOptionalList={studentActivity.suggestedOptionalList}
               onGoingList={studentActivity.onGoingList}
@@ -901,7 +994,7 @@ const StudyTool: React.FC<StudyToolProps> = (props) => {
           <p>Valittu</p>
         </div>
       </div>
-    </fieldset>
+    </>
   );
 };
 

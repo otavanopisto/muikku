@@ -1,6 +1,6 @@
 import * as React from "react";
-import Dropdown from "../../../../../../general/dropdown";
-import { ButtonPill } from "../../../../../../general/button";
+import { ButtonPill } from "~/components/general/button";
+import Dropdown from "~/components/general/dropdown";
 
 type StudyState = "notenough" | "enough" | "toomuch";
 

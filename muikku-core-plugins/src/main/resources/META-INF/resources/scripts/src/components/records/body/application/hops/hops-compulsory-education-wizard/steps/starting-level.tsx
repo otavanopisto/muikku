@@ -1,13 +1,13 @@
 import * as React from "react";
-import "~/sass/elements/compulsory-education-hops.scss";
-import { LanguageGradeTable, LanguageGradeRow } from "../language-grade-table";
 import {
-  LanguageGrade,
   Education,
   HopsStudentStartingLevel,
-} from "../../../../../../../@types/shared";
-import Button from "../../../../../../general/button";
+  LanguageGrade,
+} from "~/@types/shared";
+import "~/sass/elements/compulsory-education-hops.scss";
+import { LanguageGradeTable, LanguageGradeRow } from "../language-grade-table";
 import { TextField } from "../text-field";
+import Button from "~/components/general/button";
 
 /**
  * StartingLevelProps

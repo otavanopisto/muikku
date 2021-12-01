@@ -88,11 +88,13 @@ export const useSuggestionList = (
     if (loadData) {
       loadSuggestionListData(subjectCode, course);
     }
+  }, [course, subjectCode, loadData]);
 
+  React.useEffect(() => {
     return () => {
       componentMounted.current = false;
     };
-  }, [course, subjectCode, loadData]);
+  }, []);
 
   return suggestions;
 };

@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/compulsory-education-hops.scss";
 import { TextField } from "../text-field";
-import { BasicInformation } from "../../../../../../../@types/shared";
 import * as moment from "moment";
+import { BasicInformation } from "~/@types/shared";
 
 /**
  * StudentHopsInformationProps

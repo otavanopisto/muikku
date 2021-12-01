@@ -238,7 +238,6 @@ export const useStudentActivity = (
       params;
 
     if (goal === "add") {
-      console.log("lisätään");
       try {
         await promisify(
           mApi().hops.student.toggleSuggestion.create(studentId, {
@@ -253,7 +252,6 @@ export const useStudentActivity = (
         console.error(error);
       }
     } else {
-      console.log("poistetaan");
       try {
         await promisify(
           mApi().hops.student.toggleSuggestion.create(studentId, {
@@ -263,8 +261,8 @@ export const useStudentActivity = (
           }),
           "callback"
         )();
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        displayNotification(`Hups errori, ${err.message}`, "error");
       }
     }
   };

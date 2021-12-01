@@ -1,8 +1,4 @@
 import * as React from "react";
-import {
-  Course,
-  StudentActivityCourse,
-} from "../../../../../../../@types/shared";
 import { HopsUser } from "../hops-compulsory-education-wizard";
 import { UpdateSuggestionParams } from "../study-tool/hooks/use-student-activity";
 import { UpdateStudentChoicesParams } from "../study-tool/hooks/use-student-choices";
@@ -11,6 +7,8 @@ import {
   useElementBoundings,
 } from "../suggestion-list/hooks/useElementDimensions";
 import SuggestionList from "../suggestion-list/suggested-list";
+import { StudentActivityCourse, Course } from "~/@types/shared";
+
 /**
  * TableDataContentProps
  */

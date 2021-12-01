@@ -1,41 +1,43 @@
 import * as React from "react";
-import { FollowUp } from "../../../../../../../../@types/shared";
-import { sleep } from "~/helper-functions/shared";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import mApi from "~/lib/mApi";
+import promisify from "~/util/promisify";
+import { sleep } from "~/helper-functions/shared";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+
+export interface AlternativeStudyObject {
+  finnishAsLanguage: boolean;
+  religionAsEthics: boolean;
+}
 
 /**
  * UseFollowUpGoalsState
  */
-export interface UseFollowUpGoalsState {
+export interface UseStudentAlternativeOptions {
   isLoading: boolean;
-  followUp: FollowUp;
+  options: AlternativeStudyObject;
 }
 
 /**
  * Intial state
  */
-const initialState: UseFollowUpGoalsState = {
+const initialState: UseStudentAlternativeOptions = {
   isLoading: false,
-  followUp: {
-    graduationGoal: "",
-    followUpGoal: "",
-    followUpStudies: "",
-    studySector: "",
+  options: {
+    finnishAsLanguage: false,
+    religionAsEthics: false,
   },
 };
 
 /**
  * useFollowUpGoal
  */
-export const useFollowUpGoal = (
+export const useStudentAlternativeOptions = (
   studentId: string,
   websocketState: WebsocketStateType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
-  const [followUpData, setFollowUpData] = React.useState(initialState);
+  const [studyOptions, setStudyOptions] = React.useState(initialState);
 
   /**
    * State ref to containging studentActivity state data
@@ -43,12 +45,12 @@ export const useFollowUpGoal = (
    * This is because when websocket handler catches, it always have latest
    * state changes to use
    */
-  const ref = React.useRef(followUpData);
+  const ref = React.useRef(studyOptions);
   const componentMounted = React.useRef(true);
 
   React.useEffect(() => {
-    ref.current = followUpData;
-  }, [followUpData]);
+    ref.current = studyOptions;
+  }, [studyOptions]);
 
   React.useEffect(() => {
     /**
@@ -56,8 +58,8 @@ export const useFollowUpGoal = (
      * Loads student activity data
      * @param studentId of student
      */
-    const loadStudentFollowUpPlans = async (studentId: string) => {
-      setFollowUpData({ ...followUpData, isLoading: true });
+    const loadStudentAlternativeOptionData = async (studentId: string) => {
+      setStudyOptions({ ...studyOptions, isLoading: true });
 
       try {
         /**
@@ -68,47 +70,40 @@ export const useFollowUpGoal = (
         /**
          * Loaded and filtered student activity
          */
-        const [loadedFollowUp] = await Promise.all([
+        const [loadedStudentAlternativeOptions] = await Promise.all([
           (async () => {
-            const followUp = (await promisify(
-              mApi().hops.student.hopsGoals.read(studentId),
+            const options = (await promisify(
+              mApi().hops.student.alternativeStudyOptions.read(studentId),
               "callback"
-            )()) as FollowUp;
+            )()) as AlternativeStudyObject;
 
-            return followUp;
+            return options;
           })(),
           sleepPromise,
         ]);
 
         if (componentMounted.current) {
-          setFollowUpData({
-            ...followUpData,
+          setStudyOptions({
+            ...studyOptions,
             isLoading: false,
-            followUp: {
-              ...loadedFollowUp,
-              graduationGoal:
-                loadedFollowUp.graduationGoal !== undefined
-                  ? loadedFollowUp.graduationGoal
-                  : "",
-              followUpGoal:
-                loadedFollowUp.followUpGoal !== undefined
-                  ? loadedFollowUp.followUpGoal
-                  : "",
-            },
+            options:
+              loadedStudentAlternativeOptions !== undefined
+                ? loadedStudentAlternativeOptions
+                : initialState.options,
           });
         }
       } catch (err) {
         if (componentMounted.current) {
           displayNotification(`Hups errori, ${err.message}`, "error");
-          setFollowUpData({
-            ...followUpData,
+          setStudyOptions({
+            ...studyOptions,
             isLoading: false,
           });
         }
       }
     };
 
-    loadStudentFollowUpPlans(studentId);
+    loadStudentAlternativeOptionData(studentId);
 
     return () => {
       componentMounted.current = false;
@@ -121,7 +116,7 @@ export const useFollowUpGoal = (
      * there has happened some changes with that message
      */
     websocketState.websocket.addEventCallback(
-      "hops:hops-goals",
+      "hops:alternative-study-options",
       onAnswerSavedAtServer
     );
 
@@ -130,7 +125,7 @@ export const useFollowUpGoal = (
        * Remove callback when unmounting
        */
       websocketState.websocket.removeEventCallback(
-        "hops:hops-goals",
+        "hops:alternative-study-options",
         onAnswerSavedAtServer
       );
     };
@@ -138,27 +133,34 @@ export const useFollowUpGoal = (
 
   /**
    * onAnswerSavedAtServer
-   * @param data FollowUp. As its plain json, it needs to be parsed
+   * @param data
    */
-  const onAnswerSavedAtServer = (data: any) => {
-    setFollowUpData({
-      ...followUpData,
-      followUp: JSON.parse(data),
+  const onAnswerSavedAtServer = (data: {
+    finnishAsLanguage: boolean;
+    id: number;
+    religionAsEthics: boolean;
+    studentIdentifier: string;
+  }) => {
+    setStudyOptions({
+      ...studyOptions,
+      options: {
+        finnishAsLanguage: data.finnishAsLanguage,
+        religionAsEthics: data.religionAsEthics,
+      },
     });
   };
 
   /**
-   * updateFollowUpData
+   * updateStudyHours
    * @param studentId
-   * @param dataToUpdate
    */
-  const updateFollowUpData = async (
+  const updateStudyOptions = async (
     studentId: string,
-    dataToUpdate: FollowUp
+    options: AlternativeStudyObject
   ) => {
     try {
       await promisify(
-        mApi().hops.student.hopsGoals.create(studentId, dataToUpdate),
+        mApi().hops.student.alternativeStudyOptions.create(studentId, options),
         "callback"
       )();
     } catch (err) {
@@ -167,8 +169,8 @@ export const useFollowUpGoal = (
   };
 
   return {
-    followUpData,
-    updateFollowUpData: (studentId: string, dataToUpdate: FollowUp) =>
-      updateFollowUpData(studentId, dataToUpdate),
+    studyOptions,
+    updateStudyOptions: (studentId: string, options: AlternativeStudyObject) =>
+      updateStudyOptions(studentId, options),
   };
 };

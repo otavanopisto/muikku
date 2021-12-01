@@ -1,17 +1,26 @@
 import * as React from "react";
+import { connect, Dispatch } from "react-redux";
 import { StudySector, FollowUp } from "../../../../../../../@types/shared";
 import {
   FollowUpGoal,
   FollowUpStudies,
 } from "../../../../../../../@types/shared";
+import { useFollowUpGoal } from "./hooks/useFollowUp";
+import { StateType } from "~/reducers";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 
 /**
  * FollowUpGoalsProps
  */
 interface FollowUpGoalsProps {
   disabled: boolean;
-  followUpData: FollowUp;
-  onChange?: (followUp: FollowUp) => void;
+  studentId: string;
+  websocketState: WebsocketStateType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -20,10 +29,13 @@ interface FollowUpGoalsProps {
  * @returns JSX.Element
  */
 const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
-  const { disabled } = props;
+  const { disabled, studentId, websocketState, displayNotification } = props;
 
-  const { followUpGoal, followUpStudies, studySector, graduationGoal } =
-    props.followUpData;
+  const { followUpData, ...followUpHandlers } = useFollowUpGoal(
+    studentId,
+    websocketState,
+    displayNotification
+  );
 
   /**
    * handleGoalsSelectsChange
@@ -32,11 +44,11 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
   const handleGoalsSelectsChange =
     (name: keyof FollowUp) => (e: React.ChangeEvent<HTMLSelectElement>) => {
       const updatedFollowUpData: FollowUp = {
-        ...props.followUpData,
+        ...followUpData.followUp,
         [name]: e.currentTarget.value,
       };
 
-      props.onChange && props.onChange(updatedFollowUpData);
+      followUpHandlers.updateFollowUpData(props.studentId, updatedFollowUpData);
     };
 
   return (
@@ -45,7 +57,7 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
         <div className="hops__form-element-container">
           <label className="hops-label">Valmistumisaikatavoite:</label>
           <select
-            value={graduationGoal}
+            value={followUpData.followUp.graduationGoal}
             onChange={handleGoalsSelectsChange("graduationGoal")}
             className="hops-select"
             disabled={disabled}
@@ -63,7 +75,7 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
         <div className="hops__form-element-container">
           <label className="hops-label">Jatkotavoitteet:</label>
           <select
-            value={followUpGoal}
+            value={followUpData.followUp.followUpGoal}
             onChange={handleGoalsSelectsChange("followUpGoal")}
             className="hops-select"
             disabled={disabled}
@@ -79,12 +91,13 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
           </select>
         </div>
       </div>
-      {followUpGoal === FollowUpGoal.POSTGRADUATE_STUDIES ? (
+      {followUpData.followUp.followUpGoal ===
+      FollowUpGoal.POSTGRADUATE_STUDIES ? (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label className="hops-label">Jatko-opinnot:</label>
             <select
-              value={followUpStudies}
+              value={followUpData.followUp.followUpStudies}
               onChange={handleGoalsSelectsChange("followUpStudies")}
               className="hops-select"
               disabled={disabled}
@@ -108,7 +121,7 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
           <div className="hops__form-element-container">
             <label className="hops-label">Koulutusala:</label>
             <select
-              value={studySector}
+              value={followUpData.followUp.studySector}
               onChange={handleGoalsSelectsChange("studySector")}
               className="hops-select"
               disabled={disabled}
@@ -130,4 +143,22 @@ const FollowUpGoals: React.FC<FollowUpGoalsProps> = (props) => {
   );
 };
 
-export default FollowUpGoals;
+/**
+ * mapStateToProps
+ * @param state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    websocketState: state.websocket,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<any>) {
+  return { displayNotification };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FollowUpGoals);

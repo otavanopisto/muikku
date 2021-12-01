@@ -78,7 +78,8 @@ export const useStudentStudyHour = (
           setStudyHours({
             ...studyHours,
             isLoading: false,
-            studyHourValue: loadedStudentHours,
+            studyHourValue:
+              loadedStudentHours !== undefined ? loadedStudentHours : 0,
           });
         }
       } catch (err) {
@@ -124,27 +125,36 @@ export const useStudentStudyHour = (
    * onAnswerSavedAtServer
    * @param data
    */
-  const onAnswerSavedAtServer = (data: number) => {
-    setStudyHours({ ...studyHours, studyHourValue: data });
+  const onAnswerSavedAtServer = (data: {
+    id: number;
+    studentIdentifier: string;
+    studyHours: number;
+  }) => {
+    if (data.studyHours !== ref.current.studyHourValue) {
+      setStudyHours({ ...studyHours, studyHourValue: data.studyHours });
+    }
   };
 
   /**
    * updateStudyHours
    * @param studentId
    */
-  const updateStudyHours = async (studentId: string) => {
+  const updateStudyHours = async (studentId: string, hours: number) => {
     try {
       await promisify(
-        mApi().hops.student.toggleSuggestion.create(studentId),
+        mApi().hops.student.studyHours.create(studentId, {
+          studyHours: hours,
+        }),
         "callback"
       )();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      displayNotification(`Hups errori, ${err.message}`, "error");
     }
   };
 
   return {
     studyHours,
-    updateStudyHours: (studentId: string) => updateStudyHours(studentId),
+    updateStudyHours: (studentId: string, hours: number) =>
+      updateStudyHours(studentId, hours),
   };
 };
