@@ -35,7 +35,7 @@ let loadCeeposPurchase: LoadCeeposPurchaseTriggerType = function loadCeeposPurch
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.ceepos.errormessage.orderLoadFailed"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.ceepos.errormessage.orderLoadFailed"), 'error'));
       dispatch({
         type: 'UPDATE_CEEPOS_STATE',
         payload: <CeepostStateStatusType>"ERROR"
@@ -71,7 +71,7 @@ let loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType = function loadCeepo
       if (!(err instanceof MApiError)) {
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.ceepos.errormessage.orderLoadFailed"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.ceepos.errormessage.orderLoadFailed"), 'error'));
       dispatch({
         type: 'UPDATE_CEEPOS_STATE',
         payload: <CeepostStateStatusType>"ERROR"
