@@ -142,7 +142,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         sleep(1000);
         waitAndClick(".button--standard-ok");
         waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
-        waitForNotVisible(".dialog--deactivate-reactivate-user.dialog--visible");
+        waitForNotPresent(".dialog--deactivate-reactivate-user");
         waitAndClick(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
         sleep(1000);
