@@ -54,14 +54,19 @@ public class CourseUsersTestsBase extends AbstractUITest {
         .build();
       try {
         navigate(String.format("/workspace/%s/users", workspace1.getUrlName()), false);
+
         waitForPresent(".application-list__item--workspace-user:nth-of-type(4) .application-list__item-content-primary-data>span");
         assertText(".application-list__item--workspace-user:nth-of-type(4) .application-list__item-content-primary-data>span", "Student Tester");
-        
-        waitForPresent(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user>div:first-child");
+
+        waitForElementToAppear(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user>div:first-child", 3, 5000);
         assertText(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user>div:first-child", "Admin Person");
         assertText(".application-list--workspace-staff-members .application-list__item--workspace-staff-member .application-list__item-content-main--workspace-user .application-list__item-content-secondary-data", "testadmin@example.com");
       } finally {
         deleteWorkspace(workspace1.getId());
+        archiveUserByEmail(student.getEmail());
+        archiveUserByEmail(student2.getEmail());
+        archiveUserByEmail(student3.getEmail());
+        archiveUserByEmail(student4.getEmail());
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -100,6 +105,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span");
         assertText(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user span", "Student Tester");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());
       }
     }finally {
@@ -136,7 +142,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         sleep(1000);
         waitAndClick(".button--standard-ok");
         waitForVisible(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
-
+        waitForNotVisible(".dialog--deactivate-reactivate-user.dialog--visible");
         waitAndClick(".tabs__tab-data--workspace-students:not(.active) .application-list__item--workspace-user .application-list__item-content-actions .icon-back");
         waitUntilAnimationIsDone(".dialog--deactivate-reactivate-user");
         sleep(1000);
@@ -144,6 +150,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-content-main--workspace-user .application-list__item-content-primary-data>span");
         assertText(".application-list__item-content-main--workspace-user .application-list__item-content-primary-data>span", "Student Tester");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());
       }
     }finally {
@@ -194,6 +201,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test (test extension)");
       } finally {
+        archiveUserByEmail(student.getEmail());
         deleteWorkspace(workspace1.getId());
       }
     }finally {

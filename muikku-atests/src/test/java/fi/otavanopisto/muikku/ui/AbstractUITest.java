@@ -219,7 +219,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Map<String, Long> getBrowserDimensions() {
-    String resolution = System.getProperty("it.sauce.browser.resolution");
+    String resolution = System.getProperty("it.browser.dimensions");
     if(resolution != null) {
       if (!resolution.isEmpty()) {
         String[] widthHeight = StringUtils.split(resolution, "x");
@@ -389,7 +389,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setProfile(firefoxProfile);
     firefoxProfile.setPreference("intl.accept_languages", "en");
+    
+    if(System.getProperty("it.headless") != null) {
+      firefoxOptions.setHeadless(true);
+    }
+    
     FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
+    
+    if(getBrowserDimensions() != null) {
+      firefoxDriver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
+    }else {
+      firefoxDriver.manage().window().setSize(new Dimension(1280, 1024));
+    }
+    
     return firefoxDriver;
   }
   
@@ -400,7 +412,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
     WebDriver driver = new ChromeDriver(chromeOptions);
     if(getBrowserDimensions() != null) {
-      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("length"))));      
+      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));      
     }else {
       driver.manage().window().setSize(new Dimension(1280, 1024));
     }
@@ -768,6 +780,23 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
+
+  protected void waitForElementToAppear(String elementToAppear, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToAppear);
+    int i = 0;
+    while(elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      refresh();
+      sleep(interval);
+      elements = findElements(elementToAppear);
+    }
+    if(elements.isEmpty())
+      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
+  }
+  
   protected void waitAndClickWithAction(String selector) {
     new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
   }
