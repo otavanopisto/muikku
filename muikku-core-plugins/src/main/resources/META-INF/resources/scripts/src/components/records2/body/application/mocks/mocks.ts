@@ -188,7 +188,7 @@ export const achievementsDone: Achievement[] = [
   },
 ];
 
-export const recordsMock: RecordSubject[] = [
+/* export const recordsMock: RecordSubject[] = [
   {
     name: "Äidinkieli",
     courses: [
@@ -317,3 +317,4 @@ export const recordsMock: RecordSubject[] = [
     ],
   },
 ];
+ */

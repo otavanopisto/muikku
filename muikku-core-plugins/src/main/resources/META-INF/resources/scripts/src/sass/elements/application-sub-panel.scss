@@ -13,6 +13,11 @@
   }
 }
 
+.application-sub-panel--study-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .application-sub-panel--worklist {
   border: 0;
   margin: 0 0 15px;
@@ -56,12 +61,10 @@
 }
 
 .application-sub-panel--organization-users {
-
   &:first-child {
     padding-bottom: 12px;
   }
 }
-
 
 // Subpanel header
 .application-sub-panel__header {
@@ -185,6 +188,16 @@
 .application-sub-panel__body--studies-summary-info {
   display: flex;
   flex-flow: column nowrap;
+  width: 50%;
+}
+.application-sub-panel__body--studies-options {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 50%;
+  text-align: center;
+  background-color: antiquewhite;
+  align-items: center;
+  justify-content: center;
 }
 
 .application-sub-panel__body--studies-summary-cards {
@@ -294,7 +307,6 @@
   justify-content: center;
   padding: 10px;
 }
-
 
 .application-sub-panel__card-body {
   display: flex;
@@ -804,8 +816,6 @@
   font-weight: 600;
 }
 
-
-
 .application-sub-panel__item-label {
   font-weight: 600;
   margin: 2px 5px 2px 0;
@@ -873,7 +883,8 @@
   display: flex;
 }
 
-.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
+.application-sub-panel__item-data-container--organization-summary
+  *:not(:first-child) {
   margin-left: 10px;
 }
 
@@ -925,11 +936,13 @@
   }
 }
 
-.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date
+  .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date
+  .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
@@ -976,7 +989,6 @@
   flex-flow: row wrap;
 
   .application-sub-panel__item-title {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: 60%;
       margin: 0 10px 0 0;
@@ -984,7 +996,6 @@
   }
 
   .application-sub-panel__item-data {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -997,14 +1008,12 @@
   flex-flow: column wrap;
 
   .application-sub-panel__item-title {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
   }
 
   .application-sub-panel__item-data {
-
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -1069,7 +1078,6 @@
 }
 
 .application-sub-panel__text--course-evaluation {
-
   // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;

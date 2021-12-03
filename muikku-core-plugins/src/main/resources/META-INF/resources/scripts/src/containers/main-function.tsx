@@ -36,7 +36,7 @@ import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, load
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords, setLocationToInfoInTranscriptOfRecords
 } from '~/actions/main-function/records';
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 import { updateVops } from '~/actions/main-function/vops';
@@ -205,6 +205,9 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(setLocationToStatisticsInTranscriptOfRecords() as Action);
       this.props.store.dispatch(updateStatistics() as Action);
+    } else if(givenLocation === "info"){
+      this.props.store.dispatch(setLocationToInfoInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateSummary() as Action);
     }
     this.props.store.dispatch(updateHops() as Action);
   }

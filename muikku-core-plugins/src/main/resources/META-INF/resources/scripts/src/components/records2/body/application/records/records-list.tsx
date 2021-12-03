@@ -4,17 +4,24 @@ import AnimateHeight from "react-animate-height";
 import Avatar from "~/components/general/avatar";
 import RecordsAssignmentsListDialog from "~/components/records2/dialogs/records-assignments-list-dialog";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
+import * as moment from "moment";
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 let ProgressBarLine = require("react-progress-bar.js").Line;
 
+/**
+ * RecordSubject
+ */
 export interface RecordSubject {
   name: string;
   courses: RecordSubjectCourse[];
 }
 
+/**
+ * RecordSubjectCourse
+ */
 export interface RecordSubjectCourse {
   name: string;
-  subjectCode: string;
+  subjectCode?: string;
   evaluationDate?: string;
   asessor?: string;
   studies: {
@@ -25,94 +32,78 @@ export interface RecordSubjectCourse {
   };
   status: "EVALUATED" | "SUPPLEMENTATION" | "ONGOING";
   grade?: string;
+  description?: string;
+  workspaceId: number;
 }
 
+/**
+ * RecordsListProps
+ */
 interface RecordsListProps {
   name: string;
+  subjectId: string;
   courseCount: number;
+  openList: boolean;
+  onOpenClick: (id: string) => void;
   studiesListType: "ongoing" | "normal";
 }
 
+/**
+ * RecordsList
+ * @param param0
+ * @returns JSX.Element
+ */
 export const RecordsList: React.FC<RecordsListProps> = ({
   children,
   name,
   courseCount,
   studiesListType,
+  openList,
+  subjectId,
+  onOpenClick,
 }) => {
   const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (open !== openList) {
+      setOpen(openList);
+    }
+  }, [openList]);
+
+  const handleOpenClick = () => {
+    if (onOpenClick) {
+      onOpenClick(subjectId);
+    }
+  };
 
   const animateHeight = open ? "auto" : 0;
 
   const arrowClass = open ? "arrow-down" : "arrow-right";
 
   return (
-    <div className="studies-records__section-content-course-list">
+    <div
+      className="studies-records__section-content-course-list"
+      style={{ borderBottom: "1px solid black" }}
+    >
       <div
         className="studies-records__section-content-course-list-container"
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          borderBottom: "1px solid black",
-          paddingTop: "10px",
+          margin: "10px 0",
         }}
       >
         <div style={{ display: "flex" }}>
           <div
             className="studies-records__section-content-course-list-subject"
-            onClick={() => setOpen(!open)}
+            onClick={handleOpenClick}
           >
             {`${name} (${courseCount}) `}
           </div>
 
           <div className={arrowClass}></div>
         </div>
-
-        {studiesListType === "normal" ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 10px",
-            }}
-          >
-            <ProgressBarCircle
-              containerClassName="summary-page__study-file-progresscircle"
-              options={{
-                strokeWidth: 10,
-                duration: 1000,
-                color: "#ce01bd",
-                trailColor: "#ebebeb",
-                easing: "easeInOut",
-                trailWidth: 10,
-                svgStyle: { width: "40px", height: "40px", margin: "10px 5px" },
-                text: {
-                  style: null,
-                  value: "2/8",
-                },
-              }}
-              progress={0.1}
-            />
-            <ProgressBarCircle
-              containerClassName="summary-page__study-file-progresscircle"
-              options={{
-                strokeWidth: 10,
-                duration: 1000,
-                color: "#ce01bd",
-                trailColor: "#ebebeb",
-                easing: "easeInOut",
-                trailWidth: 10,
-                svgStyle: { width: "40px", height: "40px", margin: "10px 5px" },
-                text: {
-                  style: null,
-                  value: "0/3",
-                },
-              }}
-              progress={0.5}
-            />
-          </div>
-        ) : null}
       </div>
 
       <AnimateHeight
@@ -163,6 +154,17 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
     setHeight(height === "auto" ? 0 : "auto");
   };
 
+  /**
+   * createHtmlMarkup
+   * This should sanitize html
+   * @param htmlString string that contains html
+   */
+  const createHtmlMarkup = (htmlString: string) => {
+    return {
+      __html: htmlString,
+    };
+  };
+
   return (
     <div
       className={`studies-records__section-content-course-list-item-container ${statusClassMod()}`}
@@ -178,7 +180,9 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
         </div>
         <div className="studies-records__section-content-course-list-item-cell">
           <div className="studies-records__section-content-course-list-item-cell-box">
-            {course.evaluationDate ? course.evaluationDate : "-"}
+            {course.evaluationDate
+              ? moment(course.evaluationDate).format("l")
+              : "-"}
           </div>
         </div>
         <div className="studies-records__section-content-course-list-item-cell">
@@ -209,8 +213,9 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
           <div className="studies-records__section-content-course-list-item-cell-box">
             <div>
               <RecordsAssignmentsListDialog
+                courseName={course.name}
                 userEntityId={userEntityId}
-                workspaceEntityId={0}
+                workspaceEntityId={course.workspaceId}
               >
                 <Button style={{ backgroundColor: "green" }}>Näytä</Button>
               </RecordsAssignmentsListDialog>
@@ -219,7 +224,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
         </div>
       </div>
       <AnimateHeight height={height}>
-        {course.status !== "ONGOING" ? (
+        {course.status === "EVALUATED" ? (
           <div style={{ display: "flex", width: "100%" }}>
             <div
               style={{
@@ -234,16 +239,21 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
               <div style={{ fontWeight: "bold", margin: "5px 0" }}>
                 Sanallinen arviointi
               </div>
-              <div>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Maecenas et facilisis risus. Mauris fringilla nec tortor sed
-                egestas. Nam posuere sem et luctus tincidunt. Suspendisse
-                elementum odio ex, ut vehicula enim porta a. Integer dictum,
-                purus ac dapibus elementum, neque urna pellentesque magna, nec
-                eleifend ex ligula id diam. Vivamus lobortis nec mauris porta
-                porttitor. Vestibulum luctus sapien velit, eget ullamcorper
-                neque maximus ut.
-              </div>
+              {course.description ? (
+                <div
+                  dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  -
+                </div>
+              )}
             </div>
             <div
               style={{
@@ -274,7 +284,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                   color: "#FFA500",
                   trailColor: "#e3e3e3",
                   trailWidth: 1,
-                  svgStyle: { width: "100%", height: "35px" },
+                  svgStyle: { width: "100%", height: "25px" },
                   text: {
                     className:
                       "material-page__audiofield-file-upload-percentage",
@@ -292,7 +302,9 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                 trailWidth={1}
                 svgStyle={{ width: "100%", height: "25px" }}
                 text={`Harjoitustehtävät`}
-                progress={0.5}
+                progress={
+                  course.studies.excerciseCount / course.studies.maxExcercise
+                }
               />
             </div>
             <div style={{ margin: "5px 0" }}>
@@ -304,7 +316,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                   color: "#CE01BD",
                   trailColor: "#e3e3e3",
                   trailWidth: 1,
-                  svgStyle: { width: "100%", height: "35px" },
+                  svgStyle: { width: "100%", height: "25px" },
                   text: {
                     className:
                       "material-page__audiofield-file-upload-percentage",
@@ -322,7 +334,9 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                 trailWidth={1}
                 svgStyle={{ width: "100%", height: "25px" }}
                 text={`Arvioitavat tehtävät`}
-                progress={0.5}
+                progress={
+                  course.studies.assigmentCount / course.studies.maxAssigment
+                }
               />
             </div>
           </div>

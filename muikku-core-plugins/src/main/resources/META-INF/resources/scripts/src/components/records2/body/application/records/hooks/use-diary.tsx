@@ -25,8 +25,8 @@ export const useDiary = (userEntityId: number, workspaceEntityId: number) => {
     const fetchData = async () => {
       try {
         studyDiaryEvents = (await promisify(
-          mApi().workspace.workspaces.journal.read(4, {
-            userEntityId: 23,
+          mApi().workspace.workspaces.journal.read(workspaceEntityId, {
+            userEntityId: userEntityId,
             firstResult: 0,
             maxResults: 512,
           }),

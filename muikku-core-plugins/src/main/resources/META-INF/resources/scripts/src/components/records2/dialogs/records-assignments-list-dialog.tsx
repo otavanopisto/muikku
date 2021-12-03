@@ -15,6 +15,7 @@ import { DiaryList } from "../body/application/records/diary-list";
  */
 interface RecordsAssigmentsListDialogProps {
   i18n: i18nType;
+  courseName: string;
   userEntityId: number;
   workspaceEntityId: number;
   children?: React.ReactElement<any>;
@@ -49,7 +50,7 @@ class RecordsAssigmentsListDialog extends React.Component<
           <StudyAssignmentsList
             i18n={this.props.i18n}
             userEntityId={this.props.userEntityId}
-            workspaceId={4}
+            workspaceId={this.props.workspaceEntityId}
           />
         </div>
         <div
@@ -77,7 +78,7 @@ class RecordsAssigmentsListDialog extends React.Component<
     return (
       <Dialog
         disableScroll={true}
-        title="[Kurssin nimi] tehtävät"
+        title={`${this.props.courseName} tehtävät`}
         content={content}
         modifier={["assignments"]}
       >

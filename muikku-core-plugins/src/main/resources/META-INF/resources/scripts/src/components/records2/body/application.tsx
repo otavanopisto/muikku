@@ -3,7 +3,8 @@ import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { i18nType } from "reducers/base/i18n";
 import Records from "./application/records/records";
-import Summary from "./application/summary/summary";
+import SummaryNew from "./application/summary/summary";
+import Summary from "../../records/body/application/summary";
 import YO from "./application/yo/yo";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
@@ -14,6 +15,8 @@ import {
 import { HOPSType } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import StudyInfo from "./application/study-info/study-info";
+import { TabType } from "~/components/general/tabs";
+import Hops from "~/components/records/body/application/hops";
 
 /**
  * StudiesApplicationProps
@@ -79,7 +82,7 @@ class StudiesApplication extends React.Component<
    * @param hash section hash
    * @return whether section with given hash should be visible or not
    */
-  isVisible(id: StudiesTab) {
+  isVisible(id: string) {
     switch (id) {
       case "HOPS":
         return (
@@ -107,8 +110,13 @@ class StudiesApplication extends React.Component<
    * @param id
    */
   onTabChange = (
-    id: "RECORDS" | "CURRENT_RECORD" | "HOPS" | "SUMMARY" | "YO"
+    id: "RECORDS" | "CURRENT_RECORD" | "HOPS" | "SUMMARY" | "YO",
+    hash?: string
   ) => {
+    if (hash) {
+      window.location.hash = hash;
+    }
+
     this.setState({
       activeTab: id,
     });
@@ -125,14 +133,15 @@ class StudiesApplication extends React.Component<
       </h1>
     );
 
-    let panelTabs: PanelTab<StudiesTab>[] = [
+    let panelTabs: TabType[] = [
       {
         id: "SUMMARY",
         name: this.props.i18n.text.get("plugin.records.category.summary"),
+        hash: "summary",
         component: () => {
           return (
             <ApplicationPanelBody modifier="tabs">
-              <Summary />
+              <SummaryNew />
             </ApplicationPanelBody>
           );
         },
@@ -140,6 +149,7 @@ class StudiesApplication extends React.Component<
       {
         id: "RECORDS",
         name: this.props.i18n.text.get("plugin.records.category.records"),
+        hash: "records",
         component: () => {
           return (
             <ApplicationPanelBody modifier="tabs">
@@ -149,8 +159,21 @@ class StudiesApplication extends React.Component<
         },
       },
       {
+        id: "HOPS",
+        name: this.props.i18n.text.get("plugin.records.category.hops"),
+        hash: "hops",
+        component: () => {
+          return (
+            <ApplicationPanelBody modifier="tabs">
+              <Hops />
+            </ApplicationPanelBody>
+          );
+        },
+      },
+      {
         id: "YO",
-        name: this.props.i18n.text.get("plugin.records.category.yo"),
+        name: "Yo",
+        hash: "yo",
         component: () => {
           return (
             <ApplicationPanelBody modifier="tabs">
@@ -162,6 +185,7 @@ class StudiesApplication extends React.Component<
       {
         id: "STUDY_INFO",
         name: "Opintojen tiedot",
+        hash: "info",
         component: () => {
           return (
             <ApplicationPanelBody modifier="tabs">

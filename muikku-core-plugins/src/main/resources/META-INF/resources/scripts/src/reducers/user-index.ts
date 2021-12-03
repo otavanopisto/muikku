@@ -68,6 +68,7 @@ export interface UserWithSchoolDataType {
   nickName?: string,
   school?: string,
   studyEndDate?: string,
+  studyProgrammeIdentifier?: string,
   studyProgrammeName?: string,
   studyStartDate?: string,
   studyTimeEnd?: string,

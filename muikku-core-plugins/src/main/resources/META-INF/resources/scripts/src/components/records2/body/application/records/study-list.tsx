@@ -20,6 +20,7 @@ import { useAssignments } from "./hooks/use-assignment";
 import { useCompositeReplies } from "./hooks/use-composite-replies";
 import { useWorkspace } from "./hooks/use-workspace";
 import "~/sass/elements/records.scss";
+import AssignmentMaterial from "./AssignmentMaterial";
 
 /**
  * StudyAssignmentsListProps
@@ -40,16 +41,16 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
   workspaceId,
 }) => {
   const { loadingAssignments, assignmentsData, serverError } =
-    useAssignments(4);
+    useAssignments(workspaceId);
 
   const {
     loadingCompositeReplies,
     compositeRepliesData,
     serverErrorCompositeReplies,
-  } = useCompositeReplies(23, 4);
+  } = useCompositeReplies(userEntityId, workspaceId);
 
   const { loadingWorkspace, workspaceData, serverErrorWorkspace } =
-    useWorkspace(4);
+    useWorkspace(workspaceId);
 
   let renderContent: JSX.Element | JSX.Element[] = (
     <div className="empty">
@@ -91,7 +92,9 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
   }
 
   return (
-    <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
+    <div
+      style={{ overflowY: "scroll", maxHeight: "600px", minHeight: "600px" }}
+    >
       {renderContent}
     </div>
   );
@@ -381,7 +384,7 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
           {isLoading ? (
             <div className="loader-empty" />
           ) : workspace && materialNode ? (
-            <EvaluationMaterial
+            <AssignmentMaterial
               material={materialNode}
               workspace={workspace}
               compositeReply={compositeReply}

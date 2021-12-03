@@ -56,7 +56,9 @@ export const DiaryList: React.FC<DiaryListProps> = ({
   }
 
   return (
-    <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
+    <div
+      style={{ overflowY: "scroll", maxHeight: "600px", minHeight: "600px" }}
+    >
       {renderContent}
     </div>
   );

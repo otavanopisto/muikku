@@ -6,7 +6,6 @@ import { MaterialAssignmentType } from "~/reducers/workspaces";
 /**
  * useDiary
  * Fetches and return diary data
- * @param userEntityId
  * @param workspaceEntityId
  * @returns object containing state properties of loading, apiData and error
  */
@@ -26,7 +25,7 @@ export const useAssignments = (workspaceEntityId: number) => {
           (async () => {
             let assignmentsExcercise =
               ((await promisify(
-                mApi().workspace.workspaces.materials.read(4, {
+                mApi().workspace.workspaces.materials.read(workspaceEntityId, {
                   assignmentType: "EXERCISE",
                 }),
                 "callback"
@@ -34,7 +33,7 @@ export const useAssignments = (workspaceEntityId: number) => {
 
             let assignmentsEvaluated =
               ((await promisify(
-                mApi().workspace.workspaces.materials.read(4, {
+                mApi().workspace.workspaces.materials.read(workspaceEntityId, {
                   assignmentType: "EVALUATED",
                 }),
                 "callback"
