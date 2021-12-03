@@ -94,6 +94,16 @@
   color: $color-button-execute-text;
   order: 3;
 
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-execute-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-execute-background, 20%);
+  }
+
   @include breakpoint($breakpoint-desktop) {
     order: 1;
   }

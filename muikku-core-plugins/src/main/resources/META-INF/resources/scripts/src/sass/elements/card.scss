@@ -230,11 +230,11 @@
   text-transform: none;
 }
 
-.card__text-row--ceepos-done {
+.card__text-row--ceepos {
   padding: 20px 0 5px;
 }
 
-.card__text-highlight {
+.card__text-highlight--ceepos {
   color: $color-info;
 }
 
@@ -244,5 +244,9 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: 1.6rem;
+  }
+
+  .button {
+    margin: 0 10px 0
   }
 }

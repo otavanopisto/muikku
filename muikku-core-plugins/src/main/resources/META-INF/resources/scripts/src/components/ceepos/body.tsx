@@ -7,7 +7,6 @@ import { CeeposState } from '~/reducers/main-function/ceepos';
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import Button from "~/components/general/button";
-import Link from "~/components/general/link";
 
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';
@@ -61,16 +60,19 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
           <div className="card__title card__title--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.title")}</div>
           <div className="card__text">
             <div className="card__text-row">
-              <div className="card__subtitle">Tuote</div>
+              <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.title")}</div>
               <div>{this.props.ceepos.purchase.product.Description}</div>
             </div>
             <div className="card__text-row">
-              <div className="card__subtitle">Hinta</div>
+              <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.price")}</div>
               <div className="card__text-highlight card__text-highlight--ceepos">{this.props.ceepos.purchase.product.Price / 100}€</div>
             </div>
             <div className="card__text-row">
-              <div className="card__subtitle">Päivämäärä</div>
-              <div>{this.props.i18n.time.format(this.props.ceepos.purchase.created)}</div>
+              <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.date")}</div>
+              <div>{this.props.i18n.text.get("plugin.ceepos.order.product.created")}: {this.props.i18n.time.format(this.props.ceepos.purchase.created)}</div>
+              {this.props.ceepos.purchase.paid && this.props.ceepos.purchase.paid !== null ?
+                <div>{this.props.i18n.text.get("plugin.ceepos.order.product.paid")}: {this.props.i18n.time.format(this.props.ceepos.purchase.paid)}</div>
+              : null}
             </div>
           </div>
         </>
@@ -94,13 +96,32 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
           {productData}
 
           {/*
-            Different states of the order to be displayed if the student comes back to the pay view after order has been fulfilled.
+            Different states of the order to be displayed if the student comes back to the pay view after order has been fulfilled/cancelled/errored.
             Missing CREATED and ONGOING states should automatically redirect student to the Ceepos store.
           */}
-          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "CANCELLED" ? <div>{this.props.i18n.text.get("plugin.ceepos.order.state.cancelled")}</div> : null}
-          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "ERRORED" ? <div>{this.props.i18n.text.get("plugin.ceepos.order.state.errored")}</div> : null}
-          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "PAID" ? <div>{this.props.i18n.text.get("plugin.ceepos.order.state.paid")}</div> : null}
-          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "COMPLETE" ? <div>{this.props.i18n.text.get("plugin.ceepos.order.state.complete")}</div> : null}
+          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "CANCELLED" ?
+            <div className="card__text">
+              <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.state.cancelled")}</div>
+            </div>
+          : null}
+
+          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "ERRORED" ?
+            <div className="card__text">
+              <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.state.errored")}</div>
+            </div>
+          : null}
+
+          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "PAID" ?
+            <div className="card__text">
+              <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.state.paid")}</div>
+            </div>
+          : null}
+
+          {this.props.ceepos.purchase && this.props.ceepos.purchase.state === "COMPLETE" ?
+            <div className="card__text">
+              <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.state.complete")}</div>
+            </div>
+          : null}
         </div>
       );
 
@@ -132,7 +153,7 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
             {paymentWasSuccessful ?
               <>
                 <div className="card__text">
-                  <div className="card__text-row card__text-row--ceepos-done">{this.props.i18n.text.get("plugin.ceepos.order.done.successful")}</div>
+                  <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.successful")}</div>
                 </div>
                 <footer className="card__footer card__footer--ceepos">
                   <Button
@@ -147,7 +168,7 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
             {paymentWasCancelled ?
               <>
                 <div className="card__text">
-                  <div className="card__text-row card__text-row--ceepos-done">{this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")}</div>
+                  <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")}</div>
                 </div>
                 <footer className="card__footer card__footer--ceepos">
                   <Button
@@ -162,9 +183,14 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
             {paymentWasErrored ?
               <>
                 <div className="card__text">
-                  <div className="card__text-row card__text-row--ceepos-done">{this.props.i18n.text.get("plugin.ceepos.order.done.errored")}</div>
+                  <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.errored")}</div>
                 </div>
                 <footer className="card__footer card__footer--ceepos">
+                  <Button
+                    icon="forward"
+                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
+                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
+                  </Button>
                   <Button
                     icon="envelope"
                     buttonModifiers={["ceepos-back-to-muikku", "info"]}
@@ -177,9 +203,14 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
             {unknownError ?
               <>
                 <div className="card__text">
-                  <div className="card__text-row card__text-row--ceepos-done">{this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")}</div>
+                  <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")}</div>
                 </div>
                 <footer className="card__footer card__footer--ceepos">
+                  <Button
+                    icon="forward"
+                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
+                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
+                  </Button>
                   <Button
                     icon="envelope"
                     buttonModifiers={["ceepos-back-to-muikku", "info"]}

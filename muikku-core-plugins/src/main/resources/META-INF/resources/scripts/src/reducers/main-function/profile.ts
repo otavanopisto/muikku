@@ -51,6 +51,7 @@ export interface PurchaseProductType {
 
 export interface PurchaseType {
   created: string;
+  paid: string;
   id: number;
   product: PurchaseProductType,
   state: PurchaseStateType,

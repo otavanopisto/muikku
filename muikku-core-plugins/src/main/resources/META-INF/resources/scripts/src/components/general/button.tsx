@@ -38,6 +38,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
+    delete elementProps["icon"];
 
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
 
