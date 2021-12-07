@@ -128,7 +128,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     
       mockBuilder.mockCourseAssessments(courseStudent, admin).mockWorkspaceBilledPrice(String.valueOf(price/2));
       waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
-      waitAndClick(".button--standard-ok");
+      waitForPresent(".dialog--evaluation-archive-student.dialog--visible .button--standard-ok");
+      waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--evaluation-archive-student.dialog--visible", 3, 2000);
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
       EqualToJsonPattern jsonPattern = new EqualToJsonPattern("{\"price\": 37.5}", true, true);
       verify(putRequestedFor(urlEqualTo("/1/worklist/billedPrice"))
@@ -137,6 +138,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
+        archiveUserByEmail(student.getEmail());
       }
     } finally {
       mockBuilder.wiremockReset();
@@ -244,6 +246,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
+          archiveUserByEmail(student.getEmail());
         }
       } finally {
         mockBuilder.wiremockReset();
@@ -323,6 +326,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
         } finally {
           deleteWorkspace(workspace.getId());
+          archiveUserByEmail(student.getEmail());
+          archiveUserByEmail(student2.getEmail());
         }
       } finally {
         mockBuilder.wiremockReset();
@@ -334,7 +339,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     browsers = {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI
@@ -404,6 +408,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
       } finally {
           deleteWorkspace(workspace.getId());
+          archiveUserByEmail(student.getEmail());
+          archiveUserByEmail(student2.getEmail());
+          archiveUserByEmail(student3.getEmail());
         }
       } finally {
         mockBuilder.wiremockReset();
@@ -512,12 +519,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
+          archiveUserByEmail(student.getEmail());
         }
       } finally {
         mockBuilder.wiremockReset();
     }
   }
-  
 
-  
 }

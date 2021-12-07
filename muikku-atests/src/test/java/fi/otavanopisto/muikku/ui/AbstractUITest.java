@@ -787,9 +787,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
    * @return not a thing
    */
   protected void waitAndClickAndConfirmVisibilityGoesAway(String clickSelector, String elementToGoAway, int timesToTry, int interval) {
-    boolean visible = findElementByCssSelector(elementToGoAway).isDisplayed();
+    List<WebElement> elements = findElements(elementToGoAway);
     int i = 0;
-    while(visible) {
+    while(!elements.isEmpty()) {
       if (i > timesToTry) {
         break;
       }
@@ -797,9 +797,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
       wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
       sleep(interval);
-      visible = findElementByCssSelector(elementToGoAway).isDisplayed();
+      elements = findElements(elementToGoAway);
     }
-    if(visible)
+    if(!elements.isEmpty())
       throw new TimeoutException("Element did not go away in definded time period");
   }
   
