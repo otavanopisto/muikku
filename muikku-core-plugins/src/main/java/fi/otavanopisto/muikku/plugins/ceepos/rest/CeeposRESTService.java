@@ -559,9 +559,7 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.manualCompletion.create({
-   *   'id': '123' // order id
-   * });
+   * mApi().ceepos.manualCompletion.create(123); // order id
    * 
    * RESPONSE:
    * 
@@ -589,22 +587,22 @@ public class CeeposRESTService {
    * 
    * @return 200, no objcect
    */
-  @Path("/manualCompletion")
+  @Path("/manualCompletion/{ORDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response completeOrder(CeeposOrderRestModel payload) {
+  public Response completeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
-    if (payload.getId() == null) {
+    if (orderId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
     }
     
     // Find the order
     
-    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (order == null) {
-      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -648,7 +646,7 @@ public class CeeposRESTService {
     
     Response response = handlePaymentConfirmation(paymentConfirmation);
     if (response.getStatusInfo() == Status.OK) {
-      order = ceeposController.findOrderById(payload.getId());
+      order = ceeposController.findOrderById(orderId);
       return Response.ok(toRestModel(order)).build();
     }
     else {
@@ -659,9 +657,7 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.order.del({
-   *   'id': '123' // order id
-   * });
+   * mApi().ceepos.order.del(123); // order id
    * 
    * RESPONSE:
    * 
@@ -677,22 +673,22 @@ public class CeeposRESTService {
    * 
    * @return 204 No content
    */
-  @Path("/order")
+  @Path("/order/{ORDERID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeeOrder(CeeposOrderRestModel payload) {
+  public Response removeeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
-    if (payload.getId() == null) {
+    if (orderId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
     }
     
     // Find the order
     
-    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (order == null) {
-      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
     }
     
