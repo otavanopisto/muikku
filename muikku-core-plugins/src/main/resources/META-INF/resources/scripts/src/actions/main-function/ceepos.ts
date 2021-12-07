@@ -17,6 +17,7 @@ export interface UPDATE_CEEPOS_STATE extends SpecificActionType<"UPDATE_CEEPOS_S
 let loadCeeposPurchase: LoadCeeposPurchaseTriggerType = function loadCeeposPurchase(purchaseId) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
+
       dispatch({
         type: 'UPDATE_CEEPOS_STATE',
         payload: <CeepostStateStatusType>"LOADING"
@@ -46,6 +47,7 @@ let loadCeeposPurchase: LoadCeeposPurchaseTriggerType = function loadCeeposPurch
 
 let loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType = function loadCeeposPurchase(purchaseId) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
+
     try {
       dispatch({
         type: 'UPDATE_CEEPOS_STATE',

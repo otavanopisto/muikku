@@ -1,7 +1,6 @@
 import { ActionType } from "~/actions";
 import { PurchaseType } from "./profile";
 
-
 export type CeepostStateStatusType = "LOADING" | "ERROR" | "READY";
 
 export interface CeeposState {
