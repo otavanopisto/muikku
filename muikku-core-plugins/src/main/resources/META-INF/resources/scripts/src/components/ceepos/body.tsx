@@ -30,10 +30,6 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
     super(props);
 
     this.performPayment = this.performPayment.bind(this);
-
-    // this.state = {
-    //   email: "",
-    // }
   }
 
     /**
@@ -158,8 +154,8 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
                 <footer className="card__footer card__footer--ceepos">
                   <Button
                     icon="forward"
-                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
-                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
+                    buttonModifiers={["back-to-muikku", "info"]}
+                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
                   </Button>
                 </footer>
               </>
@@ -173,8 +169,8 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
                 <footer className="card__footer card__footer--ceepos">
                   <Button
                     icon="forward"
-                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
-                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
+                    buttonModifiers={["back-to-muikku", "info"]}
+                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
                   </Button>
                 </footer>
               </>
@@ -188,12 +184,12 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
                 <footer className="card__footer card__footer--ceepos">
                   <Button
                     icon="forward"
-                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
-                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
+                    buttonModifiers={["back-to-muikku", "info"]}
+                    href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
                   </Button>
                   <Button
                     icon="envelope"
-                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
+                    buttonModifiers={["send-message", "info"]}
                   >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
                   </Button>
                 </footer>
@@ -208,12 +204,12 @@ class CeeposBody extends React.Component<CeeposBodyProps, CeeposBodyState> {
                 <footer className="card__footer card__footer--ceepos">
                   <Button
                     icon="forward"
-                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
+                    buttonModifiers={["back-to-muikku", "info"]}
                     href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
                   </Button>
                   <Button
                     icon="envelope"
-                    buttonModifiers={["ceepos-back-to-muikku", "info"]}
+                    buttonModifiers={["send-message", "info"]}
                   >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
                   </Button>
                 </footer>
