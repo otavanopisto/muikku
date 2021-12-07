@@ -389,6 +389,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setProfile(firefoxProfile);
     firefoxProfile.setPreference("intl.accept_languages", "en");
+    
+    if(System.getProperty("it.headless") != null) {
+      firefoxOptions.setHeadless(true);
+    }
+    
     FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
     return firefoxDriver;
   }
@@ -694,6 +699,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.linkText(text)).click();
   }
   
+//  Deprecate this. I don't see any reason to do this more complicated than necessary.
+//  See waitAndClick as it is now.
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -727,8 +734,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitAndClick(String selector) {
-    waitForClickable(selector);
-    click(selector);
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(30)).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector))).click();
   }
 
   protected void waitAndClick(String selector, int timeout) {
@@ -768,6 +774,35 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
+  
+  /** 
+   * Clicks on an selector and checks
+   * if given element is not displayed after defined (ms) interval as a result, 
+   * if it is, it will try again
+   * number of times defined.
+   * @param clickSelector String
+   * @param elementToGoAway String
+   * @param timesToTry int
+   * @param interval int
+   * @return not a thing
+   */
+  protected void waitAndClickAndConfirmVisibilityGoesAway(String clickSelector, String elementToGoAway, int timesToTry, int interval) {
+    boolean visible = findElementByCssSelector(elementToGoAway).isDisplayed();
+    int i = 0;
+    while(visible) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      visible = findElementByCssSelector(elementToGoAway).isDisplayed();
+    }
+    if(visible)
+      throw new TimeoutException("Element did not go away in definded time period");
+  }
+  
   protected void waitAndClickWithAction(String selector) {
     new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
   }
