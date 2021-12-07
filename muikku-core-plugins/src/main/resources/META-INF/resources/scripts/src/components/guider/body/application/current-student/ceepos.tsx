@@ -216,10 +216,12 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
     const orderCompleteLinkDisabledState = (state: string) => {
       switch (state) {
-        case "COMPLETE":
-          return true;
-        default:
+        case "ONGOING":
+        case "PAID":
+        case "ERRORED":
           return false;
+        default:
+          return true;
       }
     };
 
