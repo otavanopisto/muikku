@@ -381,9 +381,7 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.pay.create({
-   *   'id': '123' // order id
-   * });
+   * mApi().ceepos.pay.create(123); // order id
    * 
    * RESPONSE:
    * 
@@ -393,26 +391,26 @@ public class CeeposRESTService {
    * 
    * Sends a payment request for an order to Ceepos.
    * 
-   * @param payload Payload object  
+   * @param orderId Order id  
    * 
    * @return The url to which the user should be redirected to complete payment.
    */
-  @Path("/pay")
+  @Path("/pay/{ORDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response sendPaymentRequest(CeeposOrderRestModel payload) {
+  public Response sendPaymentRequest(@PathParam("ORDERID") Long orderId) {
     
     // Validate payload
     
-    if (payload.getId() == null) {
+    if (orderId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
     }
     
     // Find the order
     
-    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (order == null) {
-      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -430,7 +428,7 @@ public class CeeposRESTService {
     // Ensure order hasn't been handled yet
     
     if (order.getState() != CeeposOrderState.CREATED && order.getState() != CeeposOrderState.ONGOING) {
-      logger.warning(String.format("Ceepos order %d: Unable to pay as state is already %s", payload.getId(), order.getState()));
+      logger.warning(String.format("Ceepos order %d: Unable to pay as state is already %s", orderId, order.getState()));
       switch (order.getState()) {
       case CANCELLED:
         return Response.status(Status.BAD_REQUEST).entity(localeController.getText(sessionController.getLocale(), "ceepos.error.cancelled")).build();
@@ -559,9 +557,7 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.manualCompletion.create({
-   *   'id': '123' // order id
-   * });
+   * mApi().ceepos.manualCompletion.create(123); // order id
    * 
    * RESPONSE:
    * 
@@ -585,26 +581,26 @@ public class CeeposRESTService {
    * COMPLETE. Forced order completion is only available for admins or the staff
    * member who originally created the order.
    * 
-   * @param payload Payload object  
+   * @param orderId Order id  
    * 
    * @return 200, no objcect
    */
-  @Path("/manualCompletion")
+  @Path("/manualCompletion/{ORDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response completeOrder(CeeposOrderRestModel payload) {
+  public Response completeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
-    if (payload.getId() == null) {
+    if (orderId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
     }
     
     // Find the order
     
-    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (order == null) {
-      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -648,7 +644,7 @@ public class CeeposRESTService {
     
     Response response = handlePaymentConfirmation(paymentConfirmation);
     if (response.getStatusInfo() == Status.OK) {
-      order = ceeposController.findOrderById(payload.getId());
+      order = ceeposController.findOrderById(orderId);
       return Response.ok(toRestModel(order)).build();
     }
     else {
@@ -659,9 +655,7 @@ public class CeeposRESTService {
   /**
    * REQUEST:
    * 
-   * mApi().ceepos.order.del({
-   *   'id': '123' // order id
-   * });
+   * mApi().ceepos.order.del(123); // order id
    * 
    * RESPONSE:
    * 
@@ -673,26 +667,26 @@ public class CeeposRESTService {
    * Order removal is only available for admins or the staff member who originally
    * created the order.
    * 
-   * @param payload Payload object  
+   * @param orderId Order id  
    * 
    * @return 204 No content
    */
-  @Path("/order")
+  @Path("/order/{ORDERID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeeOrder(CeeposOrderRestModel payload) {
+  public Response removeeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
-    if (payload.getId() == null) {
+    if (orderId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
     }
     
     // Find the order
     
-    CeeposOrder order = ceeposController.findOrderByIdAndArchived(payload.getId(), false);
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
     if (order == null) {
-      logger.warning(String.format("Ceepos order %d: Not found", payload.getId()));
+      logger.warning(String.format("Ceepos order %d: Not found", orderId));
       return Response.status(Status.NOT_FOUND).build();
     }
     
