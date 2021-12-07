@@ -395,7 +395,7 @@ public class CeeposRESTService {
    * 
    * @return The url to which the user should be redirected to complete payment.
    */
-  @Path("/pay")
+  @Path("/pay/{ORDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response sendPaymentRequest(@PathParam("ORDERID") Long orderId) {
