@@ -29,7 +29,7 @@ import { AnnouncementListType } from '~/reducers/announcements';
 import AnnouncerBody from '../components/announcer/body';
 import { updateAvailablePurchaseProducts, updateLabelFilters, updateWorkspaceFilters, updateUserGroupFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
-import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
+import { loadStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings, setProfileLocation, loadProfileWorklistTemplates, loadProfileWorklistSections, loadProfilePurchases } from '~/actions/main-function/profile';
@@ -48,7 +48,8 @@ import loadOrganizationSummary from '~/actions/organization/summary';
 
 import Chat from '../components/chat/chat';
 import EvaluationBody from '../components/evaluation/body';
-import CeeposBody from "../components/ceepos/body";
+import CeeposDone from "../components/ceepos/done";
+import CeeposPay from "../components/ceepos/pay";
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
 import { loadCeeposPurchase, loadCeeposPurchaseAndPay } from '~/actions/main-function/ceepos';
@@ -671,7 +672,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }
     }
 
-    return <CeeposBody done={true} status={parseInt(locationData.Status)}/>
+    return <CeeposDone status={parseInt(locationData.Status)}/>
   }
 
   renderCeeposPayBody() {
@@ -685,7 +686,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       }
     }
 
-    return <CeeposBody pay={true}/>
+    return <CeeposPay/>
   }
 
   /**
