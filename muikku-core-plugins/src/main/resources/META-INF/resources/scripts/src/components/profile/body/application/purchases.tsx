@@ -50,7 +50,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     if (!currentPurchase) {
       return (
         <section>
-          {this.props.i18n.text.get("plugin.profile.noPurchases")}
+          <h2 className="application-panel__content-header">{this.props.i18n.text.get('plugin.profile.titles.purchases')}</h2>
+          <div className="empty"><span>{this.props.i18n.text.get("plugin.profile.purchases.noOrders")}</span></div>
         </section>
       );
     }
