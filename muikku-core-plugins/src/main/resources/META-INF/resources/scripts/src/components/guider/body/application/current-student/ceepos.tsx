@@ -55,12 +55,14 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     this.beginOrderCreationProcess = this.beginOrderCreationProcess.bind(this);
     this.acceptOrderCreation = this.acceptOrderCreation.bind(this);
     this.declineOrderCreation = this.declineOrderCreation.bind(this);
-    this.openDeleteOrderDialog = this.openDeleteOrderDialog.bind(this);
-    this.deleteOrderFromCurrentStudent = this.deleteOrderFromCurrentStudent.bind(this);
-    this.closeDeleteOrderDialog = this.closeDeleteOrderDialog.bind(this);
-    this.completeOrderFromCurrentStudent = this.completeOrderFromCurrentStudent.bind(this);
-    this.openCompleteOrderDialog = this.openCompleteOrderDialog.bind(this);
-    this.closeCompleteOrderDialog = this.closeCompleteOrderDialog.bind(this);
+
+    this.beginOrderDeleteProcess = this.beginOrderDeleteProcess.bind(this);
+    this.acceptOrderDelete = this.acceptOrderDelete.bind(this);
+    this.declineOrderDelete = this.declineOrderDelete.bind(this);
+
+    this.beginOrderManualCompleteProcess = this.beginOrderManualCompleteProcess.bind(this);
+    this.acceptOrderManualComplete = this.acceptOrderManualComplete.bind(this);
+    this.declineOrderManualComplete = this.declineOrderManualComplete.bind(this);
   }
 
   /**
@@ -93,10 +95,10 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
   }
 
   /**
-   * openDeleteDialog
-   * @param id
+   * beginOrderDeleteProcess
+   * @param order
    */
-  openDeleteOrderDialog(order: PurchaseType) {
+   beginOrderDeleteProcess(order: PurchaseType) {
     this.setState({
       isDeleteDialogOpen: true,
       orderToBeDeleted: order,
@@ -104,26 +106,29 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
   }
 
   /**
-   * closeDeleteDialog
+   * acceptOrderDelete
    */
-  closeDeleteOrderDialog() {
+  acceptOrderDelete() {
+    this.props.deleteOrderFromCurrentStudent(this.state.orderToBeDeleted);
     this.setState({
       isDeleteDialogOpen: null,
     });
   }
 
   /**
-   * deleteOrderFromStudent
+   * declineOrderDelete
    */
-  deleteOrderFromCurrentStudent() {
-    this.props.deleteOrderFromCurrentStudent(this.state.orderToBeDeleted);
+  declineOrderDelete() {
+    this.setState({
+      isDeleteDialogOpen: null,
+    });
   }
 
 /**
- * openDeleteDialog
- * @param id
+ * beginOrderManualCompleteProcess
+ * @param order
  */
-  openCompleteOrderDialog(order: PurchaseType) {
+  beginOrderManualCompleteProcess(order: PurchaseType) {
     this.setState({
       isCompleteDialogOpen: true,
       orderToBeCompleted: order,
@@ -131,21 +136,28 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
   }
 
   /**
-   * closeDeleteDialog
+   * acceptOrderManualComplete
    */
-  closeCompleteOrderDialog() {
+  acceptOrderManualComplete() {
+    this.props.completeOrderFromCurrentStudent(this.state.orderToBeCompleted);
     this.setState({
       isCompleteDialogOpen: null,
     });
   }
 
   /**
-   *
+   * declineOrderManualComplete
    */
-  completeOrderFromCurrentStudent() {
-    this.props.completeOrderFromCurrentStudent(this.state.orderToBeCompleted);
+   declineOrderManualComplete() {
+    this.setState({
+      isCompleteDialogOpen: null,
+    });
   }
 
+  /**
+   * render
+   * @returns
+   */
   render() {
     let orderConfirmDialogContent = (closeDialog: () => any) => <div>
       <span>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</span>
@@ -171,10 +183,10 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     let orderDeleteDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.deleteOrderFromCurrentStudent}>
+          <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.acceptOrderDelete}>
             {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.okButton")}
           </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.closeDeleteOrderDialog}>
+          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.declineOrderDelete}>
             {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.cancelButton")}
           </Button>
         </div>
@@ -188,22 +200,30 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     let orderCompleteDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.completeOrderFromCurrentStudent}>
+          <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.acceptOrderManualComplete}>
             {this.props.i18n.text.get("plugin.guider.orderCompleteDialog.okButton")}
           </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.closeCompleteOrderDialog}>
+          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.declineOrderManualComplete}>
             {this.props.i18n.text.get("plugin.guider.orderCompleteDialog.cancelButton")}
           </Button>
         </div>
       )
     }
 
+    // Can new order be created by guidance counselor
     const canOrderBeCreated = this.props.guider.currentStudent.purchases &&
       this.props.guider.currentStudent.purchases.find((param) =>
         param["state"] === "CREATED" || param["state"] === "ONGOING" ? true : false
       );
 
-    const orderDeleteLinkDisabledState = (state: string) => {
+    /**
+     * Can guidance counselor delete already creted order
+     * This is handled inverse as <Button> disabled attribute receives true or false directly.
+     *  canOderBeDelete
+     * @param state
+     * @return true | false
+     * */
+    const canOrderBeDeleted = (state: string) => {
       switch (state) {
         case "ONGOING":
         case "COMPLETE":
@@ -214,7 +234,14 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       }
     };
 
-    const orderCompleteLinkDisabledState = (state: string) => {
+    /**
+     * Can guidance counselor manually complete (behalf of student) already created but not finished order.
+     * This is handled inverse as <Button> disabled attribute receives true or false directly.
+     * canOrderBeCompletedManually
+     * @param state
+     * @returns true | false
+     */
+    const canOrderBeCompletedManually = (state: string) => {
       switch (state) {
         case "ONGOING":
         case "PAID":
@@ -253,14 +280,14 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                   <span className="application-list__header-primary-description">{this.props.i18n.text.get("plugin.guider.purchases.description." + p.state)}</span>
                   <span className="application-list__header-primary-actions">
                     <Button
-                      onClick={this.openDeleteOrderDialog.bind(this, p)}
-                      disabled={orderDeleteLinkDisabledState(p.state)}
+                      onClick={this.beginOrderDeleteProcess.bind(this, p)}
+                      disabled={canOrderBeDeleted(p.state)}
                       icon="trash"
                       buttonModifiers={["delete-student-order", "fatal"]}
                     >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
                     <Button
-                      onClick={this.openCompleteOrderDialog.bind(this, p)}
-                      disabled={orderCompleteLinkDisabledState(p.state)}
+                      onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
+                      disabled={canOrderBeCompletedManually(p.state)}
                       icon="forward"
                       buttonModifiers={["complete-student-order", "execute"]}
                     >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
@@ -287,7 +314,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           modifier="dialog-delete-order"
           isOpen={!!this.state.isDeleteDialogOpen}
           title={this.props.i18n.text.get("plugin.guider.orderDeleteDialog.title")}
-          onClose={this.closeDeleteOrderDialog}
+          onClose={this.declineOrderDelete}
           content={orderDeleteDialogContent}
           footer={orderDeleteDialogFooter}
         />
@@ -296,7 +323,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           modifier="dialog-complete-order"
           isOpen={!!this.state.isCompleteDialogOpen}
           title={this.props.i18n.text.get("plugin.guider.orderCompleteDialog.title")}
-          onClose={this.closeCompleteOrderDialog}
+          onClose={this.declineOrderManualComplete}
           content={orderCompleteDialogContent}
           footer={orderCompleteDialogFooter}
         />

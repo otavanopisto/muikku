@@ -23,37 +23,14 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     super(props);
 
     this.performPayment = this.performPayment.bind(this);
-
-    // this.state = {
-    //   email: "",
-    // }
   }
-
-  // public componentDidUpdate(prevProps: IPurchasesProps) {
-  //   const currentPurchase = this.props.profile.purchases && this.props.profile.purchases[0];
-  //   const prevPurchase = prevProps.profile.purchases && prevProps.profile.purchases[0];
-
-  //   if (currentPurchase === prevPurchase || (currentPurchase && currentPurchase.id) === (prevPurchase && prevPurchase.id)) {
-  //     return;
-  //   }
-
-  //   this.setState({
-  //     email: currentPurchase.studentEmail,
-  //   });
-  // }
-
-  // public onEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   this.setState({
-  //     email: e.target.value,
-  //   });
-  // }
 
   /**
    * performPayment
    */
   public async performPayment() {
     const currentPurchase = this.props.profile.purchases[0];
-    const value: string = await promisify(mApi().ceepos.pay.create({'id': currentPurchase.id}), "callback")() as string;
+    const value: string = await promisify(mApi().ceepos.pay.create(currentPurchase.id), "callback")() as string;
 
     location.href = value;
   }

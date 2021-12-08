@@ -1,7 +1,6 @@
 import { ActionType } from '~/actions';
 import { UserWithSchoolDataType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, UserGroupType } from '~/reducers/user-index';
 import { WorkspaceType, WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
-import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
 import { PurchaseType, PurchaseProductType } from '../profile';
 
@@ -319,22 +318,27 @@ export default function guider(state: GuiderType = {
       currentStudent: {
         ...state.currentStudent,
         purchases: newOrders,
-      },
+      }
     });
-  } else if (action.type === "UPDATE_GUIDER_DELETE_PURCHASE_ORDER") {
-    const orders = [...state.currentStudent.purchases, action.payload];
+  } else if (action.type === "DELETE_GUIDER_PURCHASE_ORDER") {
     return Object.assign({}, state, {
       currentStudent: {
         ...state.currentStudent,
-        purchases: orders,
-      },
+        purchases: state.currentStudent.purchases.filter((purchace: PurchaseType) => {
+          return (purchace.id !== action.payload.id);
+        })
+      }
     });
   } else if (action.type === "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER") {
-    const orders = [...state.currentStudent.purchases, action.payload];
     return Object.assign({}, state, {
       currentStudent: {
         ...state.currentStudent,
-        purchases: orders,
+        purchases: state.currentStudent.purchases.map((purchace: PurchaseType) => {
+          if (purchace.id == action.payload.id) {
+            return Object.assign({}, purchace, action.payload)
+          }
+          return purchace;
+        })
       },
     });
   }

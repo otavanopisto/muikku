@@ -34,8 +34,8 @@ export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURR
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", { property: string, value: any }>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
 export type UPDATE_GUIDER_INSERT_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_INSERT_PURCHASE_ORDER", PurchaseType>
-export type UPDATE_GUIDER_DELETE_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_DELETE_PURCHASE_ORDER", number>
-export type UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER", number>
+export type DELETE_GUIDER_PURCHASE_ORDER = SpecificActionType<"DELETE_GUIDER_PURCHASE_ORDER", PurchaseType>
+export type UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER = SpecificActionType<"UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER", PurchaseType>
 
 export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", UserFileType>
 export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", UserFileType>
@@ -619,8 +619,8 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType = 
     try {
       await promisify(mApi().ceepos.order.del(order.id), 'callback')();
       dispatch({
-        type: "UPDATE_GUIDER_DELETE_PURCHASE_ORDER",
-        payload: order.id,
+        type: "DELETE_GUIDER_PURCHASE_ORDER",
+        payload: order,
       });
     } catch (err){
       if (!(err instanceof MApiError)){
@@ -634,10 +634,11 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType = 
 const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType = function completeOrderFromCurrentStudent(order: PurchaseType) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().ceepos.manualCompletion.create(order.id), 'callback')();
+      const value: PurchaseType = await promisify(mApi().ceepos.manualCompletion.create(order.id), 'callback')() as any;
+
       dispatch({
         type: "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER",
-        payload: order.id,
+        payload: value
       });
     } catch (err){
       if (!(err instanceof MApiError)){
