@@ -104,6 +104,12 @@ function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
   return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
 }
 
+function sortOrders(a: PurchaseType, b: PurchaseType) {
+  let dateA = new Date(a.created).getTime();
+  let dateB = new Date(b.created).getTime();
+  return dateA > dateB ? -1 : 1;
+};
+
 export default function guider(state: GuiderType = {
   state: "LOADING",
   currentState: "READY",
@@ -317,7 +323,7 @@ export default function guider(state: GuiderType = {
     return Object.assign({}, state, {
       currentStudent: {
         ...state.currentStudent,
-        purchases: newOrders,
+        purchases: newOrders.sort(sortOrders),
       }
     });
   } else if (action.type === "DELETE_GUIDER_PURCHASE_ORDER") {

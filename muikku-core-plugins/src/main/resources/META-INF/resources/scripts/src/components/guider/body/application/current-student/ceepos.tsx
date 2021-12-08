@@ -278,21 +278,23 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                 <span className="application-list__header-primary application-list__header-primary--product">
                   <span><b>{p.product.Description}</b></span>
                   <span className="application-list__header-primary-description">{this.props.i18n.text.get("plugin.guider.purchases.description." + p.state)}</span>
-                  <span className="application-list__header-primary-actions">
-                    <Button
-                      onClick={this.beginOrderDeleteProcess.bind(this, p)}
-                      disabled={canOrderBeDeleted(p.state)}
-                      icon="trash"
-                      buttonModifiers={["delete-student-order", "fatal"]}
-                    >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
-                    <Button
-                      onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
-                      disabled={canOrderBeCompletedManually(p.state)}
-                      icon="forward"
-                      buttonModifiers={["complete-student-order", "execute"]}
-                    >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
+                    {p.state !== "COMPLETE" ?
+                    <span className="application-list__header-primary-actions">
+                      <Button
+                        onClick={this.beginOrderDeleteProcess.bind(this, p)}
+                        disabled={canOrderBeDeleted(p.state)}
+                        icon="trash"
+                        buttonModifiers={["delete-student-order", "fatal"]}
+                      >{this.props.i18n.text.get("plugin.guider.purchase.deleteOrderLink")}</Button>
+                      <Button
+                        onClick={this.beginOrderManualCompleteProcess.bind(this, p)}
+                        disabled={canOrderBeCompletedManually(p.state)}
+                        icon="forward"
+                        buttonModifiers={["complete-student-order", "execute"]}
+                      >{this.props.i18n.text.get("plugin.guider.purchase.completeOrderLink")}</Button>
+                    </span>
+                    : null}
                   </span>
-                </span>
                 <span className="application-list__header-secondary">{this.props.i18n.time.format(p.created)}</span>
               </ApplicationListItemHeader>
             </ApplicationListItem>
