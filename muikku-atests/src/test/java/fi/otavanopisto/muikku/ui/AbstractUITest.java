@@ -832,6 +832,23 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
+  protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
+    String text = findElement(elementWithText).getText();
+    int i = 0;
+    while(!StringUtils.equalsIgnoreCase(text, newText)) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      text = findElement(elementWithText).getText();
+    }
+    if(!StringUtils.equalsIgnoreCase(text, newText))
+      throw new TimeoutException("Element to have new text content failed to have it in a given timeout period.");
+  }
+  
   protected void clickAndConfirmElementCount(String clickSelector, String elementToCountSelector, int expectedCount) {
     waitAndClick(clickSelector);
     waitForPresent(elementToCountSelector);

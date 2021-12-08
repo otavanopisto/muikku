@@ -402,7 +402,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitUntilTextChanged(".evaluation-card:first-child .evaluation-card__header-title", "tester student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
         
-        waitAndClick(".icon-sort-alpha-asc");
+        waitAndClickAndConfirmTextChanges(".icon-sort-alpha-asc" , ".evaluation-card:last-child .evaluation-card__header-title", "tester student", 3, 1500);
         waitUntilTextChanged(".evaluation-card:last-child .evaluation-card__header-title", "student anotha");
         assertTextIgnoreCase(".evaluation-card:last-child .evaluation-card__header-title", "tester student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card__header-title", "master apprentice");
