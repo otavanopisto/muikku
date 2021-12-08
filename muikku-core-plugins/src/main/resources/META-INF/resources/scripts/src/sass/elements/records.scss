@@ -193,6 +193,10 @@
   border-left: 5px solid yellow;
 }
 
+.studies-records__section-content-course-list-item-container--status-transfered {
+  border-left: 5px solid cornflowerblue;
+}
+
 .studies-records__section-content-course-list-item {
   display: flex;
   flex-shrink: 1;
@@ -201,6 +205,7 @@
 .studies-records__section-content-course-list-item--header {
   margin-top: 5px;
   margin-bottom: 0;
+  padding-left: 5px;
 }
 
 .studies-records__section-content-course-list-item-cell {
@@ -234,9 +239,10 @@
 .studies-records__section-content-course-list-item-cell-box--course-name {
   font-weight: bold;
   font-size: 1rem;
-  background-color: #dadada;
+  background-color: #009fe3;
   flex-wrap: wrap;
   text-align: center;
+  color: white;
 }
 
 .asessor-data {

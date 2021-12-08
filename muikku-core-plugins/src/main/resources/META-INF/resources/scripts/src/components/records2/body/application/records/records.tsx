@@ -42,6 +42,9 @@ interface RecordsState {
   sortedRecords?: any;
   allGroupsOpen: boolean;
   listOfListsIds: string[];
+  filters: {
+    studyProgramm?: string;
+  };
 }
 
 /**
@@ -54,8 +57,22 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     this.state = {
       allGroupsOpen: false,
       listOfListsIds: [],
+      filters: {},
     };
   }
+
+  /*  componentDidMount = () => {
+    const studyProgram =
+      this.props.records.userData[this.props.records.userData.length - 1].user
+        .studyProgrammeIdentifier;
+
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        studyProgramm: studyProgram,
+      },
+    });
+  }; */
 
   filterOnGoingStatusCourses = (records: RecordSubject[]) => {
     const ongoingList: RecordSubjectCourse[] = [];
@@ -72,6 +89,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   };
 
   filterRecordsBySubject = () => {
+    let transferedCourses: TransferCreditType[] = [];
     const arrayOfOnGoingCourses: WorkspaceType[] = [];
     const arrayCoursesBySubjects: RecordsBySubject[] = [];
 
@@ -85,7 +103,19 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
     const userEntityId = this.props.records.userData[0].user.userEntityId;
 
-    this.props.records.userData[0].records[0].workspaces.map((item) => {
+    let workspaces: WorkspaceType[] = [];
+
+    this.props.records.userData.map((userD) => {
+      userD.records.map((rItem) => {
+        transferedCourses = transferedCourses.concat(rItem.transferCredits);
+
+        workspaces = workspaces.concat(rItem.workspaces);
+      });
+    });
+
+    console.log([workspaces]);
+
+    workspaces.map((item) => {
       const subjectListFound = arrayCoursesBySubjects.findIndex(
         (aItem) => aItem.subjectId === item.subjectIdentifier
       );
@@ -108,7 +138,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       }
     });
 
-    return { arrayCoursesBySubjects, arrayOfOnGoingCourses, userEntityId };
+    return {
+      arrayCoursesBySubjects,
+      arrayOfOnGoingCourses,
+      transferedCourses,
+      userEntityId,
+    };
   };
 
   /**
@@ -160,6 +195,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
         idList.push("allongoing");
 
+        idList.push("alltransfered");
+
         this.setState({
           listOfListsIds: idList,
         });
@@ -192,6 +229,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
    */
   render() {
     const filteredData = this.filterRecordsBySubject();
+
+    const curriculums = this.props.records.curriculums;
+
+    /* const studyProgram =
+      this.props.records.userData[this.props.records.userData.length - 1].user
+        .studyProgrammeIdentifier; */
+
+    console.log(filteredData);
 
     return (
       <div className="records">
@@ -239,6 +284,18 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     <option>Kaikki</option>
                     <option>Työnalla</option>
                     <optgroup label="Oppiaine">
+                      {this.props.records.userData.map((uItem) => {
+                        uItem.records.map((rItem) =>
+                          rItem.workspaces.map((wItem) => {
+                            return (
+                              <option value={wItem.subjectIdentifier}>
+                                {wItem.subjectIdentifier}
+                              </option>
+                            );
+                          })
+                        );
+                      })}
+
                       <option>Äidinkieli</option>
                       <option>Matematiikka</option>
                     </optgroup>
@@ -299,6 +356,76 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
             <div className="studies-records__section-content-subject-list">
               <RecordsList
+                key="transfered"
+                name="Hyväksiluetut"
+                subjectId="alltransfered"
+                openList={this.state.listOfListsIds.includes("alltransfered")}
+                onOpenClick={this.handleListOpen}
+                courseCount={
+                  filteredData &&
+                  filteredData.transferedCourses &&
+                  filteredData.transferedCourses.length
+                }
+                studiesListType="ongoing"
+              >
+                <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
+                  <div
+                    className="studies-records__section-content-course-list-item-cell"
+                    style={{ borderLeft: "10px solid transparent" }}
+                  >
+                    <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
+                      Nimi
+                    </div>
+                  </div>
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Hyväksilukupvm.
+                    </div>
+                  </div>
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Arvioija / Opettaja
+                    </div>
+                  </div>
+
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Arvosana
+                    </div>
+                  </div>
+                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                    <div className="studies-records__section-content-course-list-item-cell-label">
+                      Tehtävät
+                    </div>
+                  </div>
+                </div>
+                {filteredData &&
+                  filteredData.transferedCourses &&
+                  filteredData.transferedCourses.length > 0 &&
+                  filteredData.transferedCourses.map((tItem, index) => {
+                    const curriculum = curriculums.find(
+                      (item) => item.identifier === tItem.curriculumIdentifier
+                    );
+
+                    return (
+                      <RecordsListItem
+                        key={tItem.identifier}
+                        userEntityId={filteredData.userEntityId}
+                        courseName={`${tItem.courseName} (${curriculum.name}) `}
+                        index={index}
+                        asessor="Eka Vekara"
+                        name={`${tItem.courseName} (${curriculum.name}) `}
+                        status="TRANSFERED"
+                        evaluationDate={tItem.date}
+                        grade={tItem.grade}
+                      />
+                    );
+                  })}
+              </RecordsList>
+            </div>
+
+            <div className="studies-records__section-content-subject-list">
+              <RecordsList
                 key="ongoing"
                 name="Työnalla"
                 subjectId="allongoing"
@@ -312,14 +439,17 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 studiesListType="ongoing"
               >
                 <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                  <div className="studies-records__section-content-course-list-item-cell">
+                  <div
+                    className="studies-records__section-content-course-list-item-cell"
+                    style={{ borderLeft: "10px solid transparent" }}
+                  >
                     <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                       Nimi
                     </div>
                   </div>
                   <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                     <div className="studies-records__section-content-course-list-item-cell-label">
-                      Suorituspvm
+                      Arviointipvm.
                     </div>
                   </div>
                   <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
@@ -387,14 +517,17 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       openList={open}
                     >
                       <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                        <div className="studies-records__section-content-course-list-item-cell">
+                        <div
+                          className="studies-records__section-content-course-list-item-cell"
+                          style={{ borderLeft: "10px solid transparent" }}
+                        >
                           <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                             Nimi
                           </div>
                         </div>
                         <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                           <div className="studies-records__section-content-course-list-item-cell-label">
-                            Suorituspvm
+                            Arviointipvm.
                           </div>
                         </div>
                         <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">

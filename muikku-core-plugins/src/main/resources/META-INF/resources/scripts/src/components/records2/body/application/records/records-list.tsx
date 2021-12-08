@@ -24,16 +24,16 @@ export interface RecordSubjectCourse {
   subjectCode?: string;
   evaluationDate?: string;
   asessor?: string;
-  studies: {
+  studies?: {
     excerciseCount: number;
     maxExcercise: number;
     assigmentCount: number;
     maxAssigment: number;
   };
-  status: "EVALUATED" | "SUPPLEMENTATION" | "ONGOING";
+  status: "EVALUATED" | "SUPPLEMENTATION" | "ONGOING" | "TRANSFERED";
   grade?: string;
   description?: string;
-  workspaceId: number;
+  workspaceId?: number;
 }
 
 /**
@@ -144,6 +144,9 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
 
       case "ONGOING":
         return "studies-records__section-content-course-list-item-container--status-ongoing";
+
+      case "TRANSFERED":
+        return "studies-records__section-content-course-list-item-container--status-transfered";
     }
   };
 
@@ -163,6 +166,273 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
     return {
       __html: htmlString,
     };
+  };
+
+  /**
+   * renderContentByStatus
+   * @returns JSX.Element
+   */
+  const renderContentByStatus = () => {
+    switch (course.status) {
+      case "EVALUATED":
+        return (
+          <div style={{ display: "flex", width: "100%" }}>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                backgroundColor: "antiquewhite",
+                flexDirection: "column",
+                padding: "10px",
+                marginRight: "5px",
+              }}
+            >
+              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
+                Sanallinen arviointi
+              </div>
+              {course.description ? (
+                <div
+                  dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  -
+                </div>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                flexDirection: "column",
+                padding: "10px",
+                backgroundColor: "#f8f8f8",
+                marginLeft: "5px",
+              }}
+            >
+              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
+                Suullinen palaute
+              </div>
+              <RecordingsList records={[]} />
+            </div>
+          </div>
+        );
+
+      case "SUPPLEMENTATION":
+        return (
+          <div style={{ display: "flex", width: "100%" }}>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                flexDirection: "column",
+                padding: "10px",
+                backgroundColor: "#f8f8f8",
+                marginLeft: "5px",
+              }}
+            >
+              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
+                Sanallinen arviointi
+              </div>
+              {course.description ? (
+                <div
+                  dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  -
+                </div>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                width: "50%",
+                flexDirection: "column",
+                padding: "10px",
+                backgroundColor: "#f8f8f8",
+                marginLeft: "5px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ margin: "5px 0" }}>
+                  <ProgressBarLine
+                    containerClassName="summary-page__study-file-progressbar"
+                    options={{
+                      strokeWidth: 1,
+                      duration: 1000,
+                      color: "#FFA500",
+                      trailColor: "#e3e3e3",
+                      trailWidth: 1,
+                      svgStyle: { width: "100%", height: "25px" },
+                      text: {
+                        className:
+                          "material-page__audiofield-file-upload-percentage",
+                        style: {
+                          position: "absolute",
+                          color: "white",
+                        },
+                      },
+                    }}
+                    strokeWidth={1}
+                    easing="easeInOut"
+                    duration={1000}
+                    color="#72d200"
+                    trailColor="#f5f5f5"
+                    trailWidth={1}
+                    svgStyle={{ width: "100%", height: "25px" }}
+                    text={`Harjoitustehtävät`}
+                    progress={
+                      (course.studies &&
+                        course.studies.excerciseCount /
+                          course.studies.maxExcercise) ||
+                      0
+                    }
+                  />
+                </div>
+                <div style={{ margin: "5px 0" }}>
+                  <ProgressBarLine
+                    containerClassName="summary-page__study-file-progressbar"
+                    options={{
+                      strokeWidth: 1,
+                      duration: 1000,
+                      color: "#CE01BD",
+                      trailColor: "#e3e3e3",
+                      trailWidth: 1,
+                      svgStyle: { width: "100%", height: "25px" },
+                      text: {
+                        className:
+                          "material-page__audiofield-file-upload-percentage",
+                        style: {
+                          position: "absolute",
+                          color: "white",
+                        },
+                      },
+                    }}
+                    strokeWidth={1}
+                    easing="easeInOut"
+                    duration={1000}
+                    color="#72d200"
+                    trailColor="#f5f5f5"
+                    trailWidth={1}
+                    svgStyle={{ width: "100%", height: "25px" }}
+                    text={`Arvioitavat tehtävät`}
+                    progress={
+                      (course.studies &&
+                        course.studies.assigmentCount /
+                          course.studies.maxAssigment) ||
+                      0
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "ONGOING":
+        return (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ margin: "5px 0" }}>
+              <ProgressBarLine
+                containerClassName="summary-page__study-file-progressbar"
+                options={{
+                  strokeWidth: 1,
+                  duration: 1000,
+                  color: "#FFA500",
+                  trailColor: "#e3e3e3",
+                  trailWidth: 1,
+                  svgStyle: { width: "100%", height: "25px" },
+                  text: {
+                    className:
+                      "material-page__audiofield-file-upload-percentage",
+                    style: {
+                      position: "absolute",
+                      color: "white",
+                    },
+                  },
+                }}
+                strokeWidth={1}
+                easing="easeInOut"
+                duration={1000}
+                color="#72d200"
+                trailColor="#f5f5f5"
+                trailWidth={1}
+                svgStyle={{ width: "100%", height: "25px" }}
+                text={`Harjoitustehtävät`}
+                progress={
+                  (course.studies &&
+                    course.studies.excerciseCount /
+                      course.studies.maxExcercise) ||
+                  0
+                }
+              />
+            </div>
+            <div style={{ margin: "5px 0" }}>
+              <ProgressBarLine
+                containerClassName="summary-page__study-file-progressbar"
+                options={{
+                  strokeWidth: 1,
+                  duration: 1000,
+                  color: "#CE01BD",
+                  trailColor: "#e3e3e3",
+                  trailWidth: 1,
+                  svgStyle: { width: "100%", height: "25px" },
+                  text: {
+                    className:
+                      "material-page__audiofield-file-upload-percentage",
+                    style: {
+                      position: "absolute",
+                      color: "white",
+                    },
+                  },
+                }}
+                strokeWidth={1}
+                easing="easeInOut"
+                duration={1000}
+                color="#72d200"
+                trailColor="#f5f5f5"
+                trailWidth={1}
+                svgStyle={{ width: "100%", height: "25px" }}
+                text={`Arvioitavat tehtävät`}
+                progress={
+                  (course.studies &&
+                    course.studies.assigmentCount /
+                      course.studies.maxAssigment) ||
+                  0
+                }
+              />
+            </div>
+          </div>
+        );
+
+      case "TRANSFERED":
+        return;
+    }
   };
 
   return (
@@ -211,137 +481,28 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
 
         <div className="studies-records__section-content-course-list-item-cell">
           <div className="studies-records__section-content-course-list-item-cell-box">
-            <div>
-              <RecordsAssignmentsListDialog
-                courseName={course.name}
-                userEntityId={userEntityId}
-                workspaceEntityId={course.workspaceId}
-              >
-                <Button style={{ backgroundColor: "green" }}>Näytä</Button>
-              </RecordsAssignmentsListDialog>
-            </div>
+            {course.status === "TRANSFERED" ? (
+              "-"
+            ) : (
+              <div>
+                <RecordsAssignmentsListDialog
+                  courseName={course.name}
+                  userEntityId={userEntityId}
+                  workspaceEntityId={course.workspaceId}
+                >
+                  <Button
+                    style={{ backgroundColor: "#009FE3", color: "white" }}
+                    disabled={!course.workspaceId}
+                  >
+                    Näytä
+                  </Button>
+                </RecordsAssignmentsListDialog>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      <AnimateHeight height={height}>
-        {course.status === "EVALUATED" ? (
-          <div style={{ display: "flex", width: "100%" }}>
-            <div
-              style={{
-                display: "flex",
-                width: "50%",
-                backgroundColor: "antiquewhite",
-                flexDirection: "column",
-                padding: "10px",
-                marginRight: "5px",
-              }}
-            >
-              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
-                Sanallinen arviointi
-              </div>
-              {course.description ? (
-                <div
-                  dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
-                />
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  -
-                </div>
-              )}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                width: "50%",
-                flexDirection: "column",
-                padding: "10px",
-                backgroundColor: "#f8f8f8",
-                marginLeft: "5px",
-              }}
-            >
-              <div style={{ fontWeight: "bold", margin: "5px 0" }}>
-                Suullinen palaute
-              </div>
-              <RecordingsList records={[]} />
-            </div>
-          </div>
-        ) : (
-          <div
-            style={{ display: "flex", width: "100%", flexDirection: "column" }}
-          >
-            <div style={{ margin: "5px 0" }}>
-              <ProgressBarLine
-                containerClassName="summary-page__study-file-progressbar"
-                options={{
-                  strokeWidth: 1,
-                  duration: 1000,
-                  color: "#FFA500",
-                  trailColor: "#e3e3e3",
-                  trailWidth: 1,
-                  svgStyle: { width: "100%", height: "25px" },
-                  text: {
-                    className:
-                      "material-page__audiofield-file-upload-percentage",
-                    style: {
-                      position: "absolute",
-                      color: "white",
-                    },
-                  },
-                }}
-                strokeWidth={1}
-                easing="easeInOut"
-                duration={1000}
-                color="#72d200"
-                trailColor="#f5f5f5"
-                trailWidth={1}
-                svgStyle={{ width: "100%", height: "25px" }}
-                text={`Harjoitustehtävät`}
-                progress={
-                  course.studies.excerciseCount / course.studies.maxExcercise
-                }
-              />
-            </div>
-            <div style={{ margin: "5px 0" }}>
-              <ProgressBarLine
-                containerClassName="summary-page__study-file-progressbar"
-                options={{
-                  strokeWidth: 1,
-                  duration: 1000,
-                  color: "#CE01BD",
-                  trailColor: "#e3e3e3",
-                  trailWidth: 1,
-                  svgStyle: { width: "100%", height: "25px" },
-                  text: {
-                    className:
-                      "material-page__audiofield-file-upload-percentage",
-                    style: {
-                      position: "absolute",
-                      color: "white",
-                    },
-                  },
-                }}
-                strokeWidth={1}
-                easing="easeInOut"
-                duration={1000}
-                color="#72d200"
-                trailColor="#f5f5f5"
-                trailWidth={1}
-                svgStyle={{ width: "100%", height: "25px" }}
-                text={`Arvioitavat tehtävät`}
-                progress={
-                  course.studies.assigmentCount / course.studies.maxAssigment
-                }
-              />
-            </div>
-          </div>
-        )}
-      </AnimateHeight>
+      <AnimateHeight height={height}>{renderContentByStatus()}</AnimateHeight>
     </div>
   );
 };
