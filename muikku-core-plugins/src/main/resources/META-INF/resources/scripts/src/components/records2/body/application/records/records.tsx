@@ -8,20 +8,32 @@ import {
 } from "~/reducers/main-function/records";
 import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
-import {
-  RecordsList,
-  RecordsListItem,
-  RecordSubject,
-  RecordSubjectCourse,
-} from "./records-list";
+import { RecordsList, RecordsListItem } from "./records-list";
 import {
   WorkspaceType,
   WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
 
+/**
+ * RecordsBySubject
+ */
 interface RecordsBySubject {
   subjectId: string | number;
   workspaces: WorkspaceType[];
+}
+
+/**
+ * Filters
+ */
+interface Filters {
+  /**
+   * aka Study programm id
+   */
+  studyProgram?: string;
+  /**
+   * ongoing, transfered, "all", or subject name
+   */
+  group?: string;
 }
 
 /**
@@ -42,9 +54,7 @@ interface RecordsState {
   sortedRecords?: any;
   allGroupsOpen: boolean;
   listOfListsIds: string[];
-  filters: {
-    studyProgramm?: string;
-  };
+  filters: Filters;
 }
 
 /**
@@ -57,86 +67,131 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     this.state = {
       allGroupsOpen: false,
       listOfListsIds: [],
-      filters: {},
+      filters: {
+        group: "",
+      },
     };
   }
 
-  /*  componentDidMount = () => {
-    const studyProgram =
-      this.props.records.userData[this.props.records.userData.length - 1].user
-        .studyProgrammeIdentifier;
+  /**
+   * componentDidUpdate
+   */
+  componentDidUpdate = (prevProps: RecordsProps, prevState: RecordsState) => {
+    if (
+      this.props.records.userDataStatus !== prevProps.records.userDataStatus
+    ) {
+      if (this.props.records.userDataStatus === "READY") {
+        const studyProgram =
+          this.props.records.userData[this.props.records.userData.length - 1]
+            .user.studyProgrammeIdentifier;
 
-    this.setState({
-      filters: {
-        ...this.state.filters,
-        studyProgramm: studyProgram,
-      },
-    });
-  }; */
-
-  filterOnGoingStatusCourses = (records: RecordSubject[]) => {
-    const ongoingList: RecordSubjectCourse[] = [];
-
-    records.map((rItem) => {
-      rItem.courses.map((cItem) => {
-        if (cItem.status === "ONGOING") {
-          ongoingList.push(cItem);
-        }
-      });
-    });
-
-    return ongoingList;
+        this.setState({
+          filters: {
+            ...this.state.filters,
+            studyProgram: studyProgram,
+          },
+        });
+      }
+    }
   };
 
+  /**
+   * filterRecordsBySubject
+   * @returns Object of filtered records data
+   */
   filterRecordsBySubject = () => {
+    /**
+     * Initial data what will be returned
+     */
     let transferedCourses: TransferCreditType[] = [];
     const arrayOfOnGoingCourses: WorkspaceType[] = [];
     const arrayCoursesBySubjects: RecordsBySubject[] = [];
 
-    if (
-      this.props.records.userDataStatus === "LOADING" ||
-      this.props.records.userDataStatus === "WAIT" ||
-      this.props.records.userDataStatus === "ERROR"
-    ) {
+    /**
+     * User data by default, which should be found by ongoing programme
+     */
+    const userDatas = this.props.records.userData.find(
+      (uItem) =>
+        uItem.user.studyProgrammeIdentifier === this.state.filters.studyProgram
+    );
+
+    /**
+     * If not found, then return null
+     */
+    if (!userDatas) {
       return;
     }
 
-    const userEntityId = this.props.records.userData[0].user.userEntityId;
+    const userEntityId = userDatas.user.userEntityId;
 
+    /**
+     * Initialize workspace list to help filter data
+     */
     let workspaces: WorkspaceType[] = [];
 
-    this.props.records.userData.map((userD) => {
-      userD.records.map((rItem) => {
-        transferedCourses = transferedCourses.concat(rItem.transferCredits);
-
-        workspaces = workspaces.concat(rItem.workspaces);
-      });
-    });
-
-    console.log([workspaces]);
-
-    workspaces.map((item) => {
-      const subjectListFound = arrayCoursesBySubjects.findIndex(
-        (aItem) => aItem.subjectId === item.subjectIdentifier
-      );
-
+    /**
+     * concat workspaces previously initialize list and transfered studies its own
+     */
+    userDatas.records.map((rItem) => {
       if (
-        item.studentAssessmentState.state === "incomplete" ||
-        item.studentAssessmentState.state === "unassessed" ||
-        item.studentAssessmentState.state === "pending"
+        this.state.filters.group === "" ||
+        this.state.filters.group === "alltransfered"
       ) {
-        arrayOfOnGoingCourses.push(item);
-      } else if (subjectListFound !== -1) {
-        arrayCoursesBySubjects[subjectListFound].workspaces.push(item);
-      } else {
-        let newCourseListBySubject: RecordsBySubject = {
-          subjectId: item.subjectIdentifier,
-          workspaces: [item],
-        };
-
-        arrayCoursesBySubjects.push(newCourseListBySubject);
+        transferedCourses = transferedCourses.concat(rItem.transferCredits);
       }
+
+      workspaces = workspaces.concat(rItem.workspaces);
     });
+
+    /**
+     * Filter by "allongoing" group
+     */
+    if (
+      this.state.filters.group === "" ||
+      this.state.filters.group === "allongoing"
+    ) {
+      for (const workspace of workspaces) {
+        if (
+          (this.state.filters.group === "" ||
+            this.state.filters.group === "allongoing") &&
+          (workspace.studentAssessmentState.state === "incomplete" ||
+            workspace.studentAssessmentState.state === "unassessed" ||
+            workspace.studentAssessmentState.state === "pending")
+        ) {
+          arrayOfOnGoingCourses.push(workspace);
+        }
+      }
+    }
+
+    /**
+     * Filter by "subject" and set subject object to hold all studies under that are done in that subject
+     */
+    if (this.state.filters.group === "") {
+      for (const workspace of workspaces) {
+        const subjectListFound = arrayCoursesBySubjects.findIndex(
+          (aItem) => aItem.subjectId === workspace.subjectIdentifier
+        );
+
+        if (
+          workspace.studentAssessmentState.state === "incomplete" ||
+          workspace.studentAssessmentState.state === "unassessed" ||
+          workspace.studentAssessmentState.state === "pending"
+        ) {
+          continue;
+        }
+
+        if (subjectListFound !== -1) {
+          arrayCoursesBySubjects[subjectListFound].workspaces.push(workspace);
+        } else {
+          let newCourseListBySubject: RecordsBySubject = {
+            subjectId: workspace.subjectIdentifier,
+            workspaces: [workspace],
+          };
+
+          arrayCoursesBySubjects.push(newCourseListBySubject);
+        }
+      }
+    }
 
     return {
       arrayCoursesBySubjects,
@@ -224,19 +279,37 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   };
 
   /**
+   * handleFilterChange
+   * @param filterName
+   */
+  handleFilterChange =
+    (filterName: keyof Filters) =>
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      let updatedFilters: Filters = {
+        ...this.state.filters,
+        [filterName]: e.currentTarget.value,
+      };
+
+      this.setState({
+        filters: updatedFilters,
+      });
+    };
+
+  /**
    * render
    * @returns JSX.Element
    */
   render() {
+    if (
+      this.props.records.userDataStatus === "LOADING" ||
+      this.props.records.userDataStatus === "WAIT"
+    ) {
+      return null;
+    }
+
     const filteredData = this.filterRecordsBySubject();
 
     const curriculums = this.props.records.curriculums;
-
-    /* const studyProgram =
-      this.props.records.userData[this.props.records.userData.length - 1].user
-        .studyProgrammeIdentifier; */
-
-    console.log(filteredData);
 
     return (
       <div className="records">
@@ -255,50 +328,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    marginRight: "5px",
-                  }}
-                >
-                  <label>Arviointiaika (alk):</label>
-                  <input type="date" />
-                </div>
-                <div>-</div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    marginLeft: "5px",
-                  }}
-                >
-                  <label>Arviointiaika (lop):</label>
-                  <input type="date" />
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    marginLeft: "5px",
                   }}
                 >
                   <label>Ryhmä:</label>
-                  <select>
-                    <option>Kaikki</option>
-                    <option>Työnalla</option>
-                    <optgroup label="Oppiaine">
-                      {this.props.records.userData.map((uItem) => {
-                        uItem.records.map((rItem) =>
-                          rItem.workspaces.map((wItem) => {
-                            return (
-                              <option value={wItem.subjectIdentifier}>
-                                {wItem.subjectIdentifier}
-                              </option>
-                            );
-                          })
-                        );
-                      })}
-
-                      <option>Äidinkieli</option>
-                      <option>Matematiikka</option>
-                    </optgroup>
+                  <select
+                    onChange={this.handleFilterChange("group")}
+                    value={this.state.filters.group}
+                  >
+                    <option value="">Kaikki</option>
+                    <option value="allongoing">Työnalla</option>
+                    <option value="alltransfered">HyväksiLuvut</option>
                   </select>
                 </div>
                 <div
@@ -309,10 +348,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   }}
                 >
                   <label>Opintolinja:</label>
-                  <select>
+                  <select
+                    onChange={this.handleFilterChange("studyProgram")}
+                    value={this.state.filters.studyProgram}
+                  >
                     {this.props.records.userData.map((item, index) => {
                       return (
-                        <option value={item.user.studyProgrammeIdentifier}>
+                        <option
+                          key={item.user.studyProgrammeIdentifier}
+                          value={item.user.studyProgrammeIdentifier}
+                        >
                           {index + 1}. {item.user.studyProgrammeName}
                         </option>
                       );
@@ -354,231 +399,241 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </Link>
             </div>
 
-            <div className="studies-records__section-content-subject-list">
-              <RecordsList
-                key="transfered"
-                name="Hyväksiluetut"
-                subjectId="alltransfered"
-                openList={this.state.listOfListsIds.includes("alltransfered")}
-                onOpenClick={this.handleListOpen}
-                courseCount={
-                  filteredData &&
-                  filteredData.transferedCourses &&
-                  filteredData.transferedCourses.length
-                }
-                studiesListType="ongoing"
-              >
-                <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                  <div
-                    className="studies-records__section-content-course-list-item-cell"
-                    style={{ borderLeft: "10px solid transparent" }}
-                  >
-                    <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
-                      Nimi
+            {this.state.filters.group === "" ||
+            this.state.filters.group === "allongoing" ? (
+              <div className="studies-records__section-content-subject-list">
+                <RecordsList
+                  key="ongoing"
+                  name="Työnalla"
+                  subjectId="allongoing"
+                  openList={this.state.listOfListsIds.includes("allongoing")}
+                  onOpenClick={this.handleListOpen}
+                  courseCount={
+                    filteredData &&
+                    filteredData.arrayOfOnGoingCourses &&
+                    filteredData.arrayOfOnGoingCourses.length
+                  }
+                  studiesListType="ongoing"
+                >
+                  <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
+                    <div
+                      className="studies-records__section-content-course-list-item-cell"
+                      style={{ borderLeft: "10px solid transparent" }}
+                    >
+                      <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
+                        Nimi
+                      </div>
                     </div>
-                  </div>
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Hyväksilukupvm.
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arviointipvm.
+                      </div>
                     </div>
-                  </div>
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Arvioija / Opettaja
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arvioija / Opettaja
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Arvosana
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arvosana
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Tehtävät
+                      </div>
                     </div>
                   </div>
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Tehtävät
+                  {filteredData &&
+                    filteredData.arrayOfOnGoingCourses &&
+                    filteredData.arrayOfOnGoingCourses.length > 0 &&
+                    filteredData.arrayOfOnGoingCourses.map((cItem, index) => (
+                      <RecordsListItem
+                        key={index}
+                        userEntityId={filteredData.userEntityId}
+                        courseName={cItem.name}
+                        index={index}
+                        asessor="Eka Vekara"
+                        name={cItem.name}
+                        status={this.evaluationStatus(
+                          cItem.studentAssessmentState.state
+                        )}
+                        evaluationDate={cItem.studentAssessmentState.date}
+                        grade={cItem.studentAssessmentState.grade}
+                        description={cItem.studentAssessmentState.text}
+                        workspaceId={cItem.id}
+                        studies={{
+                          excerciseCount:
+                            cItem.studentActivity.exercisesAnswered,
+                          maxExcercise: cItem.studentActivity.exercisesTotal,
+                          assigmentCount:
+                            cItem.studentActivity.evaluablesAnswered,
+                          maxAssigment: cItem.studentActivity.evaluablesTotal,
+                        }}
+                      />
+                    ))}
+                </RecordsList>
+              </div>
+            ) : null}
+
+            {this.state.filters.group === "" ||
+            this.state.filters.group === "alltransfered" ? (
+              <div className="studies-records__section-content-subject-list">
+                <RecordsList
+                  key="transfered"
+                  name="Hyväksiluetut"
+                  subjectId="alltransfered"
+                  openList={this.state.listOfListsIds.includes("alltransfered")}
+                  onOpenClick={this.handleListOpen}
+                  courseCount={
+                    filteredData &&
+                    filteredData.transferedCourses &&
+                    filteredData.transferedCourses.length
+                  }
+                  studiesListType="ongoing"
+                >
+                  <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
+                    <div
+                      className="studies-records__section-content-course-list-item-cell"
+                      style={{ borderLeft: "10px solid transparent" }}
+                    >
+                      <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
+                        Nimi
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Hyväksilukupvm.
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arvioija / Opettaja
+                      </div>
+                    </div>
+
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Arvosana
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Tehtävät
+                      </div>
                     </div>
                   </div>
-                </div>
-                {filteredData &&
-                  filteredData.transferedCourses &&
-                  filteredData.transferedCourses.length > 0 &&
-                  filteredData.transferedCourses.map((tItem, index) => {
-                    const curriculum = curriculums.find(
-                      (item) => item.identifier === tItem.curriculumIdentifier
+                  {filteredData &&
+                    filteredData.transferedCourses &&
+                    filteredData.transferedCourses.length > 0 &&
+                    filteredData.transferedCourses.map((tItem, index) => {
+                      const curriculum = curriculums.find(
+                        (item) => item.identifier === tItem.curriculumIdentifier
+                      );
+
+                      return (
+                        <RecordsListItem
+                          key={tItem.identifier}
+                          userEntityId={filteredData.userEntityId}
+                          courseName={`${tItem.courseName} (${curriculum.name}) `}
+                          index={index}
+                          asessor="Eka Vekara"
+                          name={`${tItem.courseName} (${curriculum.name}) `}
+                          status="TRANSFERED"
+                          evaluationDate={tItem.date}
+                          grade={tItem.grade}
+                        />
+                      );
+                    })}
+                </RecordsList>
+              </div>
+            ) : null}
+
+            <div className="studies-records__section-content-subject-list">
+              {filteredData &&
+              filteredData.arrayCoursesBySubjects &&
+              filteredData.arrayCoursesBySubjects.length > 0
+                ? filteredData.arrayCoursesBySubjects.map((rItem, index) => {
+                    const open = this.state.listOfListsIds.includes(
+                      rItem.subjectId as string
                     );
 
                     return (
-                      <RecordsListItem
-                        key={tItem.identifier}
-                        userEntityId={filteredData.userEntityId}
-                        courseName={`${tItem.courseName} (${curriculum.name}) `}
-                        index={index}
-                        asessor="Eka Vekara"
-                        name={`${tItem.courseName} (${curriculum.name}) `}
-                        status="TRANSFERED"
-                        evaluationDate={tItem.date}
-                        grade={tItem.grade}
-                      />
+                      <RecordsList
+                        key={index}
+                        subjectId={rItem.subjectId as string}
+                        name={`AineId ${rItem.subjectId as string}`}
+                        courseCount={rItem.workspaces.length}
+                        studiesListType="normal"
+                        onOpenClick={this.handleListOpen}
+                        openList={open}
+                      >
+                        <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
+                          <div
+                            className="studies-records__section-content-course-list-item-cell"
+                            style={{ borderLeft: "10px solid transparent" }}
+                          >
+                            <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
+                              Nimi
+                            </div>
+                          </div>
+                          <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                            <div className="studies-records__section-content-course-list-item-cell-label">
+                              Arviointipvm.
+                            </div>
+                          </div>
+                          <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                            <div className="studies-records__section-content-course-list-item-cell-label">
+                              Arvioija / Opettaja
+                            </div>
+                          </div>
+
+                          <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                            <div className="studies-records__section-content-course-list-item-cell-label">
+                              Arvosana
+                            </div>
+                          </div>
+                          <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                            <div className="studies-records__section-content-course-list-item-cell-label">
+                              Tehtävät
+                            </div>
+                          </div>
+                        </div>
+                        {rItem.workspaces.map((cItem, index) => {
+                          return (
+                            <RecordsListItem
+                              key={index}
+                              userEntityId={filteredData.userEntityId}
+                              courseName={cItem.name}
+                              index={index}
+                              asessor="Eka Vekara"
+                              name={cItem.name}
+                              status={this.evaluationStatus(
+                                cItem.studentAssessmentState.state
+                              )}
+                              evaluationDate={cItem.studentAssessmentState.date}
+                              grade={cItem.studentAssessmentState.grade}
+                              description={cItem.studentAssessmentState.text}
+                              workspaceId={cItem.id}
+                              studies={{
+                                excerciseCount:
+                                  cItem.studentActivity.exercisesAnswered,
+                                maxExcercise:
+                                  cItem.studentActivity.exercisesTotal,
+                                assigmentCount:
+                                  cItem.studentActivity.evaluablesAnswered,
+                                maxAssigment:
+                                  cItem.studentActivity.evaluablesTotal,
+                              }}
+                            />
+                          );
+                        })}
+                      </RecordsList>
                     );
-                  })}
-              </RecordsList>
-            </div>
-
-            <div className="studies-records__section-content-subject-list">
-              <RecordsList
-                key="ongoing"
-                name="Työnalla"
-                subjectId="allongoing"
-                openList={this.state.listOfListsIds.includes("allongoing")}
-                onOpenClick={this.handleListOpen}
-                courseCount={
-                  filteredData &&
-                  filteredData.arrayOfOnGoingCourses &&
-                  filteredData.arrayOfOnGoingCourses.length
-                }
-                studiesListType="ongoing"
-              >
-                <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                  <div
-                    className="studies-records__section-content-course-list-item-cell"
-                    style={{ borderLeft: "10px solid transparent" }}
-                  >
-                    <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
-                      Nimi
-                    </div>
-                  </div>
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Arviointipvm.
-                    </div>
-                  </div>
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Arvioija / Opettaja
-                    </div>
-                  </div>
-
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Arvosana
-                    </div>
-                  </div>
-                  <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                    <div className="studies-records__section-content-course-list-item-cell-label">
-                      Tehtävät
-                    </div>
-                  </div>
-                </div>
-                {filteredData &&
-                  filteredData.arrayOfOnGoingCourses &&
-                  filteredData.arrayOfOnGoingCourses.length > 0 &&
-                  filteredData.arrayOfOnGoingCourses.map((cItem, index) => (
-                    <RecordsListItem
-                      key={index}
-                      userEntityId={filteredData.userEntityId}
-                      courseName={cItem.name}
-                      index={index}
-                      asessor="Eka Vekara"
-                      name={cItem.name}
-                      status={this.evaluationStatus(
-                        cItem.studentAssessmentState.state
-                      )}
-                      evaluationDate={cItem.studentAssessmentState.date}
-                      grade={cItem.studentAssessmentState.grade}
-                      description={cItem.studentAssessmentState.text}
-                      workspaceId={cItem.id}
-                      studies={{
-                        excerciseCount: cItem.studentActivity.exercisesAnswered,
-                        maxExcercise: cItem.studentActivity.exercisesTotal,
-                        assigmentCount:
-                          cItem.studentActivity.evaluablesAnswered,
-                        maxAssigment: cItem.studentActivity.evaluablesTotal,
-                      }}
-                    />
-                  ))}
-              </RecordsList>
-
-              {filteredData &&
-                filteredData.arrayCoursesBySubjects &&
-                filteredData.arrayCoursesBySubjects.length > 0 &&
-                filteredData.arrayCoursesBySubjects.map((rItem, index) => {
-                  const open = this.state.listOfListsIds.includes(
-                    rItem.subjectId as string
-                  );
-
-                  return (
-                    <RecordsList
-                      key={index}
-                      subjectId={rItem.subjectId as string}
-                      name={`AineId ${rItem.subjectId as string}`}
-                      courseCount={rItem.workspaces.length}
-                      studiesListType="normal"
-                      onOpenClick={this.handleListOpen}
-                      openList={open}
-                    >
-                      <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                        <div
-                          className="studies-records__section-content-course-list-item-cell"
-                          style={{ borderLeft: "10px solid transparent" }}
-                        >
-                          <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
-                            Nimi
-                          </div>
-                        </div>
-                        <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                          <div className="studies-records__section-content-course-list-item-cell-label">
-                            Arviointipvm.
-                          </div>
-                        </div>
-                        <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                          <div className="studies-records__section-content-course-list-item-cell-label">
-                            Arvioija / Opettaja
-                          </div>
-                        </div>
-
-                        <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                          <div className="studies-records__section-content-course-list-item-cell-label">
-                            Arvosana
-                          </div>
-                        </div>
-                        <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                          <div className="studies-records__section-content-course-list-item-cell-label">
-                            Tehtävät
-                          </div>
-                        </div>
-                      </div>
-                      {rItem.workspaces.map((cItem, index) => {
-                        return (
-                          <RecordsListItem
-                            key={index}
-                            userEntityId={filteredData.userEntityId}
-                            courseName={cItem.name}
-                            index={index}
-                            asessor="Eka Vekara"
-                            name={cItem.name}
-                            status={this.evaluationStatus(
-                              cItem.studentAssessmentState.state
-                            )}
-                            evaluationDate={cItem.studentAssessmentState.date}
-                            grade={cItem.studentAssessmentState.grade}
-                            description={cItem.studentAssessmentState.text}
-                            workspaceId={cItem.id}
-                            studies={{
-                              excerciseCount:
-                                cItem.studentActivity.exercisesAnswered,
-                              maxExcercise:
-                                cItem.studentActivity.exercisesTotal,
-                              assigmentCount:
-                                cItem.studentActivity.evaluablesAnswered,
-                              maxAssigment:
-                                cItem.studentActivity.evaluablesTotal,
-                            }}
-                          />
-                        );
-                      })}
-                    </RecordsList>
-                  );
-                })}
+                  })
+                : null}
             </div>
           </div>
         </div>
