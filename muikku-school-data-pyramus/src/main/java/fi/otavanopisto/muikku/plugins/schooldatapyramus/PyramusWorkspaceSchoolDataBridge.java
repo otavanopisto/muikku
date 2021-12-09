@@ -65,19 +65,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) {
-    if (StringUtils.isBlank(name)) {
-      throw new SchoolDataBridgeInternalException("Name is required");
-    }
-    
-    if (name.length() > 255) {
-      throw new SchoolDataBridgeInternalException("Name maximum length is 255 characters");
-    }
-    
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
   public Workspace copyWorkspace(SchoolDataIdentifier sourceWorkspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
     if (!getSchoolDataSource().equals(sourceWorkspaceIdentifier.getDataSource())) {
       logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", sourceWorkspaceIdentifier));
@@ -195,27 +182,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         result.add(createWorkspaceEntity(course));
       }
     }
-    return result;
-  }
-
-  @Override
-  public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) {
-    if (courseIdentifierIdentifier.indexOf("/") == -1)
-      throw new SchoolDataBridgeInternalException("Invalid CourseIdentifierId");
-    
-    String subjectId = courseIdentifierIdentifier.substring(0, courseIdentifierIdentifier.indexOf("/"));
-    String courseNumber = courseIdentifierIdentifier.substring(courseIdentifierIdentifier.indexOf("/") + 1);
-    
-    Course[] courses = pyramusClient.get("/common/subjects/" + subjectId + "/courses", fi.otavanopisto.pyramus.rest.model.Course[].class);
-    List<Workspace> result = new ArrayList<Workspace>();
-    
-    for (Course course : courses) {
-      String courseNumber2 = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
-
-      if (courseNumber.equals(courseNumber2))
-        result.add(createWorkspaceEntity(course));
-    }
-    
     return result;
   }
 

@@ -20,15 +20,11 @@ public interface WorkspaceSchoolDataBridge {
   
   /* Workspaces */
 
-  public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier);
-
   public Workspace copyWorkspace(SchoolDataIdentifier sourceWorkspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier);
 
   public Workspace findWorkspace(String identifier);
 
   public List<Workspace> listWorkspaces();
-
-  public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier);
 
   public Workspace updateWorkspace(Workspace workspace);
   

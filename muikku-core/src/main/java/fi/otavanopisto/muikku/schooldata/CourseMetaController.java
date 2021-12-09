@@ -157,34 +157,6 @@ public class CourseMetaController {
     return null;
   }
   
-  public List<CourseIdentifier> listCourseIdentifiers() {
-    List<CourseIdentifier> result = new ArrayList<>();
-    
-    for (CourseMetaSchoolDataBridge courseMetaBridge : getCourseMetaBridges()) {
-      try {
-        result.addAll(courseMetaBridge.listCourseIdentifiers());
-      } catch (SchoolDataBridgeInternalException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing course identifiers", e);
-      } 
-    }
-
-    return result;
-  }
-  
-  public List<CourseIdentifier> listCourseIdentifiersBySubject(Subject subject) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(subject.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listCourseIdentifiersBySubject(subject.getIdentifier());
-      } else {
-        logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
-      }
-    }
-
-    return null;
-  }
-  
   private List<CourseMetaSchoolDataBridge> getCourseMetaBridges() {
     List<CourseMetaSchoolDataBridge> result = new ArrayList<>();
     
