@@ -32,6 +32,9 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
     // Create product data
     let productData: React.ReactNode = null;
 
+    // Create feedback data
+    let feedbackData: React.ReactNode = null;
+
     if (this.props.ceepos.purchase) {
       productData = (
         <>
@@ -69,6 +72,61 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
     // Something else went wrong and we have no additional details nor any idea what went wrong.
     const unknownError = !paymentWasSuccessful && !paymentWasCancelled && !paymentWasErrored;
 
+    if (this.props.status) {
+      feedbackData = (
+        <>
+          <div className="card__content card__content--ceepos">
+            {productData}
+            <div className="card__text card__text--ceepos">
+              <div className="card__text-row card__text-row--ceepos">
+                {paymentWasSuccessful ?
+                  this.props.i18n.text.get("plugin.ceepos.order.done.successful")
+                  : null}
+
+                {paymentWasCancelled ?
+                  this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")
+                  : null}
+
+                {paymentWasErrored ?
+                  this.props.i18n.text.get("plugin.ceepos.order.done.errored")
+                  : null}
+
+                {unknownError ?
+                  this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")
+                  : null}
+
+              </div>
+            </div>
+          </div>
+          <footer className="card__footer card__footer--ceepos">
+            {paymentWasSuccessful || paymentWasCancelled ?
+              <Button
+                icon="forward"
+                buttonModifiers={["back-to-muikku", "info"]}
+                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
+              </Button>
+              : null}
+
+            {paymentWasErrored || unknownError ?
+              <>
+                <Button
+                  icon="forward"
+                  buttonModifiers={["back-to-muikku", "info"]}
+                  href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
+                </Button>
+                <Button
+                  icon="envelope"
+                  buttonModifiers={["send-message", "info"]}
+                >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
+                </Button>
+              </>
+              : null}
+          </footer>
+        </>
+      );
+    }
+
+
     return (
       <div className="card-wrapper">
         <div className="card card--ceepos">
@@ -76,92 +134,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             <img className="card__hero-image card__hero-image--ceepos" src="/gfx/oo-branded-site-logo.png" role="presentation"/>
             <span className="card__hero-text card__hero-text--ceepos">Muikku</span>
           </header>
-
-          {/*
-            Different statuses of the completed order.
-            These will be displayed after the student returns back to Muikku from Ceepos online store.
-          */}
-          {paymentWasSuccessful ?
-          <>
-            <div className="card__content card__content--ceepos">
-              {productData}
-              <div className="card__text card__text--ceepos">
-                <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.successful")}</div>
-              </div>
-            </div>
-            <footer className="card__footer card__footer--ceepos">
-              <Button
-                icon="forward"
-                buttonModifiers={["back-to-muikku", "info"]}
-                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
-              </Button>
-            </footer>
-          </>
-          : null}
-
-          {paymentWasCancelled ?
-          <>
-            <div className="card__content card__content--ceepos">
-              {productData}
-              <div className="card__text card__text--ceepos">
-                <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")}</div>
-              </div>
-            </div>
-            <footer className="card__footer card__footer--ceepos">
-              <Button
-                icon="forward"
-                buttonModifiers={["back-to-muikku", "info"]}
-                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
-              </Button>
-            </footer>
-          </>
-          : null}
-
-          {paymentWasErrored ?
-          <>
-            <div className="card__content card__content--ceepos">
-              {productData}
-              <div className="card__text card__text--ceepos">
-                <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.errored")}</div>
-              </div>
-            </div>
-            <footer className="card__footer card__footer--ceepos">
-              <Button
-                icon="forward"
-                buttonModifiers={["back-to-muikku", "info"]}
-                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
-              </Button>
-              <Button
-                icon="envelope"
-                buttonModifiers={["send-message", "info"]}
-              >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
-              </Button>
-            </footer>
-          </>
-          : null}
-
-          {unknownError ?
-          <>
-            <div className="card__content card__content--ceepos">
-              {productData}
-              <div className="card__text card__text--ceepos">
-                <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")}</div>
-              </div>
-            </div>
-            <footer className="card__footer card__footer--ceepos">
-              <Button
-                icon="forward"
-                buttonModifiers={["back-to-muikku", "info"]}
-                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuLink.label")}
-              </Button>
-              <Button
-                icon="envelope"
-                buttonModifiers={["send-message", "info"]}
-              >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
-              </Button>
-            </footer>
-          </>
-          : null}
+          {feedbackData}
         </div>
       </div>
     )

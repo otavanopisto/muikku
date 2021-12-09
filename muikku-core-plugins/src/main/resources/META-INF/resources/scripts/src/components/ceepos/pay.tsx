@@ -4,6 +4,7 @@ import { Dispatch } from 'redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { CeeposState } from '~/reducers/main-function/ceepos';
+import Button from '~/components/general/button';
 
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';
@@ -41,6 +42,15 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
               }
             </div>
           </div>
+          {this.props.ceepos.state === "ERROR" ?
+            <footer className="card__footer card__footer--ceepos">
+              <Button
+                icon="forward"
+                buttonModifiers={["back-to-muikku", "info"]}
+                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
+              </Button>
+            </footer>
+          : null}
        </div>
       </div>
     )
