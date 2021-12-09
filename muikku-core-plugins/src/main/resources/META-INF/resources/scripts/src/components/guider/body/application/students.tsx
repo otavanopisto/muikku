@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
 import User from "~/components/general/user";
 import { i18nType } from "~/reducers/base/i18n";
-
+import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 
@@ -46,7 +46,10 @@ interface GuiderStudentsProps {
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
-interface GuiderStudentsState {}
+interface GuiderStudentsState {
+  isOpen: boolean,
+
+}
 
 class GuiderStudents extends BodyScrollLoader<
   GuiderStudentsProps,
@@ -63,8 +66,22 @@ class GuiderStudents extends BodyScrollLoader<
     this.loadMoreTriggerFunctionLocation = "loadMoreStudents";
     //Cancel loading more if that property exists
     this.cancellingLoadingPropertyLocation = "guiderStudentsCurrent";
+    this.state = {
+      isOpen: false,
+    }
 
     this.onStudentClick = this.onStudentClick.bind(this);
+  }
+
+  getBackByHash = (): string => {
+    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
+    delete locationData.c;
+    let newHash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
+    return newHash;
+  }
+
+  onStudentClose = () => {
+    location.hash = this.getBackByHash();
   }
 
   onStudentClick(student: GuiderStudentType) {
@@ -87,8 +104,7 @@ class GuiderStudents extends BodyScrollLoader<
         </div>
       );
     } else if (
-      this.props.guiderStudentsState.length === 0 &&
-      !this.props.guiderStudentsCurrent
+      this.props.guider.students.length === 0
     ) {
       return (
         <div className="empty">
@@ -100,7 +116,8 @@ class GuiderStudents extends BodyScrollLoader<
     }
 
     return (
-      <BodyScrollKeeper hidden={!!this.props.guiderStudentsCurrent}>
+      <BodyScrollKeeper hidden={false}>
+        <StudentDialog student={this.props.guider.currentStudent} isOpen={this.props.guider.currentStudent !== null} onClose={this.onStudentClose} />
         <SelectableList
           as={ApplicationList}
           selectModeModifiers="select-mode"

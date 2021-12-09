@@ -173,7 +173,7 @@ interface DialogRowProps {
   modifiers?: string | Array<string>;
 }
 
-interface DialogRowState {}
+interface DialogRowState { }
 
 export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
   render() {
@@ -183,11 +183,10 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row ${
-          this.props.modifiers
-            ? modifiers.map((m) => `dialog__content-row--${m}`).join(" ")
-            : ""
-        }`}
+        className={`dialog__content-row ${this.props.modifiers
+          ? modifiers.map((m) => `dialog__content-row--${m}`).join(" ")
+          : ""
+          }`}
       >
         {this.props.children}
       </div>
@@ -201,7 +200,7 @@ interface DialogRowHeaderProps {
   description?: string;
 }
 
-interface DialogRowHeaderState {}
+interface DialogRowHeaderState { }
 
 export class DialogRowHeader extends React.Component<
   DialogRowHeaderProps,
@@ -214,32 +213,29 @@ export class DialogRowHeader extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row-header ${
-          this.props.modifiers
-            ? modifiers.map((m) => `dialog__content-row-header--${m}`).join(" ")
-            : ""
-        }`}
+        className={`dialog__content-row-header ${this.props.modifiers
+          ? modifiers.map((m) => `dialog__content-row-header--${m}`).join(" ")
+          : ""
+          }`}
       >
         <div
-          className={`dialog__content-row-header-title ${
-            this.props.modifiers
-              ? modifiers
-                  .map((m) => `dialog__content-row-title--${m}`)
-                  .join(" ")
-              : ""
-          }`}
+          className={`dialog__content-row-header-title ${this.props.modifiers
+            ? modifiers
+              .map((m) => `dialog__content-row-title--${m}`)
+              .join(" ")
+            : ""
+            }`}
         >
           {this.props.title}
         </div>
         {this.props.description ? (
           <div
-            className={`dialog__content-row-header-description ${
-              this.props.modifiers
-                ? modifiers
-                    .map((m) => `dialog__content-row-title-description--${m}`)
-                    .join(" ")
-                : ""
-            }`}
+            className={`dialog__content-row-header-description ${this.props.modifiers
+              ? modifiers
+                .map((m) => `dialog__content-row-title-description--${m}`)
+                .join(" ")
+              : ""
+              }`}
           >
             {this.props.description}
           </div>
@@ -253,7 +249,7 @@ interface DialogRowContentProps {
   modifiers?: string | Array<string>;
 }
 
-interface DialogRowContentState {}
+interface DialogRowContentState { }
 
 export class DialogRowContent extends React.Component<
   DialogRowContentProps,
@@ -266,13 +262,12 @@ export class DialogRowContent extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row-content ${
-          this.props.modifiers
-            ? modifiers
-                .map((m) => `dialog__content-row-content--${m}`)
-                .join(" ")
-            : ""
-        }`}
+        className={`dialog__content-row-content ${this.props.modifiers
+          ? modifiers
+            .map((m) => `dialog__content-row-content--${m}`)
+            .join(" ")
+          : ""
+          }`}
       >
         {this.props.children}
       </div>
@@ -453,11 +448,11 @@ export class DialogRemoveUsers extends React.Component<
                                   <Avatar
                                     id={
                                       user.variables &&
-                                      user.variables.identifier
+                                        user.variables.identifier
                                         ? (user.variables.identifier as number)
                                         : this.getNumberFromUserId(
-                                            user.id as string
-                                          )
+                                          user.id as string
+                                        )
                                     }
                                     hasImage={
                                       user.variables && user.variables.boolean
@@ -527,11 +522,11 @@ export class DialogRemoveUsers extends React.Component<
                                   <Avatar
                                     id={
                                       user.variables &&
-                                      user.variables.identifier
+                                        user.variables.identifier
                                         ? (user.variables.identifier as number)
                                         : this.getNumberFromUserId(
-                                            user.id as string
-                                          )
+                                          user.id as string
+                                        )
                                     }
                                     hasImage={
                                       user.variables && user.variables.boolean

@@ -157,18 +157,19 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     }
     let originalData: any = queryString.parse(window.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
 
-    if (!originalData.c) {
-      let filters: GuiderActiveFiltersType = {
-        "workspaceFilters": (originalData.w || []).map((num: string) => parseInt(num)),
-        "labelFilters": (originalData.l || []).map((num: string) => parseInt(num)),
-        "userGroupFilters": (originalData.u || []).map((num: string) => parseInt(num)),
-        "query": originalData.q || ""
-      }
-      this.props.store.dispatch(loadStudents(filters) as Action);
-      return;
+    if (originalData.c) {
+      this.props.store.dispatch(loadStudent(originalData.c) as Action);
     }
 
-    this.props.store.dispatch(loadStudent(originalData.c) as Action)
+    let filters: GuiderActiveFiltersType = {
+      "workspaceFilters": (originalData.w || []).map((num: string) => parseInt(num)),
+      "labelFilters": (originalData.l || []).map((num: string) => parseInt(num)),
+      "userGroupFilters": (originalData.u || []).map((num: string) => parseInt(num)),
+      "query": originalData.q || ""
+    }
+    this.props.store.dispatch(loadStudents(filters) as Action);
+
+
   }
 
   /**

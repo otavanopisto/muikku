@@ -201,8 +201,8 @@ let loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       });
 
       dispatch({
-        type: "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
-        payload: null
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"LOADING"
       });
 
       await Promise.all([
