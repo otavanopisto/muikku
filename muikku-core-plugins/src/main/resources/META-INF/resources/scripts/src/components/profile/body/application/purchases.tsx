@@ -46,11 +46,11 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     const purchases = this.props.profile.purchases;
 
     const ongoingPuchases: PurchaseType[] = purchases.filter((purchase) => {
-      return (purchase.state === "ONGOING" || purchase.state === "CREATED")
+      return (purchase.state === "ONGOING" || purchase.state === "CREATED"  || purchase.state === "ERRORED")
     });
 
     const completedPurchases: PurchaseType[] = purchases.filter((purchase) => {
-      return (purchase.state !== "ONGOING" && purchase.state !== "CREATED")
+      return (purchase.state !== "ONGOING" && purchase.state !== "CREATED" && purchase.state !== "ERRORED")
     });
 
     if (!purchases.length) {
@@ -94,6 +94,15 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                                 icon="forward"
                                 buttonModifiers={["pay-student-order", "execute"]}
                                 onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.purchases.payButton.label")}
+                              </Button>
+                            </span> : null}
+
+                            {p.state === "ERRORED" ?
+                            <span className="application-list__header-primary-actions">
+                              <Button
+                                icon="envelope"
+                                buttonModifiers={["send-message", "info"]}
+                                onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.purchases.sendMessageButton.label")}
                               </Button>
                             </span> : null}
                         </span>
