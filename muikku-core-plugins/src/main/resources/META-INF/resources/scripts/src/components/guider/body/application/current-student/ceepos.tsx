@@ -16,7 +16,7 @@ import {
   completeOrderFromCurrentStudent,
   CompleteOrderFromCurrentStudentTriggerType
 } from '~/actions/main-function/guider';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemFooter, ApplicationListItemDate } from '~/components/general/application-list'
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list'
 import { PurchaseProductType, PurchaseType } from '~/reducers/main-function/profile';
 import Dialog from '~/components/general/dialog';
 import Dropdown from '~/components/general/dropdown';
