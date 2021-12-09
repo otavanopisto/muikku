@@ -160,10 +160,21 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * @returns
    */
   render() {
+
+    /**
+     * orderConfirmDialogContent
+     * @param closeDialog
+     * @returns
+     */
     let orderConfirmDialogContent = (closeDialog: () => any) => <div>
       <span>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</span>
     </div>
 
+    /**
+     * orderConfirmDialogFooter
+     * @param closeDialog
+     * @returns
+     */
     let orderConfirmDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
@@ -177,10 +188,20 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       )
     }
 
+    /**
+     * orderDeleteDialogContent
+     * @param closeDialog
+     * @returns
+     */
     let orderDeleteDialogContent = (closeDialog: () => any) => <div>
       <span>{this.props.i18n.text.get("plugin.guider.orderDeleteDialog.description")}</span>
     </div>
 
+    /**
+     * orderDeleteDialogFooter
+     * @param closeDialog
+     * @returns
+     */
     let orderDeleteDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
@@ -194,10 +215,20 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       )
     }
 
+    /**
+     * orderCompleteDialogContent
+     * @param closeDialog
+     * @returns
+     */
     let orderCompleteDialogContent = (closeDialog: () => any) => <div>
       <span>{this.props.i18n.text.get("plugin.guider.orderCompleteDialog.description")}</span>
     </div>
 
+    /**
+     * orderCompleteDialogFooter
+     * @param closeDialog
+     * @returns
+     */
     let orderCompleteDialogFooter = (closeDialog: () => any)=>{
       return (
         <div className="dialog__button-set">
@@ -211,7 +242,11 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
       )
     }
 
-    // Can new order be created by guidance counselor
+    /**
+     * Can new order be created by guidance counselor.
+     *
+     * canOrderBeCreated
+     */
     const canOrderBeCreated = this.props.guider.currentStudent.purchases &&
       this.props.guider.currentStudent.purchases.find((param) =>
         param["state"] === "CREATED" || param["state"] === "ONGOING" ? true : false
@@ -220,7 +255,8 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     /**
      * Can guidance counselor delete already creted order
      * This is handled inverse as <Button> disabled attribute receives true or false directly.
-     *  canOderBeDelete
+     *
+     * canOderBeDelete
      * @param state
      * @return true | false
      * */
@@ -238,6 +274,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     /**
      * Can guidance counselor manually complete (behalf of student) already created but not finished order.
      * This is handled inverse as <Button> disabled attribute receives true or false directly.
+     *
      * canOrderBeCompletedManually
      * @param state
      * @returns true | false
@@ -306,6 +343,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
             <span>{this.props.i18n.text.get("plugin.guider.noPurchases")}</span>
           </div>}
 
+        {/* Confirm order creation dialog */}
         <Dialog
           modifier="dialog-confirm-order"
           isOpen={!!this.state.isConfirmDialogOpenFor}
@@ -315,6 +353,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           footer={orderConfirmDialogFooter}
         />
 
+        {/* Delete order dialog */}
         <Dialog
           modifier="dialog-delete-order"
           isOpen={!!this.state.isDeleteDialogOpen}
@@ -324,6 +363,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           footer={orderDeleteDialogFooter}
         />
 
+        {/* Complete order manually dialog */}
         <Dialog
           modifier="dialog-complete-order"
           isOpen={!!this.state.isCompleteDialogOpen}
