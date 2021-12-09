@@ -191,10 +191,11 @@
 
 // Ceepos
 .card--ceepos {
-  box-shadow: 0 0 20px $color-default-separator-border;
+  background: transparent;
+  border: 0;
   height: auto;
   margin: 10px;
-  max-width: 400px;
+  max-width: 430px;
 }
 
 .card__hero--ceepos {
@@ -224,6 +225,11 @@
     font-size: 2.5rem;
   }
 }
+.card__content--ceepos {
+  background: $color-default;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
 
 .card__title--ceepos {
   font-weight: 400;
@@ -243,14 +249,18 @@
 }
 
 .card__footer--ceepos {
-  border-top: 1px dashed $color-default-separator-border;
-  padding: 1.1rem;
+  background: $color-default;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 0.55rem 0 1.1rem 0;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 1.6rem;
+    padding: 0.8rem 0 1.6rem 0;
   }
 
   .button {
-    margin: 0 10px 0 0;
+    margin: 0 10px 10px 0;
   }
 }

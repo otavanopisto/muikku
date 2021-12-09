@@ -83,7 +83,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
           */}
           {paymentWasSuccessful ?
           <>
-            <div className="card__content">
+            <div className="card__content card__content--ceepos">
               {productData}
               <div className="card__text card__text--ceepos">
                 <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.successful")}</div>
@@ -101,7 +101,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
           {paymentWasCancelled ?
           <>
-            <div className="card__content">
+            <div className="card__content card__content--ceepos">
               {productData}
               <div className="card__text card__text--ceepos">
                 <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")}</div>
@@ -119,7 +119,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
           {paymentWasErrored ?
           <>
-            <div className="card__content">
+            <div className="card__content card__content--ceepos">
               {productData}
               <div className="card__text card__text--ceepos">
                 <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.errored")}</div>
@@ -142,7 +142,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
           {unknownError ?
           <>
-            <div className="card__content">
+            <div className="card__content card__content--ceepos">
               {productData}
               <div className="card__text card__text--ceepos">
                 <div className="card__text-row card__text-row--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")}</div>

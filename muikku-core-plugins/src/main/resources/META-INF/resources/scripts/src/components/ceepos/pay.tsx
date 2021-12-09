@@ -32,7 +32,7 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
             <img className="card__hero-image card__hero-image--ceepos" src="/gfx/oo-branded-site-logo.png" role="presentation"/>
             <span className="card__hero-text card__hero-text--ceepos">Muikku</span>
           </header>
-          <div className="card__content">
+          <div className="card__content card__content--ceepos">
             <div className="card__title card__title--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.title")}</div>
             <div className="card__text card__text--ceepos">
               {this.props.ceepos.payStatusMessage ?
