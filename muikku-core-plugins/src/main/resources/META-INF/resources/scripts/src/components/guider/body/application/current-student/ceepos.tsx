@@ -69,10 +69,11 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * beginOrderCreationProcess
    * @param p
    */
-  beginOrderCreationProcess(p: PurchaseProductType) {
+  beginOrderCreationProcess(p: PurchaseProductType, closeDropdown?: () => any) {
     this.setState({
       isConfirmDialogOpenFor: p,
     });
+    closeDropdown && closeDropdown();
   }
 
   /**
@@ -255,12 +256,14 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     return (
       <div>
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
-          <Dropdown items={this.props.guider.availablePurchaseProducts.map((p) => (
-            <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p)}>
-              <span className="link__icon icon-plus"></span>
-              <span>{p.Description}</span>
-            </Link>
-          ))}>
+          <Dropdown items={this.props.guider.availablePurchaseProducts.map((p) => {
+            return (closeDropdown: () => any) => {
+              return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
+                <span className="link__icon icon-plus"></span>
+                <span>{p.Description}</span>
+              </Link>
+            }
+          })}>
             <Button
               icon="cart-plus"
               buttonModifiers={["create-student-order", "info"]}
