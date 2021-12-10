@@ -75,7 +75,7 @@ export interface ExaminationSubject {
  */
 export interface ExaminationInformation
   extends MatriculationStudent,
-  MatriculationStudentExamination {
+    MatriculationStudentExamination {
   date: string;
 }
 
@@ -217,10 +217,244 @@ export interface MatriculationExaminationApplication {
 /**
  * UploadingValue
  */
+export enum Education {
+  VOCATIONAL_SCHOOL = "VOCATIONAL_SHOOL",
+  HOME_SCHOOL = "HOME_SCHOOL",
+  COMPULSORY_SCHOOL = "COMPULSORY_SCHOOL",
+  SOMETHING_ELSE = "SOMETHING_ELSE",
+}
+
+/**
+ * FollowUpStudies
+ */
+export enum FollowUpStudies {
+  APPRENTICESHIP_TRAINING = "APPRENTICESHIP_TRAINING",
+  VOCATIONAL_SCHOOL = "VOCATIONAL_SCHOOL",
+  UPPER_SECONDARY_SCHOOL = "UPPER_SECONDARY_SCHOOL",
+  UNIVERSITY_STUDIES = "UNIVERSITY_STUDIES",
+}
+
+/**
+ * StudySector
+ */
+export enum StudySector {
+  SOCIAL_HEALT_SECTOR = "SOCIAL_HEALT_SECTOR",
+  TRADE_SECTOR = "TRADE_SECTOR",
+  TRANSPORT_SECTOR = "TRANSPORT_SECTOR",
+  EDUCATION_SECTOR = "EDUCATION_SECTOR",
+  INDUSTRY_SECTOR = "INDUSTRY_SECTOR",
+  ART_SECTOR = "ART_SECTOR",
+}
+
+/**
+ * FollowUpGoal
+ */
+export enum FollowUpGoal {
+  POSTGRADUATE_STUDIES = "POSTGRADUATE_STUDIES",
+  WORKING_LIFE = "WORKING_LIFE",
+  NO_FOLLOW_UP_GOALS = "NO_FOLLOW_UP_GOALS",
+}
+
+export enum CourseStatus {
+  ONGOING = "ONGOING",
+  GRADED = "GRADED",
+  TRANSFERRED = "TRANSFERRED",
+  SUGGESTED_NEXT = "SUGGESTED_NEXT",
+  SUGGESTED_OPTIONAL = "SUGGESTED_OPTIONAL",
+}
+
+/**
+ * LanguageGrade
+ */
+export interface LanguageGrade {
+  name: string;
+  grade: number;
+  hardCoded: boolean;
+}
+
+export interface HopsCompulsory {
+  startingLevel: HopsStudentStartingLevel;
+  motivationAndStudy: HopsMotivationAndStudy;
+  studiesPlanning: HopsPlanningStudies;
+}
+
+/**
+ * BasicStudies
+ */
+export interface BasicInformation {
+  name: string;
+  dateOfIssue?: Date;
+  updates?: HopsUpdates[];
+  counselorList?: string[];
+}
+
+export interface StudentInfo {
+  id: number;
+  firstName: string;
+  lastName: string;
+  counselorList?: string[];
+}
+
+export interface HopsUpdates {
+  date: Date;
+  modifier: string;
+}
+
+/**
+ * HopsStudentStartingLevel
+ */
+export interface HopsStudentStartingLevel {
+  previousEducation: string;
+  previousEducationElse?: string;
+  previousWorkExperience: string;
+  previousYearsUsedInStudies: string;
+  finnishAsMainOrSecondaryLng: boolean;
+  previousLanguageExperience: LanguageGrade[];
+}
+
+/**
+ * HopsMotivationAndStudy
+ */
+export interface HopsMotivationAndStudy
+  extends WayToLearn,
+    StudentLearningMethod,
+    StudentSupportive {
+  scaleSize: number;
+  scaleName: string;
+  hardOrEasyInStudies?: string;
+  strengthsOrWeaknesses?: string;
+  interests?: string;
+  areasToAdvance?: string;
+}
+
+export interface HopsStudies {
+  usedHoursPerWeek: number;
+  ethics: boolean;
+  finnishAsSecondLanguage: boolean;
+}
+
+export interface HopsPlanningStudies {
+  usedHoursPerWeek: number;
+  ethics: boolean;
+  finnishAsSecondLanguage: boolean;
+}
+
+/**
+ * FollowUpGoal
+ */
+export interface FollowUp {
+  graduationGoal: string;
+  followUpGoal: string;
+  followUpStudies?: string;
+  studySector?: string;
+}
+
+/**
+ * WayToLearn
+ */
+export interface WayToLearn {
+  byReading: number;
+  byListening: number;
+  byDoing: number;
+  someOtherWay?: string;
+}
+
+/**
+ * StudentLearningMethod
+ */
+export interface StudentLearningMethod {
+  byMemorizing: number;
+  byTakingNotes: number;
+  byDrawing: number;
+  byListeningTeacher: number;
+  byWatchingVideos: number;
+  byFollowingOthers: number;
+  someOtherMethod?: string;
+}
+
+/**
+ * StudentSupportive
+ */
+export interface StudentSupportive {
+  noSupport: number;
+  family: number;
+  friend: number;
+  supportPerson: number;
+  teacher: number;
+  somethingElse?: string;
+}
+
+export interface SchoolSubject {
+  name: string;
+  subjectCode: string;
+  availableCourses: Course[];
+}
+
+export interface Course {
+  name: string;
+  courseNumber: number;
+  length: number;
+  mandatory: boolean;
+  id: number;
+}
+
+export interface StudentActivityCourse {
+  subject: string;
+  courseId: number; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
+  courseNumber: number;
+  courseName: string;
+  grade: number; // jos on arvioitu tahi hyväksiluettu
+  status: CourseStatus;
+  date: string;
+}
+
+export interface StudiesCourseData {
+  completedSubjectListOfIds?: number[];
+  approvedSubjectListOfIds?: number[];
+  inprogressSubjectListOfIds?: number[];
+  selectedOptionalListOfIds?: number[];
+  ownHopsChoosed?: number;
+  ownHopsCompleted?: number;
+}
 export interface UploadingValue {
   name: string;
   contentType: string;
   failed?: boolean;
   progress?: number;
   file?: File;
+}
+
+export interface Suggestion {
+  id: number;
+  name: string;
+  subject: string;
+  courseNumber: number;
+}
+
+export interface StudentCourseChoice {
+  subject: string;
+  courseNumber: number;
+}
+
+export interface StudentActivityByStatus {
+  /**
+   * List of ongoing courses
+   */
+  onGoingList: StudentActivityCourse[];
+  /**
+   * List of suggested courses for next
+   */
+  suggestedNextList: StudentActivityCourse[];
+  /**
+   * List of suggested optional courses
+   */
+  suggestedOptionalList: StudentActivityCourse[];
+  /**
+   * List of transfered courses
+   */
+  transferedList: StudentActivityCourse[];
+  /**
+   * List of graded courses
+   */
+  gradedList: StudentActivityCourse[];
 }

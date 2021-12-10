@@ -1,0 +1,402 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.hops-container {
+  flex-basis: 100%;
+  overflow: auto;
+  width: 100%;
+  padding: 0 10px 0 10px;
+}
+
+.hops-container__fieldset {
+  border-bottom: 1px solid $color-default-separator-border;
+  margin: 0 0 15px;
+  padding: 0 0 10px;
+  min-width: 100%;
+
+  // @include breakpoint($breakpoint-pad) {
+  //    display: flex;
+  //  }
+}
+
+.hops-container__subheader {
+  border: 0;
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0 0 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.1875rem;
+  }
+}
+
+// .hops-sub__container {
+//  flex-grow: 1;
+//
+//  @include breakpoint($breakpoint-pad) {
+//    flex-grow: 4;
+//  }
+// }
+
+.hops-updates__list {
+  list-style-type: disc;
+  padding-inline-start: 20px;
+}
+
+.hops-updates__list li {
+  display: list-item;
+}
+
+.hops-sub__container--updates {
+  border: 1px solid cornflowerblue;
+  border-left: 3px solid cornflowerblue;
+  flex-grow: 2;
+}
+
+.hops-container__row {
+  display: flex;
+  flex-flow: column wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.hops__form-element-container {
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px;
+  position: relative;
+  display: flex;
+}
+
+.hops__form-element-container--hops_indicators {
+  align-items: center;
+}
+
+.hops__form-element-container--single-row {
+  align-items: center;
+  display: flex;
+  flex-flow: row;
+
+  .hops-label {
+    flex-basis: auto;
+    margin: 0 10px 0 0;
+    padding: 0;
+  }
+}
+
+.hops__form-element-container--pad__upforwards {
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: flex;
+  }
+}
+
+.hops__form-element-container--mobile {
+  display: flex;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: none;
+  }
+}
+
+.hops__form-element-container--info {
+  border: 2px solid;
+  border-left-width: 5px;
+  padding: 10px;
+  font-style: italic;
+}
+
+.hops__form-element-container--toomuch {
+  border-color: green;
+}
+
+.hops__form-element-container--enough {
+  border-color: lightblue;
+}
+
+.hops__form-element-container--notenough {
+  border-color: orange;
+}
+
+.hops-label {
+  display: block;
+  font-weight: 600;
+  overflow: hidden;
+  padding: 0 0 5px;
+  text-overflow: ellipsis;
+}
+
+.hops-input {
+  background: $color-default;
+  border: 2px solid pink;
+  border-radius: 3px;
+  height: 2.25rem;
+  padding: 4px 8px;
+  width: 100%;
+
+  &[readonly] {
+    background-color: lighten($color-disabled, 20%);
+    border: 0;
+  }
+}
+
+.hops-select {
+  background: $color-default;
+  border: 2px solid pink;
+  border-radius: 3px;
+  display: inline-block;
+  height: 2.25rem;
+  padding: 4px;
+  width: 100%;
+
+  &[disabled] {
+    background-color: #e6e5e5;
+    border: 0;
+  }
+}
+
+.hops-input[type="checkbox"] {
+  align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: solid 2px pink;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+
+  &[disabled] {
+    background-color: #c1c1c1;
+    border: 0;
+  }
+}
+
+.hops-input:disabled {
+  background-color: #e6e5e5;
+  border: 0;
+}
+
+.hops-input[type="checkbox"]:checked {
+  background-color: $color-application-dialog-border-color;
+  border: solid 2px $color-application-dialog-border-color;
+}
+
+.hops-input[type="checkbox"]:checked::after {
+  color: $color-default;
+  content: "\e639";
+  font-family: muikku;
+  font-size: 0.875rem;
+}
+
+.hops-table__container {
+  width: 100%;
+}
+
+.hops-button__container {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hops-container__row--list {
+  display: block;
+}
+
+.form-element__textarea[disabled] {
+  background-color: #e6e5e5;
+  border: 0;
+}
+
+.form-element__textarea--resize__vertically {
+  margin-top: 5px;
+  min-height: 50px;
+  resize: vertical;
+}
+
+.hops-container__indicator-examples {
+  display: flex;
+  margin: 10px 5px 20px;
+  flex-flow: row wrap;
+}
+
+.hops-container__course-latest_completed,
+.hops-container__course-selected,
+.hops-container__course-suggested,
+.hops-container__course-mandatory,
+.hops-container__course-optional,
+.hops-container__course-inprogress,
+.hops-container__course-approval,
+.hops-container__course-completed {
+  align-items: center;
+  display: flex;
+  margin: 5px 5px 5px;
+  flex-shrink: 1;
+}
+
+.hops-container__course-latest_completed-indicator,
+.hops-container__course-suggested-indicator,
+.hops-container__course-selected-indicator,
+.hops-container__course-mandatory-indicator,
+.hops-container__course-optional-indicator,
+.hops-container__course-inprogress-indicator,
+.hops-container__course-approval-indicator,
+.hops-container__course-completed-indicator {
+  display: inline-block;
+  height: 25px;
+  margin: 0 10px 0 0;
+  width: 25px;
+}
+
+.hops-container__course-suggested-indicator {
+  border: 2px solid pink;
+}
+
+.hops-container__course-mandatory-indicator {
+  background-color: #acacac;
+}
+
+.hops-container__course-optional-indicator {
+  background-color: lightblue;
+}
+
+.hops-container__course-inprogress-indicator {
+  background-color: orange;
+}
+
+.hops-container__course-approval-indicator {
+  background-color: palegreen;
+}
+
+.hops-container__course-completed-indicator {
+  background-color: green;
+}
+
+.hops-container__course-latest_completed-indicator {
+  background-color: #08e108;
+}
+
+.hops-container__course-selected-indicator {
+  background-color: #3ab8e1;
+}
+
+.hops__form-element-container-study__counter {
+  background-color: aliceblue;
+  padding: 5px;
+}
+
+.hops__form-element-container-study__counter div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hops__result-title {
+  margin: 0 5px;
+}
+
+.hops__calculated__hours-divider {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.hops-activity__progressbar-circle {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 105px;
+}
+
+.hops-course-activity__progressbar-circle {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  height: 100px;
+}
+
+.hops-activity__progressbar-circle {
+  line-height: 1;
+  margin: 0 5px;
+}
+
+.hops-course-activity__progressbar-circle {
+  line-height: 1;
+  margin: 0 5px;
+}
+
+.hops-proggress-line {
+  display: flex;
+  position: relative;
+  align-items: center;
+  width: calc(100% - 10px);
+  margin: 5px;
+}
+
+.hops-proggress-line .progressbar-text {
+  margin: 5px;
+}
+
+.hops-divived {
+  margin: 5px;
+}
+
+.hops-activity__progressbar-label {
+  background: $color-default;
+  border: 1px solid $color-assignment;
+  border-radius: 3px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 2px 4px;
+  position: absolute;
+  text-align: center;
+}
+
+.hops-activity__progressbar-label--workspace {
+  background: transparent;
+  border: 0;
+  padding: 0 6px;
+  white-space: nowrap;
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hops-activity__progressbar-label--assignment {
+  color: #ce01bd;
+}
+
+.hops_buttons {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: wrap;
+}
+
+.hops_buttons--add {
+  justify-content: unset;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+  }
+}
+
+.hops_buttons--remove {
+  justify-content: unset;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-end;
+  }
+}
