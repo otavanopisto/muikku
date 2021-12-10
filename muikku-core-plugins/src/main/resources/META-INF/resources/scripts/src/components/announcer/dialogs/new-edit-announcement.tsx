@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import EnvironmentDialog from '~/components/general/environment-dialog';
-import { WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/user-index';
+import { UserIndexType, ContactRecipientType } from '~/reducers/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/announcements';
 import { AnyActionType } from '~/actions';
@@ -20,8 +20,9 @@ import SessionStateComponent from '~/components/general/session-state-component'
 import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
 import equals = require("deep-equal");
+import { webworker } from 'webpack';
 
-type TargetItemsListType = Array<WorkspaceRecepientType | UserGroupRecepientType>;
+type TargetItemsListType = Array<ContactRecipientType>;
 
 interface NewEditAnnouncementProps {
   children: React.ReactElement<any>,
@@ -61,12 +62,12 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       return {
         type: "workspace",
         value: w
-      } as WorkspaceRecepientType;
+      } as ContactRecipientType;
     }).concat(props.announcement.userGroupEntityIds.filter(id => props.userIndex.groups[id]).map(id => {
       return {
         type: "usergroup",
         value: props.userIndex.groups[id]
-      } as UserGroupRecepientType;
+      } as ContactRecipientType;
     }) as any) : this.getPredefinedWorkspaceByIdToConcat(props);
 
     this.state = this.getRecoverStoredState({
@@ -120,7 +121,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         return {
           type: "workspace",
           value: w
-        } as WorkspaceRecepientType
+        } as ContactRecipientType
       });
       this.setStateAndClear({
         subject: this.props.announcement.caption,
@@ -144,7 +145,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       return [{
         type: "workspace",
         value: workpaceFound
-      } as WorkspaceRecepientType];
+      } as ContactRecipientType];
     }
 
     return [];
@@ -159,12 +160,12 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         return {
           type: "workspace",
           value: w
-        } as WorkspaceRecepientType
+        } as ContactRecipientType
       }).concat(nextProps.announcement.userGroupEntityIds.filter(id => nextProps.userIndex.groups[id]).map(id => {
         return {
           type: "usergroup",
           value: nextProps.userIndex.groups[id]
-        } as UserGroupRecepientType;
+        } as ContactRecipientType;
       }) as any);
 
       if (equals(prevBaseAnnouncementCurrentTarget, this.baseAnnouncementCurrentTarget) &&
@@ -290,7 +291,9 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         hasGroupPermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_GROUPS}
         hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
         workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
-        selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}
+        selectedItems={this.state.currentTarget}
+        onChange={this.setTargetItems}
+        autofocus={!this.props.announcement}
         showFullNames={false}
         placeholder={this.props.i18n.text.get('plugin.announcer.createannouncement.target.placeholder')}
         label={this.props.i18n.text.get('plugin.announcer.createannouncement.target.label')} />),

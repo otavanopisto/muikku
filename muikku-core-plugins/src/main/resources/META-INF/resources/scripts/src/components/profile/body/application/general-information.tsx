@@ -37,7 +37,7 @@ class GeneralInformation extends React.Component<GeneralInformationProps, Genera
 
     const studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd){
-      studyTimeEndValues.push(this.props.i18n.time.format(moment(this.props.status.profile.studyTimeEnd, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate()));
+      studyTimeEndValues.push(this.props.i18n.time.format(moment(this.props.status.profile.studyTimeEnd, "ddd MMM DD hh:mm:ss [EET] YYYY", "en").toDate()));
       if (this.props.status.profile.studyTimeLeftStr){
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
       }
@@ -51,7 +51,7 @@ class GeneralInformation extends React.Component<GeneralInformationProps, Genera
             <div className="application-sub-panel__body">
               <ProfilePicture />
               <ProfileProperty modifier="study-start-date" i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
-                value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())} />
+                value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss [EET] YYYY", "en").toDate())} />
               <ProfileProperty modifier="study-end-date"i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
                 value={studyTimeEndValues} />
             </div>

@@ -154,6 +154,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        assertTextIgnoreCase("div#loginRequired", "Kirjaudu sisään");
         assertNotPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
@@ -254,6 +255,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        assertTextIgnoreCase("div#loginRequired", "Kirjaudu sisään");
         assertNotPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  

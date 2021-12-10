@@ -10,12 +10,11 @@ import { sendMessage, SendMessageTriggerType } from '~/actions/main-function/mes
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
 import { MessageSignatureType } from '~/reducers/main-function/messages';
-import { ContactRecepientType } from '~/reducers/user-index';
+import { ContactRecipientType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
 import { StatusType } from '~/reducers/base/status';
-
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 
@@ -25,7 +24,8 @@ interface CommunicatorNewMessageProps {
   replyToAll?: boolean,
   messageId?: number,
   extraNamespace?: string,
-  initialSelectedItems?: Array<ContactRecepientType>,
+  initialSelectedItems?: Array<ContactRecipientType>,
+  refreshInitialSelectedItemsOnOpen?: boolean,
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
@@ -34,15 +34,17 @@ interface CommunicatorNewMessageProps {
   status: StatusType,
   onOpen?: () => any,
   onClose?: () => any,
+  onRecipientChange?: (selectedItems: ContactRecipientType[]) => void,
   isOpen?: boolean
 }
 
 interface CommunicatorNewMessageState {
   text: string,
-  selectedItems: Array<ContactRecepientType>,
+  selectedItems: Array<ContactRecipientType>,
   subject: string,
   locked: boolean,
-  includesSignature: boolean
+  includesSignature: boolean,
+  receivedSelectedItems?: boolean,
 }
 
 /**
@@ -92,6 +94,32 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       includesSignature: true
     }, getStateIdentifier(this.props));
 
+    if (this.props.refreshInitialSelectedItemsOnOpen) {
+
+      // Get selectedItems from the stored state
+      const storedSelectedItemsState = this.getRecoverStoredState({ selectedItems: [] }, getStateIdentifier(this.props));
+
+      // Combine stored items with the newly selected
+      const combinedSelectedItems = [...storedSelectedItemsState.selectedItems, ...this.props.initialSelectedItems];
+
+      // Remove duplicates through Set
+      const combinedSelectedUniqueIds = new Set(combinedSelectedItems.map(item => item.value.id));
+
+      // Convert the Set to an Array
+      const newCombinedSelectedIds = Array.from(combinedSelectedUniqueIds);
+
+      let newSelectedItems = [];
+
+      // Iterate through the ids and find a counterpart from the combined selected items
+
+      for (let i = 0; i < newCombinedSelectedIds.length; i++) {
+        newSelectedItems.push(combinedSelectedItems.find((item) => item.value.id === newCombinedSelectedIds[i]));
+      }
+
+      // Boom! New selected items to state
+      this.setState({ selectedItems: newSelectedItems })
+    }
+
     this.props.onOpen && this.props.onOpen();
   }
 
@@ -112,8 +140,9 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
    * setSelectedItems
    * @param selectedItems
    */
-  setSelectedItems(selectedItems: Array<ContactRecepientType>) {
+  setSelectedItems(selectedItems: Array<ContactRecipientType>) {
     this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
+    this.props.onRecipientChange && this.props.onRecipientChange(selectedItems);
   }
 
   /**
@@ -179,7 +208,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",
-      locked: false
+      locked: false,
+      receivedSelectedItems: false,
     }, getStateIdentifier(this.props));
   }
 
@@ -207,6 +237,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 
     let content = (closeDialog: () => any) => [
       (<InputContactsAutofill identifier="communicatorRecipients" modifier="new-message" key="new-message-1"
+        showFullNames={!this.props.status.isStudent}
         loaders={this.inputContactsAutofillLoaders()}
         hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
         hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
@@ -214,13 +245,19 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         label={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems}
         autofocus={!this.props.initialSelectedItems}
-        showFullNames={!this.props.status.isStudent} />),
+      />),
       (
         <div className="env-dialog__row" key="new-message-2">
           <div className="env-dialog__form-element-container">
             <label htmlFor="messageTitle" className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</label>
-            <input id="messageTitle" type="text" className="env-dialog__input env-dialog__input--new-message-title"
-              value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems} />
+            <input
+              id="messageTitle"
+              type="text"
+              className="env-dialog__input env-dialog__input--new-message-title"
+              value={this.state.subject}
+              onChange={this.onSubjectChange}
+              autoFocus={!!this.props.initialSelectedItems}
+            />
           </div>
         </div>
       ),
@@ -243,7 +280,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     let footer = (closeDialog: () => any) => {
       return (
         <div className="env-dialog__actions">
-          <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
+          <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)} disabled={this.state.locked} >
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
           </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>

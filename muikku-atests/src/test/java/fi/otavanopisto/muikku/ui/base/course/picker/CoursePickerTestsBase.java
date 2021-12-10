@@ -34,23 +34,27 @@ public class CoursePickerTestsBase extends AbstractUITest {
         .addCourse(course1)
         .build();
       login();
-      createWorkspace(course1, Boolean.TRUE);
-      navigate("/coursepicker", false);
-      waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
-//      Course selector
-//        refresh();
-      waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(1)");
-      waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(2)");
-      waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(3)");
-//      Search field
-      waitForVisible(".application-panel__toolbar-actions-main input");
-//      Side navigation
-      waitForVisible(".application-panel__helper-container");
-//      Course list and course
-      waitForVisible(".application-panel__main-container .application-list__item.course");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".application-panel__main-container .application-list__item.course")).size() > 0;
-      assertTrue(elementExists);
-    }finally{
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      try {
+        navigate("/coursepicker", false);
+        waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+  //      Course selector
+        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(1)");
+        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(2)");
+        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(3)");
+  //      Search field
+        waitForVisible(".application-panel__toolbar-actions-main input");
+  //      Side navigation
+        waitForVisible(".application-panel__helper-container");
+  //      Course list and course
+//      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
+        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
+        boolean elementExists = getWebDriver().findElements(By.cssSelector(".application-panel__main-container .application-list__item.course")).size() > 0;
+        assertTrue(elementExists);
+      }finally{
+        deleteWorkspace(workspace.getId());
+      }
+    }finally {
       mockBuilder.wiremockReset();
     }
   }
@@ -59,21 +63,26 @@ public class CoursePickerTestsBase extends AbstractUITest {
   public void coursePickerCourseDescriptionTest() throws Exception {
     Builder mockBuilder = mocker();
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Course course1 = new CourseBuilder().name("testcourse 2").id((long) 101).description("test course for testing").buildCourse();
-    mockBuilder
-      .addStaffMember(admin)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-    login();
-    createWorkspace(course1, Boolean.TRUE);
     try {
-      navigate("/coursepicker", false);
-      waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
-//        refresh();
-//        waitForVisible("div.application-panel__main-container.loader-empty .application-list__item-header--course");
-      waitAndClick("div.application-panel__main-container .application-list__item-header--course");
-      assertText(".course--open .application-list__item-body--course article", "test course for testing");
+      Course course1 = new CourseBuilder().name("testcourse 2").id((long) 101).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStaffMember(admin)
+        .mockLogin(admin)
+        .addCourse(course1)
+        .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      try {
+        navigate("/coursepicker", false);
+//      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
+        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
+        waitForPresent("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
+        waitAndClick("div.application-panel__main-container .application-list__item-header--course .application-list__header-primary");
+        waitForVisible(".course--open .application-list__item-body--course article");
+        assertText(".course--open .application-list__item-body--course article", "test course for testing");
+      }finally {
+        deleteWorkspace(workspace.getId());
+      }
     }finally{
       mockBuilder.wiremockReset();
     }
@@ -108,10 +117,12 @@ public class CoursePickerTestsBase extends AbstractUITest {
     try {
       try {
         navigate("/coursepicker", false);
+//      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
+        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
         waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         scrollToEnd();
         waitForMoreThanSize(".application-list__item.course", 27);
-        assertCount(".application-list__item.course", 38);
+        assertCount(".application-list__item.course", 35);
       } finally {
         mockBuilder.wiremockReset();
       }
@@ -138,17 +149,24 @@ public class CoursePickerTestsBase extends AbstractUITest {
         .addCourse(course3)
         .build();
       login();
-      createWorkspace(course1, Boolean.TRUE);
-      createWorkspace(course2, Boolean.TRUE);
-      createWorkspace(course3, Boolean.TRUE);
-      navigate("/coursepicker", false);
-      waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course"); 
-      refresh();
-      waitAndSendKeys(".application-panel__toolbar-actions-main input", "pot");
-      waitAndSendKeys(".application-panel__toolbar-actions-main input", "ato");
-      waitUntilElementCount(".application-list__item-header--course", 1);
-      waitForVisible(".application-list__item-header--course .application-list__header-primary");
-      assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "potato course (test extension)");
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
+      Workspace workspace3 = createWorkspace(course3, Boolean.TRUE);
+      try {
+        navigate("/coursepicker", false);
+//      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
+        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
+        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitAndSendKeys(".application-panel__toolbar-actions-main input", "pot");
+        waitAndSendKeys(".application-panel__toolbar-actions-main input", "ato");
+        waitUntilElementCount(".application-list__item-header--course", 1);
+        waitForVisible(".application-list__item-header--course .application-list__header-primary");
+        assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "potato course (test extension)");
+      }finally {
+        deleteWorkspace(workspace1.getId());
+        deleteWorkspace(workspace2.getId());
+        deleteWorkspace(workspace3.getId());
+      }
     }finally{
       mockBuilder.wiremockReset();
     }
@@ -172,14 +190,22 @@ public class CoursePickerTestsBase extends AbstractUITest {
         .addCourse(course3)
         .build();
       login();
-      createWorkspace(course1, Boolean.TRUE);
-      createWorkspace(course2, Boolean.TRUE);
-      createWorkspace(course3, Boolean.TRUE);
-      navigate("/coursepicker", false);
-      waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-      waitAndClick(".application-panel__helper-container.application-panel__helper-container--coursepicker .menu-wrapper .menu:first-child .menu__item:nth-child(3)");
-      waitForVisible(".application-list__item-header--course .application-list__header-primary");
-      assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "testcourse 7 (test extension)");
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
+      Workspace workspace3 = createWorkspace(course3, Boolean.TRUE);
+      try {
+        navigate("/coursepicker", false);
+//      CoursePicker seems to have a glitch where sometimes no courses are loaded at all. So workaround for that.
+        waitForElementToAppear(".application-panel__main-container .application-list__item.course", 10, 5000);
+        waitForVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitAndClick(".application-panel__helper-container.application-panel__helper-container--coursepicker .menu-wrapper .menu:first-child .menu__item:nth-child(3)");
+        waitForVisible(".application-list__item-header--course .application-list__header-primary");
+        assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "testcourse 7 (test extension)");
+      }finally {
+        deleteWorkspace(workspace1.getId());
+        deleteWorkspace(workspace2.getId());
+        deleteWorkspace(workspace3.getId());        
+      }
     }finally{
       mockBuilder.wiremockReset();
     }

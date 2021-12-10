@@ -67,6 +67,7 @@ interface AssignmentEditorState {
   audioAssessments: AudioAssessment[];
   grade: string;
   draftId: string;
+  locked: boolean;
 }
 
 /**
@@ -121,6 +122,7 @@ class AssignmentEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
+      locked: false,
     };
   }
 
@@ -208,6 +210,10 @@ class AssignmentEditor extends SessionStateComponent<
     materialId: number;
     defaultGrade: string;
   }) => {
+    this.setState({
+      locked: true,
+    });
+
     const {
       workspaceEntityId,
       userEntityId,
@@ -245,6 +251,10 @@ class AssignmentEditor extends SessionStateComponent<
         if (this.props.onClose) {
           this.props.onClose();
         }
+
+        this.setState({
+          locked: false,
+        });
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -254,6 +264,10 @@ class AssignmentEditor extends SessionStateComponent<
         ),
         "error"
       );
+
+      this.setState({
+        locked: false,
+      });
     }
   };
 
@@ -276,6 +290,11 @@ class AssignmentEditor extends SessionStateComponent<
       dataToSave,
       defaultGrade,
     } = data;
+
+    this.setState({
+      locked: true,
+    });
+
     try {
       await promisify(
         mApi().evaluation.workspace.user.workspacematerial.supplementationrequest.create(
@@ -308,6 +327,10 @@ class AssignmentEditor extends SessionStateComponent<
         if (this.props.onClose) {
           this.props.onClose();
         }
+
+        this.setState({
+          locked: false,
+        });
       });
     } catch (error) {
       notificationActions.displayNotification(
@@ -317,6 +340,10 @@ class AssignmentEditor extends SessionStateComponent<
         ),
         "error"
       );
+
+      this.setState({
+        locked: false,
+      });
     }
   };
 
@@ -602,6 +629,7 @@ class AssignmentEditor extends SessionStateComponent<
           <Button
             buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
+            disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
@@ -609,7 +637,10 @@ class AssignmentEditor extends SessionStateComponent<
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
-              <Button buttonModifiers="evaluate-cancel">
+              <Button
+                buttonModifiers="evaluate-cancel"
+                disabled={this.state.locked}
+              >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
                 )}
@@ -618,6 +649,7 @@ class AssignmentEditor extends SessionStateComponent<
           ) : (
             <Button
               onClick={this.props.onClose}
+              disabled={this.state.locked}
               buttonModifiers="evaluate-cancel"
             >
               {this.props.i18n.text.get(
@@ -629,6 +661,7 @@ class AssignmentEditor extends SessionStateComponent<
           {this.recovered && (
             <Button
               buttonModifiers="evaluate-remove-draft"
+              disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(

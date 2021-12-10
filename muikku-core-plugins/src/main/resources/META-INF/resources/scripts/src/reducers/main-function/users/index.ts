@@ -15,6 +15,7 @@ export interface UserPayloadType {
 }
 
 export interface UsergroupPayloadType extends UserPayloadType {
+  userIdentifier?: string,
   archetype?: string,
 }
 
