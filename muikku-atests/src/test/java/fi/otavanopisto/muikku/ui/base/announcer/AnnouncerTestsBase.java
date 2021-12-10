@@ -39,7 +39,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
         sendKeys(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input", "21.12.2025");
         waitAndClick(".env-dialog__header");
         waitForNotVisible(".react-datepicker");
+        sleep(500);
         sendKeys(".env-dialog__form-element-container--title input", "Test title");
+        sleep(500);
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".button--dialog-execute");
         waitForNotVisible(".env-dialog");
