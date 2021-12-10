@@ -133,4 +133,9 @@ public class TestUtilities {
     return result.plusYears(1);
   }
   
+  public static OffsetDateTime getNextWeek() {
+    OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
+    return result.plusWeeks(1);
+  }
+  
 }

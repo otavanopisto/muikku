@@ -24,11 +24,12 @@ import "~/sass/elements/color-picker.scss";
 import * as queryString from "query-string";
 import promisify from "../../../util/promisify";
 import mApi from "~/lib/mApi";
-import { StaffRecepientType } from "../../../reducers/user-index";
+import { ContactRecipientType } from "../../../reducers/user-index";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
 
+import { getName } from '~/util/modifiers';
 const KEYCODES = {
   ENTER: 13,
 };
@@ -55,12 +56,13 @@ interface GuiderLabelUpdateDialogProps {
   i18n: i18nType;
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType;
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType;
-  staffId: string;
+  staffId: number;
+  staffIdentifier: string;
   displayNotification: DisplayNotificationTriggerType;
 }
 
 interface GuiderLabelUpdateDialogState {
-  selectedItems: StaffRecepientType[];
+  selectedItems: ContactRecipientType[];
   displayColorPicker: boolean;
   color: string;
   name: string;
@@ -134,21 +136,18 @@ class GuiderLabelUpdateDialog extends React.Component<
   updateSharesState = () => {
     this.setState({
       selectedItems: this.sharesResult
-        .map((result: SharedFlagUser): StaffRecepientType => {
+        .map((result: SharedFlagUser): ContactRecipientType => {
           return {
             type: "staff",
             value: {
-              id: result.user.userIdentifier,
+              id: result.user.userEntityId,
+              name: getName(result.user, true),
               email: "unknown",
-              firstName: result.user.firstName,
-              lastName: result.user.lastName,
-              properties: {},
-              hasImage: result.user.hasImage,
-              userEntityId: result.user.userEntityId,
+              identifier: result.user.userIdentifier
             },
           };
         })
-        .filter((r: StaffRecepientType) => r !== null),
+        .filter((r: ContactRecipientType) => r !== null),
     });
   };
 
@@ -199,7 +198,7 @@ class GuiderLabelUpdateDialog extends React.Component<
             await promisify(
               mApi().user.flags.shares.del(
                 this.props.label.id,
-                userItem.value.userEntityId
+                userItem.value.id
               ),
               "callback"
             )();
@@ -235,22 +234,22 @@ class GuiderLabelUpdateDialog extends React.Component<
    */
   shareOrRemoveFlags = async () => {
     const promises1 = this.state.selectedItems.map(async (member) => {
-      const wasAdded = !this.sharesResult.find((share: any) => {
-        return share.userIdentifier === member.value.id;
+      const wasAdded = !this.sharesResult.find((share: SharedFlagUser) => {
+        return share.userIdentifier === member.value.identifier;
       });
 
       if (wasAdded) {
         await mApi().user.flags.shares.create(this.props.label.id, {
           flagId: this.props.label.id,
-          userIdentifier: member.value.id,
+          userIdentifier: member.value.identifier,
         });
       }
     });
 
-    const promises2 = this.sharesResult.map(async (share: any) => {
+    const promises2 = this.sharesResult.map(async (share: SharedFlagUser) => {
       const wasRemoved = !this.state.selectedItems.find(
-        (member: StaffRecepientType) => {
-          return member.value.id === share.userIdentifier;
+        (member: ContactRecipientType) => {
+          return member.value.identifier === share.userIdentifier;
         }
       );
 
@@ -466,7 +465,7 @@ class GuiderLabelUpdateDialog extends React.Component<
    * Handles members list change
    * @param members
    */
-  onSharedMembersChange = (members: StaffRecepientType[]) => {
+  onSharedMembersChange = (members: ContactRecipientType[]) => {
     this.setState({ selectedItems: members });
   };
 
@@ -476,7 +475,7 @@ class GuiderLabelUpdateDialog extends React.Component<
    */
   render() {
     const isOwnerOfCurrentLabel =
-      this.props.staffId === this.props.label.ownerIdentifier;
+      this.props.staffIdentifier === this.props.label.ownerIdentifier;
 
     const AmShared = Boolean(
       this.state.selectedItems.findIndex(
@@ -629,11 +628,11 @@ class GuiderLabelUpdateDialog extends React.Component<
               >
                 {this.state.removed
                   ? this.props.i18n.text.get(
-                      "plugin.guider.flags.confirmFlagDelete.deleted"
-                    )
+                    "plugin.guider.flags.confirmFlagDelete.deleted"
+                  )
                   : this.props.i18n.text.get(
-                      "plugin.guider.flags.removeFlag.label"
-                    )}
+                    "plugin.guider.flags.removeFlag.label"
+                  )}
               </Button>
             ) : (
               <Button
@@ -643,11 +642,11 @@ class GuiderLabelUpdateDialog extends React.Component<
               >
                 {this.state.removed
                   ? this.props.i18n.text.get(
-                      "plugin.guider.flags.confirmFlagDelete.deleted"
-                    )
+                    "plugin.guider.flags.confirmFlagDelete.deleted"
+                  )
                   : this.props.i18n.text.get(
-                      "plugin.guider.flags.removeFlag.label"
-                    )}
+                    "plugin.guider.flags.removeFlag.label"
+                  )}
               </Button>
             )}
           </div>
@@ -691,7 +690,8 @@ class GuiderLabelUpdateDialog extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    staffId: state.status.userSchoolDataIdentifier,
+    staffId: state.status.userId,
+    staffIdentifier: state.status.userSchoolDataIdentifier
   };
 }
 

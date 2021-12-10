@@ -3,7 +3,7 @@ import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import { getUserImageUrl } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import Avatar from '~/components/general/avatar';
@@ -49,7 +49,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     super(props);
   }
   render() {
-    if (!this.props.status.loggedIn) {
+    if (!this.props.status.loggedIn || this.props.status.profile.studyEndDate) {
       return null;
     }
     return <div className="panel panel--workspace-teachers">
@@ -92,7 +92,10 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                     </div> : null}
                   <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                     type: "staff",
-                    value: teacher
+                    value: {
+                      id: teacher.userEntityId,
+                      name: getName(teacher, true)
+                    }
                   }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
                     initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
                     <Button buttonModifiers={["info", "contact-teacher"]}>

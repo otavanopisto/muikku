@@ -30,9 +30,9 @@ import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-ans
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
-
 import equals = require("deep-equal");
-import Tabs, {TabType} from "~/components/general/tabs";
+import Tabs, { TabType } from "~/components/general/tabs";
+import { createAllTabs } from "~/helper-functions/tabs"
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
@@ -190,6 +190,7 @@ const CKEditorConfig = (
     },
     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
   ],
+  resize_enabled: false,
   removePlugins: "image,exportpdf",
   extraPlugins: disablePlugins
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax"
@@ -322,8 +323,8 @@ class MaterialEditor extends React.Component<
           ? "EXERCISE"
           : this.props.editorState.currentDraftNodeValue.assignmentType ===
             "EXERCISE"
-          ? "EVALUATED"
-          : null,
+            ? "EVALUATED"
+            : null,
       },
       isDraft: true,
     });
@@ -339,13 +340,13 @@ class MaterialEditor extends React.Component<
       update: {
         correctAnswers:
           !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-          this.props.editorState.currentDraftNodeValue.correctAnswers ===
+            this.props.editorState.currentDraftNodeValue.correctAnswers ===
             "ALWAYS"
             ? "ON_REQUEST"
             : this.props.editorState.currentDraftNodeValue.correctAnswers ===
               "ON_REQUEST"
-            ? "NEVER"
-            : "ALWAYS",
+              ? "NEVER"
+              : "ALWAYS",
       },
       isDraft: true,
     });
@@ -498,20 +499,20 @@ class MaterialEditor extends React.Component<
       case "Help":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
-            )
+            "plugin.workspace.helpManagement.disableViewRestrictionPageTooltip"
+          )
           : this.props.i18n.text.get(
-              "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
-            );
+            "plugin.workspace.helpManagement.enableViewRestrictionPageTooltip"
+          );
         break;
       case "Materials":
         localeString = isRestricted
           ? this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
-            )
+            "plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip"
+          )
           : this.props.i18n.text.get(
-              "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
-            );
+            "plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip"
+          );
         break;
       default:
         localeString = "";
@@ -546,8 +547,8 @@ class MaterialEditor extends React.Component<
   handleUploadingTextProcesser = (percent: number) => {
     return `
       ${this.props.i18n.text.get(
-        "plugin.guider.user.details.files.uploading"
-      )} ${percent}%`;
+      "plugin.guider.user.details.files.uploading"
+    )} ${percent}%`;
   };
 
   /**
@@ -611,9 +612,8 @@ class MaterialEditor extends React.Component<
     ) {
       return (
         <div
-          className={`material-editor ${
-            this.props.editorState.opened ? "material-editor--visible" : ""
-          }`}
+          className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""
+            }`}
         />
       );
     }
@@ -689,12 +689,12 @@ class MaterialEditor extends React.Component<
 
     const exerciseRevealType =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-      this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
+        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? "always-show"
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
-        ? "on-request"
-        : "never-show";
+          ? "on-request"
+          : "never-show";
 
     const correctAnswersModifiers = [
       "material-editor-change-answer-reveal-type",
@@ -703,16 +703,16 @@ class MaterialEditor extends React.Component<
     ];
     const correctAnswersTooltips =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-      this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
+        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
-          )
+          "plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip"
+        )
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
           "ON_REQUEST"
-        ? this.props.i18n.text.get(
+          ? this.props.i18n.text.get(
             "plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip"
           )
-        : this.props.i18n.text.get(
+          : this.props.i18n.text.get(
             "plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"
           );
 
@@ -723,19 +723,19 @@ class MaterialEditor extends React.Component<
       <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide &&
-          (!this.props.editorState.parentNodeValue ||
-            !this.props.editorState.parentNodeValue.hidden) ? (
+            (!this.props.editorState.parentNodeValue ||
+              !this.props.editorState.parentNodeValue.hidden) ? (
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
               content={
                 isHidden
                   ? this.props.i18n.text.get(
-                      "plugin.workspace.materialsManagement.showPageTooltip"
-                    )
+                    "plugin.workspace.materialsManagement.showPageTooltip"
+                  )
                   : this.props.i18n.text.get(
-                      "plugin.workspace.materialsManagement.hidePageTooltip"
-                    )
+                    "plugin.workspace.materialsManagement.hidePageTooltip"
+                  )
               }
             >
               <ButtonPill
@@ -779,7 +779,7 @@ class MaterialEditor extends React.Component<
           ) : null}
 
           {this.props.editorState.canChangeExerciseType &&
-          this.props.editorState.currentDraftNodeValue.assignmentType ===
+            this.props.editorState.currentDraftNodeValue.assignmentType ===
             "EXERCISE" ? (
             <Dropdown
               openByHover
@@ -852,13 +852,13 @@ class MaterialEditor extends React.Component<
       </div>
     );
 
-    const closeDialog =  <ButtonPill
-      buttonModifiers={["material-page-close-editor", "material-page-close-mobile-editor" ]}
+    const closeDialog = <ButtonPill
+      buttonModifiers={["material-page-close-editor", "material-page-close-mobile-editor"]}
       onClick={this.onClickClose}
       icon="arrow-left"
-  />;
+    />;
 
-    const allTabs: TabType[] = [
+    const materialEditorTabs: TabType[] = [
       {
         id: "content",
         type: "material-editor",
@@ -880,8 +880,8 @@ class MaterialEditor extends React.Component<
               </div>
             ) : null}
             {!this.props.editorState.section &&
-            this.props.editorState.canEditContent &&
-            this.props.editorState.opened ? (
+              this.props.editorState.canEditContent &&
+              this.props.editorState.opened ? (
               <div
                 id="materialEditorContainer"
                 className="material-editor__editor-container"
@@ -911,7 +911,7 @@ class MaterialEditor extends React.Component<
       this.props.editorState.canSetLicense ||
       this.props.editorState.canSetProducers
     ) {
-      allTabs.push({
+      materialEditorTabs.push({
         id: "metadata",
         type: "material-editor",
         mobileAction: closeDialog,
@@ -972,7 +972,7 @@ class MaterialEditor extends React.Component<
     }
 
     if (this.props.editorState.canAddAttachments) {
-      allTabs.push({
+      materialEditorTabs.push({
         id: "attachments",
         type: "material-editor",
         mobileAction: closeDialog,
@@ -1023,15 +1023,15 @@ class MaterialEditor extends React.Component<
 
     return (
       <div
-        className={`material-editor ${
-          this.props.editorState.opened ? "material-editor--visible" : ""
-        }`}
+        className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""
+          }`}
       >
         <Tabs
+          allTabs={createAllTabs(materialEditorTabs)}
           modifier="material-editor"
           activeTab={this.state.tab}
           onTabChange={this.onTabChange}
-          tabs={allTabs}
+          tabs={materialEditorTabs}
         >
           <ButtonPill
             buttonModifiers="material-page-close-editor"

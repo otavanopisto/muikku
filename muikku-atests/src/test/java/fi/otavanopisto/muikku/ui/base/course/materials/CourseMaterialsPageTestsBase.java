@@ -1012,6 +1012,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             assertTrue(true);
           }else {
             waitForVisible(".material-page__field-answer-examples--sorterfield");
+            waitForAttributeToHaveValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
             mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
             assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           }
