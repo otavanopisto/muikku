@@ -15,7 +15,6 @@ interface NavigationProps {
 }
 
 interface NavigationState {
-
 }
 
 class NavigationAside extends React.Component<NavigationProps, NavigationState> {
