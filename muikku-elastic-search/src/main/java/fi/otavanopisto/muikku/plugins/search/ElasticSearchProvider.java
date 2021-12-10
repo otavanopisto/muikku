@@ -69,10 +69,11 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @ApplicationScoped
-public abstract class ElasticSearchProvider implements SearchProvider {
+public class ElasticSearchProvider implements SearchProvider {
   
   @Inject
   private Logger logger;
@@ -1128,5 +1129,21 @@ public abstract class ElasticSearchProvider implements SearchProvider {
   }
 
   private Client elasticClient;
+
+  @Override
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers,
+      List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers,
+      List<SchoolDataIdentifier> organizationIdentifiers, String freeText, Collection<WorkspaceAccess> accesses,
+      SchoolDataIdentifier accessUser, boolean includeUnpublished, TemplateRestriction templateRestriction, int start,
+      int maxResults, List<Sort> sorts) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }
