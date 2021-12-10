@@ -1222,7 +1222,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".content-panel__chapter-title-text");
           waitForElementToBeClickable(".cke_wysiwyg_div p");
           addTextToCKEditor(contentInput);
-          waitForPresent(".material-page__field-answer-synchronizer--saved");
+          waitForPresent(".material-page__memofield-wrapper.state-SAVED");
           navigate("/", false);
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
