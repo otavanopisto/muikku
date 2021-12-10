@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Textarea } from "../text-area";
 import { CheckboxGroupItem, ScaleInputGroup } from "../input-groups";
+import { HopsMotivationAndStudy } from "../../../../../../../@types/shared";
 import AnimateHeight from "react-animate-height";
 import { InputGroup } from "../input-groups";
-import { HopsMotivationAndStudy } from "~/@types/shared";
 
 /**
  * MotivationAndStudySkillsProps

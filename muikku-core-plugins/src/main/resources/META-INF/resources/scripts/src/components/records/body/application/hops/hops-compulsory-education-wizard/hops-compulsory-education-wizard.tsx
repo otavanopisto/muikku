@@ -194,6 +194,11 @@ class CompulsoryEducationHopsWizard extends React.Component<
             "callback"
           )()) as HopsCompulsory;
 
+          const followUp = (await promisify(
+            mApi().hops.student.hopsGoals.read(studentId),
+            "callback"
+          )()) as FollowUp;
+
           let loadedHops = {
             basicInfo: {
               name: `${studentBasicInfo.firstName} ${studentBasicInfo.lastName}`,
@@ -201,6 +206,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
               counselorList: studentBasicInfo.counselorList,
             },
             hopsCompulsory: hops !== undefined ? hops : initializeHops(),
+            hopsFollowUp: followUp,
           };
 
           return loadedHops;
@@ -310,6 +316,14 @@ class CompulsoryEducationHopsWizard extends React.Component<
         (async () => {
           await promisify(
             mApi().hops.student.create(studentId, this.state.hopsCompulsory),
+            "callback"
+          )();
+
+          await promisify(
+            mApi().hops.student.hopsGoals.create(
+              studentId,
+              this.state.hopsFollowUp
+            ),
             "callback"
           )();
         })(),

@@ -1,9 +1,11 @@
 import * as React from "react";
+import {
+  HopsPlanningStudies,
+  FollowUp,
+} from "../../../../../../../@types/shared";
 import StudyTool from "../study-tool/study-tool";
 import FollowUpGoals from "../followUpGoal/follow-up-goals";
 import { HopsUser } from "../hops-compulsory-education-wizard";
-import AlternativeStudyOptions from "../alternative-study-options/alternative-study-options";
-import { FollowUp, HopsPlanningStudies } from "~/@types/shared";
 
 /**
  * StudiesPlanningProps
@@ -52,6 +54,27 @@ class StudiesPlanning extends React.Component<
   }
 
   /**
+   * handleFinlandAsSecondLanguage
+   * @param e
+   */
+  handleFinnishAsSecondLanguage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.onStudiesPlanningChange({
+      ...this.props.studies,
+      finnishAsSecondLanguage: e.target.checked,
+    });
+  };
+
+  /**
+   * handleEthicsChange
+   */
+  handleEthicsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.onStudiesPlanningChange({
+      ...this.props.studies,
+      ethics: e.target.checked,
+    });
+  };
+
+  /**
    * handleGoalsSelectsChange
    * @param name
    */
@@ -64,11 +87,7 @@ class StudiesPlanning extends React.Component<
       });
     };
 
-  /**
-   * Component render method
-   * @returns JSX.Element
-   */
-  render() {
+  renderDemo2 = () => {
     return (
       <div className="hops-container">
         <fieldset className="hops-container__fieldset">
@@ -76,7 +95,8 @@ class StudiesPlanning extends React.Component<
 
           <FollowUpGoals
             disabled={this.props.disabled}
-            studentId={this.props.studentId}
+            followUpData={this.props.followUp}
+            onChange={this.props.onStudiesGoalsChange}
           />
         </fieldset>
         <fieldset className="hops-container__fieldset">
@@ -84,26 +104,56 @@ class StudiesPlanning extends React.Component<
             Opintojen suunnittelu
           </legend>
 
-          <AlternativeStudyOptions
-            studentId={this.props.studentId}
-            disabled={this.props.disabled}
-          />
+          <div className="hops-container__row">
+            <div className="hops__form-element-container hops__form-element-container--single-row">
+              <label className="hops-label">
+                Suoritan äidinkielen sijaan Suomen toisena kielenä?
+              </label>
+              <input
+                type="checkbox"
+                className="hops-input"
+                checked={this.props.finnishAsSecondLanguage}
+                onChange={this.handleFinnishAsSecondLanguage}
+                disabled={this.props.disabled}
+              ></input>
+            </div>
+          </div>
+          <div className="hops-container__row">
+            <div className="hops__form-element-container hops__form-element-container--single-row">
+              <label className="hops-label">
+                Suoritan uskonnon elämänkatsomustietona?
+              </label>
+              <input
+                type="checkbox"
+                className="hops-input"
+                checked={this.props.ethics}
+                onChange={this.handleEthicsChange}
+                disabled={this.props.disabled}
+              ></input>
+            </div>
+          </div>
         </fieldset>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops__step-container__subheader">
-            Opintolaskuri
-          </legend>
-          <StudyTool
-            user={this.props.user}
-            studentId={this.props.studentId}
-            disabled={this.props.disabled}
-            studies={this.props.studies}
-            superVisorModifies={this.props.superVisorModifies}
-            onStudiesPlanningChange={this.props.onStudiesPlanningChange}
-          />
-        </fieldset>
+        <StudyTool
+          user={this.props.user}
+          studentId={this.props.studentId}
+          disabled={this.props.disabled}
+          finnishAsSecondLanguage={this.props.finnishAsSecondLanguage}
+          ethics={this.props.ethics}
+          studies={this.props.studies}
+          followUp={this.props.followUp}
+          superVisorModifies={this.props.superVisorModifies}
+          onStudiesPlanningChange={this.props.onStudiesPlanningChange}
+        />
       </div>
     );
+  };
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
+  render() {
+    return this.renderDemo2();
   }
 }
 
