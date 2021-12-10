@@ -43,6 +43,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -57,6 +58,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -217,7 +219,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected Map<String, Long> getBrowserDimensions() {
-    String resolution = System.getProperty("it.sauce.browser.resolution");
+    String resolution = System.getProperty("it.browser.dimensions");
     if(resolution != null) {
       if (!resolution.isEmpty()) {
         String[] widthHeight = StringUtils.split(resolution, "x");
@@ -331,8 +333,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       driverBuilder.oneOf(new EdgeOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
       break;
     case "firefox":
-      driverBuilder.oneOf(new FirefoxOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
-      break;
+//  TODO: When RemoteWebDriverBuilder starts to work with firefox start using this. Augmentation that builder does to the connection somehow breaks it right now for firefox.
+//      driverBuilder.oneOf(new FirefoxOptions().setPlatformName(platform).setBrowserVersion(browserVersion).setAcceptInsecureCerts(true));
+      FirefoxOptions browserOptions = new FirefoxOptions();
+      browserOptions.setPlatformName(getSaucePlatform());
+      browserOptions.setBrowserVersion(getBrowserVersion());
+      browserOptions.setAcceptInsecureCerts(true);
+      browserOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE);
+      browserOptions.setCapability("sauce:options", sauceOptions);
+      RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), browserOptions);
+      remoteWebDriver.setFileDetector(new LocalFileDetector());
+      return remoteWebDriver;
     case "internet explorer":
       driverBuilder.oneOf(new InternetExplorerOptions().setPlatformName(platform).setBrowserVersion(browserVersion));
       break;
@@ -344,7 +355,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
     driverBuilder.setCapability("sauce:options", sauceOptions);
-    driverBuilder.address(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())));
+    driverBuilder.address(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey()));
     RemoteWebDriver remoteWebDriver = (RemoteWebDriver) driverBuilder.build();
     remoteWebDriver.setFileDetector(new LocalFileDetector());
 
@@ -378,7 +389,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setProfile(firefoxProfile);
     firefoxProfile.setPreference("intl.accept_languages", "en");
+    
+    if(System.getProperty("it.headless") != null) {
+      firefoxOptions.setHeadless(true);
+    }
+    
     FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
+    
+    if(getBrowserDimensions() != null) {
+      firefoxDriver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
+    }else {
+      firefoxDriver.manage().window().setSize(new Dimension(1280, 1024));
+    }
+    
     return firefoxDriver;
   }
   
@@ -389,7 +412,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
     WebDriver driver = new ChromeDriver(chromeOptions);
     if(getBrowserDimensions() != null) {
-      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("length"))));      
+      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
     }else {
       driver.manage().window().setSize(new Dimension(1280, 1024));
     }
@@ -683,6 +706,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.linkText(text)).click();
   }
   
+//  Deprecate this. I don't see any reason to do this more complicated than necessary.
+//  See waitAndClick as it is now.
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -716,8 +741,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitAndClick(String selector) {
-    waitForClickable(selector);
-    click(selector);
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(30)).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector))).click();
   }
 
   protected void waitAndClick(String selector, int timeout) {
@@ -758,6 +782,40 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
+  /** 
+   * Clicks on an selector and checks
+   * if given element is not displayed after defined (ms) interval as a result, 
+   * if it is, it will try again
+   * number of times defined.
+   * @param clickSelector String
+   * @param elementToGoAway String
+   * @param timesToTry int
+   * @param interval int
+   * @return not a thing
+   */
+  protected void waitAndClickAndConfirmVisibilityGoesAway(String clickSelector, String elementToGoAway, int timesToTry, int interval) {
+    List<WebElement> elements = findElements(elementToGoAway);
+    int i = 0;
+    while(!elements.isEmpty()) {
+      if (i > timesToTry) {
+        break;
+      }
+      if (!elements.get(0).isDisplayed()) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      elements = findElements(elementToGoAway);
+    }
+    if(!elements.isEmpty()) {
+      if (elements.get(0).isDisplayed()) {
+        throw new TimeoutException("Element did not go away in definded time period");
+      }
+    }
+  }
+  
   protected void waitForElementToAppear(String elementToAppear, int timesToTry, int interval) {
     List<WebElement> elements = findElements(elementToAppear);
     int i = 0;
@@ -772,6 +830,40 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
+  }
+  
+  protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
+    String text = findElement(elementWithText).getText();
+    int i = 0;
+    while(!StringUtils.equalsIgnoreCase(text, newText)) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
+      sleep(interval);
+      text = findElement(elementWithText).getText();
+    }
+    if(!StringUtils.equalsIgnoreCase(text, newText))
+      throw new TimeoutException("Element to have new text content failed to have it in a given timeout period.");
+  }
+  
+  protected void clickAndConfirmElementCount(String clickSelector, String elementToCountSelector, int expectedCount) {
+    waitAndClick(clickSelector);
+    waitForPresent(elementToCountSelector);
+    int counter = 0 ;
+    int elementCount = countElements(elementToCountSelector);
+    while (elementCount != expectedCount) {
+      waitAndClick(clickSelector);
+      sleep(2000);
+      waitForPresent(elementToCountSelector);
+      elementCount = countElements(elementToCountSelector);
+      counter++;
+      if (counter > 5) {
+        throw new TimeoutException("Element count not what expected within timeout period.");
+      }
+    }
   }
   
   protected void waitAndClickWithAction(String selector) {
