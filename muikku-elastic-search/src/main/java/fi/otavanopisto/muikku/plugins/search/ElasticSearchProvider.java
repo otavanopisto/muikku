@@ -72,7 +72,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestrict
 import fi.otavanopisto.muikku.session.SessionController;
 
 @ApplicationScoped
-public abstract class ElasticSearchProvider implements SearchProvider {
+public class ElasticSearchProvider implements SearchProvider {
   
   @Inject
   private Logger logger;
@@ -448,30 +448,13 @@ public abstract class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchWorkspaces(List<OrganizationEntity> organizations, String subjectIdentifier, Integer courseNumber) {
-
-    if (CollectionUtils.isEmpty(organizations)) {
-      throw new IllegalArgumentException("Cannot search with no organizations specified.");
-    }
-    
+  public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjectIdentifier", subjectIdentifier));
-    if (courseNumber == null) {
-      query.mustNot(existsQuery("courseNumber"));
-    }
-    else {
-      query.must(termQuery("courseNumber", courseNumber));
-      
-    }
-
-    Set<String> organizationIdentifiers = organizations
-        .stream()
-        .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
-        .collect(Collectors.toSet());
-    if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
-      query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
-    }
+    query.must(termQuery("courseNumber", courseNumber));
+    // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
+    
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")

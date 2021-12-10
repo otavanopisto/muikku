@@ -36,17 +36,6 @@ public class CourseMetaController {
   
   /* Subjects */
 
-  public Subject findSubjectByCode(String schoolDataSource, String code) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource != null) {
-      CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(dataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.findSubjectByCode(code);
-      }
-    }
-    return null;
-  }
-
   public Subject findSubject(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {

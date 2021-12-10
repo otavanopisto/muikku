@@ -22,7 +22,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
@@ -37,7 +36,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
-import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -54,7 +52,6 @@ import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -106,51 +103,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   
   @Inject 
   private UserGroupEntityController userGroupEntityController;
-  
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
  
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
-  
-  @Override
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
-    
-    // Convert identifier to Pyramus student id
-    
-    Long studentId = identifierMapper.getPyramusStudentId(identifier);
-    if (studentId == null) {
-      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
-    }
-    
-    // Service call
-    
-    BridgeResponse<StudyActivityItemRestModel[]> response = pyramusClient.responseGet(
-        String.format("/muikku/students/%d/studyActivity", studentId),
-        StudyActivityItemRestModel[].class);
-    
-    // Convert Pyramus course ids in response to Muikku workspace entity ids
-    
-    List<StudyActivityItemRestModel> items = null;
-    if (response.getEntity() != null) {
-      items = new ArrayList<>();
-      for (StudyActivityItemRestModel item : response.getEntity()) {
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-            getSchoolDataSource(),
-            identifierMapper.getWorkspaceIdentifier(item.getCourseId()));
-        if (workspaceEntity == null) {
-          item.setCourseId(null);
-          logger.severe(String.format("Pyramus course %d not found in Muikku", item.getCourseId()));
-        }
-        else {
-          item.setCourseId(workspaceEntity.getId());
-        }
-        items.add(item);
-      }
-    }
-    return new BridgeResponse<List<StudyActivityItemRestModel>>(response.getStatusCode(), items);
   }
 
   @Override

@@ -212,29 +212,6 @@ public class WorkspaceEntityController {
     
     return result;
   }
-  
-  public String getName(WorkspaceEntity workspaceEntity) {
-    if (!searchProviders.isUnsatisfied()) {
-      SearchProvider searchProvider = searchProviders.get();
-      
-      SearchResult searchResult = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
-      if (searchResult.getTotalHitCount() == 1) {
-        List<Map<String, Object>> results = searchResult.getResults();
-        Map<String, Object> match = results.get(0);
-        String name = (String) match.get("name");
-        if (match.get("nameExtension") != null) {
-          name = String.format("%s (%s)", name, (String) match.get("nameExtension"));
-        }
-        return name;
-      }
-      else {
-        throw new RuntimeException(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount()));
-      }
-    }
-    else {
-      throw new RuntimeException("Search provider is not present in application.");
-    }
-  }
 
   public boolean isSignupAllowed(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity) {
     if (!searchProviders.isUnsatisfied()) {

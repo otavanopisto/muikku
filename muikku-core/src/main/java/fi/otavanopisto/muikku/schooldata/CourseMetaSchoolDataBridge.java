@@ -14,7 +14,6 @@ public interface CourseMetaSchoolDataBridge {
 	
 	/* Subjects */
 	
-	public Subject findSubjectByCode(String code);
 	public Subject findSubject(String identifier);
 	public List<Subject> listSubjects();
 	
