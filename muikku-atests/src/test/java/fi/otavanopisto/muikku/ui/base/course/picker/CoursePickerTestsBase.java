@@ -64,6 +64,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try {
+<<<<<<< HEAD
       Course course1 = new CourseBuilder().name("testcourse 2").id((long) 101).description("test course for testing").buildCourse();
       mockBuilder
         .addStaffMember(admin)
@@ -83,6 +84,12 @@ public class CoursePickerTestsBase extends AbstractUITest {
       }finally {
         deleteWorkspace(workspace.getId());
       }
+=======
+      navigate("/coursepicker", false);
+      waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+      waitAndClick("div.application-panel__main-container .application-list__item-header--course");
+      assertText(".course--open .application-list__item-body--course article", "test course for testing");
+>>>>>>> devel
     }finally{
       mockBuilder.wiremockReset();
     }

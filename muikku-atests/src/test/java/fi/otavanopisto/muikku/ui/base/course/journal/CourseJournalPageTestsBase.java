@@ -107,6 +107,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         assertText(".application-list__item-header-main-content--journal-entry-title", "title");
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
+        waitForNotPresent(".env-dialog--new-edit-journal .env-dialog__wrapper");
         waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
         waitForVisible(".dialog--delete-journal");
         waitAndClick(".dialog--delete-journal .button--standard-ok");
@@ -148,6 +149,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         assertText(".application-list__item-header-main-content--journal-entry-title", "title");
         waitForPresent(".application-list__item-content-body--journal-entry>p");
         assertText(".application-list__item-content-body--journal-entry>p", "content");
+        waitForNotPresent(".env-dialog--new-edit-journal .env-dialog__wrapper");
         waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
         addToEndCKEditor(" More text.");
         click(".button--dialog-execute");

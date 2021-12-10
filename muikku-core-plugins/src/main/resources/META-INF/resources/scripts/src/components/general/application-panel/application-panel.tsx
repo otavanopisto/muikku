@@ -3,6 +3,7 @@ import Tabs, { TabType } from "~/components/general/tabs";
 import ApplicationPanelBody from "./components/application-panel-body";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
+import { createAllTabs } from "~/helper-functions/tabs"
 
 interface ApplicationPanelProps {
   modifier?: string;
@@ -29,26 +30,28 @@ export default class ApplicationPanel extends React.Component<
   }
 
   render() {
+
     return (
       <main
-        className={`application-panel ${this.props.modifier? "application-panel--" + this.props.modifier : ""  }`}
+        className={`application-panel ${this.props.modifier ? "application-panel--" + this.props.modifier : ""}`}
         ref="panel"
       >
-        <div className={`application-panel__container ${this.props.modifier? "application-panel__container--" + this.props.modifier : ""  }`}>
-          <h1 className={`application-panel__header   ${this.props.modifier? "application-panel__header--" + this.props.modifier : ""  }`}>
+        <div className={`application-panel__container ${this.props.modifier ? "application-panel__container--" + this.props.modifier : ""}`}>
+          <h1 className={`application-panel__header   ${this.props.modifier ? "application-panel__header--" + this.props.modifier : ""}`}>
             {this.props.title ? (
-              <span className={`application-panel__header-title ${this.props.modifier? "application-panel__header-title--" + this.props.modifier : ""  }`}>
+              <span className={`application-panel__header-title ${this.props.modifier ? "application-panel__header-title--" + this.props.modifier : ""}`}>
                 {this.props.title}
               </span>
             ) : null}
             {this.props.icon ? (
-              <span className={`application-panel__header-actions ${this.props.modifier? "application-panele__header-actions--" + this.props.modifier : ""  }`}>
+              <span className={`application-panel__header-actions ${this.props.modifier ? "application-panele__header-actions--" + this.props.modifier : ""}`}>
                 {this.props.icon}
               </span>
             ) : null}
           </h1>
           {this.props.panelTabs ? (
             <Tabs
+              allTabs={createAllTabs(this.props.panelTabs)}
               modifier="application-panel"
               tabs={this.props.panelTabs}
               onTabChange={this.props.onTabChange}

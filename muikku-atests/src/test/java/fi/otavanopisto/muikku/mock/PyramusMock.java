@@ -150,6 +150,31 @@ public class PyramusMock {
         pmock.students.add(mockStudent);
         return this;
       }
+
+      public Builder updateStudent(MockStudent mockStudent) {
+        Person person = new Person(mockStudent.getPersonId(), mockStudent.getBirthday(), mockStudent.getSocialSecurityNumber(), mockStudent.getSex(), false, "empty", mockStudent.getPersonId());
+        if (!pmock.persons.isEmpty()) {
+          Iterator<Person> persons = pmock.persons.iterator();
+          while (persons.hasNext()) {
+            Person person2 = (Person) persons.next();
+            if(person2.getId().equals(person.getId())) {
+              persons.remove();
+            }
+          }
+        }
+        if (!pmock.students.isEmpty()) {
+          Iterator<MockStudent> mStudents = pmock.students.iterator();
+          while (mStudents.hasNext()) {
+            MockStudent mockStudent2 = (MockStudent) mStudents.next();
+            if(mockStudent2.getId().equals(mockStudent.getId())) {
+              mStudents.remove();
+            }
+          }
+        }
+        pmock.persons.add(person);
+        pmock.students.add(mockStudent);
+        return this;
+      }
       
       public Builder addCourseStaffMembers(HashMap<Long, List<CourseStaffMember>> courseStaffMembers){
         pmock.courseStaffMembers = courseStaffMembers;
@@ -1135,10 +1160,12 @@ public class PyramusMock {
       public Builder clearLoginMock() throws JsonProcessingException  {
         stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
+//      Fake "Pyramus" login screen
         stubFor(get(urlMatching("/users/authorize.*"))
           .willReturn(aResponse()
-            .withStatus(302)
-            .withHeader("Location", "")));
+              .withHeader("Content-Type", "text/html; charset=utf-8")
+              .withBody("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><title>Sisäänkirjautuminen</title></head><body><div id=loginRequired>Kirjaudu sisään</div></body></html>")
+              .withStatus(200)));
 
         stubFor(post(urlEqualTo("/1/oauth/token"))
           .willReturn(aResponse()
@@ -1152,7 +1179,7 @@ public class PyramusMock {
             .withBody("")
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:" + System.getProperty("it.port.https")))
+        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=http://dev.muikku.fi:" + System.getProperty("it.port.http")))
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
@@ -1344,7 +1371,7 @@ public class PyramusMock {
         WireMock.reset();
         return this;
       }
-      
+
   }
   
   public List<MockStudent> getStudents() {
