@@ -46,6 +46,7 @@ interface SupplementationEditorProps {
 interface SupplementationEditorState {
   literalEvaluation: string;
   draftId: string;
+  locked: boolean;
 }
 
 /**
@@ -103,21 +104,27 @@ class SupplementationEditor extends SessionStateComponent<
        */
       draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
 
-      this.state = this.getRecoverStoredState(
-        {
-          literalEvaluation: latestEvent.text,
-          draftId,
-        },
-        draftId
-      );
+      this.state = {
+        ...this.getRecoverStoredState(
+          {
+            literalEvaluation: latestEvent.text,
+            draftId,
+          },
+          draftId
+        ),
+        locked: false,
+      };
     } else {
-      this.state = this.getRecoverStoredState(
-        {
-          literalEvaluation: "",
-          draftId,
-        },
-        draftId
-      );
+      this.state = {
+        ...this.getRecoverStoredState(
+          {
+            literalEvaluation: "",
+            draftId,
+          },
+          draftId
+        ),
+        locked: false,
+      };
     }
   }
 
@@ -180,6 +187,8 @@ class SupplementationEditor extends SessionStateComponent<
     const { evaluations, type = "new", onClose } = this.props;
     const { evaluationAssessmentEvents } = evaluations;
 
+    this.setState({ locked: true });
+
     if (type === "new") {
       this.props.updateWorkspaceSupplementationToServer({
         type: "new",
@@ -202,9 +211,14 @@ class SupplementationEditor extends SessionStateComponent<
 
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
+          this.setState({ locked: false });
+
           onClose && onClose();
         },
-        onFail: () => onClose(),
+        onFail: () => {
+          this.setState({ locked: false });
+          onClose();
+        },
       });
     } else {
       /**
@@ -248,9 +262,14 @@ class SupplementationEditor extends SessionStateComponent<
           );
           this.props.updateNeedsReloadEvaluationRequests({ value: true });
 
+          this.setState({ locked: false });
+
           onClose && onClose();
         },
-        onFail: () => onClose(),
+        onFail: () => {
+          this.setState({ locked: false });
+          onClose();
+        },
       });
     }
   };
@@ -324,6 +343,7 @@ class SupplementationEditor extends SessionStateComponent<
           <Button
             buttonModifiers="evaluate-supplementation"
             onClick={this.handleEvaluationSupplementationSave}
+            disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
@@ -331,6 +351,7 @@ class SupplementationEditor extends SessionStateComponent<
           </Button>
           <Button
             onClick={this.props.onClose}
+            disabled={this.state.locked}
             buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
@@ -340,6 +361,7 @@ class SupplementationEditor extends SessionStateComponent<
           {this.recovered && (
             <Button
               buttonModifiers="evaluate-remove-draft"
+              disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
               {this.props.i18n.text.get(
