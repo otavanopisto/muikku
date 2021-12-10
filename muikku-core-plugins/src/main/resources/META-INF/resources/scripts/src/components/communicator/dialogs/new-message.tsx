@@ -280,7 +280,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     let footer = (closeDialog: () => any) => {
       return (
         <div className="env-dialog__actions">
-          <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
+          <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)} disabled={this.state.locked} >
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
           </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>

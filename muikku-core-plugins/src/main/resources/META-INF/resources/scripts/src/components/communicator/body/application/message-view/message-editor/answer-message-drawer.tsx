@@ -333,6 +333,7 @@ class AnswerMessageDrawer extends SessionStateComponent<
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.sendMessage.bind(this)}
+          disabled={this.state.locked}
         >
           {this.props.i18n.text.get(
             "plugin.communicator.createmessage.button.send"

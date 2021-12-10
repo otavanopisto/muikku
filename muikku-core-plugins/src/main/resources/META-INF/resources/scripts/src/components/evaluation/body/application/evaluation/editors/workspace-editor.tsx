@@ -52,6 +52,7 @@ interface WorkspaceEditorState {
   basePriceFromServer?: number;
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
+  locked: boolean;
 }
 
 interface EvaluationPriceObject {
@@ -141,25 +142,31 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       draftId = `${evaluationSelectedAssessmentId.userEntityId}-${evaluationSelectedAssessmentId.workspaceEntityId}-${eventId}`;
 
-      this.state = this.getRecoverStoredState(
-        {
-          literalEvaluation: latestEvent.text,
-          draftId,
-          basePriceFromServer: basePrice.data,
-          grade: `${usedGrade.dataSource}-${usedGrade.id}`,
-        },
-        draftId
-      );
+      this.state = {
+        ...this.getRecoverStoredState(
+          {
+            literalEvaluation: latestEvent.text,
+            draftId,
+            basePriceFromServer: basePrice.data,
+            grade: `${usedGrade.dataSource}-${usedGrade.id}`,
+          },
+          draftId
+        ),
+        locked: false,
+      };
     } else {
-      this.state = this.getRecoverStoredState(
-        {
-          literalEvaluation: "",
-          draftId,
-          basePriceFromServer: basePrice.data,
-          grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
-        },
-        draftId
-      );
+      this.state = {
+        ...this.getRecoverStoredState(
+          {
+            literalEvaluation: "",
+            draftId,
+            basePriceFromServer: basePrice.data,
+            grade: `${evaluationGradeSystem[0].grades[0].dataSource}-${evaluationGradeSystem[0].grades[0].id}`,
+          },
+          draftId
+        ),
+        locked: false,
+      };
     }
   }
 
@@ -363,6 +370,11 @@ class WorkspaceEditor extends SessionStateComponent<
       onClose,
       onSuccesfulSave,
     } = this.props;
+
+    this.setState({
+      locked: true,
+    });
+
     const { evaluationAssessmentEvents } = evaluations;
     const { literalEvaluation, grade } = this.state;
     let billingPrice = this.state.selectedPriceOption;
@@ -406,9 +418,18 @@ class WorkspaceEditor extends SessionStateComponent<
 
             onSuccesfulSave && onSuccesfulSave();
 
+            this.setState({
+              locked: false,
+            });
+
             onClose && onClose();
           },
-          onFail: () => onClose(),
+          onFail: () => {
+            this.setState({
+              locked: false,
+            });
+            onClose();
+          },
         });
       } else {
         /**
@@ -448,9 +469,18 @@ class WorkspaceEditor extends SessionStateComponent<
 
             onSuccesfulSave && onSuccesfulSave();
 
+            this.setState({
+              locked: false,
+            });
+
             onClose && onClose();
           },
-          onFail: () => onClose(),
+          onFail: () => {
+            this.setState({
+              locked: false,
+            });
+            onClose();
+          },
         });
       }
     } else {
@@ -853,6 +883,7 @@ class WorkspaceEditor extends SessionStateComponent<
           <Button
             buttonModifiers="evaluate-workspace"
             onClick={this.handleEvaluationSave}
+            disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
@@ -860,6 +891,7 @@ class WorkspaceEditor extends SessionStateComponent<
           </Button>
           <Button
             onClick={this.props.onClose}
+            disabled={this.state.locked}
             buttonModifiers="evaluate-cancel"
           >
             {this.props.i18n.text.get(
@@ -870,6 +902,7 @@ class WorkspaceEditor extends SessionStateComponent<
             <Button
               buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
+              disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"

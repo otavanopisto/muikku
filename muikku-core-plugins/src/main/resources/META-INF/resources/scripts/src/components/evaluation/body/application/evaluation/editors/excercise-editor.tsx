@@ -62,6 +62,7 @@ interface AssignmentEditorState {
   needsSupplementation: boolean;
   audioAssessments: AudioAssessment[];
   draftId: string;
+  locked: boolean;
 }
 
 /**
@@ -105,6 +106,7 @@ class ExcerciseEditor extends SessionStateComponent<
         compositeReplies.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
+      locked: false,
     };
   }
 
@@ -161,6 +163,10 @@ class ExcerciseEditor extends SessionStateComponent<
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
       data;
 
+    this.setState({
+      locked: true,
+    });
+
     if (this.props.onClose) {
       this.props.onClose();
     }
@@ -179,6 +185,10 @@ class ExcerciseEditor extends SessionStateComponent<
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
         await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
+        this.setState({
+          locked: false,
+        });
+
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
@@ -195,6 +205,10 @@ class ExcerciseEditor extends SessionStateComponent<
         ),
         "error"
       );
+
+      this.setState({
+        locked: false,
+      });
     }
   };
 
@@ -211,6 +225,10 @@ class ExcerciseEditor extends SessionStateComponent<
   }) => {
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
       data;
+
+    this.setState({
+      locked: true,
+    });
 
     if (this.props.onClose) {
       this.props.onClose();
@@ -239,6 +257,10 @@ class ExcerciseEditor extends SessionStateComponent<
           userEntityId: userEntityId,
           workspaceMaterialId: workspaceMaterialId,
         });
+
+        this.setState({
+          locked: false,
+        });
       });
     } catch (error) {
       this.props.displayNotification(
@@ -248,6 +270,10 @@ class ExcerciseEditor extends SessionStateComponent<
         ),
         "error"
       );
+
+      this.setState({
+        locked: false,
+      });
     }
   };
 
@@ -407,6 +433,7 @@ class ExcerciseEditor extends SessionStateComponent<
           <Button
             buttonModifiers="evaluate-assignment"
             onClick={this.handleSaveAssignment}
+            disabled={this.state.locked}
           >
             {this.props.i18n.text.get(
               "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
@@ -414,7 +441,10 @@ class ExcerciseEditor extends SessionStateComponent<
           </Button>
           {this.props.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
-              <Button buttonModifiers="evaluate-cancel">
+              <Button
+                buttonModifiers="evaluate-cancel"
+                disabled={this.state.locked}
+              >
                 {this.props.i18n.text.get(
                   "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
                 )}
@@ -424,6 +454,7 @@ class ExcerciseEditor extends SessionStateComponent<
             <Button
               onClick={this.props.onClose}
               buttonModifiers="evaluate-cancel"
+              disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
@@ -435,6 +466,7 @@ class ExcerciseEditor extends SessionStateComponent<
             <Button
               buttonModifiers="evaluate-remove-draft"
               onClick={this.handleDeleteEditorDraft}
+              disabled={this.state.locked}
             >
               {this.props.i18n.text.get(
                 "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
