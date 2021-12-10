@@ -448,13 +448,30 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+  public SearchResult searchWorkspaces(List<OrganizationEntity> organizations, String subjectIdentifier, Integer courseNumber) {
+
+    if (CollectionUtils.isEmpty(organizations)) {
+      throw new IllegalArgumentException("Cannot search with no organizations specified.");
+    }
+    
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjectIdentifier", subjectIdentifier));
-    query.must(termQuery("courseNumber", courseNumber));
-    // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
-    
+    if (courseNumber == null) {
+      query.mustNot(existsQuery("courseNumber"));
+    }
+    else {
+      query.must(termQuery("courseNumber", courseNumber));
+      
+    }
+
+    Set<String> organizationIdentifiers = organizations
+        .stream()
+        .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
+        .collect(Collectors.toSet());
+    if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
+      query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
+    }
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")
