@@ -8,7 +8,6 @@ export interface SummaryStudyTime {
   studyStartDate: string,
   studyTimeEnd: string,
   studyEndDate: string,
-  studyProgrammeName: string
 }
 
 export interface SummaryStudentCouncelorsType {

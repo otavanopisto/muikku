@@ -384,13 +384,6 @@ let setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecor
   };
 }
 
-let setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType = function setLocationToHopsInTranscriptOfRecords() {
-  return {
-    type: "UPDATE_RECORDS_LOCATION",
-    payload: <TranscriptOfRecordLocationType>"info"
-  };
-}
-
 let updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType = function updateTranscriptOfRecordsFiles() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     let files: Array<UserFileType> = <Array<UserFileType>>(
@@ -403,4 +396,4 @@ let updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType = 
   }
 }
 
-export { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToInfoInTranscriptOfRecords, updateTranscriptOfRecordsFiles }
+export { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, updateTranscriptOfRecordsFiles }

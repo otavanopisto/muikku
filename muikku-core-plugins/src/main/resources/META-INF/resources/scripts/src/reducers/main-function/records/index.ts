@@ -69,7 +69,7 @@ export interface RecordsType {
   curriculums: WorkspaceCurriculumFilterListType
 }
 
-export type TranscriptOfRecordLocationType = "records" | "hops" | "vops" | "summary" | "yo" | "info";
+export type TranscriptOfRecordLocationType = "records" | "hops" | "vops" | "summary" | "yo";
 
 export default function records(state: RecordsType = {
   userData: [],

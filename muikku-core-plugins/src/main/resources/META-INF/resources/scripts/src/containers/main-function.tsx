@@ -36,7 +36,7 @@ import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, load
 import RecordsBody from '../components/records/body';
 import {
   updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords, setLocationToInfoInTranscriptOfRecords
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords
 } from '~/actions/main-function/records';
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 import { updateVops } from '~/actions/main-function/vops';
@@ -50,7 +50,6 @@ import Chat from '../components/chat/chat';
 import EvaluationBody from '../components/evaluation/body';
 import { loadEvaluationAssessmentRequestsFromServer, loadEvaluationGradingSystemFromServer, loadEvaluationSortFunctionFromServer, loadEvaluationWorkspacesFromServer, loadListOfImportantAssessmentIdsFromServer, loadListOfUnimportantAssessmentIdsFromServer } from '~/actions/main-function/evaluation/evaluationActions';
 import * as moment from "moment";
-import RecordsBody2 from '~/components/records2/body';
 
 moment.locale("fi");
 
@@ -205,9 +204,6 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(setLocationToStatisticsInTranscriptOfRecords() as Action);
       this.props.store.dispatch(updateStatistics() as Action);
-    } else if(givenLocation === "info"){
-      this.props.store.dispatch(setLocationToInfoInTranscriptOfRecords() as Action);
-      this.props.store.dispatch(updateSummary() as Action);
     }
     this.props.store.dispatch(updateHops() as Action);
   }
@@ -625,7 +621,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.loadChatSettings();
     }
 
-    return <RecordsBody2 />
+    return <RecordsBody />
   }
 
   /**
