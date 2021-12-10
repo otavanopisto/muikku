@@ -13,12 +13,13 @@ export interface GuiderUserLabelType {
 }
 
 export type GuiderUserLabelListType = Array<GuiderUserLabelType>;
-
+export type GuiderUserGroupListType = Array<UserGroupType>;
 export type GuiderWorkspaceType = WorkspaceType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
 export interface GuiderFiltersType {
   labels: GuiderUserLabelListType,
+  userGroups: GuiderUserGroupListType,
   workspaces: GuiderWorkspaceListType
 }
 
@@ -27,6 +28,7 @@ export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 export interface GuiderActiveFiltersType {
   workspaceFilters: Array<number>,
   labelFilters: Array<number>,
+  userGroupFilters: Array<number>
   query: string
 }
 export interface GuiderStudentType extends UserWithSchoolDataType {
@@ -70,6 +72,7 @@ export interface GuiderType {
   currentStudent: GuiderStudentUserProfileType,
   selectedStudents: GuiderStudentListType,
   selectedStudentsIds: Array<string>,
+  toggleAllStudentsActive: boolean,
   currentState: GuiderCurrentStudentStateType
 }
 
@@ -105,11 +108,13 @@ export default function guider(state: GuiderType = {
   currentState: "READY",
   availableFilters: {
     labels: [],
-    workspaces: []
+    workspaces: [],
+    userGroups: []
   },
   activeFilters: {
     workspaceFilters: [],
     labelFilters: [],
+    userGroupFilters: [],
     query: ""
   },
   students: [],
@@ -117,6 +122,7 @@ export default function guider(state: GuiderType = {
   toolbarLock: false,
   selectedStudents: [],
   selectedStudentsIds: [],
+  toggleAllStudentsActive: false,
   currentStudent: null
 }, action: ActionType): GuiderType {
   if (action.type === "LOCK_TOOLBAR") {
@@ -274,6 +280,10 @@ export default function guider(state: GuiderType = {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, { workspaces: action.payload })
     });
+  } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS") {
+    return Object.assign({}, state, {
+      availableFilters: Object.assign({}, state.availableFilters, { userGroups: action.payload })
+    });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, { labels: state.availableFilters.labels.concat([action.payload]).sort(sortLabels) })
@@ -296,6 +306,16 @@ export default function guider(state: GuiderType = {
           return (label.id !== action.payload);
         })
       })
+    });
+  } else if (action.type === "TOGGLE_ALL_STUDENTS") {
+    return Object.assign({}, state, {
+      toggleAllStudentsActive: !state.toggleAllStudentsActive,
+      selectedStudents: !state.toggleAllStudentsActive
+        ? state.students
+        : [],
+      selectedStudentsIds: !state.toggleAllStudentsActive
+        ? state.students.map((student) => student.id)
+        : [],
     });
   }
   return state;

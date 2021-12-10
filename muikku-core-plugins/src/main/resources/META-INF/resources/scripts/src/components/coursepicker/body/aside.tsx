@@ -59,17 +59,6 @@ class NavigationAside extends React.Component<
             return <NavigationElement key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
           })}
         </NavigationTopic> : null}
-      {!this.props.status.isStudent && this.props.status.loggedIn ?
-        <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
-          {this.props.workspaces.availableFilters.stateFilters.map((stateFilter) => {
-            let isActive = this.props.workspaces.activeFilters.stateFilters && this.props.workspaces.activeFilters.stateFilters.includes(stateFilter.identifier);
-            let hash = "?" + (isActive ?
-              queryString.stringify(Object.assign({}, locationData, { p: (locationData.p || []).filter((i: string) => i !== stateFilter.identifier) }), { arrayFormat: 'bracket' }) :
-              queryString.stringify(Object.assign({}, locationData, { p: (locationData.p || []).concat(stateFilter.identifier) }), { arrayFormat: 'bracket' }));
-            return <NavigationElement key={stateFilter.name} isActive={isActive} hash={hash}>{stateFilter.name}</NavigationElement>
-          })}
-        </NavigationTopic>
-        : null}
     </Navigation>
   }
 }

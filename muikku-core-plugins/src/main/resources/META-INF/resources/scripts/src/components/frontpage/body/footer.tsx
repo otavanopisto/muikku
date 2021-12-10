@@ -35,7 +35,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
             <span>info@otavia.fi</span>
           </p>
           <p className="footer__subitem footer__subitem--privacy-policy">
-            <a href="https://otavia.fi/opiskelija-ja-opintotietorekisterin-tietosuojaseloste/" target="_blank" className="link link--privacy-policy">
+            <a href="https://drive.google.com/file/d/1rcKBLel8fXZdwiqgBcZdu4MKTRHeyEHy/view?usp=sharing" target="_blank" className="link link--privacy-policy">
               <span className="visually-hidden">Otavia </span>{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}
             </a>
           </p>
@@ -52,7 +52,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
         <div className="footer__item footer__item--plagscan">
           <a href="https://www.plagscan.com" className="link link--plagscan-logo" target="_blank"><img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo"/></a>
           <span className="footer__item--plagscan-text">{this.props.i18n.text.get('plugin.footer.plagscan.text')}</span>
-          <a href="https://otavia.fi/plagscan_tietosuojaseloste/" target="_blank" className="link link--plagscan-privacy-policy">(<span className="visually-hidden">Plagscan </span>{this.props.i18n.text.get('plugin.footer.plagScanPrivacyPolicy.label')}).</a>
+          <a href="https://drive.google.com/file/d/1IDQWdh2N1EoaJe60uS1m9tyY5znaohzz/view?usp=sharing" target="_blank" className="link link--plagscan-privacy-policy">(<span className="visually-hidden">Plagscan </span>{this.props.i18n.text.get('plugin.footer.plagScanPrivacyPolicy.label')}).</a>
         </div>
       </div>
     </footer>

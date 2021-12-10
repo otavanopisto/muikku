@@ -70,8 +70,6 @@ public class CoursePickerTestsBase extends AbstractUITest {
     try {
       navigate("/coursepicker", false);
       waitForVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
-//        refresh();
-//        waitForVisible("div.application-panel__main-container.loader-empty .application-list__item-header--course");
       waitAndClick("div.application-panel__main-container .application-list__item-header--course");
       assertText(".course--open .application-list__item-body--course article", "test course for testing");
     }finally{
