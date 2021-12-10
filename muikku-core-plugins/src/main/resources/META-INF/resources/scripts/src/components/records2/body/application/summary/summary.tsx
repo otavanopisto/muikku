@@ -18,6 +18,7 @@ import { SummaryStudentCouncelorsType } from "../../../../../reducers/main-funct
 import moment from "../../../../../lib/moment";
 import Avatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
+import { getName } from "~/util/modifiers";
 let ProgressBarLine = require("react-progress-bar.js").Line;
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 
@@ -178,7 +179,10 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                               initialSelectedItems={[
                                 {
                                   type: "staff",
-                                  value: councelor,
+                                  value: {
+                                    id: councelor.userEntityId,
+                                    name: getName(councelor, true),
+                                  },
                                 },
                               ]}
                             >

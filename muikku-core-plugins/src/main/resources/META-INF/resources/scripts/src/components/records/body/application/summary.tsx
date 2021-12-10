@@ -16,17 +16,10 @@ import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
-<<<<<<< HEAD
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
-import HopsCompulsoryEducationWizardDialog from "~/components/records/dialogs/hops-compulsory-education-wizard";
-=======
-import moment from '~/lib/moment';
-import { StatusType } from '~/reducers/base/status';
-import Avatar from '~/components/general/avatar';
-import { getName } from '~/util/modifiers';
->>>>>>> refs/remotes/origin/devel
+import { getName } from "~/util/modifiers";
 
 interface SummaryProps {
   i18n: i18nType;
@@ -72,7 +65,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </span>
               </div>
             </div>
-
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">
                 {this.props.i18n.text.get(
@@ -95,28 +87,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </span>
               </div>
             </div>
-
-<<<<<<< HEAD
-            {this.props.hops.eligibility
-              .upperSecondarySchoolCurriculum ? null : (
-              <div className="application-sub-panel__item">
-                <div className="application-sub-panel__item-title">
-                  Opintosuunnitelma
-                </div>
-                <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
-                  <HopsCompulsoryEducationWizardDialog
-                    user="student"
-                    hops={1}
-                    disabled={false}
-                    superVisorModifies={false}
-                  >
-                    <Button className="button button--yo-signup">
-                      Opintosuunnitelma
-                    </Button>
-                  </HopsCompulsoryEducationWizardDialog>
-                </div>
-              </div>
-            )}
 
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">
@@ -197,7 +167,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                               initialSelectedItems={[
                                 {
                                   type: "staff",
-                                  value: councelor,
+                                  value: {
+                                    id: councelor.userEntityId,
+                                    name: getName(councelor, true),
+                                  },
                                 },
                               ]}
                             >
@@ -218,46 +191,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     }
                   )}
                 </div>
-=======
-                  let displayVacationPeriod = !!councelor.properties['profile-vacation-start'];
-                  if (councelor.properties['profile-vacation-end']) {
-                    // we must check for the ending
-                    const vacationEndsAt = moment(councelor.properties['profile-vacation-end']);
-                    const today = moment();
-                    // if it's before or it's today then we display, otherwise nope
-                    displayVacationPeriod = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
-                  }
-                  return <div className="item-list__item item-list__item--student-councelor" key={councelor.userEntityId}>
-                    <div className="item-list__profile-picture">
-                      <Avatar id={councelor.userEntityId} userCategory={3} firstName={councelor.firstName} hasImage={councelor.hasImage} />
-                    </div>
-                    <div className="item-list__text-body item-list__text-body--multiline">
-                      <div className="item-list__user-name">{councelor.firstName} {councelor.lastName}</div>
-                      <div className="item-list__user-contact-info">
-                        <div className="item-list__user-email"><div className="glyph icon-envelope"></div>{councelor.email}</div>
-                        {councelor.properties['profile-phone'] ?
-                          <div className="item-list__user-phone"><div className="glyph icon-phone"></div>{councelor.properties['profile-phone']}
-                          </div> : null}
-                      </div>
-                      {displayVacationPeriod ?
-                        <div className="item-list__user-vacation-period">
-                          {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
-                          {this.props.i18n.time.format(councelor.properties['profile-vacation-start'])}
-                          {councelor.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(councelor.properties['profile-vacation-end']) : null}
-                        </div> : null}
-                      <CommunicatorNewMessage extraNamespace="guidance-councelor" initialSelectedItems={[{
-                        type: "staff",
-                        value: {
-                          id: councelor.userEntityId,
-                          name: getName(councelor, true),
-                        },
-                      }]}><Button buttonModifiers={["info", "contact-student-councelor"]}>
-                          {this.props.i18n.text.get("plugin.records.contactStudentCouncelor.message.label")}
-                        </Button></CommunicatorNewMessage>
-                    </div>
-                  </div>
-                })}
->>>>>>> refs/remotes/origin/devel
               </div>
             </div>
           </div>

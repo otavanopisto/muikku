@@ -11,6 +11,7 @@ import { StatusType } from "~/reducers/base/status";
 import { HOPSType } from "~/reducers/main-function/hops";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import * as moment from "moment";
+import { getName } from "~/util/modifiers";
 
 /**
  * RecordsProps
@@ -177,7 +178,10 @@ class StudyInfo extends React.Component<StudyInfoProps, StudyInfoState> {
                             initialSelectedItems={[
                               {
                                 type: "staff",
-                                value: councelor,
+                                value: {
+                                  id: councelor.userEntityId,
+                                  name: getName(councelor, true),
+                                },
                               },
                             ]}
                           >
