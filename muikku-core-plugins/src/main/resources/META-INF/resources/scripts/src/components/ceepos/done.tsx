@@ -74,28 +74,26 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
     if (this.props.status) {
       feedbackData = (
-        <>
-          <div className="card__content card__content--ceepos">
-            {productData}
-            <div className="card__text card__text--ceepos">
-              <div className="card__text-row card__text-row--ceepos">
-                {paymentWasSuccessful ?
-                  this.props.i18n.text.get("plugin.ceepos.order.done.successful")
-                  : null}
+        <div className="card__content card__content--ceepos">
+          {productData}
+          <div className="card__text card__text--ceepos">
+            <div className="card__text-row card__text-row--ceepos">
+              {paymentWasSuccessful ?
+                this.props.i18n.text.get("plugin.ceepos.order.done.successful")
+                : null}
 
-                {paymentWasCancelled ?
-                  this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")
-                  : null}
+              {paymentWasCancelled ?
+                this.props.i18n.text.get("plugin.ceepos.order.done.cancelled")
+                : null}
 
-                {paymentWasErrored ?
-                  this.props.i18n.text.get("plugin.ceepos.order.done.errored")
-                  : null}
+              {paymentWasErrored ?
+                this.props.i18n.text.get("plugin.ceepos.order.done.errored")
+                : null}
 
-                {unknownError ?
-                  this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")
-                  : null}
+              {unknownError ?
+                this.props.i18n.text.get("plugin.ceepos.order.done.unknownError")
+                : null}
 
-              </div>
             </div>
           </div>
           <footer className="card__footer card__footer--ceepos">
@@ -122,7 +120,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
               </>
               : null}
           </footer>
-        </>
+        </div>
       );
     }
 

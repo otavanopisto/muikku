@@ -226,8 +226,8 @@
 }
 .card__content--ceepos {
   background: $color-default;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border: 1px solid $color-panel-border-color;
+  border-radius: 5px;
 }
 
 .card__title--ceepos {
@@ -248,18 +248,15 @@
 }
 
 .card__footer--ceepos {
-  background: $color-default;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
   display: flex;
   justify-content: center;
-  padding: 0.55rem 0 1.1rem 0;
+  padding: 1.1rem 0 0;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 0.8rem 0 1.6rem 0;
+    padding: 1.6rem 0 0;
   }
 
   .button {
-    margin: 0 10px 10px 0;
+    margin: 0 5px 10px 5px;
   }
 }

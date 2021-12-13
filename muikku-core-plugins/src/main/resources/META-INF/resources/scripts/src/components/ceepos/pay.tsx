@@ -41,16 +41,21 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                 : this.props.i18n.text.get("plugin.ceepos.order.redirectToCeeposDescription")
               }
             </div>
-          </div>
-          {this.props.ceepos.state === "ERROR" ?
-            <footer className="card__footer card__footer--ceepos">
-              <Button
-                icon="forward"
-                buttonModifiers={["back-to-muikku", "info"]}
-                href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
-              </Button>
-            </footer>
+            {this.props.ceepos.state === "ERROR" ?
+              <div className="card__footer card__footer--ceepos">
+                <Button
+                  icon="forward"
+                  buttonModifiers={["back-to-muikku", "info"]}
+                  href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
+                </Button>
+                <Button
+                  icon="envelope"
+                  buttonModifiers={["send-message", "info"]}
+                >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
+                </Button>
+              </div>
           : null}
+          </div>
        </div>
       </div>
     )
