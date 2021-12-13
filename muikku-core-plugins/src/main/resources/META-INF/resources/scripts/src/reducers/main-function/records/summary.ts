@@ -10,7 +10,7 @@ export interface SummaryStudyTime {
   studyEndDate: string,
 }
 
-export interface SummaryStudentCouncelorsType {
+export interface SummaryStudentsGuidanceCouncelorsType {
   firstName: string,
   lastName: string,
   email: string,
@@ -27,7 +27,7 @@ export interface SummaryDataType {
   graphData: GraphDataType,
   coursesDone: number,
   studentsDetails: SummaryStudyTime,
-  studentsStudentCouncelors: Array<SummaryStudentCouncelorsType>,
+  studentsGuidanceCouncelors: Array<SummaryStudentsGuidanceCouncelorsType>,
 }
 
 export interface SummaryType {

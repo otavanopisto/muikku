@@ -42,7 +42,7 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       /* Student's user groups */
       let studentsUserGroups: any = await promisify(mApi().usergroup.groups.read({ userIdentifier: pyramusId }), 'callback')();
 
-      let studentsStudentCouncelors: any = [];
+      let studentsGuidanceCouncelors: any = [];
 
       /*
         We need to filter student's usergroups that are guidance groups, then we fetch guidance councelors
@@ -51,10 +51,10 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       if (studentsUserGroups && studentsUserGroups.length) {
         studentsUserGroups.filter((studentsUserGroup: any) => studentsUserGroup.isGuidanceGroup == true).forEach(function (studentsUserGroup: any) {
           mApi().usergroup.groups.staffMembers.read(studentsUserGroup.id, {properties: 'profile-phone,profile-vacation-start,profile-vacation-end'}).callback(function (err: any, result: any) {
-            result.forEach(function (studentsStudentCouncelor: any) {
-              if (!studentsStudentCouncelors.some((existingStudentCouncelor: any) => existingStudentCouncelor.userEntityId == studentsStudentCouncelor.userEntityId)) {
-                studentsStudentCouncelors.push(studentsStudentCouncelor);
-                studentsStudentCouncelors.sort(function (x: any, y: any) {
+            result.forEach(function (studentsGuidanceCouncelor: any) {
+              if (!studentsGuidanceCouncelors.some((existingGuidanceCouncelor: any) => existingGuidanceCouncelor.userEntityId == studentsGuidanceCouncelor.userEntityId)) {
+                studentsGuidanceCouncelors.push(studentsGuidanceCouncelor);
+                studentsGuidanceCouncelors.sort(function (x: any, y: any) {
                   let a = x.lastName.toUpperCase(),
                     b = y.lastName.toUpperCase();
                   return a == b ? 0 : a > b ? 1 : -1;
@@ -115,7 +115,7 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         coursesDone: coursesDone.length,
         graphData: graphData,
         studentsDetails: studentsDetails,
-        studentsStudentCouncelors: studentsStudentCouncelors,
+        studentsGuidanceCouncelors: studentsGuidanceCouncelors,
       }
 
       dispatch({

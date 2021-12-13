@@ -7,7 +7,7 @@ import '~/sass/elements/glyph.scss';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import { RecordsType } from '~/reducers/main-function/records';
-import { SummaryType, SummaryStudentCouncelorsType } from '~/reducers/main-function/records/summary';
+import { SummaryType, SummaryStudentsGuidanceCouncelorsType } from '~/reducers/main-function/records/summary';
 import { HOPSType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
@@ -60,7 +60,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStudentCouncelorsLabel")}</div>
             <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-student-councelors">
               <div className="item-list item-list--student-councelors">
-                {this.props.summary.data.studentsStudentCouncelors.map((councelor: SummaryStudentCouncelorsType, index: number) => {
+                {this.props.summary.data.studentsGuidanceCouncelors.map((councelor: SummaryStudentsGuidanceCouncelorsType, index: number) => {
 
                   let displayVacationPeriod = !!councelor.properties['profile-vacation-start'];
                   if (councelor.properties['profile-vacation-end']) {
@@ -77,10 +77,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     <div className="item-list__text-body item-list__text-body--multiline">
                       <div className="item-list__user-name">{councelor.firstName} {councelor.lastName}</div>
                       <div className="item-list__user-contact-info">
-                        <div className="item-list__user-email"><div className="glyph icon-envelope"></div>{councelor.email}</div>
+                        {councelor.email ?
+                          <div className="item-list__user-email"><div className="glyph icon-envelope"></div>{councelor.email}</div>
+                          : null}
                         {councelor.properties['profile-phone'] ?
-                          <div className="item-list__user-phone"><div className="glyph icon-phone"></div>{councelor.properties['profile-phone']}
-                          </div> : null}
+                          <div className="item-list__user-phone"><div className="glyph icon-phone"></div>{councelor.properties['profile-phone']}</div>
+                          : null}
                       </div>
                       {displayVacationPeriod ?
                         <div className="item-list__user-vacation-period">
