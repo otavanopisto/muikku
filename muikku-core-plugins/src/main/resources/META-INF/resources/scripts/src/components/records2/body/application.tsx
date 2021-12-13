@@ -16,7 +16,7 @@ import { HOPSType } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import StudyInfo from "./application/study-info/study-info";
 import { TabType } from "~/components/general/tabs";
-import Hops from "~/components/records/body/application/hops";
+import Hops from "./application/hops/hops";
 
 /**
  * StudiesApplicationProps
@@ -84,13 +84,6 @@ class StudiesApplication extends React.Component<
    */
   isVisible(id: string) {
     switch (id) {
-      case "HOPS":
-        return (
-          this.props.status.isActiveUser &&
-          !this.props.records.studyEndDate &&
-          this.props.hops.eligibility &&
-          this.props.hops.eligibility.upperSecondarySchoolCurriculum === true
-        );
       case "YO":
         const yoVisibleValues = ["yes", "maybe"];
         return (

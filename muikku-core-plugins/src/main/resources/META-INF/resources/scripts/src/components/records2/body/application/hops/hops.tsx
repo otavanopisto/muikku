@@ -13,7 +13,13 @@ import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
+import CompulsoryEducationHopsWizard, {
+  HopsUser,
+} from "~/components/records/body/application/hops/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
 
+/**
+ * HopsProps
+ */
 interface HopsProps {
   i18n: i18nType;
   records: RecordsType;
@@ -21,15 +27,31 @@ interface HopsProps {
   setHopsTo: SetHopsToTriggerType;
 }
 
+/**
+ * HopsState
+ */
 interface HopsState {}
 
+/**
+ * Hops
+ */
 class Hops extends React.Component<HopsProps, HopsState> {
   timeout: NodeJS.Timer;
+
+  /**
+   * constructor
+   * @param props
+   */
   constructor(props: HopsProps) {
     super(props);
 
     this.setHopsToWithDelay = this.setHopsToWithDelay.bind(this);
   }
+
+  /**
+   * setHopsToWithDelay
+   * @param hops
+   */
   setHopsToWithDelay(hops: HOPSDataType) {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(
@@ -37,12 +59,42 @@ class Hops extends React.Component<HopsProps, HopsState> {
       1000
     ) as any;
   }
+
+  /**
+   * renderUpperSecondaryHops
+   * @returns JSX.Element
+   */
+  renderUpperSecondaryHops = () => {
+    return (
+      <section>
+        <h2 className="application-panel__content-header">
+          {this.props.i18n.text.get("plugin.records.hops.title")}
+        </h2>
+        <HopsGraph onHopsChange={this.setHopsToWithDelay} />
+      </section>
+    );
+  };
+
+  /**
+   * renderHops
+   * @return JSX.Element
+   */
+  renderHops = () => {
+    return (
+      <CompulsoryEducationHopsWizard
+        user="student"
+        disabled={false}
+        superVisorModifies={false}
+      />
+    );
+  };
+
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
-    if (
-      this.props.records.location !== "hops" ||
-      (this.props.hops.eligibility &&
-        this.props.hops.eligibility.upperSecondarySchoolCurriculum == false)
-    ) {
+    if (this.props.records.location !== "hops") {
       return null;
     } else if (this.props.hops.status === "ERROR") {
       // TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
@@ -56,17 +108,21 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
 
-    return (
-      <section>
-        <h2 className="application-panel__content-header">
-          {this.props.i18n.text.get("plugin.records.hops.title")}
-        </h2>
-        <HopsGraph onHopsChange={this.setHopsToWithDelay} />
-      </section>
-    );
+    if (
+      this.props.hops.eligibility &&
+      this.props.hops.eligibility.upperSecondarySchoolCurriculum === true
+    ) {
+      return this.renderUpperSecondaryHops();
+    }
+
+    return this.renderHops();
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -75,6 +131,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }

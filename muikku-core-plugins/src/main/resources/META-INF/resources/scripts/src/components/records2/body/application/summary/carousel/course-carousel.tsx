@@ -9,6 +9,9 @@ import * as React from "react";
 import Carousel from "react-multi-carousel";
 
 import Button from "~/components/general/button";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { useCourseCarousel } from "./hooks/use-course-carousel";
 
 const responsive = {
   desktop: {
@@ -32,7 +35,8 @@ const responsive = {
  * CarouselProps
  */
 interface CourseCarouselProps {
-  courses: Course[];
+  studentId: string;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -41,7 +45,16 @@ interface CourseCarouselProps {
  * @returns JSX.Element
  */
 const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
-  const carouselItems = props.courses.map((cItem) => (
+  const { courseCarousel } = useCourseCarousel(
+    props.studentId,
+    props.displayNotification
+  );
+
+  if (courseCarousel.isLoading) {
+    return <div className="loader-empty" />;
+  }
+
+  const carouselItems = courseCarousel.carouselItems.map((cItem) => (
     <CourseCarouselItem key={cItem.id} course={cItem} />
   ));
 
@@ -71,9 +84,9 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 export interface Course {
   id: number;
   subject: string;
-  courseIndex: number;
+  courseNumber: number;
   name: string;
-  description: string;
+  description?: string;
   imageSrc?: string;
 }
 
@@ -110,10 +123,12 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         }}
       >
         <span style={{ margin: "5px" }}>
-          {course.subject} - {course.courseIndex}{" "}
+          {course.subject} - {course.courseNumber}
         </span>
         <h3 style={{ margin: "5px" }}>{course.name}</h3>
-        <p style={{ margin: "5px" }}>{course.description}</p>
+        <p style={{ margin: "5px" }}>
+          {course.description ? course.description : "-"}
+        </p>
       </div>
       <div style={{ margin: "5px 0" }}>
         <Button>Kurssille</Button>{" "}

@@ -6,7 +6,7 @@ export const courses: Course[] = [
   {
     id: 0,
     subject: "Matikka",
-    courseIndex: 1,
+    courseNumber: 1,
     name: "Kaavat ja muut",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",
@@ -16,7 +16,7 @@ export const courses: Course[] = [
   {
     id: 1,
     subject: "Matikka",
-    courseIndex: 2,
+    courseNumber: 2,
     name: "Yhtälöt ja muut",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",
@@ -26,7 +26,7 @@ export const courses: Course[] = [
   {
     id: 2,
     subject: "Matikka",
-    courseIndex: 3,
+    courseNumber: 3,
     name: "Laskut ja muut",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",
@@ -36,7 +36,7 @@ export const courses: Course[] = [
   {
     id: 3,
     subject: "Matikka",
-    courseIndex: 4,
+    courseNumber: 4,
     name: "Tippaleivät ja muut",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",
@@ -45,7 +45,7 @@ export const courses: Course[] = [
   {
     id: 4,
     subject: "Matikka",
-    courseIndex: 5,
+    courseNumber: 5,
     name: "Jotain ja muut",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",
@@ -55,7 +55,7 @@ export const courses: Course[] = [
   {
     id: 5,
     subject: "Matikka",
-    courseIndex: 6,
+    courseNumber: 6,
     name: "bläblä ja muut",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sodales non dui vel ullamcorper. Nunc congue euismod ante, a scelerisque augue rhoncus quis.",

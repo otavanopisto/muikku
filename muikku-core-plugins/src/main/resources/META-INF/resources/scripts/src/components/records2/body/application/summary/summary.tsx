@@ -18,6 +18,12 @@ import { SummaryStudentCouncelorsType } from "../../../../../reducers/main-funct
 import moment from "../../../../../lib/moment";
 import Avatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
+import { getName } from "~/util/modifiers";
+import HopsCompulsoryEducationWizardDialog from "~/components/records/dialogs/hops-compulsory-education-wizard";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 let ProgressBarLine = require("react-progress-bar.js").Line;
 let ProgressBarCircle = require("react-progress-bar.js").Circle;
 
@@ -30,6 +36,7 @@ interface SummaryProps {
   summary: SummaryType;
   status: StatusType;
   hops: HOPSType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -96,6 +103,24 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                         "plugin.records.summary.studyTime.empty"
                       )}
                 </span>
+              </div>
+            </div>
+
+            <div className="application-sub-panel__item">
+              <div className="application-sub-panel__item-title">
+                Opintosuunnitelma
+              </div>
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
+                <HopsCompulsoryEducationWizardDialog
+                  user="student"
+                  hops={1}
+                  disabled={false}
+                  superVisorModifies={false}
+                >
+                  <Button className="button button--yo-signup">
+                    Opintosuunnitelma
+                  </Button>
+                </HopsCompulsoryEducationWizardDialog>
               </div>
             </div>
 
@@ -178,7 +203,10 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                               initialSelectedItems={[
                                 {
                                   type: "staff",
-                                  value: councelor,
+                                  value: {
+                                    id: councelor.userEntityId,
+                                    name: getName(councelor, true),
+                                  },
                                 },
                               ]}
                             >
@@ -529,7 +557,10 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
               className="studies-summary__section-content-courses"
               style={{ height: "auto", width: "100%", display: "content" }}
             >
-              <CourseCarousel courses={courses} />
+              <CourseCarousel
+                studentId={(window as any).MUIKKU_LOGGED_USER}
+                displayNotification={this.props.displayNotification}
+              />
             </div>
           </div>
         </div>
@@ -617,7 +648,9 @@ function mapStateToProps(state: StateType) {
  * @returns
  */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+  return {
+    displayNotification,
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SummaryNew);
