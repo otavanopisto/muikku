@@ -2,7 +2,7 @@ import { Course } from "../summary/carousel/course-carousel";
 import { Achievement } from "../summary/carousel/achievements-carousel";
 import { RecordSubject } from "../records/records-list";
 
-export const courses: Course[] = [
+/* export const courses: Course[] = [
   {
     id: 0,
     subject: "Matikka",
@@ -62,7 +62,7 @@ export const courses: Course[] = [
     imageSrc:
       "https://cdn.ebs.newsner.com/wp-content/uploads/sites/15/2019/05/MIKAONOIKEIN_KUVA.jpg",
   },
-];
+]; */
 
 export const achievementsOnGoing: Achievement[] = [
   {

@@ -1,12 +1,10 @@
 import * as React from "react";
 import mApi from "~/lib/mApi";
 import { sleep } from "~/helper-functions/shared";
-import { WebsocketStateType } from "~/reducers/util/websocket";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   CourseStatus,
-  StudentActivityByStatus,
   StudentActivityCourse,
   Suggestion,
 } from "~/@types/shared";

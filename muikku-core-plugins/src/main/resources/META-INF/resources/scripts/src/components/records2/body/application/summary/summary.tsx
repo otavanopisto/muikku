@@ -7,8 +7,8 @@ import { SummaryType } from "~/reducers/main-function/records/summary";
 import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import CourseCarousel, { Course } from "./carousel/course-carousel";
-import { courses, achievementsOnGoing, achievementsDone } from "../mocks/mocks";
+import CourseCarousel from "./carousel/course-carousel";
+import { achievementsOnGoing, achievementsDone } from "../mocks/mocks";
 import AchievementsCarousel from "./carousel/achievements-carousel";
 import ProgressTimeline from "./progress-timeline/progress-timeline";
 import Button from "~/components/general/button";
@@ -45,7 +45,7 @@ interface SummaryProps {
 interface SummaryState {}
 
 /**
- * Summary
+ * SummaryNew
  */
 class SummaryNew extends React.Component<SummaryProps, SummaryState> {
   constructor(props: SummaryProps) {
@@ -54,6 +54,10 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
     this.state = {};
   }
 
+  /**
+   * renderOldSummary
+   * @returns JSX.Element
+   */
   renderOldSummary() {
     if (
       this.props.records.location !== "summary" ||
@@ -612,6 +616,10 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
     );
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     if (
       this.props.records.location !== "summary" ||
