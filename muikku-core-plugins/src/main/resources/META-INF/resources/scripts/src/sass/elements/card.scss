@@ -146,6 +146,7 @@
   align-items: flex-start;
   display: flex;
   flex-flow: column nowrap;
+  font-weight: 300;
   padding: 10px 0;
 }
 
@@ -154,7 +155,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .card__text-highlight {
