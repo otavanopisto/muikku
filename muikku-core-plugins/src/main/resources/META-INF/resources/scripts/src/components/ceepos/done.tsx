@@ -4,7 +4,9 @@ import { Dispatch } from 'redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { CeeposState } from '~/reducers/main-function/ceepos';
+import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import Button from "~/components/general/button";
+import { errorMessageContent, errorMessageTitle } from '~/helper-functions/ceepos-error';
 
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';
@@ -112,11 +114,14 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   buttonModifiers={["back-to-muikku", "info"]}
                   href="/">{this.props.i18n.text.get("plugin.ceepos.order.backToMuikkuButton.label")}
                 </Button>
-                <Button
-                  icon="envelope"
-                  buttonModifiers={["send-message", "info"]}
-                >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
-                </Button>
+
+                <CommunicatorNewMessage extraNamespace="ceepos-error"
+                  initialSubject={errorMessageTitle(this.props.i18n, this.props.ceepos.purchase)}
+                  initialMessage={errorMessageContent(this.props.i18n, this.props.ceepos.purchase, this.props.ceepos.payStatusMessage)}><Button
+                    icon="envelope"
+                    buttonModifiers={["send-message", "info"]}
+                  >{this.props.i18n.text.get("plugin.ceepos.order.sendMessageButton.label")}
+                  </Button></CommunicatorNewMessage>
               </>
               : null}
           </footer>

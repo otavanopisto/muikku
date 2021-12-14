@@ -6,8 +6,10 @@ import { StateType } from "~/reducers";
 import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType, PurchaseType } from "~/reducers/main-function/profile";
 import promisify from "~/util/promisify";
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListHeaderPrimary, ApplicationListItemFooter, ApplicationListItemDate } from '~/components/general/application-list'
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list'
 import Button from "~/components/general/button";
+import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
+import { errorMessageContent, errorMessageTitle } from '~/helper-functions/ceepos-error';
 
 interface IPurchasesProps {
   i18n: i18nType,
@@ -34,7 +36,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     location.href = value;
   }
 
-  /**
+    /**
    * render
    * @returns
    */
@@ -72,7 +74,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
               <ApplicationList>
                 {ongoingPuchases.map((p) => {
                   return (
-                    <ApplicationListItem modifiers="product">
+                    <ApplicationListItem modifiers="product" key={p.id}>
                       <ApplicationListItemHeader modifiers="product">
                         <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
                         <span className="application-list__header-primary application-list__header-primary--product">
@@ -99,11 +101,13 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
                             {p.state === "ERRORED" ?
                             <span className="application-list__header-primary-actions">
-                              <Button
-                                icon="envelope"
-                                buttonModifiers={["send-message", "info"]}
-                                onClick={this.performPayment}>{this.props.i18n.text.get("plugin.profile.purchases.sendMessageButton.label")}
-                              </Button>
+                              <CommunicatorNewMessage extraNamespace="ceepos-error"
+                                initialSubject={errorMessageTitle(this.props.i18n, p)}
+                                initialMessage={errorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description." + p.state))}><Button
+                                  icon="envelope"
+                                  buttonModifiers={["send-message", "info"]}
+                                >{this.props.i18n.text.get("plugin.profile.purchases.sendMessageButton.label")}
+                                </Button></CommunicatorNewMessage>
                             </span> : null}
                         </span>
                         <span className="application-list__header-secondary">
@@ -128,7 +132,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                 <ApplicationList>
                   {completedPurchases.map((p) => {
                     return (
-                      <ApplicationListItem modifiers="product">
+                      <ApplicationListItem modifiers="product" key={p.id}>
                         <ApplicationListItemHeader modifiers="product">
                           <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
                           <span className="application-list__header-primary application-list__header-primary--product">

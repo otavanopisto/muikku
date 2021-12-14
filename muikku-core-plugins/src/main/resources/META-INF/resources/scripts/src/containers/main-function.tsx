@@ -591,6 +591,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderProfileBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.profile.profile')));
@@ -666,6 +667,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
     const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
     if (this.itsFirstTime){
       this.loadlib("//fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900", "styleSheet");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       const id = parseInt(locationData.Id);
       if (id) {
         this.props.store.dispatch(loadCeeposPurchase(id) as Action);
@@ -680,6 +682,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
 
     if(this.itsFirstTime){
       this.loadlib("//fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900", "styleSheet");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       const locationData = queryString.parse(document.location.search.split("?")[1] || "", {arrayFormat: 'bracket'});
       if (locationData.order) {
         this.props.store.dispatch(loadCeeposPurchaseAndPay(parseInt(locationData.order)) as Action);
