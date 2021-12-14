@@ -19,7 +19,6 @@ import moment from "../../../../../lib/moment";
 import Avatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { getName } from "~/util/modifiers";
-import HopsCompulsoryEducationWizardDialog from "~/components/records/dialogs/hops-compulsory-education-wizard";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -107,24 +106,6 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                         "plugin.records.summary.studyTime.empty"
                       )}
                 </span>
-              </div>
-            </div>
-
-            <div className="application-sub-panel__item">
-              <div className="application-sub-panel__item-title">
-                Opintosuunnitelma
-              </div>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
-                <HopsCompulsoryEducationWizardDialog
-                  user="student"
-                  hops={1}
-                  disabled={false}
-                  superVisorModifies={false}
-                >
-                  <Button className="button button--yo-signup">
-                    Opintosuunnitelma
-                  </Button>
-                </HopsCompulsoryEducationWizardDialog>
               </div>
             </div>
 

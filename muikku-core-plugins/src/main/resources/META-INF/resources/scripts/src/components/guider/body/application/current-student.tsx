@@ -32,9 +32,8 @@ import {
   GuiderType,
   GuiderStudentUserProfileLabelType,
 } from "~/reducers/main-function/guider";
-import HopsCompulsoryEducationWizardDialog from "~/components/records/dialogs/hops-compulsory-education-wizard";
 import Button from "../../../general/button";
-import JotainWizardDialog from "../../dialogs/jotain";
+import HopsCompulsoryEducationWizardDialog from "~/components/records2/dialogs/hops-compulsory-education-wizard";
 
 interface CurrentStudentProps {
   i18n: i18nType;

@@ -2,9 +2,11 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import CompulsoryEducationHopsWizard, {
   HopsUser,
-} from "~/components/records/body/application/hops/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
-import { HopsCompulsory } from "../../../@types/shared";
+} from "~/components/records2/body/application/hops/hops-compulsory-education-wizard/hops-compulsory-education-wizard";
 
+/**
+ * HopsCompulsoruEducationWizardProps
+ */
 interface HopsCompulsoruEducationWizardProps {
   user: HopsUser;
   superVisorModifies: boolean;
@@ -13,16 +15,30 @@ interface HopsCompulsoruEducationWizardProps {
   disabled: boolean;
 }
 
+/**
+ * HopsCompulsoruEducationWizardState
+ */
 interface HopsCompulsoruEducationWizardState {}
 
+/**
+ * HopsCompulsoryEducationWizardDialog
+ */
 class HopsCompulsoryEducationWizardDialog extends React.Component<
   HopsCompulsoruEducationWizardProps,
   HopsCompulsoruEducationWizardState
 > {
+  /**
+   * Constructor method
+   * @param props
+   */
   constructor(props: HopsCompulsoruEducationWizardProps) {
     super(props);
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     let content = (closeDialog: () => any) => (
       <div>

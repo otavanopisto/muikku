@@ -167,22 +167,22 @@
   z-index: 10;
 }
 
-.right {
+.arrow-right {
   transform: rotate(-45deg);
   transition: transform 0.3s ease-in;
 }
 
-.left {
+.arrow-left {
   transform: rotate(135deg);
   transition: transform 0.3s ease-in;
 }
 
-.up {
+.arrow-up {
   transform: rotate(-135deg);
   transition: transform 0.3s ease-in;
 }
 
-.down {
+.arrow-down {
   transform: rotate(45deg);
   transition: transform 0.3s ease-in;
 }

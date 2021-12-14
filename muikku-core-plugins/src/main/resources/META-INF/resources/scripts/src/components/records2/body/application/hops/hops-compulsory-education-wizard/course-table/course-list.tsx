@@ -402,7 +402,9 @@ const CourseList: React.FC<CourseListProps> = (props) => {
             style={{ width: `${mandatoryProggress}%` }}
           />
           <span style={{ zIndex: 10 }}>{sSubject.name}</span>
-          <div className={`list-item-arrow ${open ? "down" : "right"}`} />
+          <div
+            className={`list-item-arrow ${open ? "arrow-down" : "arrow-right"}`}
+          />
         </ListItem>
 
         <AnimateHeight

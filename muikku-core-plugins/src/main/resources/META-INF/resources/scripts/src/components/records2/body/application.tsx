@@ -22,7 +22,6 @@ import Hops from "./application/hops/hops";
  * StudiesApplicationProps
  */
 interface StudiesApplicationProps {
-  aside: React.ReactElement<any>;
   i18n: i18nType;
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
@@ -46,15 +45,6 @@ type StudiesTab =
  */
 interface StudiesApplicationState {
   activeTab: StudiesTab;
-}
-
-/**
- * PanelTab
- */
-interface PanelTab<T> {
-  id: T;
-  name: string;
-  component: () => JSX.Element;
 }
 
 /**
