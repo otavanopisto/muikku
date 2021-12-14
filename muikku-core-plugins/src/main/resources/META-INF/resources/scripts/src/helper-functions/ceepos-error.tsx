@@ -11,7 +11,7 @@ export function errorMessageContent(i18n: i18nType, order: PurchaseType, message
   // Error message which can come from backend or from localization properties
   const errorMessage: string = message ? '<div><em>' + message + '</em></div>' : "";
 
-  // Pretext is functioning as a empty place holder paragraph enabeling user to place caret on top of prefilled content
+  // Pretext is functioning as a empty place holder paragraph enabling user to place caret above of the prefilled content
   const pretext: string = '<p></p>';
 
   // Error message's prefilled content
@@ -33,6 +33,6 @@ export function errorMessageContent(i18n: i18nType, order: PurchaseType, message
  */
 export function errorMessageTitle(i18n: i18nType, order: PurchaseType) {
   // Error message's prefilled title
-  const title: string = order.product.Description + ' - ' + i18n.text.get("plugin.profile.purchases.description." + order.state);
+  const title: string = order.product.Description + ' - ' + order.id;
   return title;
 }

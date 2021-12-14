@@ -103,7 +103,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                             <span className="application-list__header-primary-actions">
                               <CommunicatorNewMessage extraNamespace="ceepos-error"
                                 initialSubject={errorMessageTitle(this.props.i18n, p)}
-                                initialMessage={errorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description." + p.state))}><Button
+                                initialMessage={errorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description.ERRORED"))}><Button
                                   icon="envelope"
                                   buttonModifiers={["send-message", "info"]}
                                 >{this.props.i18n.text.get("plugin.profile.purchases.sendMessageButton.label")}
