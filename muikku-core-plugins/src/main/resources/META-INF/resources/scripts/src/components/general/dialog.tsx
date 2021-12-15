@@ -18,7 +18,7 @@ import Pager from "~/components/general/pager";
 
 interface DialogProps {
   children?: React.ReactElement<any>;
-  title: string;
+  title: string | React.ReactElement<any>;
   executing?: boolean;
   executeContent?: React.ReactElement<any>;
   modifier?: string | Array<string>;
@@ -194,6 +194,22 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
     );
   }
 }
+
+interface DialogTitleContainerProps {
+  modifier?: string;
+}
+
+export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (props) => (
+  <div className={`dialog__title-sub-container ${props.modifier ? "dialog__title-container--" + props.modifier : ""}`}>{props.children}</div>
+)
+
+interface DialogTitleProps {
+  modifier?: string;
+}
+
+export const DialogTitleItem: React.FC<DialogTitleProps> = (props) => (
+  <span className={`dialog__title-item ${props.modifier ? "dialog__title-item--" + props.modifier : ""}`}>{props.children}</span>
+)
 
 interface DialogRowHeaderProps {
   modifiers?: string | Array<string>;
@@ -578,7 +594,6 @@ export class DialogRemoveUsers extends React.Component<
         renderAllComponents
         activeTab={this.state.activeTab}
         tabs={tabs}
-
       />
     );
   }

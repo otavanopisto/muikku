@@ -38,6 +38,11 @@
   }
 }
 
+.dialog--guider-student {
+  background-color: #fff;
+  overflow: auto;
+}
+
 .dialog--visible {
   opacity: 1;
 }
@@ -65,6 +70,21 @@
     top: auto;
   }
 }
+
+.dialog__window--guider-student {
+  position: absolute;
+
+
+  @include breakpoint($breakpoint-pad) {
+    box-shadow: unset;
+    position: absolute;
+    max-width: unset;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+}
+
 
 .dialog__window--new-user {
   @include breakpoint($breakpoint-pad) {
@@ -258,6 +278,30 @@
     font-size: $dialog-title-desktop-font-size;
   }
 }
+
+.dialog__title-sub-container {
+  display: flex;
+}
+
+.dialog__title-item {
+
+  &:not(:first-child) {
+    margin-left: 10px;
+ }
+
+  @include breakpoint($breakpoint-pad) {
+  }
+}
+
+.dialog__title-item--studyprogramme {
+  display: flex;
+
+  @include breakpoint($breakpoint-pad) {
+  }
+}
+
+
+
 
 .dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
