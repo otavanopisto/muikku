@@ -60,12 +60,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
       </object>
       <div className="application-sub-panel__header-main-container">
-        <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</h2>
+        {/* <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</h2> */}
         <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
       </div>
-      <div className="application-sub-panel__header-aside-container">
+      {/* <div className="application-sub-panel__header-aside-container">
         {this.props.guider.currentStudent.basic.studyProgrammeName}
-      </div>
+      </div> */}
     </div>
 
     let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
@@ -103,7 +103,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email) => {
             return <span className="application-sub-panel__single-entry" key={email.address} >
               {email.defaultAddress ? `*` : null} {email.address} ({email.type})
-          </span>
+            </span>
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>}
         </div>
       </div>}
@@ -113,7 +113,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {this.props.guider.currentStudent.phoneNumbers.length ? this.props.guider.currentStudent.phoneNumbers.map((phone) => {
             return <span className="application-sub-panel__single-entry" key={phone.number} >
               {phone.defaultNumber ? `*` : null} {phone.number} ({phone.type})
-          </span>
+            </span>
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}</span>}
         </div>
       </div>}
