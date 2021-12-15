@@ -4,8 +4,8 @@ import { PurchaseType } from "~/reducers/main-function/profile";
 /**
  * errorMessageContent
  * @param i18n
- * @param p
- * @returns combined pretex + text
+ * @param order
+ * @returns combined pretex + content
  */
 export function errorMessageContent(i18n: i18nType, order: PurchaseType, message?: string) {
   // Error message which can come from backend or from localization properties
@@ -28,8 +28,8 @@ export function errorMessageContent(i18n: i18nType, order: PurchaseType, message
 /**
  * errorMessageTitle
  * @param i18n
- * @param p
- * @returns text
+ * @param order
+ * @returns title
  */
 export function errorMessageTitle(i18n: i18nType, order: PurchaseType) {
   // Error message's prefilled title
