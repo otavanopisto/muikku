@@ -7,11 +7,9 @@ import { i18nType } from "~/reducers/base/i18n";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
-
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";
-
 import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import SelectableList from "~/components/general/selectable-list";
 import {
@@ -48,7 +46,6 @@ interface GuiderStudentsProps {
 
 interface GuiderStudentsState {
   isOpen: boolean,
-
 }
 
 class GuiderStudents extends BodyScrollLoader<
@@ -116,53 +113,55 @@ class GuiderStudents extends BodyScrollLoader<
     }
 
     return (
-      <BodyScrollKeeper hidden={false}>
+      <>
         <StudentDialog student={this.props.guider.currentStudent} isOpen={this.props.guider.currentStudent !== null} onClose={this.onStudentClose} />
-        <SelectableList
-          as={ApplicationList}
-          selectModeModifiers="select-mode"
-          extra={
-            this.props.guiderStudentsState === "LOADING_MORE" ? (
-              <div className="application-list__item loader-empty" />
-            ) : null
-          }
-          dataState={this.props.guiderStudentsState}
-        >
-          {this.props.guider.students.map(
-            (student: GuiderStudentType, index: number) => {
-              let isSelected = this.props.guider.selectedStudentsIds.includes(
-                student.id
-              );
-              return {
-                as: ApplicationListItem,
-                className: "user user--guider",
-                onSelect: this.props.addToGuiderSelectedStudents.bind(
-                  null,
-                  student
-                ),
-                onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
-                  null,
-                  student
-                ),
-                onEnter: this.onStudentClick.bind(this, student),
-                isSelected,
-                key: student.id,
-                checkboxId: `user-select-${index}`,
-                checkboxClassName: "user__selector",
-                contents: (checkbox: React.ReactElement<any>) => {
-                  return (
-                    <Student
-                      index={index}
-                      checkbox={checkbox}
-                      student={student}
-                    />
-                  );
-                },
-              };
+        <BodyScrollKeeper hidden={false}>
+          <SelectableList
+            as={ApplicationList}
+            selectModeModifiers="select-mode"
+            extra={
+              this.props.guiderStudentsState === "LOADING_MORE" ? (
+                <div className="application-list__item loader-empty" />
+              ) : null
             }
-          )}
-        </SelectableList>
-      </BodyScrollKeeper>
+            dataState={this.props.guiderStudentsState}
+          >
+            {this.props.guider.students.map(
+              (student: GuiderStudentType, index: number) => {
+                let isSelected = this.props.guider.selectedStudentsIds.includes(
+                  student.id
+                );
+                return {
+                  as: ApplicationListItem,
+                  className: "user user--guider",
+                  onSelect: this.props.addToGuiderSelectedStudents.bind(
+                    null,
+                    student
+                  ),
+                  onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
+                    null,
+                    student
+                  ),
+                  onEnter: this.onStudentClick.bind(this, student),
+                  isSelected,
+                  key: student.id,
+                  checkboxId: `user-select-${index}`,
+                  checkboxClassName: "user__selector",
+                  contents: (checkbox: React.ReactElement<any>) => {
+                    return (
+                      <Student
+                        index={index}
+                        checkbox={checkbox}
+                        student={student}
+                      />
+                    );
+                  },
+                };
+              }
+            )}
+          </SelectableList>
+        </BodyScrollKeeper>
+      </>
     );
   }
 }
