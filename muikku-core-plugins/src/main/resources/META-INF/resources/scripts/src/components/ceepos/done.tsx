@@ -40,7 +40,6 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
     if (this.props.ceepos.purchase) {
       productData = (
         <>
-          <div className="card__title card__title--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.title")}</div>
           <div className="card__text card__text--ceepos">
             <div className="card__text-row">
               <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.title")}</div>
@@ -48,15 +47,18 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
             </div>
             <div className="card__text-row">
               <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.price")}</div>
-              <div className="card__text-highlight card__text-highlight--ceepos">{this.props.ceepos.purchase.product.Price / 100}€</div>
+              <div className="card__text-highlight card__text-highlight--ceepos">{this.props.ceepos.purchase.product.Price / 100} €</div>
             </div>
             <div className="card__text-row">
-              <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.date")}</div>
-              <div>{this.props.i18n.text.get("plugin.ceepos.order.product.created")}: {this.props.i18n.time.format(this.props.ceepos.purchase.created)}</div>
-              {this.props.ceepos.purchase.paid && this.props.ceepos.purchase.paid !== null ?
-                <div>{this.props.i18n.text.get("plugin.ceepos.order.product.paid")}: {this.props.i18n.time.format(this.props.ceepos.purchase.paid)}</div>
-              : null}
+              <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.created")}</div>
+              <div>{this.props.i18n.time.format(this.props.ceepos.purchase.created)}</div>
             </div>
+            {this.props.ceepos.purchase.paid && this.props.ceepos.purchase.paid !== null ?
+              <div className="card__text-row">
+                <div className="card__subtitle">{this.props.i18n.text.get("plugin.ceepos.order.product.paid")}</div>
+                <div>{this.props.i18n.time.format(this.props.ceepos.purchase.paid)}</div>
+              </div>
+            : null}
           </div>
         </>
       )
@@ -77,9 +79,9 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
     if (this.props.status) {
       feedbackData = (
         <div className="card__content card__content--ceepos">
-          {productData}
+          <div className="card__title card__title--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.title")}</div>
           <div className="card__text card__text--ceepos">
-            <div className="card__text-row card__text-row--ceepos">
+            <div className="card__text-row">
               {paymentWasSuccessful ?
                 this.props.i18n.text.get("plugin.ceepos.order.done.successful")
                 : null}
@@ -98,6 +100,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
 
             </div>
           </div>
+          {productData}
           <footer className="card__footer card__footer--ceepos">
             {paymentWasSuccessful || paymentWasCancelled ?
               <Button

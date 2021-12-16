@@ -173,6 +173,13 @@
   }
 }
 
+// Subpanel description'
+.application-sub-panel__description {
+  font-size: 0.8125rem;
+  font-style: italic;
+  margin: 0 0 10px;
+}
+
 // Subpanel body
 .application-sub-panel__body--yo-status-incomplete {
   border-left: 4px solid $color-sub-panel-status-incomplete-border;

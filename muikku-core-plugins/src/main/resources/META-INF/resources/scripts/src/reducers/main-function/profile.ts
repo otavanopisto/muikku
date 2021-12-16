@@ -137,10 +137,9 @@ export default function profile(state: ProfileType = {
       worklist: action.payload
     }}
   } else if (action.type === "SET_PURCHASE_HISTORY") {
-    return {
-      ...state,
-      purchases: action.payload,
-    }
+    return {...state, ...{
+      purchases: action.payload
+    }}
   }
   return state;
 }

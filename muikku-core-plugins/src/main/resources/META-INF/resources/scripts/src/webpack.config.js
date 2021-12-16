@@ -2,6 +2,8 @@ const fs = require('fs');
 const webpack = require("webpack");
 const path = require("path");
 
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 const mode = isDevelopment ? "development" : "production";
 
@@ -13,6 +15,7 @@ const plugins = [
 		chunkFilename: "[name].css",
 		ignoreOrder: true,
 	}),
+  new ForkTsCheckerWebpackPlugin(),
 ];
 const rules = [];
 
@@ -24,6 +27,9 @@ if (mode === "production") {
 rules.push({
 	test: /\.tsx?$/,
 	loader: "ts-loader",
+  options: {
+    transpileOnly: true,
+  }
 });
 rules.push({
 	test: /\.s?css$/,
@@ -41,7 +47,9 @@ rules.push({
 		},
 		{
 			loader: "sass-loader",
-			options: { sourceMap: true },
+			options: {
+        sourceMap: true
+        },
 		},
 	]
 });
@@ -60,7 +68,8 @@ for (let file of filenames) {
 module.exports = {
 	mode,
 	entry: entries,
-	devtool: isDevelopment ? "inline-source-map" : false,
+//	devtool: isDevelopment ? "inline-source-map" : false,
+  devtool: isDevelopment ? "inline-cheap-module-source-map" : false,
 	output: {
 		filename: "[name].js",
 		path: __dirname + "/../dist"

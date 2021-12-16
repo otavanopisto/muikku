@@ -22,6 +22,7 @@ import Dialog from '~/components/general/dialog';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Button from '~/components/general/button';
+import { isThisTypeNode } from 'typescript';
 
 interface CeeposProps {
   i18n: i18nType,
@@ -167,7 +168,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      * @returns
      */
     let orderConfirmDialogContent = (closeDialog: () => any) => <div>
-      <span>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</span>
+      <span><b>{this.state.isConfirmDialogOpenFor && this.state.isConfirmDialogOpenFor.Description}</b></span>
+      <br/><br/>
+      <span>{this.props.i18n.text.get("plugin.guider.orderConfirmDialog.description")}</span>
     </div>
 
     /**
@@ -291,24 +294,28 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     };
 
     return (
-      <div>
+      <>
         {this.props.guider.availablePurchaseProducts && this.props.guider.availablePurchaseProducts.length ?
-          <Dropdown items={this.props.guider.availablePurchaseProducts.map((p) => {
-            return (closeDropdown: () => any) => {
-              return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
-                <span className="link__icon icon-plus"></span>
-                <span>{p.Description}</span>
-              </Link>
-            }
-          })}>
-            <Button
-              icon="cart-plus"
-              buttonModifiers={["create-student-order", "info"]}
-              disabled={canOrderBeCreated ? true : false}
-            >{this.props.i18n.text.get("plugin.guider.createStudentOrder")}</Button>
-          </Dropdown> : <div className="empty">
+          <>
+            <div className="application-sub-panel__description">{this.props.i18n.text.get("plugin.guider.createStudentOrder.description")}</div>
+            <Dropdown items={this.props.guider.availablePurchaseProducts.map((p) => {
+              return (closeDropdown: () => any) => {
+                return <Link className="link link--full link--purchasable-product-dropdown" onClick={this.beginOrderCreationProcess.bind(this, p, closeDropdown)}>
+                  <span className="link__icon icon-plus"></span>
+                  <span>{p.Description}</span>
+                </Link>
+              }
+            })}>
+              <Button
+                icon="cart-plus"
+                buttonModifiers={["create-student-order", "info"]}
+                disabled={canOrderBeCreated ? true : false}
+              >{this.props.i18n.text.get("plugin.guider.createStudentOrder.buttonLabel")}</Button>
+            </Dropdown>
+          </> : <div className="empty">
             <span>{this.props.i18n.text.get("plugin.guider.noPurchasableProducts")}</span>
-          </div>}
+          </div>
+        }
 
         {this.props.guider.currentStudent.purchases && this.props.guider.currentStudent.purchases.length ? <ApplicationList>
           {this.props.guider.currentStudent.purchases.map((p) => (
@@ -383,7 +390,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           content={orderCompleteDialogContent}
           footer={orderCompleteDialogFooter}
         />
-      </div>
+      </>
     );
   }
 }
