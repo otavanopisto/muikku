@@ -1728,13 +1728,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       if (assignmentType != null) {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParentAndAssignmentType(parent, workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
-        workspaceMaterials.removeIf(material -> isHiddenMaterial(material));
       } else {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
       }
     } else {
       workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
-      workspaceMaterials.removeIf(material -> isHiddenMaterial(material));
     }
     
     if (workspaceMaterials.isEmpty()) {
@@ -1772,28 +1770,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.ok(workspaceMaterials).build();
   } 
-
-  private boolean isHiddenMaterial(WorkspaceMaterial workspaceMaterial) {
-    if (workspaceMaterial.getHidden()) {
-      UserEntity userEntity = sessionController.getLoggedUserEntity();
-      if (userEntity != null) {
-        fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-        if (workspaceMaterialReply != null) {
-          WorkspaceMaterialReplyState replyState = workspaceMaterialReply.getState();
-          if (replyState == WorkspaceMaterialReplyState.SUBMITTED ||
-              replyState == WorkspaceMaterialReplyState.PASSED ||
-              replyState == WorkspaceMaterialReplyState.FAILED ||
-              replyState == WorkspaceMaterialReplyState.INCOMPLETE) {
-            return false;
-          }
-        }
-      }
-      
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
@@ -1900,7 +1876,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceCompositeReply> result = new ArrayList<>();
     
     try {
-      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
+      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
       
       for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
