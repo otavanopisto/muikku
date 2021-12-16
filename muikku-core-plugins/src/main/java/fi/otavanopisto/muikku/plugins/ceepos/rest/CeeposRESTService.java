@@ -10,13 +10,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -56,6 +60,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -112,6 +118,10 @@ public class CeeposRESTService {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   /**
    * REQUEST:
@@ -136,7 +146,14 @@ public class CeeposRESTService {
    *   }
    *   'state': 'CREATED',
    *   'paid': null, 
-   *   'created': 2021-10-28T08:57:57+03:00 
+   *   'created': 2021-10-28T08:57:57+03:00,
+   *   'creator': {
+   *     'id': 'PYRAMUS-STAFF-123',
+   *     'userEntityId': 456,
+   *     'firstName': 'Guido',
+   *     'lastName': 'Councelor',
+   *     'email': 'guido.councelor@email.com'
+   *   } 
    * }
    * 
    * DESCRIPTION:
@@ -235,17 +252,25 @@ public class CeeposRESTService {
    * 
    * RESPONSE:
    * 
-   * {'id': 123, // order id
-   *  'studentIdentifier': 'PYRAMUS-STUDENT-123',
-   *  'studentEmail': 'student@email.com',
-   *  'product': {
-   *    'Code': 'PRODUCT0001',
-   *    'Amount': 1, // Irrelevant, always defaults to one
-   *    'Price': 5000, // Product price in cents
-   *    'Description': 'Product description to be shown in UI'
-   *  }
-   *  'state': 'CREATED' | 'ONGOING' | 'PAID' | 'CANCELLED' | 'ERRORED' | 'COMPLETE',
-   *  'created': 2021-10-28T08:57:57+03:00 
+   * {
+   *   'id': 123, // order id
+   *   'studentIdentifier': 'PYRAMUS-STUDENT-123',
+   *   'studentEmail': 'student@email.com',
+   *   'product': {
+   *     'Code': 'PRODUCT0001',
+   *     'Amount': 1, // Irrelevant, always defaults to one
+   *     'Price': 5000, // Product price in cents
+   *     'Description': 'Product description to be shown in UI'
+   *   }
+   *   'state': 'CREATED' | 'ONGOING' | 'PAID' | 'CANCELLED' | 'ERRORED' | 'COMPLETE',
+   *   'created': 2021-10-28T08:57:57+03:00,
+   *   'creator': {
+   *     'id': 'PYRAMUS-STAFF-123',
+   *     'userEntityId': 456,
+   *     'firstName': 'Guido',
+   *     'lastName': 'Councelor',
+   *     'email': 'guido.councelor@email.com'
+   *   }  
    * }
    * 
    * DESCRIPTION:
@@ -304,7 +329,14 @@ public class CeeposRESTService {
    *     'Price': 5000 // Product price in cents
    *   }
    *   'state': 'CREATED' | 'ONGOING' | 'PAID' | 'CANCELLED' | 'ERRORED' | 'COMPLETE',
-   *   'created': 2021-10-28T08:57:57+03:00 
+   *   'created': 2021-10-28T08:57:57+03:00,
+   *   'creator': {
+   *     'id': 'PYRAMUS-STAFF-123',
+   *     'userEntityId': 456,
+   *     'firstName': 'Guido',
+   *     'lastName': 'Councelor',
+   *     'email': 'guido.councelor@email.com'
+   *   }
    * },
    * ...]
    * 
@@ -572,7 +604,14 @@ public class CeeposRESTService {
    *   }
    *   'state': 'COMPLETE',
    *   'paid': 2021-10-28T08:57:57+03:00,
-   *   'created': 2021-10-28T08:57:57+03:00 
+   *   'created': 2021-10-28T08:57:57+03:00,
+   *   'creator': {
+   *     'id': 'PYRAMUS-STAFF-123',
+   *     'userEntityId': 456,
+   *     'firstName': 'Guido',
+   *     'lastName': 'Councelor',
+   *     'email': 'guido.councelor@email.com'
+   *   }
    * }
    * 
    * DESCRIPTION:
@@ -1053,7 +1092,36 @@ public class CeeposRESTService {
     restOrder.setProduct(restProduct);
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityById(order.getCreatorId());
+    restOrder.setCreator(toRestModel(userEntity.defaultSchoolDataIdentifier()));
     return restOrder;
+  }
+  
+  private CeeposOrderCreatorRestModel toRestModel(SchoolDataIdentifier identifier) {
+    SearchProvider elasticSearchProvider = getProvider("elastic-search");
+    SearchResult result = elasticSearchProvider.findUser(identifier, true);
+    if (result.getResults() == null || result.getResults().isEmpty()) {
+      return null;
+    }
+    Map<String, Object> userInfo = result.getResults().get(0);
+    CeeposOrderCreatorRestModel creator = new CeeposOrderCreatorRestModel();
+    creator.setEmail((String) userInfo.get("email"));
+    creator.setFirstName((String) userInfo.get("firstName"));
+    creator.setLastName((String) userInfo.get("lastName"));
+    creator.setId(identifier.toId());
+    creator.setUserEntityId(Long.valueOf(userInfo.get("userEntityId").toString()));
+    return creator;
+  }
+
+  private SearchProvider getProvider(String name) {
+    Iterator<SearchProvider> i = searchProviders.iterator();
+    while (i.hasNext()) {
+      SearchProvider provider = i.next();
+      if (name.equals(provider.getName())) {
+        return provider;
+      }
+    }
+    return null;
   }
 
 }
