@@ -6,7 +6,7 @@ import { MaterialCompositeRepliesType } from "../../../../../../reducers/workspa
 import { EvaluationWorkspace } from "~/@types/evaluation";
 
 /**
- * useDiary
+ * useWorkspace
  * Fetches and return diary data
  * @param userEntityId
  * @returns object containing state properties of loading, apiData and error
@@ -25,7 +25,7 @@ export const useWorkspace = (workspaceId: number) => {
     const fetchData = async () => {
       try {
         evaluationWorkspaces = (await promisify(
-          mApi().workspace.workspaces.read(4),
+          mApi().workspace.workspaces.read(workspaceId),
           "callback"
         )()) as EvaluationWorkspace;
 

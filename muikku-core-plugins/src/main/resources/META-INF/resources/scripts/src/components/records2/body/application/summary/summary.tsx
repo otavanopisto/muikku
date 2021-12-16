@@ -19,6 +19,7 @@ import moment from "../../../../../lib/moment";
 import Avatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { getName } from "~/util/modifiers";
+import Dropdown from "../../../../general/dropdown";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -352,10 +353,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
         <h1>Opintojen yhteenveto</h1>
         <div className="studies-summary__section studies-summary__section--agenda">
           <h2 className="studies-summary__section-header">Päivän agenda</h2>
-          <div
-            className="studies-summary__section-content"
-            style={{ marginBottom: "10px" }}
-          >
+          <div className="studies-summary__section-content">
             <div className="studies-summary__section-content-header">
               <h1>KALENTERI</h1>
             </div>
@@ -414,119 +412,138 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="studies-summary__section-content">
             <div className="studies-summary__section-content-study-values">
-              <div className="basic__info" style={{ marginBottom: "10px" }}>
-                <div className="basic__info-content basic__info-content--completed-studies">
-                  <div className="basic__info-content-header">
-                    Suoritetut opinnot
-                  </div>
-                  <div className="basic__info-indicator-container">
-                    <div
-                      className="basic__info-indicator-item--circle"
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        margin: "5px 30px",
-                      }}
-                    >
-                      <ProgressBarCircle
-                        containerClassName="summary-page__study-file-progresscircle"
-                        options={{
-                          strokeWidth: 10,
-                          duration: 1000,
-                          color: "#ce01bd",
-                          trailColor: "#ebebeb",
-                          easing: "easeInOut",
-                          trailWidth: 10,
-                          svgStyle: { width: "100px", height: "80px" },
-                          text: {
-                            style: null,
-                            className:
-                              "summary-page__study-file-progresscircle-label",
-                            value: "0",
-                          },
-                        }}
-                        progress={1}
-                      />
+              <div
+                style={{
+                  backgroundColor: "antiquewhite",
+                  padding: "5px",
+                  boxShadow: "5px 5px 5px grey",
+                  marginLeft: 0,
+                }}
+                className="hops__form-element-container hops__form-element-container--hops_indicators"
+              >
+                <h3>Suoritetut pakolliset opinnot:</h3>
+                <Dropdown
+                  content={
+                    <div>
+                      <h4>Suoritetut kurssit</h4>
+                      <h5>Pakolliset: 11 </h5>
                     </div>
-
-                    <div className="basic__info-indicator-item--optional">
-                      <div className="basic__info-indicator-item-container">
-                        <div className="basic__info-indicator-item-color"></div>
-                        <div style={{ margin: "0 5px" }}>Valinnaiset</div>
-                      </div>
-                      <div style={{ margin: "5px 0", fontSize: "1rem" }}>
-                        0/7
-                      </div>
-                    </div>
-
-                    <div className="basic__info-indicator-item--mandatory">
-                      <div className="basic__info-indicator-item-container">
-                        <div className="basic__info-indicator-item-color"></div>
-                        <div style={{ margin: "0 5px" }}>Pakolliset</div>
-                      </div>
-                      <div style={{ margin: "5px 0", fontSize: "1rem" }}>
-                        0/39
-                      </div>
-                    </div>
-                  </div>
-                  <div className="basic__info-indicator-function">
-                    <Button
-                      style={{ width: "100%", backgroundColor: "chocolate" }}
-                    >
-                      Opintosuorituksiin
-                    </Button>
-                  </div>
-                </div>
-                <div className="basic__info-content basic__info-content--completed-studies-sum">
-                  <h3>Suoritettuja kursseja/opintoja yhteensä</h3>
-                </div>
-              </div>
-              <div className="basic__info basic__info--study-time">
-                <div className="basic__info-content-header">
-                  Arvioitu opintoaika
-                </div>
-                <div
-                  style={{
-                    height: "50%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    margin: "5px 0px 0px 0px",
-                    flexGrow: 1,
-                    justifyContent: "center",
-                  }}
+                  }
                 >
-                  <ProgressBarCircle
-                    containerClassName="summary-page__study-file-progresscircle"
-                    options={{
-                      strokeWidth: 10,
-                      duration: 1000,
-                      color: "#ce01bd",
-                      trailColor: "#ebebeb",
-                      easing: "easeInOut",
-                      trailWidth: 10,
-                      svgStyle: { width: "100px", height: "80px" },
-                      text: {
-                        style: null,
-                        className:
-                          "summary-page__study-file-progresscircle-label",
-                        value: "0",
-                      },
-                    }}
-                    progress={1}
-                  />
-                </div>
-                <div style={{ display: "flex", height: "40px" }}>
-                  <Button
-                    style={{ width: "100%", backgroundColor: "chocolate" }}
-                  >
-                    HOPSIIN
-                  </Button>
-                </div>
+                  <div tabIndex={0}>
+                    <ProgressBarCircle
+                      containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                      options={{
+                        strokeWidth: 10,
+                        duration: 1000,
+                        color: "#008000",
+                        trailColor: "#808080",
+                        easing: "easeInOut",
+                        trailWidth: 10,
+                        initialAnimate: true,
+                        svgStyle: {
+                          flexBasis: "100px",
+                          flexGrow: "0",
+                          flexShrink: "0",
+                          height: "100px",
+                        },
+                        text: {
+                          style: null,
+                          className:
+                            "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
+                        },
+                      }}
+                      text={`11 / 36`}
+                      progress={0.4}
+                    />
+                  </div>
+                </Dropdown>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "antiquewhite",
+                  padding: "5px",
+                  boxShadow: "5px 5px 5px grey",
+                }}
+                className="hops__form-element-container hops__form-element-container--hops_indicators"
+              >
+                <h3>Suoritetut valinnaisopinnot:</h3>
+                <Dropdown
+                  content={
+                    <div>
+                      <h4>Suoritetut kurssit</h4>
+                      <h5>Valinnaiset: 3</h5>
+                    </div>
+                  }
+                >
+                  <div tabIndex={0}>
+                    <ProgressBarCircle
+                      containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                      options={{
+                        strokeWidth: 10,
+                        duration: 1000,
+                        color: "#008000",
+                        trailColor: "#ADD8E6",
+                        easing: "easeInOut",
+                        trailWidth: 10,
+                        svgStyle: {
+                          flexBasis: "100px",
+                          flexGrow: "0",
+                          flexShrink: "0",
+                          height: "100px",
+                        },
+                        text: {
+                          style: null,
+                          className:
+                            "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
+                        },
+                      }}
+                      text={`3 / 9`}
+                      progress={0.3}
+                    />
+                  </div>
+                </Dropdown>
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: "antiquewhite",
+                  padding: "5px",
+                  boxShadow: "5px 5px 5px grey",
+                  marginRight: 0,
+                }}
+                className="hops__form-element-container hops__form-element-container--hops_indicators"
+              >
+                <h3>Arvioitu opintoaika (kk):</h3>
+
+                <ProgressBarCircle
+                  containerClassName="hops-activity__progressbar-circle hops-course-activity__progressbar-circle"
+                  options={{
+                    strokeWidth: 10,
+                    duration: 1000,
+                    color: "grey",
+                    trailColor: "grey",
+                    easing: "easeInOut",
+                    trailWidth: 10,
+                    svgStyle: {
+                      flexBasis: "100px",
+                      flexGrow: "0",
+                      flexShrink: "0",
+                      height: "100px",
+                    },
+                    text: {
+                      style: null,
+                      className:
+                        "hops-activity__progressbar-label hops-activity__progressbar-label--assignment  hops-activity__progressbar-label--workspace",
+                    },
+                  }}
+                  text={`44kk`}
+                />
               </div>
             </div>
+          </div>
 
+          <div className="studies-summary__section-content">
             <div className="studies-summary__section-content-proggress-timeline">
               <ProgressTimeline />
             </div>
@@ -535,7 +552,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
 
         <div className="studies-summary__divider studies-summary__divider--transparent"></div>
 
-        <div className="studies-summary__section studies-summary__section--courses">
+        {/* <div className="studies-summary__section studies-summary__section--courses">
           <h2 className="studies-summary__section-header">Kursseja sinulle</h2>
           <div className="studies-summary__section-content">
             <div
@@ -550,7 +567,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
           </div>
         </div>
 
-        <div className="studies-summary__divider studies-summary__divider--transparent"></div>
+        <div className="studies-summary__divider studies-summary__divider--transparent"></div> */}
 
         <div className="studies-summary__section studies-summary__section--achivements">
           <h2 className="studies-summary__section-header">Saavutukset</h2>
@@ -602,10 +619,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
    * @returns JSX.Element
    */
   render() {
-    if (
-      this.props.records.location !== "summary" ||
-      this.props.summary.status !== "READY"
-    ) {
+    if (this.props.summary.status !== "READY") {
       return null;
     }
 

@@ -64,14 +64,24 @@
 
   .studies-records__section-content-filters {
     display: flex;
-    padding: 10px 0;
+    padding: 10px 5px;
     border-bottom: 3px solid black;
     flex-direction: column;
+
+    @include breakpoint($breakpoint-mobile-xl) {
+      padding: 10px 0;
+    }
   }
 
   .studies-records__section-content-subject-list {
     display: flex;
     flex-direction: column;
+    margin: 0 5px;
+
+    @include breakpoint($breakpoint-mobile-xl) {
+      flex-wrap: unset;
+      margin: 0;
+    }
   }
 }
 
@@ -200,17 +210,55 @@
 .studies-records__section-content-course-list-item {
   display: flex;
   flex-shrink: 1;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-wrap: unset;
+  }
 }
 
 .studies-records__section-content-course-list-item--header {
   margin-top: 5px;
   margin-bottom: 0;
   padding-left: 5px;
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-wrap: unset;
+    display: flex;
+  }
 }
 
 .studies-records__section-content-course-list-item-cell {
-  width: 100%;
+  width: 20%;
   flex-grow: 1;
+  display: flex;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-wrap: unset;
+    width: 100%;
+  }
+}
+
+.studies-records__section-content-course-list-item-cell--name {
+  width: 100%;
+}
+
+.studies-records__section-content-course-list-item-cell--assignment,
+.studies-records__section-content-course-list-item-cell--date,
+.studies-records__section-content-course-list-item-cell--assessor,
+.studies-records__section-content-course-list-item-cell--grade {
+  width: 50%;
+  flex-grow: 0;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    width: 100%;
+    flex-grow: 1;
+  }
 }
 
 .studies-records__section-content-course-list-item-cell-box {
@@ -220,6 +268,7 @@
   justify-content: center;
   align-items: center;
   padding: 5px 5px;
+  width: 100%;
 }
 
 .studies-records__section-content-course-list-item-cell-box--asessor {
@@ -270,6 +319,16 @@
   text-align: center;
 }
 
+.studies-records__section-content-course-list-item-cell-label--mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: none;
+  }
+}
+
 .studies-records__section-content-course-list-item-cell-label--name {
   visibility: hidden;
 }
@@ -294,4 +353,62 @@
   transform: rotate(90deg);
   transition: transform 0.4s ease-in;
   border-left: 20px solid black;
+}
+
+.records-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.records-assignment-section {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 50%;
+  }
+}
+
+.studies-records__section-content-course-list-item-proggress-container {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.studies-records__section-content-course-list-item-proggress-container--ongoing {
+  flex-direction: column;
+}
+
+.studies-records__section-content-course-list-item-proggress-container-item {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 10px;
+  background-color: #f8f8f8;
+  margin: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+    width: calc(50% - 5px);
+  }
+}
+
+.studies-records__section-content-course-list-item-proggress-container-item--ongoing-proggress {
+  width: 100%;
+}
+
+.studies-records__section-content-course-list-item-proggress-container-item--literal {
+  background-color: antiquewhite;
+  @include breakpoint($breakpoint-pad) {
+    margin-right: 5px;
+  }
+}
+
+.studies-records__section-content-course-list-item-proggress-container-item--proggress,
+.studies-records__section-content-course-list-item-proggress-container-item--verbal {
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 5px;
+  }
 }

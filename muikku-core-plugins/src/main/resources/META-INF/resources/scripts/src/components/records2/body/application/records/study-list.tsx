@@ -21,6 +21,7 @@ import { useCompositeReplies } from "./hooks/use-composite-replies";
 import { useWorkspace } from "./hooks/use-workspace";
 import "~/sass/elements/records.scss";
 import AssignmentMaterial from "./AssignmentMaterial";
+import Link from "~/components/general/link";
 
 /**
  * StudyAssignmentsListProps
@@ -40,6 +41,8 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
   i18n,
   workspaceId,
 }) => {
+  const [materialsOpen, setMaterialsOpen] = React.useState<number[]>([]);
+
   const { loadingAssignments, assignmentsData, serverError } =
     useAssignments(workspaceId);
 
@@ -51,6 +54,42 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
 
   const { loadingWorkspace, workspaceData, serverErrorWorkspace } =
     useWorkspace(workspaceId);
+
+  /**
+   * handlekOpenAllMaterialsClick
+   */
+  const handlekOpenAllMaterialsClick = () => {
+    const listOfMaterialIds = assignmentsData.map((aItem) => aItem.materialId);
+
+    setMaterialsOpen(listOfMaterialIds);
+  };
+
+  /**
+   * handleCloseAllMaterialsClick
+   */
+  const handleCloseAllMaterialsClick = () => {
+    setMaterialsOpen([]);
+  };
+
+  /**
+   * updateMaterialsOpened
+   * @param materialId
+   */
+  const updateMaterialsOpened = (materialId: number) => {
+    let materialIds = [...materialsOpen];
+
+    const indexOfMaterialId = materialIds.findIndex(
+      (item) => item === materialId
+    );
+
+    if (indexOfMaterialId !== -1) {
+      materialIds.splice(indexOfMaterialId, 1);
+      setMaterialsOpen(materialIds);
+    } else {
+      materialIds.push(materialId);
+      setMaterialsOpen(materialIds);
+    }
+  };
 
   let renderContent: JSX.Element | JSX.Element[] = (
     <div className="empty">
@@ -78,25 +117,44 @@ export const StudyAssignmentsList: React.FC<StudyAssignmentsListProps> = ({
         (cItem) => cItem.workspaceMaterialId === aItem.id
       );
 
+      const isOpen = materialsOpen.includes(aItem.materialId);
+
       return (
         <StudyAssignmentsListItem
-          key={i}
+          key={aItem.id}
           i18n={i18n}
           userEntityId={userEntityId}
           workspace={workspaceData}
           assigment={aItem}
+          open={isOpen}
           compositeReply={compositeReply}
+          updateMaterialOpen={updateMaterialsOpened}
         />
       );
     });
   }
 
   return (
-    <div
-      style={{ overflowY: "scroll", maxHeight: "600px", minHeight: "600px" }}
-    >
-      {renderContent}
-    </div>
+    <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2>Tehtävät</h2>
+        <div>
+          <Link onClick={handlekOpenAllMaterialsClick}>Avaa kaikki</Link>
+          <Link onClick={handleCloseAllMaterialsClick}>Sulje kaikki</Link>
+        </div>
+      </div>
+      <div
+        style={{ overflowY: "scroll", maxHeight: "600px", minHeight: "600px" }}
+      >
+        {renderContent}
+      </div>
+    </>
   );
 };
 
@@ -109,6 +167,8 @@ interface StudyAssignmentsListItemProps {
   workspace: WorkspaceType;
   assigment: MaterialAssignmentType;
   compositeReply: MaterialCompositeRepliesType;
+  open: boolean;
+  updateMaterialOpen?: (materialId: number) => void;
 }
 
 /**
@@ -116,7 +176,15 @@ interface StudyAssignmentsListItemProps {
  * @returns JSX.Element
  */
 export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
-  ({ i18n, assigment, workspace, compositeReply, userEntityId }) => {
+  ({
+    i18n,
+    assigment,
+    workspace,
+    compositeReply,
+    userEntityId,
+    open,
+    updateMaterialOpen,
+  }) => {
     const ref = React.useRef<HTMLDivElement>();
 
     const [isLoading, setIsLoading] = React.useState(false);
@@ -126,10 +194,15 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
 
     React.useEffect(() => {
       if (materialNode === undefined && openContent) {
-        console.log("tapahtuu");
         loadMaterialData();
       }
     }, [openContent]);
+
+    React.useEffect(() => {
+      if (openContent !== open) {
+        setOpenContent(open);
+      }
+    }, [open]);
 
     /**
      * loadMaterialData
@@ -179,6 +252,10 @@ export const StudyAssignmentsListItem: React.FC<StudyAssignmentsListItemProps> =
      * toggleOpened
      */
     const handleOpenMaterialContent = () => {
+      if (updateMaterialOpen) {
+        updateMaterialOpen(assigment.materialId);
+      }
+
       setOpenContent(!openContent);
     };
 

@@ -148,9 +148,9 @@ class CompulsoryEducationHopsWizard extends React.Component<
   /**
    * componentDidMount
    */
-  componentDidMount = async () => {
+  async componentDidMount() {
     this.loadHopsData();
-  };
+  }
 
   /**
    * loadHopsData

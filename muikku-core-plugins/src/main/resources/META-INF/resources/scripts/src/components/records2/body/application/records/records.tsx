@@ -8,11 +8,17 @@ import {
 } from "~/reducers/main-function/records";
 import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
-import { RecordsList, RecordsListItem } from "./records-list";
+import {
+  RecordListItemCell,
+  RecordsList,
+  RecordsListItem,
+} from "./records-list";
 import {
   WorkspaceType,
   WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
+import Avatar from "~/components/general/avatar";
+import * as moment from "moment";
 
 /**
  * RecordsBySubject
@@ -74,9 +80,27 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    if (this.props.records.userDataStatus === "READY") {
+      const studyProgram =
+        this.props.records.userData[this.props.records.userData.length - 1].user
+          .studyProgrammeIdentifier;
+
+      this.setState({
+        filters: {
+          ...this.state.filters,
+          studyProgram: studyProgram,
+        },
+      });
+    }
+  }
+
+  /**
    * componentDidUpdate
    */
-  componentDidUpdate = (prevProps: RecordsProps, prevState: RecordsState) => {
+  componentDidUpdate(prevProps: RecordsProps, prevState: RecordsState) {
     if (
       this.props.records.userDataStatus !== prevProps.records.userDataStatus
     ) {
@@ -93,7 +117,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         });
       }
     }
-  };
+  }
 
   /**
    * filterRecordsBySubject
@@ -300,10 +324,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
    * @returns JSX.Element
    */
   render() {
-    if (
-      this.props.records.userDataStatus === "LOADING" ||
-      this.props.records.userDataStatus === "WAIT"
-    ) {
+    if (this.props.records.userDataStatus !== "READY") {
       return null;
     }
 
@@ -416,19 +437,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   studiesListType="ongoing"
                 >
                   <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                    <div
-                      className="studies-records__section-content-course-list-item-cell"
-                      style={{ borderLeft: "10px solid transparent" }}
-                    >
+                    <div className="studies-records__section-content-course-list-item-cell">
                       <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                         Nimi
                       </div>
                     </div>
-                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                      <div className="studies-records__section-content-course-list-item-cell-label">
-                        Arviointipvm.
-                      </div>
-                    </div>
+
                     <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
                         Arvioija / Opettaja
@@ -440,40 +454,88 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         Arvosana
                       </div>
                     </div>
+
                     <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
-                        Tehtävät
+                        Arviointipvm.
+                      </div>
+                    </div>
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Tehtävät/Päiväkirj.
                       </div>
                     </div>
                   </div>
                   {filteredData &&
                     filteredData.arrayOfOnGoingCourses &&
                     filteredData.arrayOfOnGoingCourses.length > 0 &&
-                    filteredData.arrayOfOnGoingCourses.map((cItem, index) => (
-                      <RecordsListItem
-                        key={index}
-                        userEntityId={filteredData.userEntityId}
-                        courseName={cItem.name}
-                        index={index}
-                        asessor="Eka Vekara"
-                        name={cItem.name}
-                        status={this.evaluationStatus(
-                          cItem.studentAssessmentState.state
-                        )}
-                        evaluationDate={cItem.studentAssessmentState.date}
-                        grade={cItem.studentAssessmentState.grade}
-                        description={cItem.studentAssessmentState.text}
-                        workspaceId={cItem.id}
-                        studies={{
-                          excerciseCount:
-                            cItem.studentActivity.exercisesAnswered,
-                          maxExcercise: cItem.studentActivity.exercisesTotal,
-                          assigmentCount:
-                            cItem.studentActivity.evaluablesAnswered,
-                          maxAssigment: cItem.studentActivity.evaluablesTotal,
-                        }}
-                      />
-                    ))}
+                    filteredData.arrayOfOnGoingCourses.map((cItem, index) => {
+                      return (
+                        <RecordsListItem
+                          key={index}
+                          userEntityId={filteredData.userEntityId}
+                          courseName={cItem.name}
+                          name={cItem.name}
+                          status={this.evaluationStatus(
+                            cItem.studentAssessmentState.state
+                          )}
+                          description={cItem.studentAssessmentState.text}
+                          workspaceId={cItem.id}
+                          studies={{
+                            excerciseCount:
+                              cItem.studentActivity.exercisesAnswered,
+                            maxExcercise: cItem.studentActivity.exercisesTotal,
+                            assigmentCount:
+                              cItem.studentActivity.evaluablesAnswered,
+                            maxAssigment: cItem.studentActivity.evaluablesTotal,
+                          }}
+                        >
+                          <RecordListItemCell
+                            header="Arvioija / Opettaja"
+                            headerClassMods={["mobile", "assessor"]}
+                            classNameMods={["mobile", "assessor"]}
+                          >
+                            <div className="asessor-data">
+                              <div className="avatar">
+                                <Avatar
+                                  hasImage={false}
+                                  id={1}
+                                  firstName="Eka"
+                                />
+                              </div>
+                              <div className="asessor">
+                                <div className="name">Eka Vekara</div>
+                                <div className="title">Ohjaaja</div>
+                              </div>
+                            </div>
+                          </RecordListItemCell>
+                          <RecordListItemCell
+                            header="Arvosana"
+                            headerClassMods={["mobile", "grade"]}
+                            classNameMods={["mobile", "grade"]}
+                          >
+                            <div className="studies-records__section-content-course-list-item-cell-box">
+                              {cItem.studentAssessmentState.grade
+                                ? cItem.studentAssessmentState.grade
+                                : "-"}
+                            </div>
+                          </RecordListItemCell>
+                          <RecordListItemCell
+                            header="Arviointipvm."
+                            headerClassMods={["mobile", "date"]}
+                            classNameMods={["mobile", "date"]}
+                          >
+                            <div className="studies-records__section-content-course-list-item-cell-box">
+                              {cItem.studentAssessmentState.date
+                                ? moment(
+                                    cItem.studentAssessmentState.date
+                                  ).format("l")
+                                : "-"}
+                            </div>
+                          </RecordListItemCell>
+                        </RecordsListItem>
+                      );
+                    })}
                 </RecordsList>
               </div>
             ) : null}
@@ -495,19 +557,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   studiesListType="ongoing"
                 >
                   <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                    <div
-                      className="studies-records__section-content-course-list-item-cell"
-                      style={{ borderLeft: "10px solid transparent" }}
-                    >
+                    <div className="studies-records__section-content-course-list-item-cell">
                       <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                         Nimi
                       </div>
                     </div>
-                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                      <div className="studies-records__section-content-course-list-item-cell-label">
-                        Hyväksilukupvm.
-                      </div>
-                    </div>
+
                     <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
                         Arvioija / Opettaja
@@ -519,9 +574,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         Arvosana
                       </div>
                     </div>
+
                     <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                       <div className="studies-records__section-content-course-list-item-cell-label">
-                        Tehtävät
+                        Hyväksilukupvm.
+                      </div>
+                    </div>
+
+                    <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                      <div className="studies-records__section-content-course-list-item-cell-label">
+                        Tehtävät/Päiväkirj.
                       </div>
                     </div>
                   </div>
@@ -538,13 +600,50 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                           key={tItem.identifier}
                           userEntityId={filteredData.userEntityId}
                           courseName={`${tItem.courseName} (${curriculum.name}) `}
-                          index={index}
                           asessor="Eka Vekara"
                           name={`${tItem.courseName} (${curriculum.name}) `}
                           status="TRANSFERED"
-                          evaluationDate={tItem.date}
-                          grade={tItem.grade}
-                        />
+                        >
+                          <RecordListItemCell
+                            header="Arvioija / Opettaja"
+                            headerClassMods={["mobile", "assessor"]}
+                            classNameMods={["mobile", "assessor"]}
+                          >
+                            <div className="asessor-data">
+                              <div className="avatar">
+                                <Avatar
+                                  hasImage={false}
+                                  id={1}
+                                  firstName="Eka"
+                                />
+                              </div>
+                              <div className="asessor">
+                                <div className="name">Eka Vekara</div>
+                                <div className="title">Ohjaaja</div>
+                              </div>
+                            </div>
+                          </RecordListItemCell>
+                          <RecordListItemCell
+                            header="Arvosana"
+                            headerClassMods={["mobile", "grade"]}
+                            classNameMods={["mobile", "grade"]}
+                          >
+                            <div className="studies-records__section-content-course-list-item-cell-box">
+                              {tItem.grade ? tItem.grade : "-"}
+                            </div>
+                          </RecordListItemCell>
+                          <RecordListItemCell
+                            header="Arviointipvm."
+                            headerClassMods={["mobile", "date"]}
+                            classNameMods={["mobile", "date"]}
+                          >
+                            <div className="studies-records__section-content-course-list-item-cell-box">
+                              {tItem.date
+                                ? moment(tItem.date).format("l")
+                                : "-"}
+                            </div>
+                          </RecordListItemCell>
+                        </RecordsListItem>
                       );
                     })}
                 </RecordsList>
@@ -571,19 +670,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         openList={open}
                       >
                         <div className="studies-records__section-content-course-list-item studies-records__section-content-course-list-item--header">
-                          <div
-                            className="studies-records__section-content-course-list-item-cell"
-                            style={{ borderLeft: "10px solid transparent" }}
-                          >
+                          <div className="studies-records__section-content-course-list-item-cell">
                             <div className="studies-records__section-content-course-list-item-cell-label studies-records__section-content-course-list-item-cell-label--name">
                               Nimi
                             </div>
                           </div>
-                          <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
-                            <div className="studies-records__section-content-course-list-item-cell-label">
-                              Arviointipvm.
-                            </div>
-                          </div>
+
                           <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                             <div className="studies-records__section-content-course-list-item-cell-label">
                               Arvioija / Opettaja
@@ -595,9 +687,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               Arvosana
                             </div>
                           </div>
+
                           <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
                             <div className="studies-records__section-content-course-list-item-cell-label">
-                              Tehtävät
+                              Arviointipvm.
+                            </div>
+                          </div>
+
+                          <div className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item--header">
+                            <div className="studies-records__section-content-course-list-item-cell-label">
+                              Tehtävät/Päiväkirj.
                             </div>
                           </div>
                         </div>
@@ -607,14 +706,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                               key={index}
                               userEntityId={filteredData.userEntityId}
                               courseName={cItem.name}
-                              index={index}
                               asessor="Eka Vekara"
                               name={cItem.name}
                               status={this.evaluationStatus(
                                 cItem.studentAssessmentState.state
                               )}
-                              evaluationDate={cItem.studentAssessmentState.date}
-                              grade={cItem.studentAssessmentState.grade}
                               description={cItem.studentAssessmentState.text}
                               workspaceId={cItem.id}
                               studies={{
@@ -627,7 +723,51 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                                 maxAssigment:
                                   cItem.studentActivity.evaluablesTotal,
                               }}
-                            />
+                            >
+                              <RecordListItemCell
+                                header="Arvioija / Opettaja"
+                                headerClassMods={["mobile", "assessor"]}
+                                classNameMods={["mobile", "assessor"]}
+                              >
+                                <div className="asessor-data">
+                                  <div className="avatar">
+                                    <Avatar
+                                      hasImage={false}
+                                      id={1}
+                                      firstName="Eka"
+                                    />
+                                  </div>
+                                  <div className="asessor">
+                                    <div className="name">Eka Vekara</div>
+                                    <div className="title">Ohjaaja</div>
+                                  </div>
+                                </div>
+                              </RecordListItemCell>
+                              <RecordListItemCell
+                                header="Arvosana"
+                                headerClassMods={["mobile", "grade"]}
+                                classNameMods={["mobile", "grade"]}
+                              >
+                                <div className="studies-records__section-content-course-list-item-cell-box">
+                                  {cItem.studentAssessmentState.grade
+                                    ? cItem.studentAssessmentState.grade
+                                    : "-"}
+                                </div>
+                              </RecordListItemCell>
+                              <RecordListItemCell
+                                header="Arviointipvm."
+                                headerClassMods={["mobile", "date"]}
+                                classNameMods={["mobile", "date"]}
+                              >
+                                <div className="studies-records__section-content-course-list-item-cell-box">
+                                  {cItem.studentAssessmentState.date
+                                    ? moment(
+                                        cItem.studentAssessmentState.date
+                                      ).format("l")
+                                    : "-"}
+                                </div>
+                              </RecordListItemCell>
+                            </RecordsListItem>
                           );
                         })}
                       </RecordsList>

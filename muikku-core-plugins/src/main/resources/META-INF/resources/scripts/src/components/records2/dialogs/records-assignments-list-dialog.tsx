@@ -4,8 +4,8 @@ import { connect, Dispatch } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-import "~/sass/elements/wizard.scss";
 import "~/sass/elements/dialog.scss";
+import "~/sass/elements/records.scss";
 import { StateType } from "~/reducers";
 import { StudyAssignmentsList } from "../body/application/records/study-list";
 import { DiaryList } from "../body/application/records/diary-list";
@@ -35,35 +35,15 @@ class RecordsAssigmentsListDialog extends React.Component<
 > {
   render() {
     let content = (closeDialog: () => any) => (
-      <div style={{ display: "flex" }}>
-        <div
-          style={{
-            width: "50%",
-            display: "flex",
-            flexDirection: "column",
-            padding: "0 10px",
-          }}
-        >
-          <div>
-            <h2>Tehtävät</h2>
-          </div>
+      <div className="records-container">
+        <div className="records-assignment-section">
           <StudyAssignmentsList
             i18n={this.props.i18n}
             userEntityId={this.props.userEntityId}
             workspaceId={this.props.workspaceEntityId}
           />
         </div>
-        <div
-          style={{
-            width: "50%",
-            display: "flex",
-            flexDirection: "column",
-            padding: "0 10px",
-          }}
-        >
-          <div>
-            <h2>Päiväkirjamerkinnät</h2>
-          </div>
+        <div className="records-assignment-section">
           <DiaryList
             i18n={this.props.i18n}
             userEntityId={this.props.userEntityId}

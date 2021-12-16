@@ -22,6 +22,10 @@
   flex-flow: column;
 }
 
+.studies-summary__section-header {
+  margin: 0 5px;
+}
+
 .studies-summary__divider {
   position: relative;
   margin: 25px 0;
@@ -52,8 +56,10 @@
 
 .studies-summary__section-content {
   height: inherit;
-  width: 100%;
+  width: calc(100% - 10px);
   display: flex;
+  flex-wrap: wrap;
+  margin: 10px 5px;
 }
 
 .studies-summary__section-content-row-header {
@@ -107,20 +113,21 @@
   }
 
   .studies-summary__section-content-study-values {
-    min-height: 200px;
-    width: 50%;
-    margin-right: 5px;
+    width: 100%;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+
+    @include breakpoint($breakpoint-mobile-xl) {
+      flex-direction: row;
+    }
   }
 
   .studies-summary__section-content-proggress-timeline {
     min-height: 200px;
     max-height: 400px;
-    width: 50%;
-    margin-left: 5px;
+    width: 100%;
     background-color: antiquewhite;
-    padding: 10px 0;
     box-shadow: 5px 5px 5px grey;
   }
 }
@@ -134,13 +141,22 @@
   min-height: 300px;
 
   .studies-summary__section-content-latest-achievements {
-    width: 40%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     border: 2px solid black;
     background-color: aliceblue;
     box-shadow: 5px 5px 5px grey;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    @include breakpoint($breakpoint-mobile-xl) {
+      width: calc(40% - 5px);
+      margin-right: 5px;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
 
     .studies-summary__section-content-row-header {
       display: flex;
@@ -160,11 +176,19 @@
   }
 
   .studies-summary__section-content-achivements {
-    width: 60%;
-    margin-left: 10px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    @include breakpoint($breakpoint-mobile-xl) {
+      width: calc(60% - 5px);
+      margin-left: 5px;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
   }
 
   .studies-summary__section-content-row {
@@ -186,6 +210,7 @@
   display: flex;
   box-shadow: 5px 5px 5px grey;
   flex-grow: 1;
+  margin-bottom: 10px;
 }
 
 .basic__info-content {

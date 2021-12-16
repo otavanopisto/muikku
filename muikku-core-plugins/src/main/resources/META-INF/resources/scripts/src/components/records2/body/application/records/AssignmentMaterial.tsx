@@ -54,6 +54,7 @@ export class AssignmentMaterial extends React.Component<
         material={this.props.material}
         workspace={this.props.workspace}
         compositeReplies={this.props.compositeReply}
+        loadCompositeReplies={!this.props.compositeReply}
         readOnly
         modifiers="evaluation-material-page"
         usedAs={"evaluationTool"}

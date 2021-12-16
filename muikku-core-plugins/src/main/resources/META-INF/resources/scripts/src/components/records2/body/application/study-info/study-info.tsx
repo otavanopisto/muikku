@@ -49,10 +49,7 @@ class StudyInfo extends React.Component<StudyInfoProps, StudyInfoState> {
    * @returns JSX.Element
    */
   render() {
-    if (
-      this.props.records.location !== "info" ||
-      this.props.summary.status !== "READY"
-    ) {
+    if (this.props.summary.status !== "READY") {
       return null;
     }
 

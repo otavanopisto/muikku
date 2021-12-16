@@ -68,8 +68,7 @@ class YO extends React.Component<YOProps, YOState> {
     let i18n = this.props.i18n;
 
     if (
-      this.props.records.location !== "yo" ||
-      this.props.yo.status != "READY" ||
+      this.props.yo.status !== "READY" ||
       this.props.hops.eligibility.upperSecondarySchoolCurriculum == false
     ) {
       return null;

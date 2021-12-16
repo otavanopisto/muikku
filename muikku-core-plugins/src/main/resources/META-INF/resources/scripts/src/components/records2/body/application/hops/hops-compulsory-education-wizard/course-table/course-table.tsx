@@ -132,7 +132,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
         /**
          * Default modifiers is always course
          */
-        modifiers.push("course");
+        modifiers.push("course", "course-matrix");
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
@@ -288,7 +288,7 @@ const CourseTable: React.FC<CourseTableProps> = (props) => {
   });
 
   return (
-    <Table ref={tableRef}>
+    <Table ref={tableRef} modifiers={["course-matrix"]}>
       <Tbody>{renderRows}</Tbody>
     </Table>
   );

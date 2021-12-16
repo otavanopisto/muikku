@@ -116,22 +116,36 @@ export const RecordsList: React.FC<RecordsListProps> = ({
   );
 };
 
+/**
+ * RecordsListItemProps
+ */
 interface RecordsListItemProps extends RecordSubjectCourse {
-  index: number;
   courseName: string;
   userEntityId: number;
 }
 
+/**
+ * RecordsListItem
+ * Creates records list item. The component itself creates
+ * item name cell and functions cells to show possible assignments and diary entries
+ * and content that show something data related to that course.
+ *
+ * Children props will render any other necessary cells that user wants. In desktop view
+ * cell items headers are hidden and desktop view whole list uses one header for all
+ * @returns JSX.Element
+ */
 export const RecordsListItem: React.FC<RecordsListItemProps> = ({
-  index,
   userEntityId,
   courseName,
+  children,
   ...course
 }) => {
   const [height, setHeight] = React.useState<"auto" | 0>(0);
 
   /**
    * statusClassMod
+   * Returns string className depending what is course status
+   * This will affect what border color is showed within item-container
    * @returns string
    */
   const statusClassMod = () => {
@@ -152,6 +166,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
 
   /**
    * handleCourseClickName
+   * Handles course name click "aka" open content
    */
   const handleCourseClickName = () => {
     setHeight(height === "auto" ? 0 : "auto");
@@ -170,23 +185,17 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
 
   /**
    * renderContentByStatus
+   * This coontent depends on course status
+   * which will render different content opened by clicking
+   * course name
    * @returns JSX.Element
    */
   const renderContentByStatus = () => {
     switch (course.status) {
       case "EVALUATED":
         return (
-          <div style={{ display: "flex", width: "100%" }}>
-            <div
-              style={{
-                display: "flex",
-                width: "50%",
-                backgroundColor: "antiquewhite",
-                flexDirection: "column",
-                padding: "10px",
-                marginRight: "5px",
-              }}
-            >
+          <div className="studies-records__section-content-course-list-item-proggress-container">
+            <div className="studies-records__section-content-course-list-item-proggress-container-item studies-records__section-content-course-list-item-proggress-container-item--literal">
               <div style={{ fontWeight: "bold", margin: "5px 0" }}>
                 Sanallinen arviointi
               </div>
@@ -206,16 +215,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                 </div>
               )}
             </div>
-            <div
-              style={{
-                display: "flex",
-                width: "50%",
-                flexDirection: "column",
-                padding: "10px",
-                backgroundColor: "#f8f8f8",
-                marginLeft: "5px",
-              }}
-            >
+            <div className="studies-records__section-content-course-list-item-proggress-container-item studies-records__section-content-course-list-item-proggress-container-item--verbal">
               <div style={{ fontWeight: "bold", margin: "5px 0" }}>
                 Suullinen palaute
               </div>
@@ -226,17 +226,8 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
 
       case "SUPPLEMENTATION":
         return (
-          <div style={{ display: "flex", width: "100%" }}>
-            <div
-              style={{
-                display: "flex",
-                width: "50%",
-                flexDirection: "column",
-                padding: "10px",
-                backgroundColor: "#f8f8f8",
-                marginLeft: "5px",
-              }}
-            >
+          <div className="studies-records__section-content-course-list-item-proggress-container">
+            <div className="studies-records__section-content-course-list-item-proggress-container-item studies-records__section-content-course-list-item-proggress-container-item--literal">
               <div style={{ fontWeight: "bold", margin: "5px 0" }}>
                 Sanallinen arviointi
               </div>
@@ -256,16 +247,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                 </div>
               )}
             </div>
-            <div
-              style={{
-                display: "flex",
-                width: "50%",
-                flexDirection: "column",
-                padding: "10px",
-                backgroundColor: "#f8f8f8",
-                marginLeft: "5px",
-              }}
-            >
+            <div className="studies-records__section-content-course-list-item-proggress-container-item studies-records__section-content-course-list-item-proggress-container-item--proggress">
               <div
                 style={{
                   display: "flex",
@@ -284,8 +266,6 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                       trailWidth: 1,
                       svgStyle: { width: "100%", height: "25px" },
                       text: {
-                        className:
-                          "material-page__audiofield-file-upload-percentage",
                         style: {
                           position: "absolute",
                           color: "white",
@@ -308,7 +288,7 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                     }
                   />
                 </div>
-                <div style={{ margin: "5px 0" }}>
+                <div style={{ margin: "5px 0", marginBottom: "0" }}>
                   <ProgressBarLine
                     containerClassName="summary-page__study-file-progressbar"
                     options={{
@@ -319,8 +299,6 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
                       trailWidth: 1,
                       svgStyle: { width: "100%", height: "25px" },
                       text: {
-                        className:
-                          "material-page__audiofield-file-upload-percentage",
                         style: {
                           position: "absolute",
                           color: "white",
@@ -350,82 +328,74 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
 
       case "ONGOING":
         return (
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ margin: "5px 0" }}>
-              <ProgressBarLine
-                containerClassName="summary-page__study-file-progressbar"
-                options={{
-                  strokeWidth: 1,
-                  duration: 1000,
-                  color: "#FFA500",
-                  trailColor: "#e3e3e3",
-                  trailWidth: 1,
-                  svgStyle: { width: "100%", height: "25px" },
-                  text: {
-                    className:
-                      "material-page__audiofield-file-upload-percentage",
-                    style: {
-                      position: "absolute",
-                      color: "white",
+          <div className="studies-records__section-content-course-list-item-proggress-container">
+            <div className="studies-records__section-content-course-list-item-proggress-container-item studies-records__section-content-course-list-item-proggress-container-item--ongoing-proggress">
+              <div style={{ margin: "5px 0" }}>
+                <ProgressBarLine
+                  containerClassName="summary-page__study-file-progressbar"
+                  options={{
+                    strokeWidth: 1,
+                    duration: 1000,
+                    color: "#FFA500",
+                    trailColor: "#e3e3e3",
+                    trailWidth: 1,
+                    svgStyle: { width: "100%", height: "25px" },
+                    text: {
+                      style: {
+                        position: "absolute",
+                        color: "white",
+                      },
                     },
-                  },
-                }}
-                strokeWidth={1}
-                easing="easeInOut"
-                duration={1000}
-                color="#72d200"
-                trailColor="#f5f5f5"
-                trailWidth={1}
-                svgStyle={{ width: "100%", height: "25px" }}
-                text={`Harjoitustehtävät`}
-                progress={
-                  (course.studies &&
-                    course.studies.excerciseCount /
-                      course.studies.maxExcercise) ||
-                  0
-                }
-              />
-            </div>
-            <div style={{ margin: "5px 0" }}>
-              <ProgressBarLine
-                containerClassName="summary-page__study-file-progressbar"
-                options={{
-                  strokeWidth: 1,
-                  duration: 1000,
-                  color: "#CE01BD",
-                  trailColor: "#e3e3e3",
-                  trailWidth: 1,
-                  svgStyle: { width: "100%", height: "25px" },
-                  text: {
-                    className:
-                      "material-page__audiofield-file-upload-percentage",
-                    style: {
-                      position: "absolute",
-                      color: "white",
+                  }}
+                  strokeWidth={1}
+                  easing="easeInOut"
+                  duration={1000}
+                  color="#72d200"
+                  trailColor="#f5f5f5"
+                  trailWidth={1}
+                  svgStyle={{ width: "100%", height: "25px" }}
+                  text={`Harjoitustehtävät`}
+                  progress={
+                    (course.studies &&
+                      course.studies.excerciseCount /
+                        course.studies.maxExcercise) ||
+                    0
+                  }
+                />
+              </div>
+              <div style={{ margin: "5px 0", marginBottom: "0" }}>
+                <ProgressBarLine
+                  containerClassName="summary-page__study-file-progressbar"
+                  options={{
+                    strokeWidth: 1,
+                    duration: 1000,
+                    color: "#CE01BD",
+                    trailColor: "#e3e3e3",
+                    trailWidth: 1,
+                    svgStyle: { width: "100%", height: "25px" },
+                    text: {
+                      style: {
+                        position: "absolute",
+                        color: "white",
+                      },
                     },
-                  },
-                }}
-                strokeWidth={1}
-                easing="easeInOut"
-                duration={1000}
-                color="#72d200"
-                trailColor="#f5f5f5"
-                trailWidth={1}
-                svgStyle={{ width: "100%", height: "25px" }}
-                text={`Arvioitavat tehtävät`}
-                progress={
-                  (course.studies &&
-                    course.studies.assigmentCount /
-                      course.studies.maxAssigment) ||
-                  0
-                }
-              />
+                  }}
+                  strokeWidth={1}
+                  easing="easeInOut"
+                  duration={1000}
+                  color="#72d200"
+                  trailColor="#f5f5f5"
+                  trailWidth={1}
+                  svgStyle={{ width: "100%", height: "25px" }}
+                  text={`Arvioitavat tehtävät`}
+                  progress={
+                    (course.studies &&
+                      course.studies.assigmentCount /
+                        course.studies.maxAssigment) ||
+                    0
+                  }
+                />
+              </div>
             </div>
           </div>
         );
@@ -440,46 +410,24 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
       className={`studies-records__section-content-course-list-item-container ${statusClassMod()}`}
     >
       <div className="studies-records__section-content-course-list-item">
-        <div
-          className="studies-records__section-content-course-list-item-cell"
-          onClick={handleCourseClickName}
+        <RecordListItemCell classNameMods={["name"]}>
+          <div
+            className="studies-records__section-content-course-list-item-cell studies-records__section-content-course-list-item-cell--name"
+            onClick={handleCourseClickName}
+          >
+            <div className="studies-records__section-content-course-list-item-cell-box studies-records__section-content-course-list-item-cell-box--course-name">
+              {courseName}
+            </div>
+          </div>
+        </RecordListItemCell>
+
+        {children}
+
+        <RecordListItemCell
+          header="Tehtävät/Päiväkirj."
+          headerClassMods={["mobile", "assignment"]}
+          classNameMods={["assignment"]}
         >
-          <div className="studies-records__section-content-course-list-item-cell-box studies-records__section-content-course-list-item-cell-box--course-name">
-            {courseName}
-          </div>
-        </div>
-        <div className="studies-records__section-content-course-list-item-cell">
-          <div className="studies-records__section-content-course-list-item-cell-box">
-            {course.evaluationDate
-              ? moment(course.evaluationDate).format("l")
-              : "-"}
-          </div>
-        </div>
-        <div className="studies-records__section-content-course-list-item-cell">
-          <div className="studies-records__section-content-course-list-item-cell-box studies-records__section-content-course-list-item-cell-box--asessor">
-            {course.asessor ? (
-              <div className="asessor-data">
-                <div className="avatar">
-                  <Avatar hasImage={false} id={1} firstName="Eka" />
-                </div>
-                <div className="asessor">
-                  <div className="name">{course.asessor}</div>
-                  <div className="title">titteli</div>
-                </div>
-              </div>
-            ) : (
-              "-"
-            )}
-          </div>
-        </div>
-
-        <div className="studies-records__section-content-course-list-item-cell">
-          <div className="studies-records__section-content-course-list-item-cell-box">
-            {course.grade ? course.grade : "-"}
-          </div>
-        </div>
-
-        <div className="studies-records__section-content-course-list-item-cell">
           <div className="studies-records__section-content-course-list-item-cell-box">
             {course.status === "TRANSFERED" ? (
               "-"
@@ -500,9 +448,63 @@ export const RecordsListItem: React.FC<RecordsListItemProps> = ({
               </div>
             )}
           </div>
-        </div>
+        </RecordListItemCell>
       </div>
       <AnimateHeight height={height}>{renderContentByStatus()}</AnimateHeight>
+    </div>
+  );
+};
+
+/**
+ * RecordListItemCellProps
+ */
+interface RecordListItemCellProps {
+  header?: string;
+  classNameMods?: string[];
+  headerClassMods?: string[];
+}
+
+/**
+ * RecordListItemCell
+ * @returns JSX.Element
+ */
+export const RecordListItemCell: React.FC<RecordListItemCellProps> = ({
+  header,
+  headerClassMods,
+  classNameMods,
+  children,
+}) => {
+  return (
+    <div
+      className={`studies-records__section-content-course-list-item-cell ${
+        classNameMods
+          ? classNameMods
+              .map(
+                (m) =>
+                  `studies-records__section-content-course-list-item-cell--${m}`
+              )
+              .join(" ")
+          : ""
+      }`}
+    >
+      {header ? (
+        <div
+          className={`studies-records__section-content-course-list-item-cell-label ${
+            headerClassMods
+              ? headerClassMods
+                  .map(
+                    (m) =>
+                      `studies-records__section-content-course-list-item-cell-label--${m}`
+                  )
+                  .join(" ")
+              : ""
+          }`}
+        >
+          {header}
+        </div>
+      ) : null}
+
+      {children}
     </div>
   );
 };

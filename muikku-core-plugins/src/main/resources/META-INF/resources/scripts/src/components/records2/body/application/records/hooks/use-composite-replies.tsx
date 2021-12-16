@@ -36,7 +36,7 @@ export const useCompositeReplies = (
           "callback"
         )()) as MaterialCompositeRepliesType[];
 
-        setCompositeRepliesData(evaluationCompositeReplies);
+        setCompositeRepliesData(evaluationCompositeReplies || []);
         setLoadingCompositeReplies(false);
       } catch (error) {
         setServerErrorCompositeReplies(error);

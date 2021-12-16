@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { i18nType } from "reducers/base/i18n";
 import Records from "./application/records/records";
 import SummaryNew from "./application/summary/summary";
-import Summary from "../../records/body/application/summary";
 import YO from "./application/yo/yo";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
@@ -67,6 +66,55 @@ class StudiesApplication extends React.Component<
   }
 
   /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    /**
+     * If page is refreshed, we need to check hash which
+     * tab was opened and set that at the start to state as
+     * opened tab again
+     */
+    const hash = window.location.hash.split("#")[1];
+
+    switch (hash) {
+      case "summary":
+        this.setState({
+          activeTab: "SUMMARY",
+        });
+
+        break;
+
+      case "records":
+        this.setState({
+          activeTab: "RECORDS",
+        });
+        break;
+      case "hops":
+        this.setState({
+          activeTab: "HOPS",
+        });
+        break;
+      case "yo":
+        this.setState({
+          activeTab: "YO",
+        });
+        break;
+
+      case "info":
+        this.setState({
+          activeTab: "STUDY_INFO",
+        });
+        break;
+
+      default:
+        this.setState({
+          activeTab: "SUMMARY",
+        });
+        break;
+    }
+  }
+
+  /**
    * Returns whether section with given hash should be visible or not
    *
    * @param hash section hash
@@ -93,11 +141,15 @@ class StudiesApplication extends React.Component<
    * @param id
    */
   onTabChange = (
-    id: "RECORDS" | "CURRENT_RECORD" | "HOPS" | "SUMMARY" | "YO",
-    hash?: string
+    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO",
+    hash?: string | TabType
   ) => {
     if (hash) {
-      window.location.hash = hash;
+      if (typeof hash === "string" || hash instanceof String) {
+        window.location.hash = hash as string;
+      } else if (typeof hash === "object" && hash !== null) {
+        window.location.hash = hash.hash;
+      }
     }
 
     this.setState({
@@ -195,6 +247,10 @@ class StudiesApplication extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -205,6 +261,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 }

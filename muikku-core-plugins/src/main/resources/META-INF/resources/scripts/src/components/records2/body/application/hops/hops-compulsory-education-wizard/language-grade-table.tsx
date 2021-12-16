@@ -24,9 +24,9 @@ export const LanguageGradeTable: React.FC<LanguageGradeTableProps> = ({
   children,
 }) => {
   return (
-    <Table>
-      <TableHead>
-        <Tr>
+    <Table modifiers={["language-table"]}>
+      <TableHead modifiers={["language-table"]}>
+        <Tr modifiers={["language-table"]}>
           <Th style={{ maxWidth: "80px", textAlign: "center" }}>Kieli</Th>
           <Th modifiers={["centered"]}>1</Th>
           <Th modifiers={["centered"]}>2</Th>

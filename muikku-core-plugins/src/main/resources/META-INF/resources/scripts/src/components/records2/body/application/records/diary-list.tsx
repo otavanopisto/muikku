@@ -6,6 +6,7 @@ import AnimateHeight from "react-animate-height";
 import { i18nType } from "~/reducers/base/i18n";
 import { useDiary } from "./hooks/use-diary";
 import "~/sass/elements/records.scss";
+import Link from "~/components/general/link";
 
 /**
  * DiaryListProps
@@ -25,10 +26,47 @@ export const DiaryList: React.FC<DiaryListProps> = ({
   userEntityId,
   workspaceEntityId,
 }) => {
+  const [diariesOpen, setDiariesOpen] = React.useState<number[]>([]);
   const { loadingDiary, diaryData, serverError } = useDiary(
     userEntityId,
     workspaceEntityId
   );
+
+  /**
+   * handlekOpenAllMaterialsClick
+   */
+  const handlekOpenAllDiaryEntriesClick = () => {
+    const listOfDiaryIds = diaryData.map((aItem) => aItem.id);
+
+    setDiariesOpen(listOfDiaryIds);
+  };
+
+  /**
+   * handleCloseAllMaterialsClick
+   */
+  const handleCloseAllDiaryEntriesClick = () => {
+    setDiariesOpen([]);
+  };
+
+  /**
+   * updateMaterialsOpened
+   * @param materialId
+   */
+  const updateDiariesOpened = (materialId: number) => {
+    let diariesIds = [...diariesOpen];
+
+    const indexOfMaterialId = diariesIds.findIndex(
+      (item) => item === materialId
+    );
+
+    if (indexOfMaterialId !== -1) {
+      diariesIds.splice(indexOfMaterialId, 1);
+      setDiariesOpen(diariesIds);
+    } else {
+      diariesIds.push(materialId);
+      setDiariesOpen(diariesIds);
+    }
+  };
 
   /**
    * Renders content depending of state of useDiary hook
@@ -51,16 +89,41 @@ export const DiaryList: React.FC<DiaryListProps> = ({
     );
   } else if (diaryData.length > 0) {
     renderContent = diaryData.map((item) => {
-      return <DiaryListItem key={item.id} i18n={i18n} {...item} />;
+      const isOpen = diariesOpen.includes(item.id);
+
+      return (
+        <DiaryListItem
+          key={item.id}
+          i18n={i18n}
+          updateEntryOpen={updateDiariesOpened}
+          open={isOpen}
+          {...item}
+        />
+      );
     });
   }
 
   return (
-    <div
-      style={{ overflowY: "scroll", maxHeight: "600px", minHeight: "600px" }}
-    >
-      {renderContent}
-    </div>
+    <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2>Päiväkirjamerkinnät</h2>
+        <div>
+          <Link onClick={handlekOpenAllDiaryEntriesClick}>Avaa kaikki</Link>
+          <Link onClick={handleCloseAllDiaryEntriesClick}>Sulje kaikki</Link>
+        </div>
+      </div>
+      <div
+        style={{ overflowY: "scroll", maxHeight: "600px", minHeight: "600px" }}
+      >
+        {renderContent}
+      </div>
+    </>
   );
 };
 
@@ -69,6 +132,8 @@ export const DiaryList: React.FC<DiaryListProps> = ({
  */
 interface DiaryListItemProps extends WorkspaceJournalType {
   i18n: i18nType;
+  open: boolean;
+  updateEntryOpen?: (diaryId: number) => void;
 }
 
 /**
@@ -79,20 +144,34 @@ export const DiaryListItem: React.FC<DiaryListItemProps> = ({
   title,
   content,
   created,
+  open,
+  updateEntryOpen,
   id,
 }) => {
-  const [height, setHeight] = React.useState<0 | "auto">(0);
+  const [openContent, setOpenContent] = React.useState(false);
+
+  React.useEffect(() => {
+    if (openContent !== open) {
+      setOpenContent(open);
+    }
+  }, [open]);
 
   /**
    * handleOpenContentClick
    */
   const handleOpenContentClick = () => {
-    setHeight(height === 0 ? "auto" : 0);
+    if (updateEntryOpen) {
+      updateEntryOpen(id);
+    }
+
+    setOpenContent(!openContent);
   };
 
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
   ).format("LT")} `;
+
+  const contentOpen = openContent ? "auto" : 0;
 
   return (
     <div className="evaluation-modal__item">
@@ -114,7 +193,7 @@ export const DiaryListItem: React.FC<DiaryListItemProps> = ({
           </div>
         </div>
       </div>
-      <AnimateHeight duration={500} height={height}>
+      <AnimateHeight duration={500} height={contentOpen}>
         <div
           className="evaluation-modal__item-body rich-text"
           dangerouslySetInnerHTML={createHtmlMarkup(content)}
