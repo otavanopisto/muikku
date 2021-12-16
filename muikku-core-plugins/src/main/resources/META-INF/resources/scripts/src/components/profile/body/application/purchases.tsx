@@ -8,8 +8,9 @@ import { ProfileType, PurchaseType } from "~/reducers/main-function/profile";
 import promisify from "~/util/promisify";
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list'
 import Button from "~/components/general/button";
+import { getName } from "~/util/modifiers";
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
-import { errorMessageContent, errorMessageTitle } from '~/helper-functions/ceepos-error';
+import { getErrorMessageContent, getErrorMessageTitle } from '~/helper-functions/ceepos-error';
 
 interface IPurchasesProps {
   i18n: i18nType,
@@ -102,8 +103,15 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                             {p.state === "ERRORED" ?
                             <span className="application-list__header-primary-actions">
                               <CommunicatorNewMessage extraNamespace="ceepos-error"
-                                initialSubject={errorMessageTitle(this.props.i18n, p)}
-                                initialMessage={errorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description.ERRORED"))}><Button
+                                initialSelectedItems={[{
+                                  type: "staff",
+                                  value: {
+                                    id: p.creator.userEntityId,
+                                    name: getName(p.creator, true)
+                                  }
+                                }]}
+                                initialSubject={getErrorMessageTitle(this.props.i18n, p)}
+                                initialMessage={getErrorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description.ERRORED"))}><Button
                                   icon="envelope"
                                   buttonModifiers={["send-message", "info"]}
                                 >{this.props.i18n.text.get("plugin.profile.purchases.sendMessageButton.label")}

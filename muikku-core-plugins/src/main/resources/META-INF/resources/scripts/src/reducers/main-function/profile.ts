@@ -49,6 +49,14 @@ export interface PurchaseProductType {
   Price: number;
 };
 
+export interface PurchaseCreatorType {
+  id: number;
+  userEntityId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
 export interface PurchaseType {
   created: string;
   paid: string;
@@ -57,6 +65,7 @@ export interface PurchaseType {
   state: PurchaseStateType,
   studentEmail: string;
   studentIdentifier: string;
+  creator: PurchaseCreatorType;
 }
 
 export interface StoredWorklistItem extends WorklistItem {

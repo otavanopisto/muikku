@@ -7,7 +7,7 @@ import { PurchaseType } from "~/reducers/main-function/profile";
  * @param order
  * @returns combined pretex + content
  */
-export function errorMessageContent(i18n: i18nType, order: PurchaseType, message?: string) {
+export function getErrorMessageContent(i18n: i18nType, order: PurchaseType, message?: string) {
   // Error message which can come from backend or from localization properties
   const errorMessage: string = message ? '<div><em>' + message + '</em></div>' : "";
 
@@ -31,8 +31,9 @@ export function errorMessageContent(i18n: i18nType, order: PurchaseType, message
  * @param order
  * @returns title
  */
-export function errorMessageTitle(i18n: i18nType, order: PurchaseType) {
+export function getErrorMessageTitle(i18n: i18nType, order: PurchaseType) {
   // Error message's prefilled title
   const title: string = order.product.Description + ' - ' + order.id;
   return title;
 }
+
