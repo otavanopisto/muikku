@@ -16,11 +16,10 @@ import promisify from '~/util/promisify';
 import { UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, UserGroupType } from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType, GuiderUserGroupListType } from '~/reducers/main-function/guider';
-import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/workspaces';
-import {VOPSDataType} from '~/reducers/main-function/vops';
-import {HOPSDataType} from '~/reducers/main-function/hops';
-import {StateType} from '~/reducers';
-import {colorIntToHex} from '~/util/modifiers';
+import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType } from '~/reducers/workspaces';
+import { HOPSDataType } from '~/reducers/main-function/hops';
+import { StateType } from '~/reducers';
+import { colorIntToHex } from '~/util/modifiers';
 import { PurchaseProductType, PurchaseType } from '~/reducers/main-function/profile';
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<"UPDATE_GUIDER_ACTIVE_FILTERS", GuiderActiveFiltersType>
@@ -28,7 +27,6 @@ export type UPDATE_GUIDER_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_ALL_PROP
 export type UPDATE_GUIDER_STATE = SpecificActionType<"UPDATE_GUIDER_STATE", GuiderStudentsStateType>
 export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<"ADD_TO_GUIDER_SELECTED_STUDENTS", GuiderStudentType>
 export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<"REMOVE_FROM_GUIDER_SELECTED_STUDENTS", GuiderStudentType>
-
 export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT", GuiderStudentUserProfileType>
 export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", { property: string, value: any }>
@@ -45,12 +43,10 @@ export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_U
   studentId: string,
   label: GuiderStudentUserProfileLabelType
 }>
-
 export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LABEL_FROM_USER", {
   studentId: string,
   label: GuiderStudentUserProfileLabelType
 }>
-
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS", GuiderUserLabelListType>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES", GuiderWorkspaceListType>
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS", GuiderUserGroupListType>
@@ -72,6 +68,7 @@ export type UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"UPDA
 }>
 export type DELETE_GUIDER_AVAILABLE_FILTER_LABEL = SpecificActionType<"DELETE_GUIDER_AVAILABLE_FILTER_LABEL", number>
 export type DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS", number>
+export type TOGGLE_ALL_STUDENTS = SpecificActionType<"TOGGLE_ALL_STUDENTS", undefined>
 
 
 export interface LoadStudentsTriggerType {
@@ -164,8 +161,18 @@ export interface DeleteOrderFromCurrentStudentTriggerType {
 export interface CompleteOrderFromCurrentStudentTriggerType {
   (order: PurchaseType): AnyActionType
 }
+export interface ToggleAllStudentsTriggerType {
+  (): AnyActionType
+}
 
-let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
+const toggleAllStudents: ToggleAllStudentsTriggerType = function toggleAllStudents() {
+  return {
+    type: "TOGGLE_ALL_STUDENTS",
+    payload: null
+  }
+}
+
+let addFileToCurrentStudent: AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file) {
   return {
     type: "ADD_FILE_TO_CURRENT_STUDENT",
     payload: file
@@ -656,6 +663,6 @@ export {loadStudents, loadMoreStudents, loadStudent,
   addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
   addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
   updateWorkspaceFilters, createGuiderFilterLabel,
-  updateGuiderFilterLabel, removeGuiderFilterLabel,
+  updateGuiderFilterLabel, removeGuiderFilterLabel, toggleAllStudents,
   updateAvailablePurchaseProducts, updateUserGroupFilters,
   doOrderForCurrentStudent, deleteOrderFromCurrentStudent, completeOrderFromCurrentStudent};

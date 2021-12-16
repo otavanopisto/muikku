@@ -74,6 +74,7 @@ export interface GuiderType {
   currentStudent: GuiderStudentUserProfileType,
   selectedStudents: GuiderStudentListType,
   selectedStudentsIds: Array<string>,
+  toggleAllStudentsActive: boolean,
   currentState: GuiderCurrentStudentStateType
 }
 
@@ -130,6 +131,7 @@ export default function guider(state: GuiderType = {
   toolbarLock: false,
   selectedStudents: [],
   selectedStudentsIds: [],
+  toggleAllStudentsActive: false,
   currentStudent: null
 }, action: ActionType): GuiderType {
   if (action.type === "LOCK_TOOLBAR") {
@@ -346,6 +348,16 @@ export default function guider(state: GuiderType = {
           return purchace;
         })
       },
+    });
+  } else if (action.type === "TOGGLE_ALL_STUDENTS") {
+    return Object.assign({}, state, {
+      toggleAllStudentsActive: !state.toggleAllStudentsActive,
+      selectedStudents: !state.toggleAllStudentsActive
+        ? state.students
+        : [],
+      selectedStudentsIds: !state.toggleAllStudentsActive
+        ? state.students.map((student) => student.id)
+        : [],
     });
   }
   return state;

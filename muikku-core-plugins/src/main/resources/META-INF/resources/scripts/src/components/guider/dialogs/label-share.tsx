@@ -6,18 +6,14 @@ import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { i18nType } from "~/reducers/base/i18n";
 import mApi from "~/lib/mApi";
-
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
-
 import { GuiderUserLabelType } from "~/reducers/main-function/guider";
-
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import {
-  StaffRecepientType,
   UserIndexType,
-  UserType,
+  ContactRecipientType,
 } from "~/reducers/user-index";
 import promisify from "~/util/promisify";
 import {
@@ -26,6 +22,7 @@ import {
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
+import { getName } from '~/util/modifiers';
 
 const KEYCODES = {
   ENTER: 13,
@@ -42,7 +39,7 @@ interface GuiderLabelShareDialogProps {
 }
 
 interface GuiderLabelShareDialogState {
-  selectedItems: StaffRecepientType[];
+  selectedItems: ContactRecipientType[];
 }
 
 class GuiderLabelShareDialog extends React.Component<
@@ -82,20 +79,17 @@ class GuiderLabelShareDialog extends React.Component<
   updateSharesState(props = this.props) {
     this.setState({
       selectedItems: this.sharesResult
-        .map((result: any) => {
+        .map((result: any): ContactRecipientType => {
           return {
             type: "staff",
             value: {
               id: result.user.userIdentifier,
               email: "unknown",
-              firstName: result.user.firstName,
-              lastName: result.user.lastName,
-              properties: {},
-              userEntityId: result.user.userEntityId,
+              name: getName(result.user, true),
             },
           };
         })
-        .filter((r: StaffRecepientType) => r !== null),
+        .filter((r: ContactRecipientType) => r !== null),
     });
   }
 
@@ -120,7 +114,7 @@ class GuiderLabelShareDialog extends React.Component<
    * @param closeDialog
    */
   share(closeDialog: () => any) {
-    this.state.selectedItems.forEach(async (member: StaffRecepientType) => {
+    this.state.selectedItems.forEach(async (member: ContactRecipientType) => {
       let wasAdded = !this.sharesResult.find((share: any) => {
         return share.userIdentifier === member.value.id;
       });
@@ -141,7 +135,7 @@ class GuiderLabelShareDialog extends React.Component<
 
     this.sharesResult.forEach(async (share: any) => {
       let wasRemoved = !this.state.selectedItems.find(
-        (member: StaffRecepientType) => {
+        (member: ContactRecipientType) => {
           return member.value.id === share.userIdentifier;
         }
       );
@@ -163,7 +157,7 @@ class GuiderLabelShareDialog extends React.Component<
    * onSharedMembersChange
    * @param members
    */
-  onSharedMembersChange(members: StaffRecepientType[]) {
+  onSharedMembersChange(members: ContactRecipientType[]) {
     this.setState({ selectedItems: members });
   }
 

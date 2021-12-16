@@ -1160,10 +1160,12 @@ public class PyramusMock {
       public Builder clearLoginMock() throws JsonProcessingException  {
         stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
+//      Fake "Pyramus" login screen
         stubFor(get(urlMatching("/users/authorize.*"))
           .willReturn(aResponse()
-            .withStatus(302)
-            .withHeader("Location", "")));
+              .withHeader("Content-Type", "text/html; charset=utf-8")
+              .withBody("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><title>Sisäänkirjautuminen</title></head><body><div id=loginRequired>Kirjaudu sisään</div></body></html>")
+              .withStatus(200)));
 
         stubFor(post(urlEqualTo("/1/oauth/token"))
           .willReturn(aResponse()
@@ -1177,7 +1179,7 @@ public class PyramusMock {
             .withBody("")
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:" + System.getProperty("it.port.https")))
+        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=http://dev.muikku.fi:" + System.getProperty("it.port.http")))
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
