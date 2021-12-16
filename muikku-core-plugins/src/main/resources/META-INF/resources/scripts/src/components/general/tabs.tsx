@@ -19,7 +19,6 @@ export interface TabType {
 
 interface TabsProps {
   onTabChange: (id: string) => any,
-  allTabs: string[],
   activeTab: string,
   modifier?: string,
   i18n: i18nType,
@@ -38,10 +37,22 @@ interface MobileOnlyTabsProps {
 
 export const Tabs: React.FC<TabsProps> = (props) => {
 
-  const { modifier, renderAllComponents, activeTab, onTabChange, tabs, children, allTabs } = props;
+  const { modifier, renderAllComponents, activeTab, onTabChange, tabs, children } = props;
 
   const a11yConfig = {
     enabled: true,
+  }
+  /**
+   * Creates an array from tab ids from given tabs
+   *
+   * @returns an array of strings
+   */
+  const createAllTabs = (tabs: TabType[]) => {
+    const tabStrings: string[] = []
+    for (let i = 0; i < tabs.length; i++) {
+      tabStrings.push(tabs[i].id);
+    }
+    return tabStrings;
   }
 
   const paginationConfig = {
@@ -49,6 +60,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     modifierClass: "tabs__pagination-container--"
   }
 
+  const allTabs = createAllTabs(tabs);
   const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
   const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
 

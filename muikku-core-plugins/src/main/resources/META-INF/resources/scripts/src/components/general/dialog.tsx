@@ -10,7 +10,6 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Tabs, { TabType } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs"
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
@@ -589,7 +588,6 @@ export class DialogRemoveUsers extends React.Component<
 
     return (
       <Tabs
-        allTabs={createAllTabs(tabs)}
         onTabChange={this.onTabChange}
         renderAllComponents
         activeTab={this.state.activeTab}

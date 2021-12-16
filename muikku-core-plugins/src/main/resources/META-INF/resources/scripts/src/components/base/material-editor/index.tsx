@@ -1,5 +1,4 @@
 import * as React from "react";
-import Portal from "~/components/general/portal";
 import "~/sass/elements/material-editor.scss";
 import { bindActionCreators } from "redux";
 import {
@@ -20,7 +19,7 @@ import {
   WorkspaceType,
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
-import Button, { ButtonPill } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { StatusType } from "~/reducers/base/status";
 import { LocaleListType } from "~/reducers/base/locales";
@@ -32,11 +31,9 @@ import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
 import equals = require("deep-equal");
 import Tabs, { TabType } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs"
 import AddProducer from "~/components/general/add-producer";
 import { LicenseSelector } from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
-import Link from "~/components/general/link";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 
 interface MaterialEditorProps {
@@ -1027,7 +1024,6 @@ class MaterialEditor extends React.Component<
           }`}
       >
         <Tabs
-          allTabs={createAllTabs(materialEditorTabs)}
           modifier="material-editor"
           activeTab={this.state.tab}
           onTabChange={this.onTabChange}

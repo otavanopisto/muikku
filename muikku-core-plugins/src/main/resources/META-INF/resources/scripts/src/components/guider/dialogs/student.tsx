@@ -10,10 +10,9 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { StatusType } from "~/reducers/base/status";
 import { GuiderStudentUserProfileType, GuiderCurrentStudentStateType } from "~/reducers/main-function/guider";
-import Student from "../body/application/students/student";
 import CurrentStudent from '../body/application/current-student';
-import { getName, getUserImageUrl } from "~/util/modifiers";
-import { createAllTabs } from "~/helper-functions/tabs"
+import { getName } from "~/util/modifiers";
+
 /**
  * StudentDialogProps
  */
@@ -90,7 +89,7 @@ class StudentDialog extends React.Component<
     }
 
     const content = () => (
-      <Tabs tabs={tabs} allTabs={createAllTabs(tabs)} activeTab={this.state.activeTab} onTabChange={this.onTabChange}></Tabs>
+      <Tabs tabs={tabs} activeTab={this.state.activeTab} onTabChange={this.onTabChange}></Tabs>
     );
 
     const defaultEmailAddress = this.props.student.emails && " " + this.props.student.emails.find((e) => e.defaultAddress).address;
