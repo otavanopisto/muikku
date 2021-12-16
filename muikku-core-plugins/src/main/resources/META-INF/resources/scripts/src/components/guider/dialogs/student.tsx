@@ -65,20 +65,24 @@ class StudentDialog extends React.Component<
 
     const tabs = [{
       id: "STUDENT",
-      name: this.props.i18n.text.get('TODO: STUDENT'),
+      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.situation'),
       component: () => (<CurrentStudent />)
     },
     {
-      id: "LUDENT",
-      name: this.props.i18n.text.get('TODO: 1'),
-      component: () => (<div >huuuhaa jee kivaa</div>)
+      id: "STUDY_PLAN",
+      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyPlan'),
+      component: () => (<div >Suunnitelma</div>)
     },
-
     {
-      id: "PUDENT",
-      name: this.props.i18n.text.get('TODO: 2'),
-      component: () => (<div >huuuhaa jee kivaa</div>)
-    }
+      id: "GUIDANCE_RELATIONS",
+      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
+      component: () => (<div >Ohjaussuhde</div>)
+    },
+    {
+      id: "STUDY_HISTORY",
+      name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyHistory'),
+      component: () => (<div >Opintohistoria</div>)
+    },
     ];
 
     if (!this.props.student) {
