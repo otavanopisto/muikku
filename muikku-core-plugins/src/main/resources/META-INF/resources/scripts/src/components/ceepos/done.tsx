@@ -82,7 +82,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
         <div className="card__content card__content--ceepos">
           <div className="card__title card__title--ceepos">{this.props.i18n.text.get("plugin.ceepos.order.title")}</div>
           <div className="card__text card__text--ceepos">
-            <div className="card__text-row">
+            <div className="card__text-row card__text-row--ceepos-feedback">
               {paymentWasSuccessful ?
                 this.props.i18n.text.get("plugin.ceepos.order.done.successful")
                 : null}

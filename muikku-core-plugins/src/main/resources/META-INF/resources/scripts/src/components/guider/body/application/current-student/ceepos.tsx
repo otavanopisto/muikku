@@ -247,12 +247,13 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
 
     /**
      * Can new order be created by guidance counselor.
+     * This is handled inverse as <Button> disabled attribute receives true or false directly.
      *
      * canOrderBeCreated
      */
     const canOrderBeCreated = this.props.guider.currentStudent.purchases &&
       this.props.guider.currentStudent.purchases.find((param) =>
-        param["state"] === "CREATED" || param["state"] === "ONGOING" ? true : false
+        param["state"] === "CREATED" || param["state"] === "ONGOING" || param["state"] === "ERRORED" ? true : false
       );
 
     /**
