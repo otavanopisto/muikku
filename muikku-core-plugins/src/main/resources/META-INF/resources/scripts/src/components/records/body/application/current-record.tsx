@@ -117,6 +117,21 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
           <ApplicationList>
             {this.props.records.current.materials.map((material) => {
+            
+              let showHiddenAssignment = false
+
+              if(material.assignment && material.assignment.hidden){
+                const compositeReply = this.props.records.current && this.props.records.current.compositeReplies.find((cItem) => cItem.workspaceMaterialId === material.assignment.id);
+
+                if(compositeReply && compositeReply.submitted !== null){
+                  showHiddenAssignment = true
+                }
+              }
+              
+              if(material.assignment && material.assignment.hidden && !showHiddenAssignment){
+                return null;
+              }
+
               return <Material key={material.id} material={material} i18n={this.props.i18n}
                 workspace={this.props.records.current.workspace}
                 status={this.props.status} />
