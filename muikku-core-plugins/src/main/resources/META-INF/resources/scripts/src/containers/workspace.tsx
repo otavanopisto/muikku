@@ -765,7 +765,7 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,
-          state.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
+          true,
           (result) => {
             if (
               !hasLocationHashAndWillHaveToScrollIntoPosition &&
