@@ -27,42 +27,6 @@
   <script type="text/javascript">
     var CONTEXTPATH = "#{request.contextPath}";
     var MUIKKU_IS_STUDENT = #{sessionBackingBean.isStudent};
-    var PROFILE_DATA = {
-      displayName: '#{sessionBackingBean.displayName}' || null,
-      emails: #{sessionBackingBean.emails},
-      addresses: #{sessionBackingBean.addresses},
-      phoneNumbers: #{sessionBackingBean.phoneNumbers},
-      studyTimeLeftStr: '#{sessionBackingBean.studyTimeLeftStr}'  || null,
-      studyStartDate: '#{sessionBackingBean.studyStartDate}'  || null,
-      studyEndDate: '#{sessionBackingBean.studyEndDate}' || null,
-      studyTimeEnd: '#{sessionBackingBean.studyTimeEnd}' || null
-    }
-    var HOPS_ENABLED = #{sessionBackingBean.getUserPropertyAsBoolean('hops.enabled')};
-
-    var MUIKKU_PERMISSIONS = {
-      FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.canAccessEnvironmentForum},
-      GUIDER_VIEW: #{sessionBackingBean.hasEnvironmentPermission('GUIDER_VIEW')},
-      TRANSCRIPT_OF_RECORDS_VIEW: #{sessionBackingBean.hasEnvironmentPermission('TRANSCRIPT_OF_RECORDS_VIEW')},
-      EVALUATION_VIEW_INDEX: #{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')},
-      ANNOUNCER_TOOL: #{sessionBackingBean.hasEnvironmentPermission('ANNOUNCER_TOOL')},
-      ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
-      ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
-      ANNOUNCER_CAN_PUBLISH_GROUPS: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
-
-      COMMUNICATOR_GROUP_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')},
-      COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING')},
-
-      AREA_PERMISSIONS: #{sessionBackingBean.areaPermissions},
-      FORUM_LOCK_STICKY_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')},
-      FORUM_SHOW_FULL_NAME_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_SHOW_FULL_NAMES')},
-      FORUM_CREATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')},
-      FORUM_UPDATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')},
-      FORUM_DELETEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')},
-      ORGANIZATION_VIEW: #{sessionBackingBean.hasEnvironmentPermission('ORGANIZATION_VIEW')},
-
-      WORKLIST_AVAILABLE: #{sessionBackingBean.canAccessWorklist},
-      CHAT_AVAILABLE: #{sessionBackingBean.canAccessChat}
-    }
   </script>
 
   <!-- jQuery -->
