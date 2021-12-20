@@ -89,8 +89,9 @@
 }
 
 .evaluation-modal__content-wrapper {
+
   @include breakpoint($breakpoint-desktop) {
-    height: calc(100% - 55px);
+    height: 100%;
     overflow-y: scroll;
   }
 }
