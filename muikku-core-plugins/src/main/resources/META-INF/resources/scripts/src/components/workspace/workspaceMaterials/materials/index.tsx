@@ -365,14 +365,14 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           </div>);
         }
 
-        let showAsHidden = false;
+        let showEvenIfHidden = false;
         const compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
         
         if(node.hidden && compositeReplies){
-          showAsHidden = compositeReplies && compositeReplies.submitted !== null
+          showEvenIfHidden = compositeReplies && compositeReplies.submitted !== null
         }
 
-        let material = !this.props.workspace || !this.props.materialReplies || (!isEditable && node.hidden && !showAsHidden) ? null :
+        let material = !this.props.workspace || !this.props.materialReplies || (!isEditable && node.hidden && !showEvenIfHidden) ? null :
           <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
             <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
             {/*TOP OF THE PAGE*/}
@@ -382,7 +382,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               workspace={this.props.workspace}
               compositeReplies={compositeReplies}
               isViewRestricted={materialIsViewRestricted}
-              showAsHidden={showAsHidden}
+              showEvenIfHidden={showEvenIfHidden}
              />
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);

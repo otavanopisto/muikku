@@ -185,13 +185,6 @@ export interface MaterialLoaderProps {
   canSetTitle?: boolean;
 
   /**
-   * This is for so student that have answered assignments
-   * before it was set to hidden, so they can still see and interract
-   * with those one
-   */
-  showAsHidden?:boolean;
-
-  /**
    * When the assignment state has changed, this triggers
    */
   onAssignmentStateModified?: () => any;
@@ -539,7 +532,7 @@ class MaterialLoader extends React.Component<
 
     //Setting this up
     let isHidden =
-      this.props.material.hidden && !this.props.showAsHidden ||
+      this.props.material.hidden ||
       (this.props.folder && this.props.folder.hidden);
 
     const materialPageType = this.props.material.assignmentType

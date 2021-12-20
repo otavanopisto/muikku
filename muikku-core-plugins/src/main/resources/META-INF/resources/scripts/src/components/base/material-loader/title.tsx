@@ -12,6 +12,9 @@ function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
 }
 
 export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
+
+  let hidden = props.material.hidden || props.folder && props.folder.hidden
+
   if (props.isInFrontPage) {
     return null;
   }
@@ -19,6 +22,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
   if (props.invisible) {
     return (<h2 className="material-page__title">
       {props.material.title}
+      {hidden && <span>Piiloitettu</span>}
     </h2>);
   }
 
@@ -28,5 +32,6 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
 
   return (<h2 className={`material-page__title material-page__title--${materialPageType}`}>
     {props.material.title}
+    {hidden && <span>Piiloitettu</span>}
   </h2>);
 }

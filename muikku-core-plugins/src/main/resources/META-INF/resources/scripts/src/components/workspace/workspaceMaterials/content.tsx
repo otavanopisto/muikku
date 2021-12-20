@@ -435,10 +435,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                         subnode.workspaceMaterialId
                     );
 
-                  let showAsHidden = false;
+                  let showEvenIfHidden = false;
         
                   if(subnode.hidden && compositeReplies){
-                    showAsHidden = compositeReplies && compositeReplies.submitted !== null
+                    showEvenIfHidden = compositeReplies && compositeReplies.submitted !== null
                   }
 
                   if (compositeReplies) {
@@ -521,7 +521,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                   );
 
                   if (!isEditable) {
-                    if (subnode.hidden && !showAsHidden) {
+                    if (subnode.hidden && !showEvenIfHidden) {
                       return null;
                     }
                     return pageElement;
