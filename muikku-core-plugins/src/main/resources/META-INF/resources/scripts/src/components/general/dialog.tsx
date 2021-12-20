@@ -115,7 +115,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                   : null
               }
             >
-              {/* Execution container is missing from here */}
               <section
                 role="dialog"
                 aria-labelledby={`dialog-title--${modifiers[0]}`}

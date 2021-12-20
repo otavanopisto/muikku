@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import User from "~/components/general/user";
 import { i18nType } from "~/reducers/base/i18n";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
