@@ -306,9 +306,12 @@
 .dialog__content-row--new-workspace,
 .dialog__content-row--edit-workspace {
   display: flex;
+  flex-wrap: wrap;
 
-  .form-element:not(:first-child) {
-    margin-left: 20px;
+  @include breakpoint($breakpoint-pad) {
+    .form-element:not(:first-child) {
+      margin-left: 20px;
+    }
   }
 }
 
@@ -402,7 +405,7 @@
   }
 
   .dialog__content {
-    height: calc(100vh - 100px);
+    height: 100%;
     padding: 0;
   }
 

@@ -5,7 +5,7 @@ import promisify from '~/util/promisify';
 import { filterHighlight, getName } from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/workspaces';
-import { ContactRecepientType, WorkspaceStaffListType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
+import { WorkspaceStaffListType, ContactRecipientType, UserGroupType, UserType, UserStaffType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
@@ -19,9 +19,9 @@ export interface InputContactsAutofillLoaders {
 export interface InputContactsAutofillProps {
   placeholder?: string,
   label?: string,
-  onChange: (newValue: ContactRecepientType[]) => void,
+  onChange: (newValue: ContactRecipientType[]) => void,
   modifier: string,
-  selectedItems: ContactRecepientType[],
+  selectedItems: ContactRecipientType[],
   hasGroupPermission?: boolean,
   hasUserPermission?: boolean,
   hasWorkspacePermission?: boolean,
@@ -36,8 +36,8 @@ export interface InputContactsAutofillProps {
 }
 
 export interface InputContactsAutofillState {
-  autocompleteSearchItems: ContactRecepientType[],
-  selectedItems: ContactRecepientType[],
+  autocompleteSearchItems: ContactRecipientType[],
+  selectedItems: ContactRecipientType[],
   textInput: string,
   autocompleteOpened: boolean,
   isFocused: boolean
@@ -118,6 +118,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       });
     }
   }
+
   async autocompleteDataFromServer(textInput: string) {
     let searchId = (new Date()).getTime();
     this.activeSearchId = searchId;
@@ -155,11 +156,39 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       ]
     );
 
-    let userItems: ContactRecepientType[] = searchResults[0].map((item: UserType) => ({ type: "user", value: item } as any as UserRecepientType));
-    let userGroupItems: ContactRecepientType[] = searchResults[1].map((item: UserGroupType) => ({ type: "usergroup", value: item } as any as UserGroupRecepientType));
-    let workspaceItems: ContactRecepientType[] = searchResults[2].map((item: WorkspaceType) => ({ type: "workspace", value: item } as any as WorkspaceRecepientType))
-    let staffItems: ContactRecepientType[] = searchResults[3].map((item: UserStaffType) => ({ type: "staff", value: item } as any as StaffRecepientType))
-    let allItems: ContactRecepientType[] = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
+    let userItems: ContactRecipientType[] = searchResults[0].map((item: UserType): ContactRecipientType => ({
+      type: "user",
+      value: {
+        id: item.id,
+        name: getName(item, this.props.showFullNames),
+        email: item.email,
+      }
+    }));
+    let userGroupItems: ContactRecipientType[] = searchResults[1].map((item: UserGroupType): ContactRecipientType => ({
+      type: "usergroup",
+      value: {
+        id: item.id,
+        name: item.name,
+        organization: item.organization,
+      }
+    }));
+    let workspaceItems: ContactRecipientType[] = searchResults[2].map((item: WorkspaceType): ContactRecipientType => ({
+      type: "workspace",
+      value: {
+        id: item.id,
+        name: item.name + (item.nameExtension ? (" (" + item.nameExtension + ")") : "")
+      }
+    }))
+    let staffItems: ContactRecipientType[] = searchResults[3].map((item: UserStaffType): ContactRecipientType => ({
+      type: "staff",
+      value: {
+        id: item.userEntityId,
+        name: getName(item, this.props.showFullNames),
+        email: item.email,
+        identifier: item.id
+      }
+    }))
+    let allItems: ContactRecipientType[] = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
 
     //ensuring that the current search is the last search
     if (this.activeSearchId === searchId) {
@@ -168,7 +197,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       });
     }
   }
-  onDelete(item: ContactRecepientType) {
+  onDelete(item: ContactRecipientType) {
     clearTimeout(this.blurTimeout);
     let nfilteredValue = this.state.selectedItems.filter(selectedItem => selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
     this.setState({
@@ -179,7 +208,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     this.props.onChange(nfilteredValue);
   }
-  onAutocompleteItemClick(item: ContactRecepientType, selected: boolean) {
+  onAutocompleteItemClick(item: ContactRecipientType, selected: boolean) {
     clearTimeout(this.blurTimeout);
     this.setBodyMargin;
     if (!selected) {
@@ -208,9 +237,8 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
         return {
           node: <span className="autocomplete__selected-item">
             <span className="glyph glyph--selected-recipient icon-user" />
-            {
-              getName(item.value, this.props.showFullNames)
-            } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
+            {item.value.name}
+            {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
           </span>,
           value: item
         };
@@ -238,7 +266,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-user"></span>
           {
-            filterHighlight(getName(item.value as UserType, this.props.showFullNames), this.state.textInput)
+            filterHighlight(item.value.name, this.state.textInput)
           } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
         </div>;
       } else if (item.type === "usergroup") {
@@ -250,9 +278,11 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       } else if (item.type === "workspace") {
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-books"></span>
-          {filterHighlight(item.value.name + (item.value.nameExtension ? (" (" + item.value.nameExtension + ")") : ""), this.state.textInput)}
+          {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
+
       }
+
       return {
         value: item,
         selected: !!this.state.selectedItems.find(selectedItem => selectedItem.type === item.type && selectedItem.value.id === item.value.id),

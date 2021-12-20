@@ -6,6 +6,7 @@ import {
   WorkspaceStudentListType,
 } from "~/reducers/user-index";
 import { repairContentNodes } from "~/util/modifiers";
+import { AudioAssessment } from "../../@types/evaluation";
 
 export interface OrganizationCourseTeacherType {
   firstName: string;
@@ -291,7 +292,7 @@ export type WorkspaceListType = Array<WorkspaceType>;
 export type WorkspaceBaseFilterType =
   | "ALL_COURSES"
   | "MY_COURSES"
-  | "AS_TEACHER";
+  | "UNPUBLISHED";
 
 export interface WorkspaceEducationFilterType {
   identifier: string;
@@ -512,6 +513,7 @@ export interface MaterialEvaluationInfo {
   text: string;
   grade: string;
   date: string;
+  audioAssessments: AudioAssessment[];
 }
 
 export type MaterialCompositeRepliesListType =
@@ -531,6 +533,7 @@ export interface MaterialEvaluationType {
   gradingScale: string;
   verbalAssessment: string;
   passed: boolean;
+  audioAssessments: AudioAssessment[];
 }
 
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
@@ -597,7 +600,7 @@ export default function workspaces(
       educationTypes: [],
       curriculums: [],
       organizations: [],
-      baseFilters: ["ALL_COURSES", "MY_COURSES", "AS_TEACHER"],
+      baseFilters: ["ALL_COURSES", "MY_COURSES", "UNPUBLISHED"],
     },
     state: "LOADING",
     activeFilters: {

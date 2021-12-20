@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.167-SNAPSHOT</version>
+    <version>1.1.173-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>3.141.59</selenium-java.version>
+    <selenium-java.version>4.0.0</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
   </properties>
 
@@ -98,14 +98,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.165-SNAPSHOT</version>
+      <version>0.7.167-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.165-SNAPSHOT</version>
+      <version>0.7.167-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -237,7 +237,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <h2.version>1.4.177</h2.version>
+        <h2.version>1.4.197</h2.version>
         <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>

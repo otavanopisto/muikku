@@ -53,13 +53,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         click(".button-pill--editing-master-switch");
         waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
-        waitForPresent(".material-admin-panel--chapter-functions .icon-pencil");
-        click(".material-admin-panel--chapter-functions .icon-pencil");
+        waitAndClickAndConfirm(".material-admin-panel--chapter-functions .icon-pencil", ".material-editor--visible .material-editor__title", 5, 3000);
         waitForVisible(".material-editor--visible .material-editor__title");
         clearElement(".material-editor--visible .material-editor__title");
         sendKeys(".material-editor--visible .material-editor__title", "Test title");
         waitForNotPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
-        waitAndClickAndConfirm(".button-pill__icon.icon-leanpub", ".button-pill--material-editor-publish-page.button-pill--disabled", 5, 500);
+        waitAndClickAndConfirm(".button-pill__icon.icon-leanpub", ".button-pill--material-editor-publish-page.button-pill--disabled", 5, 1000);
         sleep(500);
         waitAndClick(".button-pill--material-page-close-editor");
         waitForNotVisible(".tabs--material-editor");
@@ -481,12 +480,9 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           click(".button-pill--editing-master-switch");
           waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           click(".material-admin-panel--workspace-materials .button-pill--material-management-page");          
-          waitAndClick(".icon-puzzle");
-          sleep(500);
-          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page--assignment .button--muikku-submit-assignment");
+          waitAndClickAndConfirm(".icon-puzzle", ".button-pill--material-editor-assignment", 5, 2000);
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 2000);
+          waitAndClickAndConfirmVisibilityGoesAway(".button-pill--material-page-close-editor .icon-arrow-left", ".button-pill--material-page-close-editor .icon-arrow-left", 5, 3000);
           assertVisible(".material-page--assignment .button--muikku-submit-assignment");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

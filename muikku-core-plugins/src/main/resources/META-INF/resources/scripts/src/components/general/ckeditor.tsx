@@ -63,6 +63,7 @@ const extraConfig = (props: CKEditorProps) => ({
   entities_latin: false,
   entities_greek: false,
   entities: false,
+  format_tags: "p;h3;h4",
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'links', items: [ 'Link' ] },
@@ -72,9 +73,10 @@ const extraConfig = (props: CKEditorProps) => ({
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  resize_enabled: false,
+  resize_enabled: true,
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins: "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
+  removePlugins: 'exportpdf',
 });
 
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {

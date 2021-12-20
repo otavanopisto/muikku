@@ -66,9 +66,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockCompositeGradingScales()
         .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
-        .mockStaffCompositeCourseAssessmentRequests()      
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
         .mockCourseAssessments(courseStudent, admin)
@@ -140,7 +138,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -150,7 +148,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockCompositeGradingScales()
         .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
@@ -162,7 +160,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitUntilAnimationIsDone(".rah-static");
         waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
         assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
-        waitAndClick(".evaluation-modal .material-page--evaluation-material-page.material-page--SUBMITTED .button-pill--evaluate");
+        waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
         waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
         addTextToCKEditor("Test evaluation.");
@@ -172,7 +170,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
         waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
         assertTextIgnoreCase(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED", "Excellent");
-        
+        mockBuilder.addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, true);
         logout();
         mockBuilder.mockLogin(student);
         login();

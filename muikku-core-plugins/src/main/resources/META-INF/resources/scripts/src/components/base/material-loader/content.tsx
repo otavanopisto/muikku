@@ -67,7 +67,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
     </div>
     {
       props.material.type === "binary" ?
-      <BinaryMaterialLoader material={props.material} i18n={props.i18n}/> : null
+      <BinaryMaterialLoader material={props.material} i18n={props.i18n} invisible={props.invisible}/> : null
     }
   </div>);
 }

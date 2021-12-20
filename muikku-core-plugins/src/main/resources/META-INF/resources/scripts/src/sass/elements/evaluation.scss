@@ -3,11 +3,13 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .evaluation-modal {
   background: $color-evaluation-modal-background;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 55px);
+  height: calc(100% - 55px);
   margin: 55px 0 0;
   overflow: auto;
   padding: 0 0 40px;
@@ -87,7 +89,7 @@
 
 .evaluation-modal__content-wrapper {
   @include breakpoint($breakpoint-desktop) {
-    height: calc(100vh - 55px);
+    height: calc(100% - 55px);
     overflow-y: scroll;
   }
 }
@@ -282,21 +284,42 @@
   // scss-lint:enable SelectorFormat
 }
 
-.evaluation-modal__event-literal-assessment p,
-.evaluation-modal__item-literal-assessment-data p {
-  margin: 0 0 10px;
+.evaluation-modal__event-literal-assessment,
+.evaluation-modal__item-literal-assessment-data {
 
-  &:last-child {
-    margin: 0 0 5px;
+  p,
+  ul,
+  table {
+    margin: 10px 0;
+
+    &:first-child {
+      margin: 0 0 10px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+
+  h3,
+  h4 {
+    margin: 15px 0 10px;
+
+    &:first-child {
+      margin: 0 0 10px;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
   }
 }
 
 .evaluation-modal__event-literal-assessment {
   background-color: $color-evaluation-modal-meta-background;
   border-radius: 2px;
-  font-size: 13px;
   margin: 5px 10px 0;
-  padding: 5px 10px;
+  padding: 10px;
 }
 
 .evaluation-modal__event-buttonset {
@@ -437,13 +460,19 @@
   margin: 0 10px;
 }
 
-.evaluation-modal__item-literal-assessment {
+.evaluation-modal__item-literal-assessment,
+.evaluation-modal__item-verbal-assessment {
   background: $color-evaluation-modal-meta-background;
   font-size: 0.825rem;
   padding: 10px;
+
+  .voice-recorder__remove-button {
+    display: none;
+  }
 }
 
-.evaluation-modal__item-literal-assessment-label {
+.evaluation-modal__item-literal-assessment-label,
+.evaluation-modal__item-verbal-assessment-label {
   font-weight: 600;
 }
 
@@ -487,7 +516,7 @@
   display: flex;
   justify-content: space-between;
   min-height: 30px;
-  padding: 10px 0;
+  padding: 12px 0;
   position: relative;
   white-space: nowrap;
   width: 100%;
@@ -544,14 +573,14 @@
 }
 
 .evaluation-modal__evaluate-drawer-content {
-  height: calc(100vh - 55px);
+  height: calc(100% - 55px);
   overflow: auto;
   overscroll-behavior: contain;
   padding: 10px;
 }
 
 .evaluation-modal__evaluate-drawer-row {
-  margin: 10px 0;
+  margin: 10px 0 15px;
 }
 
 .evaluation-modal__evaluate-drawer-row--buttons {

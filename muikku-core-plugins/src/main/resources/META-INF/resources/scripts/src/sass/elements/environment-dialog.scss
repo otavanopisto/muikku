@@ -3,6 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+@import "cke-styles";
+
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   @include text;
@@ -146,7 +148,6 @@
 .env-dialog__row--communicator-signature,
 .env-dialog__row--new-discussion-thread-states {
   align-items: center;
-  background-color: $color-default;
   display: flex;
   padding: 10px 0;
 }
@@ -369,4 +370,23 @@
 .text-field--forgotpassword-email {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
+}
+
+
+// Reply Message "Non-dialog"
+.env-dialog--reply-message {
+  opacity: 1;
+  position: relative;
+  z-index: unset;
+
+  .env-dialog__wrapper {
+    background: $color-application-alt-dialog-background-color;
+    border: 0;
+    box-shadow: none;
+    position: relative;
+  }
+
+  .env-dialog__content {
+    max-width: 100%;
+  }
 }
