@@ -498,12 +498,6 @@ class EvaluationAssessmentAssignment extends React.Component<
   render() {
     const { compositeReply, showAsHidden } = this.props;
     const materialTypeClass = this.materialTypeClass();
-    /* const compositeReply =
-      this.props.evaluations.evaluationCompositeReplies &&
-      this.props.evaluations.evaluationCompositeReplies.data &&
-      this.props.evaluations.evaluationCompositeReplies.data.find(
-        (cReply) => cReply.workspaceMaterialId === this.props.assigment.id
-      ); */
 
     const recordings =
       compositeReply &&
