@@ -100,7 +100,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                               </Button>
                             </span> : null}
 
-                            {p.state === "ERRORED" ?
+                            {p.state === "ERRORED" || p.state === "CANCELLED" || p.state === "PAID" ?
                             <span className="application-list__header-primary-actions">
                               <CommunicatorNewMessage extraNamespace="ceepos-error"
                                 initialSelectedItems={[{
@@ -110,8 +110,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                                     name: getName(p.creator, true)
                                   }
                                 }]}
-                                initialSubject={getErrorMessageTitle(this.props.i18n, p)}
-                                initialMessage={getErrorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description.ERRORED"))}><Button
+                                initialSubject={getErrorMessageTitle(p)}
+                                initialMessage={getErrorMessageContent(this.props.i18n, p, this.props.i18n.text.get("plugin.profile.purchases.description." + p.state))}><Button
                                   icon="envelope"
                                   buttonModifiers={["send-message", "info"]}
                                 >{this.props.i18n.text.get("plugin.profile.purchases.sendMessageButton.label")}
@@ -126,48 +126,48 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                   );
                 })}
               </ApplicationList>
-            : <div className="empty">
-            <span>{this.props.i18n.text.get("plugin.profile.purchases.activeOrder.empty")}</span>
-          </div>}
+              : <div className="empty">
+              <span>{this.props.i18n.text.get("plugin.profile.purchases.activeOrder.empty")}</span>
+            </div>}
 
+          </div>
+        </div>
+
+        <div className="application-sub-panel">
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.purchases.orderHistory')}</h3>
+          {completedPurchases.length ?
+            <div className="application-sub-panel__body">
+              <ApplicationList>
+                {completedPurchases.map((p) => {
+                  return (
+                    <ApplicationListItem modifiers="product" key={p.id}>
+                      <ApplicationListItemHeader modifiers="product">
+                        <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
+                        <span className="application-list__header-primary application-list__header-primary--product">
+                          <span className="application-list__header-primary-title"><b>{p.product.Description}</b></span>
+                          <span className="application-list__header-primary-description">
+                            {this.props.i18n.text.get("plugin.guider.purchases.description." + p.state)}
+                          </span>
+                          <span className="application-list__header-primary-meta">
+                            <span>{this.props.i18n.text.get("plugin.guider.purchases.orderId")}: {p.id}</span>
+                            <span>{this.props.i18n.text.get("plugin.guider.purchases.date.created")}: {this.props.i18n.time.format(p.created)}</span>
+                            {p.paid ?
+                              <span>{this.props.i18n.text.get("plugin.guider.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
+                              : null}
+                          </span>
+                        </span>
+                        <span className="application-list__header-secondary">
+
+                        </span>
+                      </ApplicationListItemHeader>
+                    </ApplicationListItem>
+                  );
+                })}
+              </ApplicationList>
             </div>
-          </div>
-
-          <div className="application-sub-panel">
-            <h3 className="application-sub-panel__header">{this.props.i18n.text.get('plugin.profile.purchases.orderHistory')}</h3>
-            {completedPurchases.length ?
-              <div className="application-sub-panel__body">
-                <ApplicationList>
-                  {completedPurchases.map((p) => {
-                    return (
-                      <ApplicationListItem modifiers="product" key={p.id}>
-                        <ApplicationListItemHeader modifiers="product">
-                          <span className={`glyph--product-state-indicator state-${p.state} icon-shopping-cart`}></span>
-                          <span className="application-list__header-primary application-list__header-primary--product">
-                            <span className="application-list__header-primary-title"><b>{p.product.Description}</b></span>
-                            <span className="application-list__header-primary-description">
-                              {this.props.i18n.text.get("plugin.guider.purchases.description." + p.state)}
-                            </span>
-                            <span className="application-list__header-primary-meta">
-                              <span>{this.props.i18n.text.get("plugin.guider.purchases.orderId")}: {p.id}</span>
-                              <span>{this.props.i18n.text.get("plugin.guider.purchases.date.created")}: {this.props.i18n.time.format(p.created)}</span>
-                              {p.paid ?
-                                <span>{this.props.i18n.text.get("plugin.guider.purchases.date.paid")}: {this.props.i18n.time.format(p.paid)}</span>
-                                : null}
-                            </span>
-                          </span>
-                          <span className="application-list__header-secondary">
-
-                          </span>
-                        </ApplicationListItemHeader>
-                      </ApplicationListItem>
-                    );
-                  })}
-                </ApplicationList>
-              </div>
-            : <div className="empty"><span>{this.props.i18n.text.get('plugin.profile.purchases.orderHistory.empty')}</span></div>}
-          </div>
-        </section>
+          : <div className="empty"><span>{this.props.i18n.text.get('plugin.profile.purchases.orderHistory.empty')}</span></div>}
+        </div>
+      </section>
     );
   }
 }
