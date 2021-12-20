@@ -61,26 +61,25 @@ class StudentDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-
     const tabs = [{
       id: "STUDENT",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.situation'),
-      component: () => (<CurrentStudent />)
+      component: <CurrentStudent />
     },
     {
       id: "STUDY_PLAN",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyPlan'),
-      component: () => (<div >Suunnitelma</div>)
+      component: <div >Suunnitelma</div>
     },
     {
       id: "GUIDANCE_RELATIONS",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
-      component: () => (<div >Ohjaussuhde</div>)
+      component: <div >Ohjaussuhde</div>
     },
     {
       id: "STUDY_HISTORY",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyHistory'),
-      component: () => (<div >Opintohistoria</div>)
+      component: <div >Opintohistoria</div>
     },
     ];
 
@@ -97,7 +96,7 @@ class StudentDialog extends React.Component<
       <DialogTitleItem modifier="user">
         {getName(this.props.student.basic, true)}
       </DialogTitleItem>
-      <DialogTitleItem modifier="studyproggamme">{"(" + this.props.student.basic.studyProgrammeName + ")"}</DialogTitleItem>
+      <DialogTitleItem modifier="studyproggamme">{"(" + this.props.student && this.props.student.basic.studyProgrammeName + ")"}</DialogTitleItem>
     </DialogTitleContainer>;
 
 

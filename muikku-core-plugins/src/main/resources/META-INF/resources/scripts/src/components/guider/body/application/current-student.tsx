@@ -60,12 +60,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
       </object>
       <div className="application-sub-panel__header-main-container">
-        {/* <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</h2> */}
+        <h2 className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</h2>
         <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
       </div>
-      {/* <div className="application-sub-panel__header-aside-container">
+      <div className="application-sub-panel__header-aside-container">
         {this.props.guider.currentStudent.basic.studyProgrammeName}
-      </div> */}
+      </div>
     </div>
 
     let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
@@ -183,40 +183,40 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess />
     </div>
 
-    return <div className="react-required-container">
+    return <>
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
         {this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.length ? <div className="application-sub-panel__body application-sub-panel__body--labels labels">
           {studentLabels}
         </div> : null}
       </div>
-      <div className="application-sub-panel">
+      <div className="application-sub-panel application-sub-panel--guider-data-primary">
         {studentBasicInfo}
       </div>
-      {studentHops ? <div className="application-sub-panel">
+      {/* {studentHops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
         {studentHops}
-      </div> : null}
-      {studentVops ? <div className="application-sub-panel">
+      </div> : null} */}
+      {/* {studentVops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.vops")}</h3>
         {studentVops}
-      </div> : null}
-      <div className="application-sub-panel">
+      </div> : null} */}
+      <div className="application-sub-panel  application-sub-panel--guider-data-secondary">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</h3>
         <div className="application-sub-panel__body">
           {studentWorkspaces}
         </div>
       </div>
-      <div className="application-sub-panel">
+      {/* <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</h3>
         {files}
-      </div>
-      <div className="application-sub-panel">
+      </div> */}
+      {/* <div className="application-sub-panel">
         <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
         {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces ? <MainChart workspaces={this.props.guider.currentStudent.workspaces} activityLogs={this.props.guider.currentStudent.activityLogs} /> : null}
-      </div>
+      </div> */}
       {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty" /> : null}
-    </div>
+    </>
   }
 }
 

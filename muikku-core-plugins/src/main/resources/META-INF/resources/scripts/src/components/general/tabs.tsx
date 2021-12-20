@@ -14,7 +14,7 @@ export interface TabType {
   name: string,
   type?: string,
   mobileAction?: React.ReactElement<any> | Array<React.ReactElement<any>>,
-  component: () => React.ReactElement<any>
+  component: React.ReactElement<any>
 }
 
 interface TabsProps {
@@ -75,7 +75,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     <div className="tabs__tab-data-container">
       {tabs.filter((t: TabType) => renderAllComponents || t.id === activeTab)
         .map((t: TabType) => <div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === activeTab ? "active" : ""}`}>
-          {t.component()}
+          {t.component}
         </div>)}
     </div>
     <Swiper
@@ -92,7 +92,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
             <div>{t.name}</div>
             {t.mobileAction ? t.mobileAction : <div className="tabs__mobile-tab-spacer" />}
           </div>
-          {t.component()}
+          {t.component}
         </SwiperSlide>)}
     </Swiper>
   </div>
@@ -116,7 +116,7 @@ export class MobileOnlyTabs extends React.Component<MobileOnlyTabsProps, {}>{
       <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
         {this.props.tabs.filter(t => this.props.renderAllComponents || t.id === this.props.activeTab)
           .map(t => <div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
-            {t.component()}
+            {t.component}
           </div>)}
       </div>
     </div>

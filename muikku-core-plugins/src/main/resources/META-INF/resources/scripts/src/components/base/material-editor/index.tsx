@@ -863,7 +863,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.content"
         ),
-        component: () => (
+        component:
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -899,8 +899,7 @@ class MaterialEditor extends React.Component<
                 </CKEditor>
               </div>
             ) : null}
-          </div>
-        ),
+          </div>,
       },
     ];
 
@@ -915,7 +914,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.metadata"
         ),
-        component: () => (
+        component:
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -963,8 +962,7 @@ class MaterialEditor extends React.Component<
                 </div>
               </div>
             ) : null}
-          </div>
-        ),
+          </div>,
       });
     }
 
@@ -976,7 +974,7 @@ class MaterialEditor extends React.Component<
         name: this.props.i18n.text.get(
           "plugin.workspace.materialsManagement.editorView.tabs.label.attachments"
         ),
-        component: () => (
+        component:
           <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
@@ -1013,8 +1011,7 @@ class MaterialEditor extends React.Component<
               displayNotificationOnSuccess
               uploadingTextProcesser={this.handleUploadingTextProcesser}
             />
-          </div>
-        ),
+          </div>,
       });
     }
 

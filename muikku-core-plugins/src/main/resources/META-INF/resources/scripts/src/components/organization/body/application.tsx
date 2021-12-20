@@ -119,25 +119,25 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
         {
           id: "SUMMARY",
           name: this.props.i18n.text.get('plugin.organization.tab.title.summary'),
-          component: () => (<ApplicationPanelBody modifier="tabs" children={<Summary />} />)
+          component: <ApplicationPanelBody modifier="tabs" children={<Summary />} />
         },
         {
           id: "USERS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
           mobileAction: usersPrimaryActionMobile,
-          component: () => (<ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />} />)
+          component: <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />} />
         },
         {
           id: "USERSGROUPS",
           name: this.props.i18n.text.get('plugin.organization.tab.title.userGroups'),
           mobileAction: userGroupsPrimaryActionMobile,
-          component: () => (<ApplicationPanelBody primaryOption={userGroupsPrimaryAction} toolbar={userGroupsToolbar} modifier="tabs" children={<UserGroups />} />)
+          component: <ApplicationPanelBody primaryOption={userGroupsPrimaryAction} toolbar={userGroupsToolbar} modifier="tabs" children={<UserGroups />} />
         },
         {
           id: "COURSES",
           name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
           mobileAction: coursesPrimaryActionMobile,
-          component: () => (<ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />} />)
+          component: <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />} />
         },
 
       ]} />
