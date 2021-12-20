@@ -60,7 +60,7 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                       name: getName(this.props.ceepos.purchase.creator, true)
                     }
                   }]}
-                  initialSubject={getErrorMessageTitle(this.props.i18n, this.props.ceepos.purchase)}
+                  initialSubject={getErrorMessageTitle(this.props.ceepos.purchase)}
                   initialMessage={getErrorMessageContent(this.props.i18n, this.props.ceepos.purchase, this.props.ceepos.payStatusMessage)}><Button
                     icon="envelope"
                     buttonModifiers={["send-message", "info"]}
