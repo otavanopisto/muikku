@@ -542,7 +542,10 @@ class EvaluationAssessmentAssignment extends React.Component<
       evaluationTitleClassMod = "active-dialog";
     }
 
-    const materialPageType = this.props.assigment.assignmentType === "EVALUATED" ? "assignment": "excercise";
+    const materialPageType =
+      this.props.assigment.assignmentType === "EVALUATED"
+        ? "assignment"
+        : "excercise";
 
     return (
       <div className={`evaluation-modal__item `}>
@@ -563,10 +566,11 @@ class EvaluationAssessmentAssignment extends React.Component<
           >
             {this.props.assigment.title}
 
-
             {showAsHidden && (
               <div className="evaluation-modal__item-hidden">
-                {this.props.i18n.text.get("plugin.evaluation.evaluationModal." + materialPageType + "HiddenButAnswered")}
+                {this.props.i18n.text.get(
+                  `plugin.evaluation.evaluationModal.${materialPageType}HiddenButAnswered`
+                )}
               </div>
             )}
 
