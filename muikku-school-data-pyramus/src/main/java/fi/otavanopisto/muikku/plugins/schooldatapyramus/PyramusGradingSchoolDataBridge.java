@@ -381,6 +381,11 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
             courseId == null ? "" : courseId,
             includeTransferCredits), CourseActivity[].class);
     
+    if (response == null) {
+      logger.warning("Null response");
+      return Collections.emptyList();
+    }
+    
     // Convert Pyramus CourseActivity to Muikku WorkspaceActivity
     
     List<String> curriculumIdentifiers = new ArrayList<>();
