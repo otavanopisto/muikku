@@ -88,14 +88,17 @@
   padding: 0;
   display: flex;
   justify-content: center;
-  margin: 10px 0.1%;
-  box-shadow: 3px 3px 3px 3px grey;
+  margin: 10px 0;
 }
 
 .carousel-itemV2--courses {
   display: flex;
   flex-flow: column;
   background-color: white;
+  flex-grow: 1;
+  width: calc(100% - 20px);
+  margin: 5px 10px;
+  box-shadow: 3px 3px 3px 3px grey;
 }
 
 .carousel-itemV2__image-section--courses {

@@ -12,6 +12,8 @@ import Button from "~/components/general/button";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { useCourseCarousel } from "./hooks/use-course-carousel";
+import Link from "~/components/general/link";
+import { Suggestion } from "~/@types/shared";
 
 const responsive = {
   desktop: {
@@ -81,11 +83,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 /**
  * Course
  */
-export interface Course {
-  id: number;
-  subject: string;
-  courseNumber: number;
-  name: string;
+export interface Course extends Suggestion {
   description?: string;
   imageSrc?: string;
 }
@@ -109,7 +107,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
     <div className="carousel-itemV2--courses">
       <div className="carousel-itemV2__image-section--courses">
         <img
-          src={course.imageSrc}
+          src="https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640"
           alt="no-image"
           className="image-section__img"
         />
@@ -125,13 +123,22 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         <span style={{ margin: "5px" }}>
           {course.subject} - {course.courseNumber}
         </span>
-        <h3 style={{ margin: "5px" }}>{course.name}</h3>
+        <h3
+          style={{
+            margin: "5px",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {course.name}
+        </h3>
         <p style={{ margin: "5px" }}>
           {course.description ? course.description : "-"}
         </p>
       </div>
       <div style={{ margin: "5px 0" }}>
-        <Button>Kurssille</Button>{" "}
+        <Link href={`/workspace/${course.urlName}`}>Kurssille</Link>
       </div>
     </div>
   );

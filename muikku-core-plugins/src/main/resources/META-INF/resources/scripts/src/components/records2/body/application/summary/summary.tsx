@@ -552,12 +552,17 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
 
         <div className="studies-summary__divider studies-summary__divider--transparent"></div>
 
-        {/* <div className="studies-summary__section studies-summary__section--courses">
+        <div className="studies-summary__section studies-summary__section--courses">
           <h2 className="studies-summary__section-header">Kursseja sinulle</h2>
           <div className="studies-summary__section-content">
             <div
               className="studies-summary__section-content-courses"
-              style={{ height: "auto", width: "100%", display: "content" }}
+              style={{
+                height: "auto",
+                width: "100%",
+                display: "content",
+                backgroundColor: "#dfdede",
+              }}
             >
               <CourseCarousel
                 studentId={(window as any).MUIKKU_LOGGED_USER}
@@ -567,7 +572,7 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
           </div>
         </div>
 
-        <div className="studies-summary__divider studies-summary__divider--transparent"></div> */}
+        <div className="studies-summary__divider studies-summary__divider--transparent"></div>
 
         <div className="studies-summary__section studies-summary__section--achivements">
           <h2 className="studies-summary__section-header">Saavutukset</h2>

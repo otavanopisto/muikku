@@ -429,6 +429,7 @@ export interface Suggestion {
   name: string;
   subject: string;
   courseNumber: number;
+  urlName: string;
 }
 
 export interface StudentCourseChoice {

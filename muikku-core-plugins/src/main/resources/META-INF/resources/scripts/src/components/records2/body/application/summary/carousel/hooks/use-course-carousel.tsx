@@ -46,18 +46,6 @@ export const useCourseCarousel = (
     }
   );
 
-  /**
-   * State ref to containging studentActivity state data
-   * when ever student activity state changes, so does this ref
-   * This is because when websocket handler catches, it always have latest
-   * state changes to use
-   */
-  const ref = React.useRef(courseCarousel);
-
-  React.useEffect(() => {
-    ref.current = courseCarousel;
-  }, [courseCarousel]);
-
   React.useEffect(() => {
     /**
      * loadStudentActivityListData
@@ -137,7 +125,7 @@ export const useCourseCarousel = (
               /**
                * Now fetching all suggested data with course list data
                */
-              Promise.all([
+              await Promise.all(
                 courses.map(async (cItem) => {
                   const suggestionListForSubject = (await promisify(
                     mApi().hops.listWorkspaceSuggestions.read({
@@ -150,15 +138,14 @@ export const useCourseCarousel = (
                   allSuggestions = allSuggestions.concat(
                     suggestionListForSubject
                   );
-                }),
-              ]);
+                })
+              );
             } catch (err) {
               displayNotification(`Hups errori ${err}`, "error");
             }
 
             return allSuggestions;
           })(),
-          sleepPromise,
         ]);
 
         setCourseCarousel({
