@@ -91,7 +91,6 @@ class StudentDialog extends React.Component<
       <Tabs tabs={tabs} activeTab={this.state.activeTab} onTabChange={this.onTabChange}></Tabs>
     );
 
-    const defaultEmailAddress = this.props.student.emails && " " + this.props.student.emails.find((e) => e.defaultAddress).address;
     const studyProgrammeName = this.props.student.basic && this.props.student.basic.studyProgrammeName;
     const dialogTitle = <DialogTitleContainer>
       <DialogTitleItem modifier="user">

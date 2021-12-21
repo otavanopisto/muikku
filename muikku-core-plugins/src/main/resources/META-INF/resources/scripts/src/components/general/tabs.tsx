@@ -72,7 +72,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
       })}
       {children}
     </div>
-    <div className="tabs__tab-data-container">
+    <div className={`tabs__tab-data-container ${modifier ? "tabs__tab-data-container--" + modifier : ""}`}>
       {tabs.filter((t: TabType) => renderAllComponents || t.id === activeTab)
         .map((t: TabType) => <div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === activeTab ? "active" : ""}`}>
           {t.component}
