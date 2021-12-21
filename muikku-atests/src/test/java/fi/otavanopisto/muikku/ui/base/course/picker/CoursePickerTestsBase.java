@@ -31,7 +31,6 @@ public class CoursePickerTestsBase extends AbstractUITest {
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
-        .addCourse(course1)
         .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -68,7 +67,6 @@ public class CoursePickerTestsBase extends AbstractUITest {
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
-        .addCourse(course1)
         .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -102,7 +100,6 @@ public class CoursePickerTestsBase extends AbstractUITest {
           .id(i)
           .description("Cat herding part #" + i)
           .buildCourse();
-      mockBuilder = mockBuilder.addCourse(course);
       courses.add(course);
     }
     mockBuilder.build();
@@ -144,9 +141,6 @@ public class CoursePickerTestsBase extends AbstractUITest {
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
-        .addCourse(course1)
-        .addCourse(course2)
-        .addCourse(course3)
         .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -185,9 +179,6 @@ public class CoursePickerTestsBase extends AbstractUITest {
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
-        .addCourse(course1)
-        .addCourse(course2)
-        .addCourse(course3)
         .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);

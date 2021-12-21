@@ -20,12 +20,14 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
-import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -51,23 +53,17 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
-      Long courseId = 2l;
       Double price = new Double(75);
       
       login();
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 2).description("test course for testing").buildCourse();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      Workspace workspace = createWorkspace("testcourses", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(courseId, workspace.getName(), created, "test course", begin, end);
-      
-      
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -94,16 +90,25 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
       
       mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, dateNow)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, dateNow)
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, dateNow)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), dateNow, false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockWorkspaceBasePrice(workspace.getIdentifier(), price)
         .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2));
       
       logout();
+      
+      mockBuilder
+      .removeMockCourseStudent(courseStudent);
+      
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+      mockBuilder
+        .addCourseStudent(course1.getId(), courseStudent)
+        .build();
+      
       mockBuilder.mockLogin(admin);
       login();
       navigate(String.format("/evaluation"), false);
@@ -122,11 +127,18 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       selectOption("#workspaceEvaluationGrade", "PYRAMUS-1");
       selectOption("#workspaceEvaluationBilling", "37.5");
       mockBuilder
-      .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), dateNow, true)
+      .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), dateNow, true)
       .mockStaffCompositeCourseAssessmentRequests()
-      .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, dateNow);
-    
-      mockBuilder.mockCourseAssessments(courseStudent, admin).mockWorkspaceBilledPrice(String.valueOf(price/2));
+      .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, dateNow);
+      
+      mockBuilder.removeMockCourseStudent(courseStudent);
+      courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED));
+      mockBuilder
+        .mockCourseAssessments(courseStudent, admin)
+        .mockWorkspaceBilledPrice(String.valueOf(price/2))
+        .addCourseStudent(course1.getId(), courseStudent)
+        .mockCourseActivities();
+      
       waitAndClick(".evaluation-modal__evaluate-drawer-row--buttons .button--evaluate-workspace");
       waitForPresent(".dialog--evaluation-archive-student.dialog--visible .button--standard-ok");
       waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--evaluation-archive-student.dialog--visible", 3, 2000);
@@ -165,22 +177,16 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
       
-      Long courseId = 1l;
-      
       login();
       
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
         .build();
    
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -206,11 +212,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
         
         mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
@@ -273,38 +279,32 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStudent(student2).addStaffMember(admin).mockLogin(admin).build();
       
-      Long courseId = 3l;
-      
       login();
-      
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
 
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, courseId, student2.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
-        .addCourseStudent(courseId, courseStudent2)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
+        .addCourseStudent(course1.getId(), courseStudent2)
         .build();
-   
+
       createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       try{
         mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
-        .mockAssessmentRequests(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
-        .addCompositeCourseAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, date.minusDays(2l))
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, date.minusDays(2l))
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-        .addStaffCompositeAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, admin.getId(), date.minusDays(2l), false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, admin.getId(), date.minusDays(2l), false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         navigate(String.format("/evaluation"), false);
@@ -354,43 +354,38 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStudent(student2).addStudent(student3).addStaffMember(admin).mockLogin(admin).build();
       
-      Long courseId = 3l;
-      
       login();
       
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-  
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, courseId, student2.getId());
-      MockCourseStudent courseStudent3 = new MockCourseStudent(4l, courseId, student3.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent3 = new MockCourseStudent(4l, course1.getId(), student3.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
-        .addCourseStudent(courseId, courseStudent2)
-        .addCourseStudent(courseId, courseStudent3)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
+        .addCourseStudent(course1.getId(), courseStudent2)
+        .addCourseStudent(course1.getId(), courseStudent3)
         .build();
-   
+  
       createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       try{
         mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
-        .mockAssessmentRequests(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, date)
-        .mockAssessmentRequests(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
-        .addCompositeCourseAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, date.minusDays(2l))
-        .addCompositeCourseAssessmentRequest(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student3, date.minusDays(1l))
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, date.minusDays(2l))
+        .addCompositeCourseAssessmentRequest(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, course1, student3, date.minusDays(1l))
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-        .addStaffCompositeAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, admin.getId(), date.minusDays(2l), false)
-        .addStaffCompositeAssessmentRequest(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student3, admin.getId(), date.minusDays(1l), false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, admin.getId(), date.minusDays(2l), false)
+        .addStaffCompositeAssessmentRequest(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, course1, student3, admin.getId(), date.minusDays(1l), false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         navigate(String.format("/evaluation"), false);
@@ -417,7 +412,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       }
     }
 
-  
   @Test
   @TestEnvironments (
     browsers = {
@@ -434,24 +428,19 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
       
-      Long courseId = 1l;
-      
       login();
-      
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
 
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
+      
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
         .build();
-   
+      
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
@@ -473,13 +462,19 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
+        
+        mockBuilder.removeMockCourseStudent(courseStudent);
+        courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED));
+        
         mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-        .mockStaffCompositeCourseAssessmentRequests();
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+        .mockStaffCompositeCourseAssessmentRequests()
+        .addCourseStudent(course1.getId(), courseStudent)
+        .mockCourseActivities();
         
         logout();
         mockBuilder.mockLogin(admin);

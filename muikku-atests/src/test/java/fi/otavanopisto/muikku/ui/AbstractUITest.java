@@ -1316,7 +1316,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected Workspace createWorkspace(Course course, Boolean published) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
+    Builder mockBuilder = mocker();
+    mockBuilder
+      .addCourse(course)
+      .build();
+    
     Workspace payload = new Workspace(null, course.getName(), null, "PYRAMUS", String.valueOf(course.getId()), published);
     Response response = asAdmin()
       .contentType("application/json")

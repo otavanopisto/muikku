@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -40,20 +41,22 @@ public class GuiderTestsBase extends AbstractUITest {
     MockStudent student2 = new MockStudent(3l, 3l, "Test", "Student", "teststrewtretudentos@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    Long courseId = 2l;
     login();
-    Workspace workspace = createWorkspace("testscourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    Workspace workspace2 = createWorkspace("diffentscourse", "Second test course", "3", Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(3l, courseId, student2.getId());
-
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 2).description("test course for testing").buildCourse();
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 3).description("Second test course").buildCourse();
+    Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
+    MockCourseStudent mcs2 = new MockCourseStudent(3l, course1.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
     mockBuilder
       .addStudent(student)
       .addStudent(student2)
       .addCourseStudent(workspace.getId(), mcs)
       .addCourseStudent(workspace.getId(), mcs2)
-      .addCourseStaffMember(courseId, courseStaffMember)
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
       .build();
 
     try {
@@ -86,11 +89,10 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(4l, course1.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(4l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
@@ -122,8 +124,10 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "5", Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(6l, workspace.getId(), student.getId());
+    
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 5).description("test course for testing").buildCourse();
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(6l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), 1l);
 
@@ -176,13 +180,15 @@ public class GuiderTestsBase extends AbstractUITest {
       
       login();
       
-      Workspace workspace = createWorkspace("testcourses", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Course course1 = new CourseBuilder().name("testcourses").id((long) 6).description("test course for testing").buildCourse();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(7l, courseId, student.getId());
+      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
@@ -257,17 +263,14 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
-      .addCourse(course2)
-      .addCourse(course3)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
       Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
       Workspace workspace3 = createWorkspace(course3, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(8l, course1.getId(), student.getId());
-      MockCourseStudent mcs2 = new MockCourseStudent(9l, course2.getId(), student.getId());
-      MockCourseStudent mcs3 = new MockCourseStudent(10l, course3.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(8l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent mcs2 = new MockCourseStudent(9l, course2.getId(), student.getId(), TestUtilities.createCourseActivity(course2, CourseActivityState.ONGOING));
+      MockCourseStudent mcs3 = new MockCourseStudent(10l, course3.getId(), student.getId(), TestUtilities.createCourseActivity(course3, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       CourseStaffMember courseStaffMember2 = new CourseStaffMember(2l, course2.getId(), admin.getId(), 1l);
       CourseStaffMember courseStaffMember3 = new CourseStaffMember(3l, course3.getId(), admin.getId(), 1l);
@@ -308,11 +311,10 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent mcs = new MockCourseStudent(9l, course1.getId(), student.getId());
+      MockCourseStudent mcs = new MockCourseStudent(9l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)

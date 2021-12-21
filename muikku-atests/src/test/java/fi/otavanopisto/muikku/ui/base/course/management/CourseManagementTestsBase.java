@@ -56,7 +56,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -134,7 +133,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -183,7 +181,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -259,7 +256,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -334,7 +330,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -383,7 +378,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
-      .addCourse(course1)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -437,7 +431,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
       mockBuilder
         .addStaffMember(admin)
         .mockLogin(admin)
-        .addCourse(course1)
         .addSignupStudyProgramme(signupStudyProgramme)
         .build();
       login();
