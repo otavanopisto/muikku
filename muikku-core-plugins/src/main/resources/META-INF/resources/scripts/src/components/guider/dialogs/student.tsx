@@ -92,11 +92,12 @@ class StudentDialog extends React.Component<
     );
 
     const defaultEmailAddress = this.props.student.emails && " " + this.props.student.emails.find((e) => e.defaultAddress).address;
+    const studyProgrammeName = this.props.student.basic && this.props.student.basic.studyProgrammeName;
     const dialogTitle = <DialogTitleContainer>
       <DialogTitleItem modifier="user">
         {getName(this.props.student.basic, true)}
       </DialogTitleItem>
-      <DialogTitleItem modifier="studyproggamme">{"(" + this.props.student && this.props.student.basic.studyProgrammeName + ")"}</DialogTitleItem>
+      <DialogTitleItem modifier="studyprogramme">{"(" + studyProgrammeName + ")"}</DialogTitleItem>
     </DialogTitleContainer>;
 
 

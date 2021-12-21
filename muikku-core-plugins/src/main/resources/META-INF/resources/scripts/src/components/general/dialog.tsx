@@ -419,6 +419,9 @@ export class DialogRemoveUsers extends React.Component<
   }
 
   render() {
+    const removeUserPages = Math.ceil(
+      this.props.removeUsers.length / this.maxRemoveUsersPerPage
+    )
     const tabs: TabType[] = [
       {
         id: this.props.identifier + "-ALL",
@@ -569,9 +572,7 @@ export class DialogRemoveUsers extends React.Component<
                   identifier={this.props.identifier + "Remove"}
                   current={this.state.currentRemovePage}
                   onClick={this.goToRemovePage}
-                  pages={Math.ceil(
-                    this.props.removeUsers.length / this.maxRemoveUsersPerPage
-                  )}
+                  pages={removeUserPages}
                 ></Pager>
               ) : null}
             </DialogRow>
