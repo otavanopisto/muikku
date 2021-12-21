@@ -84,12 +84,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     this.hotInsertBeforeSection = this.hotInsertBeforeSection.bind(this);
     this.hotInsertBeforeSubnode = this.hotInsertBeforeSubnode.bind(this);
-    this.onInteractionBetweenSections = this.onInteractionBetweenSections.bind(
-      this
-    );
-    this.onInteractionBetweenSubnodes = this.onInteractionBetweenSubnodes.bind(
-      this
-    );
+    this.onInteractionBetweenSections =
+      this.onInteractionBetweenSections.bind(this);
+    this.onInteractionBetweenSubnodes =
+      this.onInteractionBetweenSubnodes.bind(this);
     this.onDropBetweenSubnodes = this.onDropBetweenSubnodes.bind(this);
     this.onDropBetweenSections = this.onDropBetweenSections.bind(this);
   }
@@ -148,7 +146,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const contentNodesRepaired = repairContentNodes(newMaterialState);
 
     const materialFromState = this.state.materials[baseIndex];
-    const material = this.originalMaterials.find((cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId);
+    const material = this.originalMaterials.find(
+      (cn) => cn.workspaceMaterialId === materialFromState.workspaceMaterialId
+    );
     const update = contentNodesRepaired.find(
       (cn) => cn.workspaceMaterialId === material.workspaceMaterialId
     );
@@ -241,9 +241,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       },
       () => {
         if (parentBaseIndex !== parentTargetBeforeIndex) {
-          (this.refs[
-            `draggable-${parentTargetBeforeIndex}-${workspaceId}`
-          ] as Draggable).onRootSelectStart(null, true);
+          (
+            this.refs[
+              `draggable-${parentTargetBeforeIndex}-${workspaceId}`
+            ] as Draggable
+          ).onRootSelectStart(null, true);
         }
       }
     );
@@ -293,7 +295,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     base: MaterialContentNodeType,
     target: MaterialContentNodeType
   ) {
-    this.storedLastUpdateServerExecution && this.storedLastUpdateServerExecution();
+    this.storedLastUpdateServerExecution &&
+      this.storedLastUpdateServerExecution();
     delete this.storedLastUpdateServerExecution;
   }
 
@@ -347,7 +350,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     base: MaterialContentNodeType,
     target: MaterialContentNodeType | number
   ) {
-    this.storedLastUpdateServerExecution && this.storedLastUpdateServerExecution();
+    this.storedLastUpdateServerExecution &&
+      this.storedLastUpdateServerExecution();
     delete this.storedLastUpdateServerExecution;
   }
 
@@ -436,9 +440,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     );
 
                   let showEvenIfHidden = false;
-        
-                  if(subnode.hidden && compositeReplies){
-                    showEvenIfHidden = compositeReplies && compositeReplies.submitted !== null
+
+                  if (subnode.hidden && compositeReplies) {
+                    showEvenIfHidden =
+                      compositeReplies && compositeReplies.submitted !== null;
                   }
 
                   if (compositeReplies) {
@@ -491,10 +496,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     }
                   }
 
-                  if(isViewRestrictedVisible) {
+                  if (isViewRestrictedVisible) {
                     icon = "restriction";
                     className = "toc__item--view-restricted";
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materialViewRestricted")
+                    iconTitle = this.props.i18n.text.get(
+                      "plugin.workspace.materialViewRestricted"
+                    );
                   }
 
                   const pageElement = (

@@ -1976,8 +1976,6 @@ let loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType = functi
     dispatch: (arg: AnyActionType) => any,
     getState: () => StateType
   ) => {
-
-
     try {
       let contentNodes: Array<MaterialContentNodeType> =
         <Array<MaterialContentNodeType>>await promisify(
