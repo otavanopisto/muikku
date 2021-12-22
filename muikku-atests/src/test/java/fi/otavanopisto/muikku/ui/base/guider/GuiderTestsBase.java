@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,6 +26,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
@@ -188,7 +190,19 @@ public class GuiderTestsBase extends AbstractUITest {
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseActivity ca = new CourseActivity();
+      ca.setCourseId(course1.getId());
+      ca.setCourseName(course1.getName());
+      ca.setGrade("Excellent");
+      ca.setPassingGrade(true);
+      ca.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      ca.setText("Test evaluation.");
+      ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      ca.setState(CourseActivityState.GRADED);
+      List<CourseActivity> courseActivities = new ArrayList<>();
+      courseActivities.add(ca);
+      
+      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1.getId(), student.getId(), courseActivities);
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
