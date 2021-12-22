@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -9,35 +11,31 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 public abstract class AbstractWorkspace implements Workspace {
   
   public AbstractWorkspace() {
+    this.subjects = new ArrayList<>();
   }
   
-  public AbstractWorkspace(String identifier, String name, String nameExtension, String viewLink,
-      SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
-      String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
-      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber,
-      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier, boolean isTemplate) {
+  public AbstractWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String viewLink,
+      SchoolDataIdentifier workspaceTypeId, String description, SchoolDataIdentifier educationTypeIdentifier, Date modified, 
+      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, Set<SchoolDataIdentifier> curriculumIdentifiers, 
+      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier, boolean isTemplate, List<WorkspaceSubject> subjects) {
     super();
-    this.identifier = identifier;
+    this.identifier = identifier.getIdentifier();
+    this.dataSource = identifier.getDataSource();
     this.name = name;
     this.nameExtension = nameExtension;
     this.viewLink = viewLink;
     this.workspaceTypeId = workspaceTypeId;
-    this.courseIdentifierIdentifier = courseIdentifierIdentifier;
     this.description = description;
-    this.subjectIdentifier = subjectIdentifier;
     this.educationTypeIdentifier = educationTypeIdentifier;
     this.modified = modified;
-    this.length = length;
-    this.lengthUnitIdentifier = lengthUnitIdentifier;
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.archived = archived;
-    this.evaluationFeeApplicable = evaluationFeeApplicable;
     this.curriculumIdentifiers = curriculumIdentifiers;
-    this.courseNumber = courseNumber;
     this.educationSubtypeIdentifier = educationSubtypeIdentifier;
     this.organizationIdentifier = organizationIdentifier;
     this.isTemplate = isTemplate;
+    this.subjects = subjects;
   }
   
   @Override
@@ -45,6 +43,11 @@ public abstract class AbstractWorkspace implements Workspace {
     return identifier;
   }
 
+  @Override
+  public String getSchoolDataSource() {
+    return dataSource;
+  }
+  
   @Override
   public String getName() {
     return name;
@@ -74,11 +77,6 @@ public abstract class AbstractWorkspace implements Workspace {
   }
 
   @Override
-  public String getCourseIdentifierIdentifier() {
-    return courseIdentifierIdentifier;
-  }
-
-  @Override
   public String getDescription() {
     return description;
   }
@@ -99,11 +97,6 @@ public abstract class AbstractWorkspace implements Workspace {
   }
   
   @Override
-  public String getSubjectIdentifier() {
-    return subjectIdentifier;
-  }
-
-  @Override
   public SchoolDataIdentifier getEducationTypeIdentifier() {
     return educationTypeIdentifier;
   }
@@ -116,16 +109,6 @@ public abstract class AbstractWorkspace implements Workspace {
   @Override
   public SchoolDataIdentifier getOrganizationIdentifier() {
     return organizationIdentifier;
-  }
-  
-  @Override
-  public Double getLength() {
-    return length;
-  }
-  
-  @Override
-  public String getLengthUnitIdentifier() {
-    return lengthUnitIdentifier;
   }
   
   @Override
@@ -154,11 +137,6 @@ public abstract class AbstractWorkspace implements Workspace {
   }
   
   @Override
-  public boolean isEvaluationFeeApplicable() {
-    return evaluationFeeApplicable;
-  }
-
-  @Override
   public String getViewLink() {
     return viewLink;
   }
@@ -169,34 +147,34 @@ public abstract class AbstractWorkspace implements Workspace {
   }
   
   @Override
-  public Integer getCourseNumber() {
-    return courseNumber;
-  }
-
-  @Override
   public boolean isTemplate() {
     return isTemplate;
   }
+
+  public void setSubjects(List<WorkspaceSubject> subjects) {
+    this.subjects = subjects;
+  }
   
+  @Override
+  public List<WorkspaceSubject> getSubjects() {
+    return subjects;
+  }
+
   private String identifier;
+  private String dataSource;
   private String name;
   private String nameExtension;
   private String viewLink;
   private SchoolDataIdentifier workspaceTypeId;
-  private String courseIdentifierIdentifier;
   private String description;
-  private String subjectIdentifier;
   private SchoolDataIdentifier educationTypeIdentifier;
   private SchoolDataIdentifier educationSubtypeIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private Date modified;
-  private Double length;
-  private String lengthUnitIdentifier;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
   private boolean archived;
-  private boolean evaluationFeeApplicable;
   private Set<SchoolDataIdentifier> curriculumIdentifiers;
-  private Integer courseNumber;
   private boolean isTemplate;
+  private List<WorkspaceSubject> subjects;
 }

@@ -42,7 +42,7 @@ class GradingSchoolDataController {
   
   /* WorkspaceAssessment */
   
-  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
+  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String workspaceSubjectIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
@@ -50,6 +50,7 @@ class GradingSchoolDataController {
           workspaceUserIdentifier,
           workspaceUserSchoolDataSource,
           workspaceIdentifier,
+          workspaceSubjectIdentifier,
           studentIdentifier,
           assessingUserIdentifier, 
           assessingUserSchoolDataSource, 
@@ -104,7 +105,7 @@ class GradingSchoolDataController {
     }
   }
   
-  public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
+  public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String workspaceSubjectIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
@@ -113,6 +114,7 @@ class GradingSchoolDataController {
           workspaceUserIdentifier,
           workspaceUserSchoolDataSource,
           workspaceIdentifier,
+          workspaceSubjectIdentifier,
           studentIdentifier,
           assessingUserIdentifier, 
           assessingUserSchoolDataSource, 

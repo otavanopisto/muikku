@@ -155,10 +155,11 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier,
+  public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String workspaceSubjectIdentifier, String studentIdentifier, String assessingUserIdentifier,
       String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
 
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long courseModuleId = identifierMapper.getPyramusCourseModuleId(workspaceSubjectIdentifier);
     Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -201,7 +202,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
+    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, courseModuleId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
     WorkspaceAssessment workspaceAssessment = entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
     updateParticipationTypeByGrade(courseStudentId, courseId, grade);
     
@@ -233,11 +234,12 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
+  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String workspaceSubjectIdentifier, String studentIdentifier,
       String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment,
       Date date) {
 
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long courseModuleId = identifierMapper.getPyramusCourseModuleId(workspaceSubjectIdentifier);
     Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -286,7 +288,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
+    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, courseModuleId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
     updateParticipationTypeByGrade(courseStudentId, courseId, grade);
     
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));

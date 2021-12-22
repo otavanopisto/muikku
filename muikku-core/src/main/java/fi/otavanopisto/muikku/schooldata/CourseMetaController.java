@@ -36,6 +36,10 @@ public class CourseMetaController {
   
   /* Subjects */
 
+  public Subject findSubject(SchoolDataIdentifier subjectIdentifier) {
+    return findSubject(subjectIdentifier.getDataSource(), subjectIdentifier.getIdentifier());
+  }
+
   public Subject findSubject(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -110,6 +114,10 @@ public class CourseMetaController {
   }
   
   /* CourseLenthUnit */
+  
+  public CourseLengthUnit findCourseLengthUnit(SchoolDataIdentifier courseLengthUnitIdentifier) {
+    return findCourseLengthUnit(courseLengthUnitIdentifier.getDataSource(), courseLengthUnitIdentifier.getIdentifier());
+  }
   
   public CourseLengthUnit findCourseLengthUnit(String schoolDataSource, String identifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
