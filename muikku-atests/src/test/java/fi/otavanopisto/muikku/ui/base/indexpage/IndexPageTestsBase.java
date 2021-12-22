@@ -69,6 +69,7 @@ public class IndexPageTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
       createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);

@@ -49,14 +49,13 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime dateNow = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
-    
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 2).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       Double price = new Double(75);
       
       login();
-      Course course1 = new CourseBuilder().name("testcourse").id((long) 2).description("test course for testing").buildCourse();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
@@ -173,13 +172,13 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       
       login();
       
-      Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
@@ -275,13 +274,13 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student2 = new MockStudent(3l, 3l, "Apprentice", "Master", "maprentice@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111109-1212", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStudent(student2).addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder.addStudent(student).addStudent(student2).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       
       login();
 
-      Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
@@ -350,13 +349,13 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     MockStudent student2 = new MockStudent(3l, 3l, "Apprentice", "Master", "maprentice@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111109-1212", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student3 = new MockStudent(4l, 4l, "Anotha", "Student", "hurhurhrurh@example.com", 1l, OffsetDateTime.of(1992, 3, 1, 0, 0, 0, 0, ZoneOffset.UTC), "010392-2145", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStudent(student2).addStudent(student3).addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder.addStudent(student).addStudent(student2).addStudent(student3).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       
       login();
       
-      Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
@@ -424,13 +423,13 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       
       login();
 
-      Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
       MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));

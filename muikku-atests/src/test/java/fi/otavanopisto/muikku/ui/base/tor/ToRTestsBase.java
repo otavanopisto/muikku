@@ -45,6 +45,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockMatriculationEligibility(true)
         .addStaffMember(admin)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
 
@@ -127,6 +128,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockMatriculationEligibility(true)
         .addStaffMember(admin)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
       

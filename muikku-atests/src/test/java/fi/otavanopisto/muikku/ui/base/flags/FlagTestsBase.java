@@ -35,6 +35,8 @@ public class FlagTestsBase extends AbstractUITest {
     .addStudent(student)
     .addStudent(student2)
     .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -79,6 +81,8 @@ public class FlagTestsBase extends AbstractUITest {
     .addStudent(student)
     .addStudent(student2)
     .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -125,6 +129,8 @@ public class FlagTestsBase extends AbstractUITest {
     .addStudent(student)
     .addStudent(student2)
     .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -180,6 +186,8 @@ public class FlagTestsBase extends AbstractUITest {
     .addStudent(student)
     .addStudent(student2)
     .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -230,6 +238,8 @@ public class FlagTestsBase extends AbstractUITest {
     .addStudent(student)
     .addStudent(student2)
     .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -293,6 +303,8 @@ public class FlagTestsBase extends AbstractUITest {
     .addStudent(student)
     .addStudent(student2)
     .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
     .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
