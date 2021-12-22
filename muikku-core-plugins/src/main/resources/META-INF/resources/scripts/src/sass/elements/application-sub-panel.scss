@@ -13,6 +13,38 @@
   }
 }
 
+.application-sub-panel--student-data-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-desktop-xl){
+    flex-wrap:unset;
+  }
+
+
+}
+
+.application-sub-panel--student-data-primary {
+ flex-basis: 100%;
+
+  @include breakpoint($breakpoint-desktop-xl){
+    flex-basis: 35em;
+
+  }
+
+}
+
+
+.application-sub-panel--student-data-secondary {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-desktop-xl){
+    flex-basis: auto;
+    flex-grow: 1;
+  }
+}
+
+
 .application-sub-panel--worklist {
   border: 0;
   margin: 0 0 15px;
@@ -167,6 +199,10 @@
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
   text-transform: uppercase;
+
+  a:not(:first-child) {
+    margin-left: 20px;
+  }
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
@@ -562,6 +598,10 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--guider-student {
+  border-bottom: unset;
 }
 
 .application-sub-panel__item--organization-previous-bills,

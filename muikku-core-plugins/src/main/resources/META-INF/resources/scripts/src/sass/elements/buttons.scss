@@ -406,12 +406,12 @@
   width: 100%;
 }
 
+
 .button--yo-signup {
   background-color: $color-yo-sign-up;
   color: $color-yo-sign-up-contrast;
   height: $button-primary-height;
   width: 100%;
-
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
     width: auto;
@@ -452,6 +452,10 @@
       background-color: darken($color-button-primary-background, 20%);
     }
   }
+}
+
+.button--guider-student {
+  overflow: unset;
 }
 
 // Button that appears inside views component

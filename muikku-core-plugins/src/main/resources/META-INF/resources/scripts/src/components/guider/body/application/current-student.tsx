@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Link from '~/components/general/link';
 import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/label.scss';
@@ -11,20 +10,21 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/workspace-activity.scss';
 import { getUserImageUrl, getName } from '~/util/modifiers';
-import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from '../../dialogs/file-delete';
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
-import MainChart from '~/components/general/graph/main-chart'
 import {
-  AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
+  AddFileToCurrentStudentTriggerType,
   addFileToCurrentStudent
 } from '~/actions/main-function/guider';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { UserFileType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import { GuiderType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider';
+import NewMessage from '~/components/communicator/dialogs/new-message';
+import Button, { ButtonPill } from '~/components/general/button';
+
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -64,7 +64,11 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
       </div>
       <div className="application-sub-panel__header-aside-container">
-        {this.props.guider.currentStudent.basic.studyProgrammeName}
+        {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
+        <NewMessage extraNamespace='student-view'><Button buttonModifiers={["primary-function", "guider-student"]}>
+          {this.props.i18n.text.get('plugin.guider.user.actions.sendMessage.title')}</Button></NewMessage>
+        <Button buttonModifiers={["primary-function", "guider-student"]}>
+          {this.props.i18n.text.get('plugin.guider.user.actions.reserveGuidanceTime.title')}</Button>
       </div>
     </div>
 
@@ -76,28 +80,28 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     });
 
     let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
-      <div className="application-sub-panel__item">
+      <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
           <span className="application-sub-panel__single-entry">{this.props.guider.currentStudent.basic.studyStartDate ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate) : "-"}</span>
         </div>
       </div>
-      <div className="application-sub-panel__item">
+      <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</div>
         <div className="application-sub-panel__item-data">
           <span className="application-sub-panel__single-entry">{this.props.guider.currentStudent.basic.studyEndDate ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate) : "-"}</span>
         </div>
       </div>
-      <div className="application-sub-panel__item">
+      <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</div>
         <div className="application-sub-panel__item-data">
           <span className="application-sub-panel__single-entry">{this.props.guider.currentStudent.basic.studyTimeEnd ?
             this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd) : "-"}</span>
         </div>
       </div>
-      {this.props.guider.currentStudent.emails && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.emails && <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.email")}</div>
         <div className="application-sub-panel__item-data">
           {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email) => {
@@ -107,7 +111,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>}
         </div>
       </div>}
-      {this.props.guider.currentStudent.phoneNumbers && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.phoneNumbers && <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.phoneNumber")}</div>
         <div className="application-sub-panel__item-data">
           {this.props.guider.currentStudent.phoneNumbers.length ? this.props.guider.currentStudent.phoneNumbers.map((phone) => {
@@ -117,13 +121,13 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}</span>}
         </div>
       </div>}
-      <div className="application-sub-panel__item">
+      <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</div>
         <div className="application-sub-panel__item-data">
           <span className="application-sub-panel__single-entry">{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
         </div>
       </div>
-      {this.props.guider.currentStudent.usergroups && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.usergroups && <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studentgroups")}</div>
         <div className="application-sub-panel__item-data">
           {this.props.guider.currentStudent.usergroups.length ? this.props.guider.currentStudent.usergroups.map((usergroup) => {
@@ -133,7 +137,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           }) : <span className="application-sub-panel__single-entry">{this.props.i18n.text.get("plugin.guider.user.details.label.nostudentgroups")}</span>}
         </div>
       </div>}
-      {this.props.guider.currentStudent.basic && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.basic && <div className="application-sub-panel__item application-sub-panel__item--guider-student">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
           <span className="application-sub-panel__single-entry">{this.props.guider.currentStudent.basic.lastLogin ?
@@ -190,32 +194,34 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {studentLabels}
         </div> : null}
       </div>
-      <div className="application-sub-panel application-sub-panel--guider-data-primary">
-        {studentBasicInfo}
-      </div>
-      {/* {studentHops ? <div className="application-sub-panel">
+      <div className="application-sub-panel application-sub-panel--student-data-container">
+        <div className="application-sub-panel application-sub-panel--student-data-primary">
+          {studentBasicInfo}
+        </div>
+        {/* {studentHops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</h3>
         {studentHops}
       </div> : null} */}
-      {/* {studentVops ? <div className="application-sub-panel">
+        {/* {studentVops ? <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.vops")}</h3>
         {studentVops}
       </div> : null} */}
-      <div className="application-sub-panel  application-sub-panel--guider-data-secondary">
-        <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</h3>
-        <div className="application-sub-panel__body">
-          {studentWorkspaces}
+        <div className="application-sub-panel application-sub-panel--student-data-secondary">
+          <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</h3>
+          <div className="application-sub-panel__body">
+            {studentWorkspaces}
+          </div>
         </div>
-      </div>
-      {/* <div className="application-sub-panel">
+        {/* <div className="application-sub-panel">
         <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</h3>
         {files}
       </div> */}
-      {/* <div className="application-sub-panel">
+        {/* <div className="application-sub-panel">
         <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
         {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces ? <MainChart workspaces={this.props.guider.currentStudent.workspaces} activityLogs={this.props.guider.currentStudent.activityLogs} /> : null}
       </div> */}
-      {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty" /> : null}
+        {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty" /> : null}
+      </div>
     </>
   }
 }

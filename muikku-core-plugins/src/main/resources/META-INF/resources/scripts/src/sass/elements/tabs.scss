@@ -8,6 +8,12 @@
   margin-top: 10px;
 }
 
+.tabs--guider-student {
+  max-width: $dialog-max-resolution - $dialog-content-padding;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .tabs--material-editor {
   margin: 0;
   padding: 1px 0 0;
@@ -108,6 +114,10 @@
   &.active {
     display: block;
   }
+}
+
+.tabs__tab-data--guider-student {
+  padding: 10px;
 }
 
 // Used when editing material page

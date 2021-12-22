@@ -64,21 +64,25 @@ class StudentDialog extends React.Component<
     const tabs = [{
       id: "STUDENT",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.situation'),
+      type: "guider-student",
       component: <CurrentStudent />
     },
     {
       id: "STUDY_PLAN",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyPlan'),
+      type: "guider-student",
       component: <div >Suunnitelma</div>
     },
     {
       id: "GUIDANCE_RELATIONS",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.guidanceRelations'),
+      type: "guider-student",
       component: <div >Ohjaussuhde</div>
     },
     {
       id: "STUDY_HISTORY",
       name: this.props.i18n.text.get('plugin.guider.user.tabs.title.studyHistory'),
+      type: "guider-student",
       component: <div >Opintohistoria</div>
     },
     ];
@@ -88,7 +92,7 @@ class StudentDialog extends React.Component<
     }
 
     const content = () => (
-      <Tabs tabs={tabs} activeTab={this.state.activeTab} onTabChange={this.onTabChange}></Tabs>
+      <Tabs modifier="guider-student" tabs={tabs} activeTab={this.state.activeTab} onTabChange={this.onTabChange}></Tabs>
     );
 
     const studyProgrammeName = this.props.student.basic && this.props.student.basic.studyProgrammeName;
