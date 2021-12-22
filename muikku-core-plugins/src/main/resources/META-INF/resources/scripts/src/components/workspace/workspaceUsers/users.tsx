@@ -14,6 +14,7 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/avatar.scss";
 import { getName, filterMatch } from "~/util/modifiers";
 import {
+  ContactRecipientType,
   ShortWorkspaceUserWithActiveStatusType,
   UserType,
 } from "~/reducers/user-index";
@@ -211,16 +212,14 @@ class WorkspaceUsers extends React.Component<
   }
 
   render() {
-    const currentStudentBeingSentMessage: UserType = this.state
+    const currentStudentBeingSentMessage: ContactRecipientType = this.state
       .studentCurrentlyBeingSentMessage && {
-      id: this.state.studentCurrentlyBeingSentMessage.userEntityId,
-      firstName: this.state.studentCurrentlyBeingSentMessage.firstName,
-      lastName: this.state.studentCurrentlyBeingSentMessage.lastName,
-      nickName: this.state.studentCurrentlyBeingSentMessage.nickName,
-      studyProgrammeName: this.state.studentCurrentlyBeingSentMessage
-        .studyProgrammeName,
+      type: "user",
+      value: {
+        id: this.state.studentCurrentlyBeingSentMessage.userEntityId,
+        name: getName(this.state.studentCurrentlyBeingSentMessage, true)
+      }
     };
-
     const staffPager =
       this.allStaffPages > 1 ? (
         <Pager
@@ -257,6 +256,10 @@ class WorkspaceUsers extends React.Component<
           onClick={this.loadActiveStudents}
         />
       ) : null;
+
+
+
+
 
     const inactiveStudents =
       this.props.workspace &&
@@ -309,7 +312,10 @@ class WorkspaceUsers extends React.Component<
                     initialSelectedItems={[
                       {
                         type: "staff",
-                        value: staff,
+                        value: {
+                          id: staff.userEntityId,
+                          name: getName(staff, true)
+                        },
                       },
                     ]}
                     initialSubject={getWorkspaceMessage(
@@ -426,47 +432,38 @@ class WorkspaceUsers extends React.Component<
                       )
                     ) : null}
                   </ApplicationList>
+
               },
             ]}
           />
         </ApplicationSubPanel>
-
-        {
-          currentStudentBeingSentMessage ? (
-            <CommunicatorNewMessage
-              isOpen
-              onClose={this.removeStudentBeingSentMessage}
-              extraNamespace="workspace-students"
-              initialSelectedItems={[
-                {
-                  type: "user",
-                  value: currentStudentBeingSentMessage,
-                },
-              ]}
-              initialSubject={getWorkspaceMessage(
-                this.props.i18n,
-                this.props.status,
-                this.props.workspace
-              )}
-              initialMessage={getWorkspaceMessage(
-                this.props.i18n,
-                this.props.status,
-                this.props.workspace,
-                true
-              )}
-            />
-          ) : null
-        }
-        {
-          this.state.studentCurrentBeingToggledStatus ? (
-            <DeactivateReactivateUserDialog
-              isOpen
-              onClose={this.removeStudentBeingToggledStatus}
-              user={this.state.studentCurrentBeingToggledStatus}
-            />
-          ) : null
-        }
-      </ApplicationPanel >
+        {currentStudentBeingSentMessage ? (
+          <CommunicatorNewMessage
+            isOpen
+            onClose={this.removeStudentBeingSentMessage}
+            extraNamespace="workspace-students"
+            initialSelectedItems={[currentStudentBeingSentMessage]}
+            initialSubject={getWorkspaceMessage(
+              this.props.i18n,
+              this.props.status,
+              this.props.workspace
+            )}
+            initialMessage={getWorkspaceMessage(
+              this.props.i18n,
+              this.props.status,
+              this.props.workspace,
+              true
+            )}
+          />
+        ) : null}
+        {this.state.studentCurrentBeingToggledStatus ? (
+          <DeactivateReactivateUserDialog
+            isOpen
+            onClose={this.removeStudentBeingToggledStatus}
+            user={this.state.studentCurrentBeingToggledStatus}
+          />
+        ) : null}
+      </ApplicationPanel>
     );
   }
 }

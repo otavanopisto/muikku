@@ -555,6 +555,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderGuiderBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
