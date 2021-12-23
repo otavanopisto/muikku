@@ -12,32 +12,6 @@
   <ui:define name="scripts">
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/workspace.js" />
-    <script>
-      MUIKKU_PERMISSIONS.WORKSPACE_HOME_VISIBLE = #{workspaceBackingBean.homeVisible};
-	  MUIKKU_PERMISSIONS.WORKSPACE_GUIDES_VISIBLE = #{workspaceBackingBean.guidesVisible};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MATERIALS_VISIBLE = #{workspaceBackingBean.materialsVisible};
-	  MUIKKU_PERMISSIONS.WORKSPACE_DISCUSSIONS_VISIBLE = #{workspaceBackingBean.discussionsVisible};
-	  MUIKKU_PERMISSIONS.WORKSPACE_USERS_VISIBLE = #{workspaceBackingBean.usersVisible};
-	  MUIKKU_PERMISSIONS.WORKSPACE_JOURNAL_VISIBLE = #{workspaceBackingBean.journalVisible};
-	  MUIKKU_PERMISSIONS.WORKSPACE_ACCESS_EVALUATION = #{sessionBackingBean.hasWorkspacePermission('ACCESS_WORKSPACE_EVALUATION')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_MATERIALS = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_MATERIALS')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_FRONTPAGE')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_HELP = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_HELP')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_ANNOUNCER_TOOL = #{sessionBackingBean.hasWorkspacePermission('WORKSPACE_ANNOUNCER_TOOL')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_PERMISSIONS = #{sessionBackingBean.hasWorkspacePermission('WORKSPACE_MANAGE_PERMISSIONS')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT = #{sessionBackingBean.hasWorkspacePermission('REQUEST_WORKSPACE_ASSESSMENT')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_CAN_PUBLISH = #{sessionBackingBean.hasWorkspacePermission('PUBLISH_WORKSPACE')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS = #{sessionBackingBean.hasWorkspacePermission('LIST_WORKSPACE_ANNOUNCEMENTS')};
-	  MUIKKU_PERMISSIONS.WORSKPACE_LIST_WORKSPACE_MEMBERS = #{sessionBackingBean.hasWorkspacePermission('LIST_WORKSPACE_MEMBERS')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_VIEW_WORKSPACE_DETAILS = #{sessionBackingBean.hasWorkspacePermission('VIEW_WORKSPACE_DETAILS')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_MANAGE_WORKSPACE_DETAILS = #{sessionBackingBean.hasWorkspacePermission('MANAGE_WORKSPACE_DETAILS')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_SIGNUP = #{sessionBackingBean.hasWorkspacePermission('WORKSPACE_SIGNUP')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_IS_WORKSPACE_STUDENT = #{sessionBackingBean.hasWorkspacePermission('IS_WORKSPACE_STUDENT')};
-	  MUIKKU_PERMISSIONS.WORKSPACE_DELETE_FORUM_THREAD = #{sessionBackingBean.hasWorkspacePermission('FORUM_DELETE_WORKSPACE_MESSAGES')};
-	  WORKSPACE_ID = #{workspaceBackingBean.workspaceEntityId}; //With this you can get the workspace as http://dev.muikkuverkko.fi/rest/workspace/workspaces/285/
-	  WORKSPACE_NAME = '#{workspaceBackingBean.workspaceName}';
-    </script>
   </ui:define>
   
   <ui:define name="styles">
