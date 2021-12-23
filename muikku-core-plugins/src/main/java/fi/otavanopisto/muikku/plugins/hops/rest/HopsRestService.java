@@ -397,8 +397,14 @@ public class HopsRestService {
                   String tyI = typeIdentifier[1];
                 
                   SchoolDataIdentifier workspacetypeIdentifier = new SchoolDataIdentifier(tyI, dS);
-                  
-                  WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspacetypeIdentifier); 
+                  schoolDataBridgeSessionController.startSystemSession();
+                  WorkspaceType workspaceType = null;
+                  try {
+                    workspaceType = workspaceController.findWorkspaceType(workspacetypeIdentifier); 
+                  }
+                  finally {
+                    schoolDataBridgeSessionController.endSystemSession();
+                  }
                   suggestedWorkspace.setNameExtension(nameExtension);
                   suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
                   suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
