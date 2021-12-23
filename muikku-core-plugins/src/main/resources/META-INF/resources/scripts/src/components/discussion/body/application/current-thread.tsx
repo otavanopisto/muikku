@@ -7,7 +7,6 @@ import {
   DiscussionThreadReplyListType,
 } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
-import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
 import { getName } from "~/util/modifiers";
@@ -27,6 +26,7 @@ import {
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import DiscussionThreadReply from "./discussion-thread-reply";
 import ModifyThreadDrawer from "./modify-thread-drawer";
+import PagerV2 from "~/components/general/pagerV2";
 
 /**
  * CurrentThreadProps
@@ -132,6 +132,14 @@ class CurrentThread extends React.Component<
       openReplyType: undefined,
     });
   };
+
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handlePagerChange = (selectedItem: { selected: number }) =>
+    this.getToPage(selectedItem.selected + 1);
 
   /**
    * render
@@ -391,10 +399,16 @@ class CurrentThread extends React.Component<
             );
           }
         )}
-        <Pager
-          onClick={this.getToPage.bind(this)}
-          current={this.props.discussion.currentPage}
-          pages={this.props.discussion.currentTotalPages}
+
+        <PagerV2
+          previousLabel=""
+          nextLabel=""
+          breakLabel="..."
+          initialPage={this.props.discussion.currentPage - 1}
+          marginPagesDisplayed={1}
+          pageCount={this.props.discussion.currentTotalPages}
+          pageRangeDisplayed={2}
+          onPageChange={this.handlePagerChange}
         />
       </DiscussionCurrentThread>
     );

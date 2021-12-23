@@ -1,15 +1,20 @@
-import Link from '../../general/link';
-import * as React from 'react';
-import {i18nType} from '~/reducers/base/i18n';
-import {StatusType} from '~/reducers/base/status';
-import {AnnouncementListType, AnnouncementType} from '~/reducers/announcements';
+import Link from "../../general/link";
+import * as React from "react";
+import { i18nType } from "~/reducers/base/i18n";
+import { StatusType } from "~/reducers/base/status";
+import {
+  AnnouncementListType,
+  AnnouncementType,
+} from "~/reducers/announcements";
 
-import '~/sass/elements/item-list.scss';
-import '~/sass/elements/panel.scss';
-import '~/sass/elements/label.scss';
-import ReactPaginate from 'react-paginate';
-import { StateType } from '../../../reducers/index';
-import { connect, Dispatch } from 'react-redux';
+import "~/sass/elements/item-list.scss";
+import "~/sass/elements/panel.scss";
+import "~/sass/elements/label.scss";
+import ReactPaginate from "react-paginate";
+import { StateType } from "../../../reducers/index";
+import { connect, Dispatch } from "react-redux";
+import ReactPaginateForked from "react-paginate";
+import PagerV2 from "~/components/general/pagerV2";
 
 interface AnnouncementsPanelProps {
   i18n: i18nType;
@@ -19,20 +24,23 @@ interface AnnouncementsPanelProps {
 }
 
 interface AnnouncementsPanelState {
-  currentPage:number;
+  currentPage: number;
   announcements: AnnouncementListType;
-  itemsPerPage: number
+  itemsPerPage: number;
 }
 
-class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
-  constructor(props: AnnouncementsPanelProps){
+class AnnouncementsPanel extends React.Component<
+  AnnouncementsPanelProps,
+  AnnouncementsPanelState
+> {
+  constructor(props: AnnouncementsPanelProps) {
     super(props);
 
     this.state = {
       itemsPerPage: 10,
       currentPage: 0,
-      announcements: props.announcements
-    }
+      announcements: props.announcements,
+    };
   }
 
   /**
@@ -40,13 +48,18 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
    * @param prevProps
    * @param prevState
    */
-  componentDidUpdate(prevProps: AnnouncementsPanelProps, prevState: AnnouncementsPanelState){
-    if(JSON.stringify(prevProps.announcements) !== JSON.stringify(this.props.announcements)){
+  componentDidUpdate(
+    prevProps: AnnouncementsPanelProps,
+    prevState: AnnouncementsPanelState
+  ) {
+    if (
+      JSON.stringify(prevProps.announcements) !==
+      JSON.stringify(this.props.announcements)
+    ) {
       this.setState({
-        announcements: this.props.announcements
-      })
+        announcements: this.props.announcements,
+      });
     }
-
   }
 
   /**
@@ -54,12 +67,11 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
    * sets selected page as currentPage to state
    * @param event
    */
-   handlePageChange = (selectedItem: { selected: number }) => {
-
+  handlePageChange = (selectedItem: { selected: number }) => {
     this.setState({
-      currentPage: selectedItem.selected
+      currentPage: selectedItem.selected,
     });
-  }
+  };
 
   /**
    * Creates aria-label for a tags depending if link is selected
@@ -71,18 +83,18 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
   handleAriaLabelBuilder = (index: number, selected: boolean): string => {
     let label = this.props.i18n.text.get("plugin.wcag.pager.goToPage.label");
 
-    if(selected){
+    if (selected) {
       label = this.props.i18n.text.get("plugin.wcag.pager.current.label");
     }
 
     return label;
-  }
+  };
 
   /**
    * render
    * @returns
    */
-  render(){
+  render() {
     const { announcements, currentPage, itemsPerPage } = this.state;
 
     const offset = currentPage * itemsPerPage;
@@ -90,7 +102,10 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
     /**
      * Defines current announcements that will be mapped
      */
-    const currentAnnouncements = announcements.slice(offset, offset + itemsPerPage);
+    const currentAnnouncements = announcements.slice(
+      offset,
+      offset + itemsPerPage
+    );
 
     /**
      * Calculates amount of pages
@@ -101,39 +116,65 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
     /**
      * renders announcements
      */
-    const renderAnnouncements = currentAnnouncements.map((announcement: AnnouncementType)=>{
-      const extraWorkspaces = announcement.workspaces && announcement.workspaces.length ? announcement.workspaces.length - 1 : 0;
-      return (
-        <Link key={announcement.id} className={`item-list__item item-list__item--announcements ${announcement.workspaces.length ? "item-list__item--has-workspaces" : ""}`}
-          href={`/announcements#${announcement.id}`} to={`/announcements#${announcement.id}`}>
-          <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
-          <span className="item-list__text-body item-list__text-body--multiline">
-            <span className="item-list__announcement-caption">
-              {announcement.caption}
+    const renderAnnouncements = currentAnnouncements.map(
+      (announcement: AnnouncementType) => {
+        const extraWorkspaces =
+          announcement.workspaces && announcement.workspaces.length
+            ? announcement.workspaces.length - 1
+            : 0;
+        return (
+          <Link
+            key={announcement.id}
+            className={`item-list__item item-list__item--announcements ${
+              announcement.workspaces.length
+                ? "item-list__item--has-workspaces"
+                : ""
+            }`}
+            href={`/announcements#${announcement.id}`}
+            to={`/announcements#${announcement.id}`}
+          >
+            <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
+            <span className="item-list__text-body item-list__text-body--multiline">
+              <span className="item-list__announcement-caption">
+                {announcement.caption}
+              </span>
+              <span className="item-list__announcement-date">
+                {this.props.i18n.time.format(announcement.startDate)}
+              </span>
+              {announcement.workspaces && announcement.workspaces.length ? (
+                <div className="labels item-list__announcement-workspaces">
+                  <span className="label">
+                    <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                    <span className="label__text label__text--announcement-workspace">
+                      {announcement.workspaces[0].name}{" "}
+                      {announcement.workspaces[0].nameExtension
+                        ? "(" + announcement.workspaces[0].nameExtension + ")"
+                        : null}
+                    </span>
+                  </span>
+                  {extraWorkspaces ? (
+                    <span className="label">
+                      {"(+" + extraWorkspaces + ")"}
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
             </span>
-            <span className="item-list__announcement-date">
-              {this.props.i18n.time.format(announcement.startDate)}
-            </span>
-            {announcement.workspaces && announcement.workspaces.length ?
-              <div className="labels item-list__announcement-workspaces">
-                <span className="label">
-                  <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                  <span className="label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
-                </span>
-                {extraWorkspaces ? <span className="label">{"(+" + extraWorkspaces + ")"}</span> : null}
-              </div> : null}
-          </span>
-        </Link>
-      )
-    })
+          </Link>
+        );
+      }
+    );
 
     /**
      * renders pagination body as one of announcements list item
      */
     const renderPaginationBody = (
-      <div className="item-list__item item-list__item--announcements" aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}>
+      <div
+        className="item-list__item item-list__item--announcements"
+        aria-label={this.props.i18n.text.get("plugin.wcag.pager.label")}
+      >
         <span className="item-list__text-body item-list__text-body--multiline--footer">
-          <ReactPaginate
+          <PagerV2
             previousLabel=""
             nextLabel=""
             breakLabel="..."
@@ -142,12 +183,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
             pageCount={pageCount}
             pageRangeDisplayed={2}
             onPageChange={this.handlePageChange}
-            ariaLabelBuilder={this.handleAriaLabelBuilder}
-            containerClassName={"pager__body"}
-            pageClassName="pager__item"
-            activeClassName={"pager__item pager__item--current"}
-            breakClassName="pager__item pager__item--gap"
-           />
+          />
         </span>
       </div>
     );
@@ -156,19 +192,33 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
       <div className="panel panel--announcements">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--announcements icon-paper-plane"></div>
-          <h2 className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.announcements.title')}</h2>
+          <h2 className="panel__header-title">
+            {this.props.i18n.text.get("plugin.frontPage.announcements.title")}
+          </h2>
         </div>
         {this.props.announcements.length ? (
           <div className="panel__body">
-            <div className="item-list item-list--panel-announcements" style={ this.props.overflow && {overflow: "auto"}}>
+            <div
+              className="item-list item-list--panel-announcements"
+              style={this.props.overflow && { overflow: "auto" }}
+            >
               {renderAnnouncements}
             </div>
-            {this.props.announcements.length > itemsPerPage ? renderPaginationBody : null}
+            {this.props.announcements.length > itemsPerPage
+              ? renderPaginationBody
+              : null}
           </div>
-          ) : (
-            <div className="panel__body panel__body--empty" aria-label={this.props.i18n.text.get("plugin.frontPage.announcementPanel.ariaLabel.announcement.panel")}>
-              {this.props.i18n.text.get("plugin.frontPage.announcements.noAnnouncements")}
-            </div>
+        ) : (
+          <div
+            className="panel__body panel__body--empty"
+            aria-label={this.props.i18n.text.get(
+              "plugin.frontPage.announcementPanel.ariaLabel.announcement.panel"
+            )}
+          >
+            {this.props.i18n.text.get(
+              "plugin.frontPage.announcements.noAnnouncements"
+            )}
+          </div>
         )}
       </div>
     );
@@ -180,24 +230,21 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
  * @param state
  * @returns
  */
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     i18n: state.i18n,
-    announcements: state.announcements.announcements
-  }
-};
+    announcements: state.announcements.announcements,
+  };
+}
 
 /**
  * mapDispatchToProps
  * @param dispatch
  * @returns
  */
-function mapDispatchToProps(dispatch: Dispatch<any>){
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
-};
+}
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AnnouncementsPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsPanel);

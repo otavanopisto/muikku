@@ -12,11 +12,10 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/tabs.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/avatar.scss";
-import { getName, filterMatch } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import {
   ContactRecipientType,
   ShortWorkspaceUserWithActiveStatusType,
-  UserType,
 } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import Tabs, { MobileOnlyTabs } from "~/components/general/tabs";
@@ -26,19 +25,20 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
 } from "~/components/general/application-list";
-import Pager from "~/components/general/pager";
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from "./dialogs/deactivate-reactivate-user";
-import FormElement, {
-  SearchFormElement,
-} from "~/components/general/form-element";
+import { SearchFormElement } from "~/components/general/form-element";
 import WorkspaceUser from "~/components/general/workspace-user";
+import PagerV2 from "~/components/general/pagerV2";
 import {
   loadStaffMembersOfWorkspace,
   loadStudentsOfWorkspace,
   LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 
+/**
+ * WorkspaceUsersProps
+ */
 interface WorkspaceUsersProps {
   status: StatusType;
   workspace: WorkspaceType;
@@ -47,6 +47,9 @@ interface WorkspaceUsersProps {
   loadStudents: LoadUsersOfWorkspaceTriggerType;
 }
 
+/**
+ * WorkspaceUsersState
+ */
 interface WorkspaceUsersState {
   studentCurrentlyBeingSentMessage: ShortWorkspaceUserWithActiveStatusType;
   activeTab: "ACTIVE" | "INACTIVE";
@@ -57,6 +60,9 @@ interface WorkspaceUsersState {
   studentCurrentBeingToggledStatus: ShortWorkspaceUserWithActiveStatusType;
 }
 
+/**
+ * WorkspaceUsers
+ */
 class WorkspaceUsers extends React.Component<
   WorkspaceUsersProps,
   WorkspaceUsersState
@@ -66,6 +72,10 @@ class WorkspaceUsers extends React.Component<
   private allActiveStudentsPages: number = 0;
   private allInActiveStudentsPages: number = 0;
 
+  /**
+   * Constructor method
+   * @param props
+   */
   constructor(props: WorkspaceUsersProps) {
     super(props);
 
@@ -80,40 +90,52 @@ class WorkspaceUsers extends React.Component<
     };
 
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
-    this.removeStudentBeingSentMessage = this.removeStudentBeingSentMessage.bind(
-      this
-    );
+    this.removeStudentBeingSentMessage =
+      this.removeStudentBeingSentMessage.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
-    this.removeStudentBeingToggledStatus = this.removeStudentBeingToggledStatus.bind(
-      this
-    );
-    this.setStudentBeingToggledStatus = this.setStudentBeingToggledStatus.bind(
-      this
-    );
+    this.removeStudentBeingToggledStatus =
+      this.removeStudentBeingToggledStatus.bind(this);
+    this.setStudentBeingToggledStatus =
+      this.setStudentBeingToggledStatus.bind(this);
     this.onTabChange = this.onTabChange.bind(this);
     this.loadStaffMembers = this.loadStaffMembers.bind(this);
     this.loadActiveStudents = this.loadActiveStudents.bind(this);
     this.loadInActiveStudents = this.loadInActiveStudents.bind(this);
   }
 
+  /**
+   * onSendMessageTo
+   * @param student
+   */
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
     this.setState({
       studentCurrentlyBeingSentMessage: student,
     });
   }
 
+  /**
+   * removeStudentBeingSentMessage
+   */
   removeStudentBeingSentMessage() {
     this.setState({
       studentCurrentlyBeingSentMessage: null,
     });
   }
 
+  /**
+   * onTabChange
+   * @param id
+   */
   onTabChange(id: "ACTIVE" | "INACTIVE") {
     this.setState({
       activeTab: id,
     });
   }
 
+  /**
+   * updateSearch
+   * @param query
+   */
   updateSearch(query: string) {
     this.props.loadStudents({
       workspace: this.props.workspace,
@@ -141,6 +163,9 @@ class WorkspaceUsers extends React.Component<
     });
   }
 
+  /**
+   * removeStudentBeingToggledStatus
+   */
   removeStudentBeingToggledStatus() {
     this.setState({
       studentCurrentBeingToggledStatus: null,
@@ -149,6 +174,10 @@ class WorkspaceUsers extends React.Component<
     this.loadActiveStudents(1);
   }
 
+  /**
+   * setStudentBeingToggledStatus
+   * @param student
+   */
   setStudentBeingToggledStatus(
     student: ShortWorkspaceUserWithActiveStatusType
   ) {
@@ -157,6 +186,10 @@ class WorkspaceUsers extends React.Component<
     });
   }
 
+  /**
+   * loadStaffMembers
+   * @param page
+   */
   loadStaffMembers(page: number) {
     const data = {
       workspace: this.props.workspace,
@@ -170,6 +203,11 @@ class WorkspaceUsers extends React.Component<
     this.setState({ currentStaffPage: page });
   }
 
+  /**
+   * handleStudentLoad
+   * @param page
+   * @param active
+   */
   handleStudentLoad = (page: number, active: boolean) => {
     const data = {
       workspace: this.props.workspace,
@@ -183,16 +221,52 @@ class WorkspaceUsers extends React.Component<
     this.props.loadStudents(data);
   };
 
+  /**
+   * loadActiveStudents
+   * @param page
+   */
   loadActiveStudents(page: number) {
     this.handleStudentLoad(page, true);
     this.setState({ currentActiveStudentPage: page });
   }
 
+  /**
+   * loadInActiveStudents
+   * @param page
+   */
   loadInActiveStudents(page: number) {
     this.handleStudentLoad(page, false);
     this.setState({ currentInactiveStudentPage: page });
   }
 
+  /**
+   * handles pager changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleStaffPagerChange = (selectedItem: { selected: number }) =>
+    this.loadStaffMembers(selectedItem.selected + 1);
+
+  /**
+   * handles pager changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleActiveStudentsPagerChange = (selectedItem: { selected: number }) =>
+    this.loadActiveStudents(selectedItem.selected + 1);
+
+  /**
+   * handles pager changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleInActiveStudentsPagerChange = (selectedItem: { selected: number }) =>
+    this.loadInActiveStudents(selectedItem.selected + 1);
+
+  /**
+   * UNSAFE_componentWillReceiveProps. Should be refactored at somepoint
+   * @param nextProps
+   */
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceUsersProps) {
     if (nextProps.workspace && nextProps.workspace.staffMembers) {
       this.allStaffPages = Math.ceil(
@@ -211,22 +285,30 @@ class WorkspaceUsers extends React.Component<
     }
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const currentStudentBeingSentMessage: ContactRecipientType = this.state
       .studentCurrentlyBeingSentMessage && {
       type: "user",
       value: {
         id: this.state.studentCurrentlyBeingSentMessage.userEntityId,
-        name: getName(this.state.studentCurrentlyBeingSentMessage, true)
-      }
+        name: getName(this.state.studentCurrentlyBeingSentMessage, true),
+      },
     };
     const staffPager =
       this.allStaffPages > 1 ? (
-        <Pager
-          identifier="staffPager"
-          current={this.state.currentStaffPage}
-          pages={this.allStaffPages}
-          onClick={this.loadStaffMembers}
+        <PagerV2
+          previousLabel=""
+          nextLabel=""
+          breakLabel="..."
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={2}
+          initialPage={this.state.currentStaffPage}
+          pageCount={this.allStaffPages}
+          onPageChange={this.handleStaffPagerChange}
         />
       ) : null;
 
@@ -258,7 +340,7 @@ class WorkspaceUsers extends React.Component<
                         type: "staff",
                         value: {
                           id: staff.userEntityId,
-                          name: getName(staff, true)
+                          name: getName(staff, true),
                         },
                       },
                     ]}
@@ -358,11 +440,15 @@ class WorkspaceUsers extends React.Component<
 
                   const pager =
                     this.allActiveStudentsPages > 1 ? (
-                      <Pager
-                        identifier="activeStudentsPager"
-                        current={this.state.currentActiveStudentPage}
-                        pages={this.allActiveStudentsPages}
-                        onClick={this.loadActiveStudents}
+                      <PagerV2
+                        previousLabel=""
+                        nextLabel=""
+                        breakLabel="..."
+                        initialPage={this.state.currentActiveStudentPage - 1}
+                        marginPagesDisplayed={1}
+                        pageCount={this.allActiveStudentsPages}
+                        pageRangeDisplayed={2}
+                        onPageChange={this.handleActiveStudentsPagerChange}
                       />
                     ) : null;
                   return (
@@ -406,17 +492,21 @@ class WorkspaceUsers extends React.Component<
                     ));
                   const pager =
                     this.allInActiveStudentsPages > 1 ? (
-                      <Pager
-                        identifier="archivedStudentsPager"
-                        current={this.state.currentInactiveStudentPage}
-                        pages={this.allInActiveStudentsPages}
-                        onClick={this.loadInActiveStudents}
+                      <PagerV2
+                        previousLabel=""
+                        nextLabel=""
+                        breakLabel="..."
+                        initialPage={this.state.currentInactiveStudentPage - 1}
+                        marginPagesDisplayed={1}
+                        pageCount={this.allInActiveStudentsPages}
+                        pageRangeDisplayed={2}
+                        onPageChange={this.handleInActiveStudentsPagerChange}
                       />
                     ) : null;
                   return (
                     <ApplicationList footer={pager} modifiers="workspace-users">
                       {this.props.workspace &&
-                        this.props.workspace.inactiveStudents ? (
+                      this.props.workspace.inactiveStudents ? (
                         inactiveStudents.length ? (
                           inactiveStudents
                         ) : (
@@ -466,6 +556,10 @@ class WorkspaceUsers extends React.Component<
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -474,6 +568,10 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

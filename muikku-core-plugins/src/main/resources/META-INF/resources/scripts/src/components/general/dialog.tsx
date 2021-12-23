@@ -10,11 +10,11 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Tabs, { TabType } from "~/components/general/tabs";
-import { createAllTabs } from "~/helper-functions/tabs"
+import { createAllTabs } from "~/helper-functions/tabs";
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
-import Pager from "~/components/general/pager";
+import PagerV2 from "~/components/general/pagerV2";
 
 interface DialogProps {
   children?: React.ReactElement<any>;
@@ -174,7 +174,7 @@ interface DialogRowProps {
   modifiers?: string | Array<string>;
 }
 
-interface DialogRowState { }
+interface DialogRowState {}
 
 export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
   render() {
@@ -184,10 +184,11 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row ${this.props.modifiers
-          ? modifiers.map((m) => `dialog__content-row--${m}`).join(" ")
-          : ""
-          }`}
+        className={`dialog__content-row ${
+          this.props.modifiers
+            ? modifiers.map((m) => `dialog__content-row--${m}`).join(" ")
+            : ""
+        }`}
       >
         {this.props.children}
       </div>
@@ -201,7 +202,7 @@ interface DialogRowHeaderProps {
   description?: string;
 }
 
-interface DialogRowHeaderState { }
+interface DialogRowHeaderState {}
 
 export class DialogRowHeader extends React.Component<
   DialogRowHeaderProps,
@@ -214,29 +215,32 @@ export class DialogRowHeader extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row-header ${this.props.modifiers
-          ? modifiers.map((m) => `dialog__content-row-header--${m}`).join(" ")
-          : ""
-          }`}
+        className={`dialog__content-row-header ${
+          this.props.modifiers
+            ? modifiers.map((m) => `dialog__content-row-header--${m}`).join(" ")
+            : ""
+        }`}
       >
         <div
-          className={`dialog__content-row-header-title ${this.props.modifiers
-            ? modifiers
-              .map((m) => `dialog__content-row-title--${m}`)
-              .join(" ")
-            : ""
-            }`}
+          className={`dialog__content-row-header-title ${
+            this.props.modifiers
+              ? modifiers
+                  .map((m) => `dialog__content-row-title--${m}`)
+                  .join(" ")
+              : ""
+          }`}
         >
           {this.props.title}
         </div>
         {this.props.description ? (
           <div
-            className={`dialog__content-row-header-description ${this.props.modifiers
-              ? modifiers
-                .map((m) => `dialog__content-row-title-description--${m}`)
-                .join(" ")
-              : ""
-              }`}
+            className={`dialog__content-row-header-description ${
+              this.props.modifiers
+                ? modifiers
+                    .map((m) => `dialog__content-row-title-description--${m}`)
+                    .join(" ")
+                : ""
+            }`}
           >
             {this.props.description}
           </div>
@@ -250,7 +254,7 @@ interface DialogRowContentProps {
   modifiers?: string | Array<string>;
 }
 
-interface DialogRowContentState { }
+interface DialogRowContentState {}
 
 export class DialogRowContent extends React.Component<
   DialogRowContentProps,
@@ -263,12 +267,13 @@ export class DialogRowContent extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`dialog__content-row-content ${this.props.modifiers
-          ? modifiers
-            .map((m) => `dialog__content-row-content--${m}`)
-            .join(" ")
-          : ""
-          }`}
+        className={`dialog__content-row-content ${
+          this.props.modifiers
+            ? modifiers
+                .map((m) => `dialog__content-row-content--${m}`)
+                .join(" ")
+            : ""
+        }`}
       >
         {this.props.children}
       </div>
@@ -403,6 +408,22 @@ export class DialogRemoveUsers extends React.Component<
     this.goToAllUsersPage(this.state.currentAllPage);
   }
 
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleRemoveUsersPagerChange = (selectedItem: { selected: number }) =>
+    this.goToRemovePage(selectedItem.selected);
+
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleAllUsersPagerChange = (selectedItem: { selected: number }) =>
+    this.goToAllUsersPage(selectedItem.selected);
+
   render() {
     const tabs: TabType[] = [
       {
@@ -443,12 +464,11 @@ export class DialogRemoveUsers extends React.Component<
                             aside={
                               <Avatar
                                 id={
-                                  user.variables &&
-                                    user.variables.identifier
+                                  user.variables && user.variables.identifier
                                     ? (user.variables.identifier as number)
                                     : this.getNumberFromUserId(
-                                      user.id as string
-                                    )
+                                        user.id as string
+                                      )
                                 }
                                 hasImage={
                                   user.variables && user.variables.boolean
@@ -461,10 +481,7 @@ export class DialogRemoveUsers extends React.Component<
                             }
                           >
                             <ApplicationListItemHeader
-                              onClick={this.toggleUserRemoved.bind(
-                                this,
-                                user
-                              )}
+                              onClick={this.toggleUserRemoved.bind(this, user)}
                               modifiers="course"
                             >
                               <span className="application-list__header-primary">
@@ -482,12 +499,16 @@ export class DialogRemoveUsers extends React.Component<
                 </ApplicationList>
               </DialogRow>
               <DialogRow>
-                <Pager
-                  identifier={this.props.identifier + "All"}
-                  current={this.state.currentAllPage}
-                  onClick={this.goToAllUsersPage}
-                  pages={this.props.pages}
-                ></Pager>
+                <PagerV2
+                  previousLabel=""
+                  nextLabel=""
+                  breakLabel="..."
+                  initialPage={this.state.currentAllPage - 1}
+                  marginPagesDisplayed={1}
+                  pageCount={this.props.pages}
+                  pageRangeDisplayed={2}
+                  onPageChange={this.handleAllUsersPagerChange}
+                />
               </DialogRow>
             </DialogRow>
           );
@@ -517,12 +538,11 @@ export class DialogRemoveUsers extends React.Component<
                             aside={
                               <Avatar
                                 id={
-                                  user.variables &&
-                                    user.variables.identifier
+                                  user.variables && user.variables.identifier
                                     ? (user.variables.identifier as number)
                                     : this.getNumberFromUserId(
-                                      user.id as string
-                                    )
+                                        user.id as string
+                                      )
                                 }
                                 hasImage={
                                   user.variables && user.variables.boolean
@@ -535,10 +555,7 @@ export class DialogRemoveUsers extends React.Component<
                             }
                           >
                             <ApplicationListItemHeader
-                              onClick={this.toggleUserRemoved.bind(
-                                this,
-                                user
-                              )}
+                              onClick={this.toggleUserRemoved.bind(this, user)}
                               modifiers="course"
                             >
                               <span className="application-list__header-primary">
@@ -557,12 +574,18 @@ export class DialogRemoveUsers extends React.Component<
               </DialogRow>
               <DialogRow>
                 {this.props.removeUsers.length > 0 ? (
-                  <Pager
-                    identifier={this.props.identifier + "Remove"}
-                    current={this.state.currentRemovePage}
-                    onClick={this.goToRemovePage}
-                    pages={removePages}
-                  ></Pager>
+                  <PagerV2
+                    previousLabel=""
+                    nextLabel=""
+                    breakLabel="..."
+                    nextAriaLabel="Seuraava"
+                    previousAriaLabel="Edellinen"
+                    initialPage={this.state.currentRemovePage - 1}
+                    marginPagesDisplayed={1}
+                    pageCount={removePages}
+                    pageRangeDisplayed={2}
+                    onPageChange={this.handleRemoveUsersPagerChange}
+                  />
                 ) : null}
               </DialogRow>
             </DialogRow>

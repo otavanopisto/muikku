@@ -17,7 +17,7 @@ import {
   UserPanelUsersType,
   UsersListType,
 } from "~/reducers/main-function/users";
-import Pager from "~/components/general/pager";
+import PagerV2 from "~/components/general/pagerV2";
 
 interface UserPanelProps {
   i18n: i18nType;
@@ -63,7 +63,10 @@ export default class UserPanel extends React.Component<
   }
 
   componentDidUpdate(prevProps: UserPanelProps) {
-    if (prevProps.searchString !== this.props.searchString && this.props.searchString !== null) {
+    if (
+      prevProps.searchString !== this.props.searchString &&
+      this.props.searchString !== null
+    ) {
       if (this.state.currentPage !== 1) {
         this.setState({ currentPage: 1 });
       }
@@ -72,6 +75,14 @@ export default class UserPanel extends React.Component<
       });
     }
   }
+
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handlePagerChange = (selectedItem: { selected: number }) =>
+    this.getToPage(selectedItem.selected + 1);
 
   render() {
     let results = this.props.users.results as UsersListType;
@@ -101,7 +112,8 @@ export default class UserPanel extends React.Component<
                         <span className="icon-pencil"></span>
                       </StudentDialog>
                     </div>
-                  ) : data.role === "ADMINISTRATOR" || data.role === "STUDY_PROGRAMME_LEADER" ? (
+                  ) : data.role === "ADMINISTRATOR" ||
+                    data.role === "STUDY_PROGRAMME_LEADER" ? (
                     <div title={data.role}>
                       <span className="state-DISABLED icon-pencil"></span>
                     </div>
@@ -120,12 +132,17 @@ export default class UserPanel extends React.Component<
             <span>{this.props.i18n.text.get(this.props.onEmpty)}</span>
           </div>
         )}
-        <Pager
-          identifier={this.props.identifier.toLowerCase()}
-          current={this.state.currentPage}
-          onClick={this.getToPage}
-          pages={this.state.pages}
-        ></Pager>
+
+        <PagerV2
+          previousLabel=""
+          nextLabel=""
+          breakLabel="..."
+          initialPage={this.state.currentPage - 1}
+          marginPagesDisplayed={1}
+          pageCount={this.state.pages}
+          pageRangeDisplayed={2}
+          onPageChange={this.handlePagerChange}
+        />
       </ApplicationSubPanel>
     );
   }
