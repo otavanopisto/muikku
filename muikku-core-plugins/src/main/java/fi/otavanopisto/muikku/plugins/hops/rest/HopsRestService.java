@@ -351,7 +351,7 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @DefaultValue("TRUE") @QueryParam("includeMoreInfo") Boolean includeMoreInfo) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @DefaultValue("FALSE") @QueryParam("includeMoreInfo") Boolean includeMoreInfo) {
     
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
     
@@ -389,7 +389,6 @@ public class HopsRestService {
               suggestedWorkspace.setName(name);
               suggestedWorkspace.setSubject(subjectObject.getCode());
               suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
-              includeMoreInfo = true;
               if (Boolean.TRUE.equals(includeMoreInfo)) {
                 String typeId = (String) result.get("workspaceTypeId");
                 String[] typeIdentifier = typeId.split("-", 2);
