@@ -49,12 +49,39 @@ public class SuggestedWorkspaceRestModel {
   public void setType(String type) {
     this.type = type;
   }
+  
+  public Boolean getHasCustomImage() {
+    return hasCustomImage;
+  }
+  
+  public void setHasCustomImage(Boolean hasCustomImage) {
+    this.hasCustomImage = hasCustomImage;
+  }
+  
+  public String getNameExtension() {
+    return nameExtension;
+  }
+  
+  public void setNameExtension(String nameExtension) {
+    this.nameExtension = nameExtension;
+  }
+  
+  public String getCourseType() {
+    return courseType;
+  }
+  
+  public void setCourseType(String courseType) {
+    this.courseType = courseType;
+  }
 
   private Long id;
   private String name;
   private String subject;
   private String urlName;
   private Integer courseNumber;
-  private String type;
+  private String type; // optional/next
+  private Boolean hasCustomImage;
+  private String nameExtension;
+  private String courseType; // ryhmäkurssi/non-stop
 
 }

@@ -16,6 +16,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -42,15 +43,18 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -99,6 +103,12 @@ public class HopsRestService {
   
   @Inject
   private WebSocketMessenger webSocketMessenger;
+  
+  @Inject 
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
 
   @Inject
   @Any
@@ -341,7 +351,7 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @DefaultValue("TRUE") @QueryParam("includeMoreInfo") Boolean includeMoreInfo) {
     
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
     
@@ -372,14 +382,35 @@ public class HopsRestService {
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
               String name = (String) result.get("name");
-              if (result.get("nameExtension") != null) {
+              String nameExtension = (String) result.get("nameExtension");
+              if (nameExtension != null) {
                 name = String.format("%s (%s)", name, (String) result.get("nameExtension"));
               }
               suggestedWorkspace.setName(name);
               suggestedWorkspace.setSubject(subjectObject.getCode());
               suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
-              suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
+              includeMoreInfo = true;
+              if (Boolean.TRUE.equals(includeMoreInfo)) {
+                String typeId = (String) result.get("workspaceTypeId");
+                String[] typeIdentifier = typeId.split("-", 2);
+                if (typeIdentifier.length == 2) {
+                  String dS= typeIdentifier[0];
+                  String tyI = typeIdentifier[1];
+                
+                  SchoolDataIdentifier workspacetypeIdentifier = new SchoolDataIdentifier(tyI, dS);
+                  
+                  WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspacetypeIdentifier); 
+                  suggestedWorkspace.setNameExtension(nameExtension);
+                  suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
+                  suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
+                  
+                  if (workspaceType != null) {
+                    suggestedWorkspace.setCourseType(workspaceType.getName());
+                  }
+                }
+              }
               suggestedWorkspaces.add(suggestedWorkspace);
+
             }
           }
         }
