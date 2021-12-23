@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -78,7 +79,7 @@ public class IndexPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       logout();
 
-      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder
         .mockLogin(student)
         .addCourseStudent(workspace.getId(), mockCourseStudent)
