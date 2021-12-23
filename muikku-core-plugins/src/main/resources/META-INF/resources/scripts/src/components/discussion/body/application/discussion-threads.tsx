@@ -66,8 +66,6 @@ class DDiscussionThreads extends React.Component<
    * @param event
    */
   handlePageChange = (selectedItem: { selected: number }) => {
-    console.log(selectedItem);
-
     window.location.hash =
       (this.props.discussion.areaId || 0) + "/" + (selectedItem.selected + 1);
   };
