@@ -405,7 +405,7 @@ public class HopsRestService {
                   finally {
                     schoolDataBridgeSessionController.endSystemSession();
                   }
-                  suggestedWorkspace.setId(Long.parseLong(workspaceEntity.getIdentifier()));
+                  suggestedWorkspace.setWorkspaceId(Long.parseLong(workspaceEntity.getIdentifier()));
                   suggestedWorkspace.setNameExtension(nameExtension);
                   suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
                   suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));

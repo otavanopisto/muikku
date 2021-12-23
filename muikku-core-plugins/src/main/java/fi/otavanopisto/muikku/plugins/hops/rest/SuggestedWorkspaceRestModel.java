@@ -81,6 +81,14 @@ public class SuggestedWorkspaceRestModel {
   public void setDescription(String description) {
     this.description = description;
   }
+  
+  public Long getWorkspaceId() {
+    return workspaceId;
+  }
+
+  public void setWorkspaceId(Long workspaceId) {
+    this.workspaceId = workspaceId;
+  }
 
   private Long id;
   private String name;
@@ -92,5 +100,6 @@ public class SuggestedWorkspaceRestModel {
   private String nameExtension;
   private String courseType; // ryhmäkurssi/non-stop
   private String description;
+  private Long workspaceId;
 
 }
