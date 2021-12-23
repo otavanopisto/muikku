@@ -73,6 +73,14 @@ public class SuggestedWorkspaceRestModel {
   public void setCourseType(String courseType) {
     this.courseType = courseType;
   }
+  
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
   private Long id;
   private String name;
@@ -83,5 +91,6 @@ public class SuggestedWorkspaceRestModel {
   private Boolean hasCustomImage;
   private String nameExtension;
   private String courseType; // ryhmäkurssi/non-stop
+  private String description;
 
 }
