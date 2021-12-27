@@ -143,15 +143,6 @@ export async function loadWorkspacesHelper(filters: WorkspacesActiveFiltersType 
       actualWorkspaces.pop();
     }
 
-    //Create the payload for updating all the coursepicker properties
-    if (hasEvaluationFees) {
-      actualWorkspaces = await Promise.all(actualWorkspaces.map(async (workspace) => {
-        return Object.assign(workspace, {
-          feeInfo: await promisify(mApi().workspace.workspaces.feeInfo.read(workspace.id), 'callback')()
-        });
-      }));
-    }
-
     let payload: WorkspacesPatchType = {
       state: "READY",
       availableWorkspaces: (concat ? workspaces.availableWorkspaces.concat(actualWorkspaces) : actualWorkspaces),
