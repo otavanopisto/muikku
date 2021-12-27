@@ -10,7 +10,7 @@ import {
 import { UserFileType, UserWithSchoolDataType } from '~/reducers/user-index';
 import {
   WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceStudentActivityType,
-  WorkspaceJournalListType, MaterialContentNodeType, MaterialEvaluationType, MaterialAssignmentType, WorkspaceStudentAssessmentsType
+  WorkspaceJournalListType, MaterialContentNodeType, MaterialEvaluationType, MaterialAssignmentType, WorkspaceStudentAssessmentsType, MaterialCompositeRepliesType
 } from '~/reducers/workspaces';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
@@ -258,7 +258,7 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
 
       let userData: AllStudentUsersDataType = getState().records.userData;
 
-      let [workspace, journals, materials] = await Promise.all([
+      let [workspace, journals, materials, compositeReplies] = await Promise.all([
 
         (async () => {
           let workspace: WorkspaceType;
@@ -319,8 +319,18 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
               path: assignments[index].path,
             });
           });
-        })()
+        })(),
 
+        (async () => {
+          const compositeRepliesList = <MaterialCompositeRepliesType[]>await promisify(
+            mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
+              userEntityId,
+            }),
+            "callback"
+          )() || [];
+
+          return compositeRepliesList;
+        })(),
       ]);
 
       dispatch({
@@ -328,7 +338,8 @@ let setCurrentStudentUserViewAndWorkspace: SetCurrentStudentUserViewAndWorkspace
         payload: {
           workspace,
           journals,
-          materials
+          materials,
+          compositeReplies
         }
       });
       dispatch({

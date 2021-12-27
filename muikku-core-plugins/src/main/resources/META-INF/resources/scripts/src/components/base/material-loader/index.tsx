@@ -544,9 +544,9 @@ class MaterialLoader extends React.Component<
       modifiers || []
     )
       .map((s) => `material-page--${s}`)
-      .join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
+      .join(" ")} ${isHidden ? "state-HIDDEN" : ""}`;
     if (compositeReplies && compositeReplies.state) {
-      className += " material-page--" + compositeReplies.state;
+      className += " state-" + compositeReplies.state;
     }
 
     let content = null;

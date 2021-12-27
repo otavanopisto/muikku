@@ -20,7 +20,8 @@
     padding: 0;
   }
 
-  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+  .cke {
+    // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
     border: 2px solid $taskfield-border-color;
     border-radius: 2px;
@@ -88,8 +89,9 @@
 }
 
 .evaluation-modal__content-wrapper {
+
   @include breakpoint($breakpoint-desktop) {
-    height: calc(100% - 55px);
+    height: 100%;
     overflow-y: scroll;
   }
 }
@@ -286,7 +288,6 @@
 
 .evaluation-modal__event-literal-assessment,
 .evaluation-modal__item-literal-assessment-data {
-
   p,
   ul,
   table {
@@ -392,6 +393,13 @@
   cursor: default;
 }
 
+.evaluation-modal__item-hidden {
+  font-size: 0.75rem;
+  font-style: italic;
+  padding: 4px 0 2px;
+}
+
+.evaluation-modal__item-hidden,
 .evaluation-modal__item-meta {
   align-items: center;
   color: $color-default-contrast;
@@ -450,6 +458,7 @@
     border-radius: 2px;
     color: $color-default;
   }
+
   // scss-lint:enable SelectorFormat
 }
 
