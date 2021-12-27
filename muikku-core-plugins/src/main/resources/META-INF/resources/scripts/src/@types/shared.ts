@@ -429,6 +429,11 @@ export interface Suggestion {
   name: string;
   subject: string;
   courseNumber: number;
+  urlName: string;
+  hasCustomImage: boolean;
+  nameExtension: string | null;
+  courseType: CourseType;
+  description?: string | null;
 }
 
 /**
@@ -437,14 +442,7 @@ export interface Suggestion {
  */
 type CourseType = "Nonstop" | "Ryhmäkurssi";
 
-export interface SuggestionWithWorkspaceInfo extends Suggestion {
-  workspaceId: number;
-  urlName: string;
-  hasCustomImage: boolean;
-  nameExtension: string | null;
-  courseType: CourseType;
-  description?: string | null;
-}
+export interface SuggestionWithWorkspaceInfo extends Suggestion {}
 
 export interface StudentCourseChoice {
   subject: string;

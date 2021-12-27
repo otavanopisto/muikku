@@ -17,6 +17,7 @@ import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup"
 import { useCanSignUp } from "./hooks/use-can-signup";
 import { useWorkspace } from "../../records/hooks/use-workspace";
 import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
+import { Suggestion } from "../../../../../../@types/shared";
 
 const responsive = {
   desktop: {
@@ -86,7 +87,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 /**
  * Course
  */
-export interface Course extends SuggestionWithWorkspaceInfo {}
+export interface Course extends Suggestion {}
 
 /**
  * CourseCarouselItemProps
@@ -103,10 +104,6 @@ interface CourseCarouselItemProps {
 const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
   const { course } = props;
 
-  const { loadingCanSignUp, canSignUp, serverError } = useCanSignUp(course.id);
-  const { loadingWorkspace, workspaceData, serverErrorWorkspace } =
-    useWorkspace(course.id);
-
   /**
    * createHtmlMarkup
    * This should sanitize html
@@ -119,7 +116,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
   };
 
   const courseImage = course.hasCustomImage
-    ? `url(/rest/workspace/workspaces/${course.workspaceId}/workspacefile/workspace-frontpage-image-cropped)`
+    ? `url(/rest/workspace/workspaces/${course.id}/workspacefile/workspace-frontpage-image-cropped)`
     : "url(/gfx/workspace-default-header.jpg)";
 
   return (
@@ -129,49 +126,10 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         style={{ backgroundImage: courseImage }}
       >
         <h3>{course.name}</h3>
+
+        {course.nameExtension !== null && <h2>{course.nameExtension}</h2>}
       </div>
-      <div style={{ display: "flex" }}>
-        <div
-          style={{ display: "flex", margin: "0 10px 0 0", padding: "2px 0" }}
-        >
-          <span
-            style={{
-              fontWeight: 300,
-              textTransform: "uppercase",
-            }}
-          >
-            Laajuus:
-          </span>
-          <span
-            style={{
-              textTransform: "uppercase",
-              padding: "0 5px",
-            }}
-          >
-            35 H
-          </span>
-        </div>
-        <div
-          style={{ display: "flex", margin: "0 10px 0 0", padding: "2px 0" }}
-        >
-          <span
-            style={{
-              fontWeight: 300,
-              textTransform: "uppercase",
-            }}
-          >
-            Tyyppi:
-          </span>
-          <span
-            style={{
-              textTransform: "uppercase",
-              padding: "0 5px",
-            }}
-          >
-            {course.courseType}
-          </span>
-        </div>
-      </div>
+
       <div
         style={{
           display: "flex",
@@ -200,37 +158,29 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
           )}
         </div>
         <div style={{ margin: "5px 0" }}>
-          {loadingCanSignUp ? (
-            <div className="loader-empty" />
-          ) : (
-            <>
-              <Button
-                aria-label={course.name}
-                buttonModifiers={[
-                  "primary-function-content ",
-                  "coursepicker-course-action",
-                ]}
-                href={`/workspace/${course.urlName}`}
-              >
-                Tutustu
-              </Button>
+          <Button
+            aria-label={course.name}
+            buttonModifiers={[
+              "primary-function-content ",
+              "coursepicker-course-action",
+            ]}
+            href={`/workspace/${course.urlName}`}
+          >
+            Tutustu
+          </Button>
 
-              {canSignUp ? (
-                <WorkspaceSignup>
-                  <Button
-                    aria-label={course.name}
-                    buttonModifiers={[
-                      "primary-function-content",
-                      "coursepicker-course-action",
-                    ]}
-                  >
-                    {/*  {this.props.i18n.text.get("plugin.coursepicker.course.signup")} */}
-                    Ilmoittaudu
-                  </Button>
-                </WorkspaceSignup>
-              ) : null}
-            </>
-          )}
+          <WorkspaceSignup>
+            <Button
+              aria-label={course.name}
+              buttonModifiers={[
+                "primary-function-content",
+                "coursepicker-course-action",
+              ]}
+            >
+              {/*  {this.props.i18n.text.get("plugin.coursepicker.course.signup")} */}
+              Ilmoittaudu
+            </Button>
+          </WorkspaceSignup>
         </div>
       </div>
     </div>

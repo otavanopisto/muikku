@@ -10,6 +10,7 @@ import {
 } from "~/@types/shared";
 import { Course } from "../course-carousel";
 import { schoolCourseTable } from "~/mock/mock-data";
+import { Suggestion } from "../../../../../../../@types/shared";
 
 /**
  * UpdateSuggestionParams
@@ -121,7 +122,7 @@ export const useCourseCarousel = (
             /**
              * Initialized suggestions list
              */
-            let allSuggestions: SuggestionWithWorkspaceInfo[] = [];
+            let allSuggestions: Suggestion[] = [];
 
             try {
               /**
@@ -133,10 +134,9 @@ export const useCourseCarousel = (
                     mApi().hops.listWorkspaceSuggestions.read({
                       subject: cItem.subjectCode,
                       courseNumber: cItem.courseNumber,
-                      includeMoreInfo: true,
                     }),
                     "callback"
-                  )()) as SuggestionWithWorkspaceInfo[];
+                  )()) as Suggestion[];
 
                   allSuggestions = allSuggestions.concat(
                     suggestionListForSubject

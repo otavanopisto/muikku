@@ -564,7 +564,9 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
               }}
             >
               <CourseCarousel
-                studentId={(window as any).MUIKKU_LOGGED_USER}
+                studentId={document
+                  .querySelector('meta[name="muikku:loggedUser"]')
+                  .getAttribute("value")}
                 displayNotification={this.props.displayNotification}
               />
             </div>
