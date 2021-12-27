@@ -127,6 +127,7 @@ public class SessionBackingBean {
           else {
             loggedUserName = user.getDisplayName();
           }
+          hasFees = user.getHasEvaluationFees();
         }
       }
 
@@ -469,6 +470,14 @@ public class SessionBackingBean {
     return canAccessChat;
   }
 
+  public boolean getHasFees() {
+    return hasFees;
+  }
+
+  public void setHasFees(boolean hasFees) {
+    this.hasFees = hasFees;
+  }
+
   private String displayName;
   private String emails;
   private String addresses;
@@ -480,5 +489,6 @@ public class SessionBackingBean {
   private boolean canAccessEnvironmentForum;
   private boolean canAccessWorklist;
   private boolean canAccessChat;
+  private boolean hasFees;
 
 }
