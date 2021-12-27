@@ -50,11 +50,9 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -103,9 +101,6 @@ public class HopsRestService {
   
   @Inject
   private WebSocketMessenger webSocketMessenger;
-  
-  @Inject 
-  private WorkspaceController workspaceController;
   
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
@@ -351,7 +346,7 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @DefaultValue("FALSE") @QueryParam("includeMoreInfo") Boolean includeMoreInfo) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces) {
     
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
     
@@ -379,42 +374,18 @@ public class HopsRestService {
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity != null) {
+              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity)) {
+                continue;
+              }
               SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
               suggestedWorkspace.setId(workspaceEntity.getId());
-              String name = (String) result.get("name");
-              String nameExtension = (String) result.get("nameExtension");
-              if (nameExtension != null) {
-                name = String.format("%s (%s)", name, (String) result.get("nameExtension"));
-              }
-              suggestedWorkspace.setName(name);
+              suggestedWorkspace.setName((String) result.get("name"));
+              suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
               suggestedWorkspace.setSubject(subjectObject.getCode());
               suggestedWorkspace.setCourseNumber((Integer) result.get("courseNumber"));
-              if (Boolean.TRUE.equals(includeMoreInfo)) {
-                String typeId = (String) result.get("workspaceTypeId");
-                String[] typeIdentifier = typeId.split("-", 2);
-                if (typeIdentifier.length == 2) {
-                  String dS= typeIdentifier[0];
-                  String tyI = typeIdentifier[1];
-                
-                  SchoolDataIdentifier workspacetypeIdentifier = new SchoolDataIdentifier(tyI, dS);
-                  schoolDataBridgeSessionController.startSystemSession();
-                  WorkspaceType workspaceType = null;
-                  try {
-                    workspaceType = workspaceController.findWorkspaceType(workspacetypeIdentifier); 
-                  }
-                  finally {
-                    schoolDataBridgeSessionController.endSystemSession();
-                  }
-                  suggestedWorkspace.setWorkspaceId(Long.parseLong(workspaceEntity.getIdentifier()));
-                  suggestedWorkspace.setNameExtension(nameExtension);
-                  suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
-                  suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
-                  suggestedWorkspace.setDescription((String) result.get("description"));
-                  if (workspaceType != null) {
-                    suggestedWorkspace.setCourseType(workspaceType.getName());
-                  }
-                }
-              }
+              suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
+              suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
+              suggestedWorkspace.setDescription((String) result.get("description"));
               suggestedWorkspaces.add(suggestedWorkspace);
 
             }
