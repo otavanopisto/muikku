@@ -561,7 +561,6 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                 height: "auto",
                 width: "100%",
                 display: "content",
-                backgroundColor: "#dfdede",
               }}
             >
               <CourseCarousel

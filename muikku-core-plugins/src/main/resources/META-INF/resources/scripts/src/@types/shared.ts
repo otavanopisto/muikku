@@ -429,7 +429,21 @@ export interface Suggestion {
   name: string;
   subject: string;
   courseNumber: number;
+}
+
+/**
+ * FOR SOME REASON... backend's course type is defined
+ * in finnish in the backend side
+ */
+type CourseType = "Nonstop" | "Ryhmäkurssi";
+
+export interface SuggestionWithWorkspaceInfo extends Suggestion {
+  workspaceId: number;
   urlName: string;
+  hasCustomImage: boolean;
+  nameExtension: string | null;
+  courseType: CourseType;
+  description?: string | null;
 }
 
 export interface StudentCourseChoice {

@@ -6,7 +6,7 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   CourseStatus,
   StudentActivityCourse,
-  Suggestion,
+  SuggestionWithWorkspaceInfo,
 } from "~/@types/shared";
 import { Course } from "../course-carousel";
 import { schoolCourseTable } from "~/mock/mock-data";
@@ -116,10 +116,12 @@ export const useCourseCarousel = (
               }
             }
 
+            console.log(courses);
+
             /**
              * Initialized suggestions list
              */
-            let allSuggestions: Suggestion[] = [];
+            let allSuggestions: SuggestionWithWorkspaceInfo[] = [];
 
             try {
               /**
@@ -131,9 +133,10 @@ export const useCourseCarousel = (
                     mApi().hops.listWorkspaceSuggestions.read({
                       subject: cItem.subjectCode,
                       courseNumber: cItem.courseNumber,
+                      includeMoreInfo: true,
                     }),
                     "callback"
-                  )()) as Suggestion[];
+                  )()) as SuggestionWithWorkspaceInfo[];
 
                   allSuggestions = allSuggestions.concat(
                     suggestionListForSubject

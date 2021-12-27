@@ -9,11 +9,14 @@ import * as React from "react";
 import Carousel from "react-multi-carousel";
 
 import Button from "~/components/general/button";
-import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { useCourseCarousel } from "./hooks/use-course-carousel";
 import Link from "~/components/general/link";
-import { Suggestion } from "~/@types/shared";
+import { SuggestionWithWorkspaceInfo } from "~/@types/shared";
+import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
+import { useCanSignUp } from "./hooks/use-can-signup";
+import { useWorkspace } from "../../records/hooks/use-workspace";
+import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
 
 const responsive = {
   desktop: {
@@ -83,10 +86,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
 /**
  * Course
  */
-export interface Course extends Suggestion {
-  description?: string;
-  imageSrc?: string;
-}
+export interface Course extends SuggestionWithWorkspaceInfo {}
 
 /**
  * CourseCarouselItemProps
@@ -103,42 +103,135 @@ interface CourseCarouselItemProps {
 const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
   const { course } = props;
 
+  const { loadingCanSignUp, canSignUp, serverError } = useCanSignUp(course.id);
+  const { loadingWorkspace, workspaceData, serverErrorWorkspace } =
+    useWorkspace(course.id);
+
+  /**
+   * createHtmlMarkup
+   * This should sanitize html
+   * @param htmlString string that contains html
+   */
+  const createHtmlMarkup = (htmlString: string) => {
+    return {
+      __html: htmlString,
+    };
+  };
+
+  const courseImage = course.hasCustomImage
+    ? `url(/rest/workspace/workspaces/${course.workspaceId}/workspacefile/workspace-frontpage-image-cropped)`
+    : "url(/gfx/workspace-default-header.jpg)";
+
   return (
     <div className="carousel-itemV2--courses">
-      <div className="carousel-itemV2__image-section--courses">
-        <img
-          src="https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png?w=640"
-          alt="no-image"
-          className="image-section__img"
-        />
+      <div
+        className="carousel-itemV2__image-section--courses"
+        style={{ backgroundImage: courseImage }}
+      >
+        <h3>{course.name}</h3>
+      </div>
+      <div style={{ display: "flex" }}>
+        <div
+          style={{ display: "flex", margin: "0 10px 0 0", padding: "2px 0" }}
+        >
+          <span
+            style={{
+              fontWeight: 300,
+              textTransform: "uppercase",
+            }}
+          >
+            Laajuus:
+          </span>
+          <span
+            style={{
+              textTransform: "uppercase",
+              padding: "0 5px",
+            }}
+          >
+            35 H
+          </span>
+        </div>
+        <div
+          style={{ display: "flex", margin: "0 10px 0 0", padding: "2px 0" }}
+        >
+          <span
+            style={{
+              fontWeight: 300,
+              textTransform: "uppercase",
+            }}
+          >
+            Tyyppi:
+          </span>
+          <span
+            style={{
+              textTransform: "uppercase",
+              padding: "0 5px",
+            }}
+          >
+            {course.courseType}
+          </span>
+        </div>
       </div>
       <div
         style={{
           display: "flex",
           flexFlow: "column",
-          textAlign: "initial",
           margin: "5px 0",
+          justifyContent: "space-between",
         }}
       >
-        <span style={{ margin: "5px" }}>
-          {course.subject} - {course.courseNumber}
-        </span>
-        <h3
+        <div
           style={{
-            margin: "5px",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
+            display: "flex",
+            flexFlow: "column",
+            textAlign: "initial",
+            margin: "5px 0",
+            height: "120px",
+            maxHeight: "120px",
+            overflow: "auto",
           }}
         >
-          {course.name}
-        </h3>
-        <p style={{ margin: "5px" }}>
-          {course.description ? course.description : "-"}
-        </p>
-      </div>
-      <div style={{ margin: "5px 0" }}>
-        <Link href={`/workspace/${course.urlName}`}>Kurssille</Link>
+          {course.description ? (
+            <div
+              dangerouslySetInnerHTML={createHtmlMarkup(course.description)}
+            />
+          ) : (
+            <p style={{ margin: "5px" }}>-</p>
+          )}
+        </div>
+        <div style={{ margin: "5px 0" }}>
+          {loadingCanSignUp ? (
+            <div className="loader-empty" />
+          ) : (
+            <>
+              <Button
+                aria-label={course.name}
+                buttonModifiers={[
+                  "primary-function-content ",
+                  "coursepicker-course-action",
+                ]}
+                href={`/workspace/${course.urlName}`}
+              >
+                Tutustu
+              </Button>
+
+              {canSignUp ? (
+                <WorkspaceSignup>
+                  <Button
+                    aria-label={course.name}
+                    buttonModifiers={[
+                      "primary-function-content",
+                      "coursepicker-course-action",
+                    ]}
+                  >
+                    {/*  {this.props.i18n.text.get("plugin.coursepicker.course.signup")} */}
+                    Ilmoittaudu
+                  </Button>
+                </WorkspaceSignup>
+              ) : null}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

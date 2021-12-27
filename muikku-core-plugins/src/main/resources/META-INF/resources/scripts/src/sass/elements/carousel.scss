@@ -99,11 +99,30 @@
   width: calc(100% - 20px);
   margin: 5px 10px;
   box-shadow: 3px 3px 3px 3px grey;
+  border: 5px solid white;
 }
 
 .carousel-itemV2__image-section--courses {
-  height: 150px;
+  height: 200px;
   width: 100%;
+  background-size: cover;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 15px 0;
+
+  h3 {
+    background: #ffffffe3;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    box-shadow: 15px 0 10px $color-workspace-hero-shadow;
+    display: flex;
+    font-size: 1rem;
+    font-weight: 300;
+    padding: 5px 10px 5px 5px;
+    width: fit-content;
+    max-width: 90%;
+  }
 }
 
 .carousel-itemV2__image-section--courses img {
