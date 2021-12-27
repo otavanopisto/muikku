@@ -17,6 +17,8 @@ export interface i18nType {
   }
 }
 
+const lang = document.querySelector("html").lang;
+
 //TODO it uses the global muikku locale because the i18n time part doesn't have a way to know
 //the current locale, it should be a method somehow
 export default function i18n(state={
@@ -28,7 +30,7 @@ export default function i18n(state={
   },
   time: {
     format(date=new Date(), format="L"){
-      return moment(date).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(format);
+      return moment(date).locale(lang.toLowerCase()).format(format);
     },
     fromNow(date=new Date()){
       return moment(date).fromNow();
@@ -36,7 +38,7 @@ export default function i18n(state={
     formatDaily(date = new Date(), todayFormat = "LT", otherDayFormat = "l") {
       const momentOfDate = moment(date);
       const isToday = moment().isSame(momentOfDate, "day");
-      return moment(date).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(isToday ? todayFormat : otherDayFormat);
+      return moment(date).locale(lang.toLowerCase()).format(isToday ? todayFormat : otherDayFormat);
     },
     subtract(date=new Date(), input=1, value="days"){
       return moment(date).subtract(input, value).calendar();
@@ -45,10 +47,10 @@ export default function i18n(state={
       return moment(date).add(input, value).calendar();
     },
     getLocalizedMoment(...args:any[]){
-      return moment(...args).locale((window as any)._MUIKKU_LOCALE.toLowerCase());
+      return moment(...args).locale(lang.toLowerCase());
     },
     getLocale(){
-      return (window as any)._MUIKKU_LOCALE.toLowerCase();
+      return lang.toLowerCase();
     }
   }
 }, action: ActionType): i18nType {

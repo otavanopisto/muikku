@@ -70,17 +70,13 @@ export type CurrentStudentUserAndWorkspaceStatusType =
   | "ERROR";
 
 export interface RecordsType {
-  userData: AllStudentUsersDataType;
-  userDataStatus: AllStudentUsersDataStatusType;
-  studyStartDate: string; // Date of when studies have started
-  studyTimeEnd: string; // Date of when right to study ends
-  studyEndDate: string; // Date of when studies have ended
-  grades: RecordsGradesType;
-  files: Array<UserFileType>;
-  currentStatus: CurrentStudentUserAndWorkspaceStatusType;
-  current?: CurrentRecordType;
-  location?: TranscriptOfRecordLocationType;
-  curriculums: WorkspaceCurriculumFilterListType;
+  userData: AllStudentUsersDataType,
+  userDataStatus: AllStudentUsersDataStatusType,
+  files: Array<UserFileType>,
+  currentStatus: CurrentStudentUserAndWorkspaceStatusType,
+  current?: CurrentRecordType,
+  location?: TranscriptOfRecordLocationType,
+  curriculums: WorkspaceCurriculumFilterListType
 }
 
 export type TranscriptOfRecordLocationType =
@@ -90,22 +86,15 @@ export type TranscriptOfRecordLocationType =
   | "summary"
   | "yo";
 
-export default function records(
-  state: RecordsType = {
-    userData: [],
-    userDataStatus: "WAIT",
-    location: null,
-    files: (window as any).FILES,
-    grades: (window as any).GRADES,
-    studyStartDate: (window as any).STUDY_START_DATE || null,
-    studyTimeEnd: (window as any).STUDY_TIME_END || null,
-    studyEndDate: (window as any).STUDY_END_DATE || null,
-    current: null,
-    currentStatus: "WAIT",
-    curriculums: [],
-  },
-  action: ActionType
-): RecordsType {
+export default function records(state: RecordsType = {
+  userData: [],
+  userDataStatus: "WAIT",
+  location: null,
+  files: null,
+  current: null,
+  currentStatus: "WAIT",
+  curriculums: []
+}, action: ActionType): RecordsType {
   if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA") {
     return Object.assign({}, state, {
       userData: action.payload,
