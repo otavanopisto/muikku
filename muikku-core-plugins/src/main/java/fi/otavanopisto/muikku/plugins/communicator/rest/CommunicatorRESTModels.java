@@ -98,6 +98,7 @@ public class CommunicatorRESTModels {
       
       UserBasicInfo result = new UserBasicInfo(
           userEntity.getId(), 
+          userEntity.defaultSchoolDataIdentifier().toId(),
           user.getFirstName(), 
           user.getLastName(), 
           user.getNickName(),

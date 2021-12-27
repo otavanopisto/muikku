@@ -58,10 +58,6 @@ export type CurrentStudentUserAndWorkspaceStatusType = "WAIT" | "LOADING" | "REA
 export interface RecordsType {
   userData: AllStudentUsersDataType,
   userDataStatus: AllStudentUsersDataStatusType,
-  studyStartDate: string, // Date of when studies have started
-  studyTimeEnd: string, // Date of when right to study ends
-  studyEndDate: string, // Date of when studies have ended
-  grades: RecordsGradesType,
   files: Array<UserFileType>,
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,
   current?: CurrentRecordType,
@@ -75,11 +71,7 @@ export default function records(state: RecordsType = {
   userData: [],
   userDataStatus: "WAIT",
   location: null,
-  files: (window as any).FILES,
-  grades: (window as any).GRADES,
-  studyStartDate: (window as any).STUDY_START_DATE || null,
-  studyTimeEnd: (window as any).STUDY_TIME_END || null,
-  studyEndDate: (window as any).STUDY_END_DATE || null,
+  files: null,
   current: null,
   currentStatus: "WAIT",
   curriculums: []

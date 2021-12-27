@@ -7,6 +7,29 @@
 import $ from '~/lib/jquery';
 import { ActionType } from "~/actions";
 
+export interface WhoAmIType {
+  studyTimeEnd: string;
+  studyTimeLeftStr: string;
+  studyStartDate: string;
+  studyEndDate: string;
+  phoneNumbers: any;
+  displayName: string;
+  curriculumIdentifier: string;
+  firstName: string;
+  lastName: string;
+  hasEvaluationFees: boolean;
+  hasImage: boolean;
+  id: number;
+  organizationIdentifier: string;
+  nickName: string;
+  isDefaultOrganization: boolean;
+  permissions: string[];
+  roles: string[];
+  studyProgrammeName: string;
+  addresses: string;
+  emails: string;
+}
+
 export interface StatusType {
   loggedIn: boolean,
   userId: number,
@@ -16,11 +39,28 @@ export interface StatusType {
   isActiveUser: boolean,
   isStudent: boolean,
   profile: ProfileStatusType,
-  currentWorkspaceId?: number,
-  currentWorkspaceName?: string,
+  currentWorkspaceInfo?: {
+    id: number;
+    organizationEntityId: number;
+    urlName: string;
+    archived: boolean;
+    name: string;
+    nameExtension: string;
+    description: string;
+    numVisits: number;
+    lastVisit: string;
+    access: string;
+    materialDefaultLicense: string;
+    published: boolean;
+    curriculumIdentifiers: string[];
+    subjectIdentifier: string;
+    hasCustomImage: boolean;
+  },
+  canCurrentWorkspaceSignup: boolean;
   hasImage: boolean,
   imgVersion: number,
-  hopsEnabled: boolean
+  hopsEnabled: boolean,
+  currentWorkspaceId: number,
 }
 
 export interface ProfileStatusType {
@@ -35,20 +75,25 @@ export interface ProfileStatusType {
   studyTimeEnd: string
 }
 
+const workspaceIdNode = document.querySelector('meta[name="muikku:workspaceId"]');
+const roleNode = document.querySelector('meta[name="muikku:role"]');
+
+// _MUIKKU_LOCALE should be taken from the html
 export default function status(state: StatusType = {
-  loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,
-  userId: (<any>window).MUIKKU_LOGGED_USER_ID,
-  permissions: (<any>window).MUIKKU_PERMISSIONS,
-  contextPath: (<any>window).CONTEXTPATH,
-  userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER,
-  isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER,
-  profile: (<any>window).PROFILE_DATA,
-  isStudent: (<any>window).MUIKKU_IS_STUDENT,
-  currentWorkspaceId: (<any>window).WORKSPACE_ID,
-  currentWorkspaceName: (<any>window).WORKSPACE_NAME,
+  loggedIn: JSON.parse(document.querySelector('meta[name="muikku:loggedIn"]').getAttribute("value")),    //whoami.id
+  userId: parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value")) || null,     // whoami.id
+  permissions: {},
+  contextPath: "",   // always empty
+  userSchoolDataIdentifier: document.querySelector('meta[name="muikku:loggedUser"]').getAttribute("value"), // missing
+  isActiveUser: JSON.parse(document.querySelector('meta[name="muikku:activeUser"]').getAttribute("value")), // missing
+  profile: null,
+  isStudent: roleNode.getAttribute("value") === "STUDENT", // check if roles contain STUDENT
+  currentWorkspaceInfo: null,
   hasImage: false,
   imgVersion: (new Date()).getTime(),
-  hopsEnabled: (<any>window).HOPS_ENABLED
+  currentWorkspaceId: (workspaceIdNode && parseInt(workspaceIdNode.getAttribute("value"))) || null,
+  canCurrentWorkspaceSignup: false,
+  hopsEnabled: false // /user/property/hops.enabled
 }, action: ActionType): StatusType {
   if (action.type === "LOGOUT") {
     // chat listens to this event to close the connection
@@ -62,6 +107,23 @@ export default function status(state: StatusType = {
     return { ...state, profile: action.payload };
   } else if (action.type === "UPDATE_STATUS_HAS_IMAGE") {
     return { ...state, hasImage: action.payload, imgVersion: (new Date()).getTime() };
+  } else if (action.type === "UPDATE_STATUS") {
+
+    const actionPayloadWoPermissions = {...action.payload};
+    delete actionPayloadWoPermissions["permissions"];
+
+    // TODO remove when JSF removed
+    const stateBasedCloneWoPermissions: any = {};
+    Object.keys(actionPayloadWoPermissions).forEach((k) => {
+      stateBasedCloneWoPermissions[k] = (state as any)[k];
+    });
+
+    const permissionsBasedClone: any = {};
+    Object.keys(action.payload.permissions || {}).forEach((k) => {
+      permissionsBasedClone[k] = (state as any).permissions[k];
+    });
+
+    return { ...state, ...actionPayloadWoPermissions, permissions: {...state.permissions, ...action.payload.permissions} };
   }
   return state;
 }

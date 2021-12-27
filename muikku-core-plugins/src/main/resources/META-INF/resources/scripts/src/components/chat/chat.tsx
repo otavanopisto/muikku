@@ -108,6 +108,8 @@ interface IChatProps {
   displayNotification: DisplayNotificationTriggerType,
 }
 
+const roleNode = document.querySelector('meta[name="muikku:role"]');
+
 class Chat extends React.Component<IChatProps, IChatState> {
   private messagesListenerHandler: any = null;
 
@@ -124,7 +126,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       availableMucRooms: [],
       showControlBox: JSON.parse(window.sessionStorage.getItem("showControlBox")) || false,
       showNewRoomForm: false,
-      isStudent: (window as any).MUIKKU_IS_STUDENT,
+      isStudent: roleNode.getAttribute("value") === "STUDENT",
       openRoomNumber: null,
 
       // we should have these open
@@ -543,7 +545,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
     let session = window.sessionStorage.getItem("strophe-bosh-session");
     let prebindSessionHost = window.sessionStorage.getItem("strophe-bosh-hostname");
-    const expectedId = (this.state.isStudent ? "muikku-student-" : "muikku-staff-") + (window as any).MUIKKU_LOGGED_USER_ID;
+    const expectedId = (this.state.isStudent ? "muikku-student-" : "muikku-staff-") +
+      document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value");
 
     let prebind: IPrebindResponseType = null;
     const isRestore = !!session;

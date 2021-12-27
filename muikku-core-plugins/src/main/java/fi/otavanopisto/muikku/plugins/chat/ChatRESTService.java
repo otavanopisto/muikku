@@ -256,6 +256,24 @@ public class ChatRESTService extends PluginRESTService {
     }
   }
   
+  /**
+   * GET mapi().chat.isAvailable
+   * 
+   * Returns whether chat functionality is active and available for the currently logged in user.
+   * 
+   * Output: true|false
+   */
+  @GET
+  @Path("/isAvailable")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getIsActive() {
+    if (!chatController.isChatActive()) {
+      return Response.ok(false).build();
+    }
+    UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
+    return Response.ok(userChatSettings != null).build();
+  }
+
   @GET
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE)
