@@ -867,6 +867,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitAndClickWithAction(String selector) {
+    waitForPresent(selector);
     new Actions(getWebDriver()).moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().perform();    
   }
 
@@ -882,10 +883,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void scrollIntoView(String selector) {
+    waitForPresent(selector);
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format("document.querySelectorAll('%s').item(0).scrollIntoView(true);", selector));
   }
   
   protected void scrollTo(String selector, int offset) {
+    waitForPresent(selector);
     ((JavascriptExecutor) getWebDriver()).executeScript(String.format(""
         + "var elPos = document.querySelectorAll('%s').item(0).getBoundingClientRect().top;"
         + "var offsetPosition = elPos - %d;"

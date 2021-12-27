@@ -31,6 +31,9 @@ class GeneralInformation extends React.Component<GeneralInformationProps, Genera
   }
 
   public render() {
+    if (!this.props.profile || !this.props.status.profile) {
+      return null;
+    }
     if (this.props.profile.location !== "general") {
       return null;
     }

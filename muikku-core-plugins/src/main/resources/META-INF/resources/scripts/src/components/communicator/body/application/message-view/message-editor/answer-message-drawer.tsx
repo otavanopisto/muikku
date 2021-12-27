@@ -276,23 +276,23 @@ class AnswerMessageDrawer extends SessionStateComponent<
               autoFocus={!!this.props.initialSelectedItems}
             />
           </div>
-          <div
-            className="env-dialog__row env-dialog__row--ckeditor"
-            key="new-message-3"
-          >
-            <div className="env-dialog__form-element-container">
-              <label className="env-dialog__label">
-                {this.props.i18n.text.get(
-                  "plugin.communicator.createmessage.title.content"
-                )}
-              </label>
-              <CKEditor
-                editorTitle={editorTitle}
-                onChange={this.onCKEditorChange}
-              >
-                {this.state.text}
-              </CKEditor>
-            </div>
+        </div>
+        <div
+          className="env-dialog__row env-dialog__row--ckeditor"
+          key="new-message-3"
+        >
+          <div className="env-dialog__form-element-container">
+            <label className="env-dialog__label">
+              {this.props.i18n.text.get(
+                "plugin.communicator.createmessage.title.content"
+              )}
+            </label>
+            <CKEditor
+              editorTitle={editorTitle}
+              onChange={this.onCKEditorChange}
+            >
+              {this.state.text}
+            </CKEditor>
           </div>
         </div>
         {this.props.signature ? (
