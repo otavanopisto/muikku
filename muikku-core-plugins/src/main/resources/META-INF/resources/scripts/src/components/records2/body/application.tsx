@@ -128,8 +128,8 @@ class StudiesApplication extends React.Component<
           this.props.status.isActiveUser &&
           this.props.hops.value &&
           yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) >
-            -1 &&
-          !this.props.records.studyEndDate
+            -1 /* &&
+          !this.props.records.studyEndDate */
         );
     }
 
