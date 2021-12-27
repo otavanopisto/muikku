@@ -10,7 +10,7 @@ import { StateType } from '~/reducers';
 //TODO screw ie11 >:(
 import 'babel-polyfill';
 
-export default function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?: (store: Store<StateType>)=>any): Store<StateType> {
+export default async function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?: (store: Store<StateType>)=>Promise<any> | any): Promise<Store<StateType>> {
   let store: Store<StateType>;
   if (process.env["NODE_ENV"] !== "production"){
     store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
@@ -46,7 +46,7 @@ export default function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?
     (window as any).STORE_DEBUG = store;
   }
 
-  let props:any = beforeCreateApp ? beforeCreateApp(newStore) : {};
+  let props:any = beforeCreateApp ? await beforeCreateApp(newStore) : {};
   render(React.createElement(
       Provider,
       { store: store },

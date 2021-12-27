@@ -322,6 +322,21 @@ public class WorklistRESTService {
   }
 
   /**
+   * GET mapi().worklist.isAvailable
+   * 
+   * Returns whether worklist functionality is active and available for the currently logged in user.
+   * 
+   * Output: true|false
+   */
+  @GET
+  @Path("/isAvailable")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getIsActive() {
+    boolean available = worklistController.isWorklistActive() && sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_WORKLIST_BILLING);
+    return Response.ok(available).build();
+  }
+
+  /**
    * GET mApi().worklist.worklistSummary
    * 
    * Returns an array of monthly worklist summary items for the given user; mainly the number

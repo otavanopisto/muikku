@@ -66,28 +66,12 @@ public class SuggestedWorkspaceRestModel {
     this.nameExtension = nameExtension;
   }
   
-  public String getCourseType() {
-    return courseType;
-  }
-  
-  public void setCourseType(String courseType) {
-    this.courseType = courseType;
-  }
-  
   public String getDescription() {
     return description;
   }
 
   public void setDescription(String description) {
     this.description = description;
-  }
-  
-  public Long getWorkspaceId() {
-    return workspaceId;
-  }
-
-  public void setWorkspaceId(Long workspaceId) {
-    this.workspaceId = workspaceId;
   }
 
   private Long id;
@@ -98,8 +82,6 @@ public class SuggestedWorkspaceRestModel {
   private String type; // optional/next
   private Boolean hasCustomImage;
   private String nameExtension;
-  private String courseType; // ryhmäkurssi/non-stop
   private String description;
-  private Long workspaceId;
 
 }

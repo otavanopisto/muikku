@@ -16,6 +16,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -40,8 +41,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -86,8 +87,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -134,8 +135,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -191,8 +192,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -243,8 +244,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
@@ -308,8 +309,8 @@ public class FlagTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
-    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId());
+    MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    MockCourseStudent mcs2 = new MockCourseStudent(4l, workspace.getId(), student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
     mockBuilder.
       addCourseStudent(workspace.getId(), mcs).
       addCourseStudent(workspace.getId(), mcs2).
