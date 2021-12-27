@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.evaluation.dao;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -54,6 +55,17 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     supplementationRequest.setArchived(archived);
     
     return persist(supplementationRequest);
+  }
+  
+  public SupplementationRequest findLatestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
+    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+    if (requests.isEmpty()) {
+      return null;
+    }
+    else if (requests.size() > 1) {
+      requests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
+    }
+    return requests.get(0);
   }
   
   public List<SupplementationRequest> listByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {

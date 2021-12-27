@@ -1311,6 +1311,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
     delete actualOriginal["chatStatus"];
+    delete actualOriginal["inactiveStudents"];
 
     try {
       let newDetails = data.update.details;
