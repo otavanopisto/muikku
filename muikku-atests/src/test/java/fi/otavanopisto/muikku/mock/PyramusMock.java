@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
@@ -212,6 +213,7 @@ public class PyramusMock {
 
       public Builder addCourseStudent(Long courseId, MockCourseStudent mockCourseStudent){
         CourseStudent courseStudent = TestUtilities.courseStudentFromMockCourseStudent(mockCourseStudent);
+        pmock.mockCourseStudents.add(mockCourseStudent);
         if(pmock.courseStudents.containsKey(courseId)){
           pmock.courseStudents.get(courseId).add(courseStudent);
         }else{
@@ -221,6 +223,13 @@ public class PyramusMock {
         }
         return this;
       }
+      
+      public Builder removeMockCourseStudent(MockCourseStudent mockCourseStudent){
+        pmock.mockCourseStudents.removeIf(mcs -> Objects.equals(mcs, mockCourseStudent));
+        pmock.mockCourseStudents.add(mockCourseStudent);
+        return this;
+      }
+      
 //      TODO: UserGroup mockings
       public Builder addStudentGroup(Long id, Long organizationId, String name, String description, Long creatorId, boolean archived) {
         OffsetDateTime date = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
@@ -1271,6 +1280,27 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockCourseActivities() throws JsonProcessingException {
+        for (MockCourseStudent mcs : pmock.mockCourseStudents) {
+          List<CourseActivity> courseActivities = mcs.getCourseActivities();
+
+          stubFor(get(urlPathEqualTo(String.format("/1/students/students/%d/courseActivity", mcs.getStudentId())))
+              .withQueryParam("courseIds", matching(".*"))
+              .withQueryParam("includeTransferCredits", matching(".*"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
+              .withStatus(200)));
+          
+          stubFor(get(urlMatching(String.format("/1/students/students/%d/courseActivity", mcs.getStudentId())))
+              .willReturn(aResponse()
+                  .withHeader("Content-Type", "application/json")
+                  .withBody(pmock.objectMapper.writeValueAsString(courseActivities))
+                  .withStatus(200)));
+        }
+        return this;
+      }
+      
       public Builder build() throws Exception {
         mockDefaultOrganization();        
         mockPersons();
@@ -1290,6 +1320,7 @@ public class PyramusMock {
         mockCourseStudents();
         mockCourseStaffMemberRoles();
         mockStudentGroups();
+        mockCourseActivities();
         
         for (String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
@@ -1456,4 +1487,5 @@ public class PyramusMock {
   private List<Organization> organizations = new ArrayList<>();
   private HashMap<Long, List<CourseSignupStudyProgramme>> signupStudyProgrammes = new HashMap<>();
   private HashMap<Long, List<CourseSignupStudentGroup>> signupStudentGroups = new HashMap<>();
+  private List<MockCourseStudent> mockCourseStudents = new ArrayList<>();
 }

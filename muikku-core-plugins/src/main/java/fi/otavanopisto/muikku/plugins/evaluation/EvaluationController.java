@@ -45,11 +45,14 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -57,11 +60,11 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 public class EvaluationController {
 
   @Inject
-  private Logger logger;
-  
-  @Inject
   @BaseUrl
   private String baseUrl;
+
+  @Inject
+  private Logger logger;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -86,7 +89,7 @@ public class EvaluationController {
   
   @Inject
   private GradingController gradingController;
-
+  
   @Inject
   private UserEntityController userEntityController;
 
@@ -98,9 +101,116 @@ public class EvaluationController {
 
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
-  
+
   @Inject
   private EvaluationFileStorageUtils file;
+  
+  /* Workspace activity */
+  
+  public List<WorkspaceActivity> listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier workspaceIdentifier,
+      boolean includeTransferCredits,
+      boolean includeAssignmentStatistics) {
+    String dataSource = studentIdentifier.getDataSource(); 
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    
+    // Ask base information from Pyramus
+    
+    List<WorkspaceActivity> activities = gradingController.listWorkspaceActivities(
+        dataSource,
+        studentIdentifier.getIdentifier(),
+        workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
+        includeTransferCredits);
+    
+    // Complement the response with data available only in Muikku
+    
+    for (WorkspaceActivity activity : activities) {
+      
+      // Skip activity items without a course (basically transfer credits)
+      
+      if (activity.getIdentifier() == null) {
+        continue;
+      }
+      
+      // WorkspaceEntityId
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, activity.getIdentifier());
+      if (workspaceEntity == null) {
+        logger.warning(String.format("Pyramus course %s not found", activity.getIdentifier()));
+        continue;
+      }
+      activity.setId(workspaceEntity.getId());
+      
+      // Supplementation request, if one exists and is newer than activity date so far
+      
+      SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+          userEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+      if (supplementationRequest != null && supplementationRequest.getRequestDate().after(activity.getDate())) {
+        activity.setText(supplementationRequest.getRequestText());
+        activity.setDate(supplementationRequest.getRequestDate());
+        activity.setState(WorkspaceActivityState.SUPPLEMENTATION_REQUESTED);
+      }
+      
+      // Optional assignment statistics
+      
+      if (includeAssignmentStatistics) {
+        int exercisesTotal = 0;
+        int exercisesAnswered = 0;
+        int evaluablesTotal = 0;
+        int evaluablesAnswered = 0;
+        
+        // Exercises
+        
+        List<WorkspaceMaterial> assignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+            workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE);
+        exercisesTotal = assignments.size();
+        for (WorkspaceMaterial assignment : assignments) {
+          WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
+              .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, userEntity);
+          if (workspaceMaterialReply != null) {
+            switch (workspaceMaterialReply.getState()) {
+              case SUBMITTED:
+              case PASSED:
+              case FAILED:
+              case INCOMPLETE:
+                exercisesAnswered++;
+              break;
+              default:
+              break;
+            }
+          }
+        }
+        
+        // Evaluables
+        
+        assignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+            workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
+        evaluablesTotal = assignments.size();
+        for (WorkspaceMaterial assignment : assignments) {
+          WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
+              .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, userEntity);
+          if (workspaceMaterialReply != null) {
+            switch (workspaceMaterialReply.getState()) {
+              case SUBMITTED:
+              case PASSED:
+              case FAILED:
+              case INCOMPLETE:
+                evaluablesAnswered++;
+              break;
+              default:
+              break;
+            }
+          }
+        }
+
+        activity.setExercisesTotal(exercisesTotal);
+        activity.setExercisesAnswered(exercisesAnswered);
+        activity.setEvaluablesTotal(evaluablesTotal);
+        activity.setEvaluablesAnswered(evaluablesAnswered);
+      }
+    }
+    return activities;
+  }
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
@@ -171,14 +281,7 @@ public class EvaluationController {
   }
   
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
-    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived); 
-    if (supplementationRequests.isEmpty()) {
-      return null;
-    }
-    else if (supplementationRequests.size() > 1) {
-      supplementationRequests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
-    }
-    return supplementationRequests.get(0);
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {

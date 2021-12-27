@@ -385,9 +385,7 @@ export default class Workspace extends React.Component<
       );
 
       let state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(state.status.currentWorkspaceName)
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -397,6 +395,9 @@ export default class Workspace extends React.Component<
                 loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
+            this.props.store.dispatch(
+              titleActions.updateTitle(workspace.name)
+            );
           },
         }) as Action
       );
@@ -765,7 +766,7 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,
-          state.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
+          true,
           (result) => {
             if (
               !hasLocationHashAndWillHaveToScrollIntoPosition &&
@@ -848,7 +849,7 @@ export default class Workspace extends React.Component<
         state.status.isStudent &&
         !state.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT
       ) {
-        if (!state.status.permissions.WORKSPACE_SIGNUP) {
+        if (!state.status.canCurrentWorkspaceSignup) {
           this.props.store.dispatch(
             displayNotification(
               state.i18n.text.get(

@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
@@ -41,6 +42,12 @@ public class GradingController {
   
   @Inject
   private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
+  
+  /* Workspace activity */
+  
+  public List<WorkspaceActivity> listWorkspaceActivities(String schoolDataSource, String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits) {
+    return gradingSchoolDataController.listWorkspaceActivities(schoolDataSource, studentIdentifier, workspaceIdentifier, includeTransferCredits);
+  }
   
   /* CompositeGradingScale */
   

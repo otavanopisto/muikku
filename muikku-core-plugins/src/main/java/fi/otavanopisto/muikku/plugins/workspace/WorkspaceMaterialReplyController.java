@@ -71,12 +71,12 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplyDAO.findById(workspaceMaterialReplyId);
   }
 
-  public List<WorkspaceMaterialReply> listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(
+  public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByWorkspaceEntity(
       WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     List<WorkspaceMaterialReply> workspaceMaterialReplies = new ArrayList<WorkspaceMaterialReply>();
     WorkspaceRootFolder rootFolder = workspaceRootFolderDAO.findByWorkspaceEntityId(workspaceEntity.getId());
     List<WorkspaceMaterial> workspaceMaterials = new ArrayList<WorkspaceMaterial>();
-    appendVisibleWorkspaceMaterials(workspaceMaterials, rootFolder);
+    appendWorkspaceMaterials(workspaceMaterials, rootFolder);
     WorkspaceMaterialReply reply;
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
       reply = findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
@@ -92,14 +92,14 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplyDAO.countByUserAndStatesAndMaterials(userEntityId, replyStates, materials);
   }
 
-  private void appendVisibleWorkspaceMaterials(List<WorkspaceMaterial> materials, WorkspaceNode workspaceNode) {
-    List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentAndHidden(workspaceNode, Boolean.FALSE);
+  private void appendWorkspaceMaterials(List<WorkspaceMaterial> materials, WorkspaceNode workspaceNode) {
+    List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParent(workspaceNode);
     for (WorkspaceNode childNode : childNodes) {
       if (childNode instanceof WorkspaceMaterial) {
         materials.add((WorkspaceMaterial) childNode);
       }
 
-      appendVisibleWorkspaceMaterials(materials, childNode);
+      appendWorkspaceMaterials(materials, childNode);
     }
   }
 

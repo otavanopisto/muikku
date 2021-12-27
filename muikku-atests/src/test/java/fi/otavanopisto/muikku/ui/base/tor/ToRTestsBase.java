@@ -4,6 +4,8 @@ import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -20,6 +22,8 @@ import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseActivity;
+import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
@@ -40,17 +44,32 @@ public class ToRTestsBase extends AbstractUITest {
         .addStudent(student)
         .mockMatriculationEligibility(true)
         .addStaffMember(admin)
-        .addCourse(course1)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
 
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
+      
+      CourseActivity ca = new CourseActivity();
+      ca.setCourseId(course1.getId());
+      ca.setCourseName(course1.getName());
+      ca.setGrade("Excellent");
+      ca.setPassingGrade(true);
+      ca.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      ca.setText("Test evaluation.");
+      ca.setActivityDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+      ca.setState(CourseActivityState.GRADED);
+      
+      
+      List<CourseActivity> courseActivities = new ArrayList<>();
+      courseActivities.add(ca);
+      
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId(), courseActivities);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 1l);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -61,31 +80,31 @@ public class ToRTestsBase extends AbstractUITest {
         "EVALUATED");
       
       try {
-      mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
-        .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
-        .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
-        .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-        .mockCourseAssessments(courseStudent, admin)
-        .mockStudentCourseStats(student.getId(), 10).build();
-      
-      logout();
-      mockBuilder.mockLogin(student);
-      login();
-      
-      navigate("/records#records", false);
-      waitForPresent(".application-list__item-header--course .application-list__header-primary");
-      assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
-      
-      waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
-      assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
-      
-      waitAndClick(".application-list__item-header--course .application-list__header-primary");
-      waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
-      assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
+        mockBuilder
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
+          .mockCompositeGradingScales()
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+          .mockCompositeCourseAssessmentRequests()
+          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
+          .mockStaffCompositeCourseAssessmentRequests()
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
+          .mockCourseAssessments(courseStudent, admin)
+          .mockStudentCourseStats(student.getId(), 10).build();
+        
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        
+        navigate("/records#records", false);
+        waitForPresent(".application-list__item-header--course .application-list__header-primary");
+        assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
+        
+        waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
+        assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
+        
+        waitAndClick(".application-list__item-header--course .application-list__header-primary");
+        waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+        assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -108,13 +127,13 @@ public class ToRTestsBase extends AbstractUITest {
         .addStudent(student)
         .mockMatriculationEligibility(true)
         .addStaffMember(admin)
-        .addCourse(course1)
         .mockLogin(admin)
+        .addCourse(course1)
         .build();
       login();
       
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 1l);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
@@ -193,7 +212,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void recordsHOPSAndMatriculation() throws JsonProcessingException, Exception {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -241,7 +260,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void recordsMatriculationExamNoSubjectsSelected() throws JsonProcessingException, Exception {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -274,7 +293,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
   @Test
   public void studiesSummaryTest() throws Exception {
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());

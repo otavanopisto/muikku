@@ -38,8 +38,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -88,8 +88,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -150,8 +150,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
         mockBuilder
         .addStaffMember(admin)
-        .mockLogin(admin)
         .addCourse(course1)
+        .mockLogin(admin)
         .build();
         login();
         Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -212,8 +212,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -273,8 +273,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -336,8 +336,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -397,8 +397,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .mockLogin(admin)
       .addCourse(course1)
+      .mockLogin(admin)
       .build();
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
