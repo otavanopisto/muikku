@@ -117,7 +117,12 @@ class Course extends React.Component<CourseProps, CourseState>{
                 this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Button>
             {this.state.canSignUp && this.props.status.loggedIn ?
-              <WorkspaceSignupDialog workspace={this.props.workspace}><Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
+              <WorkspaceSignupDialog workspaceSignUpDetails={{
+                id: this.props.workspace.id,
+                name: this.props.workspace.name,
+                nameExtension: this.props.workspace.nameExtension,
+                urlName: this.props.workspace.urlName,
+              }}><Button aria-label={this.props.workspace.name} buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
                 {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
               </Button></WorkspaceSignupDialog> : null}
           </ApplicationListItemFooter>
