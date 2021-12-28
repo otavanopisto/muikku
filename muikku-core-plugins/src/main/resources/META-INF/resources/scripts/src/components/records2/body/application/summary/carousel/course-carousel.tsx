@@ -169,7 +169,14 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
             Tutustu
           </Button>
 
-          <WorkspaceSignup>
+          <WorkspaceSignup
+            workspaceSignUpDetails={{
+              id: course.id,
+              name: course.name,
+              nameExtension: course.nameExtension,
+              urlName: course.urlName,
+            }}
+          >
             <Button
               aria-label={course.name}
               buttonModifiers={[
@@ -177,7 +184,6 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
                 "coursepicker-course-action",
               ]}
             >
-              {/*  {this.props.i18n.text.get("plugin.coursepicker.course.signup")} */}
               Ilmoittaudu
             </Button>
           </WorkspaceSignup>

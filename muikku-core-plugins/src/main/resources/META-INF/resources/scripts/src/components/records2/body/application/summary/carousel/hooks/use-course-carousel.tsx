@@ -117,8 +117,6 @@ export const useCourseCarousel = (
               }
             }
 
-            console.log(courses);
-
             /**
              * Initialized suggestions list
              */

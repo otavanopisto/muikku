@@ -18,6 +18,7 @@ import {
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
+  WorkspaceSignUpDetails,
 } from "~/reducers/workspaces";
 import {
   ShortWorkspaceUserWithActiveStatusType,
@@ -993,7 +994,7 @@ export interface SignupIntoWorkspaceTriggerType {
   (data: {
     success: () => any;
     fail: () => any;
-    workspace: WorkspaceType;
+    workspace: WorkspaceSignUpDetails;
     message: string;
   }): AnyActionType;
 }
