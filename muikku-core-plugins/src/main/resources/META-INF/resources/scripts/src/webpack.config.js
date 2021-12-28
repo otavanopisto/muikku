@@ -9,14 +9,21 @@ const mode = isDevelopment ? "development" : "production";
 
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
-const plugins = [
+const plugins = isDevelopment ? [
   new MiniCSSExtractPlugin({
     filename: "[name].css",
     chunkFilename: "[name].css",
     ignoreOrder: true,
   }),
   new ForkTsCheckerWebpackPlugin(),
-];
+  ] : [
+    new MiniCSSExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[name].css",
+      ignoreOrder: true,
+    })
+  ];
+
 const rules = [];
 
 if (mode === "production") {
