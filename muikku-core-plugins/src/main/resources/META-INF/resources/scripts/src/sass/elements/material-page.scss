@@ -1973,6 +1973,26 @@ mark[data-muikku-word-definition] {
   }
 }
 
+.material-exercise-feedback {
+  border: 1px solid blue;
+  border-left-width: 3px;
+  padding-left: 72px;
+  display: block;
+
+  &::before {
+    background: blue;
+    content: "\f02d";
+  }
+}
+
+.material-exercise-feedback[data-show='true'] {
+  display: block;
+}
+
+.material-exercise-feedback[data-show='false'] {
+  display: none;
+}
+
 // INSTRUCTION BOX
 .material-instructionbox {
   border: 1px solid $color-material-instruction-box;
