@@ -273,7 +273,7 @@ public class ChatRESTService extends PluginRESTService {
   /**
    * GET mapi().chat.isAvailable
    * 
-   * Returns whether chat functionality is active and available for the currently logged in user.
+   * Returns whether chat functionality is active and activated for the currently logged in user.
    * 
    * Output: true|false
    */
