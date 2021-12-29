@@ -1,11 +1,9 @@
 package fi.otavanopisto.muikku.plugins.profile;
 
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -15,7 +13,6 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
@@ -27,6 +24,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -40,13 +38,13 @@ public class ProfileBackingBean {
   
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
 
-  @Inject
-  private LocaleController localeController;
-  
   @Inject
   private ChatController chatController;
 
@@ -62,36 +60,7 @@ public class ProfileBackingBean {
     
     studyStartDate = user.getStudyStartDate();
     studyTimeEnd = user.getStudyTimeEnd();
-    studyTimeLeftStr = "";
-
-    if (studyTimeEnd != null) {
-      OffsetDateTime now = OffsetDateTime.now();
-      Locale locale = sessionController.getLocale();
-      
-      if (now.isBefore(studyTimeEnd)) {
-        long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
-        now = now.plusYears(studyTimeLeftYears);
-        if (studyTimeLeftYears > 0) {
-          studyTimeLeftStr += studyTimeLeftYears + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.y");
-        }
-        
-        long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
-        now = now.plusMonths(studyTimeLeftMonths);
-        if (studyTimeLeftMonths > 0) {
-          if (studyTimeLeftStr.length() > 0)
-            studyTimeLeftStr += " ";
-          studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
-        }
-        
-        long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
-        now = now.plusDays(studyTimeLeftDays);
-        if (studyTimeLeftDays > 0) {
-          if (studyTimeLeftStr.length() > 0)
-            studyTimeLeftStr += " ";
-          studyTimeLeftStr += studyTimeLeftDays + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
-        }
-      }
-    }
+    studyTimeLeftStr = userEntityController.getStudyTimeEndAsString(studyTimeEnd);
     
     addresses = new ArrayList<>();
     for (UserAddress userAddress : userAddresses) {

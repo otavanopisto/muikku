@@ -1,11 +1,9 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +20,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
@@ -33,6 +30,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -61,7 +59,7 @@ public class TranscriptofRecordsBackingBean {
   private UserController userController;
 
   @Inject
-  private LocaleController localeController;
+  private UserEntityController userEntityController;
   
   @RequestAction
   public String init() {
@@ -101,36 +99,7 @@ public class TranscriptofRecordsBackingBean {
     studyStartDate = user.getStudyStartDate();
     studyEndDate = user.getStudyEndDate();
     studyTimeEnd = user.getStudyTimeEnd();
-    studyTimeLeftStr = "";
-    
-    if (studyTimeEnd != null) {
-      OffsetDateTime now = OffsetDateTime.now();
-      Locale locale = sessionController.getLocale();
-      
-      if (now.isBefore(studyTimeEnd)) {
-        long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
-        now = now.plusYears(studyTimeLeftYears);
-        if (studyTimeLeftYears > 0) {
-          studyTimeLeftStr += studyTimeLeftYears + " " + localeController.getText(locale, "plugin.records.studyTimeEndShort.y");
-        }
-        
-        long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
-        now = now.plusMonths(studyTimeLeftMonths);
-        if (studyTimeLeftMonths > 0) {
-          if (studyTimeLeftStr.length() > 0)
-            studyTimeLeftStr += " ";
-          studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.records.studyTimeEndShort.m");
-        }
-        
-        long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
-        now = now.plusDays(studyTimeLeftDays);
-        if (studyTimeLeftDays > 0) {
-          if (studyTimeLeftStr.length() > 0)
-            studyTimeLeftStr += " ";
-          studyTimeLeftStr += studyTimeLeftDays + " " + localeController.getText(locale, "plugin.records.studyTimeEndShort.d");
-        }
-      }
-    }
+    studyTimeLeftStr = userEntityController.getStudyTimeEndAsString(studyTimeEnd);
     
     List<TranscriptOfRecordsFile> transcriptOfRecordsFiles;
     if (loggedEntity != null) {
