@@ -324,7 +324,7 @@ public class WorklistRESTService {
   /**
    * GET mapi().worklist.isAvailable
    * 
-   * Returns whether worklist functionality is active and available for the currently logged in user.
+   * Returns whether worklist functionality is available (for the currently logged in user).
    * 
    * Output: true|false
    */
