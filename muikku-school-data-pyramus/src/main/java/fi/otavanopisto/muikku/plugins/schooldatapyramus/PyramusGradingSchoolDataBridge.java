@@ -35,8 +35,11 @@ import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -360,6 +363,52 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       logger.log(Level.SEVERE, String.format("Could not find WorkspaceAssessmentRequest for courseId %d, studentId %d, id %d", courseId, studentId, id));
       return null;
     }
+  }
+
+  @Override
+  public List<WorkspaceActivity> listWorkspaceActivities(String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits) {
+    
+    // Convert identifiers to Pyramus ids
+    
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long courseId = workspaceIdentifier == null ? null : identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    
+    // Make the call
+    
+    CourseActivity[] response = pyramusClient.get(
+        String.format("/students/students/%d/courseActivity?courseIds=%s&includeTransferCredits=%s",
+            studentId,
+            courseId == null ? "" : courseId,
+            includeTransferCredits), CourseActivity[].class);
+    
+    if (response == null) {
+      logger.warning("Null response");
+      return Collections.emptyList();
+    }
+    
+    // Convert Pyramus CourseActivity to Muikku WorkspaceActivity
+    
+    List<String> curriculumIdentifiers = new ArrayList<>();
+    List<WorkspaceActivity> activities = new ArrayList<>();
+    for (int i = 0; i < response.length; i++) {
+      WorkspaceActivity activity = new WorkspaceActivity();
+      activity.setIdentifier(response[i].getCourseId() == null ? null : response[i].getCourseId().toString());
+      if (response[i].getCurriculumIds() != null) {
+        for (Long curriculumId : response[i].getCurriculumIds()) {
+          curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId).toId());
+        }
+      }
+      activity.setName(response[i].getCourseName());
+      activity.setGrade(response[i].getGrade());
+      activity.setGradeDate(response[i].getGradeDate());
+      activity.setPassingGrade(response[i].getPassingGrade());
+      activity.setState(WorkspaceActivityState.valueOf(response[i].getState().toString()));
+      activity.setDate(response[i].getActivityDate());
+      activity.setText(response[i].getText());
+      activities.add(activity);
+    }
+    
+    return activities;
   }
 
   @Override

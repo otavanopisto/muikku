@@ -246,9 +246,11 @@
   position: relative;
   z-index: 2;
 
-  &.content-panel__chapter-title--hidden {
-    opacity: 0.5;
+  // scss-lint:disable SelectorFormat
+  &.state-HIDDEN {
+    opacity: 0.3;
   }
+  // scss-lint:enable SelectorFormat
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
