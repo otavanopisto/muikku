@@ -292,19 +292,19 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE)
   public Response getUserChatSettings() {
-
-    if (!chatController.isChatAvailable()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
     ChatSettingsRESTModel result = new ChatSettingsRESTModel();
-    UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
-    if (userChatSettings != null) {
-      result.setNick(userChatSettings.getNick());
-      result.setVisibility(userChatSettings.getVisibility());
+    if (!chatController.isChatAvailable()) {
+      result.setVisibility(UserChatVisibility.DISABLED);
     }
     else {
-      result.setVisibility(UserChatVisibility.DISABLED);
+      UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
+      if (userChatSettings != null) {
+        result.setNick(userChatSettings.getNick());
+        result.setVisibility(userChatSettings.getVisibility());
+      }
+      else {
+        result.setVisibility(UserChatVisibility.DISABLED);
+      }
     }
     return Response.ok(result).build();
   }
