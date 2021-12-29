@@ -57,7 +57,7 @@ async function loadWhoAMI(dispatch: (arg: AnyActionType) => any, whoAmIReadyCb: 
   whoAmIReadyCb();
 }
 
-// User has set nickname for chat and activated the chat funtionality via prolfile view
+// User has set nickname for chat and activated the chat funtionality via profile view
 async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
   const isActive = <boolean>(await promisify(mApi().chat.isActive.read(), 'callback')());
 

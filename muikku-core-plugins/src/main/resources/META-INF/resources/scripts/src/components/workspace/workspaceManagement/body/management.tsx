@@ -91,7 +91,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceDescription: props.workspace ? props.workspace.description || "" : "",
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
       workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
-      workspaceChatStatus: props.workspace && props.status && props.status.permissions.CHAT_ACTIVE ? props.workspace.chatStatus : null,
+      workspaceChatStatus: props.workspace && props.status && props.status.permissions.CHAT_AVAILABLE ? props.workspace.chatStatus : null,
       workspacePermissions: props.workspace && props.workspace.permissions ? props.workspace.permissions : [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
