@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
@@ -43,6 +45,9 @@ public class AssessmentRequestController {
   
   @Inject
   private ActivityLogController activityLogController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String requestText) {
     String dataSource = workspaceUserEntity.getWorkspaceEntity().getDataSource().getIdentifier();
@@ -90,11 +95,18 @@ public class AssessmentRequestController {
     
     // Ask activity with user + workspace combo
     
-    List<WorkspaceActivity> activities = evaluationController.listWorkspaceActivities(
-        userIdentifier,          // for this user only
-        workspaceIdentifier,     // for this workspace only
-        false,                   // no interest in transfer credits
-        false);                  // no interest for assignment statistics
+    List<WorkspaceActivity> activities = new ArrayList<WorkspaceActivity>();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      activities = evaluationController.listWorkspaceActivities(
+          userIdentifier,          // for this user only
+          workspaceIdentifier,     // for this workspace only
+          false,                   // no interest in transfer credits
+          false);                  // no interest for assignment statistics
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
     if (activities.isEmpty()) {
       logger.warning(String.format("WorkspaceUserEntity %d not found in Pyramus", workspaceUserEntity.getId()));
       return new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
