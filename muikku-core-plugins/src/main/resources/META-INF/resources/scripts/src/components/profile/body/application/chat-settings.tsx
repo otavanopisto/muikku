@@ -173,7 +173,7 @@ class ChatSettings extends React.Component<
   public render() {
     if (
       this.props.profile.location !== "chat" ||
-      !this.props.status.permissions.CHAT_AVAILABLE
+      !this.props.status.permissions.CHAT_ENABLED
     ) {
       return null;
     }

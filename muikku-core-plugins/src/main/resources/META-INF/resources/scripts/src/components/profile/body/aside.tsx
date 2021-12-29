@@ -30,9 +30,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
    */
   isVisible(hash: string) {
     switch (hash) {
-      case "vacation":
       case "chat":
-        return this.props.status.permissions.CHAT_AVAILABLE
+        return this.props.status.permissions.CHAT_ENABLED
       case "work":
         return !this.props.status.isStudent && this.props.status.permissions.WORKLIST_AVAILABLE;
       default:

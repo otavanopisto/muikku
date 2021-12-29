@@ -57,14 +57,29 @@ async function loadWhoAMI(dispatch: (arg: AnyActionType) => any, whoAmIReadyCb: 
   whoAmIReadyCb();
 }
 
-async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
-  const isAvailable = <boolean>(await promisify(mApi().chat.isAvailable.read(), 'callback')());
+// User has set nickname for chat and activated the chat funtionality via prolfile view
+async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
+  const isActive = <boolean>(await promisify(mApi().chat.isActive.read(), 'callback')());
 
   dispatch({
     type: "UPDATE_STATUS",
     payload: {
       permissions: {
-        CHAT_AVAILABLE: isAvailable,
+        CHAT_ACTIVE: isActive,
+      }
+    },
+  });
+}
+
+// User is loggedin and is part of default organization that has access to chat
+async function loadChatEnabled(dispatch: (arg: AnyActionType) => any) {
+  const isEnabled = <boolean>(await promisify(mApi().chat.isEnabled.read(), 'callback')());
+
+  dispatch({
+    type: "UPDATE_STATUS",
+    payload: {
+      permissions: {
+        CHAT_ENABLED: isEnabled,
       }
     },
   });
@@ -152,7 +167,8 @@ async function loadWorkspacePermissions(workspaceId: number, dispatch: (arg: Any
 const loadStatus: LoadStatusType = function loadStatus(whoAmIReadyCb: () => void) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     loadWhoAMI(dispatch, whoAmIReadyCb);
-    loadChatAvailable(dispatch);
+    loadChatActive(dispatch);
+    loadChatEnabled(dispatch);
     loadWorklistAvailable(dispatch);
     loadForumIsAvailable(dispatch);
     loadHopsEnabled(dispatch);

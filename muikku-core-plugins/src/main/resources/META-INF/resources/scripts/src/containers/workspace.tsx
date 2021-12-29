@@ -250,7 +250,7 @@ export default class Workspace extends React.Component<
    * loadChatSettings
    */
   loadChatSettings = (): void => {
-    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
+    if (this.props.store.getState().status.permissions.CHAT_ENABLED) {
       this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
   };
