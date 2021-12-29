@@ -328,10 +328,32 @@ export class DialogRemoveUsers extends React.Component<
     this.checkUserInRemoveList = this.checkUserInRemoveList.bind(this);
   }
 
-  onTabChange(identifier: string) {
-    this.setState({
-      activeTab: identifier,
-    });
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.refreshRemoveUserpage(
+      this.state.currentRemovePage,
+      this.props.removeUsers
+    );
+    this.goToAllUsersPage(this.state.currentAllPage);
+  }
+
+  /**
+   * UNSAFE_componentWillReceiveProps
+   * @param nextProps
+   * @param nextState
+   */
+  UNSAFE_componentWillReceiveProps(
+    nextProps: DialogRemoveUsersProps,
+    nextState: DialogRemoveUsersState
+  ) {
+    if (this.props.removeUsers.length !== nextProps.removeUsers.length) {
+      this.refreshRemoveUserpage(
+        this.state.currentRemovePage,
+        nextProps.removeUsers
+      );
+    }
   }
 
   goToAllUsersPage(n: number) {
@@ -371,18 +393,6 @@ export class DialogRemoveUsers extends React.Component<
     this.props.setRemoved(this.turnSelectToUiSelectItem(user));
   }
 
-  UNSAFE_componentWillReceiveProps(
-    nextProps: DialogRemoveUsersProps,
-    nextState: DialogRemoveUsersState
-  ) {
-    if (this.props.removeUsers.length !== nextProps.removeUsers.length) {
-      this.refreshRemoveUserpage(
-        this.state.currentRemovePage,
-        nextProps.removeUsers
-      );
-    }
-  }
-
   checkUserInRemoveList(user: string, removedListUsers: UiSelectItem[]) {
     for (let i = 0; i < removedListUsers.length; i++) {
       if (user === removedListUsers[i].id) {
@@ -400,12 +410,14 @@ export class DialogRemoveUsers extends React.Component<
     return parseInt(digitRegEx.exec(id)[0]);
   };
 
-  componentDidMount() {
-    this.refreshRemoveUserpage(
-      this.state.currentRemovePage,
-      this.props.removeUsers
-    );
-    this.goToAllUsersPage(this.state.currentAllPage);
+  /**
+   * onTabChange
+   * @param identifier
+   */
+  onTabChange(identifier: string) {
+    this.setState({
+      activeTab: identifier,
+    });
   }
 
   /**
@@ -414,7 +426,7 @@ export class DialogRemoveUsers extends React.Component<
    * @param event
    */
   handleRemoveUsersPagerChange = (selectedItem: { selected: number }) =>
-    this.goToRemovePage(selectedItem.selected);
+    this.goToRemovePage(selectedItem.selected + 1);
 
   /**
    * handles page changes,
@@ -422,7 +434,7 @@ export class DialogRemoveUsers extends React.Component<
    * @param event
    */
   handleAllUsersPagerChange = (selectedItem: { selected: number }) =>
-    this.goToAllUsersPage(selectedItem.selected);
+    this.goToAllUsersPage(selectedItem.selected + 1);
 
   render() {
     const tabs: TabType[] = [
@@ -504,6 +516,7 @@ export class DialogRemoveUsers extends React.Component<
                   nextLabel=""
                   breakLabel="..."
                   initialPage={this.state.currentAllPage - 1}
+                  forcePage={this.state.currentAllPage - 1}
                   marginPagesDisplayed={1}
                   pageCount={this.props.pages}
                   pageRangeDisplayed={2}
@@ -581,6 +594,7 @@ export class DialogRemoveUsers extends React.Component<
                     nextAriaLabel="Seuraava"
                     previousAriaLabel="Edellinen"
                     initialPage={this.state.currentRemovePage - 1}
+                    forcePage={this.state.currentRemovePage - 1}
                     marginPagesDisplayed={1}
                     pageCount={removePages}
                     pageRangeDisplayed={2}

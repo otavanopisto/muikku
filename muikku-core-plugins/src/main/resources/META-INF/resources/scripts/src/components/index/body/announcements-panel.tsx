@@ -179,6 +179,7 @@ class AnnouncementsPanel extends React.Component<
             nextLabel=""
             breakLabel="..."
             initialPage={currentPage}
+            forcePage={currentPage}
             marginPagesDisplayed={1}
             pageCount={pageCount}
             pageRangeDisplayed={2}

@@ -405,6 +405,7 @@ class CurrentThread extends React.Component<
           nextLabel=""
           breakLabel="..."
           initialPage={this.props.discussion.currentPage - 1}
+          forcePage={this.props.discussion.currentPage - 1}
           marginPagesDisplayed={1}
           pageCount={this.props.discussion.currentTotalPages}
           pageRangeDisplayed={2}

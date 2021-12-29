@@ -307,6 +307,7 @@ class WorkspaceUsers extends React.Component<
           marginPagesDisplayed={1}
           pageRangeDisplayed={2}
           initialPage={this.state.currentStaffPage}
+          forcePage={this.state.currentStaffPage}
           pageCount={this.allStaffPages}
           onPageChange={this.handleStaffPagerChange}
         />
@@ -445,6 +446,7 @@ class WorkspaceUsers extends React.Component<
                         nextLabel=""
                         breakLabel="..."
                         initialPage={this.state.currentActiveStudentPage - 1}
+                        forcePage={this.state.currentActiveStudentPage - 1}
                         marginPagesDisplayed={1}
                         pageCount={this.allActiveStudentsPages}
                         pageRangeDisplayed={2}
@@ -497,6 +499,7 @@ class WorkspaceUsers extends React.Component<
                         nextLabel=""
                         breakLabel="..."
                         initialPage={this.state.currentInactiveStudentPage - 1}
+                        forcePage={this.state.currentInactiveStudentPage - 1}
                         marginPagesDisplayed={1}
                         pageCount={this.allInActiveStudentsPages}
                         pageRangeDisplayed={2}

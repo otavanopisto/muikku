@@ -237,6 +237,7 @@ class DDiscussionThreads extends React.Component<
             nextLabel=""
             breakLabel="..."
             initialPage={this.props.discussion.page - 1}
+            forcePage={this.props.discussion.page - 1}
             marginPagesDisplayed={1}
             pageCount={this.props.discussion.totalPages}
             pageRangeDisplayed={2}
