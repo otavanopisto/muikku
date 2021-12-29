@@ -72,14 +72,14 @@ async function loadChatActive(dispatch: (arg: AnyActionType) => any) {
 }
 
 // User is loggedin and is part of default organization that has access to chat
-async function loadChatEnabled(dispatch: (arg: AnyActionType) => any) {
-  const isEnabled = <boolean>(await promisify(mApi().chat.isEnabled.read(), 'callback')());
+async function loadChatAvailable(dispatch: (arg: AnyActionType) => any) {
+  const isAvailable = <boolean>(await promisify(mApi().chat.isAvailable.read(), 'callback')());
 
   dispatch({
     type: "UPDATE_STATUS",
     payload: {
       permissions: {
-        CHAT_ENABLED: isEnabled,
+        CHAT_AVAILABLE: isAvailable,
       }
     },
   });
@@ -168,7 +168,7 @@ const loadStatus: LoadStatusType = function loadStatus(whoAmIReadyCb: () => void
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     loadWhoAMI(dispatch, whoAmIReadyCb);
     loadChatActive(dispatch);
-    loadChatEnabled(dispatch);
+    loadChatAvailable(dispatch);
     loadWorklistAvailable(dispatch);
     loadForumIsAvailable(dispatch);
     loadHopsEnabled(dispatch);

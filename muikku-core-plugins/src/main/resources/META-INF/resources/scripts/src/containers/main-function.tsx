@@ -134,7 +134,7 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
    * loadChatSettings
    */
   loadChatSettings = (): void => {
-    if (this.props.store.getState().status.permissions.CHAT_ENABLED) {
+    if (this.props.store.getState().status.permissions.CHAT_ACTIVE) {
       if (!this.loadedChatSettings) {
         this.loadedChatSettings = true;
         this.props.store.dispatch(loadProfileChatSettings() as Action);

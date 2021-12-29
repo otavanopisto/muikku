@@ -566,7 +566,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
             </div>
             : null}
         </section>
-        {this.props.status.permissions.CHAT_ENABLED ?
+        {this.props.status.permissions.CHAT_AVAILABLE ?
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceChatSectionTitle")}</h2>
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
