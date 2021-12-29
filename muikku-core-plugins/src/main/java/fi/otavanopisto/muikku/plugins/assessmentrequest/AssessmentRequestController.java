@@ -43,7 +43,7 @@ public class AssessmentRequestController {
   
   @Inject
   private ActivityLogController activityLogController;
-
+  
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String requestText) {
     String dataSource = workspaceUserEntity.getWorkspaceEntity().getDataSource().getIdentifier();
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();

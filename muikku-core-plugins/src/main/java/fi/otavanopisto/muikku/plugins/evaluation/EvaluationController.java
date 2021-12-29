@@ -127,7 +127,7 @@ public class EvaluationController {
           dataSource,
           studentIdentifier.getIdentifier(),
           workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
-              includeTransferCredits);
+          includeTransferCredits);
     }
     finally {
       schoolDataBridgeSessionController.endSystemSession();
