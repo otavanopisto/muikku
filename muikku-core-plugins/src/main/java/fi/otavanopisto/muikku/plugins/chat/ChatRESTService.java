@@ -127,7 +127,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response fetchPrebindIdentifiers() {
     
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -184,7 +184,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response fetchCredentials() {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -257,23 +257,23 @@ public class ChatRESTService extends PluginRESTService {
   }
   
   /**
-   * GET mapi().chat.isEnabled
+   * GET mapi().chat.isAvailable
    * 
-   * Returns whether chat functionality is enabled.
+   * Returns whether chat functionality is available in general.
    * 
    * Output: true|false
    */
   @GET
-  @Path("/isEnabled")
+  @Path("/isAvailable")
   @RESTPermit(handling = Handling.INLINE)
-  public Response getIsEnabled() {
-    return Response.ok(chatController.isChatActive()).build(); 
+  public Response getIsAvailable() {
+    return Response.ok(chatController.isChatAvailable()).build(); 
   }
 
   /**
    * GET mapi().chat.isActive
    * 
-   * Returns whether chat functionality is enabled and activated for the currently logged in user.
+   * Returns whether chat functionality is available and activated for the currently logged in user.
    * 
    * Output: true|false
    */
@@ -281,7 +281,7 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/isActive")
   @RESTPermit(handling = Handling.INLINE)
   public Response getIsActive() {
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.ok(false).build();
     }
     UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
@@ -293,7 +293,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response getUserChatSettings() {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -314,7 +314,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createPublicChatRoom(ChatRoomRESTModel payload) {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -349,7 +349,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updatePublicChatRoom(ChatRoomRESTModel payload) {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -383,7 +383,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deletePublicChatRoom(ChatRoomRESTModel payload) {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -409,7 +409,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateUserChatSettings(ChatSettingsRESTModel payload) {
     
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -482,7 +482,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getUserInfo(@PathParam("userIdentifier") String identifierString) {
     
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -532,7 +532,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getNick(@PathParam("userIdentifier") String identifierString) {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -559,7 +559,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response getWorkspaceChatSettings(@PathParam("workspaceEntityId") Long workspaceEntityId) {
 
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.ok(WorkspaceChatStatus.DISABLED).build();
     }
     
@@ -578,7 +578,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRESTModel workspaceChatSettings) {
     
-    if (!chatController.isChatActive()) {
+    if (!chatController.isChatAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
