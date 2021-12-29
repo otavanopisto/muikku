@@ -33,7 +33,7 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.longCitation"), element: 'div', attributes: { 'class': 'material-citation-long material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exampleBox"), element: 'div', attributes: { 'class': 'material-example material-styles-text' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseBox"), element: 'div', attributes: { 'class': 'material-exercise material-styles-text' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseFeedbackBox"), element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "false" } }
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.exerciseFeedbackBox"), element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "true" } }
 
   /* Inline Styles */
 
