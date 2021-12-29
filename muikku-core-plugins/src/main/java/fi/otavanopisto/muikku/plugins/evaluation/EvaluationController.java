@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -104,6 +105,9 @@ public class EvaluationController {
 
   @Inject
   private EvaluationFileStorageUtils file;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   /* Workspace activity */
   
@@ -116,11 +120,18 @@ public class EvaluationController {
     
     // Ask base information from Pyramus
     
-    List<WorkspaceActivity> activities = gradingController.listWorkspaceActivities(
-        dataSource,
-        studentIdentifier.getIdentifier(),
-        workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
-        includeTransferCredits);
+    List<WorkspaceActivity> activities = new ArrayList<>();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      activities = gradingController.listWorkspaceActivities(
+          dataSource,
+          studentIdentifier.getIdentifier(),
+          workspaceIdentifier == null ? null : workspaceIdentifier.getIdentifier(),
+          includeTransferCredits);
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
     
     // Complement the response with data available only in Muikku
     
