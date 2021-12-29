@@ -1976,15 +1976,10 @@ mark[data-muikku-word-definition] {
 // MATERIAL'S EXERCISE FEEDBACK BOX
 // This will be visible only after user checks and submits exercise.
 .material-exercise-feedback {
-  border: 1px solid blue;
-  border-left-width: 3px;
-  padding-left: 72px;
+  background: $color-default-item-separator-border;
+  border: 1px solid $color-default-item-separator-border;
+  border-radius: 10px;
   display: block;
-
-  &::before {
-    background: blue;
-    content: "\f02d";
-  }
 }
 
 .material-exercise-feedback[data-show='true'] {
