@@ -259,7 +259,7 @@ public class ChatRESTService extends PluginRESTService {
   /**
    * GET mapi().chat.isEnabled
    * 
-   * Returns whether chat functionality is active.
+   * Returns whether chat functionality is enabled.
    * 
    * Output: true|false
    */
@@ -271,14 +271,14 @@ public class ChatRESTService extends PluginRESTService {
   }
 
   /**
-   * GET mapi().chat.isAvailable
+   * GET mapi().chat.isActive
    * 
-   * Returns whether chat functionality is active and activated for the currently logged in user.
+   * Returns whether chat functionality is enabled and activated for the currently logged in user.
    * 
    * Output: true|false
    */
   @GET
-  @Path("/isAvailable")
+  @Path("/isActive")
   @RESTPermit(handling = Handling.INLINE)
   public Response getIsActive() {
     if (!chatController.isChatActive()) {
