@@ -100,8 +100,8 @@ public class SessionBackingBean {
     loggedUserId = null;
     loggedUser = null;
     canAccessEnvironmentForum = forumController.isEnvironmentForumActive() && hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
-    canAccessChat = chatController.isChatActive();
-    canAccessWorklist = worklistController.isWorklistActive();
+    canAccessChat = chatController.isChatAvailable();
+    canAccessWorklist = worklistController.isWorklistAvailable();
 
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();

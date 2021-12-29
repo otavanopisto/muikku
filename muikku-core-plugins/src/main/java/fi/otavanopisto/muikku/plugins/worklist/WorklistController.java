@@ -28,10 +28,10 @@ public class WorklistController {
   @Inject
   private PluginSettingsController pluginSettingsController;
 
-  public boolean isWorklistActive() {
+  public boolean isWorklistAvailable() {
     if (sessionController.isLoggedIn()) {
       
-      // Worklist functionality is always active for admins, never for students
+      // Worklist functionality is always available for admins, never for students
       
       EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
       if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
@@ -41,7 +41,7 @@ public class WorklistController {
         return false;
       }
       
-      // Plugin setting worklist.enabledOrganizations (if not defined, worklist functionality is not active)
+      // Plugin setting worklist.enabledOrganizations (if not defined, worklist functionality is not available)
       
       String enabledOrganizationsStr = pluginSettingsController.getPluginSetting("worklist", "enabledOrganizations");
       if (StringUtils.isNotBlank(enabledOrganizationsStr)) {
