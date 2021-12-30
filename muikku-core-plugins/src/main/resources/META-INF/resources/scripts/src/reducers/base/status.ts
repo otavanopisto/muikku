@@ -37,6 +37,7 @@ export interface StatusType {
   contextPath: string,
   userSchoolDataIdentifier: string,
   isActiveUser: boolean,
+  role: Role;
   isStudent: boolean,
   profile: ProfileStatusType,
   currentWorkspaceInfo?: {
@@ -75,6 +76,16 @@ export interface ProfileStatusType {
   studyTimeEnd: string
 }
 
+export enum Role {
+  TEACHER = "TEACHER",
+  STUDENT = "STUDENT",
+  ADMINISTRATOR = "ADMINISTRATOR",
+  MANAGER = "MANAGER",
+  STUDY_PROGRAMME_LEADER = "STUDY_PROGRAMME_LEADER",
+  STUDY_GUIDER = "STUDY_GUIDER",
+  CUSTOM = "CUSTOM"
+}
+
 const workspaceIdNode = document.querySelector('meta[name="muikku:workspaceId"]');
 const roleNode = document.querySelector('meta[name="muikku:role"]');
 
@@ -82,6 +93,7 @@ const roleNode = document.querySelector('meta[name="muikku:role"]');
 export default function status(state: StatusType = {
   loggedIn: JSON.parse(document.querySelector('meta[name="muikku:loggedIn"]').getAttribute("value")),    //whoami.id
   userId: parseInt(document.querySelector('meta[name="muikku:loggedUserId"]').getAttribute("value")) || null,     // whoami.id
+  role: <Role>document.querySelector('meta[name="muikku:role"]').getAttribute("value"),
   permissions: {},
   contextPath: "",   // always empty
   userSchoolDataIdentifier: document.querySelector('meta[name="muikku:loggedUser"]').getAttribute("value"), // missing
