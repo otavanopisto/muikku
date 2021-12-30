@@ -416,7 +416,6 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                 style={{
                   backgroundColor: "antiquewhite",
                   padding: "5px",
-                  boxShadow: "5px 5px 5px grey",
                   marginLeft: 0,
                 }}
                 className="hops__form-element-container hops__form-element-container--hops_indicators"
@@ -463,7 +462,6 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                 style={{
                   backgroundColor: "antiquewhite",
                   padding: "5px",
-                  boxShadow: "5px 5px 5px grey",
                 }}
                 className="hops__form-element-container hops__form-element-container--hops_indicators"
               >
@@ -509,7 +507,6 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
                 style={{
                   backgroundColor: "antiquewhite",
                   padding: "5px",
-                  boxShadow: "5px 5px 5px grey",
                   marginRight: 0,
                 }}
                 className="hops__form-element-container hops__form-element-container--hops_indicators"
@@ -554,23 +551,12 @@ class SummaryNew extends React.Component<SummaryProps, SummaryState> {
 
         <div className="studies-summary__section studies-summary__section--courses">
           <h2 className="studies-summary__section-header">Kursseja sinulle</h2>
-          <div className="studies-summary__section-content">
-            <div
-              className="studies-summary__section-content-courses"
-              style={{
-                height: "auto",
-                width: "100%",
-                display: "content",
-              }}
-            >
-              <CourseCarousel
-                studentId={document
-                  .querySelector('meta[name="muikku:loggedUser"]')
-                  .getAttribute("value")}
-                displayNotification={this.props.displayNotification}
-              />
-            </div>
-          </div>
+          <CourseCarousel
+            studentId={document
+              .querySelector('meta[name="muikku:loggedUser"]')
+              .getAttribute("value")}
+            displayNotification={this.props.displayNotification}
+          />
         </div>
 
         <div className="studies-summary__divider studies-summary__divider--transparent"></div>

@@ -75,7 +75,7 @@
     width: inherit;
     display: flex;
     flex-direction: column;
-    box-shadow: 5px 5px 5px grey;
+    box-shadow: 5px 5px 5px $color-workspace-hero-shadow;
 
     .studies-summary__section-content-sticky-notes {
       background-color: antiquewhite;
@@ -89,7 +89,7 @@
     width: inherit;
     display: flex;
     flex-direction: column;
-    box-shadow: 5px 5px 5px grey;
+    box-shadow: 5px 5px 5px $color-workspace-hero-shadow;
 
     .studies-summary__section-content-header {
       height: 75px;
@@ -109,7 +109,7 @@
   .studies-summary__section-content-study-proggress {
     width: 100%;
     margin: 10px 0;
-    box-shadow: 5px 5px 5px grey;
+    box-shadow: 0 5px 5px $color-workspace-hero-shadow;
   }
 
   .studies-summary__section-content-study-values {
@@ -128,7 +128,7 @@
     max-height: 400px;
     width: 100%;
     background-color: antiquewhite;
-    box-shadow: 5px 5px 5px grey;
+    box-shadow: 5px 5px 5px $color-workspace-hero-shadow;
   }
 }
 
@@ -147,7 +147,7 @@
     justify-content: center;
     border: 2px solid black;
     background-color: aliceblue;
-    box-shadow: 5px 5px 5px grey;
+    box-shadow: 5px 5px 5px $color-workspace-hero-shadow;
     margin-top: 5px;
     margin-bottom: 5px;
 

@@ -7,16 +7,10 @@ import "react-multi-carousel/lib/styles.css";
 import "~/sass/elements/carousel.scss";
 import * as React from "react";
 import Carousel from "react-multi-carousel";
-
 import Button from "~/components/general/button";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { useCourseCarousel } from "./hooks/use-course-carousel";
-import Link from "~/components/general/link";
-import { SuggestionWithWorkspaceInfo } from "~/@types/shared";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
-import { useCanSignUp } from "./hooks/use-can-signup";
-import { useWorkspace } from "../../records/hooks/use-workspace";
-import workspace from "~/components/guider/body/application/current-student/workspaces/workspace";
 import { Suggestion } from "../../../../../../@types/shared";
 
 const responsive = {
@@ -94,6 +88,7 @@ export interface Course extends Suggestion {}
  */
 interface CourseCarouselItemProps {
   course: Course;
+  suggestedBySupervisor?: boolean;
 }
 
 /**
@@ -134,7 +129,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
         style={{
           display: "flex",
           flexFlow: "column",
-          margin: "5px 0",
+          margin: "5px 10px",
           justifyContent: "space-between",
         }}
       >
