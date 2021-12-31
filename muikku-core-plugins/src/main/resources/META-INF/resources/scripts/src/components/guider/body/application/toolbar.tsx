@@ -25,6 +25,9 @@ import {
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
 
+/**
+ * GuiderToolbarProps
+ */
 interface GuiderToolbarProps {
   i18n: i18nType,
   guider: GuiderType
@@ -33,12 +36,22 @@ interface GuiderToolbarProps {
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
+/**
+ * GuiderToolbarState
+ */
 interface GuiderToolbarState {
   searchquery: string,
   focused: boolean
 }
 
+/**
+ * GuiderToolbar
+ */
 class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarState> {
+  /**
+   * Constructor method
+   * @param props
+   */
   constructor(props: GuiderToolbarProps) {
     super(props);
 
@@ -54,6 +67,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     this.onInputBlur = this.onInputBlur.bind(this);
   }
 
+  /**
+   * getBackByHash
+   * @returns hash
+   */
   getBackByHash(): string {
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
     delete locationData.c;
@@ -61,6 +78,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     return newHash;
   }
 
+  /**
+   * onGoBackClick
+   * @param e
+   */
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -77,6 +98,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     }
   }
 
+  /**
+   * updateSearchWithQuery
+   * @param query
+   */
   updateSearchWithQuery(query: string) {
     this.setState({
       searchquery: query
@@ -86,6 +111,12 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   * @param snapshot
+   */
   componentDidUpdate(prevProps: Readonly<GuiderToolbarProps>, prevState: Readonly<GuiderToolbarState>, snapshot?: any): void {
     if (!this.state.focused && (this.props.guider.activeFilters.query) !== this.state.searchquery) {
       this.setState({
@@ -94,10 +125,16 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     }
   }
 
+  /**
+   * onInputFocus
+   */
   onInputFocus() {
     this.setState({ focused: true });
   }
 
+  /**
+   * onInputBlur
+   */
   onInputBlur() {
     this.setState({ focused: false });
   }
@@ -107,7 +144,6 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
    * @param users array of GuiderStudents
    * @returns {Array} an Array of ContactRecipientType
    */
-
   turnSelectedUsersToContacts = (users: GuiderStudentListType): ContactRecipientType[] => {
     let contacts: ContactRecipientType[] = [];
     users.map((user) => {
@@ -128,7 +164,6 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
    * @param selectedUsers is an Array of ContactRecipientType
    */
-
   onContactsChange = (selectedUsers: ContactRecipientType[]): void => {
 
     // We need the arrays of ids for comparison from the dialog and the redux state
@@ -156,6 +191,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     }
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <ApplicationPanelToolbar>
@@ -192,6 +231,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
@@ -200,6 +243,10 @@ function mapStateToProps(state: StateType) {
   }
 };
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {

@@ -233,6 +233,9 @@ export class FormWizardActions extends React.Component<
   }
 }
 
+/**
+ * SearchFormElementProps
+ */
 interface SearchFormElementProps {
   updateField: (value: string) => any;
   value: string;
@@ -246,10 +249,16 @@ interface SearchFormElementProps {
   delay?: number;
 }
 
+/**
+ * SearchFormElementState
+ */
 interface SearchFormElementState {
   value: string;
 }
 
+/**
+ * SearchFormElement
+ */
 export class SearchFormElement extends React.Component<
   SearchFormElementProps,
   SearchFormElementState
@@ -258,6 +267,10 @@ export class SearchFormElement extends React.Component<
   private searchTimer: NodeJS.Timer;
   private delay: number;
 
+  /**
+   * constructor method
+   * @param props
+   */
   constructor(props: SearchFormElementProps) {
     super(props);
     this.delay = this.props.delay >= 0 ? this.props.delay : 400;
@@ -269,6 +282,12 @@ export class SearchFormElement extends React.Component<
     this.searchInput = React.createRef();
   }
 
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   * @param snapshot
+   */
   componentDidUpdate(prevProps: Readonly<SearchFormElementProps>, prevState: Readonly<SearchFormElementState>, snapshot?: any): void {
     if(prevProps.value !== this.props.value){
       if(this.state.value !== this.props.value){
@@ -279,6 +298,10 @@ export class SearchFormElement extends React.Component<
     }
   }
 
+  /**
+   * updateSearchField
+   * @param e
+   */
   updateSearchField(e: React.ChangeEvent<HTMLInputElement>) {
     clearTimeout(this.searchTimer);
     let value = e.target.value;
@@ -293,12 +316,19 @@ export class SearchFormElement extends React.Component<
     }
   }
 
+  /**
+   * clearSearchField
+   */
   clearSearchField() {
     this.props.updateField("");
     this.setState({ value: "" });
     this.searchInput.current.focus();
   }
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     const modifiers =
       this.props.modifiers && this.props.modifiers instanceof Array
