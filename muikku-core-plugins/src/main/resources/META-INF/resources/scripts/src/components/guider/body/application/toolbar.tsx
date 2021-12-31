@@ -86,10 +86,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
   }
 
-  componentWillReceiveProps(nextProps: GuiderToolbarProps) {
-    if (!this.state.focused && (nextProps.guider.activeFilters.query || "") !== this.state.searchquery) {
+  componentDidUpdate(prevProps: Readonly<GuiderToolbarProps>, prevState: Readonly<GuiderToolbarState>, snapshot?: any): void {
+    if (!this.state.focused && (this.props.guider.activeFilters.query) !== this.state.searchquery) {
       this.setState({
-        searchquery: nextProps.guider.activeFilters.query || ""
+        searchquery: this.props.guider.activeFilters.query
       });
     }
   }
