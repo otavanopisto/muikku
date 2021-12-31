@@ -288,12 +288,16 @@ export class SearchFormElement extends React.Component<
    * @param prevState
    * @param snapshot
    */
-  componentDidUpdate(prevProps: Readonly<SearchFormElementProps>, prevState: Readonly<SearchFormElementState>, snapshot?: any): void {
-    if(prevProps.value !== this.props.value){
-      if(this.state.value !== this.props.value){
+  componentDidUpdate(
+    prevProps: Readonly<SearchFormElementProps>,
+    prevState: Readonly<SearchFormElementState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.value !== this.props.value) {
+      if (this.state.value !== this.props.value) {
         this.setState({
-          value: this.props.value
-        })
+          value: this.props.value,
+        });
       }
     }
   }
@@ -336,10 +340,11 @@ export class SearchFormElement extends React.Component<
         : [this.props.modifiers];
     return (
       <div
-        className={`form-element form-element--search ${this.props.modifiers
+        className={`form-element form-element--search ${
+          this.props.modifiers
             ? modifiers.map((m) => `form-element--${m}`).join(" ")
             : ""
-          } ${this.props.className ? this.props.className : ""}`}
+        } ${this.props.className ? this.props.className : ""}`}
       >
         <label htmlFor={this.props.id} className="visually-hidden">
           {this.props.placeholder}
@@ -351,16 +356,18 @@ export class SearchFormElement extends React.Component<
           onBlur={this.props.onBlur}
           name={this.props.name}
           value={this.state.value}
-          className={`form-element__input form-element__input--search ${this.props.modifiers
+          className={`form-element__input form-element__input--search ${
+            this.props.modifiers
               ? modifiers.map((m) => `form-element__input--${m}`).join(" ")
               : ""
-            }`}
+          }`}
           placeholder={this.props.placeholder}
           onChange={this.updateSearchField}
         />
         <div
-          className={`form-element__input-decoration--clear-search icon-cross ${this.props.value.length > 0 ? "active" : ""
-            }`}
+          className={`form-element__input-decoration--clear-search icon-cross ${
+            this.props.value.length > 0 ? "active" : ""
+          }`}
           onClick={this.clearSearchField}
         ></div>
         <div className="form-element__input-decoration--search icon-search"></div>
