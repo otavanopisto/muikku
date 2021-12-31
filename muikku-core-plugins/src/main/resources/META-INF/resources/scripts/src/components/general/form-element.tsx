@@ -272,7 +272,6 @@ export class SearchFormElement extends React.Component<
   componentDidUpdate(prevProps: Readonly<SearchFormElementProps>, prevState: Readonly<SearchFormElementState>, snapshot?: any): void {
     if(prevProps.value !== this.props.value){
       if(this.state.value !== this.props.value){
-        console.log("shi happens?");
         this.setState({
           value: this.props.value
         })
