@@ -382,11 +382,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderIndexBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 6));
+      this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 10));
       this.props.store.dispatch(loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
-      this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
+      this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
       this.loadChatSettings();
     }
