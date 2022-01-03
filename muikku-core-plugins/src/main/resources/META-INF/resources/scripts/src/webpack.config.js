@@ -16,7 +16,8 @@ const plugins = [
     ignoreOrder: true,
   }),
   new ForkTsCheckerWebpackPlugin(),
-];
+  ];
+
 const rules = [];
 
 if (mode === "production") {
@@ -81,19 +82,19 @@ module.exports = {
       cacheGroups: {
         vendor: {
           test: /[\/]node_modules[\/]/,
-				},
-			},
-		}
-	},
+        },
+      },
+    }
+  },
   resolve: {
     alias: {
       "~": __dirname
-		},
+    },
     extensions: [".js", ".ts", ".tsx"]
-	},
+  },
   module: {
     rules
-	},
+  },
   plugins,
   externals: {
     "jquery": "jQuery",

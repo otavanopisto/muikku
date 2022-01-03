@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.rest.user;
 
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -1666,55 +1664,7 @@ public class UserRESTService extends AbstractRESTService {
     OffsetDateTime studyStartDate = user == null ? null : user.getStudyStartDate();
     OffsetDateTime studyEndDate = user == null ? null : user.getStudyEndDate();
     OffsetDateTime studyTimeEnd = user == null ? null : user.getStudyTimeEnd();
-    String studyTimeLeftStr = null;
-    if (studyTimeEnd != null) {
-      OffsetDateTime now = OffsetDateTime.now();
-      Locale locale = sessionController.getLocale();
-        
-      if (now.isBefore(studyTimeEnd)) {
-        long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
-        now = now.plusYears(studyTimeLeftYears);
-        if (studyTimeLeftYears > 0) {
-          studyTimeLeftStr += studyTimeLeftYears + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.y");
-        }
-          
-        long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
-        now = now.plusMonths(studyTimeLeftMonths);
-        if (studyTimeLeftMonths > 0) {
-          if (studyTimeLeftStr != null) {
-            if (studyTimeLeftStr.length() > 0)
-              studyTimeLeftStr += " ";
-          }
-          studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
-        }
-        
-        long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
-        now = now.plusDays(studyTimeLeftDays);
-        if (studyTimeLeftDays > 0) {
-          if (studyTimeLeftStr.length() > 0)
-            studyTimeLeftStr += " ";
-          studyTimeLeftStr += studyTimeLeftDays + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
-        }
-      }
-
-      long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
-      now = now.plusMonths(studyTimeLeftMonths);
-      if (studyTimeLeftMonths > 0) {
-        if (studyTimeLeftStr.length() > 0)
-          studyTimeLeftStr += " ";
-        studyTimeLeftStr += studyTimeLeftMonths + " "
-            + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
-      }
-
-      long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
-      now = now.plusDays(studyTimeLeftDays);
-      if (studyTimeLeftDays > 0) {
-        if (studyTimeLeftStr.length() > 0)
-          studyTimeLeftStr += " ";
-        studyTimeLeftStr += studyTimeLeftDays + " "
-          + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
-      }
-    }
+    String studyTimeLeftStr = userEntityController.getStudyTimeEndAsString(studyTimeEnd);
     
     // Damn emails, addresses, and phoneNumbers as json
     
