@@ -955,6 +955,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
+
+  protected void assertTextIgnoreCase(String selector, String text, int timeOut) {
+    waitForPresent(selector, timeOut);
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertEquals(StringUtils.lowerCase(text), actual);
+  }
   
   protected void assertTextStartsWith(String selector, String text) {
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
