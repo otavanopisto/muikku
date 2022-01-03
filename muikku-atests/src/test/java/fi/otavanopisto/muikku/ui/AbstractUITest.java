@@ -706,8 +706,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.linkText(text)).click();
   }
   
-//  Deprecate this. I don't see any reason to do this more complicated than necessary.
-//  See waitAndClick as it is now.
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -717,8 +715,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
             return ExpectedConditions.elementToBeClickable(elements.get(0)).apply(driver) != null;
           }
         } catch (Exception e) {
-        }
-        
+        } 
         return false;
       }
     });

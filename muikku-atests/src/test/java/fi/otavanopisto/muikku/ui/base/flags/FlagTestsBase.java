@@ -333,7 +333,6 @@ public class FlagTestsBase extends AbstractUITest {
       waitUntilAnimationIsDone(".icon-flag");
       assertTextIgnoreCase(".button--guider-remove-label", "Poisto tallennuksessa");
       sleep(500);
-      waitForClickable(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
       waitAndClick(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
       waitForNotVisible(".dialog--guider-edit-label");
       waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
