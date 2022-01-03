@@ -33,6 +33,7 @@ export interface InputContactsAutofillProps {
   autofocus?: boolean,
   loaders?: InputContactsAutofillLoaders,
   identifier: string,
+  required?: boolean
 }
 
 export interface InputContactsAutofillState {
@@ -292,7 +293,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
-      <TagInput identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
+      <TagInput required={this.props.required} identifier={this.props.identifier} ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         label={this.props.label}
         tags={selectedItems} placeholder={this.props.placeholder} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete} />
