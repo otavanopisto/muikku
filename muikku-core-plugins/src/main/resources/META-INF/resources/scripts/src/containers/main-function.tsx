@@ -522,8 +522,12 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcements.pageTitle')));
       this.props.store.dispatch(loadAnnouncementsAsAClient({ hideWorkspaceAnnouncements: "false" }, (announcements: AnnouncementListType) => { announcements }) as Action);
-      this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
 
+      const hashId = parseInt(window.location.hash.replace("#", ""));
+
+      if(hashId){
+        this.loadAnnouncementsData(parseInt(window.location.hash.replace("#", "")));
+      }
       this.loadChatSettings();
     }
     return <AnnouncementsBody />
