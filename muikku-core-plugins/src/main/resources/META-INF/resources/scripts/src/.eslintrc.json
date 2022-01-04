@@ -6,8 +6,9 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "prettier",
     "plugin:react/recommended",
-    "prettier"
+    "plugin:react-hooks/recommended"
   ],
   "rules": {
     "camelcase": 1,

@@ -1,10 +1,14 @@
 import { ActionType, SpecificActionType } from "~/actions";
 import MuikkuWebsocket from "~/util/websocket";
 
-export interface WEBSOCKET_EVENT
-  extends SpecificActionType<"WEBSOCKET_EVENT", { event: string }> {}
-export interface INITIALIZE_WEBSOCKET
-  extends SpecificActionType<"INITIALIZE_WEBSOCKET", MuikkuWebsocket> {}
+export type WEBSOCKET_EVENT = SpecificActionType<
+  "WEBSOCKET_EVENT",
+  { event: string }
+>;
+export type INITIALIZE_WEBSOCKET = SpecificActionType<
+  "INITIALIZE_WEBSOCKET",
+  MuikkuWebsocket
+>;
 
 export interface WebsocketStateType {
   connected: boolean;
@@ -38,12 +42,6 @@ export default function websocket(
     state.synchronized
   ) {
     return Object.assign({}, state, { synchronized: false });
-  } else if (
-    action.type === "WEBSOCKET_EVENT" &&
-    action.payload.event === "webSocketSync" &&
-    !state.synchronized
-  ) {
-    return Object.assign({}, state, { synchronized: true });
   } else if (
     action.type === "WEBSOCKET_EVENT" &&
     action.payload.event === "webSocketSync" &&
