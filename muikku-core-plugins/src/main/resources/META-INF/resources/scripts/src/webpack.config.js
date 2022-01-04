@@ -2,21 +2,33 @@ const fs = require('fs');
 const webpack = require("webpack");
 const path = require("path");
 
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-
 const isDevelopment = process.env.NODE_ENV !== "production";
 const mode = isDevelopment ? "development" : "production";
 
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
-const plugins = [
-  new MiniCSSExtractPlugin({
-    filename: "[name].css",
-    chunkFilename: "[name].css",
-    ignoreOrder: true,
-  }),
-  new ForkTsCheckerWebpackPlugin(),
-  ];
+const plugins = [];
+
+if (mode === "development") {
+  plugins.push(new ForkTsCheckerWebpackPlugin());
+  plugins.push(
+    new MiniCSSExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[name].css",
+      ignoreOrder: true,
+    })
+  );
+} else {
+  plugins.push(
+    new MiniCSSExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[name].css",
+      ignoreOrder: true,
+    })
+  );
+}
+
 
 const rules = [];
 
