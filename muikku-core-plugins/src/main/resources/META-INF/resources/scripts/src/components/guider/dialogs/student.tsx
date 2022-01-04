@@ -51,7 +51,6 @@ class StudentDialog extends React.Component<
     }
   }
 
-
   onTabChange = (id: string) => {
     this.setState({ activeTab: id });
   }

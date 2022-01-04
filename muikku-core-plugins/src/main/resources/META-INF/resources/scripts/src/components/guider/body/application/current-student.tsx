@@ -23,8 +23,8 @@ import { UserFileType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import { GuiderType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider';
 import NewMessage from '~/components/communicator/dialogs/new-message';
-import Button, { ButtonPill } from '~/components/general/button';
-
+import { ButtonPill } from '~/components/general/button';
+import GuiderToolbarLabels from './toolbar/labels';
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -65,12 +65,19 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
       <div className="application-sub-panel__header-aside-container">
         {/* {this.props.guider.currentStudent.basic.studyProgrammeName} */}
-        <NewMessage extraNamespace='student-view'><Button buttonModifiers={["primary-function", "guider-student"]}>
-          {this.props.i18n.text.get('plugin.guider.user.actions.sendMessage.title')}</Button></NewMessage>
-        <Button buttonModifiers={["primary-function", "guider-student"]}>
-          {this.props.i18n.text.get('plugin.guider.user.actions.reserveGuidanceTime.title')}</Button>
+        <GuiderToolbarLabels />
+        <NewMessage extraNamespace='student-view' initialSelectedItems={[{
+          type: "user",
+          value: {
+            id: this.props.guider.currentStudent.basic.userEntityId,
+            name: getName(this.props.guider.currentStudent.basic, true)
+          }
+        }]}>
+          <ButtonPill icon="envelope" buttonModifiers={["new-message", "guider-student"]} />
+        </NewMessage>
+        <ButtonPill icon="bubbles" buttonModifiers={["new-message", "guider-student"]} />
       </div>
-    </div>
+    </div >
 
     let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType) => {
       return <span className="label" key={label.id}>

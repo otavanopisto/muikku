@@ -14,6 +14,8 @@ import NewMessage from '~/components/communicator/dialogs/new-message';
 import { ContactRecipientType } from '~/reducers/user-index';
 import { getName } from '~/util/modifiers';
 import { StatusType } from '~/reducers/base/status';
+import Button, { ButtonPill } from '~/components/general/button';
+import GuiderToolbarLabels from './toolbar/labels';
 
 import {
   removeFromGuiderSelectedStudents,
@@ -134,6 +136,16 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     return (
       <ApplicationPanelToolbar>
         <ApplicationPanelToolbarActionsMain>
+          <NewMessage extraNamespace="guider" refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}>
+            <ButtonPill disabled={this.props.guider.selectedStudentsIds.length < 1} icon="envelope" buttonModifiers="new-message" />
+          </NewMessage>
+          <ButtonPill
+            buttonModifiers="toggle"
+            icon="check"
+            disabled={this.props.guider.students.length < 1}
+            onClick={this.props.toggleAllStudents}
+          />
+          <GuiderToolbarLabels />
           <ApplicationPanelToolsContainer>
             <SearchFormElement
               updateField={this.updateSearchWithQuery}

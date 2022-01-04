@@ -39,7 +39,6 @@
 }
 
 .dialog--guider-student {
-  background-color: #fff;
   overflow: auto;
 }
 
@@ -74,17 +73,14 @@
 .dialog__window--guider-student {
   position: absolute;
 
-
   @include breakpoint($breakpoint-pad) {
     box-shadow: unset;
     position: absolute;
-    max-width: unset;
-    left: 0;
-    right: 0;
-    top: 0;
+    max-width: unset ;
+    top: 20px;
+    width: calc(100% - 40px);
   }
 }
-
 
 .dialog__window--new-user {
   @include breakpoint($breakpoint-pad) {
@@ -243,12 +239,13 @@
   }
 }
 
-.dialog-header--guider-student {
-  position: sticky;
-  top:0;
-  z-index: 1;
+.dialog__header--guider-student {
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+    top:0;
+    z-index: 1;
+  }
 }
-
 
 .dialog__header--wizard {
   @include breakpoint($breakpoint-pad) {
