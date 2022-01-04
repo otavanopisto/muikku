@@ -13,7 +13,7 @@ import Tabs, { TabType } from "~/components/general/tabs";
 import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
-import Pager from "~/components/general/pager";
+import PagerV2 from "~/components/general/pagerV2";
 
 interface DialogProps {
   children?: React.ReactElement<any>;
@@ -338,10 +338,32 @@ export class DialogRemoveUsers extends React.Component<
     this.checkUserInRemoveList = this.checkUserInRemoveList.bind(this);
   }
 
-  onTabChange(identifier: string) {
-    this.setState({
-      activeTab: identifier,
-    });
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.refreshRemoveUserpage(
+      this.state.currentRemovePage,
+      this.props.removeUsers
+    );
+    this.goToAllUsersPage(this.state.currentAllPage);
+  }
+
+  /**
+   * UNSAFE_componentWillReceiveProps
+   * @param nextProps
+   * @param nextState
+   */
+  UNSAFE_componentWillReceiveProps(
+    nextProps: DialogRemoveUsersProps,
+    nextState: DialogRemoveUsersState
+  ) {
+    if (this.props.removeUsers.length !== nextProps.removeUsers.length) {
+      this.refreshRemoveUserpage(
+        this.state.currentRemovePage,
+        nextProps.removeUsers
+      );
+    }
   }
 
   goToAllUsersPage(n: number) {
@@ -381,18 +403,6 @@ export class DialogRemoveUsers extends React.Component<
     this.props.setRemoved(this.turnSelectToUiSelectItem(user));
   }
 
-  UNSAFE_componentWillReceiveProps(
-    nextProps: DialogRemoveUsersProps,
-    nextState: DialogRemoveUsersState
-  ) {
-    if (this.props.removeUsers.length !== nextProps.removeUsers.length) {
-      this.refreshRemoveUserpage(
-        this.state.currentRemovePage,
-        nextProps.removeUsers
-      );
-    }
-  }
-
   checkUserInRemoveList(user: string, removedListUsers: UiSelectItem[]) {
     for (let i = 0; i < removedListUsers.length; i++) {
       if (user === removedListUsers[i].id) {
@@ -410,16 +420,34 @@ export class DialogRemoveUsers extends React.Component<
     return parseInt(digitRegEx.exec(id)[0]);
   };
 
-  componentDidMount() {
-    this.refreshRemoveUserpage(
-      this.state.currentRemovePage,
-      this.props.removeUsers
-    );
-    this.goToAllUsersPage(this.state.currentAllPage);
+  /**
+   * onTabChange
+   * @param identifier
+   */
+  onTabChange(identifier: string) {
+    this.setState({
+      activeTab: identifier,
+    });
   }
 
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleRemoveUsersPagerChange = (selectedItem: { selected: number }) =>
+    this.goToRemovePage(selectedItem.selected + 1);
+
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param event
+   */
+  handleAllUsersPagerChange = (selectedItem: { selected: number }) =>
+    this.goToAllUsersPage(selectedItem.selected + 1);
+
   render() {
-    const removeUserPages = Math.ceil(
+    const removePages = Math.ceil(
       this.props.removeUsers.length / this.maxRemoveUsersPerPage
     )
     const tabs: TabType[] = [
@@ -478,10 +506,7 @@ export class DialogRemoveUsers extends React.Component<
                           }
                         >
                           <ApplicationListItemHeader
-                            onClick={this.toggleUserRemoved.bind(
-                              this,
-                              user
-                            )}
+                            onClick={this.toggleUserRemoved.bind(this, user)}
                             modifiers="course"
                           >
                             <span className="application-list__header-primary">
@@ -499,12 +524,17 @@ export class DialogRemoveUsers extends React.Component<
               </ApplicationList>
             </DialogRow>
             <DialogRow>
-              <Pager
-                identifier={this.props.identifier + "All"}
-                current={this.state.currentAllPage}
-                onClick={this.goToAllUsersPage}
-                pages={this.props.pages}
-              ></Pager>
+              <PagerV2
+                previousLabel=""
+                nextLabel=""
+                breakLabel="..."
+                initialPage={this.state.currentAllPage - 1}
+                forcePage={this.state.currentAllPage - 1}
+                marginPagesDisplayed={1}
+                pageCount={this.props.pages}
+                pageRangeDisplayed={2}
+                onPageChange={this.handleAllUsersPagerChange}
+              />
             </DialogRow>
           </DialogRow>
       },
@@ -522,14 +552,14 @@ export class DialogRemoveUsers extends React.Component<
                         className="course"
                         key={"remove-" + user.id}
                       >
+
                         <ApplicationListItemContentWrapper
                           modifiers="dialog-remove-users"
                           asideModifiers="user"
                           aside={
                             <Avatar
                               id={
-                                user.variables &&
-                                  user.variables.identifier
+                                user.variables && user.variables.identifier
                                   ? (user.variables.identifier as number)
                                   : this.getNumberFromUserId(
                                     user.id as string
@@ -546,10 +576,7 @@ export class DialogRemoveUsers extends React.Component<
                           }
                         >
                           <ApplicationListItemHeader
-                            onClick={this.toggleUserRemoved.bind(
-                              this,
-                              user
-                            )}
+                            onClick={this.toggleUserRemoved.bind(this, user)}
                             modifiers="course"
                           >
                             <span className="application-list__header-primary">
@@ -568,15 +595,22 @@ export class DialogRemoveUsers extends React.Component<
             </DialogRow>
             <DialogRow>
               {this.props.removeUsers.length > 0 ? (
-                <Pager
-                  identifier={this.props.identifier + "Remove"}
-                  current={this.state.currentRemovePage}
-                  onClick={this.goToRemovePage}
-                  pages={removeUserPages}
-                ></Pager>
+                <PagerV2
+                  previousLabel=""
+                  nextLabel=""
+                  breakLabel="..."
+                  nextAriaLabel="Seuraava"
+                  previousAriaLabel="Edellinen"
+                  initialPage={this.state.currentRemovePage - 1}
+                  forcePage={this.state.currentRemovePage - 1}
+                  marginPagesDisplayed={1}
+                  pageCount={removePages}
+                  pageRangeDisplayed={2}
+                  onPageChange={this.handleRemoveUsersPagerChange}
+                />
               ) : null}
             </DialogRow>
-          </DialogRow>
+          </DialogRow >
       },
     ];
 

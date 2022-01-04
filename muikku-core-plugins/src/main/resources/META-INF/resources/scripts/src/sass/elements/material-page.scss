@@ -11,9 +11,20 @@
   position: relative;
   width: 100%;
 
-  &.material-page--hidden {
+  // scss-lint:disable SelectorFormat
+  &.state-HIDDEN {
     opacity: 0.3;
   }
+
+  &.state-SUBMITTED.state-HIDDEN,
+  &.state-WITHDRAWN.state-HIDDEN,
+  &.state-ANSWERED.state-HIDDEN,
+  &.state-PASSED.state-HIDDEN,
+  &.state-FAILED.state-HIDDEN,
+  &.state-INCOMPLETE.state-HIDDEN {
+    opacity: 0.6;
+  }
+  // scss-lint:enable SelectorFormat
 }
 
 .material-page--empty {
@@ -90,6 +101,12 @@
     border-left: 5px solid $color-assignment;
     padding: 0 0 0 15px;
   }
+}
+
+.material-page__title-meta {
+  color: $color-info;
+  font-style: italic;
+  padding: 5px 20px;
 }
 
 .material-page__content {

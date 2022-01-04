@@ -8,7 +8,6 @@ import {
   WorkspaceChatStatusType,
   WorkspaceStudentActivityType,
   WorkspaceStudentAssessmentsType,
-  WorkspaceFeeInfoType,
   WorkspaceAssessementStateType,
   WorkspaceAssessmentRequestType,
   WorkspaceEducationFilterListType,
@@ -596,7 +595,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
         workspace = { ...current };
       }
       let assesments: WorkspaceStudentAssessmentsType;
-      let feeInfo: WorkspaceFeeInfoType;
       let assessmentRequests: Array<WorkspaceAssessmentRequestType>;
       let activity: WorkspaceStudentActivityType;
       let additionalInfo: WorkspaceAdditionalInfoType;
@@ -610,7 +608,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
       [
         workspace,
         assesments,
-        feeInfo,
         assessmentRequests,
         activity,
         additionalInfo,
@@ -636,18 +633,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
               mApi()
                 .workspace.workspaces.students.assessments.cacheClear()
                 .read(data.workspaceId, status.userSchoolDataIdentifier),
-              "callback"
-            )()
-        ),
-
-        reuseExistantValue(
-          status.loggedIn,
-          workspace && workspace.feeInfo,
-          () =>
-            promisify(
-              mApi()
-                .workspace.workspaces.feeInfo.cacheClear()
-                .read(data.workspaceId),
               "callback"
             )()
         ),
@@ -750,7 +735,6 @@ let setCurrentWorkspace: SetCurrentWorkspaceTriggerType = function setCurrentWor
           : null,
       ])) as any;
       workspace.studentAssessments = assesments;
-      workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
       workspace.studentActivity = activity;
       workspace.additionalInfo = additionalInfo;
@@ -1298,7 +1282,6 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["studentAssessments"];
     delete actualOriginal["studentAssessmentState"];
     delete actualOriginal["activityStatistics"];
-    delete actualOriginal["feeInfo"];
     delete actualOriginal["assessmentRequests"];
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
@@ -1311,6 +1294,7 @@ let updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
     delete actualOriginal["chatStatus"];
+    delete actualOriginal["inactiveStudents"];
 
     try {
       let newDetails = data.update.details;
@@ -1531,7 +1515,6 @@ let updateOrganizationWorkspace: UpdateWorkspaceTriggerType = function updateOrg
       delete originalWorkspace["studentAssessments"];
       delete originalWorkspace["studentAssessmentState"];
       delete originalWorkspace["activityStatistics"];
-      delete originalWorkspace["feeInfo"];
       delete originalWorkspace["assessmentRequests"];
       delete originalWorkspace["additionalInfo"];
       delete originalWorkspace["staffMembers"];

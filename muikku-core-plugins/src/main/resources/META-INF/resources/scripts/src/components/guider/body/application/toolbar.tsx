@@ -1,21 +1,28 @@
-import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
-import { i18nType } from '~/reducers/base/i18n';
-import * as queryString from 'query-string';
-import '~/sass/elements/link.scss';
-import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-elements.scss';
-import { GuiderType, GuiderStudentListType } from '~/reducers/main-function/guider';
-import { StateType } from '~/reducers';
-import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel/application-panel';
-import { SearchFormElement } from '~/components/general/form-element';
-import NewMessage from '~/components/communicator/dialogs/new-message';
-import { ContactRecipientType } from '~/reducers/user-index';
-import { getName } from '~/util/modifiers';
-import { StatusType } from '~/reducers/base/status';
-import Button, { ButtonPill } from '~/components/general/button';
-import GuiderToolbarLabels from './toolbar/labels';
+import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { i18nType } from "~/reducers/base/i18n";
+import * as queryString from "query-string";
+import GuiderToolbarLabels from "./toolbar/labels";
+import "~/sass/elements/link.scss";
+import "~/sass/elements/application-panel.scss";
+import "~/sass/elements/buttons.scss";
+import "~/sass/elements/form-elements.scss";
+import {
+  GuiderType,
+  GuiderStudentListType,
+} from "~/reducers/main-function/guider";
+import { StateType } from "~/reducers";
+import {
+  ApplicationPanelToolbar,
+  ApplicationPanelToolbarActionsMain,
+  ApplicationPanelToolsContainer,
+} from "~/components/general/application-panel/application-panel";
+import { ButtonPill } from "~/components/general/button";
+import { SearchFormElement } from "~/components/general/form-element";
+import NewMessage from "~/components/communicator/dialogs/new-message";
+import { ContactRecipientType } from "~/reducers/user-index";
+import { getName } from "~/util/modifiers";
+import { StatusType } from "~/reducers/base/status";
 
 import {
   removeFromGuiderSelectedStudents,
@@ -25,55 +32,135 @@ import {
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
 
+/**
+ * GuiderToolbarProps
+ */
 interface GuiderToolbarProps {
-  i18n: i18nType,
-  guider: GuiderType
-  status: StatusType
-  toggleAllStudents: ToggleAllStudentsTriggerType
+  i18n: i18nType;
+  guider: GuiderType;
+  status: StatusType;
+  toggleAllStudents: ToggleAllStudentsTriggerType;
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
 
+/**
+ * GuiderToolbarState
+ */
 interface GuiderToolbarState {
-  searchquery: string,
-  focused: boolean
+  searchquery: string;
+  focused: boolean;
 }
 
-class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarState> {
+/**
+ * GuiderToolbar
+ */
+class GuiderToolbar extends React.Component<
+  GuiderToolbarProps,
+  GuiderToolbarState
+> {
+  /**
+   * Constructor method
+   * @param props
+   */
   constructor(props: GuiderToolbarProps) {
     super(props);
 
     this.state = {
       searchquery: this.props.guider.activeFilters.query || "",
-      focused: false
-    }
+      focused: false,
+    };
 
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
   }
 
-
-  updateSearchWithQuery(query: string) {
-    this.setState({
-      searchquery: query
-    });
-    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", { arrayFormat: 'bracket' });
-    locationData.q = query;
-    window.location.hash = "#?" + queryString.stringify(locationData, { arrayFormat: 'bracket' });
+  /**
+   * getBackByHash
+   * @returns hash
+   */
+  getBackByHash(): string {
+    let locationData = queryString.parse(
+      document.location.hash.split("?")[1] || "",
+      { arrayFormat: "bracket" }
+    );
+    delete locationData.c;
+    let newHash =
+      "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
+    return newHash;
   }
 
-  componentWillReceiveProps(nextProps: GuiderToolbarProps) {
-    if (!this.state.focused && (nextProps.guider.activeFilters.query || "") !== this.state.searchquery) {
+  /**
+   * onGoBackClick
+   * @param e
+   */
+  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState) {
+      let canGoBack =
+        (!document.referrer ||
+          document.referrer.indexOf(window.location.host) !== -1) &&
+        history.length;
+      if (canGoBack) {
+        history.back();
+      } else {
+        history.replaceState("", "", this.getBackByHash());
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      location.hash = this.getBackByHash();
+    }
+  }
+
+  /**
+   * updateSearchWithQuery
+   * @param query
+   */
+  updateSearchWithQuery(query: string) {
+    this.setState({
+      searchquery: query,
+    });
+    let locationData = queryString.parse(
+      document.location.hash.split("?")[1] || "",
+      { arrayFormat: "bracket" }
+    );
+    locationData.q = query;
+    window.location.hash =
+      "#?" + queryString.stringify(locationData, { arrayFormat: "bracket" });
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps
+   * @param prevState
+   * @param snapshot
+   */
+  componentDidUpdate(
+    prevProps: Readonly<GuiderToolbarProps>,
+    prevState: Readonly<GuiderToolbarState>,
+    snapshot?: any
+  ): void {
+    if (
+      !this.state.focused &&
+      this.props.guider.activeFilters.query !== this.state.searchquery
+    ) {
       this.setState({
-        searchquery: nextProps.guider.activeFilters.query || ""
+        searchquery: this.props.guider.activeFilters.query,
       });
     }
   }
 
+  /**
+   * onInputFocus
+   */
   onInputFocus() {
     this.setState({ focused: true });
   }
 
+  /**
+   * onInputBlur
+   */
   onInputBlur() {
     this.setState({ focused: false });
   }
@@ -83,8 +170,9 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
    * @param users array of GuiderStudents
    * @returns {Array} an Array of ContactRecipientType
    */
-
-  turnSelectedUsersToContacts = (users: GuiderStudentListType): ContactRecipientType[] => {
+  turnSelectedUsersToContacts = (
+    users: GuiderStudentListType
+  ): ContactRecipientType[] => {
     let contacts: ContactRecipientType[] = [];
     users.map((user) => {
       contacts.push({
@@ -93,24 +181,25 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
           id: user.userEntityId,
           name: getName(user, !this.props.status.isStudent),
           identifier: user.id,
-          email: user.email
-        }
-      })
+          email: user.email,
+        },
+      });
     });
     return contacts;
-  }
+  };
 
   /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
    * @param selectedUsers is an Array of ContactRecipientType
    */
-
   onContactsChange = (selectedUsers: ContactRecipientType[]): void => {
-
     // We need the arrays of ids for comparison from the dialog and the redux state
 
-    const selectedUserIds: number[] = selectedUsers.map((student) => student.value.id);
-    const guiderSelectedStudentsIds: number[] = this.props.guider.selectedStudents.map(student => student.userEntityId);
+    const selectedUserIds: number[] = selectedUsers.map(
+      (student) => student.value.id
+    );
+    const guiderSelectedStudentsIds: number[] =
+      this.props.guider.selectedStudents.map((student) => student.userEntityId);
 
     // whatever id will be left from the iteration, will be stored here
 
@@ -124,21 +213,36 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
 
     // Check if the leftover id is actually a user in the redux state and if it is, remove it
 
-    const selectedUser = this.props.guider.selectedStudents.find(user => user.userEntityId === remainingStudentsId);
+    const selectedUser = this.props.guider.selectedStudents.find(
+      (user) => user.userEntityId === remainingStudentsId
+    );
     const isGuiderSelectedStudent = !!selectedUser;
 
     if (isGuiderSelectedStudent) {
       this.props.removeFromGuiderSelectedStudents(selectedUser);
     }
-  }
+  };
 
+  /**
+   * Component render method
+   * @returns JSX.Element
+   */
   render() {
     return (
       <ApplicationPanelToolbar>
+
         <ApplicationPanelToolbarActionsMain>
-          <NewMessage extraNamespace="guider" refreshInitialSelectedItemsOnOpen onRecipientChange={this.onContactsChange} initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}>
-            <ButtonPill disabled={this.props.guider.selectedStudentsIds.length < 1} icon="envelope" buttonModifiers="new-message" />
+          <NewMessage
+            extraNamespace="guider"
+            refreshInitialSelectedItemsOnOpen
+            onRecipientChange={this.onContactsChange}
+            initialSelectedItems={this.turnSelectedUsersToContacts(this.props.guider.selectedStudents)}>
+            <ButtonPill
+              disabled={this.props.guider.selectedStudentsIds.length < 1}
+              icon="envelope"
+              buttonModifiers="new-message" />
           </NewMessage>
+
           <ButtonPill
             buttonModifiers="toggle"
             icon="check"
@@ -157,31 +261,36 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
               value={this.state.searchquery}
             />
           </ApplicationPanelToolsContainer>
-        </ApplicationPanelToolbarActionsMain>
-      </ApplicationPanelToolbar>
-    )
+        </ApplicationPanelToolbarActionsMain >
+      </ApplicationPanelToolbar >
+    );
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state
+ */
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     guider: state.guider,
-    status: state.status
-  }
-};
+    status: state.status,
+  };
+}
 
+/**
+ * mapDispatchToProps
+ * @param dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return bindActionCreators(
     {
       removeFromGuiderSelectedStudents,
-      toggleAllStudents
+      toggleAllStudents,
     },
     dispatch
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuiderToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(GuiderToolbar);

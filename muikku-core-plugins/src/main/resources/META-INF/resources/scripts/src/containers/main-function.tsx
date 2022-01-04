@@ -64,6 +64,8 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   private prevPathName: string;
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
+  private subscribedChatSettings: boolean = false;
+  private loadedChatSettings: boolean = false;
 
   /**
    * constructor
@@ -133,7 +135,13 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
    */
   loadChatSettings = (): void => {
     if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
-      this.props.store.dispatch(loadProfileChatSettings() as Action);
+      if (!this.loadedChatSettings) {
+        this.loadedChatSettings = true;
+        this.props.store.dispatch(loadProfileChatSettings() as Action);
+      }
+    } else if (!this.subscribedChatSettings) {
+      this.subscribedChatSettings = true;
+      this.props.store.subscribe(this.loadChatSettings);
     }
   }
 
@@ -359,11 +367,11 @@ export default class MainFunction extends React.Component<MainFunctionProps, {}>
   renderIndexBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 6));
+      this.props.websocket && this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null, 10));
       this.props.store.dispatch(loadAnnouncementsAsAClient({ loadUserGroups: false }) as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
-      this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
+      this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
       this.loadChatSettings();
     }

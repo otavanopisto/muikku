@@ -185,7 +185,7 @@ class ContactInformation extends React.Component<
    * @returns JSX.Element
    */
   public render() {
-    if (this.props.profile.location !== "contact") {
+    if (this.props.profile.location !== "contact" || !this.props.status.profile) {
       return null;
     }
 

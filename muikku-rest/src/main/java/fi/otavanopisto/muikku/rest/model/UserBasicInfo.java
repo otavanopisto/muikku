@@ -6,6 +6,7 @@ public class UserBasicInfo {
   }
 
   public UserBasicInfo(Long id,
+              String identifier,
               String firstName,
               String lastName,
               String nickName, 
@@ -13,6 +14,7 @@ public class UserBasicInfo {
               ) {
     super();
     this.id = id;
+    this.setIdentifier(identifier);
     this.firstName = firstName;
     this.lastName = lastName;
     this.nickName = nickName;
@@ -59,7 +61,16 @@ public class UserBasicInfo {
     this.nickName = nickName;
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
   private Long id;
+  private String identifier;
   private String firstName;
   private String lastName;
   private String nickName;
