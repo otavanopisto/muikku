@@ -345,10 +345,6 @@ class WorkspaceUsers extends React.Component<
         />
       ) : null;
 
-
-
-
-
     const inactiveStudents =
       this.props.workspace &&
       this.props.workspace.inactiveStudents &&
